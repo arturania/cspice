@@ -1,0 +1,1705 @@
+ 
+Ellipses Required Reading
+===========================================================================
+ 
+   Last revised on 2008 JAN 17 by B. V. Semenov.
+ 
+ 
+Abstract
+--------------------------------------------------------
+ 
+   SPICELIB contains a substantial set of subroutines that solve common
+   mathematical problems involving ellipses and triaxial ellipsoids.
+ 
+ 
+Note on FORTRAN and C Versions
+--------------------------------------------------------
+ 
+   This document covers the FORTRAN version of the interfaces of this
+   subsystem. CSPICE provides f2c translated equivalents for all, and
+   native C wrappers for some of them. If you wish to use the C versions of
+   the interfaces described in this document, refer to the CSPICE Required
+   Reading, cspice.req, for more information on naming conventions,
+   locations, and usage of the f2c'ed routines and native C wrappers.
+ 
+ 
+Introduction
+--------------------------------------------------------
+ 
+   Ellipses turn up frequently in the sort of science analysis problems
+   SPICELIB is designed to help solve. The shapes of extended
+   bodies--planets, satellites, and the Sun--are frequently modelled by
+   triaxial ellipsoids. The IAU has defined such models for the Sun, all of
+   the planets, and most of their satellites, in the 1988 IAU/IAG/COSPAR
+   working group report [1]. Many geometry problems involving triaxial
+   ellipsoids give rise to ellipses as `mathematical byproducts'. Ellipses
+   are also used in modelling orbits and planetary rings.
+ 
+   SPICELIB contains a substantial set of subroutines that solve common
+   mathematical problems involving ellipses and triaxial ellipsoids. This
+   required reading file documents those routines, gives examples of their
+   use, and presents some of the mathematical background required to
+   understand the routines.
+ 
+   This required reading file is divided into four chapters:
+ 
+       --   The ellipse data type
+ 
+       --   Ellipse and ellipsoid routines
+ 
+       --   Examples
+ 
+       --   Mathematical notes
+ 
+   The first chapter discusses a structured data type in SPICELIB called
+   `ellipses'. The first chapter is a prerequisite for the next two, since
+   many SPICELIB subroutines make use of the ellipse data type in their
+   calling sequences.
+ 
+   The second chapter lists the SPICELIB routines that deal with ellipses
+   and ellipsoids.
+ 
+   The third chapter presents some extended examples that illustrate the
+   use of SPICELIB ellipse and ellipsoid routines to solve practical
+   geometry problems.
+ 
+   The fourth chapter presents some of the mathematical background
+   necessary to fully understand the SPICELIB ellipse and ellipsoid
+   routines.
+ 
+ 
+References
+--------------------------------------------------------
+ 
+         [1]   `Report of the IAU/IAG/COSPAR Working Group on Cartographic
+               Coordinates and Rotational Elements of the Planets and
+               Satellites: 1988', January 4, 1989.
+ 
+         [2]   `Calculus, Vol. II'. Tom Apostol. John Wiley and Sons, 1969.
+               See Chapter 5, `Eigenvalues of Operators Acting on Euclidean
+               Spaces'.
+ 
+         [3]   PLANES required reading (planes.req).
+ 
+ 
+The ellipse data type
+===========================================================================
+ 
+   The `ellipse' is a structured data type used in SPICELIB to represent
+   ellipses in three-dimensional space. SPICELIB ellipses are used to
+   simplify calling sequences of routines that output or accept as input
+   data that defines ellipses. We will not dwell on the argument justifying
+   this choice; see the introduction of the PLANES required reading,
+   planes.req, for a discussion of the topic.
+ 
+   SPICELIB ellipses are declared as double precision arrays of length
+   UBEL; the value of the parameter UBEL is 9. As a matter of good
+   programming practice, we recommend that you declare ellipses using the
+   parameter UBEL, as in the example below.
+ 
+      INTEGER               UBEL
+      PARAMETER           ( UBEL = 9 )
+ 
+      DOUBLE PRECISION      ELLIPS ( UBEL )
+ 
+   The values of SPICELIB ellipses are set and retrieved via two access
+   routines, CGV2EL (Center and generating vectors to ellipse) and EL2CGV
+   (Ellipse to center and generating vectors).
+ 
+   You should never directly assign values to the elements of a SPICELIB
+   ellipse or make an assignment from an element of a SPICELIB ellipse. The
+   contents of SPICELIB ellipses are considered an implementation choice,
+   and are not described by the specification of any SPICELIB routine. In
+   the future, the definition of the contents of SPICELIB ellipses may be
+   changed in any way that does not affect the user-visible behavior of the
+   access routines.
+ 
+   The following representation of an ellipse is used throughout SPICELIB,
+   and in particular by the ellipse access routines: An ellipse is the set
+   of points
+ 
+      CENTER    +    cos(theta) * V1    +    sin(theta) * V2
+ 
+   where CENTER, V1, and V2 are three vectors, and theta is in the range
+ 
+      (-pi, pi].
+ 
+   It is a fact, which we will prove in the chapter titled `Mathematical
+   notes', that this set of points is an ellipse. The ellipse defined by
+   this parametric representation is non-degenerate if and only if V1 and
+   V2 are linearly independent.
+ 
+   We call CENTER the `center' of the ellipse, and we refer to V1 and V2 as
+   `generating vectors'. Note that an ellipse centered at the origin is
+   completely specified by its generating vectors. In the rest of this
+   document, when we refer to the center or generating vectors for a
+   particular ellipse, we mean vectors that play the role of CENTER or V1
+   and V2 in defining that ellipse.
+ 
+   This representation of ellipses has the particularly convenient property
+   that it allows easy computation of the image of an ellipse under a
+   linear transformation. If M is a matrix representing a linear
+   transformation, and E is the ellipse
+ 
+      CENTER    +    cos(theta) * V1    +    sin(theta) * V2,
+ 
+   then the image of E under the transformation represented by M is
+ 
+      M*CENTER    +    cos(theta) * M*V1    +    sin(theta) * M*V2.
+ 
+   If we accept that the first set of points is an ellipse, then we can see
+   that the image of an ellipse under a linear transformation is always
+   another (possibly degenerate) ellipse.
+ 
+   Since many geometric computations involving ellipses and ellipsoids may
+   be greatly simplified by judicious application of linear transformations
+   to ellipses, it is useful to have a representation for ellipses that
+   allows ready computation of their images under such mappings.
+ 
+ 
+Ellipse and ellipsoid routines
+===========================================================================
+ 
+   The SPICELIB routines that deal with ellipses and ellipsoids are:
+ 
+         CGV2EL   ( Center and generating vectors to ellipse )
+ 
+         EL2CGV   ( Ellipse to center and generating vectors )
+ 
+         NEARPT   ( Nearest point on ellipsoid to point )
+ 
+         SURFPT   ( Surface intercept point on ellipsoid )
+ 
+         SURFNM   ( Surface normal on ellipsoid )
+ 
+         EDLIMB   ( Ellipsoid limb )
+ 
+         NPEDLN   ( Nearest point on ellipsoid to line )
+ 
+         INEDPL   ( Intersection of ellipsoid and plane)
+ 
+         INELPL   ( Intersection of ellipse and plane )
+ 
+         NPELPT   ( Nearest point on ellipse to point )
+ 
+         PJELPL   ( Projection of ellipse onto plane )
+ 
+         SAELGV   ( Semi-axes of ellipse from generating vectors )
+ 
+   In the code examples that follow, we will repeatedly use the variable
+   names CENTER, V1, V2, and ELLIPS. Wherever these appear, they refer to
+   the center and a pair of generating vectors for an ellipse, and a
+   SPICELIB ellipse. These variables can always be assumed to have been
+   declared as follows:
+ 
+      INTEGER               UBEL
+      PARAMETER           ( UBEL = 9 )
+ 
+      DOUBLE PRECISION      ELLIPS ( UBEL )
+      DOUBLE PRECISION      CENTER ( 3 )
+      DOUBLE PRECISION      V1     ( 3 )
+      DOUBLE PRECISION      V2     ( 3 )
+ 
+ 
+Ellipse access routines
+--------------------------------------------------------
+ 
+   The SPICELIB routines used for accessing ellipses are
+ 
+         CGV2EL   ( Center and generating vectors to ellipse )
+ 
+         EL2CGV   ( Ellipse to center and generating vectors )
+ 
+ 
+Creating a SPICELIB ellipse
+ 
+   Let CENTER, V1, and V2 be a center vector and two generating vectors for
+   an ellipse. To create a SPICELIB ellipse from these vectors, we could
+   make the declarations shown above for CENTER, V1, and V2, and use the
+   subroutine call
+ 
+      CALL CGV2EL ( CENTER, V1, V2, ELLIPS )
+ 
+   This call produces the SPICELIB ellipse ELLIPS, which represents the
+   same mathematical ellipse as do CENTER, V1, and V2.
+ 
+   The generating vectors need not be linearly independent. If they are
+   not, the resulting ellipse will be degenerate. Specifically, if the
+   generating vectors are both zero, the ellipse will be the single point
+   represented by CENTER, and if just one of the semi-axis vectors (call it
+   V) is non-zero, the ellipse will be the line segment extending from
+ 
+      CENTER - V
+ 
+   to
+ 
+      CENTER + V
+ 
+ 
+`Breaking apart' a SPICELIB ellipse
+ 
+   Let ELLIPS be a SPICELIB ellipse. To produce the center and two
+   generating vectors for ELLIPS, we can make the call
+ 
+      CALL EL2CGV ( ELLIPS, CENTER, V1, V2 )
+ 
+   On output, V1 will be a semi-major axis vector for the ellipse
+   represented by ELLIPS, and V2 will be a semi-minor axis vector.
+   Semi-axis vectors are never unique; if X is a semi-axis vector; then so
+   is -X.
+ 
+   V1 is a vector of maximum norm extending from the ellipse's center to
+   the ellipse itself; V2 is an analogous vector of minimum norm. V1 and V2
+   are orthogonal vectors.
+ 
+ 
+CGV2EL and EL2CGV are not inverses
+ 
+   Because the routine EL2CGV always returns semi-axes as generating
+   vectors, if V1 and V2 are not semi-axes on input to CGV2EL, the sequence
+   of calls
+ 
+      CALL CGV2EL ( CENTER,  V1,      V2,  ELLIPS )
+      CALL EL2CGV ( ELLIPS,  CENTER,  V1,  V2     )
+ 
+   will certainly modify V1 and V2. Even if V1 and V2 are semi-axes to
+   start out with, because of the non-uniqueness of semi-axes, one or both
+   of these vectors could be negated on output from EL2CGV.
+ 
+   There is a sense in which CGV2EL and EL2CGV are inverses, though: the
+   above sequence of calls returns a center and generating vectors that
+   define the same ellipse as the input center and generating vectors.
+ 
+ 
+Triaxial ellipsoid routines
+--------------------------------------------------------
+ 
+   The SPICELIB routines that deal with triaxial ellipsoids are
+ 
+         NEARPT   ( Nearest point on ellipsoid to point )
+ 
+         SURFPT   ( Surface intercept point on ellipsoid )
+ 
+         SURFNM   ( Surface normal on ellipsoid )
+ 
+         EDLIMB   ( Ellipsoid limb )
+ 
+         NPEDLN   ( Nearest point on ellipsoid to line )
+ 
+         INEDPL   ( Intersection of ellipsoid and plane)
+ 
+   In the rest of this section, the variables A, B, and C will be used to
+   denote the semi-axis lengths of a triaxial ellipsoid. The declarations
+   of these variables are
+ 
+      DOUBLE PRECISION      A
+      DOUBLE PRECISION      B
+      DOUBLE PRECISION      C
+ 
+ 
+Finding the nearest point on an ellipsoid to a point
+ 
+   The routine NEARPT finds the nearest point on a triaxial ellipsoid to a
+   specified point. The point may be outside, on, or inside the ellipsoid.
+   If the variable POINT and output arguments NRPT and ALT are declared by
+ 
+      DOUBLE PRECISION      POINT ( 3 )
+      DOUBLE PRECISION      NRPT  ( 3 )
+      DOUBLE PRECISION      ALT
+ 
+   then the code fragment
+ 
+      CALL NEARPT ( POINT, A, B, C, NRPT, ALT )
+ 
+   will return NRPT as the nearest point on the ellipsoid to POINT and ALT
+   as the altitude of POINT above the ellipsoid. If POINT is inside the
+   ellipsoid, ALT will be negative.
+ 
+   NEARPT is useful for, among other things, finding the sub-spacecraft
+   point or sub-solar point on a target body. It also is used as a utility
+   routine by the SPICELIB routines that convert between geodetic and other
+   coordinate systems.
+ 
+ 
+Finding the intersection of a ray and an ellipsoid
+ 
+   The routine SURFPT finds the intersection of a ray and a triaxial
+   ellipsoid. Let a ray be defined by two variables, VERTEX and DIR, that
+   represent the vertex and direction vector. Let XPT represent the
+   intersection point and let FOUND be a logical flag indicating whether
+   the ray and ellipsoid intersect. VERTEX, DIR, XPT, and FOUND are
+   declared as follows:
+ 
+      DOUBLE PRECISION      VERTEX ( 3 )
+      DOUBLE PRECISION      DIR    ( 3 )
+      DOUBLE PRECISION      XPT    ( 3 )
+      LOGICAL               FOUND
+ 
+   Then if A, B, and C are the semi-axis lengths of the ellipsoid, the call
+ 
+      CALL SURFPT ( VERTEX, DIR, A, B, C, XPT, FOUND )
+ 
+   returns the location of the intercept point in XPT and sets FOUND to
+   .TRUE. if the ray does intersect the ellipsoid. Otherwise, FOUND is set
+   to .FALSE. and XPT is set to the zero vector.
+ 
+   A typical use of SURFPT would be finding the surface intercept of an
+   instrument boresight ray on an extended body. SURFPT can also be used to
+   for a low-accuracy determination of whether a star is occulted by an
+   extended body. Such a test would ignore factors such as topography of
+   the body, differential stellar aberration, differential light-time
+   corrections, and light-bending.
+ 
+ 
+Finding the outward normal at a surface point
+ 
+   The routine SURFNM finds the unit outward normal vector at a specified
+   point on a triaxial ellipsoid. Let A, B, C be the lengths of the
+   semi-axes of the ellipsoid, let the variable POINT represent a surface
+   point on the ellipsoid, and let NORMAL represent the unit outward normal
+   at POINT. The variables POINT and NORMAL are declared
+ 
+      DOUBLE PRECISION      POINT  ( 3 )
+      DOUBLE PRECISION      NORMAL ( 3 )
+ 
+   The call
+ 
+      CALL SURFNM ( A, B, C, POINT, NORMAL )
+ 
+   returns NORMAL as the unit outward normal vector at the surface point
+   represented by POINT.
+ 
+   SURFNM is useful in any application requiring a local surface coordinate
+   system with one coordinate plane tangent to the surface at a specified
+   point. It is also useful for computing emission and solar incidence
+   angles at a surface point. SURFNM is also used as a utility by SPICELIB
+   routines that convert between geodetic and other coordinate systems.
+ 
+ 
+Finding the limb of an ellipsoid
+ 
+   The routine EDLIMB finds the limb of a triaxial ellipsoid as viewed from
+   a specified location. (The limb is the boundary of the visible portion
+   of the ellipsoid; this boundary is an ellipse as long as the viewing
+   location is outside of the ellipsoid.)
+ 
+   Let A, B, C be the lengths of the semi-axes of the ellipsoid, and let
+   VIEWPT be the viewing location. The output argument LIMB is declared as
+   a SPICELIB ellipse.
+ 
+   We also declare variables that represent the center and semi-axes of the
+   limb.
+ 
+      INTEGER               UBEL
+      PARAMETER           ( UBEL = 9 )
+ 
+      DOUBLE PRECISION      VIEWPT ( 3 )
+      DOUBLE PRECISION      LIMB   ( UBEL )
+ 
+      DOUBLE PRECISION      CENTER ( 3 )
+      DOUBLE PRECISION      SMAJOR ( 3 )
+      DOUBLE PRECISION      SMINOR ( 3 )
+ 
+   After the call
+ 
+      CALL EDLIMB ( A, B, C, VIEWPT, LIMB )
+ 
+   LIMB represents the limb of the ellipsoid as viewed from VIEWPT. The
+   routine EL2CGV can be used to extract the center and semi-axes of the
+   limb:
+ 
+      CALL EL2CGV ( LIMB, CENTER, SMAJOR, SMINOR )
+ 
+   Several uses of the calculated limb are:
+ 
+       --   Predicting the appearance of an extended body in an
+            instrument's field of view
+ 
+       --   Creating graphical overlays for limb-fitting
+ 
+       --   Finding the terminator of a body (using the vertex of the
+            shadow cone as the viewing point)
+ 
+       --   Determining whether one ellipsoidal body occults another
+ 
+ 
+Finding the nearest point on an ellipsoid to a line
+ 
+   The routine NPEDLN finds the nearest point on a triaxial ellipsoid to a
+   specified line. Let A, B, C be the lengths of the semi-axes of the
+   ellipsoid, and let the line be specified by a point and a direction
+   vector represented by the variables POINT and DIR respectively. NPEDLN
+   returns the nearest point on the ellipsoid to the line and the distance
+   between that point and the line. The variables NRPT and DIST serve as
+   these arguments.
+ 
+      DOUBLE PRECISION      POINT  ( 3 )
+      DOUBLE PRECISION      DIR    ( 3 )
+      DOUBLE PRECISION      NRPT   ( 3 )
+      DOUBLE PRECISION      DIST
+ 
+   The call
+ 
+      CALL NPEDLN ( A, B, C, POINT, DIR, NRPT, DIST )
+ 
+   sets the values of NRPT and DIST as described.
+ 
+   The capability of finding the nearest surface point to a line is useful
+   in constructing maps that associate the nearest surface point to the
+   boresight of a remote-sensing instrument at a given epoch with a
+   measurement made by that instrument at that epoch.
+ 
+   Note that this capability is NOT useful for determining whether the
+   boresight of a remote sensing instrument intersects the surface of a
+   body when topography is taken into account.
+ 
+ 
+Finding the intersection of an ellipsoid and a plane
+ 
+   The routine INEDPL finds the intersection of a triaxial ellipsoid and a
+   plane. Let A, B, C be the lengths of the semi-axes of the ellipsoid, and
+   let PLANE and ELLIPS be declared as a SPICELIB plane and SPICELIB
+   ellipse respectively:
+ 
+      INTEGER               UBEL
+      PARAMETER           ( UBEL = 9 )
+ 
+      INTEGER               UBPL
+      PARAMETER           ( UBPL = 4 )
+ 
+      DOUBLE PRECISION      PLANE  ( UBPL )
+      DOUBLE PRECISION      ELLIPS ( UBEL )
+      LOGICAL               FOUND
+ 
+   Then the call
+ 
+      CALL INEDPL ( A, B, C, PLANE, ELLIPS, FOUND )
+ 
+   returns ELLIPS as the ellipse of intersection of the ellipsoid and
+   plane, if the intersection is non-empty. FOUND indicates whether the
+   plane and ellipsoid intersect.
+ 
+   INEDPL is used as a utility routine by the SPICELIB routines EDLIMB and
+   NPEDLN. Other uses include determining whether an ellipsoidal body is
+   partially within the field of view of a remote sensing instrument when
+   the boundary of the field of view is polygonal, and finding the curve on
+   the surface of an ellipsoid that corresponds to a line segment in an
+   image.
+ 
+ 
+Ellipse routines
+--------------------------------------------------------
+ 
+   The SPICELIB routines that deal with ellipses and do not fall into any
+   of the above categories are:
+ 
+         INELPL   ( Intersection of ellipse and plane )
+ 
+         NPELPT   ( Nearest point on ellipse to point )
+ 
+         PJELPL   ( Projection of ellipse onto plane )
+ 
+         SAELGV   ( Semi-axes of ellipse from generating vectors )
+ 
+ 
+Finding the intersection of an ellipse and plane
+ 
+   The routine INELPL finds the intersection of an ellipse and plane. Let
+   ELLIPS and PLANE be declared as a SPICELIB ellipse and SPICELIB plane,
+   respectively:
+ 
+      INTEGER               UBEL
+      PARAMETER           ( UBEL = 9 )
+ 
+      INTEGER               UBPL
+      PARAMETER           ( UBPL = 4 )
+ 
+      DOUBLE PRECISION      ELLIPS ( UBEL )
+      DOUBLE PRECISION      PLANE  ( UBPL )
+      DOUBLE PRECISION      XPT1   ( 3 )
+      DOUBLE PRECISION      XPT2   ( 3 )
+      INTEGER               NXPTS
+ 
+   Then the call
+ 
+      CALL INELPL ( ELLIPS, PLANE, NXPTS, XPT1, XPT2 )
+ 
+   sets the output argument NXPTS equal to the number of intersection
+   points of the ELLIPS and PLANE. The possible values of NXPTS are -1, 0,
+   1, and 2. The value -1 is returned when the input ellipse lies in the
+   input plane; the number of intersection points is infinite in that case.
+   When NXPTS is equal to 1, both XPT1 and XPT2 are set to the value of the
+   single point of intersection. When NXPTS is equal to 2, XPT1 and XPT2
+   are the points of intersection.
+ 
+   Among the uses of INELPL are:
+ 
+       --   Finding the boundary of the illuminated portion of the limb of
+            a body (the intersection of the terminator plane and the limb)
+ 
+       --   Finding the intersection of the limb of an ellipsoidal body
+            with a plane defined by the focal point of a camera and an edge
+            of the field of view of the camera--this calculation is useful
+            for determining whether any part of the body appears in the
+            field of view
+ 
+       --   Finding the limb points that lie in the plane defined by the
+            body-centered position and velocity vectors of a spacecraft
+            orbiting a body
+ 
+ 
+Finding the nearest point on an ellipse to a point
+ 
+   The routine NPELPT finds the nearest point on an ellipse to a specified
+   point. Let ELLIPS be declared as a SPICELIB ellipse; POINT is just a
+   point in three-dimensional space:
+ 
+      INTEGER               UBEL
+      PARAMETER           ( UBEL = 9 )
+ 
+      DOUBLE PRECISION      POINT  ( 3 )
+      DOUBLE PRECISION      ELLIPS ( UBEL )
+      DOUBLE PRECISION      NRPT   ( 3 )
+      DOUBLE PRECISION      DIST
+ 
+   Then the call
+ 
+      CALL NPELPT ( POINT, ELLIPS, NRPT, DIST )
+ 
+   returns NRPT as the point on ELLIPS closest to POINT, and DIST as the
+   distance between NRPT and POINT.
+ 
+   NPELPT is used as a utility routine by the SPICELIB routine NPEDLN. It
+   is also useful for testing ellipses for equality: given a parametric
+   representation of one ellipse, a number of points on that ellipse can be
+   generated, and the distance of each from a second ellipse can be found.
+ 
+ 
+Finding the semi-axes of an ellipse from generating vectors
+ 
+   The routine SAELGV finds the semi-axes of an ellipse in
+   three-dimensional space, given two generating vectors. The generating
+   vectors are not required to be linearly independent. If V1, V2, SMAJOR,
+   and SMINOR are declared as follows,
+ 
+      DOUBLE PRECISION      V1     ( 3 )
+      DOUBLE PRECISION      V2     ( 3 )
+      DOUBLE PRECISION      SMAJOR ( 3 )
+      DOUBLE PRECISION      SMINOR ( 3 )
+ 
+   then the call
+ 
+      CALL SAELGV ( V1, V2, SMAJOR, SMINOR )
+ 
+   returns SMAJOR as a semi-major axis of the ellipse and SMINOR as a
+   semi-minor axis. SMAJOR and SMINOR are orthogonal; SMAJOR is a point on
+   the ellipse of largest norm, and SMINOR is a point of smallest norm. The
+   semi-axis vectors are not unique: the inverse of any semi-axis vector is
+   also a semi-axis vector.
+ 
+   SAELGV is used within SPICELIB as a utility routine.
+ 
+ 
+Finding the orthogonal projection of an ellipse onto a plane
+ 
+   The routine PJELPL finds the orthogonal projection of an ellipse onto a
+   specified plane. The orthogonal projection of an ellipse is another,
+   possibly degenerate, ellipse. The projection is just the union of the
+   orthogonal projections onto the plane of each point in the ellipse. The
+   orthogonal projection of a point X onto a plane is the closest point in
+   the plane to X.
+ 
+   Let ELLIN and ELLOUT be declared as SPICELIB ellipses, and let PLANE be
+   declared as a SPICELIB plane:
+ 
+      INTEGER               UBEL
+      PARAMETER           ( UBEL = 9 )
+ 
+      INTEGER               UBPL
+      PARAMETER           ( UBPL = 4 )
+ 
+      DOUBLE PRECISION      ELLIN  ( UBEL )
+      DOUBLE PRECISION      PLANE  ( UBPL )
+      DOUBLE PRECISION      ELLOUT ( UBEL )
+ 
+   Then the call
+ 
+      CALL PJELPL ( ELLIN, PLANE, ELLOUT )
+ 
+   returns the orthogonal projection of ELLIN onto PLANE as the SPICELIB
+   ellipse ELLOUT.
+ 
+   PJELPL is used as a utility routine in the SPICELIB routine INEDPL.
+   Another application is finding the altitude of an instrument boresight
+   above the limb of an ellipsoidal body; this procedure is demonstrated in
+   the `Examples' chapter below.
+ 
+ 
+Examples
+===========================================================================
+ 
+ 
+Finding the sub-observer point on an extended body
+ 
+   In this example, we present a small program that solves a realistic
+   science analysis geometry problem: finding the sub-observer point on an
+   extended body at a specified time. We will assume that we have an SPK
+   file available that contains ephemeris data for observer and target body
+   at the time of interest.
+ 
+   If you are not familar with SPICE kernel files, consult the SPK.REQ,
+   TIME.REQ, and KERNEL.REQ required reading.
+ 
+ 
+            PROGRAM SUBOBS
+      C
+      C     Compute the planetocentric latitude and longitude of the
+      C     sub-observer point on an extended target body at a
+      C     specified UTC epoch.  The observer may be a spacecraft,
+      C     planet, or any body for which ephemeris data is available
+      C     in an SPK file.
+      C
+ 
+      C
+      C     SPICELIB functions
+      C
+            DOUBLE PRECISION      DPR
+ 
+      C
+      C     Local parameters
+      C
+            INTEGER               FILEN
+            PARAMETER           ( FILEN = 128 )
+ 
+      C
+      C     Local variables
+      C
+            CHARACTER*(FILEN)     LEAP
+            CHARACTER*(FILEN)     PCK
+            CHARACTER*(FILEN)     SPK
+            CHARACTER*(30)        UTC
+            CHARACTER*(5)         CORR
+ 
+            DOUBLE PRECISION      ALT
+            DOUBLE PRECISION      DIST
+            DOUBLE PRECISION      EPOCH
+            DOUBLE PRECISION      ET
+            DOUBLE PRECISION      LT
+            DOUBLE PRECISION      OBSPOS ( 3 )
+            DOUBLE PRECISION      RADII  ( 3 )
+            DOUBLE PRECISION      STATE  ( 6 )
+            DOUBLE PRECISION      SUBLAT
+            DOUBLE PRECISION      SUBLON
+            DOUBLE PRECISION      SUBPT  ( 3 )
+            DOUBLE PRECISION      TIPM   ( 3, 3 )
+ 
+            INTEGER               HANDLE
+            INTEGER               N
+            INTEGER               OBSRVR
+            INTEGER               TARGET
+ 
+            LOGICAL               CONT
+ 
+            DATA CONT / .TRUE. /
+ 
+      C
+      C     Start out by prompting for the names of kernel files.
+      C     Load each kernel as the name is supplied.
+      C
+            WRITE (*,*) ' '
+            WRITE (*,*) 'Enter name of SPK file'
+            READ  (*,FMT='(A)') SPK
+ 
+            CALL SPKLEF ( SPK, HANDLE )
+ 
+            WRITE (*,*) 'Enter name of leapseconds kernel'
+            READ  (*,FMT='(A)') LEAP
+ 
+            CALL FURNSH ( LEAP )
+ 
+            WRITE (*,*) 'Enter name of P_constants kernel'
+            READ  (*,FMT='(A)') PCK
+ 
+            CALL FURNSH ( PCK )
+ 
+ 
+            DO WHILE ( CONT )
+ 
+               WRITE (*,*) ' '
+               WRITE (*,*) 'Enter NAIF integer code of target body'
+               READ   *,    TARGET
+ 
+               WRITE (*,*) 'Enter NAIF integer code of observer body'
+               READ   *,    OBSRVR
+ 
+               WRITE (*,*) 'Enter UTC epoch of observation'
+               READ  (*,FMT='(A)') UTC
+ 
+               WRITE (*,*) 'Enter aberration correction to use:'
+               WRITE (*,*) 'NONE, LT, or LT+S'
+               READ  (*,FMT='(A)') CORR
+ 
+      C
+      C        Convert the UTC epoch to ET.
+      C
+               CALL UTC2ET ( UTC, ET )
+ 
+      C
+      C        Find the state of the target as seen from the observer at
+      C        ET.
+      C
+               CALL SPKEZ ( TARGET, ET, 'J2000', CORR, OBSRVR, STATE,
+           .                LT                                        )
+ 
+      C
+      C        The pure mathematical problem embedded in this application
+      C        is finding the nearest point on a triaxial ellipsoid to a
+      C        specified point.  The SPICELIB routine NEARPT solves this
+      C        problem.  NEARPT deals with an ellipsoid that is centered
+      C        at the origin and whose axes are lined up with the x, y,
+      C        and z coordinate axes.  So to use NEARPT, we'll have to
+      C        convert the problem at hand into a form that NEARPT can
+      C        accept.
+      C
+      C        The way to do this is to convert all of our vectors into
+      C        body equator and prime meridian coordinates.  The body
+      C        equator and prime meridian system is one in which the
+      C        coordinate axes are lined up with the body's geometric
+      C        axes (there may be a few exceptions to the rule--check the
+      C        PCK file to be sure about the body you're working with).
+      C
+ 
+      C
+      C        Find the epoch for which the inertial to body equator and
+      C        prime meridian transformation should be computed.
+      C
+               IF ( CORR .EQ. 'NONE' ) THEN
+                  EPOCH = ET
+               ELSE
+                  EPOCH = ET - LT
+               END IF
+ 
+      C
+      C        Find the transformation from inertial to body equator and
+      C        prime meridian coordinates at the appropriate epoch.
+      C
+               CALL BODMAT ( TARGET, EPOCH, TIPM )
+ 
+      C
+      C        Negate the observer-target vector and rotate the result
+      C        into body-fixed coordinates.
+      C
+               CALL VMINUS ( STATE, OBSPOS )
+ 
+               CALL MXV    ( TIPM,  OBSPOS,  OBSPOS )
+ 
+      C
+      C        Look up the radii of the target body from the PCK file.
+      C
+               CALL BODVAR ( TARGET, 'RADII', N, RADII )
+ 
+      C
+      C        Find the nearest point on the body to the observer.
+      C
+               CALL NEARPT ( OBSPOS, RADII(1), RADII(2), RADII(3),
+           .                 SUBPT,  ALT                           )
+ 
+      C
+      C        Find the latitude and longitude of the sub-observer point.
+      C
+               CALL RECLAT ( SUBPT,  DIST,  SUBLON,  SUBLAT )
+ 
+      C
+      C        Write out the results, converting radians to degrees.
+      C
+               WRITE(*,*) ' '
+               WRITE(*,*) 'Sub-observer longitude (deg) ', DPR() * SUBLON
+               WRITE(*,*) 'Sub-observer latitude  (deg) ', DPR() * SUBLAT
+               WRITE(*,*) ' '
+ 
+               WRITE (*,*) 'Do you wish to continue? (T/F)'
+               READ   *,    CONT
+ 
+            END DO
+ 
+            END
+ 
+ 
+Testing for occultation of a star
+ 
+   We've mentioned that SURFPT can be used for a low-accuracy determination
+   of whether a star is occulted by an extended body. Such a test would
+   ignore factors such as topography of the body, differential stellar
+   aberration, differential light-time corrections, and light-bending.
+   Nonetheless, such a determination can be useful, especially for deciding
+   which objects to draw in a graphical depiction of the sky as seen in the
+   field of view of an instrument.
+ 
+   We demonstrate this procedure, assuming that the observing body is the
+   Earth, and the occulting body is Jupiter. The NAIF integer code for the
+   Earth is 399, and that of Jupiter is 599 (see the SPK required reading,
+   spk.req, for the complete set of NAIF integer body codes). The program
+   below could be easily generalized to deal with occulting bodies other
+   than Jupiter: the necessary change would be to make the ID code of the
+   occulting body a variable.
+ 
+   We're going to take the offset of the observer from the Earth's center
+   into account because doing so gives us an opportunity to demonstrate the
+   use of a number of SPICELIB routines. The actual parallax involved is
+   not necessarily important.
+ 
+ 
+            PROGRAM STAROC
+      C
+      C     Determine whether a star is occulted by Jupiter as seen from
+      C     Earth at a specified surface location and specified UTC time.
+      C     This program does not determine whether the Earth blocks the
+      C     line of sight to the star.
+      C
+      C     Inputs to the program are:
+      C
+      C        -- Name of a leapseconds kernel file
+      C
+      C        -- Name of a PCK file containing radii and orientation
+      C           models for Earth and Jupiter
+      C
+      C        -- Name of an SPK file containing ephemeris data for Earth
+      C           and Jupiter at the time of observation
+      C
+      C        -- UTC time of observation
+      C
+      C        -- RA and Dec of star, relative to the J2000 inertial
+      C           reference frame
+      C
+      C        -- Planetocentric latitude and longitude of the observer.
+      C
+      C     The program prints out the result to the user's terminal
+      C     screen.
+      C
+      C     Test data:  the inputs
+      C
+      C        UTC:    1990 DEC 12 18:02.01
+      C        RA:     136.10735
+      C        DEC:     17.37258
+      C        OBSLAT:  12.0
+      C        OBSLON:   1.0
+      C
+      C     should cause this program to find that the star at the
+      C     specified RA and Dec is occulted.
+      C
+ 
+      C
+      C     SPICELIB functions
+      C
+            DOUBLE PRECISION      DPR
+            DOUBLE PRECISION      RPD
+      C
+      C     Local parameters
+      C
+            INTEGER               FILEN
+            PARAMETER           ( FILEN = 128 )
+ 
+      C
+      C     Local variables
+      C
+            CHARACTER*(30)        UTC
+            CHARACTER*(FILEN)     LEAP
+            CHARACTER*(FILEN)     PCK
+            CHARACTER*(FILEN)     SPK
+ 
+            DOUBLE PRECISION      DEC
+            DOUBLE PRECISION      ET
+            DOUBLE PRECISION      ETIPM  ( 3, 3 )
+            DOUBLE PRECISION      LT
+            DOUBLE PRECISION      OBSLAT
+            DOUBLE PRECISION      OBSLON
+            DOUBLE PRECISION      OBSPOS ( 3 )
+            DOUBLE PRECISION      OBSPT  ( 3 )
+            DOUBLE PRECISION      ORIGIN ( 3 )
+            DOUBLE PRECISION      JTIPM  ( 3, 3 )
+            DOUBLE PRECISION      RA
+            DOUBLE PRECISION      RANGE
+            DOUBLE PRECISION      REARTH ( 3 )
+            DOUBLE PRECISION      RJUP   ( 3 )
+            DOUBLE PRECISION      JSTATE ( 6 )
+            DOUBLE PRECISION      UVEC   ( 3 )
+            DOUBLE PRECISION      VSTAR  ( 3 )
+            DOUBLE PRECISION      XPT    ( 3 )
+ 
+            INTEGER               HANDLE
+            INTEGER               N
+ 
+            LOGICAL               FOUND
+ 
+            DATA ORIGIN  /  3 * 0.D0                /
+ 
+      C
+      C     Convert the UTC epoch to ephemeris time.  Before doing this,
+      C     we must load a leapseconds kernel into the kernel pool.
+      C     Consult the TIME.REQ and KERNEL.REQ required reading for more
+      C     information about NAIF time conversion routines.
+      C
+      C     (In your own program, you would substitute the name of an
+      C     actual leapseconds kernel accessible to your program for the
+      C     name shown below.)
+      C
+            WRITE (*,*) 'Enter name of leapseconds kernel'
+            READ  (*,FMT='(A)') LEAP
+ 
+            CALL FURNSH ( LEAP )
+ 
+      C
+      C     We're also going to need the radii of Earth and Jupiter, and
+      C     the orientation of Earth and Jupiter at the desired epoch.
+      C     In order to make the required information available to our
+      C     code, we must load a P_constants kernel into the kernel pool
+      C     (in your own program, you would have to supply the name of a
+      C     P_constants kernel accessible to your own program.  See the
+      C     KERNEL.REQ required reading for more information about
+      C     P_constants kernels).
+      C
+            WRITE (*,*) 'Enter name of P_constants kernel'
+            READ  (*,FMT='(A)') PCK
+ 
+            CALL FURNSH ( PCK )
+ 
+      C
+      C     We'll need to load an SPK file containing ephemeris data for
+      C     both Earth and Jupiter.
+      C
+            WRITE (*,*) 'Enter name of SPK file'
+            READ  (*,FMT='(A)') SPK
+ 
+            CALL SPKLEF ( SPK, HANDLE )
+ 
+      C
+      C     Now obtain the UTC time and convert UTC to ET.
+      C
+            WRITE (*,*) 'Enter time of observation, UTC'
+            READ  (*,FMT='(A)') UTC
+ 
+            CALL UTC2ET ( UTC, ET )
+ 
+      C
+      C     Obtain the RA and Dec of the star.
+      C
+            WRITE (*,*) 'Enter RA of star, relative to '               //
+           .            'J2000 reference frame (degrees)'
+            READ   *,    RA
+            WRITE (*,*) 'Enter Dec of star, relative to '              //
+           .            'J2000 reference frame (degrees)'
+            READ   *,    DEC
+ 
+      C
+      C     Convert input RA and Dec to radians.
+      C
+            RA  = RA  * RPD()
+            DEC = DEC * RPD()
+ 
+      C
+      C     Obtain the observation longitude and latitude.
+      C
+            WRITE (*,*) 'Enter planetocentric longitude of the '       //
+           .            'observer (degrees)'
+            READ   *,    OBSLON
+ 
+            WRITE (*,*) 'Enter planetocentric latitude of the '        //
+           .            'observer (degrees)'
+            READ   *,    OBSLAT
+ 
+            OBSLON = RPD() * OBSLON
+            OBSLAT = RPD() * OBSLAT
+ 
+      C
+      C     Look up the radii used in the ellipsoidal models of the
+      C     Earth and Jupiter.
+      C
+            CALL BODVAR ( 399, 'RADII', N, REARTH )
+            CALL BODVAR ( 599, 'RADII', N, RJUP   )
+ 
+      C
+      C     Find the position of the observer relative to the Earth's
+      C     center in cartesian coordinates.  Although it's a little
+      C     tedious to do so, we'll find the observation point's exact
+      C     altitude (according to our ellipsoidal Earth model).  To do
+      C     this, we find the unit vector pointing from the Earth's
+      C     center toward the observer's surface location, and compute
+      C     the cartesian coordinates of the intercept point generated
+      C     by extending this unit vector.
+      C
+ 
+      C
+      C     Find the cartesian unit vector:
+      C
+            CALL LATREC ( 1.D0, OBSLON, OBSLAT, UVEC )
+ 
+      C
+      C     Extend the unit vector from the origin and find the surface
+      C     intercept.  The output argument FOUND indicates whether the
+      C     intercept point was found; there's no need to check this
+      C     when the intercepting ray has its vertex inside the
+      C     ellipsoid.  OBSPT is the surface point on output.
+      C
+            CALL SURFPT ( ORIGIN, UVEC, REARTH(1), REARTH(2), REARTH(3),
+           .              OBSPT,  FOUND                                 )
+ 
+      C
+      C     Now find the vector from the Earth's center to the
+      C     observation point in J2000 coordinates.  We'll need the
+      C     transformation from J2000 to Earth body equator and prime
+      C     meridian coordinates.  This transformation, which we'll name
+      C     ETIPM, can be obtained from BODMAT.
+      C
+            CALL BODMAT ( 399, ET, ETIPM )
+ 
+      C
+      C     To convert OBSPT to J2000 coordinates, use the transpose
+      C     of ETIPM.  The routine MTXV left-multiplies a vector by
+      C     the transpose of a specified matrix.
+      C
+            CALL MTXV ( ETIPM, OBSPT, OBSPT )
+ 
+      C
+      C     Find the state of Jupiter, as seen from Earth, in J2000
+      C     coordinates.  Use light time correction.  The output
+      C     argument JSTATE is a state vector--the first three
+      C     components are position; the next three are velocity.
+      C
+            CALL SPKEZ ( 599, ET, 'J2000', 'LT', 399, JSTATE, LT )
+ 
+      C
+      C     Find the J2000 to body equator and prime meridian
+      C     transformation for Jupiter.  Note:  the epoch at which to
+      C     evaluation this transformation must be adjusted for
+      C     light time.  Anticipating our need, SPKEZ (called above)
+      C     has returned this light time value in the argument LT.
+      C
+            CALL BODMAT ( 599, ET-LT, JTIPM )
+ 
+      C
+      C     Find the position of the Earth's center in Jupiter equator
+      C     and prime meridian coordinates.  To do this, negate the
+      C     Earth center-Jupiter center vector and rotate the result
+      C     into Jupiter equator and prime meridian coordinates.  VMINUS
+      C     negates a three-dimensional vector.
+      C
+            CALL VMINUS ( JSTATE, OBSPOS )
+            CALL MXV    ( JTIPM,  OBSPOS, OBSPOS )
+ 
+      C
+      C     While we're at it, transform the observer's offset vector
+      C     from J2000 to Jupiter equator and prime meridian coordinates.
+      C
+            CALL MXV  ( JTIPM, OBSPT, OBSPT )
+ 
+      C
+      C     Finally, we can find the position of the observer in
+      C     Jupiter equator and prime meridian coordinates.
+      C
+            CALL VADD ( OBSPOS, OBSPT, OBSPOS )
+ 
+      C
+      C     Convert the RA and Dec of the star into a unit vector
+      C     specified in J2000 coordinates.
+      C
+            CALL RADREC ( 1.D0, RA, DEC, VSTAR )
+ 
+      C
+      C     Rotate the star's direction vector into
+      C     Jupiter equator and prime meridian coordinates.
+      C
+            CALL MXV  ( JTIPM, VSTAR, VSTAR )
+ 
+      C
+      C     Now that the observer's position and the star's direction
+      C     vector are in Jupiter equator and prime meridian coordinates,
+      C     we can apply SURFPT to find out whether the line segment
+      C     from the observer to the star intersects Jupiter.  The point
+      C     of working in this coordinate system is that our Jupiter
+      C     axes are lined up with the coordinate axes of this system.
+      C
+      C     If SURFPT sets the output argument FOUND to .TRUE., the
+      C     star is occulted.  Otherwise, it is visible.
+      C
+      C
+            CALL SURFPT ( OBSPOS, VSTAR, RJUP(1), RJUP(2), RJUP(3),
+           .              XPT,    FOUND                                )
+ 
+            WRITE (*,*) ' '
+ 
+            IF ( FOUND ) THEN
+               WRITE (*,*) 'Star is occulted by Jupiter at time ', UTC
+            ELSE
+               WRITE (*,*) 'Star is not occulted by Jupiter at time ',UTC
+            END IF
+ 
+            END
+ 
+ 
+Finding the `limb angle' of an instrument boresight
+ 
+   If we want to find the angle of some ray above the limb of an ellipsoid,
+   where the angle is measured in a plane containing the ray and a `down'
+   vector, we can follow the procedure given below. We assume the ray does
+   not intersect the ellipsoid. The result we seek is called ANGLE,
+   imaginatively enough.
+ 
+   We assume that all vectors are given in body-fixed coordinates.
+ 
+      C
+      C     The body-center--observer vector is OBSERV; RAYDIR is
+      C     the boresight ray's direction vector in body-fixed
+      C     coordinates.
+      C
+      C     Find the limb of the ellipsoid as seen from the
+      C     point OBSERV.  Here A, B, and C are the lengths of
+      C     the semi-axes of the ellipsoid.
+      C
+            CALL EDLIMB ( A, B, C, OBSERV, LIMB )
+ 
+      C
+      C     The ray direction vector is RAYDIR, so the ray is the
+      C     set of points
+      C
+      C        OBSERV  +  t * RAYDIR
+      C
+      C     where t is any non-negative real number.
+      C
+      C     The `down' vector is just -OBSERV.  The vectors
+      C     OBSERV and RAYDIR are spanning vectors for the plane
+      C     we're interested in.  We can use PSV2PL to represent
+      C     this plane by a SPICELIB plane.
+      C
+            CALL PSV2PL ( OBSERV, OBSERV, RAYDIR, PLANE )
+      C
+      C
+      C     Find the intersection of the plane defined by OBSERV
+      C     and RAYDIR with the limb.
+      C
+            CALL INELPL ( LIMB, PLANE, NXPTS, XPT1, XPT2 )
+      C
+      C
+      C     We always expect two intersection points, if DOWN
+      C     is valid.
+      C
+      C                  IF ( NXPTS .LT. 2 ) THEN
+      C
+      C                     [ do something about the error ]
+      C
+      C                  ENDIF
+      C
+      C
+      C     Form the vectors from OBSERV to the intersection
+      C     points.  Find the angular separation between the
+      C     boresight ray and each vector from OBSERV to the
+      C     intersection points.
+      C
+            CALL VSUB ( XPT1, OBSERV, VEC1 )
+            CALL VSUB ( XPT2, OBSERV, VEC2 )
+ 
+            SEP1 = VSEP ( VEC1, RAYDIR )
+            SEP2 = VSEP ( VEC2, RAYDIR )
+ 
+      C
+      C     The angular separation we're after is the minimum of
+      C     the two separations we've computed.
+      C
+            ANGLE = MIN ( SEP1, SEP2 )
+ 
+ 
+Finding the instrument boresight---limb distance
+ 
+   The technique demonstrated here can be used to find the altitude of a
+   spacecraft-mounted remote sensing instrument's boresight ray above a the
+   limb of a body modelled by a triaxial ellipsoid.
+ 
+   We assume that the angular separation of the boresight ray and the
+   `down' direction (the direction of the normal to the limb plane that
+   points away from the observer) is less than pi/2 radians. In practice,
+   this criterion will usually be met when the limb of the body is in the
+   instrument field of view.
+ 
+   For example, in the case of a camera with a field of view of eight
+   milliradians (roughly the field of view of the Galileo SSI camera and
+   slightly more than the field of view of the Voyager 2 narrow angle ISS
+   camera), this technique will work for observations of the Earth as long
+   as the limb of the Earth is in the field of view, and as long as the
+   altitude of the observer above the Earth is at least 52 meters (assuming
+   a spherical Earth with all radii equal to the equatorial radius).
+ 
+   The following subroutine demonstrates the computation.
+ 
+ 
+            SUBROUTINE RAYALT  ( TARG,   ET,  CORR,  SC,  RAYDIR,
+           .                     LNEAR,  ALT                      )
+ 
+      C
+      C     Find the altitude of an instrument boresight ray above the
+      C     limb of a specified target body, and find the nearest point
+      C     on the limb to the ray.
+      C
+            INTEGER               TARG
+            DOUBLE PRECISION      ET
+            CHARACTER*(*)         CORR
+            INTEGER               SC
+            DOUBLE PRECISION      RAYDIR ( 3 )
+            DOUBLE PRECISION      LNEAR  ( 3 )
+            DOUBLE PRECISION      ALT
+ 
+ 
+      C
+      C     SPICELIB functions
+      C
+            DOUBLE PRECISION      DPR
+ 
+      C
+      C     Local parameters
+      C
+            INTEGER               UBEL
+            PARAMETER           ( UBEL  =   9 )
+ 
+            INTEGER               UBPL
+            PARAMETER           ( UBPL  =   4 )
+ 
+      C
+      C     Local variables
+      C
+            DOUBLE PRECISION      CENTER ( 3 )
+            DOUBLE PRECISION      DIST
+            DOUBLE PRECISION      EPOCH
+            DOUBLE PRECISION      LIMB   ( UBEL )
+            DOUBLE PRECISION      NEAR   ( 3 )
+            DOUBLE PRECISION      LPLANE ( UBPL )
+            DOUBLE PRECISION      LT
+            DOUBLE PRECISION      PJLIMB ( UBEL )
+            DOUBLE PRECISION      PJPOS  ( 3 )
+            DOUBLE PRECISION      PLANE  ( UBPL )
+            DOUBLE PRECISION      SCPOS  ( 3 )
+            DOUBLE PRECISION      SMAJOR ( 3 )
+            DOUBLE PRECISION      SMINOR ( 3 )
+            DOUBLE PRECISION      RADII  ( 3 )
+            DOUBLE PRECISION      STATE  ( 6 )
+            DOUBLE PRECISION      SUBPT  ( 3 )
+            DOUBLE PRECISION      TIPM   ( 3, 3 )
+ 
+            INTEGER               N
+ 
+            LOGICAL               FOUND
+ 
+      C
+      C                  Glossary of variables
+      C
+      C
+      C       Name                            Meaning
+      C    ----------        ------------------------------------------
+      C
+      C     SC                NAIF ID code of a spacecraft.
+      C
+      C     TARG              NAIF ID code of a target body.
+      C
+      C     ET                Ephemeris time of the observation.
+      C
+      C     STATE             State (position and velocity), light-time
+      C                       corrected, of the target body as seen from
+      C                       the spacecraft at ET.
+      C
+      C     LT                Light time from target body to the
+      C                       spacecraft at ET.
+      C
+      C     SCPOS             Spacecraft position relative to the
+      C                       light-time corrected body position, in body
+      C                       centered, inertial coordinates.
+      C
+      C     TIPM              Transformation from inertial (J2000)
+      C                       coordinates to light-time corrected body
+      C                       equator and prime meridian coordinates.
+      C
+      C     RADII             Radii of the triaxial ellipsoid used to
+      C                       model the body.
+      C
+      C     RAYDIR            `Ray direction'--the instrument boresight
+      C                       vector.
+      C
+      C     LIMB              A SPICELIB ellipse that represents the
+      C                       body's limb. (This is an array of length
+      C                       9.)
+      C
+      C     LPLANE            The limb plane.
+      C
+      C     PLANE             A plane orthogonal to the vector RAYDIR.
+      C                       (This is an array of length 4.)
+      C
+      C     PJLIMB            The orthogonal projection of the limb onto
+      C                       PLANE.
+      C
+      C     PJPOS             The orthogonal projection of the
+      C                       spacecraft position onto PLANE.
+      C
+      C     NEAR              The nearest point on the projected limb
+      C                       PJLIMB to the projected vertex PJPOS.
+      C
+      C     LNEAR             The inverse orthogonal projection of PJPOS
+      C                       back to the limb plane. This is the point
+      C                       on the limb closest to the boresight ray.
+      C
+      C     ALT               The altitude of the boresight above the
+      C                       limb of the target body.
+ 
+      C
+      C
+      C     Step 1:  Find the light-time corrected position of the body
+      C              as seen from the spacecraft.  We will request the
+      C              state vector in J2000 coordinates.
+      C
+      C              Also find the light-time corrected inertial to body
+      C              equator and prime meridian transformation matrix.
+      C
+      C
+            CALL SPKEZ  ( TARG, ET, 'J2000', CORR, SC, STATE, LT )
+ 
+            CALL BODMAT ( TARG, ET-LT, TIPM )
+ 
+      C
+      C     Step 2:  Find the position of the spacecraft as seen from
+      C              the light-time corrected body position.  Convert
+      C              this position vector to equator and prime meridian
+      C              coordinates.  Also transform the boresight ray.
+      C
+            CALL VMINUS ( STATE, SCPOS          )
+            CALL MXV    ( TIPM,  SCPOS,  SCPOS  )
+            CALL MXV    ( TIPM,  RAYDIR, RAYDIR )
+ 
+      C
+      C     Step 3:  Look up the radii of the body and find the limb.
+      C              Find the limb plane as well, since we'll use it
+      C              soon.
+      C
+            CALL BODVAR ( TARG, 'RADII', N, RADII )
+ 
+            CALL EDLIMB ( RADII(1), RADII(2), RADII(3), SCPOS,  LIMB   )
+            CALL EL2CGV ( LIMB,     CENTER,   SMAJOR,   SMINOR         )
+            CALL PSV2PL (           CENTER,   SMAJOR,   SMINOR, LPLANE )
+ 
+      C
+      C     Step 4.  Create a plane that is orthogonal to the instrument
+      C              boresight vector.  Orthogonally project the limb
+      C              onto this plane.  Under this projection, every
+      C              point on the limb maps to a point that is the same
+      C              distance from the boresight as the pre-image of
+      C              that point.  The intersection of
+      C              the boresight itself with the plane is just the
+      C              orthogonal projection of the boresight ray's vertex
+      C              onto the plane.
+      C
+            CALL NVC2PL ( RAYDIR, 0.D0,   PLANE  )
+ 
+            CALL PJELPL ( LIMB,   PLANE,  PJLIMB )
+ 
+            CALL VPRJP  ( SCPOS,  PLANE,  PJPOS  )
+ 
+      C
+      C     Step 5.  Find the nearest point (NEAR) on the projected
+      C              limb to the projected vertex of the boresight
+      C              ray.  The distance between the projected ellipse
+      C              PJLIMB and the point PJPOS is the altitude of the
+      C              boresight ray above the limb.  To find the point
+      C              on the limb closest to the boresight, just find
+      C              the inverse orthogonal projection of NEAR onto the
+      C              limb plane.
+      C
+ 
+            CALL NPELPT ( PJPOS,   PJLIMB,   NEAR,    ALT           )
+ 
+            CALL VPRJPI ( NEAR,    PLANE,   LPLANE,  LNEAR,  FOUND )
+ 
+      C
+      C     If FOUND is false, the inverse projection could not be
+      C     performed.  This indicates that the limb plane is too
+      C     close to parallel to the boresight ray for this method to
+      C     work.  This problem is very unlikely to occur.
+      C
+            IF ( .NOT. FOUND ) THEN
+               CALL SETMSG ( 'Could not compute limb altitude.' )
+               CALL SIGERR ( 'SPICE(DEGENERATECASE)'            )
+               RETURN
+            END IF
+ 
+      C
+      C     LNEAR and ALT are the limb point nearest to the boresight
+      C     ray, and the altitude of the boresight ray above the limb of
+      C     the target body, respectively.
+      C
+            END
+ 
+ 
+ 
+ 
+Mathematical notes
+===========================================================================
+ 
+ 
+Defining an ellipse parametrically
+--------------------------------------------------------
+ 
+   Our aim is to show that the set of points
+ 
+      CENTER    +    cos(theta) * V1    +    sin(theta) * V2
+ 
+   where CENTER, V1, and V2 are specified vectors in three-dimensional
+   space, and where theta is a real number in the interval (-pi, pi], is in
+   fact an ellipse as we've claimed.
+ 
+   Since the vector CENTER simply translates the set, we may assume without
+   loss of generality that it is the zero vector. So we'll re-write our
+   expression for the alleged ellipse as
+ 
+      cos(theta) * V1    +    sin(theta) * V2
+ 
+   where theta is a real number in the interval (-pi, pi]. We'll give the
+   name S to the above set of vectors. Without loss of generality, we can
+   assume that V1 and V2 lie in the x-y plane. Therefore, we can treat V1
+   and V2 as two-dimensional vectors.
+ 
+   If V1 and V2 are linearly dependent, S is obviously a line segment or a
+   point, so there is nothing to prove. We'll assume from now on that V1
+   and V2 are linearly independent.
+ 
+   Every point in S has coordinates ( cos(theta), sin(theta) ) relative to
+   the basis
+ 
+      {V1, V2}.
+ 
+   Define the change-of-basis matrix C by setting the first and second
+   columns of C equal to V1 and V2, respectively. If (x,y) are the
+   coordinates of a point P of S relative to the standard basis
+ 
+      { (1,0), (0,1) },
+ 
+   then the coordinates of P relative to the basis
+ 
+      {V1, V2}
+ 
+   are
+ 
+                 +- -+
+            -1   | x |
+           C     |   |
+                 | y |
+                 +- -+
+ 
+               +-          -+
+               | cos(theta) |
+      =        |            |
+               | sin(theta) |
+               +-          -+
+ 
+   Taking inner products, we find
+ 
+           +-    -+      -1 T     -1   +- -+
+           | x  y |   ( C  )     C     | x |
+           +-    -+                    |   |
+                                       | y |
+                                       +- -+
+ 
+ 
+           +-                      -+  +-          -+
+      =    | cos(theta)  sin(theta) |  | cos(theta) |
+           +-                      -+  |            |
+                                       | sin(theta) |
+                                       +-          -+
+ 
+      =    1
+ 
+   The matrix
+ 
+         -1  T   -1
+      ( C   )   C
+ 
+   is symmetric; let's say that it has entries
+ 
+      +-          -+
+      |   a   b/2  |
+      |            |.
+      |  b/2   c   |
+      +-          -+
+ 
+   We know that a and c are positive because they are squares of norms of
+   the columns of
+ 
+       -1
+      C
+ 
+   which is a non-singular matrix. Then the equation above reduces to
+ 
+         2                2
+      a x   +  b xy  + c y   =  1,     a, c  >  0.
+ 
+   We can find a new orthogonal basis such that this equation transforms to
+ 
+          2           2
+      d1 u    +   d2 v
+ 
+   with respect to this new basis. Let's give the name SYM to the matrix
+ 
+      +-          -+
+      |   a   b/2  |
+      |            |;
+      |  b/2   c   |
+      +-          -+
+ 
+   since SYM is symmetric, there exists an orthogonal matrix M that
+   diagonalizes SYM. That is, we can find an orthogonal matrix M such that
+ 
+                       +-      -+
+       T               | d1   0 |
+      M  SYM  M    =   |        |.
+                       | 0   d2 |
+                       +-      -+
+ 
+   The existence of such a matrix M will not be proved here; see reference
+   [2]. The columns of M are the elements of the basis we're looking for:
+   if we define the variables (u,v) by the transformation
+ 
+      +- -+        +- -+
+      | u |      T | x |
+      |   |  =  M  |   |,
+      | v |        | y |
+      +- -+        +- -+
+ 
+   then our equation in x and y transforms to the equation
+ 
+          2           2
+      d1 u    +   d2 v
+ 
+   since
+ 
+           2                 2
+          a x   +  b xy  +  c y
+ 
+           +-    -+              +- -+
+      =    | x  y |      SYM     | x |
+           +-    -+              |   |
+                                 | y |
+                                 +- -+
+ 
+           +-    -+   T          +- -+
+      =    | u  v |  M   SYM  M  | u |
+           +-    -+              |   |
+                                 | v |
+                                 +- -+
+ 
+           +-    -+  +-      -+  +- -+
+      =    | u  v |  | d1   0 |  | u |
+           +-    -+  |        |  |   |
+                     | 0   d2 |  | v |
+                     +-      -+  +- -+
+ 
+ 
+               2            2
+      =    d1 u    +    d2 v
+ 
+   This last equation is that of an ellipse, as long as d1 and d2 are
+   positive. To verify that they are, note that d1 and d2 are the
+   eigenvalues of the matrix SYM, and SYM is the product
+ 
+         -1  T   -1
+      ( C   )   C,
+ 
+   which is of the form
+ 
+       T
+      M   M,
+ 
+   so SYM is positive semi-definite (its eigenvalues are non-negative).
+   Furthermore, since the product
+ 
+         -1  T   -1
+      ( C   )   C
+ 
+   is non-singular if C is non-singular, and since the columns of C are V1
+   and V2, SYM exists and is non-singular precisely when V1 and V2 are
+   linearly independent, a condition that we have assumed. So the
+   eigenvalues of SYM can't be zero. They're not negative either. We
+   conclude they're positive.
+ 
+ 
+Solving intersection problems
+--------------------------------------------------------
+ 
+   There is one problem solving technique used in SPICELIB ellipse and
+   ellipsoid routines that is so useful that it deserves special mention:
+   using a `distortion map' to solve intersection problems.
+ 
+   The distortion map (as it is referred to in SPICELIB routines) is simply
+   a linear transformation that maps an ellipsoid to the unit sphere. The
+   distortion map defined by an ellipsoid whose semi-axes are A, B, and C
+   is represented by the matrix
+ 
+      +-                -+
+      |  1/A   0    0    |
+      |   0   1/B   0    |.
+      |   0    0    1/C  |
+      +-                -+
+ 
+   The distortion map is (as is clear from examining the matrix) one-to-one
+   and onto, and in particular is invertible, so it preserves set
+   operations such as intersection. That is, if M is a distortion map and
+   X, Y are two sets, then
+ 
+      M( X intersect Y ) = M(X) intersect M(Y).
+ 
+   The same is true of the inverse of the distortion map.
+ 
+   The utility of these facts is that frequently it's easier to find the
+   intersection of the images under the distortion map of two sets than it
+   is to find the intersection of the original two sets. Having found the
+   intersection of the `distorted' sets, we apply the inverse distortion
+   map to arrive at the intersection of the original sets. Some examples:
+ 
+       --   To find the intersection of a ray and an ellipsoid, apply the
+            distortion map to both. Because the distortion map is linear,
+            the ray maps to another ray, and the ellipsoid maps to the unit
+            sphere. The resulting intersection problem is easy to solve.
+            Having found the points of intersection of the new ray and the
+            unit sphere, if any, we apply the inverse distortion map to
+            these points, and we're done.
+ 
+       --   To find the intersection of a plane and an ellipsoid, apply the
+            distortion map to both. The linearity of the distortion map
+            ensures that the original plane maps to a second plane (whose
+            formula is easily calculated). The ellipsoid maps to the unit
+            sphere. The intersection of a plane and a unit sphere is easily
+            found. The inverse distortion map is then applied to the circle
+            of intersection (when the intersection is non-trivial), and the
+            ellipse of intersection of the original plane and ellipsoid
+            results. This procedure is used in the SPICELIB routine INEDPL.
+ 
+       --   To find the image under gnomonic projection onto a plane
+            (camera projection) of an ellipsoid, given a focal point, we
+            must find the intersection of the plane and the cone generated
+            by ellipsoid and the focal point. Applying the distortion map
+            to the ellipsoid, plane, and focal point, the problem is
+            transformed into that of finding the intersection of the
+            transformed plane with the cone generated by a unit sphere and
+            the transformed focal point. This `transformed' problem is much
+            easier to solve. The resulting intersection ellipse is then
+            mapped back to the original intersection ellipse by the inverse
+            distortion mapping.
+ 
+ 
+Appendix: Document Revision History
+===========================================================================
+ 
+ 
+December 21, 2004
+ 
+   LDPOOL was replaced with FURNSH in all examples.
+ 
+ 
+December 12, 2002.
+ 
+   Corrections were made to comments in the code example that computes the
+   altitude of a ray above the limb of an ellipsoid. Previously, the
+   quantity computed was incorrectly described as the altitude of a ray
+   above an ellipsoid.
+ 

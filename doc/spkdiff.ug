@@ -1,0 +1,1392 @@
+ 
+SPKDIFF User's Guide
+===========================================================================
+ 
+   Last revised on 2006 JUL 20 by B. V. Semenov.
+ 
+ 
+Abstract
+--------------------------------------------------------
+ 
+   SPKDIFF is a program that computes differences between geometric states
+   obtained from two SPK files and either displays these differences or
+   shows statistics about them.
+ 
+ 
+Summary
+--------------------------------------------------------
+ 
+   SPKDIFF provides a simple way of comparing trajectories stored in two
+   SPK files. To perform a comparison it computes a set of geometric states
+   of a body as seen from a center in a reference frame over an interval of
+   time with a fixed time step using one SPK file, computes a set of
+   geometric states for the same or different body-center-frame combination
+   at the same times using the other SPK file, and then subtracts
+   corresponding states from each other. Depending on type of output report
+   requested the program prints to the screen only maximum differences in
+   position and velocity, or a complete table of position and velocity
+   differences, or a complete table of differences expressed in the ``view
+   frame'' coordinates, or results of a simple statistical analysis of the
+   differences expressed in the ``view frame'' coordinates.
+ 
+ 
+Usage
+--------------------------------------------------------
+ 
+   SPKDIFF is a command line program with the following usage:
+ 
+         > spkdiff [options] <first SPK file> <second SPK file>
+ 
+   where options are:
+ 
+         -b1 <first body name or ID>
+         -c1 <first center name or ID>
+         -r1 <first reference frame name>
+         -b2 <second body name or ID>
+         -c2 <second center name or ID>
+         -r2 <second reference frame name>
+         -k  <other kernel file name(s)>
+         -b  <interval begin time>
+         -e  <interval end time>
+         -s  <time step in seconds>
+         -n  <number of states: 2 to 1000000 (default: 1000)>
+         -f  <output time format (default: TDB seconds past J2000)>
+         -t  <report type: basic|stats|dump|dumpvf (default: basic)>
+ 
+   The names of the two SPK files to be compared are required while none of
+   the other options are. The order of options and case of the option keys
+   are not significant. The values provided after the option keys must be
+   separated from keys by one or more spaces. Un-recongnized options are
+   not specifically checked for; instead they are treated as continuation
+   of the value provided with the preceeding reconginized option.
+ 
+   Either physical object names or NAIF IDs can be provided using the
+   ``-b1'', ``-c1'', ``-b2'', and ``-c2'' options to identify the bodies
+   and centers to be used for each of the two SPK files. If the names
+   provided using these options do not belong to the set of name/ID
+   mappings built into SPICE, a text kernel(s) containing name/ID mappings
+   for these names must be provided using the ``-k'' option.
+ 
+   The reference frame names provided using the ``-r1'' and ``-r2'' options
+   must be for any of the frames built into SPICE; otherwise a frame
+   kernel(s) defining these frames must be provided using the ``-k''
+   option.
+ 
+   The comparison interval begin and end times specified using the ``-b''
+   and ``-e'' options must be in any of the formats accepted by SPICE
+   STR2ET routine (see STR2ET header for details). If one or both of these
+   times are provided, the name of an LSK file must also be provided using
+   the ``-k' option.
+ 
+   The output time format to be used in ``dump'' reports, provided using
+   the ``-f'' option must be given in any of the forms acceptable to the
+   SPICE TIMOUT routine (see TIMOUT header for details).
+ 
+ 
+Specifying Options vs. Defaults
+--------------------------------------------------------
+ 
+   None of the command line options is required because SPKDIFF can pick a
+   default value for each of them either by examining the two SPK files
+   provided for comparison, or by using parameters hard-coded into the
+   program. On the other hand using a subset of options or even all options
+   might be required for a number of reasons. For example ``-t'' options
+   must be used to get output reports other than basic, ``-b1'' and ``-b2''
+   options may be used to compare SPK files containing trajectories for
+   spacecraft with different IDs, ``-b'' and ``-e'' options must be used to
+   compute differences over particular time intervals, and so on. This
+   section provides detailed information about which default values are
+   picked by the program for any of the options that are not specified by
+   the user.
+ 
+ 
+Options/Defaults for Body, Center, and Frame
+ 
+   Since SPKDIFF computes geometric states by calling the SPICE SPKGEO
+   routine, for each of the two SPK files it needs to know the combination
+   of the body, center, and frame -- three of the four inputs to that
+   routine (the fourth input, time, is discussed later in this User's
+   Guide). The program has six separate options -- ``-b1'', ``-c1'',
+   ``-r1'', ``-b2'', ``-c2'', and ``-r2'', -- one for each of the three
+   items for each of the two SPK files, together providing the flexibility
+   to specify completely distinct body, center, and frame combinations for
+   each of the two SPK files. In many cases, though the SPK files to be
+   compared contain trajectories of the same body relative to the same
+   center given in the same frame. For these cases specifying all six
+   options seems like an unnecessary burden. Moreover, the segment layout
+   of SPK files can be fairly simple allowing the program to determine all
+   of these values by examining the data in the first SPK file.
+ 
+   This set of simple rules determines which body, center, and frame
+   combination SPKDIFF uses when calling SPKGEO for each of the two SPK
+   files, given a particular set of options and defaults determined by
+   examining the data in the SPK files.
+ 
+   The rules for picking bodies to be used in calls to SPKGEO to sample
+   states from the SPK files are:
+ 
+       --   If neither the body name/ID for the first SPK file is specified
+            using the ``-b1'' option nor the body name/ID for the second
+            SPK file is specified using the ``-b2'' option, the body to be
+            used for both SPK files is determined by examining segments in
+            the first SPK file. If the first SPK file contains segments for
+            one or more spacecraft (i.e. segments for bodies with negative
+            IDs), the body from the spacecraft data segment closest to the
+            end of the file is picked and used for computing states from
+            both SPK files. If the SPK file does not contain data for any
+            spacecraft, the body from the very last segment of the file is
+            picked and used for computing states from both SPK files.
+ 
+       --   If either the body name/ID for the first SPK file is specified
+            using the ``-b1'' option or the body name/ID for the second SPK
+            file is specified using the ``-b2'' option, this body is used
+            for both SPK files.
+ 
+       --   If the body name/ID for the first SPK file is specified using
+            the ``-b1'' option and the body name/ID for the second SPK file
+            is specified using the ``-b2'' option, these bodies are used
+            for the corresponding SPK files.
+ 
+   The rules for picking centers to be used in calls to SPKGEO to sample
+   states from the first and second SPK files are:
+ 
+       --   If neither the center name/ID for the first SPK file is
+            specified using the ``-c1'' option nor the center name/ID for
+            the second SPK file is specified using the ``-c2'' option, the
+            center to be used for both SPK files is determined by examining
+            segments in the first SPK file. It is set to the center from
+            the last segment in the file for the body determined using the
+            rules for picking bodies (the rules for picking bodies are
+            explained earlier in the ``Options/Defaults for Body, Center,
+            and Frame'' section of this User's Guide).
+ 
+       --   If either the center name/ID for the first SPK file is
+            specified using the ``-c1'' option or the center name/ID for
+            the second SPK file is specified using the ``-c2'' option, this
+            center is used for both SPK files.
+ 
+       --   If the center name/ID for the first SPK file is specified using
+            the ``-c1'' option and the center name/ID for the second SPK
+            file is specified using the ``-c2'' option, these centers are
+            used for the corresponding SPK files.
+ 
+   The rules for picking reference frames to be used in calls to SPKGEO to
+   sample states from the first and second SPK files are:
+ 
+       --   If neither the reference frame name for the first SPK file is
+            specified using the ``-r1'' option nor the reference frame name
+            for the second SPK file is specified using the ``-r2'' option,
+            the reference frame to be used for both SPK files is determined
+            by examining segments in the first SPK file. It is set to the
+            name of the reference frame from last segment in the file for
+            the body determined using the rules for picking bodies (the
+            rules for picking bodies are explained earlier in the
+            ``Options/Defaults for Body, Center, and Frame'' section of
+            this User's Guide).
+ 
+       --   If either the reference frame name for the first SPK file is
+            specified using the ``-r1'' option or the reference frame name
+            for the second SPK file is specified using the ``-r2'' option,
+            this reference frame is used for both SPK files.
+ 
+       --   If the reference frame name for the first SPK file is specified
+            using the ``-r1'' option and the reference frame name for the
+            second SPK file is specified using the ``-r2'' option, these
+            reference frames are used for the corresponding SPK files.
+ 
+   A few scenarios shown below illustrate when some or all of the options
+   specifying body, center and frame can be omitted and when they should be
+   provided to achieve the desired result:
+ 
+       --   When comparing spacecraft trajectories for a spacecraft with
+            the same ID provided in two SPK files, each containing data
+            only for one spacecraft with or without planetary ephemeris
+            data merged in, neither of the six options specifying body,
+            center and frame combination is required. SPKDIFF determines
+            body, center and frame from the last segment for that
+            spacecraft from the first SPK file and uses these body, center
+            and frame in calling SPKGEO to obtain states from both SPK
+            files.
+ 
+       --   When comparing spacecraft trajectories for the spacecraft with
+            the same ID provided in two SPK files, each containing data for
+            more than one spacecraft, the name/ID of that spacecraft needs
+            to be specified either using either the ``-b1'' or ``-b2''
+            option to prevent SPKDIFF from automatically picking the other
+            spacecraft, data for which is also provided in the files.
+ 
+       --   When comparing spacecraft trajectories for the same spacecraft
+            ``tagged'' with two different IDs (for example flight ID and
+            simulation ID) provided in two SPK files, both IDs need to be
+            specified using the ``-b1'' and ``-b2'' options to make sure
+            that SPKDIFF uses the right ID for each of the files.
+ 
+       --   When comparing ephemerides for a natural body provided in two
+            planetary or satellite ephemeris SPK files, the name/ID of that
+            body need to be specified using either the ``-b1'' or ``-b2''
+            option to prevent SPKDIFF from automatically picking a
+            different body.
+ 
+   The list of scenarios and suggestions above is not comprehensive by any
+   means. There are numerous applications in which not just bodies but also
+   centers and references frames may need to be specified to override
+   defaults. For example, a center may need to be specified to compare
+   trajectories with respect to a center that is different from the center
+   of motion specified in the SPK segment; two centers may need to be
+   specified to compare two SPK files, in one of which the trajectory is
+   given with respect to the planet center while in the other it is given
+   with respect to the planet system barycenter; two different frames may
+   need to be specified to see how different the trajectory from the same
+   SPK file would appear if it was computed in a different frame; and so
+   on.
+ 
+ 
+Options/Defaults for Comparison Time Boundaries and Step
+ 
+   The final input argument to SPKGEO that SPKDIFF calls to compute states
+   from the two input SPK files is time. SPKDIFF generates an array of
+   equally-spaced TDB epochs between the comparison window begin and end
+   times determined from the combination of the specified command line
+   options, defaults obtained by examining the SPK files to be compared,
+   and parameters built into the program. The options controlling how
+   SPKDIFF determines the epochs include the ``-b'' option for specifying
+   begin time, the ``-e'' option for specifying end time, the ``-s'' option
+   for specifying time step in TDB seconds, and the ``-n'' option for
+   specifying the number of equidistant points within the comparison
+   window. The ``-s'' and ``-n'' options are mutually exclusive with the
+   ``-s'' option taking priority if both are specified.
+ 
+   As with the body, center, frame combinations, in some cases no command
+   line options defining the comparison window boundaries and time step
+   need to be specified because the combination of defaults picked by
+   SPKDIFF by examining the SPK files and using internal parameters
+   produces the desired result. In other cases, though, specifying one or
+   both comparison window end points and/or the time step on the command
+   line may be required to perform a comparison only over a time period of
+   interest or get a more ``refined'' result by using a smaller time step.
+ 
+   This set of rules determines which comparison window begin and end times
+   SPKDIFF uses given a particular set of options and defaults determined
+   by examining the data in the files. It is important to note that the
+   default time coverage information is obtained from the SPK files using
+   the corresponding body, center, and frame combinations provided on the
+   command line and/or determined earlier from the files.
+ 
+       --   If neither the ``-b'' nor ``-e'' option specifying comparison
+            window boundaries is provided, the program sets the comparison
+            window boundaries to the begin and end time of the intersection
+            of the coverage window provided for the first body by the first
+            SPK file and the coverage window provided for the second body
+            by the second SPK file. Caution -- this method for determining
+            the comparison window may impose a severe limitation: if the
+            intersection of the coverages determined from the two SPK files
+            consists of more than one interval, the program stops because
+            it cannot perform comparisons over multiple disjoint time
+            intervals.
+ 
+       --   If only the ``-b'' option specifying the begin time of the
+            comparison window is provided and the time specified using it
+            is within the intersection of the coverage window provided for
+            the first body by the first SPK file and the coverage window
+            provided for the second body by the second SPK file, the
+            program sets the comparison window begin time to that value and
+            sets the comparison window end time to the end time of the
+            coverage intersection window. The limitation described in the
+            previous paragraph applies to this case as well: if the
+            intersection consists of more than one interval and both
+            intervals are later than the specified begin time, the program
+            stops because it cannot perform comparison over multiple
+            disjoint time intervals. If the specified begin time is earlier
+            than the begin time determined from the files, it is
+            disregarded as if it wasn't specified at all and the comparison
+            is performed over the coverage window intersection. If the
+            specified begin time is later than the end time determined from
+            the files, the program does not do comparison and reports an
+            error.
+ 
+       --   If only the ``-e'' option specifying the end time of the
+            comparison window is provided and the time specified using it
+            is within the intersection of the coverage window provided for
+            the first body by the first SPK file and the coverage window
+            provided for the second body by the second SPK file, the
+            program sets the comparison window end time to that value and
+            sets the comparison window begin time to the begin time of the
+            intersection window. The limitation described above applies to
+            this case as well: if the intersection consists of more than
+            one interval and both intervals are earlier than the specified
+            end time, the program stops because it cannot perform
+            comparison over multiple disjoint time intervals. If the
+            specified end time is later than the end time determined from
+            the files, it is disregarded as if it wasn't specified at all
+            and the comparison is performed over the coverage window
+            intersection. If the specified end time is earlier than the
+            begin time determined from the files, the program does not do
+            comparison and reports an error.
+ 
+       --   If both the ``-b'' and ``-e'' options are provided, the program
+            sets the comparison window begin and end times to these values,
+            unless the specified begin time is later than the end time, in
+            which case the program stops with an error message. It does not
+            attempt to check these times against the actual coverage
+            windows provided by the files, which may lead to termination of
+            the run if either of the two SPK files does not provide data
+            within the specified window.
+ 
+   Another set of rules determines the time step that SPKDIFF will use to
+   generate the array of TDB epochs at which the states for comparison will
+   be computed.
+ 
+       --   If neither the ``-s'' nor the ``-n'' option affecting
+            computation of the time step are provided, SPKDIFF determines
+            the time step by dividing the comparison window by the default
+            number of steps hard coded into the program (1000).
+ 
+       --   If either the ``-s'', or the ``-s'' and ``-n'' options are
+            provided, SPKDIFF uses the number of seconds specified using
+            the ``-s'' option as the time step and generates the array of
+            TDB epochs starting from the comparison window begin time
+            through the comparison window end time. Since in general the
+            very last step is likely to ``miss'' the actual end time of the
+            window, the last buffered epoch is reset by the end time of the
+            window, resulting in the last step duration being less than the
+            value specified on the command line.
+ 
+       --   If only the ``-n'' option is provided, SPKDIFF determines the
+            time step by dividing the comparison window by the number of
+            steps provided with this option. The number of steps specified
+            using the ``-n'' option must be at least two but no more than
+            1,000,000 (in order for the computed states to fit into the
+            program's internal buffers).
+ 
+   When the number of steps -- either default or provided on the command
+   line -- is used to determine the size of the time step, the size is
+   computed by dividing the comparison window interval by that number minus
+   one to ensure that the last epoch at which a comparison is performed is
+   the interval end time.
+ 
+   A few scenarios below illustrate when some or all of the options
+   specifying the comparison time window and time step can be omitted and
+   when they should be provided to achieve the desired result:
+ 
+       --   If the program is run just to find out whether trajectories
+            provided by the SPK files are different or not, all of the
+            options in this category can be omitted. SPKDIFF finds the
+            overlapping coverage from the file data, computes default
+            number of samples over that window and performs comparison of
+            these samples.
+ 
+       --   If the goal is to assess differences during a particular time
+            interval, which is usually much shorter than the overlap in
+            coverage between the two files (for example for a time window
+            around a single pericenter for two files, each covering many
+            orbits), both the begin and end times should be specified to
+            constrain SPKDIFF to that window.
+ 
+       --   If the time step automatically computed by SPKDIFF using the
+            default or specified number of steps is too large to produce a
+            meaningful set of samples for a given trajectory (for example
+            the automatically computed step is 10 hours for an orbiter with
+            2 hour period), a more appropriate time step should be
+            specified on the command line.
+ 
+       --   Another situation when the time step should be specified on the
+            command is when the program is used to generate a dump of
+            differences. In this case using a time step that is an integer
+            number of seconds results in a cleaner and more understandable
+            output report.
+ 
+   As with the body, center, frame combination this list of scenarios for
+   using the time window/step related options is not comprehensive. There
+   are applications in which specifying only the begin time (to examine
+   only the ``tail'' portion of the overlap window) or only the end time
+   (to examine only the ``head'' portion of the overlap window) would be
+   appropriate. There are other applications, for which providing just a
+   small number of steps (to perform faster but less thorough sampling over
+   the whole overlap window between the files) or a large number of steps
+   (to perform slower but more thorough sampling over the whole overlap
+   window between the files) is all that is needed.
+ 
+ 
+Options/Defaults for Output Report Type
+ 
+   The program can generate four different report types depending of the
+   value provided using the ``-t'' option.
+ 
+   If the ``-t'' option is omitted or if it is followed by the value
+   ``basic'', the program generates a ``Basic Report'' showing only the
+   absolute and relative maximum and average differences in magnitude of
+   position and velocity vectors. This type of output is useful for a quick
+   assessment of whether the two SPK files are different and finding the
+   maximum magnitude of this difference.
+ 
+   If the ``-t'' option is followed by the value ``stats'' the program
+   generates a ``View Frame Statistics Report'' including a set of values
+   resulting from statistical analysis of the state differences rotated
+   into the view frame -- +X down track along velocity vector, +Y normal to
+   the orbit plane, computed as the cross product of position and velocity
+   vectors, and +Z in the orbit plane, completing the right handed frame --
+   based on the state computed from the first SPK file. Among values
+   included in this report are the average and RMS view frame components of
+   the differences as well as the view frame components for maximum
+   relative and maximum absolute differences. This report is useful for
+   obtaining a more useful assessment of the differences between
+   trajectories, for which using the view frame is appropriate.
+ 
+   If the ``-t'' option is followed by the value ``dump'' the program
+   generates a ``Difference Dump Report'' containing a table with time
+   tagged differences between individual states computed from the two SPK
+   files. This report is useful for subsequent plotting of the difference
+   between trajectories over time.
+ 
+   If the ``-t'' option is followed by the value ``dumpvf'' the program
+   generates a ``View Frame Difference Dump Report'' containing a table
+   with time tagged differences between individual states computed from the
+   two SPK files, rotated into the view frame based on states computed from
+   the first SPK file. This report is useful for plotting of the difference
+   between trajectories expressed in the view frame, as a function of time.
+ 
+   Each of these reports is described in detail in the section ``Output
+   Report Types'' later in this User's Guide.
+ 
+ 
+Option for Specifying Additional Kernels
+ 
+   Additional kernels may be needed for SPKDIFF to compute states for the
+   specified body, center, frame combination, or to process command line
+   inputs and/or display difference dump time tags in the specified format.
+   Such kernels can be provided using the ``-k'' option. The kernels, the
+   names of which are listed using this option, are loaded by the program
+   by calling the SPICE generic loader routine FURNSH. Kernels of any type
+   can be provided to the program, including meta-kernels listing other
+   kernels. All of the kernels provide using the ``-k'' option are loaded
+   at the beginning of the program run and ``apply'' to both SPK files
+   being compared.
+ 
+   The set of other kernels may include any number of SPK files as long as
+   these additional SPK files do not provide enough data for computing
+   states anywhere within the comparison window for the body, center, frame
+   combinations applicable to either of the SPK files to be compared. This
+   restriction is important to ensure that the states being compared are
+   indeed computed using the data from the two SPK files of interest but
+   not from the additional SPK files provided to support the program run.
+ 
+   There are some special cases when a kernel(s) of a particular type must
+   be provided in order for SPKDIFF to proceed. Among such cases are:
+ 
+       --   An LSK file must be provided if the comparison window's begin
+            time or end time is specified using the ``-b'' or ``-e''
+            option. Since internally these times are converted to TDB by
+            calling the STR2ET routine, an LSK file must be loaded prior to
+            these calls for the conversion to succeed.
+ 
+       --   An LSK file must be provided if the output time format for the
+            dump report is specified using the ``-f'' option. In this case
+            the output time tags are generated by calling the TIMOUT
+            routine, which requires LSK data.
+ 
+       --   A text kernel(s) must be provided, defining name/ID mappings
+            for any of the physical object names not built into SPICE and
+            specified using the ``-b1'', ``-c1'', ``-b2'' or ``-c2''
+            options.
+ 
+       --   A frame kernel(s) must be provided, containing frame
+            definitions for any of the reference frames not built into
+            SPICE and specified using the ``-r1'' or ``-r2'' option.
+ 
+   In addition to the cases above when certain types of kernels are
+   required for processing command options and/or formatting times for
+   output, there is a myriad of situations when supporting kernels are
+   needed to compute states for the requested body, center, frame
+   combination because the two SPK files by themselves do not provide
+   enough data for that. These situations range from requesting states with
+   respect to a center, data for which is not provided by the principal SPK
+   file (in such cases additional SPK files providing missing ephemeris
+   links are needed) to requesting states with respect to a frame based on
+   PCK, CK, or FK data (in this case the PCK, CK, and/or FK files allowing
+   one to compute orientation of this frame must be provided to the
+   program).
+ 
+ 
+Output Report Types
+--------------------------------------------------------
+ 
+   SPKDIFF can generate four types of difference reports depending of the
+   value provided using the ``-t'' option. This section provides an example
+   and explanation of each report type.
+ 
+ 
+Usage display
+ 
+   If the program is run without any command line options or with
+   insufficient command line options, it displays the following usage
+   information:
+ 
+      spkdiff -- Version 1.0.0, April 25, 2006 -- Toolkit Version N0060
+ 
+      spkdiff computes differences between geometric states obtained from
+      two SPK files and either displays these differences or shows
+      statistics about them (see the User's Guide for more details). The
+      program usage is:
+ 
+         % spkdiff [options] <first SPK file> <second SPK file>
+ 
+      Options are shown below. Order and case of keys are not
+      significant. Values must be space-separated from keys, i.e.
+      '-n 10', not '-n10'.
+ 
+         -b1 <first body name or ID>
+         -c1 <first center name or ID>
+         -r1 <first reference frame name>
+         -b2 <second body name or ID>
+         -c2 <second center name or ID>
+         -r2 <second reference frame name>
+         -k  <other kernel file name(s)>
+         -b  <interval start time>
+         -e  <interval stop time>
+         -s  <time step in seconds>
+         -n  <number of states: 2 to 1000000 (default: 1000)>
+         -f  <output time format (default: TDB seconds past J2000)>
+         -t  <report type: basic|stats|dump|dumpvf (default: basic)>
+ 
+ 
+ 
+Comparison Information Header
+ 
+   If the program was provided with sufficient information to perform
+   comparison, it displays the ``Comparison Information Header'' providing
+   detailed information about the comparison being performed at the
+   beginning of each report. This header has the following format:
+ 
+      #
+      # Comparison of N_POINTS 'FRAME1_NAME'-referenced geometric states
+      #
+      #    of 'BOD1_NAME' (BOD1_ID) relative to 'CEN1_NAME' (CEN1_ID)
+      #    from SPK 'SPK1_NAME'
+      #
+      # with N_POINTS 'FRAME2_NAME'-referenced geometric states
+      #
+      #    of 'BOD2_NAME' (BOD2_ID) relative to 'CEN2_NAME' (CEN2_ID)
+      #    from SPK 'SPK2_NAME'
+      #
+      # evenly-spaced with STEP_SECONDS second (STEP_DDHRMNSC) step size
+      # within the time interval
+      #
+      #    from 'BEGIN_TIME' (BEGIN_ET_SEC TDB seconds)
+      #    to   'END_TIME'   (END_ET_SEC TDB seconds)
+      #
+      # using additional data from these kernels
+      #
+      #    KERNEL_LIST
+      #
+ 
+   where
+ 
+         N_POINTS       is the number of states computed from the first and
+                        second SPK files.
+ 
+         FRAME1_NAME    is the name of the reference frame, in which the
+                        states from the first SPK file were computed.
+ 
+         BOD1_NAME      is the name of the body, for which the states from
+                        the first SPK file were computed.
+ 
+         BOD1_ID        is the NAIF ID of the body, for which the states
+                        from the first SPK file were computed.
+ 
+         CEN1_NAME      is the name of the center, with respect to which
+                        the states from the first SPK file were computed.
+ 
+         CEN1_ID        is the NAIF ID of the center, with respect to which
+                        the states from the first SPK file were computed.
+ 
+         SPK1_NAME      is the name of the first SPK file that is being
+                        compared.
+ 
+         FRAME2_NAME    is the name of the reference frame, in which the
+                        states from the second SPK file were computed.
+ 
+         BOD2_NAME      is the name of the body, for which the states from
+                        the second SPK file were computed.
+ 
+         BOD2_ID        is the NAIF ID of the body, for which the states
+                        from the second SPK file were computed.
+ 
+         CEN2_NAME      is the name of the center, with respect to which
+                        the states from the second SPK file were computed.
+ 
+         CEN2_ID        is the NAIF ID of the center, with respect to which
+                        the states from the second SPK file were computed.
+ 
+         SPK2_NAME      is the name of the second SPK file that is being
+                        compared.
+ 
+         STEP_SECONDS   is the time steps in seconds.
+ 
+         STEP_DDHRMNS   is the time step formatted as days, hours, minutes,
+                        seconds. For example, step of ``90061.2'' seconds
+                        will appear as ``1d 1h 1m 1.200000s''.
+ 
+         BEGIN_TIME     is the comparison window begin time given in
+                        calendar format.
+ 
+         BEGIN_ET_SEC   is the comparison window begin time given as TDB
+                        seconds past J2000.
+ 
+         END_TIME       is the comparison window end time given in calendar
+                        format.
+ 
+         END_ET_SEC     is the comparison window end time given as TDB
+                        seconds past J2000.
+ 
+         KERNEL_LIST    is the list of additional kernels used in making
+                        the comparison. If no additional kernels were
+                        provided on the command line, this section is
+                        omitted from the header.
+ 
+   Since the program does not require specifying all comparison attributes
+   on the command line -- it can ``pick up'' defaults by examining the
+   files and/or using built in parameters based on the rules described
+   earlier -- it is crucial to examine the ``Comparison Information
+   Header'' included in every report in order to know exactly for which
+   body, center, frame combinations and over which time period the
+   trajectories were compared.
+ 
+   Note that each line of the ``Comparison Information Header'' has
+ 
+      #
+ 
+   as the first character. This allows common plotting programs, such as
+   GNUPLOT, to skip these header lines when plotting the ``dump''-type
+   reports generated by SPKDIFF.
+ 
+ 
+Basic Report (no ``-t'' option or ``-t basic'')
+ 
+   The ``Basic Report'' shows only the absolute and relative maximum and
+   average differences in magnitude of position and velocity vectors. This
+   report is generated if the ``-t'' option is omitted or if it is followed
+   by the value ``basic''. This report has the following format (as for all
+   other reports it follows the ``Comparison Information Header''):
+ 
+      Relative differences in state vectors:
+ 
+                                   maximum                 average
+ 
+       Position:             n.nnnnnnnnnnnnnE-nn      n.nnnnnnnnnnnnnE-nn
+       Velocity:             n.nnnnnnnnnnnnnE-nn      n.nnnnnnnnnnnnnE-nn
+ 
+ 
+      Absolute differences in state vectors:
+ 
+                                   maximum                 average
+ 
+       Position (km):        n.nnnnnnnnnnnnnE-nn      n.nnnnnnnnnnnnnE-nn
+       Velocity (km/s):      n.nnnnnnnnnnnnnE-nn      n.nnnnnnnnnnnnnE-nn
+ 
+ 
+   where ``n.nnnnnnnnnnnnnE-nn'' are the relative and absolute maximum and
+   average differences in magnitude of position and velocity vectors.
+ 
+   It is important to remember that these maximum values are picked from
+   the sets of states sampled from the SPK files within the given/default
+   comparison windows using the given/default time step, rather than by a
+   true search for the maximum within the window. Thus any change in the
+   window begin and end time and/or time step will result in a different
+   set of states being sampled at different times and then used in the
+   comparison, leading to different maximum and average values appearing in
+   the report.
+ 
+ 
+View Frame Statistics Report (``-t stats'')
+ 
+   The ``View Frame Statistics Report'' shows a set values resulting from
+   statistical analysis of the state differences rotated into the view
+   frame. This report is generated if the ``-t'' option is followed by the
+   value ``stats''.
+ 
+   The view frame into which the differences between states are rotated for
+   statistical analysis is based on states computed using the first SPK
+   file and is defined as follows:
+ 
+       --   +X is down track, in the direction of the velocity vector.
+ 
+       --   +Y is normal to the orbit plane. It is computed as the cross
+            product of the position and velocity vectors.
+ 
+       --   +Z is in the orbit plane. It completes the right handed frame
+            and is computed as the cross product of +X and +Y.
+ 
+   This report has the following format (as for all other reports it
+   follows the ``Comparison Information Header''):
+ 
+      1) Average components of position difference vectors in view
+         frame coordinates:
+ 
+         1a) Down track (km):                        n.nnnnnnnnnnnnnn
+ 
+         1b) In orbit plane (km):                    n.nnnnnnnnnnnnnn
+ 
+         1c) Normal to orbit plane (km):             n.nnnnnnnnnnnnnn
+ 
+         1d) Average delta time down track (sec):    n.nnnnnnnnnnnnnn
+ 
+ 
+      2) Average |components| of position difference vectors in view
+         frame coordinates:
+ 
+         2a) Down track (km):                        n.nnnnnnnnnnnnnn
+ 
+         2b) In orbit plane (km):                    n.nnnnnnnnnnnnnn
+ 
+         2c) Normal to orbit plane (km):             n.nnnnnnnnnnnnnn
+ 
+         2d) Average |delta time| down track (sec):  n.nnnnnnnnnnnnnn
+ 
+ 
+      3) RMS of position difference vectors in view frame coordinates:
+ 
+         3a) Down track (km):                        n.nnnnnnnnnnnnnn
+ 
+         3b) In orbit plane (km):                    n.nnnnnnnnnnnnnn
+ 
+         3c) Normal to orbit plane (km):             n.nnnnnnnnnnnnnn
+ 
+         3d) RMS delta time down track (sec):        n.nnnnnnnnnnnnnn
+ 
+ 
+      4) Components of the position difference vector in view frame
+         coordinates for the states with the MAXIMUM RELATIVE
+         difference in position:
+ 
+         4a) Down track (km):                        n.nnnnnnnnnnnnnn
+ 
+         4b) In orbit plane (km):                    n.nnnnnnnnnnnnnn
+ 
+         4c) Normal to orbit plane (km):             n.nnnnnnnnnnnnnn
+ 
+         4d) Delta time down track (sec):            n.nnnnnnnnnnnnnn
+ 
+         4e) Epoch (TDB, seconds past J2000):        nnnnnnnnn.nnnnnn
+ 
+         4f) Epoch (TDB, calendar format):           YYYY-MON-DD-HR:MN:SC
+ 
+ 
+      5) Components of the position difference vector in view frame
+         coordinates for the states with the MAXIMUM ABSOLUTE
+         difference in position:
+ 
+         5a) Down track (km):                        n.nnnnnnnnnnnnnn
+ 
+         5b) In orbit plane (km):                    n.nnnnnnnnnnnnnn
+ 
+         5c) Normal to orbit plane (km):             n.nnnnnnnnnnnnnn
+ 
+         5d) Delta time down track (sec):            n.nnnnnnnnnnnnnn
+ 
+         5e) Epoch (TDB, seconds past J2000):        nnnnnnnnn.nnnnnn
+ 
+         5f) Epoch (TDB, calendar format):           YYYY-MON-DD-HR:MN:SC
+ 
+ 
+   In addition to the average, average of absolute values, RMS, maximum
+   relative, and maximum absolute down track, in orbit plane and normal to
+   orbit plane components, the program includes in each category a delta
+   time down track in seconds. For the maximum relative and maximum
+   absolute differences the report also provides the times -- as calendar
+   format TDB and TDB seconds past J2000 -- at which these states were
+   computed.
+ 
+   As with the basic report the statistically determined maximum values are
+   based on the sets of states sampled from the SPK files within the
+   given/default comparison windows using the given/default time step
+   rather than by a true search for the maximum within the window. Thus any
+   change in the window begin and end time and/or time step will result in
+   a different set of states being sampled at different times and then used
+   in the comparison, leading to different maximum and average values
+   appearing in the report.
+ 
+   While this type of report can be requested for any combination of body,
+   center, and frame, for some of them the notion of the view frame would
+   not be applicable because the motion of the body with respect to the
+   center would be too different from the ``normal'' orbital motion for
+   which using the view frame makes the most sense. In such cases this
+   report may contain meaningless or even incomprehensible numbers. There
+   is also a possibility that the view frame simply cannot be constructed
+   for one or more states computed from the first SPK file because position
+   and velocity components of this state are linearly dependent. In such
+   cases the program reports this fact and does not generate the report.
+ 
+   To facilitate parsing, each of the items included in this report is
+   provided on a separate line tagged with a distinct item ``identifier''
+   (1a, 2b, 5d, etc.), with the value appearing as the last word on the
+   line.
+ 
+ 
+Difference Dump Report (``-t dump'')
+ 
+   The ``Difference Dump Report'' contains a table with time tagged
+   differences between individual states computed for the specified/default
+   body, center, frame combinations from the two SPK files. This report is
+   generated if the ``-t'' option is followed by the value ``dump''. This
+   report has the following format (as for all other reports it follows the
+   ``Comparison Information Header''):
+ 
+ 
+      # time, (x1-x2), (y1-y2), (z1-z2), (vx1-vx2), (vy1-vy2), (vz1-vz2)
+      TIME DELTA_X DELTA_Y DELTA_Z DELTA_VX DELTA_VY DELTA_VZ
+      TIME DELTA_X DELTA_Y DELTA_Z DELTA_VX DELTA_VY DELTA_VZ
+      ...  ...     ...     ...     ...      ...      ...
+      TIME DELTA_X DELTA_Y DELTA_Z DELTA_VX DELTA_VY DELTA_VZ
+ 
+ 
+   The first line of the report ``names'' the items provided in the table.
+   As for the lines of the ``Comparison Information Header'' that this line
+   immediately follows, it is prefixed using the
+ 
+      #
+ 
+   character in order to be ignored by common plotting utilities.
+ 
+   Each of the subsequent lines contains seven space-delimited items -- a
+   time tag in the format specified using the ``-f'' option (if ``-f'' was
+   not provided the time tag is the number of TDB seconds past J2000)
+   followed by the X, Y, Z, Vx, Vy, and Vz components of the difference
+   between the state computed from the first SPK file and the state
+   computed from the second SPK file. The position component differences
+   are provided in kilometers, the velocity component differences in
+   kilometers per second. All differences are printed in scientific
+   notation, +n.nnnnnnnnnnnnnE+nn.
+ 
+ 
+View Frame Difference Dump Report (``-t dumpvf'')
+ 
+   The ``View Frame Difference Dump Report'' contains a table with time
+   tagged differences between individual states computed for the
+   specified/default body, center, frame combinations from the two SPK
+   files, rotated into the view frame based on states from the first SPK
+   file (see the ``View Frame Statistics Report'' section above for the
+   definition of the view frame). This report is generated if the ``-t''
+   option is followed by the value ``dumpvf''. This report has the
+   following format (as for all other reports it follows the ``Comparison
+   Information Header''):
+ 
+ 
+      # time, down_track_p_diff, normal_to_plane_p_diff, in_plane_p_diff,
+      down_track_v_diff, normal_to_plane_v_diff, in_plane_v_diff
+      TIME DELTA_DT DELTA_NTP DELTA_IP DELTA_VDP DELTA_VNTP DELTA_VIP
+      TIME DELTA_DT DELTA_NTP DELTA_IP DELTA_VDP DELTA_VNTP DELTA_VIP
+      ...  ...     ...     ...     ...      ...      ...
+      TIME DELTA_DT DELTA_NTP DELTA_IP DELTA_VDP DELTA_VNTP DELTA_VIP
+ 
+ 
+   The first line of the report (which is shown as two lines above to fit
+   into the width of the page) ``names'' the items provided in the table.
+   As for the lines of the ``Comparison Information Header'' that this line
+   immediately follows, it is prefixed using the
+ 
+      #
+ 
+   character in order to be ignored by common plotting utilities.
+ 
+   Each of the subsequent lines contains seven space-delimited items -- a
+   time tag in the format specified using the ``-f'' option (if the ``-f''
+   option was not provided the time tag is the number of TDB seconds past
+   J2000) followed by the down track, normal to orbit plane, in orbit
+   plane, down track velocity, normal to orbit plane velocity, and in orbit
+   plane velocity components of difference between the state computed from
+   the first SPK file and the state computed from the second SPK file,
+   rotated into the view frame. The position component differences are
+   provided in kilometers, the velocity component differences in kilometers
+   per second. All differences are printed in scientific notation,
+   +n.nnnnnnnnnnnnnE+nn.
+ 
+   While this type of report can be requested for any combination of body,
+   center, and frame, for some of them the notion of the view frame would
+   not be applicable because the motion of the body with respect to the
+   center would be too different from the ``normal'' orbital motion for
+   which using the view frame makes the most sense. In such cases this
+   report may contain meaningless or even incomprehensible numbers. There
+   is also a possibility that the view frame simply cannot be constructed
+   for one or more states computed from the first SPK file because position
+   and velocity components of this state are linearly dependent. In such
+   cases the program reports this fact and does not generate the report.
+ 
+ 
+Troubleshooting
+--------------------------------------------------------
+ 
+   There are many cases when SPKDIFF is not able to perform the requested
+   comparison due to incorrect, inconsistent, or missing command line
+   options. Some such cases and possible solutions are:
+ 
+       --   The program reports an error if the specified begin time is
+            greater than the specified end time. This case is usually the
+            result of a simple typo; double-checking and fixing the command
+            line options is the way to correct it.
+ 
+       --   The program reports an error if the body or center names
+            provided on the command line cannot be translated to NAIF IDs.
+            In such cases bodies and/or centers should be specified by ID
+            instead of the name or a text kernel containing name/ID mapping
+            for the given names should be provided using the ``-k'' option.
+ 
+       --   The program reports an error if it does not recognize any
+            specified frame names. In such cases a frames kernel(s)
+            defining these frames should be provided using the ``-k''
+            option.
+ 
+       --   The program reports an error when either of the SPK files to be
+            compared or any of the supporting kernels provided using the
+            ``-k'' option does not exist or is not a SPICE kernel of the
+            expected type. The ``offending'' file names should be checked
+            and corrected.
+ 
+       --   The program reports an error when instead of a numeric value
+            expected with some of the options (``-n'' and ``-s'') it
+            detects a string that does not represent a number. These inputs
+            must be corrected for the program to proceed.
+ 
+       --   The program reports an error if it does not recognize the
+            output report type provided on the command line. This
+            unrecognized value should be replaced with one of the allowed
+            values.
+ 
+       --   The program reports an error if an unsupported command line
+            option key is provided on the command line. Such keys and any
+            values following them are treated as part of the value for the
+            preceding option key, causing a parsing error to be reported.
+            Any unsupported option should be removed from the command line
+            for the program to proceed.
+ 
+       --   The program reports an error if either of the SPK files
+            together with supporting kernels does not provide data for the
+            body specified/picked for that SPK file. The body specification
+            should be re-examined and corrected for the program to proceed.
+ 
+       --   The program reports an error if either of the SPK files does
+            not provide enough coverage for the specified/default body,
+            center, frame combination within the comparison window
+            specified on the command line. The comparison window should be
+            adjusted for the program to proceed.
+ 
+       --   The program reports an error if the SPK files to be compared do
+            not have overlap in coverage for the corresponding body,
+            center, frame combinations. In such cases the comparison simply
+            cannot be performed.
+ 
+       --   The program reports an error if the SPK files to be compared
+            have overlap in coverage that consists of more than one
+            continuous window. In such cases narrower comparison window
+            boundaries should be specified on the command line.
+ 
+       --   The program reports an error if any of the supporting kernels
+            needed to compute states for the specified body, center, frame
+            combination using either SPK file are missing. Depending on the
+            contents of a particular SPK and specifics of the request any
+            number and types of supporting kernels -- from additional SPK
+            files to FK and CK files -- may be needed to satisfy the
+            request. For this reason no simple suggestion on picking
+            additional kernels can be made. Instead the user is directed to
+            familiarize himself/herself with contents of the SPK files in
+            question and with mission-specific and generic SPICE data that
+            might be used together with these SPK files in order to
+            identify supporting kernels needed to perform comparison.
+ 
+       --   The program does not generate either statistical or dump view
+            frame report if the view frame cannot be constructed using one
+            or more states computed from the first SPK file. In this case
+            other types of reports should be used instead.
+ 
+       --   The program reports an error if too many states were requested
+            to be used in the comparison either by specifying a too large
+            number of steps using the ``-n'' option or by specifying a too
+            small time step using the ``-s'' option. The inputs should be
+            adjusted accordingly to reduce the number to be below the
+            limit. The maximum number of steps allowed is 1,000,000; this
+            values is hard-coded into the program.
+ 
+       --   The program reports an error if the specified time step is
+            smaller than 1.E-8 seconds. The input time step should be
+            adjusted for the program to proceed.
+ 
+       --   The program reports an error if SPK file(s) provided as
+            supporting kernels allow for computing states for either of the
+            body, center, frame combinations without loading the SPK files
+            to be compared. The set of supporting SPK files should be
+            reconsidered and some of the SPK files provided in it should be
+            removed to resolve this conflict.
+ 
+ 
+Examples
+--------------------------------------------------------
+ 
+   This section provides a few examples showing how SPKDIFF can help answer
+   common questions regarding differences between SPK files.
+ 
+ 
+Do Two SPK Files Provide the Same Trajectory for a Spacecraft?
+ 
+   This very common question usually requires a simple ``yes'' or ``no''
+   answer and zero or non-zero maximum differences shown by the SPKDIFF's
+   ``Basic Report'' provides just that.
+ 
+   In most cases spacecraft SPK files that are checked for ``sameness''
+   have the same attributes -- storing spacecraft trajectory with respect
+   to the same center in the same frame -- and need to be compared during
+   the whole period of overlap between their coverages. Therefore, SPKDIFF
+   can be run with ``bare minimum'' inputs -- just the names of the SPK
+   files -- and be allowed to use defaults obtained by examining the files
+   and/or hard-coded into the program.
+ 
+   Below, SPKDIFF is invoked to answer this question for a regular,
+   reconstructed OD solution SPK file and a merged reconstructed SPK file
+   for Mars Global Surveyor. With just the SPK file names provided on the
+   command line:
+ 
+      > spkdiff spk_m_060508_OD32021-32092_rec_V1.bsp mgs_map_rec.bsp
+ 
+   the program produces the following output:
+ 
+      #
+      # Comparison of 1000 'J2000'-referenced geometric states
+      #
+      #    of 'MGS' (-94) relative to 'MARS BARYCENTER' (4)
+      #    from SPK 'spk_m_060508_OD32021-32092_rec_V1.bsp'
+      #
+      # with 1000 'J2000'-referenced geometric states
+      #
+      #    of 'MGS' (-94) relative to 'MARS BARYCENTER' (4)
+      #    from SPK 'mgs_map_rec.bsp'
+      #
+      # evenly-spaced with 507.387 second (0d 00h 08m 27.387s) step size
+      # within the time interval
+      #
+      #    from '2006 MAY 08 15:22:00.000 TDB' (200373720.0 TDB seconds)
+      #    to   '2006 MAY 14 12:10:00.000 TDB' (200880600.0 TDB seconds)
+      #
+ 
+      Relative differences in state vectors:
+ 
+                                   maximum                 average
+ 
+        Position:            0.0000000000000E+00      0.0000000000000E+00
+        Velocity:            0.0000000000000E+00      0.0000000000000E+00
+ 
+ 
+      Absolute differences in state vectors:
+ 
+                                   maximum                 average
+ 
+        Position (km):       0.0000000000000E+00      0.0000000000000E+00
+        Velocity (km/s):     0.0000000000000E+00      0.0000000000000E+00
+ 
+ 
+   The fact that all differences in the output are zero means that both
+   files provide the same trajectory for MGS relative to Mars Barycenter
+   for the whole period of overlap (which should be the case because the
+   regular reconstructed OD solution SPK file is one of the files that was
+   used to create the merged SPK file).
+ 
+ 
+Do SPK files Differ Enough to Matter?
+ 
+   This is another very common question frequently asked when it is known
+   that two SPK files represent different trajectories but it is not known
+   whether this difference is large enough to matter. In many such cases
+   the magnitude of the maximum difference provided by SPKDIFF's ``Basic
+   Report'' provides the answer to this question.
+ 
+   As in the previous example, the SPK files that are compared probably
+   have the same attributes -- storing the spacecraft trajectory with
+   respect to the same center in the same frame -- but the comparison
+   window of interest is likely to be narrower than the whole overlap
+   between the file coverages (for example only during closest approach or
+   during a time window around pericenter). Thus, SPKDIFF should be allowed
+   to get most defaults from the files but should be provided with the
+   comparison window begin and end times on the command line.
+ 
+   Below, SPKDIFF is run to check how different the reconstructed MGS
+   trajectories provided by the Mars Global Surveyor Navigation team and
+   the JPL Gravity Group are during the 30 minute window from 2001 APR 04
+   02:30 to 03:30 UTC (a part of illuminated portion of the MGS orbit
+   9266). SPKDIFF, invoked with the comparison window boundaries, LSK file
+   name (to support conversion of boundary UTC times to ET), and SPK file
+   names:
+ 
+      > spkdiff -b 2001 APR 04 02:30 -e 2001 APR 04 03:00 \
+                -k naif0008.tls \
+                mgs_ext2.bsp mgs_ext2_ipng_mgs75d.bsp
+ 
+   produces the following output:
+ 
+      #
+      # Comparison of 1000 'J2000'-referenced geometric states
+      #
+      #    of 'MGS' (-94) relative to 'MARS BARYCENTER' (4)
+      #    from SPK 'mgs_ext2.bsp'
+      #
+      # with 1000 'J2000'-referenced geometric states
+      #
+      #    of 'MGS' (-94) relative to 'MARS BARYCENTER' (4)
+      #    from SPK 'mgs_ext2_ipng_mgs75d.bsp'
+      #
+      # evenly-spaced with 1.801 second (0d 00h 00m 01.801s) step size
+      # within the time interval
+      #
+      #    from '2001 APR 04 02:30' (39623464.185 TDB seconds)
+      #    to   '2001 APR 04 03:00' (39625264.185 TDB seconds)
+      #
+      # using additional data from these kernels
+      #
+      #    'naif0008.tls'
+      #
+ 
+      Relative differences in state vectors:
+ 
+                                   maximum                 average
+ 
+        Position:            1.5585888672802E-05      7.4593186410629E-06
+        Velocity:            1.7161324644915E-05      1.4552469606438E-05
+ 
+ 
+      Absolute differences in state vectors:
+ 
+                                   maximum                 average
+ 
+        Position (km):       5.9196225803226E-02      2.8215203092988E-02
+        Velocity (km/s):     5.7990372644310E-05      4.9083689420832E-05
+ 
+   The report shows that the maximum difference in position is about 60
+   meters, which, given uncertainties in other data (timing, attitude,
+   etc), may be deemed unimportant in processing data from a low resolution
+   instrument.
+ 
+ 
+What Is the Down Track Timing Error?
+ 
+   This question often arises when comparing preliminary and final
+   predicted trajectories for orbiters that have to perform observations of
+   a particular area on the surface of a target body. SPKDIFF provides
+   estimates of the down track timing error in its `` View Frame Statistics
+   Report''.
+ 
+   Below, SPKDIFF is run to determine the down track timing error during
+   the 10 minute window around pericenter of the MEX orbit 3040 ( 2006 MAY
+   23 21:46 ... 21:56 UTC) for trajectories provided by long-term and
+   short-term predicted SPK files. SPKDIFF, invoked with the comparison
+   window boundaries, LSK file name (to support conversion of boundary UTC
+   times to ET), report type ``stats'', and SPK file names:
+ 
+      > spkdiff -b 2006 MAY 23 21:46 -e 2006 MAY 23 21:56 \
+                -k NAIF0008.TLS \
+                -t stats
+                ORMM__060501000000_00253.BSP ORMF_______________00185.BSP
+ 
+   produces the following output:
+ 
+      #
+      # Comparison of 1000 'J2000'-referenced geometric states
+      #
+      #    of 'MARS EXPRESS' (-41) relative to 'MARS' (499)
+      #    from SPK 'ORMM__060501000000_00253.BSP'
+      #
+      # with 1000 'J2000'-referenced geometric states
+      #
+      #    of 'MARS EXPRESS' (-41) relative to 'MARS' (499)
+      #    from SPK 'ORMF_______________00185.BSP'
+      #
+      # evenly-spaced with 0.600 second (0d 0h 0m 0.600000s) step size
+      # within the time interval
+      #
+      #    from '2006 MAY 23 21:46' (201692825.18509 TDB seconds)
+      #    to   '2006 MAY 23 21:56' (201693425.18509 TDB seconds)
+      #
+      # using additional data from these kernels
+      #
+      #    'NAIF0008.TLS'
+      #
+ 
+      1) Average components of position difference vectors in view
+         frame coordinates:
+ 
+         1a) Down track (km):                        30.552115284475
+ 
+         1b) In orbit plane (km):                    1.2710676287493
+ 
+         1c) Normal to orbit plane (km):            -0.011807645604121
+ 
+         1d) Average delta time down track (sec):    7.1913943821391
+ 
+ 
+      2) Average |components| of position difference vectors in view
+         frame coordinates:
+ 
+         2a) Down track (km):                        30.552115284475
+ 
+         2b) In orbit plane (km):                    1.2710676287493
+ 
+         2c) Normal to orbit plane (km):             0.011807645604121
+ 
+         2d) Average |delta time| down track (sec):  7.1913943821391
+ 
+ 
+      3) RMS of position difference vectors in view frame coordinates:
+ 
+         3a) Down track (km):                        30.553065680244
+ 
+         3b) In orbit plane (km):                    1.2720138468831
+ 
+         3c) Normal to orbit plane (km):             0.012788802634391
+ 
+         3d) RMS delta time down track (sec):        7.1917249241123
+ 
+ 
+      4) Components of the position difference vector in view frame
+         coordinates for the states with the MAXIMUM RELATIVE
+         difference in position:
+ 
+         4a) Down track (km):                        30.708369357832
+ 
+         4b) In orbit plane (km):                    1.2758338375402
+ 
+         4c) Normal to orbit plane (km):            -0.011447894251492
+ 
+         4d) Delta time down track (sec):            7.1972290201441
+ 
+         4e) Epoch (TDB, seconds past J2000):        201693107.46737
+ 
+         4f) Epoch (TDB, calendar format):           2006-MAY-23-21:51:47
+ 
+ 
+      5) Components of the position difference vector in view frame
+         coordinates for the states with the MAXIMUM ABSOLUTE
+         difference in position:
+ 
+         5a) Down track (km):                        30.767205150213
+ 
+         5b) In orbit plane (km):                    1.3086257963549
+ 
+         5c) Normal to orbit plane (km):            -0.0080797486007561
+ 
+         5d) Delta time down track (sec):            7.2439115051116
+ 
+         5e) Epoch (TDB, seconds past J2000):        201692992.15206
+ 
+         5f) Epoch (TDB, calendar format):           2006-MAY-23-21:49:52
+ 
+ 
+   As seen in the report, the maximum down track timing error is about 7.2
+   seconds at 2006-MAY-23-21:49:52 TBD.
+ 
+ 
+How Does the Difference Change with Time?
+ 
+   In order to answer this question SPKDIFF should be run to produce either
+   a ``Difference Dump'' or a ``View Frame Difference Dump'' report that
+   can then be plotted using a plotting utility.
+ 
+   Below SPKDIFF is run to generate a view frame difference table for
+   Phobos ephemerides provided by the previous and the latest Martian
+   satellite ephemeris files produced by the Solar System Dynamics group at
+   JPL. To get detailed information on short-term difference trends, the
+   comparison is done over 1 day, which is about three Phobos orbits, using
+   a 30 minute time step (time boundaries and step specified using the
+   ``-b'', ``-e'', and ``-s'' options). Since both SPK files contain data
+   for multiple natural bodies, the body name is explicitly specified on
+   the command line using the ``-b1'' option. Because the trajectory
+   difference with respect to Mars is of interest, Mars is specified as the
+   center using the ``-c1'' option. The time tag format for the output is
+   set to the Julian date TDB using the ``-f'' option. SPKDIFF, run with
+   the all of these options and the names of the SPK files:
+ 
+      > spkdiff -b 2006 MAY 10 -e 2006 MAY 11 \
+                -s 1800 \
+                -k naif0008.tls \
+                -b1 PHOBOS -c1 MARS \
+                -t dumpvf \
+                -f 'JULIAND.######## ::TDB' \
+                mar033_2000-2025.bsp mar063.bsp
+ 
+   produces the following output:
+ 
+      #
+      # Comparison of 49 'J2000'-referenced geometric states
+      #
+      #    of 'PHOBOS' (401) relative to 'MARS' (499)
+      #    from SPK 'mar033_2000-2025.bsp'
+      #
+      # with 49 'J2000'-referenced geometric states
+      #
+      #    of 'PHOBOS' (401) relative to 'MARS' (499)
+      #    from SPK 'mar063.bsp'
+      #
+      # evenly-spaced with 1800.0 second (0d 0h 30m 0.0000s) step size
+      # within the time interval
+      #
+      #    from '2006 MAY 10' (200491265.18535 TDB seconds)
+      #    to   '2006 MAY 11' (200577665.18533 TDB seconds)
+      #
+      # using additional data from these kernels
+      #
+      #    'naif0008.tls'
+      #
+      # time, along_track_P_diff, normal_to_plane_P_diff, in_plane_P_di
+      ff, along_track_V_diff, normal_to_plane_V_diff, in_plane_V_diff
+      2453865.50075450 -3.4E+0 +1.1E-1 +1.1E+0 +1.6E-3 -1.9E-4 +1.2E-3
+      2453865.52158780 -4.5E+0 -2.3E-1 +1.7E+0 +1.5E-3 -2.0E-4 +1.3E-3
+      2453865.54242110 -6.1E+0 -5.5E-1 +2.1E+0 +1.4E-3 -1.6E-4 +1.5E-3
+      2453865.56325450 -7.9E+0 -7.7E-1 +2.0E+0 +1.2E-3 -1.0E-4 +1.6E-3
+      2453865.58408780 -9.5E+0 -8.6E-1 +1.8E+0 +1.2E-3 -3.0E-5 +1.8E-3
+      2453865.60492110 -1.0E+1 -8.1E-1 +1.1E+0 +1.2E-3 +5.1E-5 +1.9E-3
+      2453865.62575450 -1.1E+1 -6.2E-1 +3.2E-1 +1.3E-3 +1.2E-4 +1.9E-3
+      2453865.64658780 -1.1E+1 -3.4E-1 -5.4E-1 +1.5E-3 +1.7E-4 +2.0E-3
+      2453865.66742110 -1.0E+1 -1.5E-2 -1.3E+0 +1.7E-3 +2.0E-4 +1.9E-3
+      2453865.68825450 -9.0E+0 +3.2E-1 -1.9E+0 +1.9E-3 +1.9E-4 +1.8E-3
+      2453865.70908780 -7.3E+0 +6.0E-1 -2.0E+0 +2.2E-3 +1.5E-4 +1.6E-3
+      2453865.72992110 -5.6E+0 +7.9E-1 -1.9E+0 +2.2E-3 +8.8E-5 +1.4E-3
+      2453865.75075450 -4.1E+0 +8.4E-1 -1.6E+0 +2.1E-3 +6.2E-6 +1.2E-3
+      2453865.77158780 -3.1E+0 +7.6E-1 -8.8E-1 +2.0E-3 -7.7E-5 +1.1E-3
+      2453865.79242110 -2.8E+0 +5.4E-1 +6.4E-2 +1.8E-3 -1.4E-4 +1.1E-3
+      2453865.81325450 -3.2E+0 +2.3E-1 +8.8E-1 +1.4E-3 -1.9E-4 +1.2E-3
+      2453865.83408780 -4.1E+0 -1.1E-1 +1.5E+0 +1.2E-3 -2.0E-4 +1.2E-3
+      2453865.85492110 -5.6E+0 -4.4E-1 +2.0E+0 +1.0E-3 -1.8E-4 +1.4E-3
+      2453865.87575450 -7.4E+0 -7.0E-1 +2.1E+0 +9.0E-4 -1.2E-4 +1.6E-3
+      2453865.89658780 -9.0E+0 -8.5E-1 +1.9E+0 +1.0E-3 -5.4E-5 +1.8E-3
+      2453865.91742110 -1.0E+1 -8.5E-1 +1.3E+0 +1.2E-3 +2.7E-5 +1.9E-3
+      2453865.93825450 -1.1E+1 -7.2E-1 +6.0E-1 +1.5E-3 +1.0E-4 +1.9E-3
+      2453865.95908780 -1.1E+1 -4.8E-1 -3.6E-1 +1.8E-3 +1.6E-4 +2.0E-3
+      2453865.97992110 -1.0E+1 -1.5E-1 -1.0E+0 +2.1E-3 +1.9E-4 +1.9E-3
+      2453866.00075450 -9.4E+0 +1.8E-1 -1.7E+0 +2.2E-3 +1.9E-4 +1.8E-3
+      2453866.02158780 -7.8E+0 +5.0E-1 -2.1E+0 +2.1E-3 +1.6E-4 +1.6E-3
+      2453866.04242110 -6.2E+0 +7.3E-1 -2.0E+0 +2.1E-3 +1.1E-4 +1.5E-3
+      2453866.06325450 -4.6E+0 +8.5E-1 -1.6E+0 +1.9E-3 +3.3E-5 +1.4E-3
+      2453866.08408780 -3.3E+0 +8.1E-1 -1.1E+0 +1.6E-3 -4.9E-5 +1.1E-3
+      2453866.10492110 -2.7E+0 +6.4E-1 -2.7E-1 +1.5E-3 -1.2E-4 +1.0E-3
+      2453866.12575450 -3.0E+0 +3.5E-1 +5.6E-1 +1.3E-3 -1.7E-4 +1.1E-3
+      2453866.14658780 -3.9E+0 +1.0E-2 +1.2E+0 +1.2E-3 -2.0E-4 +1.3E-3
+      2453866.16742110 -5.1E+0 -3.4E-1 +1.9E+0 +1.3E-3 -1.8E-4 +1.3E-3
+      2453866.18825450 -6.7E+0 -6.3E-1 +2.3E+0 +1.4E-3 -1.4E-4 +1.5E-3
+      2453866.20908780 -8.5E+0 -8.1E-1 +2.0E+0 +1.3E-3 -8.0E-5 +1.7E-3
+      2453866.22992110 -9.9E+0 -8.6E-1 +1.4E+0 +1.3E-3 -1.1E-6 +1.8E-3
+      2453866.25075450 -1.0E+1 -7.6E-1 +8.4E-1 +1.5E-3 +7.7E-5 +2.0E-3
+      2453866.27158780 -1.1E+1 -5.4E-1 +3.4E-2 +1.6E-3 +1.4E-4 +2.0E-3
+      2453866.29242110 -1.0E+1 -2.3E-1 -8.5E-1 +1.7E-3 +1.8E-4 +1.9E-3
+      2453866.31325450 -9.8E+0 +1.1E-1 -1.5E+0 +1.7E-3 +1.9E-4 +1.8E-3
+      2453866.33408780 -8.4E+0 +4.3E-1 -2.0E+0 +1.8E-3 +1.7E-4 +1.7E-3
+      2453866.35492110 -6.7E+0 +6.9E-1 -2.1E+0 +1.8E-3 +1.2E-4 +1.5E-3
+      2453866.37575450 -5.0E+0 +8.2E-1 -1.9E+0 +1.9E-3 +5.8E-5 +1.4E-3
+      2453866.39658780 -3.7E+0 +8.2E-1 -1.3E+0 +2.0E-3 -2.5E-5 +1.2E-3
+      2453866.41742110 -3.0E+0 +6.8E-1 -5.7E-1 +1.9E-3 -1.0E-4 +1.1E-3
+      2453866.43825450 -2.8E+0 +4.1E-1 +3.5E-1 +1.9E-3 -1.6E-4 +1.1E-3
+      2453866.45908780 -3.4E+0 +8.1E-2 +1.1E+0 +1.7E-3 -2.0E-4 +1.2E-3
+      2453866.47992110 -4.6E+0 -2.6E-1 +1.7E+0 +1.4E-3 -1.9E-4 +1.3E-3
+      2453866.50075440 -6.2E+0 -5.6E-1 +2.1E+0 +1.1E-3 -1.6E-4 +1.5E-3
+ 
+   (To fit into the page width, the format for the difference columns in
+   the output above was changed from n.nnnnnnnnnnnnnE-nn to n.nE-n).
+ 
+   The table above shows that differences in Phobos' position provided by
+   the previous and latest SPK file oscillates with Phobos orbital motion,
+   with the down track component ranging from -11 km to -3 km, normal to
+   orbit plane from -0.9 to 0.9 km, and in orbit plane from -2 to 2 km.
+ 

@@ -1,0 +1,262 @@
+ 
+SPKMERGE User's Guide
+===========================================================================
+ 
+   Last revised on 2001 APR 03 by F. S. Turner, C. H. Acton.
+ 
+ 
+Abstract
+--------------------------------------------------------
+ 
+   SPKMERGE is a program that subsets or merges one or more SPK files into
+   a single SPK file.
+ 
+ 
+Introduction
+--------------------------------------------------------
+ 
+   SPKMERGE builds new SPK files by merging entire or subsets of one or
+   more existing SPK files. SPKMERGE creates SPK kernels that have no
+   overlapping ephemeris; the order in which source files are specified
+   determines the precedence when source files contain overlapping data.
+ 
+   SPKMERGE reads all its input from a command file. A command file is an
+   ASCII formatted file that you must supply.
+ 
+ 
+Running SPKMERGE
+--------------------------------------------------------
+ 
+   SPKMERGE will prompt for the name of the command file when you start the
+   program. Alternately, you can name the command file as the first
+   argument on the command line.
+ 
+ 
+Command file syntax
+--------------------------------------------------------
+ 
+   Inputs are specified in a command file by using assignments. The rules
+   for forming assignments are listed here.
+ 
+       --   An assignment must start on a line by itself. A keyword must
+            appear first, followed by an equals sign, followed by a value.
+ 
+       --   Keywords are not case sensitive---they may appear in upper,
+            lower, or mixed case.
+ 
+       --   Spaces and tabs are ignored, except for those embedded within
+            values.
+ 
+       --   Values may extend over multiple lines. No continuation
+            characters are necessary.
+ 
+       --   A semi-colon signals the beginning of a comment. All characters
+            following a semi-colon on a line are ignored.
+ 
+       --   Values must not exceed 300 characters.
+ 
+   In addition, there are other non-lexical rules that apply to
+   assignments:
+ 
+       --   Some assignments must be present in the command file, while
+            others are optional.
+ 
+       --   Most assignments can only follow certain other assignments.
+ 
+       --   All assignments have restrictions on the number of times they
+            can appear in the command file.
+ 
+   These rules will be discussed as the keywords are introduced.
+ 
+ 
+Command file keywords
+--------------------------------------------------------
+ 
+   A command file must contain at least these three keywords:
+ 
+      LEAPSECONDS_KERNEL
+      SPK_KERNEL
+      SOURCE_SPK_KERNEL
+ 
+   The optional keywords are:
+ 
+      LOG_FILE
+      BEGIN_TIME
+      END_TIME
+      BODIES
+      INCLUDE_COMMENTS
+ 
+   All the keywords are described below. Note that some keywords may appear
+   multiple times.
+ 
+ 
+leapseconds_kernel
+ 
+   The value of this keyword must be the name of a SPICE leapseconds kernel
+   file. This assignment must be present, and is usually the first
+   assignment in the command file. If the leapseconds kernel does not
+   reside in the current directory, remember to include the directory path
+   of the file, as shown in this example:
+ 
+      leapseconds_kernel  = /kernels/lsk/naif0004.tls
+ 
+ 
+spk_kernel
+ 
+   The value of this keyword must be the name of the SPK file that SPKMERGE
+   is to create. After this assignment, the names of one or more source SPK
+   files must be listed by using the `source_spk_kernel' assignment.
+ 
+   Multiple SPK files can be created by SPKMERGE by repeating this
+   assignment.
+ 
+ 
+source_spk_kernel
+ 
+   The value of this keyword must be the name of an existing SPK file that
+   you want to merge into a new SPK file. Multiple SPK files or different
+   parts of a single SPK file can be merged into a new SPK file by
+   repeating this assignment. Before you name the files you want to merge,
+   you must have previously specified the name of a new SPK kernel by using
+   the `spk_kernel' assignment.
+ 
+   The sample command file below instructs SPKMERGE to create one SPK file
+   by merging three existing SPK files in their entirety.
+ 
+      leapseconds_kernel  = /kernels/lsk/naif0003.tls
+ 
+      spk_kernel          = complete.bsp
+        source_spk_kernel = planets.bsp
+        source_spk_kernel = gll_1.bsp
+        source_spk_kernel = gll_2.bsp
+ 
+   SPKMERGE will not create an SPK file that has overlapping data. The
+   files you list first have precedence. In the example above, source data
+   from planets.bsp will have precedence over data from gll_1.bsp, and both
+   will have precedence over gll_2.bsp.
+ 
+ 
+bodies
+ 
+   This keyword is optional. If present, it restricts which bodies are
+   merged. This keyword can appear in one of two places: after a
+   `source_spk_kernel' assignment, or before the first `source_spk_kernel'
+   assignemt. In the former case, the keyword lists the bodies that should
+   be merged from a specific source SPK file; in the latter case, the
+   keyword lists the bodies that should be merged from all source SPK files
+   that do not have specific bodies mentioned. A body listed in this
+   assignment does not have to be contained within the source SPK file(s)
+   the assignment applies to. Remember that SPKMERGE will not create a file
+   that has overlapping data, so even if an SPK kernel contains a body you
+   list, it may not necessarily be merged.
+ 
+   The bodies must be given as NAIF integer body IDs; the IDs may be
+   delimited by spaces or commas.
+ 
+   In the example below, only bodies 10, 399 and 301 will be merged from
+   `planets.bsp'. The other two files will be merged in their
+   entirety---assuming no overlapping data.
+ 
+      leapseconds_kernel  = /kernels/lsk/naif0003.tls
+ 
+      spk_kernel          = complete.bsp
+        source_spk_kernel = planets.bsp
+          bodies          = 10, 399, 301
+        source_spk_kernel = gll_1.bsp
+        source_spk_kernel = gll_2.bsp
+ 
+   If you want to merge only bodies 10, 399, 301 and -77, the command file
+   could be structured as shown below:
+ 
+      leapseconds_kernel  = /kernels/lsk/naif0003.tls
+ 
+      spk_kernel          = complete.bsp
+        bodies            = 10, 399, 301, -77
+        source_spk_kernel = planets.bsp
+        source_spk_kernel = gll_1.bsp
+        source_spk_kernel = gll_2.bsp
+ 
+ 
+begin_time, end_time
+ 
+   These two keywords operate just like the `bodies' keyword, except they
+   restrict times instead of bodies. The `end_time' keyword must
+   immediately follow the `begin_time' keyword. Together, these keywords
+   represent a time window. Multiple windows can be specified by repeating
+   these two assignments.
+ 
+   SPKMERGE accepts many different time input formats from a variety of
+   time systems. The default input system is UTC, but one may specify
+   ephemeris time (TDB) instead. For complete details on the accepted time
+   strings see the STR2ET section of ``Time Required Reading'' (time.req).
+   Below are a few examples.
+ 
+   The following illustrates utilization of the default time system, UTC.
+ 
+      leapseconds_kernel  = /kernels/lsk/naif0003.tls
+ 
+      spk_kernel          = complete.bsp
+        source_spk_kernel = planets.bsp
+          begin_time      = 1 JAN 1994 00:00:00.000
+          end_time        = 1 JUL 1994 00:00:00.000
+        source_spk_kernel = gll_1.bsp
+          begin_time      = 1 JAN 1994 00:00:00.000
+          end_time        = 1 JUL 1994 00:00:00.000
+        source_spk_kernel = gll_2.bsp
+          begin_time      = 1 JAN 1994 00:00:00.000
+          end_time        = 1 JUL 1994 00:00:00.000
+ 
+   To select ephemeris time (ET, also called Time Dynamic Barycentric or
+   TDB) as the desired input time system, append TDB to the end of the time
+   string. The following example demonstrates the merging of the contents
+   of two SPK files for the period between the ephemeris times `15 Feb
+   1998' amd `21 Jul 1998'.
+ 
+      leapseconds_kernel  = /kernels/lsk/naif0003.tls
+ 
+      spk_kernel          = complete.bsp
+        source_spk_kernel = planets.bsp
+          begin_time      = 15 FEB 1998 00:00:00.000 TDB
+          end_time        = 21 JUL 1998 00:00:00.000 TDB
+        source_spk_kernel = mgs_ab2.bsp
+          begin_time      = 15 FEB 1998 00:00:00.000 TDB
+          end_time        = 21 JUL 1998 00:00:00.000 TDB
+ 
+   In the following example SPKMERGE is instructed to merge only the UTC
+   times `1 Jan 1994' through `2 Jan 1994'. Since no `bodies' keyword is
+   given, all bodies will be merged. In this example a command log file is
+   also produced (see explanation below).
+ 
+      leapseconds_kernel  = /kernels/lsk/naif0003.tls
+ 
+      spk_kernel          = complete.bsp
+        log_file          = gll_early_cruise.log
+        begin_time        = 1 JAN 1994 00:00:00.000
+        end_time          = 1 JUL 1994 00:00:00.000
+        source_spk_kernel = planets.bsp
+        source_spk_kernel = gll_1.bsp
+        source_spk_kernel = gll_2.bsp
+ 
+ 
+log_file
+ 
+   If this keyword is present it instructs SPKMERGE to create a log file.
+   This keyword can only follow an `spk_kernel' assignment. A log file
+   created by SPKMERGE will contain a list of all the SPK files that were
+   used to create an SPK file, including all the times and all the bodies.
+   The log file will be in the form of a command file, so it can be used as
+   such if the need arises. An exact copy of the log file is always placed
+   in the comment area of an SPK file created by SPKMERGE. The value field
+   for this assignment can be any file name that is valid on the computer
+   being used.
+ 
+ 
+include_comments
+ 
+   If this keyword is present it can only have a value of YES or NO (upper
+   or lower case), and it can only follow a `source_spk_kernel' assignment.
+   If the value of this keyword is YES, the comment area of the source SPK
+   file named prior to this assignment is merged into the new SPK file,
+   otherwise it is not. The default action is not to merge the comment area
+   of a source SPK file.
+ 

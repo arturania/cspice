@@ -1,0 +1,937 @@
+ 
+SPICE Kernel Pool Required Reading
+===========================================================================
+ 
+   Last revised on 2009 APR 08 by B. V. Semenov.
+ 
+ 
+Abstract
+--------------------------------------------------------
+ 
+   The CSPICE kernel subsystem serves to load and unload SPICE kernel
+   files, retrieve loaded data, and directly insert data into the ``kernel
+   pool''.
+ 
+ 
+Managing Kernels
+--------------------------------------------------------
+ 
+ 
+The Generic Kernel Loader furnsh_c
+ 
+   For the SPICE system to use kernel files, the files must be made known
+   to the system and opened at run time. This activity is called
+   ``loading'' kernels. CSPICE provides a simple function interface for
+   this purpose. The principal kernel loading function is called furnsh_c
+   (pronounced ``furnish''). The kernel system also provides a small set of
+   functions that enable an application to find the names and attributes of
+   kernels that have been loaded via furnsh_c.
+ 
+   Previous versions of CSPICE loaded kernels using functions specific to
+   each kernel type: SPK, CK, PCK, IK, LSK, EK; the binary kernel systems
+   also supported a kernel unload facility. CSPICE continues to provide the
+   original kernel loaders and unloaders, but you should use furnsh_c to
+   load SPICE kernels.
+ 
+   NAIF recommends that when loading multiple kernels, rather than
+   sequential calls to furnsh_c, use a ``metakernel.'' A metakernel is a
+   SPICE text kernel that lists the names of the kernels to load. At run
+   time, the application supplies the name of the metakernel as an input
+   argument to furnsh_c. For example, instead of loading kernels using the
+   code fragment:
+ 
+      #include "SpiceUsr.h"
+           .
+           .
+           .
+      furnsh_c ( "leapseconds.ker"  );
+      furnsh_c ( "mgs.tsc"          );
+      furnsh_c ( "generic.bsp"      );
+      furnsh_c ( "mgs.bc"           );
+      furnsh_c ( "earth.bpc"        );
+      furnsh_c ( "mgs.bes"          );
+ 
+   one now may write
+ 
+      #include "SpiceUsr.h"
+           .
+           .
+           .
+      furnsh_c ( "kernels.txt" );
+ 
+ 
+   where the file kernels.txt is a SPICE text kernel containing the lines
+ 
+      \begindata
+ 
+      KERNELS_TO_LOAD = ( 'leapseconds.ker',
+                          'mgs.tsc',
+                          'generic.bsp',
+                          'mgs.bc',
+                          'earth.bpc',
+                          'mgs.bes'           )
+ 
+      \begintext
+ 
+   This technique has the advantage of enabling a user to change the set of
+   kernels loaded by the application without modifying source code.
+ 
+   It also possible to use furnsh_c to load kernels in the older CSPICE
+   style: the names of kernels to load can be supplied as input arguments
+   to furnsh_c. For example, instead of using the series of loader calls
+   shown earlier, one now may write
+ 
+      #include "SpiceUsr.h"
+           .
+           .
+           .
+ 
+      #define NKER  6
+ 
+      char  * kernels[NKER] = {  "leapseconds.ker",
+                                 "mgs.tsc",
+                                 "generic.bsp",
+                                 "mgs.bc",
+                                 "earth.bpc",
+                                 "mgs.bes"        };
+ 
+      for ( int i = 0;  i < NKER;  i++ )
+         {
+         furnsh_c ( kernels[i] );
+         }
+ 
+ 
+Kernel Priority
+ 
+   The older CSPICE loaders allow users to prioritize kernel files via load
+   order: kernels loaded later have higher priority than kernels loaded
+   earlier. furnsh_c follows the same convention. When kernels are listed
+   in a metakernel, those appearing later in the list have higher priority.
+   The old prioritization scheme also applies to kernels supplied directly
+   as arguments to furnsh_c.
+ 
+ 
+Path Symbols
+ 
+   Inside a metakernel, it is sometimes necessary to qualify file names
+   with their pathnames. To reduce both typing and the need to continue
+   file names over multiple lines, metakernels allow users to define
+   symbols for paths. This is done using the kernel variables
+ 
+      PATH_VALUES
+      PATH_SYMBOLS
+ 
+   To create symbols for path names, one assigns an array of path names to
+   the variable PATH_VALUES. Next, one assigns an array of corresponding
+   symbol names to the variable PATH_SYMBOLS. The nth symbol in the second
+   array represents the nth path name in the first.
+ 
+   Finally, one prefixes with path symbols the kernel names specified in
+   the KERNELS_TO_LOAD variable. Each symbol is prefixed with a dollar sign
+   to indicate that it is in fact a symbol.
+ 
+   Suppose in our example above that the MGS kernels reside in the path
+ 
+      /flight_projects/mgs/SPICE_kernels
+ 
+   and the other kernels reside in the path
+ 
+      /generic/SPICE_kernels
+ 
+   Then we can add paths to our metakernel as follows:
+ 
+      \begindata
+ 
+      PATH_VALUES  = ( '/flight_projects/mgs/SPICE_kernels',
+                       '/generic/SPICE_kernels'              )
+ 
+      PATH_SYMBOLS = ( 'MGS',
+                       'GEN' )
+ 
+ 
+      KERNELS_TO_LOAD = ( '$GEN/leapseconds.ker',
+                          '$MGS/mgs.tsc',
+                          '$GEN/generic.bsp',
+                          '$MGS/mgs.bc',
+                          '$GEN/earth.bpc',
+                          '$MGS/mgs.bes'           )
+ 
+      \begintext
+ 
+   It is not required that paths be abbreviated using path symbols; it's
+   simply a convenience.
+ 
+   Note the symbols defined here are not related to the symbols supported
+   by a host shell or any other operating system interface.
+ 
+ 
+Keeping Track of Loaded Kernels
+ 
+   furnsh_c maintains a record of the load operations it has performed
+   during a program run. This record is implemented using data structures
+   of fixed size, so there is a limit on the number of the maximum number
+   of loaded kernels furnsh_c can accommodate.
+ 
+   When a loaded kernel is loaded via furnsh_c, a new entry is created in
+   the record of loaded kernels, whether or not the kernel is already
+   loaded.
+ 
+   All load or unload (see the discussion of unload_c below) operations
+   affect the list of loaded files and therefore affect the results
+   returned by the routines ktotal_c, kdata_c, and kinfo_c, all of which
+   are discussed below under ``Finding Out What's Loaded.''
+ 
+ 
+Reloading Kernels
+ 
+   Reloading an already loaded kernel decreases the available space in
+   furnsh_c's list of loaded files. furnsh_c's treatment of reloaded files
+   is thus slightly different from that performed by the CSPICE low-level
+   kernel loaders, which handle a reload operation by first unloading the
+   kernel in question, then loading it.
+ 
+   The recommended method of increasing the priority of a loaded binary
+   kernel, or of a metakernel containing binary kernels, is to unload it
+   using unload_c (see below), then reload it using furnsh_c. This
+   technique helps reduce clutter in furnsh_c's kernel list.
+ 
+ 
+Load Limits
+ 
+   furnsh_c can currently keep track of up to 1300 kernels. The list of
+   loaded kernels may contain multiple entries for a given physical file,
+   so the number of maximum number of distinct loaded files may be smaller
+   if some files have been reloaded. Unloading kernels via unload_c frees
+   room in the file list, so there is no limit on the total number of load
+   or unload operations performed in a program run.
+ 
+   The DAF/DAS handle manager system imposes its own lower limit on the
+   number of DAF and DAS files that may be loaded simultaneously. This
+   limit is currently set to a total of 1000 DAF and DAS files.
+ 
+ 
+Finding Out What's Loaded
+ 
+   CSPICE-based applications may need to determine at run time which files
+   have been loaded. Applications may need to find the DAF or DAS handles
+   of loaded binary kernels so that the kernels may be searched. Some
+   applications may need to unload kernels to make room for others, or
+   change the priority of loaded kernels at run time.
+ 
+   CSPICE provides kernel access routines to support these needs. For every
+   loaded kernel, an application can find the name of kernel, the kernel
+   type (text or one of SPK, CK, PCK, or EK), the kernel's DAF or DAS
+   handle if applicable, and the name of the metakernel used to load the
+   kernel, again if applicable.
+ 
+   The function ktotal_c returns the count of loaded kernels of a given
+   type. The function kdata_c returns information on the nth kernel of a
+   given type. The two functions are normally used together. Following is
+   an example of how an application could retrieve summary information on
+   the currently loaded SPK files:
+ 
+         #include <stdio.h>
+         #include "SpiceUsr.h"
+ 
+         #define  FILLEN   128
+         #define  TYPLEN   32
+         #define  SRCLEN   128
+ 
+         SpiceInt        which;
+         SpiceInt        handle;
+ 
+         SpiceChar       file  [FILLEN];
+         SpiceChar       filtyp[TYPLEN];
+         SpiceChar       source[SRCLEN];
+ 
+         SpiceBoolean    found;
+              .
+              .
+              .
+ 
+         ktotal_c ( "spk", &count );
+ 
+         if ( count == 0 )
+            {
+            printf ( "No SPK files loaded at this time.\n" );
+            }
+         else
+            {
+            printf ( "The loaded SPK files are: \n\n" );
+            }
+ 
+         for ( which = 0;  which < count;  which++ )
+            {
+            kdata_c ( which,  "spk",    FILLEN,   TYPLEN, SRCLEN,
+                      file,   filtyp,  &source, &handle,  &found );
+            printf ( "%s\n",  file   );
+            }
+ 
+   Above, the input argument "spk" is a kernel type specifier. The allowed
+   set of values is
+ 
+      SPK  --- All SPK files are counted in the total.
+      CK   --- All CK files are counted in the total.
+      PCK  --- All binary PCK files are counted in the
+               total.
+      EK   --- All EK files are counted in the total.
+      TEXT --- All text kernels that are not meta-text
+               kernels are included in the total.
+      META --- All meta-text kernels are counted in the
+               total.
+      ALL  --- Every type of kernel is counted in the
+               total.
+ 
+   In this example, `filtyp' is a string indicating the type of kernel.
+   `handle' is the file handle if the file is a binary SPICE kernel.
+   `source' is the name of the metakernel used to load the file, if
+   applicable. `found' indicates whether a file having the specified type
+   and index was found.
+ 
+   CSPICE also contains the function kinfo_c which returns summary
+   information about a file whose name is already known. kinfo_c is called
+   as follows:
+ 
+         kinfo_c ( file,   TYPLEN, SRCLEN,
+                   filtyp, source, &handle, &found );
+ 
+ 
+Unloading Kernels
+ 
+   CSPICE-based applications may need to remove loaded kernels. Possible
+   reasons for this are:
+ 
+       --   To make room to load other kernels.
+ 
+       --   To change the priority of loaded kernel data.
+ 
+       --   To change the set of kernel data visible to CSPICE.
+ 
+   The function unload_c acts as an inverse to furnsh_c: passing a kernel
+   to unload_c undoes the effect of the last load operation performed on
+   that kernel via furnsh_c. For binary kernels that have been loaded just
+   once, the meaning of this is simple: the kernel is closed, and CSPICE
+   data structures referring to the file's contents are adjusted to reflect
+   the absence of the file.
+ 
+   Text kernels and metakernels may be unloaded as well. Unloading a
+   metakernel involves unloading the files referenced by the metakernel.
+   Text kernels are unloaded by clearing the kernel pool and then reloading
+   the other text kernels not designated for removal.
+ 
+   Note that unloading text kernels has the side effect of wiping out
+   kernel variables that have been set via the kernel pool's function write
+   access interface. It is important to consider whether this side effect
+   is acceptable when writing code that may unload text kernels or
+   metakernels.
+ 
+   unload_c is called as follows:
+ 
+         unload_c ( kernel );
+ 
+ 
+Loading of Non-native Text and Binary Kernels
+ 
+   The various platforms supported by CSPICE use different end-of-line
+   (EOL) indicators in text files:
+ 
+ 
+      Environment                  Native End-Of-Line
+                                   Indicator
+      ___________                  _____________________
+ 
+      PC DOS/Windows                <CR><LF>
+      Unix                          <LF>
+      Linux                         <LF>
+      Alpha  Digital Unix           <LF>
+      Mac OS X                      <LF>
+      Macintosh Classic (OS9)       <CR>
+ 
+ 
+   As of CSPICE N0059, the CSPICE text kernel loaders, furnsh_c and
+   ldpool_c, can read and parse non-native text files. The FORTRAN SPICELIB
+   does not include this capability.
+ 
+   Please be aware the CSPICE text file reader, rdtext_c, does not possess
+   the capability to read non-native text files.
+ 
+   Starting with the N0052 release of the SPICE Toolkit (January, 2002)
+   certain supported platforms are able to read DAF-based binary files
+   (SPK, CK and binary PCK) that were written using a different, or
+   non-native, binary representation. This access is read-only; any
+   operations requiring writing to the file (adding information to the
+   comment area, or appending additional ephemeris data, for example)
+   require prior conversion of the file to the native binary file format.
+   See the Convert User's Guide, convert.ug, for details.
+ 
+ 
+SPICE File Identification Word
+--------------------------------------------------------
+ 
+   The first few bytes of a SPICE kernel are used for the SPICE file
+   identification word. In binary and text kernels this word consists of
+   two string IDs separated by the ``/'' character. The first ID,
+   identifying the file architecture of the SPICE kernel file (``DAF'',
+   ``DAS'', ``KPL'', etc), is always three characters long. The second ID
+   identifying the file type of the SPICE kernel file (``SPK'', ``PCK'',
+   ``IK'', ``SCLK'', etc), is two to four characters long. In transfer
+   format files (see convert.ug for details) this word consists of a single
+   string ID.
+ 
+   In binary kernels the SPICE file identification word always occupies the
+   first eight bytes. If the combined length of the file architecture ID,
+   ``/'', and the file type ID is less than 8 characters, the word is
+   padded on the right to eight characters using blanks (e.g. ``DAF/SPK '',
+   ``DAS/EK '', etc). The correct file identification word is written to a
+   binary file automatically when the file is created by calling the kernel
+   type specific ``open new file'' routine -- spkopn_c for SPK files,
+   ckopn_c for CK files, etc. If a binary file is created by calling the
+   architecture specific ``open new file'' routine -- dafonw_c for DAF
+   files, dasonw_c for DAS files, etc, -- it is the caller's responsibility
+   to specify the correct kernel type in the corresponding input argument
+   of these routines to make sure the correct SPICE file identification
+   word is written to the file.
+ 
+   In text kernels the SPICE file identification word occupies the first
+   six to eight characters and is immediately followed by the end-of-line
+   terminator character(s), resulting in the identification word appearing
+   on a line by itself. If the combined length of the file architecture ID,
+   ``/'', and the file type ID is less than 8 characters, the word can but
+   does not have to be padded on the right to eight characters using blanks
+   (e.g. ``KPL/SCLK'', ``KPL/IK'', etc). Since most text kernels are
+   created manually using a text editor, it is the responsibility of the
+   person who makes the file to put the correct SPICE file identification
+   word by itself on the first line of the file.
+ 
+   In transfer format files the SPICE file identification word occupies the
+   first six characters of the file and is followed by the expanded name of
+   the format (e.g. ``DAFETF NAIF DAF ENCODED TRANSFER FILE''). The correct
+   file identification word is written to a transfer format file
+   automatically when the file is created by the SPICE utility programs
+   TOXFR or SPACIT (see toxfr.ug and spacit.ug for details).
+ 
+   This table lists the SPICE file identification words used in modern
+   SPICE kernel types:
+ 
+      Binary Kernels:
+ 
+         SPK           DAF/SPK
+         CK            DAF/CK
+         PCK           DAF/PCK
+         EK            DAS/EK
+ 
+      Text Kernels:
+ 
+         FK            KPL/FK
+         IK            KPL/IK
+         LSK           KPL/LSK
+         MK            KPL/MK
+         PCK           KPL/PCK
+         SCLK          KPL/SCLK
+ 
+      Transfer format files:
+ 
+         DAF           DAFETF
+         DAS           DASETF
+ 
+ 
+   The Toolkit includes the getfat_c routine that can be used to retrieve
+   the kernel file architecture and type encapsulated in the SPICE file
+   identification word.
+ 
+ 
+Introduction of Text Kernels and Kernel Pool
+--------------------------------------------------------
+ 
+   A variety of SPICE text kernels that are read into and accessed through
+   the kernel pool. These include:
+ 
+       --   Text PCK kernels
+ 
+       --   Leapseconds kernels
+ 
+       --   SCLK kernels
+ 
+       --   I kernels
+ 
+       --   Frame kernels
+ 
+   Do not confuse SPICE text kernels with text ``transfer'' versions of
+   SPK, CK, PCK or DAF files produced by the utilities SPACIT or TOXFR. The
+   text transfer files are not intended to be used with the kernel pool and
+   do not conform to the SPICE text kernel format.
+ 
+   The kernel pool system interface is composed of two parts: a text file
+   format and kernel pool access software. The software includes functions
+   that read files conforming to the format, routines that allow direct
+   insertion of data into the pool via function calls, functions that fetch
+   data from the kernel pool, functions that return information about the
+   current state of the pool, and utilities that manipulate various aspects
+   of the pool.
+ 
+   The SPICE text kernel format has a ``name = value'' structure similar to
+   the format used to assign values to variables in languages such as C and
+   FORTRAN. Details of the format are described below.
+ 
+   The kernel pool may be viewed abstractly as a repository of associative
+   arrays which map names to lists of numeric or string values. The kernel
+   pool allows CSPICE-based programs to read data from SPICE text kernel
+   files while maintaining the ``name = value'' associations established in
+   the files. Alternatively, associative arrays may be inserted into the
+   kernel pool via the pool's programming interface.
+ 
+   Once name-value associations have been stored in the kernel pool, you
+   may access the stored data through kernel pool look-up functions. These
+   look-up functions use the names as keys to find the associated values.
+   The look-up and other access functions are described in detail below.
+ 
+ 
+The SPICE Text Kernel File Format
+--------------------------------------------------------
+ 
+   As the name implies, SPICE text kernel files contain only ASCII text. An
+   additional restriction on the contents of SPICE text kernel files is
+   that they contain no non-printing characters, such as tabs or formfeeds.
+ 
+   We illustrate this format by way of example using an excerpt from a
+   SPICE text planetary constants kernel (PCK) file. The format description
+   given below applies to all SPICE text kernels; the specific data names
+   shown below apply only to text PCK files.
+ 
+      Planets first. Each has quadratic expressions for the direction
+      (RA, Dec) of the north pole and the rotation of the prime meridian.
+      Planets with satellites (except Pluto) also have linear expressions
+      for the auxiliary (phase) angles used in the nutation and libration
+      expressions of their satellites.
+ 
+      \begindata
+ 
+      BODY399_POLE_RA        = (    0.      -0.64061614  -0.00008386  )
+      BODY399_POLE_DEC       = (  +90.      -0.55675303  +0.00011851  )
+      BODY399_PM             = (   10.21  +360.98562970  +0.          )
+      BODY399_LONG_AXIS      = (    0.                                )
+ 
+      BODY3_NUT_PREC_ANGLES  = (  125.045    -1935.53
+                                  249.390    -3871.06
+                                  196.694  -475263.
+                                  176.630  +487269.65
+                                  358.219   -36000.    )
+ 
+      \begintext
+ 
+      Each satellite has similar quadratic expressions for the pole and
+      prime meridian. In addition, some satellites have nonzero nutation
+      and libration amplitudes. (The number of amplitudes matches the
+      number of auxiliary phase angles of the primary.)
+ 
+      \begindata
+ 
+      BODY301_POLE_RA      = (  270.000   -0.64061614  -0.00008386   )
+      BODY301_POLE_DEC     = (  +66.534   -0.55675303  +0.00011851   )
+      BODY301_PM           = (   38.314  +13.1763581    0.           )
+      BODY301_LONG_AXIS    = (    0.                                 )
+ 
+      BODY301_NUT_PREC_RA  = (  -3.878  -0.120  +0.070  -0.017   0.     )
+      BODY301_NUT_PREC_DEC = (  +1.543  +0.024  -0.028  +0.007   0.     )
+      BODY301_NUT_PREC_PM  = (  +3.558  +0.121  -0.064  +0.016  +0.025  )
+ 
+      \begintext
+ 
+      Finally, we include the radii of the satellites and planets.
+ 
+      \begindata
+ 
+      BODY399_RADII    = (     6378.140    6378.140     6356.755  )
+      BODY301_RADII    = (     1738.       1738.        1738.     )
+ 
+      \begintext
+ 
+   In this example are several comment blocks. All are introduce by the
+   control word:
+ 
+      \begintext
+ 
+   A comment block may contain any number of comment lines. Once a comment
+   block has begun, no special characters are required to introduce
+   subsequent lines of comments within that block. A comment block is
+   terminated by the control word
+ 
+      \begindata
+ 
+   This control word also serves to introduce a block of data that will be
+   stored in the kernel pool. Each of these control words must appear on a
+   line by itself.
+ 
+   Each variable definition consists of three components:
+ 
+       1.   A variable name.
+ 
+       2.   An assignment directive. This must be ``='' (direct assignment)
+            or ``+='' (incremental assignment).
+ 
+       3.   A scalar or vector value.
+ 
+   A variable name can include any printable the character except:
+ 
+       1.   `` '' (space)
+ 
+       2.   ``.'' (period)
+ 
+       3.   ``('' (open parentheses)
+ 
+       4.   ``)'' (close parentheses)
+ 
+       5.   ``=" (equal sign)
+ 
+       6.   TAB character
+ 
+   NAIF recommends you do not use a variable name with ``+' as the last
+   character.
+ 
+   Direct assignments supersede previous assignments, whereas incremental
+   assignments are added to previous assignments. For example, the series
+   of assignments
+ 
+      BODY301_NUT_PREC_RA  = -3.878
+      BODY301_NUT_PREC_RA += -0.120
+      BODY301_NUT_PREC_RA += +0.070
+      BODY301_NUT_PREC_RA += -0.017
+      BODY301_NUT_PREC_RA += 0.
+ 
+   has the same effect as the single assignment
+ 
+      BODY301_NUT_PREC_RA = (  -3.878  -0.120  +0.070  -0.017   0 )
+ 
+   Dates, e.g.,
+ 
+      FOOBAR_CALIBRATION_DATES = ( @31-JAN-1987,
+                                   @2/4/87,
+                                   @March-7-1987-3:10:39.221 )
+ 
+   may be entered in a wide variety of formats. There are two restrictions
+   regarding the format of dates. They may not contain embedded blanks, and
+   they must begin with the character
+ 
+      @
+ 
+   Internally, dates are converted to TDB seconds past J2000 as they are
+   read. As a result, dates, are treated as numeric data in the pool.
+ 
+   Strings may be supplied by quoting the string value.
+ 
+      MISSION_UNITS = ( 'KILOMETERS',
+                        'SECONDS',
+                        'KILOMETERS/SECOND' )
+ 
+   If you need to include a quote in the string value, use the FORTRAN
+   convention of "doubling" the quote.
+ 
+      MESSAGE = ( 'You can''t always get what you want.' )
+ 
+   The maximum length of as string that can be assigned as the value of a
+   scalar kernel variable, or as an element of an array-valued kernel
+   variable, is 80 characters.
+ 
+   The types of values assigned to a kernel pool variable must all be the
+   same. If you attempt to make an assignment such as the one shown here:
+ 
+      ERROR_EXAMPLE = ( 1, 2, 'THREE', 4, 'FIVE' )
+ 
+   The kernel pool reader will regard the assignment as erroneous and
+   reject it and any subsequent kernel pool assignments that appear in the
+   text kernel.
+ 
+ 
+String Continuation
+ 
+   It is possible to treat specified, consecutive components of a string
+   array as a single ``continued'' string. String continuation is indicated
+   by placing a user-specified sequence of non-blank characters at the end
+   (excluding trailing blanks) of each string value that is to be
+   concatenated to its successor. For example, if the character sequence
+ 
+      //
+ 
+   is used as a continuation mark, the assignment
+ 
+      CONTINUED_STRINGS = ( 'This //  ',
+                            'is //  ',
+                            'just //',
+                            'one long //',
+                            'string.',
+                            'Here''s a second //',
+                            'continued //'
+                            'string.'              )
+ 
+   allows the string array elements on the right hand side of the
+   assignment to be treated as the two strings
+ 
+      This is just one long string.
+      Here's a second continued string.
+ 
+   The CSPICE function stpool_c provides the capability of retrieving
+   continued strings from the kernel pool. See the discussion below under
+   ``Fetching Data from the Kernel Pool'' or the header of stpool_c for
+   further information.
+ 
+ 
+Fetching Data from the Kernel Pool
+--------------------------------------------------------
+ 
+   The values of variables stored in the kernel pool may be retrieved using
+   the functions:
+ 
+         gcpool_c   Used to fetch character data from the kernel pool.
+ 
+         gdpool_c   Used to fetch double precision data from the kernel
+                    pool.
+ 
+         gipool_c   Used to fetch integer data from the kernel pool. Note
+                    that internally, all numeric data are stored as double
+                    precision values. This interface is provided as a
+                    convenience so that users may retrieve integer data
+                    directly from the kernel pool without having worry
+                    about converting from double precision values to
+                    integers.
+ 
+         stpool_c   Used to fetch continued strings from the kernel pool.
+ 
+   The calling sequences are shown below.
+ 
+      \literal
+      gcpool_c( name, first, room,   lenout,  nvalues, values, found );
+      gdpool_c( name, first, room,   nvalues, values,  found );
+      gipool_c( name, first, room,   nvalues, values,  found );
+      stpool_c( name, nth,   contin, lenout,  string,  size,   found );
+ 
+   The meanings of the arguments are as follows:
+ 
+         `name'     is the name of the item to retrieve.
+ 
+         `first'    is the index of the first item to retrieve from the
+                    array of values associated with `name'.
+ 
+         `room'     is the number of values that may be stored in the
+                    output array `values'.
+ 
+         `lenout'   is the maximum allowed length of the output string,
+                    including the terminating null character.
+ 
+         `nvalues   is the number of items stored in `values'
+ 
+         `values'   is the output array of values associated with `name'.
+                    The data type of `values' depends upon the routine: for
+                    gcpool_c, `values' is an array of strings; for
+                    gdpool_c, `values' is an array of double precision
+                    numbers, for gipool_c, `values' is an array of
+                    integers.
+ 
+         `found'    indicates whether or not the requested data are is
+                    available in the kernel pool.
+ 
+   For the function stpool_c
+ 
+         `nth'      is the index of the continued string to fetch.
+ 
+         `contin'   is the continuation marker. This is a sequence of
+                    characters used to indicate that the next string array
+                    element is to be concatenated to the marked element.
+ 
+         `string'   is the string value whose index is given by `nth'.
+ 
+         `size'     is the number of characters in the returned string,
+                    excluding the terminating null character.
+ 
+   See the headers of these functions for a more extensive discussion of
+   their arguments and use.
+ 
+ 
+Informational Functions
+ 
+   Four routines are provided for retrieving general information about the
+   contents of the kernel pool.
+ 
+         dtpool_c        Returns information about the existence, dimension
+                         and type of kernel pool variables.
+ 
+         expool_c        Returns information on the existence of a kernel
+                         pool variable.
+ 
+         gnpool_c        Allows retrieval of names of kernel pool variables
+                         that match a string pattern.
+ 
+         szpool_c        Returns information about the size of various
+                         structures used in the implementation of the
+                         kernel pool.
+ 
+   These routines are discussed at length in their respective headers.
+ 
+ 
+Changing Kernel Pool Contents
+ 
+   The main way in which you change the contents of the kernel pool is by
+   ``loading'' a SPICE text kernel with the function furnsh_c. However, the
+   kernel pool also provides a several other routines that allow you to
+   change the contents of the pool.
+ 
+         clpool_c        clears (initializes) the kernel pool, deleting all
+                         the variables in the pool.
+ 
+         lmpool_c        Similar in effect to loading a text kernel via
+                         furnsh_c, but the text kernel is stored in an
+                         array of strings instead of an external file.
+ 
+         pcpool_c        Allows the insertion of a character variable
+                         directly into the kernel pool without supplying a
+                         text kernel.
+ 
+         pdpool_c        Allows the insertion of a double precision
+                         variable directly into the kernel pool without
+                         supplying a text kernel.
+ 
+         pipool_c        Allows the insertion of an integer variable
+                         directly into the kernel pool without supplying a
+                         text kernel.
+ 
+         dvpool_c        allows deletion of a specific variable from the
+                         kernel pool. (clpool_c deletes all variables from
+                         the kernel pool.)
+ 
+   The following code fragment shows how the data normally provided in a
+   leapseconds kernel could be loaded via lmpool_c. See the headers of the
+   other functions for specific details regarding their use.
+ 
+      #include "SpiceUsr.h"
+             .
+             .
+             .
+      #define  LNSIZE      81
+      #define  BUFSIZE     28
+ 
+      static SpiceChar     text [BUFSIZE][LNSIZE] =
+         {
+         "DELTET/DELTA_T_A =   32.184",
+         "DELTET/K         =    1.657D-3",
+         "DELTET/EB        =    1.671D-2",
+         "DELTET/M         = (  6.239996D0",
+         "                      1.99096871D-7 )",
+         "DELTET/DELTA_AT  = ( 10, @1972-JAN-1",
+         "                     11, @1972-JUL-1",
+         "                     12, @1973-JAN-1",
+         "                     13, @1974-JAN-1",
+         "                     14, @1975-JAN-1",
+         "                     15, @1976-JAN-1",
+         "                     16, @1977-JAN-1",
+         "                     17, @1978-JAN-1",
+         "                     18, @1979-JAN-1",
+         "                     19, @1980-JAN-1",
+         "                     20, @1981-JUL-1",
+         "                     21, @1982-JUL-1",
+         "                     22, @1983-JUL-1",
+         "                     23, @1985-JUL-1",
+         "                     24, @1988-JAN-1",
+         "                     25, @1990-JAN-1",
+         "                     26, @1991-JAN-1",
+         "                     27, @1992-JUL-1",
+         "                     28, @1993-JUL-1",
+         "                     29, @1994-JUL-1",
+         "                     30, @1996-JAN-1",
+         "                     31, @1997-JUL-1",
+         "                     32, @1999-JAN-1)"
+         };
+ 
+         /*
+         Add the contents of the buffer to the kernel pool:
+         */
+         lmpool_c ( text, BUFSIZE );
+ 
+ 
+Detecting Changes in the Kernel Pool
+ 
+   Since loading SPICE text kernels tends to happen only at program
+   initialization, a function that relies on data in the kernel pool may
+   run more efficiently if it can store a local copy of the values needed
+   and update these only when a change occurs in the kernel pool. Two
+   functions are available that allow a quick test to see whether kernel
+   pool variables have been updated.
+ 
+         swpool_c        Sets up a "watcher" on a variable so that various
+                         "agents" can be notified when a variable has been
+                         updated.
+ 
+         cvpool_c        Indicates whether or not an agent's variable has
+                         been updated since the last time an agent checked
+                         with the pool.
+ 
+   See the headers of these functions for details and examples of their
+   use.
+ 
+ 
+SPICE Subsystems that Rely on SPICE Text Kernels
+--------------------------------------------------------
+ 
+ 
+PCK-related Functions
+ 
+   The PCK kernel is CSPICE's source of the planetary constants needed to
+   define the size, shape, and orientation of planets and satellites. The
+   PCK text file format and functions which access PCK data are described
+   in the PCK Required Reading, pck.req.
+ 
+ 
+Time Conversion Functions
+ 
+   Routines that retrieve leapseconds or SCLK data directly from the kernel
+   pool are documented in the time.req and sclk.req Required reading files,
+   respectively.
+ 
+ 
+Frame Transformation Functions
+ 
+   See the FRAMES Required Reading, frames.req, for a discussion of frame
+   definition kernels.
+ 
+ 
+Instrument Description Functions
+ 
+   Instrument kernels specify an instrument's field-of-view, size, shape,
+   and orientation. Internal instrument timing parameters and other data
+   relating to SPICE computations might also be placed in an I-kernel. Once
+   an I-kernel containing the required keywords defining the instrument's
+   FOV is loaded, the getfov_c routine can used to retrieve the FOV
+   parameters.
+ 
+ 
+Summary of Functions
+--------------------------------------------------------
+ 
+   Each kernel pool function name consists of a mnemonic which translates
+   into a short description of the function's purpose.
+ 
+      clpool_c ( Clear the pool of kernel variables )
+      cvpool_c ( Check variable in the pool for update )
+      dtpool_c ( Data for a kernel pool variable )
+      dvpool_c ( Delete a variable from the kernel pool )
+      expool_c ( Confirm the existence of a pool kernel variable )
+      furnsh_c ( Furnish a program with SPICE kernels )
+      gcpool_c ( Get character data from the kernel pool )
+      gdpool_c ( Get d.p. values from the kernel pool )
+      getfov_c ( Get instrument FOV configuration )
+      gipool_c ( Get integers from the kernel pool )
+      gnpool_c ( Get names of kernel pool variables )
+      kdata_c  ( Kernel Data )
+      kinfo_c  ( Kernel Information )
+      ktotal_c ( Kernel Totals )
+      ldpool_c ( Load variables from a kernel file into the pool )
+      lmpool_c ( Load variables from memory into the pool )
+      pcpool_c ( Put character strings into the kernel pool )
+      pdpool_c ( Put d.p.'s into the kernel pool )
+      pipool_c ( Put integers into the kernel pool )
+      stpool_c ( String from pool )
+      swpool_c ( Set watch on a pool variable )
+      szpool_c ( Get size limitations of the kernel pool)
+      unload_c ( Unload a kernel )
+ 
+ 
+ 
+ 

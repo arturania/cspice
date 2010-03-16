@@ -1,0 +1,768 @@
+ 
+Planes Required Reading
+===========================================================================
+ 
+   Last revised on 2008 JAN 17 by B. V. Semenov.
+ 
+ 
+Abstract
+--------------------------------------------------------
+ 
+   SPICELIB contains a substantial set of subroutines that solve common
+   mathematical problems involving planes.
+ 
+ 
+Note on FORTRAN and C Versions
+--------------------------------------------------------
+ 
+   This document covers the FORTRAN version of the interfaces of this
+   subsystem. CSPICE provides f2c translated equivalents for all, and
+   native C wrappers for some of them. If you wish to use the C versions of
+   the interfaces described in this document, refer to the CSPICE Required
+   Reading, cspice.req, for more information on naming conventions,
+   locations, and usage of the f2c'ed routines and native C wrappers.
+ 
+ 
+Revisions
+--------------------------------------------------------
+ 
+   December 12, 2002.
+ 
+   Corrections were made to comments in code example that computes altitude
+   of ray above the limb of an ellipsoid. Previously, the quantity computed
+   was incorrectly described as the altitude of a ray above an ellipsoid.
+ 
+ 
+Introduction
+--------------------------------------------------------
+ 
+   In SPICELIB, the `plane' is a data type used to represent planes in
+   three-dimensional space. The purpose of the plane data type is to
+   simplify the calling sequences of geometry routines. Also, using planes
+   helps to centralize error checking and facilitate conversion between
+   different representations of planes.
+ 
+   Here's an example of how planes simplify calling sequences. Suppose that
+   you want to find the vector VOUT in plane PLANE2 whose orthogonal
+   projection onto plane PLANE1 is the vector VIN. The SPICELIB routine
+   VPRJPI can be used to find VOUT. Since VPRJPI accepts planes as
+   arguments, your subroutine call to VPRJPI looks like this:
+ 
+      CALL VPRJPI ( VIN, PLANE1, PLANE2, VOUT, FOUND )
+ 
+   If instead VPRJPI required a normal vector and scalar constant to define
+   each plane, a call to VPRJPI would look something like this:
+ 
+      CALL VPRJPI ( VIN, NORML1, CONST1, NORML2, CONST2, VOUT, FOUND )
+ 
+   And if a point and two spanning vectors were required to define each
+   plane, a call to VPRJPI would resemble the following monstrosity:
+ 
+      CALL VPRJPI ( VIN, PT1, SV11, SV12, PT2, SV21, SV22, VOUT, FOUND )
+ 
+   This example demonstrates another benefit of using planes in calling
+   sequences: you don't have to guess which arguments will be required to
+   define the plane. Does the routine expect a normal vector and a
+   constant? A normal vector and a point? A point and two spanning vectors?
+   Three points? Planes make the calling sequences of geometry routines
+   more predictable.
+ 
+   You will see later on that SPICELIB planes greatly simplify a number of
+   geometric operations that are commonly applied to planes: translating
+   planes by a constant, applying linear transformations to planes, and
+   converting between different representations of planes.
+ 
+ 
+Definition of the plane data type
+--------------------------------------------------------
+ 
+   Viewed as a user-defined data type, SPICELIB planes are arrays of double
+   precision numbers whose elements are set and interpreted by a small set
+   of access routines provided for that purpose. The elements of a SPICELIB
+   plane must not be accessed in any other way. The contents of SPICELIB
+   planes are not specified by the data type definition; instead, all
+   properties of SPICELIB planes other than the length and type of the
+   arrays used to store them are defined by the specifications of the
+   access routines. We'll discuss these routines below.
+ 
+   Arrays used as SPICELIB planes have length UBPL (`upper bound of
+   plane'). Currently, UBPL is 4. We strongly recommend declaring planes
+   with parameterized lengths as in this example:
+ 
+      INTEGER                 UBPL
+      PARAMETER             ( UBPL = 4 )
+ 
+      DOUBLE PRECISION        PLANE ( UBPL )
+ 
+   The SPICELIB routines that create planes are
+ 
+      NVC2PL  ( Normal vector and constant to plane )
+      NVP2PL  ( Normal vector and point to plane    )
+      PSV2PL  ( Point and spanning vectors to plane )
+ 
+   These routines produce SPICELIB planes from various forms of data that
+   define geometric planes; the routines are described in the next section.
+   We bring them up at this point because they actually define the SPICELIB
+   plane data type:
+ 
+      In SPICELIB, a plane is a double precision array of length UBPL
+      that is the output of one of the routines
+      NVC2PL, NVP2PL, or PSV2PL.
+ 
+   SPICELIB routines that take planes as input arguments can accept planes
+   created by any of the routines listed above.
+ 
+   The SPICELIB routines that break planes apart into data that define
+   geometric planes are
+ 
+      PL2NVC  ( Plane to normal vector and constant )
+      PL2NVP  ( Plane to normal vector and point    )
+      PL2PSV  ( Plane to point and spanning vectors )
+ 
+   The information stored in SPICELIB planes is not necessarily the input
+   information you supply to a plane-making routine. SPICELIB planes use a
+   single, uniform internal representation for planes, no matter what data
+   you use to create them. As a consequence, when you create a SPICELIB
+   plane and then break it apart into data that define a plane, the
+   returned data will not necessarily be the data you originally supplied,
+   though they define the same geometric plane as the data you originally
+   supplied.
+ 
+   This `loss of information' may seem to be a liability at first but turns
+   out to be a convenience in the end: the SPICELIB routines that break
+   apart SPICELIB planes into various representations return outputs that
+   are particularly useful for many geometric computations. In the case of
+   the routine PL2NVP (Plane to normal vector and point), the output normal
+   vector is always a unit vector, and the output point is always the
+   closest point in the plane to the origin. The normal vector points from
+   the origin toward the plane, if the plane does not contain the origin.
+ 
+   The internal structure of the plane data type is not part of its
+   specification. This structure is considered to be an implementation
+   choice and may be changed. Therefore, you should never write code that
+   takes advantange of the internal structure of planes; such code might
+   not work with future versions of SPICELIB.
+ 
+   Having said that, and recognizing that some readers will find it easier
+   to think about planes as concrete, rather than abstract objects, we'll
+   tell you what's in them. The first three elements of a SPICELIB plane
+   contain a unit normal vector; the remaining element contains a plane
+   constant corresponding to the unit normal vector. Letting N and C
+   represent a SPICELIB plane's unit normal vector and plane constant, and
+   using the notation
+ 
+      < X, Y >
+ 
+   to denote the inner product of the vectors X and Y, the relationship
+ 
+      < X, N > = C
+ 
+   holds for all vectors X in the plane. The constant C is the distance of
+   the plane from the origin in three-dimensional Euclidean space. The
+   vector
+ 
+      C * N
+ 
+   is the closest point in the plane to the origin. For planes that do not
+   contain the origin, the vector N points from the origin toward the
+   plane.
+ 
+ 
+Making planes
+--------------------------------------------------------
+ 
+   You can convert any of the following representations of planes to a
+   SPICELIB plane:
+ 
+         A normal vector      If N is a normal vector and C is a constant,
+         and a constant       then the plane is the set of points X such
+                              that
+ 
+                                 < X, N > = C.
+ 
+         A normal vector      If P is a point in the plane and N is a
+         and a point          normal vector, then the plane is the set of
+                              points X such that
+ 
+                                 < X - P,  N > = 0.
+ 
+         A point and two      If P is a point in the plane and V1 and V2
+         spanning vectors     are two linearly independent but not
+                              necessarily orthogonal vectors, then the
+                              plane is the set of points
+ 
+                                 P   +   s * V1   +   t * V2,
+ 
+                              where s and t are real numbers.
+ 
+   The calling sequences of the SPICELIB routines that create planes are
+   described below. For examples of how you might use these routines in a
+   program, see the section below `Planes in Real Life'.
+ 
+ 
+Making a plane from a normal vector and constant
+ 
+   Let N, C and PLANE be declared by
+ 
+      DOUBLE PRECISION     N     ( 3 )
+      DOUBLE PRECISION     C
+      DOUBLE PRECISION     PLANE ( UBPL )
+ 
+   After N and C have been assigned values, you can construct a SPICELIB
+   plane that represents the plane having normal N and constant C by
+   calling NVC2PL:
+ 
+      CALL NVC2PL ( N, C, PLANE )
+ 
+ 
+Making a plane from a normal vector and a point
+ 
+   Let N, P, and PLANE be declared by
+ 
+      DOUBLE PRECISION     N     ( 3 )
+      DOUBLE PRECISION     P     ( 3 )
+      DOUBLE PRECISION     PLANE ( UBPL )
+ 
+   After N and P have been assigned values, you can construct a SPICELIB
+   plane that represents the plane containing point P and having normal N
+   by calling NVP2PL:
+ 
+      CALL NVP2PL ( N, P, PLANE )
+ 
+ 
+Making a plane from a point and spanning vectors
+ 
+   Let P, V1, V2,and PLANE be declared by
+ 
+      DOUBLE PRECISION     P     ( 3 )
+      DOUBLE PRECISION     V1    ( 3 )
+      DOUBLE PRECISION     V2    ( 3 )
+      DOUBLE PRECISION     PLANE ( UBPL )
+ 
+   After P, V1, and V2 have been assigned values, you can construct a
+   SPICELIB plane that represents the plane spanned by the vectors V1 and
+   V2 and containing the point P by calling PSV2PL:
+ 
+      CALL PSV2PL ( P, V1, V2, PLANE )
+ 
+ 
+Breaking planes
+--------------------------------------------------------
+ 
+   You can `take planes apart' as well as put them together. Any SPICELIB
+   plane, regardless of which routine created it, can be converted to any
+   of the representations listed in the previous section: normal vector and
+   constant, point and normal vector, or point and spanning vectors.
+ 
+   In the following discussion, PLANE is a SPICELIB plane, N is a normal
+   vector, P is a point, C is a scalar constant, and V1 and V2 are spanning
+   vectors. We omit the declarations; all are as in the previous section.
+ 
+   To find a unit normal vector N and a plane constant C that define PLANE,
+   use PL2NVC:
+ 
+      CALL PL2NVC ( PLANE, N, C )
+ 
+   The constant C is the distance of the plane from the origin. The vector
+ 
+      C * N
+ 
+   will be the closest point in the plane to the origin.
+ 
+   To find a unit normal vector N and a point P that define PLANE, use
+   PL2NVP:
+ 
+      CALL PL2NVP ( PLANE, N, P )
+ 
+   P will be the closest point in the plane to the origin. The unit normal
+   vector N will point from the origin toward the plane.
+ 
+   To find a point P and two spanning vectors V1 and V2 that define PLANE,
+   use PL2PSV:
+ 
+      CALL PL2PSV ( PLANE, P, V1, V2 )
+ 
+   P will be the closest point in the plane to the origin. The vectors V1
+   and V2 are mutually orthogonal unit vectors and are also orthogonal to
+   P.
+ 
+   It is important to note that the xxx2PL and PL2xxx routines are not
+   exact inverses of each other. The pairs of calls
+ 
+      CALL NVC2PL ( N,      C,   PLANE )
+      CALL PL2NVC ( PLANE,  N,   C     )
+ 
+      CALL NVP2PL ( P,      N,   PLANE )
+      CALL PL2NVP ( PLANE   N,   P     )
+ 
+      CALL PSV2PL ( V1,     V2,  P     PLANE )
+      CALL PL2PSV ( PLANE,  V1,  V1    P     )
+ 
+   do not necessarily preserve the input arguments supplied to the xxx2PL
+   routines. This is because the uniform internal representation of
+   SPICELIB planes causes them to `forget' what data they were created
+   from; all sets of data that define the same geometric plane have the
+   same internal representation in SPICELIB planes.
+ 
+   In general, the routines PL2NVC, PL2NVP, and PL2PSV are used in routines
+   that accept planes as input arguments. In this role, they simplify the
+   routines that call them, because the calling routines no longer check
+   the input planes' validity.
+ 
+ 
+Planes in real life
+--------------------------------------------------------
+ 
+   This section shows how you might use the SPICELIB plane routines to
+   solve several geometry problems.
+ 
+ 
+Converting between representations of planes
+ 
+   The SPICELIB plane routines can also be used as a convenient way to
+   convert one representation of a plane to another. For example, suppose
+   that given a normal vector N and constant C defining a plane, you must
+   produce the closest point in the plane to the origin. The code fragment
+ 
+      CALL NVC2PL ( N,      C,  PLANE )
+      CALL PL2NVP ( PLANE,  N,  POINT )
+ 
+   immediately yields the answer. Some programmers would squint a bit
+   before finding the direct computation
+ 
+      CALL VSCL (  C  / ( VNORM (N) )**2,  N,  POINT  )    {Scale vector}
+ 
+   and others might squint while trying to determine whether it's correct.
+ 
+ 
+Translating planes
+ 
+   A `translation' T is a vector space mapping defined by the relation
+ 
+      T(X) = X + A   for all vectors X
+ 
+   where A is a constant vector. While it's not difficult to directly apply
+   a translation map to a plane, using SPICELIB plane routines provides the
+   convenience of automatically computing the closest point to the origin
+   in the translated plane.
+ 
+   Suppose a plane is defined by the point P and the normal vector N, and
+   you wish to translate it by the vector X. That is, you wish to find data
+   defining the plane that results from adding X to every vector in the
+   original plane. You can do this with the code fragment
+ 
+      CALL VADD   ( P,     X, P     )              {Vector addition}
+      CALL NVP2PL ( P,     N, PLANE )
+      CALL PL2NVP ( PLANE, N, P     )
+ 
+   Now, P is the closest point in the translated plane to the origin.
+ 
+ 
+Applying linear transformations to planes
+ 
+   Suppose we have a normal vector N and constant C defining a plane, and
+   we wish to apply a non-singular linear transformation T to the plane. We
+   want to find a unit normal vector and constant that define the
+   transformed plane; the constant should be the distance of the plane from
+   the origin. Let T be represented by the matrix M. We can solve the
+   problem using the following code fragment.
+ 
+      C     Make a SPICELIB plane from N and C, and then find a
+      C     point in PLANE and spanning vectors for PLANE.  N
+      C     need not be a unit vector.
+      C
+            CALL NVC2PL ( N,      C,      PLANE     )
+            CALL PL2PSV ( PLANE,  POINT,  V1,    V2 )
+ 
+      C
+      C     Apply the linear transformation to the point and
+      C     spanning vectors.  All we need to do is multiply
+      C     these vectors by M, since for any linear
+      C     transformation T,
+      C
+      C           T ( POINT   +     t1 * V1     +   t2 * V2 )
+      C
+      C        =  T (POINT)   +   t1 * T (V1)   +   t2 * T (V2),
+      C
+      C     which means that T(POINT), T(V1), and T(V2) are a
+      C     a point and spanning vectors for the transformed
+      C     plane.
+      C
+            CALL MXV ( M, POINT, TPOINT )
+            CALL MXV ( M, V1,    TV1    )
+            CALL MXV ( M, V2,    TV2    )
+ 
+      C
+      C     Make a new SPICELIB plane TPLANE from the
+      C     transformed point and spanning vectors, and find a
+      C     unit normal and constant for this new plane.
+      C
+            CALL PSV2PL ( TPOINT,   TV1,  TV2,  TPLANE )
+            CALL PL2NVC ( TPLANE,   TN,   TC           )
+ 
+   Let's see what transformation looks like without the SPICELIB plane
+   routines (you might try to derive the solution before reading on):
+ 
+      C
+      C     If Y is a point in the transformed plane, then
+      C
+      C         -1
+      C        M   Y
+      C
+      C     is a point in the original plane, so
+      C
+      C              -1
+      C        < N, M  Y >  =  C.
+      C
+      C     But
+      C
+      C              -1           T  -1
+      C        < N, M  Y >  =    N  M   Y
+      C
+      C                               -1 T     T
+      C                     =   (  ( M  )  N  )   Y
+      C
+      C                               -1 T
+      C                     =   <  ( M  )  N,  Y >
+      C
+      C     So
+      C
+      C           -1 T
+      C        ( M  )  N,  C
+      C
+      C     are, respectively, a normal vector and constant for the
+      C     transformed plane.
+      C
+            CALL INV   ( M,     MINV      )   {matrix inverse}
+            CALL MTXV  ( MINV,  N,    N   )   {matrix transpose x matrix}
+            CALL UNORM ( N,     N,    MAG )   {unitize vector, find norm}
+ 
+            IF ( C .LT. 0.D0 ) THEN
+ 
+               CALL VMINUS ( N, N )           {negate vector}
+               C = -C / MAG
+            ELSE
+               C =  C / MAG
+            END IF
+ 
+ 
+   The code is slightly shorter, but the solution is much harder to arrive
+   at. It's also harder to understand, unless it's very well commented.
+ 
+ 
+Finding the limb of an ellipsoid
+ 
+   This problem is somewhat artificial, because the SPICELIB routine EDLIMB
+   already solves this problem. Nonetheless, it is a good illustration of
+   how SPICELIB plane routines are used.
+ 
+   We'll work in body-fixed coordinates, which is to say that the ellipsoid
+   is centered at the origin and has axes aligned with the x, y and z axes.
+   Suppose that the semi-axes of the ellipsoid have lengths A, B, and C,
+   and call our observation point
+ 
+      P = ( p1, p2, p3 ).
+ 
+   Then every point
+ 
+      X = ( x1, x2, x3 )
+ 
+   on the limb satisfies
+ 
+      < P - X, N > = 0
+ 
+   where N a surface normal vector at X. In particular, the gradient vector
+ 
+            2      2      2
+      ( x1/A , x2/B , x3/C  )
+ 
+   is a surface normal, so X satisfies
+ 
+      0 = < P - X, N >
+ 
+                        2      2      2
+        = < P - X, (x1/A , x2/B , x3/C ) >
+ 
+                    2      2      2                  2      2      2
+        = < P, (x1/A , x2/B , x3/C ) >  -  < X, (x1/A , x2/B , x3/C ) >
+ 
+                 2      2      2
+        = < (p1/A , p2/B , p3/C ), X >  -  1
+ 
+   So the limb plane has normal vector
+ 
+                2      2      2
+      N = ( p1/A , p2/B , p3/C  )
+ 
+   and constant 1. We can create a SPICELIB plane representing the limb
+   with the code fragment
+ 
+      N(1) = P(1) / A**2
+      N(2) = P(2) / B**2
+      N(3) = P(3) / C**2
+ 
+      CALL NVC2PL ( N, 1.D0, PLANE )
+ 
+   The limb is the intersection of the limb plane and the ellipsoid. To
+   find the intersection, we use the SPICELIB routine INEDPL (Intersection
+   of ellipsoid and plane):
+ 
+      CALL INEDPL ( A, B, C, PLANE, ELLIPS, FOUND )
+ 
+   ELLIPS is an array that represents the limb. The array is a SPICELIB
+   `ellipse', a data type analogous to the SPICELIB plane. We can use the
+   SPICELIB routine EL2CGV (Ellipse to center and generating vectors) to
+   find the limb's center, semi-major axis, and semi-minor axis:
+ 
+      CALL EL2CGV ( ELLIPS, CENTER, SMAJOR, SMINOR )
+ 
+ 
+Altitude of a ray above the limb of an ellipsoid
+ 
+   The technique demonstrated here can be used to find the altitude of a
+   spacecraft-mounted remote sensing instrument's boresight ray above the
+   limb of a body modelled by a triaxial ellipsoid.
+ 
+   We assume that the angular separation of the boresight ray and the
+   `down' direction (the direction of the normal to the limb plane that
+   points away from the observer) is less than pi/2 radians. In practice,
+   this criterion will usually be met whenever the limb of the body is in
+   the instrument field of view.
+ 
+   For example, in the case of a camera with a field of view of eight
+   milliradians (roughly the field of view of the Galileo SSI camera and
+   slightly more than the field of view of the Voyager 2 narrow angle ISS
+   camera), this technique will work for observations of the Earth as long
+   as the limb of the Earth is in the field of view, and as long as the
+   altitude of the observer above the Earth is at least 52 meters (assuming
+   a spherical Earth with all radii equal to the equatorial radius).
+ 
+   The following subroutine demonstrates the computation.
+ 
+            SUBROUTINE RAYALT  ( TARG,   ET,  CORR,  SC,  RAYDIR,
+           .                     LNEAR,  ALT                      )
+ 
+      C
+      C     Find the altitude of an instrument boresight ray above the
+      C     limb of a specified target body, and find the nearest point
+      C     on the limb to the ray.
+      C
+            INTEGER               TARG
+            DOUBLE PRECISION      ET
+            CHARACTER*(*)         CORR
+            INTEGER               SC
+            DOUBLE PRECISION      RAYDIR ( 3 )
+            DOUBLE PRECISION      LNEAR  ( 3 )
+            DOUBLE PRECISION      ALT
+ 
+ 
+      C
+      C     SPICELIB functions
+      C
+            DOUBLE PRECISION      DPR
+ 
+      C
+      C     Local parameters
+      C
+            INTEGER               UBEL
+            PARAMETER           ( UBEL  =   9 )
+ 
+            INTEGER               UBPL
+            PARAMETER           ( UBPL  =   4 )
+ 
+      C
+      C     Local variables
+      C
+            DOUBLE PRECISION      CENTER ( 3 )
+            DOUBLE PRECISION      DIST
+            DOUBLE PRECISION      EPOCH
+            DOUBLE PRECISION      LIMB   ( UBEL )
+            DOUBLE PRECISION      NEAR   ( 3 )
+            DOUBLE PRECISION      LPLANE ( UBPL )
+            DOUBLE PRECISION      LT
+            DOUBLE PRECISION      PJLIMB ( UBEL )
+            DOUBLE PRECISION      PJPOS  ( 3 )
+            DOUBLE PRECISION      PLANE  ( UBPL )
+            DOUBLE PRECISION      SCPOS  ( 3 )
+            DOUBLE PRECISION      SMAJOR ( 3 )
+            DOUBLE PRECISION      SMINOR ( 3 )
+            DOUBLE PRECISION      RADII  ( 3 )
+            DOUBLE PRECISION      STATE  ( 6 )
+            DOUBLE PRECISION      SUBPT  ( 3 )
+            DOUBLE PRECISION      TIPM   ( 3, 3 )
+ 
+            INTEGER               N
+ 
+            LOGICAL               FOUND
+ 
+      C
+      C                  Glossary of variables
+      C
+      C
+      C       Name                            Meaning
+      C    ----------        ------------------------------------------
+      C
+      C     SC                NAIF ID code of a spacecraft.
+      C
+      C     TARG              NAIF ID code of a target body.
+      C
+      C     ET                Ephemeris time of the observation.
+      C
+      C     STATE             State (position and velocity), light-time
+      C                       corrected, of the target body as seen from
+      C                       the spacecraft at ET.
+      C
+      C     LT                Light time from target body to the
+      C                       spacecraft at ET.
+      C
+      C     SCPOS             Spacecraft position relative to the
+      C                       light-time corrected body position, in body
+      C                       centered, inertial coordinates.
+      C
+      C     TIPM              Transformation from inertial (J2000)
+      C                       coordinates to light-time corrected body
+      C                       equator and prime meridian coordinates.
+      C
+      C     RADII             Radii of the triaxial ellipsoid used to
+      C                       model the body.
+      C
+      C     RAYDIR            `Ray direction'--the instrument boresight
+      C                       vector.
+      C
+      C     LIMB              A SPICELIB ellipse that represents the
+      C                       body's limb. (This is an array of length
+      C                       9.)
+      C
+      C     LPLANE            The limb plane.
+      C
+      C     PLANE             A plane orthogonal to the vector RAYDIR.
+      C                       (This is an array of length 4.)
+      C
+      C     PJLIMB            The orthogonal projection of the limb onto
+      C                       PLANE.
+      C
+      C     PJPOS             The orthogonal projection of the
+      C                       spacecraft position onto PLANE.
+      C
+      C     NEAR              The nearest point on the projected limb
+      C                       PJLIMB to the projected vertex PJPOS.
+      C
+      C     LNEAR             The inverse orthogonal projection of PJPOS
+      C                       back to the limb plane. This is the point
+      C                       on the limb closest to the boresight ray.
+      C
+      C     ALT               The altitude of the boresight above the
+      C                       limb of the target body.
+ 
+      C
+      C
+      C     Step 1:  Find the light-time corrected position of the body
+      C              as seen from the spacecraft.  We will request the
+      C              state vector in J2000 coordinates.
+      C
+      C              Also find the light-time corrected inertial to body
+      C              equator and prime meridian transformation matrix.
+      C
+      C
+            CALL SPKEZ  ( TARG, ET, 'J2000', CORR, SC, STATE, LT )
+ 
+            CALL BODMAT ( TARG, ET-LT, TIPM )
+ 
+      C
+      C     Step 2:  Find the position of the spacecraft as seen from
+      C              the light-time corrected body position.  Convert
+      C              this position vector to equator and prime meridian
+      C              coordinates.  Also transform the boresight ray.
+      C
+            CALL VMINUS ( STATE, SCPOS          )
+            CALL MXV    ( TIPM,  SCPOS,  SCPOS  )
+            CALL MXV    ( TIPM,  RAYDIR, RAYDIR )
+ 
+      C
+      C     Step 3:  Look up the radii of the body and find the limb.
+      C              Find the limb plane as well, since we'll use it
+      C              soon.
+      C
+            CALL BODVAR ( TARG, 'RADII', N, RADII )
+ 
+            CALL EDLIMB ( RADII(1), RADII(2), RADII(3), SCPOS,  LIMB   )
+            CALL EL2CGV ( LIMB,     CENTER,   SMAJOR,   SMINOR         )
+            CALL PSV2PL (           CENTER,   SMAJOR,   SMINOR, LPLANE )
+ 
+      C
+      C     Step 4.  Create a plane that is orthogonal to the instrument
+      C              boresight vector.  Orthogonally project the limb
+      C              onto this plane.  Under this projection, every
+      C              point on the limb maps to a point that is the same
+      C              distance from the boresight as the pre-image of
+      C              that point.  The intersection of
+      C              the boresight itself with the plane is just the
+      C              orthogonal projection of the boresight ray's vertex
+      C              onto the plane.
+      C
+            CALL NVC2PL ( RAYDIR, 0.D0,   PLANE  )
+ 
+            CALL PJELPL ( LIMB,   PLANE,  PJLIMB )
+ 
+            CALL VPRJP  ( SCPOS,  PLANE,  PJPOS  )
+ 
+      C
+      C     Step 5.  Find the nearest point (NEAR) on the projected
+      C              limb to the projected vertex of the boresight
+      C              ray.  The distance between the projected ellipse
+      C              PJLIMB and the point PJPOS is the altitude of the
+      C              boresight ray above the limb.  To find the point
+      C              on the limb closest to the boresight, just find
+      C              the inverse orthogonal projection of NEAR onto the
+      C              limb plane.
+      C
+ 
+            CALL NPELPT ( PJPOS,   PJLIMB,   NEAR,    ALT           )
+ 
+            CALL VPRJPI ( NEAR,    PLANE,   LPLANE,  LNEAR,  FOUND )
+ 
+      C
+      C     If FOUND is false, the inverse projection could not be
+      C     performed.  This indicates that the limb plane is too
+      C     close to parallel to the boresight ray for this method to
+      C     work.  This problem is very unlikely to occur.
+      C
+            IF ( .NOT. FOUND ) THEN
+               CALL SETMSG ( 'Could not compute limb altitude.' )
+               CALL SIGERR ( 'SPICE(DEGENERATECASE)'            )
+               RETURN
+            END IF
+ 
+      C
+      C     LNEAR and ALT are the limb point nearest to the boresight
+      C     ray, and the altitude of the boresight ray above the limb
+      C     of the target body, respectively.
+      C
+            END
+ 
+ 
+ 
+ 
+Summary of routines
+===========================================================================
+ 
+   The following table summarizes the SPICELIB plane routines.
+ 
+         NVC2PL     (NORMAL, CONST, PLANE)   Convert a normal vector and a
+                                             constant to a plane.
+ 
+         NVP2PL     (NORMAL, POINT, PLANE)   Convert normal vector and
+                                             point to a plane.
+ 
+         PSV2PL     (POINT, V1, V2, PLANE)   Convert a point and two
+                                             spanning vectors to a plane.
+ 
+         PL2NVC     (PLANE, NORMAL, CONST)   Convert a plane to a normal
+                                             vector and a constant.
+ 
+         PL2NVP     (PLANE, NORMAL, POINT)   Convert a plane to a normal
+                                             vector and a point.
+ 
+         PL2PSV     (PLANE, POINT, V1, V2)   Convert a plane to a point and
+                                             spanning vectors.
+ 

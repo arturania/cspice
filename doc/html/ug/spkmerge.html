@@ -1,0 +1,379 @@
+<HTML>
+<HEAD>
+<TITLE> SPKMERGE User's Guide </TITLE>
+</HEAD>
+
+<BODY style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);">
+
+<A NAME="top"></A>
+
+<TABLE STYLE="text-align: left; margin-left: auto; margin-right: auto; width: 800px;" BORDER="0" CELLPADDING="5" CELLSPACING="2">
+<TBODY>
+<TR>
+  <TD STYLE="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
+  <DIV ALIGN="right">
+    <SMALL><SMALL><A HREF="index.html">Index Page</A></SMALL></SMALL>
+  </DIV>
+  <B>SPKMERGE User's Guide</B> </TD>
+</TR>
+<TR>
+  <TD STYLE="vertical-align: top;">
+
+<H2> Table of Contents
+</H2>
+
+<PRE>
+   <A HREF="#SPKMERGE User's Guide">SPKMERGE User's Guide</A>
+      <A HREF="#Abstract">Abstract</A>
+      <A HREF="#Introduction">Introduction</A>
+      <A HREF="#Running SPKMERGE">Running SPKMERGE</A>
+      <A HREF="#Command file syntax">Command file syntax</A>
+      <A HREF="#Command file keywords">Command file keywords</A>
+         <A HREF="#leapseconds_kernel">leapseconds_kernel</A>
+         <A HREF="#spk_kernel">spk_kernel</A>
+         <A HREF="#source_spk_kernel">source_spk_kernel</A>
+         <A HREF="#bodies">bodies</A>
+         <A HREF="#begin_time, end_time">begin_time, end_time</A>
+         <A HREF="#log_file">log_file</A>
+         <A HREF="#include_comments">include_comments</A>
+
+</PRE>
+
+<HR SIZE=3 NOSHADE>
+
+<BR><BR>
+<A NAME="SPKMERGE User's Guide"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> SPKMERGE User's Guide
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+   Last revised on 2001 APR 03 by F. S. Turner, C. H. Acton.
+<P>
+ 
+<BR><BR>
+<A NAME="Abstract"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Abstract
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   SPKMERGE is a program that subsets or merges one or more SPK files into
+   a single SPK file.
+<P>
+ 
+<BR><BR>
+<A NAME="Introduction"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Introduction
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   SPKMERGE builds new SPK files by merging entire or subsets of one or
+   more existing SPK files. SPKMERGE creates SPK kernels that have no
+   overlapping ephemeris; the order in which source files are specified
+   determines the precedence when source files contain overlapping data.
+<P>
+ 
+   SPKMERGE reads all its input from a command file. A command file is an
+   ASCII formatted file that you must supply.
+<P>
+ 
+<BR><BR>
+<A NAME="Running SPKMERGE"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Running SPKMERGE
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   SPKMERGE will prompt for the name of the command file when you start the
+   program. Alternately, you can name the command file as the first
+   argument on the command line.
+<P>
+ 
+<BR><BR>
+<A NAME="Command file syntax"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Command file syntax
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   Inputs are specified in a command file by using assignments. The rules
+   for forming assignments are listed here.
+<P>
+ 
+<UL>
+<TT>--</TT> An assignment must start on a line by itself. A keyword must appear first,
+followed by an equals sign, followed by a value.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Keywords are not case sensitive---they may appear in upper, lower, or mixed
+case.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Spaces and tabs are ignored, except for those embedded within values.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Values may extend over multiple lines. No continuation characters are
+necessary.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> A semi-colon signals the beginning of a comment. All characters following a
+semi-colon on a line are ignored.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Values must not exceed 300 characters.
+<BR><BR></UL>
+   In addition, there are other non-lexical rules that apply to
+   assignments:
+<P>
+ 
+<UL>
+<TT>--</TT> Some assignments must be present in the command file, while others are
+optional.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Most assignments can only follow certain other assignments.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> All assignments have restrictions on the number of times they can appear in
+the command file.
+<BR><BR></UL>
+   These rules will be discussed as the keywords are introduced.
+<P>
+ 
+<BR><BR>
+<A NAME="Command file keywords"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Command file keywords
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   A command file must contain at least these three keywords:
+<P>
+ 
+<PRE>
+   LEAPSECONDS_KERNEL
+   SPK_KERNEL
+   SOURCE_SPK_KERNEL
+</PRE>
+   The optional keywords are:
+<P>
+ 
+<PRE>
+   LOG_FILE
+   BEGIN_TIME
+   END_TIME
+   BODIES
+   INCLUDE_COMMENTS
+</PRE>
+   All the keywords are described below. Note that some keywords may appear
+   multiple times.
+<P>
+ 
+<BR><BR>
+<A NAME="leapseconds_kernel"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> leapseconds_kernel
+</H3><P><BR><BR>
+   The value of this keyword must be the name of a SPICE leapseconds kernel
+   file. This assignment must be present, and is usually the first
+   assignment in the command file. If the leapseconds kernel does not
+   reside in the current directory, remember to include the directory path
+   of the file, as shown in this example:
+<P>
+ 
+<PRE>
+   leapseconds_kernel  = /kernels/lsk/naif0004.tls
+</PRE>
+<BR><BR>
+<A NAME="spk_kernel"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> spk_kernel
+</H3><P><BR><BR>
+   The value of this keyword must be the name of the SPK file that SPKMERGE
+   is to create. After this assignment, the names of one or more source SPK
+   files must be listed by using the `source_spk_kernel' assignment.
+<P>
+ 
+   Multiple SPK files can be created by SPKMERGE by repeating this
+   assignment.
+<P>
+ 
+<BR><BR>
+<A NAME="source_spk_kernel"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> source_spk_kernel
+</H3><P><BR><BR>
+   The value of this keyword must be the name of an existing SPK file that
+   you want to merge into a new SPK file. Multiple SPK files or different
+   parts of a single SPK file can be merged into a new SPK file by
+   repeating this assignment. Before you name the files you want to merge,
+   you must have previously specified the name of a new SPK kernel by using
+   the `spk_kernel' assignment.
+<P>
+ 
+   The sample command file below instructs SPKMERGE to create one SPK file
+   by merging three existing SPK files in their entirety.
+<P>
+ 
+<PRE>
+   leapseconds_kernel  = /kernels/lsk/naif0003.tls
+ 
+   spk_kernel          = complete.bsp
+     source_spk_kernel = planets.bsp
+     source_spk_kernel = gll_1.bsp
+     source_spk_kernel = gll_2.bsp
+</PRE>
+   SPKMERGE will not create an SPK file that has overlapping data. The
+   files you list first have precedence. In the example above, source data
+   from planets.bsp will have precedence over data from gll_1.bsp, and both
+   will have precedence over gll_2.bsp.
+<P>
+ 
+<BR><BR>
+<A NAME="bodies"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> bodies
+</H3><P><BR><BR>
+   This keyword is optional. If present, it restricts which bodies are
+   merged. This keyword can appear in one of two places: after a
+   `source_spk_kernel' assignment, or before the first `source_spk_kernel'
+   assignemt. In the former case, the keyword lists the bodies that should
+   be merged from a specific source SPK file; in the latter case, the
+   keyword lists the bodies that should be merged from all source SPK files
+   that do not have specific bodies mentioned. A body listed in this
+   assignment does not have to be contained within the source SPK file(s)
+   the assignment applies to. Remember that SPKMERGE will not create a file
+   that has overlapping data, so even if an SPK kernel contains a body you
+   list, it may not necessarily be merged.
+<P>
+ 
+   The bodies must be given as NAIF integer body IDs; the IDs may be
+   delimited by spaces or commas.
+<P>
+ 
+   In the example below, only bodies 10, 399 and 301 will be merged from
+   `planets.bsp'. The other two files will be merged in their
+   entirety---assuming no overlapping data.
+<P>
+ 
+<PRE>
+   leapseconds_kernel  = /kernels/lsk/naif0003.tls
+ 
+   spk_kernel          = complete.bsp
+     source_spk_kernel = planets.bsp
+       bodies          = 10, 399, 301
+     source_spk_kernel = gll_1.bsp
+     source_spk_kernel = gll_2.bsp
+</PRE>
+   If you want to merge only bodies 10, 399, 301 and -77, the command file
+   could be structured as shown below:
+<P>
+ 
+<PRE>
+   leapseconds_kernel  = /kernels/lsk/naif0003.tls
+ 
+   spk_kernel          = complete.bsp
+     bodies            = 10, 399, 301, -77
+     source_spk_kernel = planets.bsp
+     source_spk_kernel = gll_1.bsp
+     source_spk_kernel = gll_2.bsp
+</PRE>
+<BR><BR>
+<A NAME="begin_time, end_time"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> begin_time, end_time
+</H3><P><BR><BR>
+   These two keywords operate just like the `bodies' keyword, except they
+   restrict times instead of bodies. The `end_time' keyword must
+   immediately follow the `begin_time' keyword. Together, these keywords
+   represent a time window. Multiple windows can be specified by repeating
+   these two assignments.
+<P>
+ 
+   SPKMERGE accepts many different time input formats from a variety of
+   time systems. The default input system is UTC, but one may specify
+   ephemeris time (TDB) instead. For complete details on the accepted time
+   strings see the STR2ET section of ``Time Required Reading'' (<a href="../req/time.html">time.req</a>).
+   Below are a few examples.
+<P>
+ 
+   The following illustrates utilization of the default time system, UTC.
+<P>
+ 
+<PRE>
+   leapseconds_kernel  = /kernels/lsk/naif0003.tls
+ 
+   spk_kernel          = complete.bsp
+     source_spk_kernel = planets.bsp
+       begin_time      = 1 JAN 1994 00:00:00.000
+       end_time        = 1 JUL 1994 00:00:00.000
+     source_spk_kernel = gll_1.bsp
+       begin_time      = 1 JAN 1994 00:00:00.000
+       end_time        = 1 JUL 1994 00:00:00.000
+     source_spk_kernel = gll_2.bsp
+       begin_time      = 1 JAN 1994 00:00:00.000
+       end_time        = 1 JUL 1994 00:00:00.000
+</PRE>
+   To select ephemeris time (ET, also called Time Dynamic Barycentric or
+   TDB) as the desired input time system, append TDB to the end of the time
+   string. The following example demonstrates the merging of the contents
+   of two SPK files for the period between the ephemeris times `15 Feb
+   1998' amd `21 Jul 1998'.
+<P>
+ 
+<PRE>
+   leapseconds_kernel  = /kernels/lsk/naif0003.tls
+ 
+   spk_kernel          = complete.bsp
+     source_spk_kernel = planets.bsp
+       begin_time      = 15 FEB 1998 00:00:00.000 TDB
+       end_time        = 21 JUL 1998 00:00:00.000 TDB
+     source_spk_kernel = mgs_ab2.bsp
+       begin_time      = 15 FEB 1998 00:00:00.000 TDB
+       end_time        = 21 JUL 1998 00:00:00.000 TDB
+</PRE>
+   In the following example SPKMERGE is instructed to merge only the UTC
+   times `1 Jan 1994' through `2 Jan 1994'. Since no `bodies' keyword is
+   given, all bodies will be merged. In this example a command log file is
+   also produced (see explanation below).
+<P>
+ 
+<PRE>
+   leapseconds_kernel  = /kernels/lsk/naif0003.tls
+ 
+   spk_kernel          = complete.bsp
+     log_file          = gll_early_cruise.log
+     begin_time        = 1 JAN 1994 00:00:00.000
+     end_time          = 1 JUL 1994 00:00:00.000
+     source_spk_kernel = planets.bsp
+     source_spk_kernel = gll_1.bsp
+     source_spk_kernel = gll_2.bsp
+</PRE>
+<BR><BR>
+<A NAME="log_file"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> log_file
+</H3><P><BR><BR>
+   If this keyword is present it instructs SPKMERGE to create a log file.
+   This keyword can only follow an `spk_kernel' assignment. A log file
+   created by SPKMERGE will contain a list of all the SPK files that were
+   used to create an SPK file, including all the times and all the bodies.
+   The log file will be in the form of a command file, so it can be used as
+   such if the need arises. An exact copy of the log file is always placed
+   in the comment area of an SPK file created by SPKMERGE. The value field
+   for this assignment can be any file name that is valid on the computer
+   being used.
+<P>
+ 
+<BR><BR>
+<A NAME="include_comments"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> include_comments
+</H3><P><BR><BR>
+   If this keyword is present it can only have a value of YES or NO (upper
+   or lower case), and it can only follow a `source_spk_kernel' assignment.
+   If the value of this keyword is YES, the comment area of the source SPK
+   file named prior to this assignment is merged into the new SPK file,
+   otherwise it is not. The default action is not to merge the comment area
+   of a source SPK file.
+<P>
+ 
+
+</TD>
+</TR>
+</TBODY>
+</TABLE>
+
+</BODY>
+
+</HTML>
