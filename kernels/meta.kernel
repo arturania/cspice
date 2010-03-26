@@ -1,0 +1,16 @@
+\begindata
+
+PATH_VALUES     = ( 'cspice/kernels/lsk',
+                    'cspice/kernels/spk',
+                    'cspice/kernels/pck' )
+ 
+PATH_SYMBOLS    = ( 'LSK', 'SPK', 'PCK' )
+ 
+KERNELS_TO_LOAD = ( '$LSK/naif0009.tls',
+                    '$SPK/asteroids/chiron.bsp',
+                    '$SPK/de421.bsp',
+                    '$PCK/pck00009.tpc',
+                    '$PCK/earth_predict.bpc',
+                    '$PCK/earth_long.bpc',
+                    '$PCK/earth_short.bpc' )
+\begintext
