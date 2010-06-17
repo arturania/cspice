@@ -153,6 +153,10 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.0.3, 18-MAY-2010 (BVS) */
+
+/*        Removed "C$" marker from text in the header. */
+
 /* -    SPICELIB Version 2.0.2, 20-NOV-2004  (NJB) */
 
 /*        Updated description of input argument REF to indicate all */
@@ -160,7 +164,7 @@
 
 /* -    SPICELIB Version 2.0.1, 24-JUN-1999  (WLT) */
 
-/*        Corrected code in C$ Examples section of the headers */
+/*        Corrected code in Examples section of the headers */
 
 /* -    SPICELIB Version 2.0.0, 19-SEP-1995  (WLT) */
 

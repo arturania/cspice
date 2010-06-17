@@ -90,6 +90,14 @@
 
    None.
 
+-Exceptions
+
+   Error free.
+
+-Files
+
+   None.
+
 -Particulars
 
    None.
@@ -122,13 +130,10 @@
    1) If the requested item is not found, the error
       SPICE(KERNELVARNOTFOUND) is signalled.
 
--Exceptions
+-Literature_References
 
-   Error free.
-
--Files
-
-   None.
+   1) Refer to the SPK required reading file for a complete list of
+      the NAIF integer ID codes for bodies.
 
 -Author_and_Institution
 
@@ -136,12 +141,11 @@
    I.M. Underwood  (JPL)
    E.D. Wright     (JPL)
 
--Literature_References
-
-   1) Refer to the SPK required reading file for a complete list of
-      the NAIF integer ID codes for bodies.
-
 -Version
+
+   -CSPICE Version 2.0.4, 19-MAY-2010 (BVS)
+
+       Index lines now states that this routine is deprecated.
 
    -CSPICE Version 2.0.3, 27-OCT-2005 (NJB)
 
@@ -167,8 +171,8 @@
 
 -Index_Entries
 
-   fetch constants for a body from the kernel pool
-   physical constants for a body
+   DEPRECATED fetch constants for a body from the kernel pool
+   DEPRECATED physical constants for a body
 
 -&
 */

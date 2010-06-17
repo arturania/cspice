@@ -142,25 +142,33 @@
 
 -Particulars
 
-   bods2c_c is one of four related routines,
+   bods2c_c is one of five related subroutines,
 
       bods2c_c      Body string to code
+      bodc2s_c      Body code to string
       bodn2c_c      Body name to code
       bodc2n_c      Body code to name
       boddef_c      Body name/code definition
 
-   bods2c_c, bodn2c_c, and bodc2n_c perform translations between body
-   names and their corresponding integer ID codes which are used in
-   SPICE files and routines.
+   bods2c_c, bodc2s_c, bodn2c_c, and bodc2n_c perform translations between 
+   body names and their corresponding integer ID codes which are 
+   used in SPICE files and routines.
 
-   bods2c_c is a slightly more general version of bodn2c_c:  support
+   bods2c_c is a slightly more general version of bodn2c_c: support
    for strings containing ID codes in string format enables a caller
    to identify a body using a string, even when no name is
    associated with that body.
 
-   See NAIF_IDs for the list of name/code associations built into
-   SPICE, and for details concerning adding new name/code associations
-   at run time by loading text kernels.
+   bodc2s_c is a general version of bodc2n_c; the routine returns either
+   the name assigned in the body ID to name mapping or a string
+   representation of the CODE value if no mapping exists.
+
+   boddef_c assigns a body name to ID mapping. The mapping has priority 
+   in name-to-ID and ID-to-name translations.
+
+   Refer to NAIF_IDs for the list of name/code associations built into
+   SPICE, and for details concerning adding new name/code
+   associations at run time by loading text kernels.
 
 -Examples
 
@@ -173,8 +181,6 @@
           bods2c_c ( "JUPITER", &jupid, &found );
 
           bodeul_  ( &jupid, &et, &ra, &dec, &w, &lambda );
-          
-
 
    2.  In this example, we assume that only the set of default 
        name/code pairs has been defined.
@@ -228,6 +234,10 @@
    B.V. Semenov    (JPL)
 
 -Version
+
+   -CSPICE Version 1.0.2, 16-MAY-2009 (EDW) 
+
+       Edit to Particulars section to document the bodc2s_c routine.
 
    -CSPICE Version 1.0.1, 27-FEB-2008 (BVS)
 

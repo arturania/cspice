@@ -5,7 +5,7 @@
 
 #include "f2c.h"
 
-/* $Procedure      DVHAT ( Derivative and unit vector "V-hat" of a state) */
+/* $Procedure DVHAT ( Derivative and unit vector "V-hat" of a state) */
 /* Subroutine */ int dvhat_(doublereal *s1, doublereal *sout)
 {
     /* System generated locals */
@@ -56,6 +56,7 @@
 
 /*     VECTOR */
 /*     DERIVATIVE */
+/*     MATH */
 
 /* $ Declarations */
 /* $ Brief_I/O */
@@ -83,10 +84,6 @@
 
 /*     None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     Error free. */
@@ -95,6 +92,10 @@
 /*        component of SOUT will also be the zero vector.  The */
 /*        velocity component will be the velocity component */
 /*        of S1. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -106,23 +107,90 @@
 
 /* $ Examples */
 
-/*     Suppose that STATE gives the apparent state of a body with */
-/*     respect to an observer.  This routine can be used to compute the */
-/*     instantaneous angular rate of the object across the sky as seen */
-/*     from the observers vantage. */
+/*   Any numerical results shown for this example may differ between */
+/*   platforms as the results depend on the SPICE kernels used as input */
+/*   and the machine specific arithmetic implementation. */
 
-/*        INTEGER               POS */
-/*        PARAMETER           ( POS = 1 ) */
+/*   Suppose that STATE gives the apparent state of a body with */
+/*   respect to an observer.  This routine can be used to compute the */
+/*   instantaneous angular rate of the object across the sky as seen */
+/*   from the observers vantage. */
 
-/*        INTEGER               VEL */
-/*        PARAMETER           ( VEL = 4 ) */
+/*           PROGRAM DVHAT_T */
+/*           IMPLICIT NONE */
 
-/*        CALL DVHAT ( STATE, USTATE ) */
+/*           DOUBLE PRECISION      ET */
+/*           DOUBLE PRECISION      LT */
+/*           DOUBLE PRECISION      OMEGA */
+/*           DOUBLE PRECISION      STATE  (6) */
+/*           DOUBLE PRECISION      USTATE (6) */
 
-/*        ANGULAR_RATE = VNORM ( USTATE(VEL) ) */
+/*           DOUBLE PRECISION      VNORM */
 
+/*           CHARACTER*(32)        EPOCH */
+/*           CHARACTER*(32)        TARGET */
+/*           CHARACTER*(32)        FRAME */
+/*           CHARACTER*(32)        ABCORR */
+/*           CHARACTER*(32)        OBSRVR */
+
+/*     C */
+/*     C     Load SPK, PCK, and LSK kernels, use a meta kernel for */
+/*     C     convenience. */
+/*     C */
+/*           CALL FURNSH ( 'standard.tm' ) */
+
+/*     C */
+/*     C     Define an arbitrary epoch, convert the epoch to ephemeris */
+/*     C     time. */
+/*     C */
+/*           EPOCH = 'Jan 1 2009' */
+/*           CALL STR2ET ( EPOCH, ET ) */
+
+/*     C */
+/*     C     Calculate the state of the moon with respect to the */
+/*     C     earth-moon barycenter in J2000, corrected for light time */
+/*     C     and stellar aberration at ET. */
+/*     C */
+/*           TARGET   = 'MOON' */
+/*           FRAME    = 'J2000' */
+/*           ABCORR   = 'LT+S' */
+/*           OBSRVR   = 'EARTH BARYCENTER' */
+
+/*           CALL SPKEZR ( TARGET, ET, FRAME, ABCORR, OBSRVR, STATE, LT ) */
+
+/*     C */
+/*     C     Calculate the unit vector of STATE and the derivative of the */
+/*     C     unit vector. */
+/*     C */
+/*           CALL DVHAT ( STATE, USTATE ) */
+
+/*     C */
+/*     C     Calculate the instantaneous angular velocity from the */
+/*     C     magnitude of the derivative of the unit vector. */
+/*     C */
+/*     C          v = r x omega */
+/*     C */
+/*     C          ||omega|| = ||v||  for  r . v = 0 */
+/*     C                      ----- */
+/*     C                      ||r|| */
+/*     C */
+/*     C          ||omega|| = ||v||  for  ||r|| = 1 */
+/*     C */
+/*           OMEGA = VNORM( USTATE(4) ) */
+
+/*           WRITE(*,*) 'Instantaneous angular velocity, rad/sec', OMEGA */
+
+/*           END */
+
+/*   The program outputs: */
+
+/*       Instantaneous angular velocity, rad/sec  2.48106658E-06 */
 
 /* $ Restrictions */
+
+/*     None. */
+
+/* $ Literature_References */
 
 /*     None. */
 
@@ -131,11 +199,15 @@
 /*     N.J. Bachman    (JPL) */
 /*     W.L. Taber      (JPL) */
 
-/* $ Literature_References */
-
-/*     None. */
-
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.1, 06-MAY-2010 (EDW) */
+
+/*        Expanded the code example into a complete program. */
+
+/*        Reordered header sections to proper NAIF convention. */
+/*        Removed Revision section, it listed a duplication of a */
+/*        Version section entry. */
 
 /* -    SPICELIB Version 1.1.0, 02-SEP-2005 (NJB) */
 
@@ -148,15 +220,6 @@
 /* $ Index_Entries */
 
 /*     State of a unit vector parallel to a state vector */
-
-/* -& */
-
-/* $ Revisions */
-
-/* -    SPICELIB Version 1.1.0, 02-SEP-2005 (NJB) */
-
-/*        Updated to remove non-standard use of duplicate arguments */
-/*        in VPERP and VSCL calls. */
 
 /* -& */
 

@@ -12,9 +12,9 @@ static integer c__7 = 7;
 static integer c__0 = 0;
 static logical c_true = TRUE_;
 
-/* $Procedure ZZGFREL ( Geometric Relation Finder ) */
+/* $Procedure ZZGFREL ( Private --- GF, geometric relation finder ) */
 /* Subroutine */ int zzgfrel_(U_fp udstep, U_fp udrefn, U_fp udqdec, U_fp 
-	udcond, S_fp udqget, S_fp udqref, char *relate, doublereal *refval, 
+	udcond, S_fp udfunc, S_fp udqref, char *relate, doublereal *refval, 
 	doublereal *tol, doublereal *adjust, doublereal *cnfine, integer *mw, 
 	integer *nw, doublereal *work, logical *rpt, S_fp udrepi, U_fp udrepu,
 	 S_fp udrepf, char *rptpre, char *rptsuf, logical *bail, L_fp udbail, 
@@ -97,6 +97,9 @@ static logical c_true = TRUE_;
 /*     geometric quantity related to one or more objects and an observer */
 /*     satisfies a user specified constraint within time intervals */
 /*     specified by the window CNFINE. */
+
+/*     Sister routine to ZZGFRELX. Copy any edits to ZZGFREL or ZZGFRELX */
+/*     to the sister routine. */
 
 /* $ Disclaimer */
 
@@ -192,6 +195,11 @@ static logical c_true = TRUE_;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+
+/*       Added NWRR parameter. */
+/*       Added NWUDS parameter. */
+
 /* -    SPICELIB Version 1.0.0, 21-FEB-2009 (NJB) (LSE) (EDW) */
 
 /* -& */
@@ -227,6 +235,14 @@ static logical c_true = TRUE_;
 
 /*     Callers of GFSEP should declare their workspace window */
 /*     count using NWSEP. */
+
+
+/*     Callers of GFRR should declare their workspace window */
+/*     count using NWRR. */
+
+
+/*     Callers of GFUDS should declare their workspace window */
+/*     count using NWUDS. */
 
 
 /*     ADDWIN is a parameter used to expand each interval of the search */
@@ -284,14 +300,14 @@ static logical c_true = TRUE_;
 /*                    time step. */
 /*     UDREFN     I   Name of the routine that computes a refined time. */
 /*     UDQDEC     I   Name of the routine that computes whether the */
-/*                    current state is decreasing. */
-/*     UDCOND     I   Name of the routine that computes the current state */
+/*                    geometric quantity is decreasing. */
+/*     UDCOND     I   Name of the routine that computes the geometric */
 /*                    condition with-respect-to the constraint. */
-/*     UDQGET     I   Name of the routine that computes the value of */
-/*                    the current state. */
+/*     UDFUNC     I   The routine that computes the geometric quantity of */
+/*                    interest. */
 /*     UDQREF     I   Name of the routine that resets the current value */
 /*                    of REFVAL. */
-/*     RELATE         I   Operator that either looks for an extreme value */
+/*     RELATE     I   Operator that either looks for an extreme value */
 /*                    (max, min, local, absolute) or compares the */
 /*                    geometric quantity value and a number. */
 /*     REFVAL     I   Value used as reference for geometric quantity */
@@ -316,12 +332,12 @@ static logical c_true = TRUE_;
 
 /* $ Detailed_Input */
 
-/*     UDSTEP     is an externally specified routine that computes a */
-/*                time step in an attempt to find a transition of the */
-/*                state of the specified coordinate. In the context */
-/*                of this routine's algorithm, a "state transition" */
-/*                occurs where the coordinate value changes from */
-/*                "decreasing" to "not decreasing" or vice versa. */
+/*     UDSTEP     the routine that computes a time step in an attempt to */
+/*                find a transition of the state of the specified */
+/*                coordinate. In the context of this routine's algorithm, */
+/*                a "state transition" occurs where the coordinate value */
+/*                changes from "decreasing" to "not decreasing" or vice */
+/*                versa. */
 
 /*                This routine relies on UDSTEP returning step sizes */
 /*                small enough so that state transitions within the */
@@ -351,11 +367,10 @@ static logical c_true = TRUE_;
 /*                If a constant step size is desired, the routine */
 /*                GFSTEP may be used. This is the default option. */
 
-/*     UDREFN     is the name of the externally specified routine that */
-/*                computes a refinement in the times that bracket a */
-/*                transition point. In other words, once a pair of */
-/*                times have been detected such that the system is in */
-/*                different states at each of the two times, UDREFN */
+/*     UDREFN     the routine that computes a refinement in the times */
+/*                that bracket a transition point. In other words, once */
+/*                a pair of times have been detected such that the system */
+/*                is in different states at each of the two times, UDREFN */
 /*                selects an intermediate time which should be closer to */
 /*                the transition state than one of the two known times. */
 /*                The calling sequence for UDREFN is: */
@@ -364,96 +379,90 @@ static logical c_true = TRUE_;
 
 /*                where the inputs are: */
 
-/*                   T1    is a time when the system is in state S1. T1 */
-/*                         is a DOUBLE PRECISION number. */
+/*                   T1    a time when the system is in state S1. */
 
-/*                   T2    is a time when the system is in state S2. T2 */
-/*                         is a DOUBLE PRECISION number and is assumed */
-/*                         to be larger than T1. */
+/*                   T2    a time when the system is in state S2. T2 */
+/*                         is assumed to be larger than T1. */
 
-/*                   S1    is the state of the system at time T1. */
-/*                         S1 is a LOGICAL value. */
+/*                   S1    a logical indicating the state of the system */
+/*                         at time T1. */
 
-/*                   S2    is the state of the system at time T2. */
-/*                         S2 is a LOGICAL value. */
+/*                   S2    a logical indicating the state of the system */
+/*                         at time T2. */
 
 /*                UDREFN may use or ignore the S1 and S2 values. */
 
 /*                The output is: */
 
-/*                   T     is next time to check for a state transition. */
-/*                         T is a DOUBLE PRECISION number between T1 and */
-/*                         T2. */
+/*                   T     a time to check for a state transition */
+/*                         between T1 and T2. */
 
 /*                If a simple bisection method is desired, the routine */
 /*                GFREFN may be used. This is the default option. */
 
-/*     UDQDEC     the name of externally specified routines that */
-/*                determine whether the geometric quantity is in */
-/*                a state of decreasing value. */
+/*     UDQDEC     the routine that determines if the geometric quantity */
+/*                is decreasing. */
 
 /*                The calling sequence: */
 
-/*                CALL UDQDEC ( TIME, STATE) */
+/*                   CALL UDQDEC ( ET, ISDECR ) */
 
-/*                TIME    is a DOUBLE PRECISION number representing */
-/*                        the time at which one wishes to determine */
-/*                        the state. */
+/*                where: */
 
-/*                STATE   is a LOGICAL variable indicating whether */
-/*                        or not the system is in the state of interest. */
-/*                        STATE is returned as .TRUE. if the system is */
-/*                        in the state of interest otherwise it is */
-/*                        returned as .FALSE. NO ERROR CHECKING is */
-/*                        performed on the value of STATE. */
+/*                   ET       a double precision value representing */
+/*                            ephemeris time, expressed as seconds past */
+/*                            J2000 TDB, at which to determine the time */
+/*                            derivative of the geometric quantity. */
 
-/*     UDCOND     the name of the EXTERNAL routine that determines if the */
-/*                system state at TIME satisfies some constraint */
-/*                condition. Use this function to identify a REFVAL */
-/*                crossing, normally set IN_CON to .TRUE. for some */
-/*                value < REFVAL. */
+/*                   ISDECR   a logical return indicating whether */
+/*                            or not the geometric quantity */
+/*                            is decreasing. ISDECR returns true if the */
+/*                            time derivative of the geometric quantity */
+/*                            at ET is negative. */
+
+/*     UDCOND     the routine that determines if the geometric quantity */
+/*                satisfies some constraint condition at epoch ET. */
 
 /*                The calling sequence: */
 
-/*                CALL UDCOND ( ET, IN_CON ) */
+/*                   CALL UDCOND ( ET, IN_CON ) */
 
 /*                where: */
 
-/*                ET       an input DOUBLE PRECISION value representing */
-/*                         the ephemeris time at which to evaluate */
-/*                         the state. */
+/*                   ET       a double precision value representing */
+/*                            ephemeris time, expressed as seconds past */
+/*                            J2000 TDB, at which to evaluate the */
+/*                            geometric quantity. */
 
-/*                IN_CON   an output LOGICAL value indicating whether */
-/*                         or not the system is in the state of interest */
-/*                         at ET. IN_CON returns as .TRUE. if the system */
-/*                         is in the state of interest otherwise it */
-/*                         returns as .FALSE. */
+/*                   IN_CON   a logical value indicating whether or */
+/*                            not the geometric quantity satisfies the */
+/*                            constraint at ET (TRUE) or not (FALSE). */
 
-/*     UDQGET     is the name of the externally specified routine that */
-/*                returns the value of the geometric quantity at the */
-/*                time of interest. The calling sequence for UDQGET is: */
+/*     UDFUNC     the routine that returns the value of the geometric */
+/*                quantity at the time of interest. The calling sequence */
+/*                for UDFUNC is: */
 
-/*                CALL UDQGET ( TIME, VALUE ) */
+/*                   CALL UDFUNC ( TIME, VALUE ) */
 
 /*                where: */
 
-/*                TIME    is a DOUBLE PRECISION number representing */
-/*                        the time at which one wishes to determine */
-/*                        the value of the state. */
+/*                   TIME    a double precision value representing */
+/*                           ephemeris time, expressed as seconds past */
+/*                           J2000 TDB, at which  to determine */
+/*                           the value of the geometric quantity. */
 
-/*                VALUE   is the value of the geometric quantity at */
-/*                        time TIME. */
+/*                   VALUE   is the value of the geometric quantity at */
+/*                           time TIME. */
 
-/*     UDQREF     is the name of the externally specified routine that */
-/*                resets the current value of REFVAL. The calling */
-/*                sequence for UDQREF is: */
+/*     UDQREF     the routine that resets the current value of REFVAL. */
+/*                The calling sequence for UDQREF is: */
 
-/*                CALL UDQREF ( REFER2 ) */
+/*                   CALL UDQREF ( REFER2 ) */
 
 /*                where REFER2 is a new value of REFVAL. */
 
-/*     RELATE     is a comparison operator, indicating the */
-/*                numeric constraint of interest. Values are: */
+/*     RELATE     is a comparison operator, indicating the numeric */
+/*                constraint of interest. Values are: */
 
 /*                '>'   value of geometric quantity greater than some */
 /*                      reference (REFVAL). */
@@ -473,7 +482,6 @@ static logical c_true = TRUE_;
 /*                LOCMAX-the geometric quantity is at an local maximum. */
 
 /*                LOCMIN-the geometric quantity is at an local minimum. */
-
 
 /*     REFVAL     Reference value for geometric quantity (in */
 /*                radians, radians/sec, km, or km/sec as appropriate). */
@@ -509,10 +517,10 @@ static logical c_true = TRUE_;
 /*                progress reporter is on or off. The progress reporter */
 /*                writes to the user's terminal. */
 
-/*     UDREPI     is a user-defined subroutine that initializes a */
-/*                progress report.  When progress reporting is */
-/*                enabled, UDREPI is called at the start */
-/*                of a search.  The calling sequence of UDREPI is */
+/*     UDREPI     the routine that initializes a progress report. */
+/*                When progress reporting is enabled, UDREPI */
+/*                is called at the start of a search.  The calling */
+/*                sequence of UDREPI is: */
 
 /*                   UDREPI ( CNFINE, RPTPRE, RPTSUF ) */
 
@@ -524,7 +532,7 @@ static logical c_true = TRUE_;
 
 /*                   CNFINE */
 
-/*                is the confinement window passed into ZZGFREL, and */
+/*                is the confinement window passed into ZZGFRELX, and */
 
 /*                   RPTPRE */
 /*                   RPTSUF */
@@ -537,9 +545,8 @@ static logical c_true = TRUE_;
 /*                routine, the SPICELIB routine GFRPIN may be used. This */
 /*                is the default option. */
 
-/*     UDREPU     is a user-defined subroutine that updates the */
-/*                progress report for a search.  The calling sequence */
-/*                of UDREPU is */
+/*     UDREPU     the routine that updates the progress report for a */
+/*                search.  The calling sequence of UDREPU is: */
 
 /*                   UDREPU (IVBEG, IVEND, ET ) */
 
@@ -560,8 +567,8 @@ static logical c_true = TRUE_;
 /*                the SPICELIB routine GFRPUD may be used. This is the */
 /*                default option. */
 
-/*     UDREPF     is a user-defined subroutine that finalizes a */
-/*                progress report.  UDREPF has no arguments. */
+/*     UDREPF     the routine that finalizes a progress report. UDREPF */
+/*                has no arguments. */
 
 /*                If the user has no progress reporting finalizing */
 /*                routine, the SPICELIB routine GFRPEN may be used. This */
@@ -601,15 +608,13 @@ static logical c_true = TRUE_;
 
 /*                   'Distance pass I of 2 xxx.xx% done.' */
 
-
 /*     BAIL       is a logical indicating whether or not interrupt */
 /*                signaling is enabled. */
 
-/*     UDBAIL     is the name of a user defined logical function that */
-/*                checks to see whether an interrupt signal has been */
-/*                issued from, e.g. the keyboard. If this capability is */
-/*                not to be used, a dummy function, zzgfbail must be */
-/*                supplied. */
+/*     UDBAIL     the routine that checks to see whether an interrupt */
+/*                signal has been issued from, e.g. the keyboard. If */
+/*                this capability is not to be used, a dummy function, */
+/*                ZZGFBAIL must be supplied. */
 
 /*     RESULT     is an initialized SPICE window. RESULT is large */
 /*                enough to hold all of the intervals, within the */
@@ -699,7 +704,11 @@ static logical c_true = TRUE_;
 
 /* $ Version */
 
-/* -    SPICELIB Version 1.0.0 06-MAR-2009 (NJB) (LSE) (WLT) (IMU) (EDW) */
+/* -    SPICELIB Version 1.0.1  21-DEC-2009 (EDW) */
+
+/*        Edit to Abstract to document sister routine ZZGFRELX. */
+
+/* -    SPICELIB Version 1.0.0  21-FEB-2009 (NJB) (LSE) (WLT) (IMU) (EDW) */
 
 /* -& */
 /* $ Index_Entries */
@@ -840,19 +849,19 @@ static logical c_true = TRUE_;
 
     ssized_(mw, &work[(i__1 = (work_dim1 << 1) - 5 - work_offset) < work_dim1 
 	    * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfrel_",
-	     (ftnlen)773)]);
+	     (ftnlen)769)]);
     ssized_(mw, &work[(i__1 = work_dim1 - 5 - work_offset) < work_dim1 * 
 	    work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfrel_", (
-	    ftnlen)774)]);
+	    ftnlen)770)]);
     ssized_(mw, &work[(i__1 = work_dim1 * 3 - 5 - work_offset) < work_dim1 * 
 	    work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfrel_", (
-	    ftnlen)775)]);
+	    ftnlen)771)]);
     ssized_(mw, &work[(i__1 = (work_dim1 << 2) - 5 - work_offset) < work_dim1 
 	    * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfrel_",
-	     (ftnlen)776)]);
+	     (ftnlen)772)]);
     ssized_(mw, &work[(i__1 = work_dim1 * 5 - 5 - work_offset) < work_dim1 * 
 	    work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfrel_", (
-	    ftnlen)777)]);
+	    ftnlen)773)]);
     name__[0] = 2;
     name__[1] = 1;
     if (failed_()) {
@@ -875,10 +884,10 @@ static logical c_true = TRUE_;
     }
     copyd_(cnfine, &work[(i__1 = work_dim1 * 3 - 5 - work_offset) < work_dim1 
 	    * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfrel_",
-	     (ftnlen)803)]);
+	     (ftnlen)799)]);
     wnexpd_(&addl, &addr__, &work[(i__1 = work_dim1 * 3 - 5 - work_offset) < 
 	    work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, 
-	    "zzgfrel_", (ftnlen)804)]);
+	    "zzgfrel_", (ftnlen)800)]);
     if (failed_()) {
 	chkout_("ZZGFREL", (ftnlen)7);
 	return 0;
@@ -897,7 +906,7 @@ static logical c_true = TRUE_;
     if (*rpt) {
 	(*udrepi)(&work[(i__1 = work_dim1 * 3 - 5 - work_offset) < work_dim1 *
 		 work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfr"
-		"el_", (ftnlen)825)], rptpre + (pass - 1) * rptpre_len, rptsuf 
+		"el_", (ftnlen)821)], rptpre + (pass - 1) * rptpre_len, rptsuf 
 		+ (pass - 1) * rptsuf_len, rptpre_len, rptsuf_len);
     }
 
@@ -905,9 +914,9 @@ static logical c_true = TRUE_;
 
     count = wncard_(&work[(i__1 = work_dim1 * 3 - 5 - work_offset) < 
 	    work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, 
-	    "zzgfrel_", (ftnlen)831)]);
+	    "zzgfrel_", (ftnlen)827)]);
 
-/*     Start the schedule that contains intervals when the quantity of */
+/*     Start the window that contains intervals when the quantity of */
 /*     interest is decreasing. The result will contain all intervals in */
 /*     (expanded) CNFINE when the selected geometric quantity function */
 /*     is decreasing, since this is how ZZGFSOLV is configured. */
@@ -920,12 +929,12 @@ static logical c_true = TRUE_;
 
 	wnfetd_(&work[(i__2 = work_dim1 * 3 - 5 - work_offset) < work_dim1 * 
 		work_dim2 && 0 <= i__2 ? i__2 : s_rnge("work", i__2, "zzgfre"
-		"l_", (ftnlen)844)], &i__, &start, &finish);
+		"l_", (ftnlen)840)], &i__, &start, &finish);
 	zzgfsolv_((U_fp)udqdec, (U_fp)udstep, (U_fp)udrefn, bail, (L_fp)
 		udbail, &cstep, &step, &start, &finish, tol, rpt, (U_fp)
 		udrepu, &work[(i__2 = (work_dim1 << 1) - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : s_rnge("work", 
-		i__2, "zzgfrel_", (ftnlen)846)]);
+		i__2, "zzgfrel_", (ftnlen)842)]);
 	if (failed_()) {
 	    chkout_("ZZGFREL", (ftnlen)7);
 	    return 0;
@@ -979,10 +988,10 @@ static logical c_true = TRUE_;
 
 	wnextd_("R", &work[(i__1 = (work_dim1 << 1) - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrel_", (ftnlen)912)], (ftnlen)1);
+		i__1, "zzgfrel_", (ftnlen)908)], (ftnlen)1);
 	zzgfwsts_(&work[(i__1 = (work_dim1 << 1) - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrel_", (ftnlen)914)], cnfine, "()", result, (
+		i__1, "zzgfrel_", (ftnlen)910)], cnfine, "()", result, (
 		ftnlen)2);
 	chkout_("ZZGFREL", (ftnlen)7);
 	return 0;
@@ -994,10 +1003,10 @@ static logical c_true = TRUE_;
 
 	wnextd_("L", &work[(i__1 = (work_dim1 << 1) - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrel_", (ftnlen)926)], (ftnlen)1);
+		i__1, "zzgfrel_", (ftnlen)922)], (ftnlen)1);
 	zzgfwsts_(&work[(i__1 = (work_dim1 << 1) - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrel_", (ftnlen)928)], cnfine, "()", result, (
+		i__1, "zzgfrel_", (ftnlen)924)], cnfine, "()", result, (
 		ftnlen)2);
 	chkout_("ZZGFREL", (ftnlen)7);
 	return 0;
@@ -1016,29 +1025,29 @@ static logical c_true = TRUE_;
 
 	copyd_(&work[(i__1 = (work_dim1 << 1) - 5 - work_offset) < work_dim1 *
 		 work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfr"
-		"el_", (ftnlen)946)], &work[(i__2 = (work_dim1 << 2) - 5 - 
+		"el_", (ftnlen)942)], &work[(i__2 = (work_dim1 << 2) - 5 - 
 		work_offset) < work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : 
-		s_rnge("work", i__2, "zzgfrel_", (ftnlen)946)]);
+		s_rnge("work", i__2, "zzgfrel_", (ftnlen)942)]);
 	wnintd_(cnfine, &work[(i__1 = (work_dim1 << 1) - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrel_", (ftnlen)948)], &work[(i__2 = work_dim1 * 5 
+		i__1, "zzgfrel_", (ftnlen)944)], &work[(i__2 = work_dim1 * 5 
 		- 5 - work_offset) < work_dim1 * work_dim2 && 0 <= i__2 ? 
-		i__2 : s_rnge("work", i__2, "zzgfrel_", (ftnlen)948)]);
+		i__2 : s_rnge("work", i__2, "zzgfrel_", (ftnlen)944)]);
 	copyd_(&work[(i__1 = work_dim1 * 5 - 5 - work_offset) < work_dim1 * 
 		work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfre"
-		"l_", (ftnlen)949)], &work[(i__2 = (work_dim1 << 1) - 5 - 
+		"l_", (ftnlen)945)], &work[(i__2 = (work_dim1 << 1) - 5 - 
 		work_offset) < work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : 
-		s_rnge("work", i__2, "zzgfrel_", (ftnlen)949)]);
+		s_rnge("work", i__2, "zzgfrel_", (ftnlen)945)]);
 	wndifd_(cnfine, &work[(i__1 = (work_dim1 << 1) - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrel_", (ftnlen)951)], &work[(i__2 = work_dim1 * 5 
+		i__1, "zzgfrel_", (ftnlen)947)], &work[(i__2 = work_dim1 * 5 
 		- 5 - work_offset) < work_dim1 * work_dim2 && 0 <= i__2 ? 
-		i__2 : s_rnge("work", i__2, "zzgfrel_", (ftnlen)951)]);
+		i__2 : s_rnge("work", i__2, "zzgfrel_", (ftnlen)947)]);
 	copyd_(&work[(i__1 = work_dim1 * 5 - 5 - work_offset) < work_dim1 * 
 		work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfre"
-		"l_", (ftnlen)952)], &work[(i__2 = work_dim1 - 5 - work_offset)
+		"l_", (ftnlen)948)], &work[(i__2 = work_dim1 - 5 - work_offset)
 		 < work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : s_rnge("work", 
-		i__2, "zzgfrel_", (ftnlen)952)]);
+		i__2, "zzgfrel_", (ftnlen)948)]);
 
 /*        Here's what we plan to do, we want to look over two schedules */
 /*        DECREASING and INCREASING to search for the absolute max or */
@@ -1068,19 +1077,19 @@ static logical c_true = TRUE_;
 	    }
 	    winsiz = wncard_(&work[(i__2 = name__[(i__1 = case__ - 1) < 2 && 
 		    0 <= i__1 ? i__1 : s_rnge("name", i__1, "zzgfrel_", (
-		    ftnlen)990)] * work_dim1 - 5 - work_offset) < work_dim1 * 
+		    ftnlen)986)] * work_dim1 - 5 - work_offset) < work_dim1 * 
 		    work_dim2 && 0 <= i__2 ? i__2 : s_rnge("work", i__2, 
-		    "zzgfrel_", (ftnlen)990)]);
+		    "zzgfrel_", (ftnlen)986)]);
 	    i__1 = winsiz;
 	    for (i__ = 1; i__ <= i__1; ++i__) {
 		wnfetd_(&work[(i__3 = name__[(i__2 = case__ - 1) < 2 && 0 <= 
 			i__2 ? i__2 : s_rnge("name", i__2, "zzgfrel_", (
-			ftnlen)994)] * work_dim1 - 5 - work_offset) < 
+			ftnlen)990)] * work_dim1 - 5 - work_offset) < 
 			work_dim1 * work_dim2 && 0 <= i__3 ? i__3 : s_rnge(
-			"work", i__3, "zzgfrel_", (ftnlen)994)], &i__, endpt, 
+			"work", i__3, "zzgfrel_", (ftnlen)990)], &i__, endpt, 
 			&endpt[1]);
-		(*udqget)(&endpt[(i__2 = want - 1) < 2 && 0 <= i__2 ? i__2 : 
-			s_rnge("endpt", i__2, "zzgfrel_", (ftnlen)997)], &
+		(*udfunc)(&endpt[(i__2 = want - 1) < 2 && 0 <= i__2 ? i__2 : 
+			s_rnge("endpt", i__2, "zzgfrel_", (ftnlen)993)], &
 			value);
 		if (failed_()) {
 		    chkout_("ZZGFREL", (ftnlen)7);
@@ -1112,9 +1121,9 @@ static logical c_true = TRUE_;
 				500, (ftnlen)70);
 			zzwninsd_(&endpt[(i__2 = want - 1) < 2 && 0 <= i__2 ? 
 				i__2 : s_rnge("endpt", i__2, "zzgfrel_", (
-				ftnlen)1034)], &endpt[(i__3 = want - 1) < 2 &&
+				ftnlen)1030)], &endpt[(i__3 = want - 1) < 2 &&
 				 0 <= i__3 ? i__3 : s_rnge("endpt", i__3, 
-				"zzgfrel_", (ftnlen)1034)], contxt, result, (
+				"zzgfrel_", (ftnlen)1030)], contxt, result, (
 				ftnlen)500);
 		    }
 		    extrem = min(extrem,value);
@@ -1131,9 +1140,9 @@ static logical c_true = TRUE_;
 				500, (ftnlen)70);
 			zzwninsd_(&endpt[(i__2 = want - 1) < 2 && 0 <= i__2 ? 
 				i__2 : s_rnge("endpt", i__2, "zzgfrel_", (
-				ftnlen)1056)], &endpt[(i__3 = want - 1) < 2 &&
+				ftnlen)1052)], &endpt[(i__3 = want - 1) < 2 &&
 				 0 <= i__3 ? i__3 : s_rnge("endpt", i__3, 
-				"zzgfrel_", (ftnlen)1056)], contxt, result, (
+				"zzgfrel_", (ftnlen)1052)], contxt, result, (
 				ftnlen)500);
 		    }
 		    extrem = max(extrem,value);
@@ -1176,17 +1185,17 @@ static logical c_true = TRUE_;
 
 	copyd_(&work[(i__1 = (work_dim1 << 2) - 5 - work_offset) < work_dim1 *
 		 work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfr"
-		"el_", (ftnlen)1111)], &work[(i__2 = (work_dim1 << 1) - 5 - 
+		"el_", (ftnlen)1107)], &work[(i__2 = (work_dim1 << 1) - 5 - 
 		work_offset) < work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : 
-		s_rnge("work", i__2, "zzgfrel_", (ftnlen)1111)]);
+		s_rnge("work", i__2, "zzgfrel_", (ftnlen)1107)]);
     }
     wndifd_(&work[(i__1 = work_dim1 * 3 - 5 - work_offset) < work_dim1 * 
 	    work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfrel_", (
-	    ftnlen)1115)], &work[(i__2 = (work_dim1 << 1) - 5 - work_offset) <
+	    ftnlen)1111)], &work[(i__2 = (work_dim1 << 1) - 5 - work_offset) <
 	     work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : s_rnge("work", i__2, 
-	    "zzgfrel_", (ftnlen)1115)], &work[(i__3 = work_dim1 - 5 - 
+	    "zzgfrel_", (ftnlen)1111)], &work[(i__3 = work_dim1 - 5 - 
 	    work_offset) < work_dim1 * work_dim2 && 0 <= i__3 ? i__3 : s_rnge(
-	    "work", i__3, "zzgfrel_", (ftnlen)1115)]);
+	    "work", i__3, "zzgfrel_", (ftnlen)1111)]);
     if (failed_()) {
 	chkout_("ZZGFREL", (ftnlen)7);
 	return 0;
@@ -1215,7 +1224,7 @@ static logical c_true = TRUE_;
 	pass = 2;
 	(*udrepi)(&work[(i__1 = work_dim1 * 3 - 5 - work_offset) < work_dim1 *
 		 work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfr"
-		"el_", (ftnlen)1147)], rptpre + (pass - 1) * rptpre_len, 
+		"el_", (ftnlen)1143)], rptpre + (pass - 1) * rptpre_len, 
 		rptsuf + (pass - 1) * rptsuf_len, rptpre_len, rptsuf_len);
     }
 
@@ -1225,9 +1234,9 @@ static logical c_true = TRUE_;
     scardd_(&c__0, result);
     for (case__ = 1; case__ <= 2; ++case__) {
 	winsiz = wncard_(&work[(i__2 = name__[(i__1 = case__ - 1) < 2 && 0 <= 
-		i__1 ? i__1 : s_rnge("name", i__1, "zzgfrel_", (ftnlen)1159)] 
+		i__1 ? i__1 : s_rnge("name", i__1, "zzgfrel_", (ftnlen)1155)] 
 		* work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 && 0 <=
-		 i__2 ? i__2 : s_rnge("work", i__2, "zzgfrel_", (ftnlen)1159)]
+		 i__2 ? i__2 : s_rnge("work", i__2, "zzgfrel_", (ftnlen)1155)]
 		);
 
 /*        Search each interval of the window identified by NAME(CASE) for */
@@ -1236,10 +1245,10 @@ static logical c_true = TRUE_;
 	i__1 = winsiz;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    wnfetd_(&work[(i__3 = name__[(i__2 = case__ - 1) < 2 && 0 <= i__2 
-		    ? i__2 : s_rnge("name", i__2, "zzgfrel_", (ftnlen)1167)] *
+		    ? i__2 : s_rnge("name", i__2, "zzgfrel_", (ftnlen)1163)] *
 		     work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 && 
 		    0 <= i__3 ? i__3 : s_rnge("work", i__3, "zzgfrel_", (
-		    ftnlen)1167)], &i__, &start, &finish);
+		    ftnlen)1163)], &i__, &start, &finish);
 
 /*           For each interval, accumulate the result in RESULT. */
 
@@ -1284,10 +1293,10 @@ static logical c_true = TRUE_;
 
 	wnintd_(cnfine, result, &work[(i__1 = work_dim1 * 5 - 5 - work_offset)
 		 < work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrel_", (ftnlen)1219)]);
+		i__1, "zzgfrel_", (ftnlen)1215)]);
 	copyd_(&work[(i__1 = work_dim1 * 5 - 5 - work_offset) < work_dim1 * 
 		work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfre"
-		"l_", (ftnlen)1220)], result);
+		"l_", (ftnlen)1216)], result);
     } else if (s_cmp(locrel, ">", (ftnlen)80, (ftnlen)1) == 0 || s_cmp(locrel,
 	     "ABSMAX", (ftnlen)80, (ftnlen)6) == 0) {
 
@@ -1298,10 +1307,10 @@ static logical c_true = TRUE_;
 
 	wndifd_(cnfine, result, &work[(i__1 = work_dim1 * 5 - 5 - work_offset)
 		 < work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrel_", (ftnlen)1230)]);
+		i__1, "zzgfrel_", (ftnlen)1226)]);
 	copyd_(&work[(i__1 = work_dim1 * 5 - 5 - work_offset) < work_dim1 * 
 		work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfre"
-		"l_", (ftnlen)1231)], result);
+		"l_", (ftnlen)1227)], result);
     } else {
 
 /*        This is the branch for the relational operator '='. */
@@ -1311,7 +1320,7 @@ static logical c_true = TRUE_;
 
 	scardd_(&c__0, &work[(i__1 = work_dim1 * 5 - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrel_", (ftnlen)1240)]);
+		i__1, "zzgfrel_", (ftnlen)1236)]);
 	i__1 = cardd_(result);
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    s_copy(contxt, "Inserting endpoints of result window into worksp"
@@ -1321,7 +1330,7 @@ static logical c_true = TRUE_;
 	    zzwninsd_(&result[i__ + 5], &result[i__ + 5], contxt, &work[(i__2 
 		    = work_dim1 * 5 - 5 - work_offset) < work_dim1 * 
 		    work_dim2 && 0 <= i__2 ? i__2 : s_rnge("work", i__2, 
-		    "zzgfrel_", (ftnlen)1249)], (ftnlen)500);
+		    "zzgfrel_", (ftnlen)1245)], (ftnlen)500);
 	    if (failed_()) {
 		chkout_("ZZGFREL", (ftnlen)7);
 		return 0;
@@ -1341,7 +1350,7 @@ static logical c_true = TRUE_;
 
 	wnintd_(cnfine, &work[(i__1 = work_dim1 * 5 - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrel_", (ftnlen)1271)], result);
+		i__1, "zzgfrel_", (ftnlen)1267)], result);
     }
     chkout_("ZZGFREL", (ftnlen)7);
     return 0;

@@ -1,0 +1,168 @@
+ 
+CKSLICER User's Guide
+===========================================================================
+ 
+   Last revised on 2005 JAN 13 by B. V. Semenov.
+ 
+ 
+Abstract
+--------------------------------------------------------
+ 
+   CKSLICER is a command-line program that subsets a CK file into another
+   CK file.
+ 
+ 
+Summary
+--------------------------------------------------------
+ 
+   CKSLICER is a command-line program that copies a subset of pointing data
+   within a specified time interval for a specified instrument or structure
+   from all applicable Type 1, 2 or 3 CK segments contained in one CK file
+   into another CK file.
+ 
+ 
+Usage
+--------------------------------------------------------
+ 
+   CKSLICER is used as follows:
+ 
+      > ckslicer -lsk <lsk_file_name>
+                 -sclk <sclk_file_name(s)>
+                 -inputck <input_ck_file>
+                 -outputck <output_ck_file>
+                 -id <naif_id>
+                 -timetype <UTC or SCLK or TICKS>
+                 -start <start_time>
+                 -stop <stop_time>
+ 
+   where inputs provided on the command line are:
+ 
+         lsk_file_name    name of LSK file.
+ 
+         sclk_file_name   name(s) of SCLK file.
+ 
+         input_ck_file    name of input CK file
+ 
+         output_ck_file   name of output CK file.
+ 
+         naif_id          CK ID, the data for which is to be copied to the
+                          output CK file. This argument is optional; if it
+                          is not specified, all applicable segments in the
+                          file will be subset'ed. It must be specified if
+                          ``-timetype'' is 'UTC' or 'SCLK'.
+ 
+         UTC/SCLK/TICKS   time type used to specify subset boundaries. This
+                          argument is optional; the default value is UTC.
+ 
+         start_time       start time of the subset interval provided as
+                          UTC, SCLK, or encoded SCLK ticks.
+ 
+         stop_time        stop time of the subset interval provided as UTC,
+                          SCLK, or encoded SCLK ticks..
+ 
+   Case of the command line keys and order of command line arguments are
+   insignificant.
+ 
+ 
+Example
+--------------------------------------------------------
+ 
+   In this example CKSLICER is used on a UNIX workstation to create an MGS
+   spacecraft orientation CK file covering only one hour from a CK file
+   covering 84 days:
+ 
+      ckslicer -LSK      naif0007.tls \
+               -SCLK     MGS_SCLKSCET.00057.tsc \
+               -INPUTCK  mgs_sc_ext11.bc \
+               -OUTPUTCK mgs_subset.bc \
+               -ID       -94000 \
+               -TIMETYPE UTC \
+               -START    2003-JUL-05 12:00 \
+               -STOP     2003-JUL-05 13:00
+ 
+      CKSLICER: Version 1.0.1 July 17, 1999; Toolkit Version N0058
+ 
+      >
+ 
+ 
+ 
+   Coverage summary for the original and output CK files can be obtained by
+   using CKBRIEF utility program:
+ 
+      > ckbrief mgs_sc_ext11.bc \
+                naif0007.tls \
+                MGS_SCLKSCET.00057.tsc \
+                -utc
+ 
+      CKBRIEF Version: 2.0.0, 2001-05-16. SPICE Toolkit Version: N0058.
+ 
+ 
+      Summary for: mgs_sc_ext11.bc
+ 
+      Object:  -94000
+        Interval Begin UTC       Interval End UTC         AV
+        ------------------------ ------------------------ ---
+        2003-APR-30 00:01:00.694 2003-JUL-22 23:59:55.525 Y
+ 
+      > ckbrief mgs_subset.bc \
+                naif0007.tls \
+                MGS_SCLKSCET.00057.tsc \
+                -utc
+ 
+      CKBRIEF Version: 2.0.0, 2001-05-16. SPICE Toolkit Version: N0058.
+ 
+ 
+      Summary for: /home/bsemenov/mgs_subset.bc
+ 
+      Object:  -94000
+        Interval Begin UTC       Interval End UTC         AV
+        ------------------------ ------------------------ ---
+        2003-JUL-05 11:59:59.999 2003-JUL-05 12:59:59.999 Y
+ 
+      >
+ 
+ 
+ 
+   CKSLICER copies comments from the original CK into the output CK and
+   prepends them with a trace information indicating subsetting arguments,
+   as seen in this output of COMMNT utility program:
+ 
+      > commnt -r mgs_subset.bc
+ 
+      ****************************************************************
+      ****************
+       This CK file was created using CKSLICER Utility Ver. 1.0.1 July
+       17, 1999
+       linked against SPICE Toolkit Ver. N0058.
+ 
+       This file contains a subset of the pointing data between:
+             UTC 2003-JUL-05 12:00
+       and
+             UTC 2003-JUL-05 13:00
+       for segments for the instrument -94000 from the source CK file:
+             mgs_sc_ext11.bc
+ 
+       LSK file:
+             ../lsk/naif0007.tls
+       and SCLK file(s):
+             ../sclk/MGS_SCLKSCET.00057.tsc
+       were used by CKSLICER to support required time conversions.
+ 
+       This file was created on 2005-01-13 13:23:24.
+ 
+       Text below is the contents of the comment area of the source CK
+       file.
+ 
+      *******************************************************************
+      *************
+ 
+ 
+      MGS Spacecraft CK File for Extended Mission, Mapping Cycles 55-57
+      ===================================================================
+      ========
+ 
+      ...
+ 
+      >
+ 
+ 

@@ -167,6 +167,8 @@ static integer c__1 = 1;
 /*                    time interval from, but not including, EPOCHS(I-1) */
 /*                    through EPOCHS(I). */
 
+/*                    The elements of EPOCHS must be strictly increasing. */
+
 
 /* $ Detailed_Output */
 
@@ -251,6 +253,12 @@ static integer c__1 = 1;
 /*     N.J. Bachman   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1, 07-APR-2010 (NJB) */
+
+/*        Updated Detailed_Input to state that the elements */
+/*        of EPOCHS must be strictly increasing. The Exceptions */
+/*        section already described this error condition. */
 
 /* -    SPICELIB Version 1.0.0, 30-JAN-2003 (NJB) */
 

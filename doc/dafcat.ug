@@ -1,0 +1,80 @@
+ 
+DAFCAT User's Guide
+===========================================================================
+ 
+   Last revised on 2010 JUN 03 by B. V. Semenov.
+ 
+ 
+Abstract
+--------------------------------------------------------
+ 
+   DAFCAT is a command-line utility program that concatenates together
+   SPICE DAF files of the same type.
+ 
+ 
+Summary
+--------------------------------------------------------
+ 
+   DAFCAT is a program for concatenating several DAF files of the same type
+   into a single (new) file. For example using DAFCAT you can concatenate
+   several SPK files into a single file; concatenate several CK files into
+   a single file; or several binary PCK files into a single file. However,
+   DAFCAT does not allow you to concatenate different types of DAF based
+   files into a single DAF file. For instance, you cannot concatenate a
+   C-kernel and SP-kernel together using DAFCAT.
+ 
+   DAFCAT concatenates the source files in order they are provided on the
+   input. For each source file the segments are copied to the destination
+   file in the same order as they are stored in the source file. The
+   program does not alter the data from any of the segments in any way. If
+   some of the input files contain overlapping data, the data from the file
+   that appears last in the input list will be stored closer to the end of
+   the output file and will be accessed first by the SPICE Toolkit.
+ 
+   DAFCAT does not put any information into the comment area of the output
+   file. It is the responsibility of the operator of the program to prepare
+   comments for the output file and to add them to the file using the
+   COMMNT utility program (see commnt.ug for details).
+ 
+ 
+Usage
+--------------------------------------------------------
+ 
+   DAFCAT takes a list of files to concatenate from standard input and
+   concatenates them together in a new file that is listed on the command
+   line. Thus if the text file "sources" contains a list of files to be
+   concatenated together and you wish the combination to reside in the file
+   "grouped.daf" enter the command
+ 
+      dafcat grouped.daf <sources
+ 
+   You can also invoke DAFCAT and type the sources to be concatenated
+   together (follow the list by the end of file character). For example
+   suppose the list of files in input "sources" above is "spk1.bsp",
+   "spk2.bsp", "spk3.bsp". You can concatenate these together by typing:
+ 
+      dafcat grouped.daf
+ 
+   DAFCAT will respond with version information and a "blank" prompt"
+ 
+      DAF binary files concatenation program version. 1.00
+ 
+ 
+   Now just type the list of files to be concatenated together. Terminate
+   the list with the end of file character (CTRL-D on UNIX and DOS
+   platforms, CTRL-Z on VAX/VMS systems).
+ 
+      spk1.bsp
+      spk2.bsp
+      spk3.bsp
+      ^D
+ 
+ 
+Other UNIX and DOS scenarios
+--------------------------------------------------------
+ 
+   On UNIX and DOS systems you may redirect the output from some other
+   command to the input of DAFCAT. For example
+ 
+      ls -1 spk*.bsp | dafcat combined.spk
+ 

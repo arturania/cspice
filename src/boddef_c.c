@@ -138,29 +138,39 @@
 
 -Particulars
 
-   boddef_c is one of three related subroutines,
+   boddef_c is one of five related subroutines,
 
+      bods2c_c      Body string to code
+      bodc2s_c      Body code to string
       bodn2c_c      Body name to code
-
       bodc2n_c      Body code to name
-
       boddef_c      Body name/code definition
 
-   bodn2c_c and bodc2n_c perform translations between body names
-   and their corresponding integer ID codes which are used
-   in SPK and PCK files and routines.  A set of name/code
-   pairs are automatically defined during the first call to
-   one of these subroutines. Additional name/code pairs may
-   be defined via boddef_c for two purposes:
+   bods2c_c, bodc2s_c, bodn2c_c, and bodc2n_c perform translations between 
+   body names and their corresponding integer ID codes which are 
+   used in SPICE files and routines.
 
-      1.  to associate another, perhaps more familiar or
-          abbreviated, name with a particular body integer
-          code that has already been defined, or
+   bods2c_c is a slightly more general version of bodn2c_c: support
+   for strings containing ID codes in string format enables a caller
+   to identify a body using a string, even when no name is
+   associated with that body.
 
-      2.  to define a new body integer code and name,
+   bodc2s_c is a general version of bodc2n_c; the routine returns either
+   the name assigned in the body ID to name mapping or a string
+   representation of the CODE value if no mapping exists.
+
+   boddef_c assigns a body name to ID mapping. The mapping has priority 
+   in name-to-ID and ID-to-name translations.
+
+   Refer to NAIF_IDs for the list of name/code associations built into
+   SPICE, and for details concerning adding new name/code
+   associations at run time by loading text kernels.
+
+   Modifying the SPICE name-ID mapping set
+   =======================================
 
    Each body has a unique integer 'code', but may have several
-   names.  Thus you may associate more than one name with
+   names. Thus you may associate more than one name with
    a particular integer code.
 
    'code' may already have a name as defined by a previous
@@ -168,29 +178,25 @@
    definitions.  That previous definition will remain,
    and a translation of that name will still give the
    same 'code'.  However, future translations of 'code' will
-   give the new NAME instead of the previous one.  This
+   give the new 'name' instead of the previous one.  This
    feature is useful for assigning a more familiar or
    abbreviated name to a body. For example, in addition
-   to the default name for body 5, 'JUPITER BARYCENTER',
-   you could define the abbreviation 'JB' to mean 5.
- 
-   Note: In the case where boddef_c performs a body/ID mapping
+   to the default name for body 5, "JUPITER BARYCENTER",
+   you could define the abbreviation "JB" to mean 5.
+
+   Note: In the case where boddef_c performs a name-to-ID mapping
    assignment for an unused body name and unused ID value,
-   any subsequent assignment to NAME destroys the pervious
+   any subsequent assignment to NAME destroys the previous
    mapping.
- 
-      boddef_c( "spud", 22 );
- 
+
+      boddef_c ( "spud", 22)
+
    then
- 
-      boddef_c("spud", 23 );
- 
+
+      boddef_c ( "spud", 23)
+
    results in the state "spud" maps to 23, 23 maps to "spud",
    and 22 maps to nothing ('found' in bodc2n_c returns SPICEFALSE).
- 
-   Please refer to the NAIF_IDS Required Reading document for
-   details about kernel pool name-code definitions, masking,
-   and assignment precedence.
 
 -Examples
 
@@ -236,6 +242,10 @@
    B.V. Semenov    (JPL)
 
 -Version
+
+   -CSPICE Version 2.2.2, 16-MAY-2009 (EDW) 
+
+       Edit to Particulars section to document the bodc2s_c routine.
 
    -CSPICE Version 2.2.1, 27-FEB-2008 (BVS)
 

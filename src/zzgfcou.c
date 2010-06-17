@@ -73,8 +73,8 @@ static integer c__3 = 3;
     static integer svobs;
     extern /* Subroutine */ int ljust_(char *, char *, ftnlen, ftnlen);
     extern logical vzero_(doublereal *);
-    extern /* Subroutine */ int bodc2n_(integer *, char *, logical *, ftnlen),
-	     bods2c_(char *, integer *, logical *, ftnlen);
+    extern /* Subroutine */ int bods2c_(char *, integer *, logical *, ftnlen),
+	     bodc2s_(integer *, char *, ftnlen);
     extern logical failed_(void);
     extern doublereal pi_(void);
     extern /* Subroutine */ int cleard_(integer *, doublereal *), bodvcd_(
@@ -221,6 +221,11 @@ static integer c__3 = 3;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+
+/*       Added NWRR parameter. */
+/*       Added NWUDS parameter. */
+
 /* -    SPICELIB Version 1.0.0, 21-FEB-2009 (NJB) (LSE) (EDW) */
 
 /* -& */
@@ -256,6 +261,14 @@ static integer c__3 = 3;
 
 /*     Callers of GFSEP should declare their workspace window */
 /*     count using NWSEP. */
+
+
+/*     Callers of GFRR should declare their workspace window */
+/*     count using NWRR. */
+
+
+/*     Callers of GFUDS should declare their workspace window */
+/*     count using NWUDS. */
 
 
 /*     ADDWIN is a parameter used to expand each interval of the search */
@@ -433,7 +446,7 @@ static integer c__3 = 3;
 
 /*     Note: the sum of these lengths, plus the length of the */
 /*     "percent complete" substring, should not be long enough */
-/*     to cause wrap-around on any platforms's terminal window. */
+/*     to cause wrap-around on any platform's terminal window. */
 
 
 /*     Total progress report message length upper bound: */
@@ -714,6 +727,11 @@ static integer c__3 = 3;
 /*     N.J. Bachman   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0 12-MAY-2009 (NJB) */
+
+/*        Upgraded to support targets and observers having */
+/*        no names associated with their ID codes. */
 
 /* -    SPICELIB Version 1.0.0 05-MAR-2009 (NJB) */
 
@@ -1173,10 +1191,6 @@ L_zzgfcoin:
 /*         REF is degenerate (one or more radii are non-positive), */
 /*         the error SPICE(DEGENERATECASE) is signaled. */
 
-/*     17) If geodetic or planetographic coordinates are used and the */
-/*         ID code of the center of the frame REF cannot be mapped to a */
-/*         name, the error SPICE(NOTRANSLATION) is signaled. */
-
 /* $ Files */
 
 /*     See the discussion in the Files section of the header of the */
@@ -1228,6 +1242,11 @@ L_zzgfcoin:
 /*     N.J. Bachman   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0 12-MAY-2009 (NJB) */
+
+/*        Upgraded to support targets and observers having */
+/*        no names associated with their ID codes. */
 
 /* -    SPICELIB Version 1.0.0 05-MAR-2009 (NJB) */
 
@@ -1341,7 +1360,7 @@ L_zzgfcoin:
 
     svcidx = isrchc_(svcrd, &c__3, crdnms + (((i__1 = sysidx * 3 - 3) < 21 && 
 	    0 <= i__1 ? i__1 : s_rnge("crdnms", i__1, "zzgfcou_", (ftnlen)
-	    1014)) << 5), (ftnlen)32, (ftnlen)32);
+	    1020)) << 5), (ftnlen)32, (ftnlen)32);
     if (svcidx == 0) {
 
 /*        We don't recognize this coordinate name. */
@@ -1521,18 +1540,7 @@ L_zzgfcoin:
 /*        longitude of the +Y axis. */
 
 	if (s_cmp(svcsys, "PLANETOGRAPHIC", (ftnlen)32, (ftnlen)14) == 0) {
-	    bodc2n_(&svrctr, svrcnm, &found, (ftnlen)36);
-	    if (! found) {
-		setmsg_("The ID code # of the center of the frame '#', is no"
-			"t a recognized ID for an ephemeris object. The cause"
-			" of this problem may be that you need an updated ver"
-			"sion of the SPICE Toolkit. ", (ftnlen)182);
-		errint_("#", &svrctr, (ftnlen)1);
-		errch_("#", ref, (ftnlen)1, ref_len);
-		sigerr_("SPICE(NOTRANSLATION)", (ftnlen)20);
-		chkout_("ZZGFCOIN", (ftnlen)8);
-		return 0;
-	    }
+	    bodc2s_(&svrctr, svrcnm, (ftnlen)36);
 	    recpgr_(svrcnm, y, &svre, &svf, &lon, &lat, &alt, (ftnlen)36);
 
 /*           Planetographic longitude ranges from 0 to 2*pi, so */
@@ -2181,7 +2189,7 @@ L_zzgfcodc:
 /*     is negative. This is indicated by a "sign" of -1. */
 
     *decres = cdsign[(i__1 = svcidx - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge(
-	    "cdsign", i__1, "zzgfcou_", (ftnlen)1975)] == -1;
+	    "cdsign", i__1, "zzgfcou_", (ftnlen)1966)] == -1;
     chkout_("ZZGFCODC", (ftnlen)8);
     return 0;
 /* $Procedure ZZGFCOEX ( GF, does coordinate state exist? ) */
@@ -3118,7 +3126,7 @@ L_zzgfcocd:
 /*     Pick off the coordinate value. */
 
     value = coords[(i__1 = svcidx - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("coo"
-	    "rds", i__1, "zzgfcou_", (ftnlen)3022)];
+	    "rds", i__1, "zzgfcou_", (ftnlen)3013)];
 
 /*     Compute the proxy for the derivative with respect to time of the */
 /*     coordinate. This proxy gives us the sign of the derivative, which */
@@ -3129,7 +3137,7 @@ L_zzgfcocd:
 /*     The derivative of the coordinate is negative if the "sign" is -1. */
 
     *decres = -sin(value) * cdsign[(i__1 = svcidx - 1) < 3 && 0 <= i__1 ? 
-	    i__1 : s_rnge("cdsign", i__1, "zzgfcou_", (ftnlen)3034)] < 0.;
+	    i__1 : s_rnge("cdsign", i__1, "zzgfcou_", (ftnlen)3025)] < 0.;
     chkout_("ZZGFCOCD", (ftnlen)8);
     return 0;
 /* $Procedure ZZGFCOSD ( GF, is sine of coordinate decreasing? ) */
@@ -3344,7 +3352,7 @@ L_zzgfcosd:
 /*     Pick off the coordinate value. */
 
     value = coords[(i__1 = svcidx - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("coo"
-	    "rds", i__1, "zzgfcou_", (ftnlen)3289)];
+	    "rds", i__1, "zzgfcou_", (ftnlen)3280)];
 
 /*     Compute the proxy for the derivative with respect to time of the */
 /*     coordinate. This proxy gives us the sign of the derivative, which */
@@ -3355,7 +3363,7 @@ L_zzgfcosd:
 /*     The derivative of the coordinate is negative if the "sign" is -1. */
 
     *decres = cos(value) * cdsign[(i__1 = svcidx - 1) < 3 && 0 <= i__1 ? i__1 
-	    : s_rnge("cdsign", i__1, "zzgfcou_", (ftnlen)3301)] < 0.;
+	    : s_rnge("cdsign", i__1, "zzgfcou_", (ftnlen)3292)] < 0.;
     chkout_("ZZGFCOSD", (ftnlen)8);
     return 0;
 } /* zzgfcou_ */

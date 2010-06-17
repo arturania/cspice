@@ -77,7 +77,7 @@
               '*' and '%' are used for the wild string and wild
               characters respectively.  For details of string
               pattern matching see the header of the routine matchi_c.
- 
+              'name' is restricted to a length of 32 characters or less.
  
    start      is the index of the first variable name to return that
               matches the name template.  The matching names are
@@ -157,6 +157,9 @@
    5) The caller must pass a value indicating the length of the output
       string.  If this value is not at least 2, the error
       SPICE(STRINGTOOSHORT) will be signaled.
+
+   6) The error 'SPICE(BADVARNAME)' signals if the kernel pool
+      variable name length exceeds 32.
  
 -Files
  
@@ -265,6 +268,12 @@
    W.L. Taber     (JPL)
  
 -Version
+
+   -CSPICE Version 1.1.1,  10-FEB-2010 (EDW)
+
+      Added mention of the restriction on kernel pool variable 
+      names to 32 characters or less.
+
    -CSPICE Version 1.1.0, 18-MAY-2001 (WLT)
 
       Added a cast to (char *) in the call to F2C_ConvertStrArr

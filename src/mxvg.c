@@ -22,7 +22,7 @@
 
 /* $ Abstract */
 
-/*      Multiply a matrix and a vector of arbitrary size. */
+/*     Multiply a matrix and a vector of arbitrary size. */
 
 /* $ Disclaimer */
 
@@ -55,104 +55,102 @@
 
 /* $ Keywords */
 
-/*      MATRIX,  VECTOR */
+/*     MATRIX */
+/*     VECTOR */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*       M1        I     Left-hand matrix to be multiplied. */
-/*       V2        I     Right-hand vector to be multiplied. */
-/*       NR1       I     Row dimension of M1 and length of VOUT. */
-/*       NC1R2     I     Column dimension of M1 and length of V2. */
-/*       VOUT      O     Product vector M1*V2. */
-/*                       VOUT must not overwrite either M1 or V2. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     M1         I   Left-hand matrix to be multiplied. */
+/*     V2         I   Right-hand vector to be multiplied. */
+/*     NR1        I   Row dimension of M1 and length of VOUT. */
+/*     NC1R2      I   Column dimension of M1 and length of V2. */
+/*     VOUT       O   Product vector M1*V2. */
 
 /* $ Detailed_Input */
 
-/*      M1      This is a double precision matrix of arbitrary size which */
-/*              forms the left-hand matrix of the multiplication. */
+/*     M1      This is a double precision matrix of arbitrary size which */
+/*             forms the left-hand matrix of the multiplication. */
 
-/*      V2      This is a double precision vector on the right of the */
-/*              multiplication. */
+/*     V2      This is a double precision vector on the right of the */
+/*             multiplication. */
 
-/*      NR1     This is the row dimension of M1 and length of VOUT. */
+/*     NR1     This is the row dimension of M1 and length of VOUT. */
 
-/*      NC1R2   This is the column dimension of M1 and length of V2. */
+/*     NC1R2   This is the column dimension of M1 and length of V2. */
 
 /* $ Detailed_Output */
 
-/*      VOUT    This is the double precision vector which results from */
-/*              the expression VOUT = (M1) x V2.  VOUT should not */
-/*              overwrite M1 or V2. */
+/*     VOUT    This is the double precision vector which results from */
+/*             the expression VOUT = (M1) x V2. */
 
 /* $ Parameters */
 
 /*     None. */
 
-/* $ Particulars */
-
-/*      The code reflects precisely the following mathematical expression */
-
-/*      For each value of the subscript I from 1 to NR1, */
-
-/*      VOUT(I) = Summation from K=1 to NC1R2 of  ( M1(I,K) * V2(K) ) */
-
-/*      Since this subroutine operates on matrices of arbitrary size, it */
-/*      is not feasible to buffer intermediate results.  Thus, VOUT */
-/*      should NOT overwrite either M1 or V2. */
-
-/* $ Examples */
-
-/*      Suppose that M1 = | 1  1  1 | */
-/*                        | 2  3  4 | */
-
-/*                        | 1 | */
-/*      and that     V2 = | 2 | */
-/*                        | 3 | */
-
-/*      Then calling MXVG according to the following calling sequence */
-
-/*      CALL MXVG (M1, V2, 2, 3, VOUT) */
-
-/*      will yield the following vector value for VOUT */
-
-/*      VOUT = | 6  | */
-/*             | 20 | */
-
-/* $ Restrictions */
-
-/*      1) The user is responsible for checking the magnitudes of the */
-/*      elements of M1 and V2 so that a floating point overflow does */
-/*      not occur. */
-/*      2) VOUT not overwrite M1 or V2 or else the intermediate */
-/*      will affect the final result. */
-
 /* $ Exceptions */
 
-/*      Error free. */
+/*     Error free. */
 
 /* $ Files */
 
-/*      None. */
+/*     None. */
 
-/* $ Author_and_Institution */
+/* $ Particulars */
 
-/*      W.M. Owen       (JPL) */
+/*     The code reflects precisely the following mathematical expression */
+
+/*        For each value of the subscript I from 1 to NR1, */
+
+/*        VOUT(I) = Summation from K=1 to NC1R2 of  ( M1(I,K) * V2(K) ) */
+
+/* $ Examples */
+
+/*     Suppose that M1  = | 1  1  1 | */
+/*                        | 2  3  4 | */
+
+/*                        | 1 | */
+/*     and that     V2  = | 2 | */
+/*                        | 3 | */
+
+/*     Then calling MXVG according to the following calling sequence */
+
+/*        CALL MXVG (M1, V2, 2, 3, VOUT) */
+
+/*     will yield the following vector value for VOUT */
+
+/*        VOUT = | 6  | */
+/*               | 20 | */
+
+/* $ Restrictions */
+
+/*     1) The user is responsible for checking the magnitudes of the */
+/*        elements of M1 and V2 so that a floating point overflow does */
+/*        not occur. */
 
 /* $ Literature_References */
 
-/*      None. */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     W.M. Owen       (JPL) */
 
 /* $ Version */
 
-/* -     SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+/* -    SPICELIB Version 1.0.2, 23-APR-2010 (NJB) */
 
-/*         Comment section for permuted index source lines was added */
-/*         following the header. */
+/*        Re-ordered header sections and made minor formatting */
+/*        changes. */
 
-/* -     SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
+/* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
+
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
 
 /* -& */
 /* $ Index_Entries */
@@ -178,11 +176,11 @@
 	for (k = 1; k <= i__2; ++k) {
 	    sum += m1[(i__3 = i__ + k * m1_dim1 - m1_offset) < m1_dim1 * 
 		    m1_dim2 && 0 <= i__3 ? i__3 : s_rnge("m1", i__3, "mxvg_", 
-		    (ftnlen)162)] * v2[(i__4 = k - 1) < v2_dim1 && 0 <= i__4 ?
-		     i__4 : s_rnge("v2", i__4, "mxvg_", (ftnlen)162)];
+		    (ftnlen)163)] * v2[(i__4 = k - 1) < v2_dim1 && 0 <= i__4 ?
+		     i__4 : s_rnge("v2", i__4, "mxvg_", (ftnlen)163)];
 	}
 	vout[(i__2 = i__ - 1) < vout_dim1 && 0 <= i__2 ? i__2 : s_rnge("vout",
-		 i__2, "mxvg_", (ftnlen)164)] = sum;
+		 i__2, "mxvg_", (ftnlen)165)] = sum;
     }
     return 0;
 } /* mxvg_ */

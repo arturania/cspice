@@ -1,0 +1,109 @@
+ 
+BSPIDMOD User's Guide
+===========================================================================
+ 
+   Last revised on 2004 NOV 15 by L. S. Elson.
+ 
+ 
+Abstract
+--------------------------------------------------------
+ 
+   BSPMODID is a command-line program that allows users to alter the body
+   ID in a binary SPK (bsp) file.
+ 
+ 
+Summary
+--------------------------------------------------------
+ 
+   BSPIDMOD is a program for changing NAIF IDs in one or more binary SPK
+   (bsp) file(s). The result is either written to the same or a different
+   file along with comments indicating the changes that were made. The
+   binary SPK file(s) must be in native format (see Convert User's Guide,
+   convert.ug). ID changes are made to every segment descriptor. Several
+   binary SPK files may be altered at one time by specifying (on the
+   command line) the name of a text file that contains a list of binary SPK
+   file names.
+ 
+   The user is cautioned that altering NAIF ID codes in an SPK file can
+   result in useless or erroneous results when used for calculations. Be
+   sure you know what you are doing.
+ 
+ 
+Usage
+--------------------------------------------------------
+ 
+           bspidmod [-switch] [file]...
+ 
+   The command line switches above have the following meanings:
+ 
+         -spki <in_filename>      indicates the name of the file to be
+                                  modified. This must be a native format,
+                                  binary SPK file. See the Convert User's
+                                  Guide (convert.ug) for details. By
+                                  default, the output filename will be
+                                  in_filename_out.bsp. If a file named
+                                  in_filename_out.bsp exists, the program
+                                  will terminate with an error message
+ 
+         -idi <in_id>             input NAIF ID (integer).
+ 
+         -ido <out_id>            output (modified) NAIF ID (integer).
+ 
+         -mod <item>              item to be modified. Possible values are
+                                  'TARGET', 'CENTER' or 'OBJECT'. Selecting
+                                  'OBJECT' will cause both target and
+                                  center to be modified. Values are case
+                                  insensitive.
+ 
+         -oflg                    output flag. If present, causes input
+                                  file to be overwritten. This flag is to
+                                  be used with caution.
+ 
+         -h, -help                displays brief help text and terminates
+                                  execution.
+ 
+         -spkl <list_filename>    indicates the filename of an ASCII file
+                                  to be used to specify a list of binary
+                                  SPK files. This file should specify one
+                                  SPK file per line. This switch is ignored
+                                  if -spki is set.
+ 
+ 
+Examples.
+ 
+   BSPIDMOD, when invoked with no arguments, or with the help switch,
+   provides a brief summary of command line switches.
+ 
+   1) We have a Cassini file, entire_tour_cas.bsp, in which we would like
+   to change all occurrences of ID -90 to -89 for targets and centers:
+ 
+      %bspidmod -spki  entire_tour_cas.bsp -idi -90 -ido -89 -mod OBJECT
+ 
+      The modified file entire_tour_cas_out.bsp has been created.
+      %
+ 
+   2) We wish to change all occurrences of ID = -89 back to ID = -90 in the
+   file entire_tour_cas_out.bsp, overwriting this same file:
+ 
+      %bspidmod -spki  entire_tour_cas_out.bsp -idi -89 -ido
+      90 -mod OBJECT  -oflg
+ 
+      The file entire_tour_cas_out.bsp has been updated.
+      %
+ 
+   3) We wish to create new versions of 3 Cassini files:
+   fpfile.92-01.leg10.bsp, fpfile.92-01.leg11.bsp and
+   fpfile.92-01.leg12.bsp. First we create a text file called 'text' that
+   lists these filenames. Then we use this text file as input. Here, we
+   want to change only target ID's of -90 to -82:
+ 
+      %ls fp* >! text
+ 
+      %bspidmod -spkl text -idi -90 -ido -82 -mod TARGET
+ 
+      The modified file fpfile.92-01.leg10_out.bsp has been created.
+      The modified file fpfile.92-01.leg11_out.bsp has been created.
+      The modified file fpfile.92-01.leg12_out.bsp has been created.
+ 
+      %
+ 

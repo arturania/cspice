@@ -1,0 +1,137 @@
+ 
+ARCHTYPE User's Guide
+===========================================================================
+ 
+   Last revised on 1997 JAN 27 by C. H. Acton.
+ 
+ 
+Abstract
+--------------------------------------------------------
+ 
+   ARCHTYPE is a command-line program that displays the architecture and
+   type of a specified SPICE kernel file.
+ 
+ 
+Introduction
+--------------------------------------------------------
+ 
+   This utility program extracts the architecture and type from a SPICE
+   kernel file, displaying them on the standard output. It has been
+   designed primarily to be used for batch processing tasks inside shell
+   scripts.
+ 
+ 
+Usage
+--------------------------------------------------------
+ 
+ 
+Input
+ 
+   The only input to the program is the name of the file whose architecture
+   and type are to be determined. This file name must appear on the command
+   line as the sole argument to the program.
+ 
+ 
+Output
+ 
+   The output from the program is a single line containing two tokens
+   (words). If the architecture and type of the specified file could be
+   determined, the two tokens are the architecture and type, respectively.
+ 
+   The architectures that are defined at this time are:
+ 
+      DAF
+      DAS
+      KPL
+ 
+   and the file types are:
+ 
+      SPK
+      PCK
+      IK
+      CK
+      EK
+      LSK
+      SCLK
+ 
+   If an error occurs or the architecture and type could not be determined,
+   the tokens will each have the value ``UNK.''
+ 
+   If the architecture cannot be determined, then the first token will have
+   a value of ``UNK'' and the second will be the type. If the type could
+   not be determined, the first token will be the architecture and the
+   second will have the value ``UNK.''
+ 
+ 
+Examples
+--------------------------------------------------------
+ 
+   Example 1:
+ 
+   Assume that we have a SPICE SPK file named ``myfile.bsp'' in the current
+   directory, and that we want to see its architecture and type, which
+   should be ``DAF'' and ``SPK'', respectively. To accomplish this, we use
+   the ``archtype'' program.
+ 
+      prompt > archtype myfile.bsp
+      DAF SPK
+      prompt >
+ 
+   Example 2:
+ 
+   In this example, no file name is specified when ``archtype'' is used.
+   This is not an error, but without a file you can't expect to get a
+   meaningful architecture and type. Running the program without specifying
+   a file results in the architecture and type both being set to ``UNK.''
+ 
+      prompt > archtype
+      UNK UNK
+      prompt >
+ 
+   Example 3:
+ 
+   In this example, the file name specified when ``archtype'' is used,
+   ``nofile.bsp'', does not exist. This is not an error, but with a file
+   that doesn't exist, you can't expect to get a meaningful architecture
+   and type. Running the program with a file that does not exist results in
+   the architecture and type both being set to ``UNK.''
+ 
+      prompt > archtype nofile.bsp
+      UNK UNK
+      prompt >
+ 
+   Example 4:
+ 
+   In this example, the file name specified when ``archtype'' is used,
+   ``badfile.bsp'' or ``oldfile.tls'', is not a SPICE kernel file or is an
+   old SPICE text kernel file. This is not an error, but you can't expect
+   to get a meaningful architecture and type. Running the program in this
+   situation results in the architecture and type both being set to
+   ``UNK.''
+ 
+      prompt > archtype badfile.bsp
+      UNK UNK
+      prompt >
+ 
+      prompt > archtype oldfile.tls
+      UNK UNK
+      prompt >
+ 
+ 
+Restrictions
+ 
+   This program cannot determine the architecture and type of old SPICE
+   text kernel files. Old text kernel files do not have an ID word as the
+   first word on the first line of the file to identify their architecture
+   and type, so they cannot be easily identified.
+ 
+ 
+References
+--------------------------------------------------------
+ 
+       1.   DAF Required Reading (daf.req); NAIF Document No. 167
+ 
+       2.   DAS Required Reading (das.req); NAIF Document No. 286
+ 
+       3.   KERNEL Required Reading (kernel.req); NAIF Document No. 218
+ 

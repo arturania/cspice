@@ -19,7 +19,7 @@ static doublereal c_b35 = 60.;
 static integer c__5 = 5;
 static integer c__7 = 7;
 
-/* $Procedure      ET2LST ( ET to Local Solar Time ) */
+/* $Procedure ET2LST ( ET to Local Solar Time ) */
 /* Subroutine */ int et2lst_(doublereal *et, integer *body, doublereal *
 	long__, char *type__, integer *hr, integer *mn, integer *sc, char *
 	time, char *ampm, ftnlen type_len, ftnlen time_len, ftnlen ampm_len)
@@ -119,7 +119,7 @@ static integer c__7 = 7;
 
 /* $ Required_Reading */
 
-/*     TIME.REQ. */
+/*     TIME */
 
 /* $ Keywords */
 
@@ -165,7 +165,7 @@ static integer c__7 = 7;
 /*                epoch ET. Note that an "hour" of local time does not */
 /*                have the same duration as an hour measured by */
 /*                conventional clocks.  It is simply a representation */
-/*                of an angle.  See C$ Particulars for a more */
+/*                of an angle. See the "Particulars" section for a more */
 /*                complete discussion of the meaning of local time. */
 
 /*     MN         is the number of "minutes" past the hour of the */
@@ -328,22 +328,33 @@ static integer c__7 = 7;
 /*     loaded independently of whether a binary PCK file providing */
 /*     rotation data for the same body is loaded or not. */
 
-/*     Although it is not curretly the case for any of the Solar System */
+/*     Although it is not currently the case for any of the Solar System */
 /*     bodies, it is possible that the retrograde rotation rate of a */
 /*     body would be slower than the orbital rate of the body rotation */
 /*     around the Sun. The routine does not account for such cases; for */
 /*     them it will compute incorrect the local time progressing */
 /*     backwards. */
 
-/* $ Author_and_Institution */
-
-/*     W.L. Taber      (JPL) */
-
 /* $ Literature_References */
 
 /*     None. */
 
+/* $ Author_and_Institution */
+
+/*     W.L. Taber      (JPL) */
+
 /* $ Version */
+
+/* -    SPICELIB Version 3.0.1, 09-SEP-2009 (EDW) */
+
+/*        Header edits: deleted a spurious C$ marker from the */
+/*        "Detailed_Output" section. The existence of the marker */
+/*        caused a failure in the HTML documentation creation script. */
+
+/*        Deleted the "Revisions" section as it contained several */
+/*        identical entries from the "Version" section. */
+
+/*        Corrected order of header sections. */
 
 /* -    SPICELIB Version 3.0.0, 28-OCT-2006 (BVS) */
 
@@ -379,30 +390,6 @@ static integer c__7 = 7;
 /* $ Index_Entries */
 
 /*     Compute the local time for a point on a body. */
-
-/* -& */
-/* $ Revisions */
-
-/* -    SPICELIB Version 3.0.0, 28-OCT-2006 (BVS) */
-
-/*        Bug fix: incorrect computation of the local time for the */
-/*        bodies with the retrograde rotation causing the local time to */
-/*        flow backwards has been fixed. The local time for all types of */
-/*        bodies now progresses as expected -- midnight, increasing AM */
-/*        hours, noon, increasing PM hours, next midnight, and so on. */
-
-/* -    SPICELIB Version 2.0.0, 03-NOV-2005 (NJB) */
-
-/*        Bug fix:  treatment of planetographic longitude has been */
-/*        updated to be consistent with the SPICE planetographic/ */
-/*        rectangular coordinate conversion routines.  The effect of */
-/*        this change is that the default sense of positive longitude */
-/*        for the moon is now east; also, the default sense of positive */
-/*        planetographic longitude now may be overridden for any body */
-/*        (see Particulars above). */
-
-/*        Updated to remove non-standard use of duplicate arguments */
-/*        in RMAIND calls. */
 
 /* -& */
 

@@ -1,0 +1,101 @@
+ 
+DAFMOD User's Guide
+===========================================================================
+ 
+   Last revised on 2008 JAN 30 by B. V. Semenov.
+ 
+ 
+Abstract
+--------------------------------------------------------
+ 
+   DAFMOD is an interactive program that modifies various segment
+   attributes of a DAF based kernel -- SPK, CK, or binary PCK.
+ 
+ 
+Summary
+--------------------------------------------------------
+ 
+   DAFMOD is an interactive program that allows the user to modify various
+   attributes of a DAF based kernel -- SPK, CK, or binary PCK. This task
+   should not be under taken without careful thought. It is expected that
+   the user is familiar with the structure and information provided in the
+   SPK, CK, and binary PCK segment descriptors (refer to SPK.REQ, CK.REQ,
+   and PCK.REQ Required Reading documents for more information on this
+   subject.) It is also expected that the user understands the implications
+   which changing a particular segment attribute may cause in the way the
+   data with be used by SPICE software.
+ 
+ 
+Usage
+--------------------------------------------------------
+ 
+   DAFMOD is an interactive program; it prompts the user for all needed
+   inputs.
+ 
+ 
+Example
+--------------------------------------------------------
+ 
+   In this example DAFMOD is used replace MGS SIM ID (-95) with MGS Flight
+   ID (-94) in a test SPK file:
+ 
+      > dafmod
+ 
+      DAFMOD -- Version 2.0.0, January 30, 2008 -- Toolkit Version N0061
+ 
+         DAFMOD allows you to modify various attributes of
+         a DAF based kernel. This task should not be under taken
+         without careful thought, but if you need to do it...
+ 
+         You need to supply:
+            1) The name of the file
+            2) The name of the item to modify
+            3) The old name or id-code of this item
+            4) The new name or id-code of this item.
+ 
+         Here's what you can modify (item):
+ 
+              SPK              CK            PCK
+            object          object         object
+            frame           frame          frame
+            target
+            center
+ 
+         (for SPK files if you specify object both target
+         and center will be modified.)
+ 
+      1) File     : spk_m_010904_OD11140-11209_rec_V1.bsp
+      2) Item     : object
+      3) Old Value: -95
+      4) New Value: -94
+      The file spk_m_010904_OD11140-11209_rec_V1.bsp has been
+      updated.
+      >
+ 
+ 
+ 
+   DAFMOD appends a warning indicating that the file was modified and how
+   it was changed to the comment area of the file, as seen in this output
+   of the COMMNT utility program:
+ 
+      > commnt -r spk_m_010904_OD11140-11209_rec_V1.bsp
+ 
+      ...
+ 
+      =====================================================
+         !!!!!!!!!!!!!!!!!!!Warning !!!!!!!!!!!!!!!!!
+      =====================================================
+      This file was modified by the SPICE program "DAFMOD" on
+      a PC running Linux.
+      Date and time modified: 2005-JAN-13 14:13:19
+ 
+      Every occurrence of a body (target or center) in a segment
+      descriptor
+      with idcode -95 was changed to the value -94.  This change
+      was performed on the segments in the following list.
+ 
+      Segments: 1 2 3 4
+ 
+      >
+ 
+ 

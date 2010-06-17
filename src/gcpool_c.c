@@ -89,7 +89,7 @@
               returned for this variable.  (Usually it is the amount
               of room available in the array cvals). If room is
               less than 1 the error SPICE(BADARRAYSIZE) will be
-              signalled.
+              signaled.
  
    lenout     The allowed length of the output string.  This length
               must large enough to hold the output string plus the
@@ -123,7 +123,7 @@
 -Exceptions
  
    1) If the value of room is less than one the error
-      SPICE(BADARRAYSIZE) is signalled.
+      SPICE(BADARRAYSIZE) is signaled.
  
    2) If cvals has declared length less than the size of a
       string to be returned, the value will be truncated on

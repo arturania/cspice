@@ -104,13 +104,13 @@ static integer c__0 = 0;
 
 /*     None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*    None. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -147,6 +147,10 @@ static integer c__0 = 0;
 
 /* $ Version */
 
+/* -     SPICELIB Version 1.0.5, 18-MAY-2010 (BVS) */
+
+/*        Index lines now state that this routine is deprecated. */
+
 /* -     SPICELIB Version 1.0.4, 27-OCT-2005 (NJB) */
 
 /*         Routine is now deprecated. */
@@ -170,8 +174,8 @@ static integer c__0 = 0;
 /* -& */
 /* $ Index_Entries */
 
-/*     fetch constants for a body from the kernel pool */
-/*     physical constants for a body */
+/*     DEPRECATED fetch constants for a body from the kernel pool */
+/*     DEPRECATED physical constants for a body */
 
 /* -& */
 

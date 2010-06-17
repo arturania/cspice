@@ -67,7 +67,8 @@
 -Detailed_Input
  
    name       is the name of the kernel pool variable to associate 
-              with the values supplied in the array dvals. 
+              with the values supplied in the array dvals. 'name' is
+              restricted to a length of 32 characters or less.
  
    n          is the number of values to insert into the kernel pool. 
  
@@ -82,10 +83,6 @@
  
    None. 
  
--Files
- 
-   None. 
- 
 -Exceptions
  
    1) If name is already present in the kernel pool and there 
@@ -95,16 +92,23 @@
    2) If there is not sufficient room to insert a new variable 
       into the kernel pool and name is not already present in 
       the kernel pool, the error SPICE(KERNELPOOLFULL) is 
-      signalled by a routine in the call tree to this routine. 
+      signaled by a routine in the call tree to this routine. 
  
    3) If there is not sufficient room to insert the values associated 
-      with name, the error SPICE(NOMOREROOM) will be signalled. 
+      with name, the error SPICE(NOMOREROOM) will be signaled. 
  
    4) If the input string pointer name is null, the error
       SPICE(NULLPOINTER) will be signaled.
  
    5) If the input string name has length zero, the error
       SPICE(EMPTYSTRING) will be signaled.
+
+   6) The error 'SPICE(BADVARNAME)' signals if the kernel pool
+      variable name length exceeds 32.
+ 
+-Files
+ 
+   None. 
  
 -Particulars
  
@@ -201,17 +205,24 @@
  
    None. 
  
+-Literature_References
+ 
+   None. 
+ 
 -Author_and_Institution
  
    N.J. Bachman    (JPL)
    W.L. Taber      (JPL) 
  
--Literature_References
- 
-   None. 
- 
 -Version
- 
+
+   -CSPICE Version 1.1.2,  10-FEB-2010 (EDW)
+
+      Added mention of the restriction on kernel pool variable 
+      names to 32 characters or less.
+
+      Reordered header sections to conform to SPICE convention.
+
    -CSPICE Version 1.1.1, 17-NOV-2005 (NJB)
 
       Replaced code fragment in Examples section of header with 
@@ -219,7 +230,7 @@
 
    -CSPICE Version 1.1.0, 24-JUL-2001   (NJB)
 
-       Changed protoype:  input dvals is now type (ConstSpiceDouble *).
+       Changed prototype:  input dvals is now type (ConstSpiceDouble *).
        Implemented interface macro for casting input dvals to const.
 
    -CSPICE Version 1.0.0, 03-JUN-1999 (NJB) (WLT)

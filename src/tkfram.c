@@ -283,6 +283,11 @@ static integer c__14 = 14;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.1.0, 23-APR-2009 (NJB) */
+
+/*        Bug fix: watch is deleted only for frames */
+/*        that are deleted from the buffer. */
+
 /* -    SPICELIB Version 2.0.0, 19-MAR-2009 (NJB) */
 
 /*        Bug fix: this routine now deletes watches set on */
@@ -384,7 +389,9 @@ static integer c__14 = 14;
     full = lnknfn_(pool) == 0;
     if (full) {
 
-/*        The call to LOCATI we're about to make will overwrite */
+/*        If the input frame ID is not buffered, we'll need to */
+/*        overwrite an existing buffer entry. In this case */
+/*        the call to LOCATI we're about to make will overwrite */
 /*        the ID code in the slot we're about to use. We need */
 /*        this ID code, so extract it now while we have the */
 /*        opportunity. The old ID sits at the tail of the list */
@@ -392,27 +399,32 @@ static integer c__14 = 14;
 
 	tail = lnktl_(&at, pool);
 	oldid = idents[(i__1 = tail - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge(
-		"idents", i__1, "tkfram_", (ftnlen)406)];
+		"idents", i__1, "tkfram_", (ftnlen)413)];
 
-/*        Since the buffer is already full, we'll delete the watcher for */
-/*        the kernel variables associated with OLDID, since there's no */
-/*        longer a need for that watcher. */
+/*        Create the name of the agent associated with the old */
+/*        frame. */
 
 	s_copy(oldagt, "TKFRAME_#", (ftnlen)32, (ftnlen)9);
 	repmi_(oldagt, "#", &oldid, oldagt, (ftnlen)32, (ftnlen)1, (ftnlen)32)
 		;
-
-/*        Clear the update status of the old agent; DWPOOL won't */
-/*        delete an agent with a unchecked update. */
-
-	cvpool_(oldagt, &update, (ftnlen)32);
-	dwpool_(oldagt, (ftnlen)32);
     }
 
 /*     Look up the address of the instance data. */
 
     idnt[0] = *id;
     locati_(idnt, &c__1, idents, pool, &at, &buffrd);
+    if (full && ! buffrd) {
+
+/*        Since the buffer is already full, we'll delete the watcher for */
+/*        the kernel variables associated with OLDID, since there's no */
+/*        longer a need for that watcher. */
+
+/*        First clear the update status of the old agent; DWPOOL won't */
+/*        delete an agent with a unchecked update. */
+
+	cvpool_(oldagt, &update, (ftnlen)32);
+	dwpool_(oldagt, (ftnlen)32);
+    }
 
 /*     Until we have better information we put the identity matrix */
 /*     into the output rotation and set FRAME to zero. */
@@ -467,25 +479,25 @@ static integer c__14 = 14;
 /*        information from the local buffer. */
 
 	rot[0] = buffd[(i__1 = at * 9 - 9) < 180 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffd", i__1, "tkfram_", (ftnlen)492)];
+		"buffd", i__1, "tkfram_", (ftnlen)506)];
 	rot[1] = buffd[(i__1 = at * 9 - 8) < 180 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffd", i__1, "tkfram_", (ftnlen)493)];
+		"buffd", i__1, "tkfram_", (ftnlen)507)];
 	rot[2] = buffd[(i__1 = at * 9 - 7) < 180 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffd", i__1, "tkfram_", (ftnlen)494)];
+		"buffd", i__1, "tkfram_", (ftnlen)508)];
 	rot[3] = buffd[(i__1 = at * 9 - 6) < 180 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffd", i__1, "tkfram_", (ftnlen)495)];
+		"buffd", i__1, "tkfram_", (ftnlen)509)];
 	rot[4] = buffd[(i__1 = at * 9 - 5) < 180 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffd", i__1, "tkfram_", (ftnlen)496)];
+		"buffd", i__1, "tkfram_", (ftnlen)510)];
 	rot[5] = buffd[(i__1 = at * 9 - 4) < 180 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffd", i__1, "tkfram_", (ftnlen)497)];
+		"buffd", i__1, "tkfram_", (ftnlen)511)];
 	rot[6] = buffd[(i__1 = at * 9 - 3) < 180 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffd", i__1, "tkfram_", (ftnlen)498)];
+		"buffd", i__1, "tkfram_", (ftnlen)512)];
 	rot[7] = buffd[(i__1 = at * 9 - 2) < 180 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffd", i__1, "tkfram_", (ftnlen)499)];
+		"buffd", i__1, "tkfram_", (ftnlen)513)];
 	rot[8] = buffd[(i__1 = at * 9 - 1) < 180 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffd", i__1, "tkfram_", (ftnlen)500)];
+		"buffd", i__1, "tkfram_", (ftnlen)514)];
 	*frame = buffi[(i__1 = at - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffi", i__1, "tkfram_", (ftnlen)502)];
+		"buffi", i__1, "tkfram_", (ftnlen)516)];
     } else {
 
 /*        Determine how the frame is specified and what it */
@@ -516,13 +528,13 @@ static integer c__14 = 14;
 
 	for (i__ = 1; i__ <= 2; ++i__) {
 	    dtpool_(alt + (((i__1 = i__ - 1) < 14 && 0 <= i__1 ? i__1 : 
-		    s_rnge("alt", i__1, "tkfram_", (ftnlen)523)) << 5), found,
+		    s_rnge("alt", i__1, "tkfram_", (ftnlen)537)) << 5), found,
 		     &n, type__, (ftnlen)32, (ftnlen)1);
 	    if (*found) {
 		s_copy(item + (((i__1 = i__ - 1) < 14 && 0 <= i__1 ? i__1 : 
-			s_rnge("item", i__1, "tkfram_", (ftnlen)526)) << 5), 
+			s_rnge("item", i__1, "tkfram_", (ftnlen)540)) << 5), 
 			alt + (((i__3 = i__ - 1) < 14 && 0 <= i__3 ? i__3 : 
-			s_rnge("alt", i__3, "tkfram_", (ftnlen)526)) << 5), (
+			s_rnge("alt", i__3, "tkfram_", (ftnlen)540)) << 5), (
 			ftnlen)32, (ftnlen)32);
 	    }
 	}
@@ -654,13 +666,13 @@ static integer c__14 = 14;
 
 	    for (i__ = 3; i__ <= 5; ++i__) {
 		dtpool_(alt + (((i__1 = i__ - 1) < 14 && 0 <= i__1 ? i__1 : 
-			s_rnge("alt", i__1, "tkfram_", (ftnlen)654)) << 5), 
+			s_rnge("alt", i__1, "tkfram_", (ftnlen)668)) << 5), 
 			found, &n, type__, (ftnlen)32, (ftnlen)1);
 		if (*found) {
 		    s_copy(item + (((i__1 = i__ - 1) < 14 && 0 <= i__1 ? i__1 
-			    : s_rnge("item", i__1, "tkfram_", (ftnlen)657)) <<
+			    : s_rnge("item", i__1, "tkfram_", (ftnlen)671)) <<
 			     5), alt + (((i__3 = i__ - 1) < 14 && 0 <= i__3 ? 
-			    i__3 : s_rnge("alt", i__3, "tkfram_", (ftnlen)657)
+			    i__3 : s_rnge("alt", i__3, "tkfram_", (ftnlen)671)
 			    ) << 5), (ftnlen)32, (ftnlen)32);
 		}
 	    }
@@ -684,10 +696,10 @@ static integer c__14 = 14;
 
 	    for (i__ = 1; i__ <= 3; ++i__) {
 		convrt_(&angles[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : 
-			s_rnge("angles", i__1, "tkfram_", (ftnlen)686)], 
+			s_rnge("angles", i__1, "tkfram_", (ftnlen)700)], 
 			units, "RADIANS", &tempd, (ftnlen)32, (ftnlen)7);
 		angles[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge(
-			"angles", i__1, "tkfram_", (ftnlen)687)] = tempd;
+			"angles", i__1, "tkfram_", (ftnlen)701)] = tempd;
 	    }
 	    if (failed_()) {
 		lnkini_(&c__20, pool);
@@ -759,25 +771,25 @@ static integer c__14 = 14;
 /*        Buffer the identifier, relative frame and rotation matrix. */
 
 	buffd[(i__1 = at * 9 - 9) < 180 && 0 <= i__1 ? i__1 : s_rnge("buffd", 
-		i__1, "tkfram_", (ftnlen)770)] = rot[0];
+		i__1, "tkfram_", (ftnlen)784)] = rot[0];
 	buffd[(i__1 = at * 9 - 8) < 180 && 0 <= i__1 ? i__1 : s_rnge("buffd", 
-		i__1, "tkfram_", (ftnlen)771)] = rot[1];
+		i__1, "tkfram_", (ftnlen)785)] = rot[1];
 	buffd[(i__1 = at * 9 - 7) < 180 && 0 <= i__1 ? i__1 : s_rnge("buffd", 
-		i__1, "tkfram_", (ftnlen)772)] = rot[2];
+		i__1, "tkfram_", (ftnlen)786)] = rot[2];
 	buffd[(i__1 = at * 9 - 6) < 180 && 0 <= i__1 ? i__1 : s_rnge("buffd", 
-		i__1, "tkfram_", (ftnlen)773)] = rot[3];
+		i__1, "tkfram_", (ftnlen)787)] = rot[3];
 	buffd[(i__1 = at * 9 - 5) < 180 && 0 <= i__1 ? i__1 : s_rnge("buffd", 
-		i__1, "tkfram_", (ftnlen)774)] = rot[4];
+		i__1, "tkfram_", (ftnlen)788)] = rot[4];
 	buffd[(i__1 = at * 9 - 4) < 180 && 0 <= i__1 ? i__1 : s_rnge("buffd", 
-		i__1, "tkfram_", (ftnlen)775)] = rot[5];
+		i__1, "tkfram_", (ftnlen)789)] = rot[5];
 	buffd[(i__1 = at * 9 - 3) < 180 && 0 <= i__1 ? i__1 : s_rnge("buffd", 
-		i__1, "tkfram_", (ftnlen)776)] = rot[6];
+		i__1, "tkfram_", (ftnlen)790)] = rot[6];
 	buffd[(i__1 = at * 9 - 2) < 180 && 0 <= i__1 ? i__1 : s_rnge("buffd", 
-		i__1, "tkfram_", (ftnlen)777)] = rot[7];
+		i__1, "tkfram_", (ftnlen)791)] = rot[7];
 	buffd[(i__1 = at * 9 - 1) < 180 && 0 <= i__1 ? i__1 : s_rnge("buffd", 
-		i__1, "tkfram_", (ftnlen)778)] = rot[8];
+		i__1, "tkfram_", (ftnlen)792)] = rot[8];
 	buffi[(i__1 = at - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge("buffi", i__1,
-		 "tkfram_", (ftnlen)780)] = *frame;
+		 "tkfram_", (ftnlen)794)] = *frame;
 
 /*        If these were not previously buffered, we need to set */
 /*        a watch on the various items that might be used to define */

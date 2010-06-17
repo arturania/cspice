@@ -1,0 +1,135 @@
+ 
+CKSMRG User's Guide
+===========================================================================
+ 
+   Last revised on 2010 JUN 03 by B. V. Semenov.
+ 
+ 
+Abstract
+--------------------------------------------------------
+ 
+   CKSMRG is a command-line program that merges segments in Type 3 CK
+   files.
+ 
+ 
+Summary
+--------------------------------------------------------
+ 
+   CKSMRG is a program that takes an existing type 3 CK file, finds in it
+   all segments that match a specified structure/reference pair, merges the
+   data from these segments, and writes merged segment(s) out to an output
+   Type 3 CK file. While doing this, it re-computes interpolation intervals
+   boundaries based on a specified tolerance, regenerates, if requested,
+   angular rates and optionally applies a time offset to the input CK time
+   tags. CKSMRG can also down sample input CK data to produce output CK
+   file of a smaller size matching the attitude in the input CK at or
+   better than specified angular threshold.
+ 
+   Normally this program is used to merge segments in the CK files that
+   were created from the same input data stream, for example daily CKs
+   created from orientation telemetry. In some cases a few CKs must be
+   concatenated together using DAFCAT and resulting concatenated file
+   should then be used as CKSMRG input.
+ 
+   NAIF strongly advises to NOT use this program to merge CKs containing
+   data that came from two or more different input data streams, for
+   example reconstructed and predicted CKs.
+ 
+ 
+Usage
+--------------------------------------------------------
+ 
+   To make a new type 3 CK file containing a merged segment(s) for a set of
+   homogeneous type 3 segments from an existing CK file:
+ 
+      > CKSMRG -K|-KERNELS <meta kernel name|kernel file names>
+               -I|-INPUT <input CK file name>
+               -O|-OUTPUT <output CK file name>
+               -S|-SEGID <output CK segment ID string>
+               -F|-FILEID <output CK file ID string>
+               -B|-BODY <body ID|name>
+               -R|-REFERENCE <reference ID|name>
+               -A|-AV <DROP|KEEP|MAKE|MAKEAVRG>
+               -T|-TOLERANCE <tolerance (number units)>
+              [-C|-CORRECTION <time delta|correction table file>]
+              [-D|-DOWNSAMPLE <angular threshold (units)>]
+ 
+   To display help:
+ 
+      > CKSMRG  -H|-HELP
+ 
+   To display usage:
+ 
+      > CKSMRG [-U|-USAGE]
+ 
+   To display version:
+ 
+      > CKSMRG  -V|-VERSION
+ 
+   Command line parameters specified in [] are optional. Command line keys
+   are case insensitive.
+ 
+   Depending on the value specified with -A/-AV command line switch the
+   program copies angular rates from the input file to the output file
+   (KEEP), re-computes angular rates using a straight (MAKE) or averaged
+   (MAKEAVRG) approach, or ignores them and produces an output CK segment
+   without angular rate information (DROP).
+ 
+   Optionally the program can apply an offset to the orientation data time
+   tags from the input CK file. The value of the offset can be specified in
+   two ways -- directly with the -C/-CORRECTION command line switch or via
+   a correction table file, the name of which can be provided after
+   -C/-CORRECTION command line switch.
+ 
+   An example of the first case would be '-C -2.3 seconds', which tells the
+   program to subtract 2.3 seconds from each time from the input file
+   before writing it to the output file.
+ 
+   In the second case, '-C corr_table.txt', the specified correction table
+   file should be a plain text file containing one or more lines with three
+   space-delimited items on each line. These items are starting UTC time
+   (without embedded blanks), correction value, and correction units. For
+   example, this correction file:
+ 
+      2002-02-01T00:00  2.0 seconds
+      2002-03-01T00:00 -4.5 seconds
+ 
+   tells the program that all time tags before February 1, 2002 should not
+   be corrected, 2 seconds must be added to all time tags falling in
+   February, and 4.5 seconds must be subtracted from all time tags after
+   March 1 00:00.
+ 
+   Optionally the program can also down sample input CK data to produce a
+   smaller output CK file still providing attitude that matches input
+   attitude at or better than angular threshold specified with
+   -D/-DOWNSAMPLE command line switch. Note that this capability should be
+   exercised with caution because some data from the input CK does not get
+   copied to the output CK file. This loss of data makes the output CK file
+   not as usable for further alterations, for example such as changing
+   interpolation interval information, as the input CK file. Using too
+   tight angular threshold may also result in making output CK with too
+   many points in a single segment making access to the data in the segment
+   via CK reader routines inefficient.
+ 
+ 
+Usage Example
+--------------------------------------------------------
+ 
+   For example, imagine that there is a CK file containing a few type 3 CK
+   segments with orientation data for a structure with NAIF ID -53000 with
+   respect to the MARSIAU reference frame (the case for Mars 01 Odyssey CK
+   files). The angular rates stored in the segments of this file were
+   originally computed from the orientation data. This program can be run
+   in the following fashion to generate an output type 3 file, in which the
+   data from the input segments will be merged into a single segment:
+ 
+      > CKSMRG -K m01.lsk m01.sclk m01.fk        \
+               -I m01_input_ck.bc                \
+               -O m01_output_ck.bc               \
+               -S 'Merged M01 s/c Segment Desc.' \
+               -F 'New M01 s/c File Desc.'       \
+               -B -53000                         \
+               -R MARSIAU                        \
+               -A MAKEAVRG                       \
+               -T 1 minutes
+ 

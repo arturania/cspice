@@ -236,6 +236,12 @@
  
 -Version
  
+   -CSPICE Version 1.1.0, 01-JUN-2010 (NJB)
+ 
+       Added touchd_ calls to tests for squared, scaled axis length
+       underflow. This forces rounding to zero in certain cases where
+       it otherwise might not occur due to use of extended registers.
+
    -CSPICE Version 1.0.1, 06-DEC-2002 (NJB)
 
        Outputs shown in header example have been corrected to 
@@ -431,9 +437,9 @@
    sclb2  =  sclb*sclb;
    sclc2  =  sclc*sclc;
 
-   if (       ( scla2   ==   0. )
-         ||   ( sclb2   ==   0. )
-         ||   ( sclc2   ==   0. )   )    
+   if (       ( (SpiceDouble)touchd_(&scla2)   ==   0. )
+         ||   ( (SpiceDouble)touchd_(&sclb2)   ==   0. )
+         ||   ( (SpiceDouble)touchd_(&sclc2)   ==   0. )   )    
    {
       setmsg_c ( "Semi-axis too small:  a = #, b = #, c = #. " );
       errdp_c  ( "#", a                                        );

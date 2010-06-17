@@ -33,7 +33,7 @@ rem
 rem  Compile everything else.
 rem
 
-for %%f in (*.c) do cl %%f >> mkcspice.log
+for %%f in (*.c) do cl %%f 
 
 rem
 rem  Set the cl variable to omit optimization.  Compile zzsecprt.c.
@@ -43,7 +43,7 @@ set cl= /c -D_COMPLEX_DEFINED -DMSDOS -DOMIT_BLANK_CC
 
 rename zzsecprt.x zzsecprt.c
 
-cl zzsecprt.c >> mkcspice.log
+cl zzsecprt.c 
 
 dir /b *.obj > temp.lst
 

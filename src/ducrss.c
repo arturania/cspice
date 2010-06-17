@@ -82,13 +82,7 @@
 /*              of the output will simply be the derivative of the */
 /*              cross product of the position components of S1 and S2. */
 
-/*              SOUT may overwrite S1 or S2. */
-
 /* $ Parameters */
-
-/*     None. */
-
-/* $ Files */
 
 /*     None. */
 
@@ -110,12 +104,14 @@
 /*        derivative may be well within the range of double */
 /*        precision numbers. */
 
+/* $ Files */
+
+/*     None. */
+
 /* $ Particulars */
 
 /*     DUCRSS calculates the unit vector parallel to the cross product */
 /*     of two vectors and the derivative of that unit vector. */
-/*     The results of the computation may overwrite either of the */
-/*     input vectors. */
 
 /* $ Examples */
 
@@ -146,16 +142,21 @@
 /*     there will be no problem and no checking actually needs to be */
 /*     done. */
 
+/* $ Literature_References */
+
+/*     None. */
+
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
 /*     W.L. Taber      (JPL) */
 
-/* $ Literature_References */
-
-/*     None. */
-
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.1, 22-APR-2010 (NJB) */
+
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
 /* -    SPICELIB Version 1.1.0, 30-AUG-2005 (NJB) */
 

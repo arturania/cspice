@@ -65,13 +65,14 @@ static doublereal c_b128 = 2.;
     doublereal bsite[3], coord[2];
     logical found;
     extern /* Subroutine */ int errdp_(char *, doublereal *, ftnlen);
-    doublereal stobs[6], vtemp[3], fovpt[3], m1[9]	/* was [3][3] */, m2[
-	    9]	/* was [3][3] */;
+    doublereal stobs[6], vtemp[3], fovpt[3], m1[9]	/* was [3][3] */;
     extern doublereal vnorm_(doublereal *);
+    doublereal m2[9]	/* was [3][3] */;
     static integer svobs;
-    extern /* Subroutine */ int ljust_(char *, char *, ftnlen, ftnlen), 
-	    ucrss_(doublereal *, doublereal *, doublereal *);
+    extern /* Subroutine */ int ljust_(char *, char *, ftnlen, ftnlen);
     extern logical vzero_(doublereal *);
+    extern /* Subroutine */ int ucrss_(doublereal *, doublereal *, doublereal 
+	    *);
     integer nxpts;
     extern /* Subroutine */ int bods2c_(char *, integer *, logical *, ftnlen),
 	     vrotv_(doublereal *, doublereal *, doublereal *, doublereal *), 
@@ -447,6 +448,11 @@ static doublereal c_b128 = 2.;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+
+/*       Added NWRR parameter. */
+/*       Added NWUDS parameter. */
+
 /* -    SPICELIB Version 1.0.0, 21-FEB-2009 (NJB) (LSE) (EDW) */
 
 /* -& */
@@ -482,6 +488,14 @@ static doublereal c_b128 = 2.;
 
 /*     Callers of GFSEP should declare their workspace window */
 /*     count using NWSEP. */
+
+
+/*     Callers of GFRR should declare their workspace window */
+/*     count using NWRR. */
+
+
+/*     Callers of GFUDS should declare their workspace window */
+/*     count using NWUDS. */
 
 
 /*     ADDWIN is a parameter used to expand each interval of the search */

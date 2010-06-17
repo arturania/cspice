@@ -54,76 +54,80 @@ static integer c__9 = 9;
 
 /* $ Required_Reading */
 
-/*      None. */
+/*     None. */
 
 /* $ Keywords */
 
-/*      MATRIX */
+/*     MATRIX */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*      M1         I   3x3 double precision matrix. */
-/*      M2         I   3x3 double precision matrix. */
-/*      MOUT       O   3x3 double precision matrix. MOUT is the */
-/*                     M1 * M2**T. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     M1         I   3x3 double precision matrix. */
+/*     M2         I   3x3 double precision matrix. */
+/*     MOUT       O   3x3 double precision matrix. MOUT is the */
+/*                    product M1 * M2**T. */
 
 /* $ Detailed_Input */
 
-/*      M1         is an arbitrary 3x3 double precision matrix. */
+/*     M1         is an arbitrary 3x3 double precision matrix. */
 
-/*      M2         is an arbitrary 3x3 double precision matrix. */
-/*                 Typically, M2 will be a rotation matrix since */
-/*                 then its transpose is its inverse (but this is */
-/*                 NOT a requirement). */
+/*     M2         is an arbitrary 3x3 double precision matrix. */
+/*                Typically, M2 will be a rotation matrix since */
+/*                then its transpose is its inverse (but this is */
+/*                NOT a requirement). */
 
 /* $ Detailed_Output */
 
-/*      MOUT       is a 3x3 double precision matrix. MOUT is the */
-/*                 product (M1) x (M2**T). MOUT can overwrite M1 or M2. */
+/*     MOUT       is a 3x3 double precision matrix. MOUT is the */
+/*                product (M1) x (M2**T). */
 
 /* $ Parameters */
 
-/*      None. */
+/*     None. */
+
+/* $ Exceptions */
+
+/*     Error free. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
-/*      The code reflects precisely the following mathematical expression */
+/*     The code reflects precisely the following mathematical expression */
 
-/*      For each value of the subscripts I and J from 1 to 3: */
+/*        For each value of the subscripts I and J from 1 to 3: */
 
-/*      MOUT(I,J) = Summation from K=1 to 3 of  ( M1(I,K) * M2(J,K) ) */
+/*        MOUT(I,J) = Summation from K=1 to 3 of  ( M1(I,K) * M2(J,K) ) */
 
-/*      Note that the reversal of the K and J subscripts in the right- */
-/*      hand matrix M2 is what makes MOUT the product of the TRANSPOSE */
-/*      of M2 and not simply of M2 itself.  Also, the intermediate */
-/*      results of the operation above are buffered in a temporary matrix */
-/*      which is later moved to the output matrix.  Thus, to save space */
-/*      in the calling program, MOUT can be actually be M2 or M1 if */
-/*      desired without interfering with the computations. */
+/*     Note that the reversal of the K and J subscripts in the right- */
+/*     hand matrix M2 is what makes MOUT the product of the TRANSPOSE of */
+/*     M2 and not simply of M2 itself. */
 
 /* $ Examples */
 
-/*      Let M1 = |  0.0D0  1.0D0  0.0D0 | */
-/*               |                      | */
-/*               | -1.0D0  0.0D0  0.0D0 | */
-/*               |                      | */
-/*               |  0.0D0  0.0D0  1.0D0 | */
+/*     Let M1 = |  0.0D0  1.0D0  0.0D0 | */
+/*              |                      | */
+/*              | -1.0D0  0.0D0  0.0D0 | */
+/*              |                      | */
+/*              |  0.0D0  0.0D0  1.0D0 | */
 
 
-/*          M2 = |  0.0D0  1.0D0  0.0D0 | */
-/*               |                      | */
-/*               | -1.0D0  0.0D0  0.0D0 | */
-/*               |                      | */
-/*               |  0.0D0  0.0D0  1.0D0 | */
+/*         M2 = |  0.0D0  1.0D0  0.0D0 | */
+/*              |                      | */
+/*              | -1.0D0  0.0D0  0.0D0 | */
+/*              |                      | */
+/*              |  0.0D0  0.0D0  1.0D0 | */
 
-/*      then the call */
+/*     then the call */
 
-/*      CALL MXMT ( M1, M2, MOUT ) */
+/*        CALL MXMT ( M1, M2, MOUT ) */
 
-/*      produces the matrix */
+/*     produces the matrix */
 
 
 /*        MOUT = | 1.0D0  0.0D0  0.0D0 | */
@@ -135,28 +139,25 @@ static integer c__9 = 9;
 
 /* $ Restrictions */
 
-/*      The user is responsible for checking the magnitudes of the */
-/*      elements of M1 and M2 so that a floating point overflow does */
-/*      not occur.  (In the typical use where M1 and M2 are rotation */
-/*      matrices, this not a risk at all.) */
-
-/* $ Exceptions */
-
-/*     Error free. */
-
-/* $ Files */
-
-/*      None. */
-
-/* $ Author_and_Institution */
-
-/*      W.M. Owen       (JPL) */
+/*     The user is responsible for checking the magnitudes of the */
+/*     elements of M1 and M2 so that a floating point overflow does */
+/*     not occur.  (In the typical use where M1 and M2 are rotation */
+/*     matrices, this not a risk at all.) */
 
 /* $ Literature_References */
 
-/*      None */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     W.M. Owen       (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.2, 22-APR-2010 (NJB) */
+
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
 /* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
 
@@ -172,29 +173,31 @@ static integer c__9 = 9;
 
 /* -& */
 
+/*     Local variables */
+
+
 /*  Perform the matrix multiplication */
 
     for (i__ = 1; i__ <= 3; ++i__) {
 	for (j = 1; j <= 3; ++j) {
 	    prodm[(i__1 = i__ + j * 3 - 4) < 9 && 0 <= i__1 ? i__1 : s_rnge(
-		    "prodm", i__1, "mxmt_", (ftnlen)168)] = m1[(i__2 = i__ - 
+		    "prodm", i__1, "mxmt_", (ftnlen)174)] = m1[(i__2 = i__ - 
 		    1) < 9 && 0 <= i__2 ? i__2 : s_rnge("m1", i__2, "mxmt_", (
-		    ftnlen)168)] * m2[(i__3 = j - 1) < 9 && 0 <= i__3 ? i__3 :
-		     s_rnge("m2", i__3, "mxmt_", (ftnlen)168)] + m1[(i__4 = 
+		    ftnlen)174)] * m2[(i__3 = j - 1) < 9 && 0 <= i__3 ? i__3 :
+		     s_rnge("m2", i__3, "mxmt_", (ftnlen)174)] + m1[(i__4 = 
 		    i__ + 2) < 9 && 0 <= i__4 ? i__4 : s_rnge("m1", i__4, 
-		    "mxmt_", (ftnlen)168)] * m2[(i__5 = j + 2) < 9 && 0 <= 
-		    i__5 ? i__5 : s_rnge("m2", i__5, "mxmt_", (ftnlen)168)] + 
+		    "mxmt_", (ftnlen)174)] * m2[(i__5 = j + 2) < 9 && 0 <= 
+		    i__5 ? i__5 : s_rnge("m2", i__5, "mxmt_", (ftnlen)174)] + 
 		    m1[(i__6 = i__ + 5) < 9 && 0 <= i__6 ? i__6 : s_rnge(
-		    "m1", i__6, "mxmt_", (ftnlen)168)] * m2[(i__7 = j + 5) < 
+		    "m1", i__6, "mxmt_", (ftnlen)174)] * m2[(i__7 = j + 5) < 
 		    9 && 0 <= i__7 ? i__7 : s_rnge("m2", i__7, "mxmt_", (
-		    ftnlen)168)];
+		    ftnlen)174)];
 	}
     }
 
 /*  Move the result into MOUT */
 
     moved_(prodm, &c__9, mout);
-
     return 0;
 } /* mxmt_ */
 

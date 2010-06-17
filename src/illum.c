@@ -569,6 +569,10 @@ static integer c__3 = 3;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.2.2, 18-MAY-2010 (BVS) */
+
+/*        Index lines now state that this routine is deprecated. */
+
 /* -    SPICELIB Version 1.2.1, 07-FEB-2008 (NJB) */
 
 /*        Abstract now states that this routine is deprecated. */
@@ -599,11 +603,11 @@ static integer c__3 = 3;
 /* -& */
 /* $ Index_Entries */
 
-/*     illumination angles */
-/*     lighting angles */
-/*     phase angle */
-/*     solar incidence angle */
-/*     emission angle */
+/*     DEPRECATED illumination angles */
+/*     DEPRECATED lighting angles */
+/*     DEPRECATED phase angle */
+/*     DEPRECATED solar incidence angle */
+/*     DEPRECATED emission angle */
 
 /* -& */
 /* $ Revisions */

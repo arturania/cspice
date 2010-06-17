@@ -140,7 +140,7 @@ static integer c__2000 = 2000;
 
 /* $ Version */
 
-/*     SPICELIB 1.0.0 Fri Mar  6 14:46:37 2009 (EDW) */
+/*     SPICELIB 1.0.0 Thu May 20 07:57:58 2010 (EDW) */
 
 
 /*     A script generates this file. Do not edit by hand. */

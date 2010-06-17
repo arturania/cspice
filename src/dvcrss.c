@@ -76,16 +76,10 @@
 
 /*     SOUT     This variable represents the state associated with the */
 /*              cross product of the position components of S1 and S2. */
-/*              In otherwords if S1 = (P1,V1) and S2 = (P2,V2) then */
-/*              SOUT is ( P1xP2, d/dt{ P1xP2 } ) */
-
-/*              SOUT may overwrite S1 or S2. */
+/*              In other words, if S1 = (P1,V1) and S2 = (P2,V2) then */
+/*              SOUT is ( P1xP2, d/dt{ P1xP2 } ). */
 
 /* $ Parameters */
-
-/*     None. */
-
-/* $ Files */
 
 /*     None. */
 
@@ -94,7 +88,7 @@
 /*     Error free. */
 
 /*     1) If S1 and S2 are large in magnitude (taken together, */
-/*        their magnitude surpasses the limit allow by the */
+/*        their magnitude surpasses the limit allowed by the */
 /*        computer) then it may be possible to generate a */
 /*        floating point overflow from an intermediate */
 /*        computation even though the actual cross product and */
@@ -104,14 +98,15 @@
 /*        DVCRSS does NOT check the magnitude of S1 or S2 to */
 /*        insure that overflow will not occur. */
 
+/* $ Files */
+
+/*     None. */
+
 /* $ Particulars */
 
 /*     DVCRSS calculates the three-dimensional cross product of two */
 /*     vectors and the derivative of that cross product according to */
-/*     the definition.  The components of this state are stored */
-/*     in a local buffer vector until the calculation is complete. */
-/*     Thus SOUT may overwrite S1 or S2 without interfering with */
-/*     intermediate computations. */
+/*     the definition. */
 
 /* $ Examples */
 
@@ -124,15 +119,20 @@
 
 /*     None. */
 
-/* $ Author_and_Institution */
-
-/*     W.L. Taber      (JPL) */
-
 /* $ Literature_References */
 
 /*     None. */
 
+/* $ Author_and_Institution */
+
+/*     W.L. Taber      (JPL) */
+
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1, 22-APR-2010 (NJB) */
+
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
 /* -    SPICELIB Version 1.0.0, 15-JUN-1995 (WLT) */
 

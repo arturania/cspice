@@ -160,6 +160,46 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.20.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL. */
+
+/* -    SPICELIB Version 2.19.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-CC_C. */
+
+/* -    SPICELIB Version 2.18.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-64BIT-CC_C. */
+
+/* -    SPICELIB Version 2.17.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-NATIVE_C. */
+
+/* -    SPICELIB Version 2.16.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-WINDOWS-64BIT-IFORT. */
+
+/* -    SPICELIB Version 2.15.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 2.14.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-64BIT-MS_C. */
+
+/* -    SPICELIB Version 2.13.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-INTEL_C. */
+
+/* -    SPICELIB Version 2.12.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 2.11.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-GFORTRAN. */
+
 /* -    SPICELIB Version 2.10.0, 18-MAR-2009 (BVS) */
 
 /*        Updated for PC-LINUX-GFORTRAN. */

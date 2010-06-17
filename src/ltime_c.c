@@ -2,6 +2,13 @@
 
 -Procedure ltime_c ( Light Time )
 
+-Abstract
+ 
+   This routine computes the transmit (or receive) time 
+   of a signal at a specified target, given the receive 
+   (or transmit) time at a specified observer. The elapsed 
+   time between transmit and receive is also returned. 
+ 
 -Disclaimer
 
    THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE
@@ -27,13 +34,6 @@
    CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE
    ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE.
 
--Abstract
- 
-   This routine computes the transmit (or receive) time 
-   of a signal at a specified target, given the receive 
-   (or transmit) time at a specified observer. The elapsed 
-   time between transmit and receive is also returned. 
- 
 -Required_Reading
  
     None. 
@@ -102,10 +102,9 @@
  
 -Detailed_Output
  
-   ettarg      is the epoch expressed in ephemeris seconds (TDB) 
-               past the epoch of the j2000_c reference system 
-               at which the electromagnetic signal is "at" the 
-               target body. 
+   ettarg      is the epoch, expressed in ephemeris seconds
+               past J2000 TDB, at which the electromagnetic signal is
+               "at" the target body.
  
                Note ettarg is computed using only Newtonian 
                assumptions about the propagation of light. 
@@ -116,10 +115,6 @@
                   elapsd = fabs( etobs - ettarg )
  
 -Parameters
- 
-    None. 
- 
--Files
  
     None. 
  
@@ -137,6 +132,10 @@
  
       In this case, the value of ettarg will be set to etobs 
       and elapsd will be set to zero. 
+ 
+-Files
+ 
+    None. 
  
 -Particulars
  
@@ -258,17 +257,25 @@
  
    None. 
  
+-Literature_References
+ 
+    None. 
+ 
 -Author_and_Institution
  
     N.J. Bachman    (JPL)
     W.L. Taber      (JPL) 
  
--Literature_References
- 
-    None. 
- 
 -Version
  
+   -CSPICE Version 1.0.1, 09-NOV-2006   (NJB)
+
+      Corrected a reference to the function j2000_c; this had been
+      erroneously changed from the name J2000 to j2000_c 
+      during translation from Fortran.
+
+      Re-ordered header sections to conform to standard.
+
    -CSPICE Version 1.0.0, 29-MAY-1999 (WLT) (NJB)
 
 -Index_Entries

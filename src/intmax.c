@@ -166,12 +166,32 @@
  
    N.J. Bachman    (JPL) 
    H.A. Neilan     (JPL) 
+   B.V. Semenov    (JPL) 
    M.J. Spencer    (JPL) 
    W.L. Taber      (JPL) 
    I.M. Underwood  (JPL) 
+   E.D. Wright     (JPL) 
  
 -Version
- 
+
+   -CSPICE Version 2.1.0, 14-MAY-2010 (EDW)(BVS)
+
+       Updated for:
+       
+          MAC-OSX-64BIT-INTEL_C
+          PC-64BIT-MS_C
+          SUN-SOLARIS-64BIT-NATIVE_C
+          SUN-SOLARIS-INTEL-64BIT-CC_C
+
+       environments. Added the corresponding tags:
+       
+          CSPICE_MAC_OSX_INTEL_64BIT_GCC
+          CSPICE_PC_64BIT_MS
+          CSPICE_SUN_SOLARIS_64BIT_NATIVE
+          CSPICE_SUN_SOLARIS_INTEL_64BIT_CC
+
+       tag to the #ifdefs set.
+
    -CSPICE Version 2.0.0, 21-FEB-2006 (NJB)
 
        Updated to support the PC Linux 64 bit mode/gcc platform.
@@ -205,7 +225,23 @@
        return ( INT_MAX );
 
    #elif defined( CSPICE_SUN_SOLARIS_64BIT_GCC )
-        
+
+       return ( INT_MAX );
+
+   #elif defined( CSPICE_MAC_OSX_INTEL_64BIT_GCC )
+
+       return ( INT_MAX );
+
+   #elif defined( CSPICE_PC_64BIT_MS )
+
+       return ( INT_MAX );
+
+   #elif defined( CSPICE_SUN_SOLARIS_64BIT_NATIVE )
+
+       return ( INT_MAX );
+
+   #elif defined( CSPICE_SUN_SOLARIS_INTEL_64BIT_CC )
+
        return ( INT_MAX );
 
    #else

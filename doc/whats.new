@@ -15,29 +15,562 @@ Introduction
  
    The versions of the Toolkit changes described in this document are
  
-      Version 63
-      Version 62
-      Version 61
-      Version 60
-      Version 59
-      Version 58
-      Version 57
-      Version 56
-      Version 55
-      Version 54
-      Version 53
-      Version 52
-      Version 51
-      Version 50
-      Version 49
-      Version 48
-      Version 47
-      Version 46
-      Version 45
-      Version 44
-      Version 43
-      Version 42
-      Version 41
+      Version 64 --- June 2010
+      Version 63 --- April 2009
+      Version 62 --- March 2008
+      Version 61 --- December 2006
+      Version 60 --- December 2005
+      Version 59 --- November 2005
+      Version 58 --- January 2005
+      Version 57 --- March 2004
+      Version 56 --- August 2003
+      Version 55 --- March 2003
+      Version 54 --- December 2002
+      Version 53 --- September 2002
+      Version 52 --- January 2002
+      Version 51 --- April 2000
+      Version 50 --- October 1999
+      Version 49 --- September 1998
+      Version 48 --- May 1998
+      Version 47 --- July 1997
+      Version 46 --- January 1997
+      Version 45 --- October 1996
+      Version 44 --- August 1996
+      Version 43 --- May 1996
+      Version 42 --- December 1995
+      Version 41 --- October 1995
+ 
+ 
+Version 64 --- June 2010
+===========================================================================
+ 
+ 
+Environments
+--------------------------------------------------------
+ 
+ 
+New Environments
+ 
+   The SPICE Toolkit is now officially supported on these new environments:
+ 
+      FORTRAN Toolkit:
+ 
+         Mac/Intel    OS-X          GFORTRAN / 64bit
+         Mac/Intel    OS-X          Intel FORTRAN / 64bit
+         PC           Linux         GFORTRAN / 64bit
+         PC           Windows       Intel FORTRAN / 64bit
+         Sun/Intel    Solaris       SUN FORTRAN / 32bit
+ 
+      CSPICE:
+ 
+         Mac/Intel    OS-X          Apple C / 64bit
+         PC           Windows       MS Visual C / 64bit
+         Sun          Solaris       SUN C / 64bit
+         Sun/Intel    Solaris       SUN C / 32bit
+         Sun/Intel    Solaris       SUN C / 64bit
+ 
+      Icy:
+ 
+         Mac/Intel    OS-X          Apple C / IDL 7.x / 64bit
+         PC           Windows       MS Visual C / IDL 7.x / 64bit
+ 
+      Mice:
+ 
+         Mac/Intel    OS-X          Apple C / MATLAB 7.x / 64bit
+         PC           Windows       MS Visual C / MATLAB 7.x / 64bit
+         Sun/Intel    Solaris       SUN C / MATLAB 7.x / 64bit
+ 
+ 
+ 
+Complete List of Supported Environments
+ 
+   This is the complete list of environments on which the N0064 version of
+   the SPICE Toolkit is supported:
+ 
+      FORTRAN Toolkit:
+ 
+         Mac/Intel    OS-X          GFORTRAN / 32bit
+         Mac/Intel    OS-X          GFORTRAN / 64bit
+         Mac/Intel    OS-X          Intel FORTRAN / 32bit
+         Mac/Intel    OS-X          Intel FORTRAN / 64bit
+         Mac/PowerPC  OS-X          Absoft FORTRAN / 32bit
+         Mac/PowerPC  OS-X          g77 / 32bit
+         PC           CYGWIN        g77 / 32bit
+         PC           Linux         GFORTRAN / 32bit
+         PC           Linux         GFORTRAN / 64bit
+         PC           Linux         Intel FORTRAN / 32bit
+         PC           Linux         g77 / 32bit
+         PC           Windows       Compaq (Digital) FORTRAN / 32bit
+         PC           Windows       Intel FORTRAN / 32bit
+         PC           Windows       Intel FORTRAN / 64bit
+         PC           Windows       Lahey FORTRAN 95 / 32bit
+         Sun          Solaris       SUN FORTRAN / 32bit
+         Sun/Intel    Solaris       SUN FORTRAN / 32bit
+ 
+      CSPICE:
+ 
+         Mac/Intel    OS-X          Apple C / 32bit
+         Mac/Intel    OS-X          Apple C / 64bit
+         Mac/PowerPC  OS-X          Apple C / 32bit
+         PC           CYGWIN        gCC / 32bit
+         PC           Linux         gCC / 32bit
+         PC           Linux         gCC / 64bit
+         PC           Windows       MS Visual C / 32bit
+         PC           Windows       MS Visual C / 64bit
+         Sun          Solaris       SUN C / 32bit
+         Sun          Solaris       SUN C / 64bit
+         Sun          Solaris       gCC / 32bit
+         Sun          Solaris       gCC / 64bit
+         Sun/Intel    Solaris       SUN C / 32bit
+         Sun/Intel    Solaris       SUN C / 64bit
+ 
+      Icy:
+ 
+         Mac/Intel    OS-X          Apple C / IDL 7.x / 32bit
+         Mac/Intel    OS-X          Apple C / IDL 7.x / 64bit
+         Mac/PowerPC  OS-X          Apple C / IDL 6.4 / 32bit
+         PC           Linux         gCC / IDL 6.4 / 32bit
+         PC           Linux         gCC / IDL 6.4 / 64bit
+         PC           Windows       MS Visual C / IDL 7.x / 32bit
+         PC           Windows       MS Visual C / IDL 7.x / 64bit
+         Sun          Solaris       SUN C / IDL 7.x / 32bit
+         Sun          Solaris       gCC / IDL 7.x / 32bit
+         Sun          Solaris       gCC / IDL 7.x / 64bit
+ 
+      Mice:
+ 
+         Mac/Intel    OS-X          Apple C / MATLAB 7.x / 32bit
+         Mac/Intel    OS-X          Apple C / MATLAB 7.x / 64bit
+         Mac/PowerPC  OS-X          Apple C / MATLAB 7.x / 32bit
+         PC           Linux         gCC / MATLAB 7.x / 32bit
+         PC           Linux         gCC / MATLAB 7.x / 64bit
+         PC           Windows       MS Visual C / MATLAB 7.x / 32bit
+         PC           Windows       MS Visual C / MATLAB 7.x / 64bit
+         Sun/Intel    Solaris       SUN C / MATLAB 7.x / 64bit
+ 
+ 
+ 
+Dynamically Linked Executables
+ 
+   For some environments precompiled executables provided in the generic
+   Toolkit packages and additional utility program executables provided on
+   the Utilities page on the NAIF Web site
+   (http://naif.jpl.nasa.gov/naif/utilities.html) are dynamically linked
+   and, in order to run, require certain dynamic libraries, usually
+   provided with the compiler used to build the executables, to be
+   installed on the user's system. This applies to most Mac/OSX, PC/Linux
+   and Sun/Solaris environments.
+ 
+ 
+Lahey Memory Issue Related to File Opening/Closing
+ 
+   The Lahey memory issue related to file opening/closing described in the
+   N0061 section of this document persists in the N0064 version of the
+   Toolkit.
+ 
+ 
+Scratch EK File Issue in Icy on PC/Windows
+ 
+   The scratch EK file issue in Icy on PC/Windows described in the N0061
+   section of this document persists in the N0064 version of the Toolkit.
+ 
+ 
+Geometry Finder (GF) Subsystem
+--------------------------------------------------------
+ 
+   The N0064 version offers a number of additional SPICE Geometry Finder
+   (GF) subsystem interfaces.
+ 
+ 
+SPICELIB High-Level GF APIs
+ 
+   The following High-Level GF APIs were added to SPICELIB:
+ 
+         GFRR            determines time intervals when a specified
+                         constraint on the observer-target range rate
+                         is met.
+ 
+         GFUDS           performs a GF search on a user defined scalar
+                         quantity. This API is supported by two
+                         additional routines UDDC and UDDF.
+ 
+ 
+CSPICE High-Level GF APIs
+ 
+   The following High-Level GF APIs were added to CSPICE:
+ 
+         gfrr_c          determines time intervals when a specified
+                         constraint on the observer-target range rate
+                         is met.
+ 
+         gfuds_c         performs a GF search on a user defined scalar
+                         quantity. This API is supported by two
+                         additional functions uddc_c and uddf_c.
+ 
+ 
+Icy and Mice High-Level GF APIs
+ 
+   The following High-Level GF APIs were added to Icy and Mice:
+ 
+         cspice_gfrr     determines time intervals when a specified
+                         constraint on the observer-target range rate
+                         is met.
+ 
+ 
+SPICELIB/CSPICE/Icy/Mice
+--------------------------------------------------------
+ 
+ 
+Kernel Pool Variable Name Length Check
+ 
+   The routines loading SPICE text kernel files now include a check on the
+   length of the kernel pool variable names. The error SPICE(BADVARNAME) is
+   signaled if the length of any variable provided in the text kernel file
+   exceeds 32 characters. Regardless of language, all Toolkits inherit this
+   behavior.
+ 
+ 
+CK Buffered Segment Limits
+ 
+   The maximum number of CK segments that can be buffered simultaneously
+   has been increased to 50000.
+ 
+ 
+SPK Buffered Segment Limits
+ 
+   The maximum number of SPK segments that can be buffered simultaneously
+   has been increased to 50000.
+ 
+ 
+Kernel Pool Double Precision Buffer Limit
+ 
+   The maximum number of double precision values that can be stored in the
+   kernel pool has been increased to 200000.
+ 
+ 
+SCLK Coefficient Record Limit
+ 
+   The maximum number of SCLK coefficient records that can be buffered has
+   been increased to 50000. This is also the limit on the number of
+   coefficient records that can be stored in an SCLK kernel.
+ 
+ 
+CK writer quaternion magnitude check
+ 
+   The quaternion magnitude check performed in the CK writers
+ 
+      CKW01 (ckw01_c in CSPICE) (cspice_ckw01 in Icy and Mice)
+      CKW02 (ckw02_c in CSPICE) (cspice_ckw02 in Icy and Mice)
+      CKW03 (ckw03_c in CSPICE) (cspice_ckw03 in Icy and Mice)
+      CKW05 (ckw05_c in CSPICE)
+ 
+   has been relaxed from checking for a magnitude ``close'' to 1 to simply
+   ensuring that the input quaternions are non-zero.
+ 
+ 
+New SPICELIB Interfaces
+ 
+   The following 3d and 6d vector APIs were added to SPICELIB:
+ 
+         dvnorm          calculates the derivative of the norm of a
+                         3-vector.
+ 
+         dhfa            calculates the value of the time derivative
+                         of the half angle of a spherical body given
+                         a state vector and body radius.
+ 
+   The following auxiliary APIs were added to SPICELIB:
+ 
+         bodc2s          translates a body ID code to either the
+                         corresponding name, or if no name to ID code
+                         mapping exists, the string representation
+                         of the body ID value.
+ 
+ 
+New CSPICE Interfaces
+ 
+   The following 3d and 6d vector APIs were added to CSPICE:
+ 
+         ducrss_c        computes the unit vector parallel to the
+                         cross product of two 3-dimensional vectors,
+                         and the derivative of this unit vector.
+ 
+         dvcrss_c        computes the cross product of two
+                         3-dimensional vectors and the derivative of
+                         this cross product.
+ 
+         dvnorm_c        calculates the derivative of the norm of a
+                         3-vector.
+ 
+   The following lower-level DAF access APIs were added to CSPICE:
+ 
+         dafgsr_c        reads a portion of the contents of a summary
+                         record in a DAF file.
+ 
+         dafrfr_c        reads the contents of the file record of
+                         a DAF.
+ 
+   The following auxiliary APIs were added to CSPICE:
+ 
+         bodc2s_c        translates a body ID code to either the
+                         corresponding name, or if no name to ID code
+                         mapping exists, the string representation
+                         of the body ID value.
+ 
+         dp2hx_c         converts a double precision number to an
+                         equivalent character string using base 16
+                         ``scientific notation.''
+ 
+         hx2dp_c         converts a string representing a double
+                         precision number in a base 16 ``scientific
+                         notation'' into its equivalent double
+                         precision number.
+ 
+ 
+New Icy Interfaces
+ 
+   The following 3d and 6d vector APIs were added to Icy:
+ 
+         cspice_ducrss   computes the unit vector parallel to the
+                         cross product of two 3-dimensional vectors
+                         and the derivative of this unit vector.
+ 
+         cspice_dvcrss   computes the cross product of two
+                         3-dimensional vectors and the derivative of
+                         this cross product.
+ 
+         cspice_dvnorm   calculates the derivative of the norm of a
+                         3-vector.
+ 
+         cspice_dvsep    calculates the time derivative of the
+                         separation angle between states.
+ 
+   The following auxiliary APIs were added to Icy:
+ 
+         cspice_bodc2s   translates a body ID code to either the
+                         corresponding name or if no name to ID code
+                         mapping exists, the string representation
+                         of the body ID value.
+ 
+         cspice_dp2hx    converts a double precision number to an
+                         equivalent character string using base 16
+                         ``scientific notation.''
+ 
+         cspice_hx2dp    converts a string representing a double
+                         precision number in a base 16 ``scientific
+                         notation'' into its equivalent double
+                         precision number.
+ 
+ 
+New Mice Interfaces
+ 
+   The following 3d and 6d vector APIs were added to Mice:
+ 
+         cspice_ducrss   computes the unit vector parallel to the
+                         cross product of two 3-dimensional vectors
+                         and the derivative of this unit vector.
+ 
+         cspice_dvcrss   computes the cross product of two
+                         3-dimensional vectors and the derivative of
+                         this cross product.
+ 
+         cspice_dvdot    computes the time derivative of the dot
+                         product of two position vectors.
+ 
+         cspice_dvhat    calculates the unit vector corresponding
+                         to a state or states and the derivative of
+                         the unit vector.
+ 
+         cspice_dvnorm   calculates the derivative of the norm of a
+                         3-vector.
+ 
+         cspice_dvsep    calculates the time derivative of the
+                         separation angle between states.
+ 
+         cspice_vnorm    returns the magnitude of a double
+                         precision, 3-dimensional array or set of
+                         such arrays.
+ 
+         cspice_vperp    calculates the component of a vector
+                         perpendicular to a second vector.
+ 
+   The following EK-access APIs were added to Mice:
+ 
+         cspice_ekfind   finds E-kernel data that satisfy a set of
+                         constraints.
+ 
+         cspice_eknelt   returns the number of elements in a
+                         specified column entry in the current row.
+ 
+         cspice_ekgc     returns an element of string (character)
+                         data from a specified row in a specified
+                         column of the set of rows matching
+                         the previous cspice_ekfind query.
+ 
+         cspice_ekgd     returns an element of double precision
+                         data from a specified row in a specified
+                         column of the set of rows matching
+                         the previous cspice_ekfind query.
+ 
+         cspice_ekgi     returns an element of integer
+                         data from a specified row in a specified
+                         column of the set of rows matching
+                         the previous cspice_ekfind query.
+ 
+   The following time conversion APIs were added to Mice:
+ 
+         cspice_unitim   returns the double precision value of
+                         an input epoch converted from one uniform
+                         time scale to another.
+ 
+ 
+   The following auxiliary APIs were added to Mice:
+ 
+         cspice_bodc2s   translates a body ID code to either the
+                         corresponding name, or if no name to ID code
+                         mapping exists, the string representation
+                         of the body ID value.
+ 
+ 
+Built-in NAIF ID Code/Name Definitions
+ 
+   The following new built-in NAIF ID code/name definitions have been added
+   to the Toolkit:
+ 
+      Spacecraft:
+ 
+               -5   AKATSUKI
+               -5   VCO
+             -121   BEPICOLOMBO
+             -177   GRAIL-A
+             -181   GRAIL-B
+             -202   MAVEN
+             -205   SOIL MOISTURE ACTIVE AND PASSIVE
+             -205   SMAP
+             -362   RADIATION BELT STORM PROBE A
+             -362   RBSP_A
+             -363   RADIATION BELT STORM PROBE B
+             -363   RBSP_B
+ 
+      Satellites:
+ 
+              550   HERSE
+              653   AEGAEON
+ 
+      Comets:
+ 
+          1000093   TEMPEL_1
+ 
+      Asteroids:
+ 
+          2000021   LUTETIA
+          2004179   TOUTATIS
+ 
+ 
+ 
+Documentation
+--------------------------------------------------------
+ 
+ 
+Overwriting Input Arguments Not Allowed
+ 
+   The following SPICELIB routines were designed to allow applications to
+   call them in such a way that input arguments could overwrite output
+   arguments. However, this usage is a violation of the Fortran 77
+   standard; it also causes failures in some environments when SPICELIB is
+   compiled with optimization (currently SPICELIB is optimized only for
+   Intel Fortran environments). So, the header documentation of affected
+   SPICELIB routines has been updated to not suggest this calling
+   technique. The affected routines are:
+ 
+      CYCLAD  CYCLAI  DUCRSS  DVCRSS  INVERT  INVSTM  MTXM
+      MTXV    MXM     MXMT    MXV     PACKAC  PACKAD  PACKAI
+      ROTMAT  ROTVEC  SAELGV  UNORM   UNORMG  VADD    VADDG
+      VCRSS   VHATG   VMINUG  VMINUS  VPROJ   VPROJG  VSCL
+      VSCLG   VSUB    VSUBG   XPOSBL  XPOSE   XPOSEG
+ 
+ 
+Bug Fixes
+--------------------------------------------------------
+ 
+ 
+Kernel Pool Watcher Deletion in TKFRAM
+ 
+   The watcher deletion algorithm has been corrected to delete watchers
+   only when the variables they watch are dumped from the local buffer.
+ 
+ 
+Frame Change in CKGP
+ 
+   CKGP now computes the transformation from the requested frame to the
+   applicable CK segment's base frame via a call to REFCHG. Formerly CKGP
+   performed this transformation using FRMCHG, which required that angular
+   velocity data describing the relative motion of these frames be
+   available.
+ 
+ 
+ROTGET Dynamic Frame ID
+ 
+   ROTGET formerly passed the frame class ID rather than the frame ID to
+   private routine ZZDYNROT, which handles dynamic frame transformations.
+   Since by convention these IDs are identical for dynamic frames, the
+   error had no practical effect. The error has been corrected. The shadow
+   private routine ZZROTGT0 has been corrected as well. Note that the error
+   does not apply to the second-level private shadow routine ZZROTGT1.
+ 
+ 
+ZZEKQCON Initialization Error
+ 
+   The private routine ZZEKQCON could in some cases access uninitialized
+   variables when working with null column entries. This has been
+   corrected.
+ 
+ 
+ZZEKRD03 Memory Violation Error
+ 
+   The private routine ZZEKRD03 had a bug that caused it to overwrite local
+   memory. Prior to the N0064 version of SPICELIB, this error had been
+   benign on all supported platforms. The error has been corrected.
+ 
+ 
+EK Strings Longer Than 1024 Characters
+ 
+   Although the EK Required Reading states that variable-length strings in
+   EK columns are limited to 1024 characters in length, the EK writer
+   routines don't enforce this limit, and some users have created kernels
+   that violate the limit. Various routines that support EK query and fetch
+   operations had assumed that the limit was in effect and were subject to
+   substring boundary violations when these long strings were encountered.
+   In addition, the semantics of string comparisons for excessively long
+   strings were undefined.
+ 
+   A compromise solution was selected: EK routines that perform
+   variable-length EK column entry string comparisons now treat only the
+   first 1024 characters of strings as significant.
+ 
+   The following private routines were updated to effect this change:
+ 
+      ZZEKECMP
+      ZZEKFRX
+      ZZEKSCMP
+      ZZEKVMCH
+ 
+   This fix also corrects the substring boundary violations.
+ 
+ 
+RETURN Mode Logic in Various Routines
+ 
+   The following routines were corrected to ensure that they avoid making
+   branch decisions based on uninitialized data after encountering a SPICE
+   error while in RETURN mode:
+ 
+      ILUMIN
+      SPKAPO
+      SPKEZ
+      SUBPNT
+      SUBSLR
+      ZZSPKEZ0
+      ZZSPKEZ1
  
  
 Version 63 --- April 2009

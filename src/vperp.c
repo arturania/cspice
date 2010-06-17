@@ -5,7 +5,7 @@
 
 #include "f2c.h"
 
-/* $Procedure      VPERP ( Perpendicular component of a 3-vector) */
+/* $Procedure VPERP ( Perpendicular component of a 3-vector ) */
 /* Subroutine */ int vperp_(doublereal *a, doublereal *b, doublereal *p)
 {
     /* System generated locals */
@@ -89,6 +89,14 @@
 
 /*     None. */
 
+/* $ Exceptions */
+
+/*     Error free. */
+
+/* $ Files */
+
+/*     None. */
+
 /* $ Particulars */
 
 /*     Given and non-zero vector B and a vector A, there is a unique */
@@ -113,24 +121,24 @@
 
 /*     None. */
 
-/* $ Exceptions */
+/* $ Literature_References */
 
-/*     Error free. */
-
-/* $ Files */
-
-/*     None. */
+/*     Any reasonable calculus text (for example Thomas) */
 
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
 /*     W.L. Taber      (JPL) */
 
-/* $ Literature_References */
-
-/*     Any reasonable calculus text (for example Thomas) */
-
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.1, 11-MAY-2010 (EDW) */
+
+/*       Minor edit to code comments eliminating typo. */
+
+/*        Reordered header sections to proper NAIF convention. */
+/*        Removed Revision section, it listed a duplication of a */
+/*        Version section entry. */
 
 /* -    SPICELIB Version 1.1.0, 09-SEP-2005 (NJB) */
 
@@ -148,14 +156,6 @@
 /* $ Index_Entries */
 
 /*     perpendicular component of a 3-vector */
-
-/* -& */
-/* $ Revisions */
-
-/* -    SPICELIB Version 1.1.0, 09-SEP-2005 (NJB) */
-
-/*        Updated to remove non-standard use of duplicate arguments */
-/*        in VSCL call. */
 
 /* -& */
 

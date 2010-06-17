@@ -127,6 +127,10 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 3.12.0, 09-JUN-2010 (WLT) */
+
+/*        Version update, N0064 */
+
 /* -    SPICELIB Version 3.11.0, 15-APR-2009 (WLT) */
 
 /*        Version update, N0063 */
@@ -266,7 +270,7 @@
 /*     defined. */
 
     if (eqstr_(item, "TOOLKIT", item_len, (ftnlen)7)) {
-	s_copy(verstr, "N0063", verstr_len, (ftnlen)5);
+	s_copy(verstr, "N0064", verstr_len, (ftnlen)5);
     } else {
 	s_copy(verstr, "No version found.", verstr_len, (ftnlen)17);
     }

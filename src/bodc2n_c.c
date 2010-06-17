@@ -46,6 +46,7 @@
    #include "SpiceZfc.h"
    #include "SpiceZst.h"
    #include "SpiceZmc.h"
+   #undef   bodc2n_c
 
    void bodc2n_c ( SpiceInt        code,
                    SpiceInt        lenout,
@@ -112,20 +113,33 @@
 
 -Particulars
 
-   bodc2n_c is one of three related subroutines,
+   bodc2n_c is one of five related subroutines,
 
+      bods2c_c      Body string to code
+      bodc2s_c      Body code to string
       bodn2c_c      Body name to code
-
       bodc2n_c      Body code to name
-
       boddef_c      Body name/code definition
 
-   bodn2c_c and bodc2n_c perform translations between body names
-   and their corresponding integer ID codes which are used
-   in SPK and PCK files and routines.  A set of name/code
-   pairs are automatically defined during the first call to
-   one of these subroutines.  Additional name/code pairs may
-   be defined via boddef_c.
+   bods2c_c, bodc2s_c, bodn2c_c, and bodc2n_c perform translations between 
+   body names and their corresponding integer ID codes which are 
+   used in SPICE files and routines.
+
+   bods2c_c is a slightly more general version of bodn2c_c: support
+   for strings containing ID codes in string format enables a caller
+   to identify a body using a string, even when no name is
+   associated with that body.
+
+   bodc2s_c is a general version of bodc2n_c; the routine returns either
+   the name assigned in the body ID to name mapping or a string
+   representation of the CODE value if no mapping exists.
+
+   boddef_c assigns a body name to ID mapping. The mapping has priority 
+   in name-to-ID and ID-to-name translations.
+
+   Refer to NAIF_ID.REQ for the list of name/code associations built into
+   SPICE, and for details concerning adding new name/code
+   associations at run time by loading text kernels.
 
 -Examples
 
@@ -208,6 +222,11 @@
    B.V. Semenov    (JPL)
 
 -Version
+
+   -CSPICE Version 2.2.2, 24-APR-2010 (EDW) 
+
+       Edit to Particulars section to document the bodc2s_c routine.
+       Minor edit to code comments eliminating typo.
 
    -CSPICE Version 2.2.1, 27-FEB-2008 (BVS)
 

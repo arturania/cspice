@@ -168,6 +168,10 @@
 
 -Version
 
+   -CSPICE Version 1.0.3, 19-MAY-2010 (BVS)
+
+        Index line now states that this routine is deprecated.
+
    -CSPICE Version 1.0.2, 23-JAN-2008 (EDW)
 
       Removed a spurious and unneeded "-Declarations"
@@ -184,7 +188,7 @@
 
 -Index_Entries
 
-   read data from daf address
+   DEPRECATED read data from daf address
 
 -&
 */

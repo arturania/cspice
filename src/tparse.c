@@ -96,7 +96,7 @@ static integer c__400 = 400;
 /*                  formats and can make use of abbreviations. */
 /*                  Several example strings and */
 /*                  the times that they translate to are listed below */
-/*                  in the C$ Examples section. */
+/*                  in the Examples section. */
 
 /* $ Detailed_Output */
 
@@ -353,6 +353,10 @@ static integer c__400 = 400;
 /*      W.L. Taber      (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 5.0.1, 18-MAY-2010 (BVS) */
+
+/*        Removed "C$" marker from text in the header. */
 
 /* -    SPICELIB Version 5.0.0, 30-DEC-1997 (WLT) */
 

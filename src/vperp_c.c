@@ -83,6 +83,14 @@
 
    None.
 
+-Exceptions
+
+   Error free.
+
+-Files
+
+   None.
+
 -Particulars
 
    Given and non-zero vector b and a vector a, there is a unique
@@ -107,23 +115,19 @@
 
    None.
 
--Exceptions
+-Literature_References
 
-   Error free.
-
--Files
-
-   None.
+   REFERENCE: Any reasonable calculus text (for example Thomas)
 
 -Author_and_Institution
 
    W.L. Taber      (JPL)
 
--Literature_References
-
-   REFERENCE: Any reasonable calculus text (for example Thomas)
-
 -Version
+
+   -CSPICE Version 1.2.1, 24-APR-2010 (EDW)
+
+      Minor edit to code comments eliminating typo.
 
    -CSPICE Version 1.2.0, 22-OCT-1998 (NJB)
 

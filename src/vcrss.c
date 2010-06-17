@@ -12,7 +12,7 @@
 
 /* $ Abstract */
 
-/*      Compute the cross product of two 3-dimensional vectors. */
+/*     Compute the cross product of two 3-dimensional vectors. */
 
 /* $ Disclaimer */
 
@@ -45,92 +45,91 @@
 
 /* $ Keywords */
 
-/*      VECTOR */
+/*     VECTOR */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*       V1        I     Left hand vector for cross product. */
-/*       V2        I     Right hand vector for cross product. */
-/*       VOUT      O     Cross product V1xV2. */
-/*                       VOUT can overwrite either V1 or V2. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     V1         I     Left hand vector for cross product. */
+/*     V2         I     Right hand vector for cross product. */
+/*     VOUT       O     Cross product V1xV2. */
 
 /* $ Detailed_Input */
 
-/*      V1      This may be any 3-dimensional vector.  Typically, this */
+/*     V1       This may be any 3-dimensional vector.  Typically, this */
 /*              might represent the (possibly unit) vector to a planet, */
 /*              sun, or a star which defines the orientation of axes of */
 /*              some coordinate system. */
 
-/*      V2      Ditto. */
+/*     V2       Ditto. */
 
 /* $ Detailed_Output */
 
-/*      VOUT    This variable represents the cross product of V1 and V2. */
-/*              VOUT may overwrite V1 or V2. */
+/*     VOUT     This variable represents the cross product of V1 and V2. */
 
 /* $ Parameters */
 
 /*     None. */
 
-/* $ Particulars */
-
-/*      VCRSS calculates the three dimensional cross product of two */
-/*      vectors according to the definition.  The cross product is stored */
-/*      in a buffer vector until the calculation is complete.  Thus VOUT */
-/*      may overwrite V1 or V2 without interfering with intermediate */
-/*      computations. */
-
-/*      If V1 and V2 are large in magnitude (taken together, their */
-/*      magnitude surpasses the limit allow by the computer) then it may */
-/*      be possible to generate a floating point overflow from an */
-/*      intermediate computation even though the actual cross product */
-/*      may be well within the range of double precision numbers. */
-/*      VCRSS does NOT check the magnitude of V1 or V2 to insure that */
-/*      overflow will not occur. */
-
-/* $ Examples */
-
-/*      V1                  V2                  VOUT (=V1XV2) */
-/*      ----------------------------------------------------------------- */
-/*      (0, 1, 0)           (1, 0, 0)           (0, 0, -1) */
-/*      (5, 5, 5)           (-1, -1, -1)        (0, 0, 0) */
-
-/* $ Restrictions */
-
-/*      No checking of V1 or V2 is done to prevent floating point */
-/*      overflow. The user is required to determine that the magnitude */
-/*      of each component of the vectors is within an appropriate range */
-/*      so as not to cause floating point overflow. In almost every case */
-/*      there will be no problem and no checking actually needs to be */
-/*      done. */
-
 /* $ Exceptions */
 
-/*      Error free. */
+/*     Error free. */
 
 /* $ Files */
 
-/*      None. */
+/*     None. */
 
-/* $ Author_and_Institution */
+/* $ Particulars */
 
-/*      W.M. Owen       (JPL) */
+/*     VCRSS calculates the three dimensional cross product of two */
+/*     vectors according to the definition. */
+
+/*     If V1 and V2 are large in magnitude (taken together, their */
+/*     magnitude surpasses the limit allow by the computer) then it may */
+/*     be possible to generate a floating point overflow from an */
+/*     intermediate computation even though the actual cross product may */
+/*     be well within the range of double precision numbers. VCRSS does */
+/*     NOT check the magnitude of V1 or V2 to insure that overflow will */
+/*     not occur. */
+/* $ Examples */
+
+/*     V1                  V2                  VOUT (=V1XV2) */
+/*     ----------------------------------------------------------------- */
+/*     (0, 1, 0)           (1, 0, 0)           (0, 0, -1) */
+/*     (5, 5, 5)           (-1, -1, -1)        (0, 0, 0) */
+
+/* $ Restrictions */
+
+/*     No checking of V1 or V2 is done to prevent floating point */
+/*     overflow. The user is required to determine that the magnitude of */
+/*     each component of the vectors is within an appropriate range so */
+/*     as not to cause floating point overflow. In almost every case */
+/*     there will be no problem and no checking actually needs to be */
+/*     done. */
 
 /* $ Literature_References */
 
-/*      None. */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     W.M. Owen       (JPL) */
 
 /* $ Version */
 
-/* -     SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+/* -    SPICELIB Version 1.0.2, 22-APR-2010 (NJB) */
 
-/*         Comment section for permuted index source lines was added */
-/*         following the header. */
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
-/* -     SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
+/* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
+
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
 
 /* -& */
 /* $ Index_Entries */

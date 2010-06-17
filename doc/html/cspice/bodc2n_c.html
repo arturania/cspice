@@ -170,20 +170,33 @@
 </PRE>
 <h4><a name="Particulars">Particulars</a></h4>
 <PRE>
-   <b>bodc2n_c</b> is one of three related subroutines,
+   <b>bodc2n_c</b> is one of five related subroutines,
 
+      <a href="bods2c_c.html">bods2c_c</a>      Body string to code
+      <a href="bodc2s_c.html">bodc2s_c</a>      Body code to string
       <a href="bodn2c_c.html">bodn2c_c</a>      Body name to code
-
       <b>bodc2n_c</b>      Body code to name
-
       <a href="boddef_c.html">boddef_c</a>      Body name/code definition
 
-   <a href="bodn2c_c.html">bodn2c_c</a> and <b>bodc2n_c</b> perform translations between body names
-   and their corresponding integer ID codes which are used
-   in SPK and PCK files and routines.  A set of name/code
-   pairs are automatically defined during the first call to
-   one of these subroutines.  Additional name/code pairs may
-   be defined via <a href="boddef_c.html">boddef_c</a>.
+   <a href="bods2c_c.html">bods2c_c</a>, <a href="bodc2s_c.html">bodc2s_c</a>, <a href="bodn2c_c.html">bodn2c_c</a>, and <b>bodc2n_c</b> perform translations between 
+   body names and their corresponding integer ID codes which are 
+   used in SPICE files and routines.
+
+   <a href="bods2c_c.html">bods2c_c</a> is a slightly more general version of <a href="bodn2c_c.html">bodn2c_c</a>: support
+   for strings containing ID codes in string format enables a caller
+   to identify a body using a string, even when no name is
+   associated with that body.
+
+   <a href="bodc2s_c.html">bodc2s_c</a> is a general version of <b>bodc2n_c</b>; the routine returns either
+   the name assigned in the body ID to name mapping or a string
+   representation of the CODE value if no mapping exists.
+
+   <a href="boddef_c.html">boddef_c</a> assigns a body name to ID mapping. The mapping has priority 
+   in name-to-ID and ID-to-name translations.
+
+   Refer to NAIF_ID.REQ for the list of name/code associations built into
+   SPICE, and for details concerning adding new name/code
+   associations at run time by loading text kernels.
 </PRE>
 <h4><a name="Examples">Examples</a></h4>
 <PRE>
@@ -267,6 +280,11 @@
 </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
+   -CSPICE Version 2.2.2, 24-APR-2010 (EDW) 
+
+       Edit to Particulars section to document the <a href="bodc2s_c.html">bodc2s_c</a> routine.
+       Minor edit to code comments eliminating typo.
+
    -CSPICE Version 2.2.1, 27-FEB-2008 (BVS)
 
        Corrected the contents of the Required_Reading section of 
@@ -305,7 +323,7 @@
   </tbody>
 </table>
 
-   <pre>Thu Apr 16 08:57:22 2009</pre>
+   <pre>Wed Jun  9 13:05:19 2010</pre>
 
 </body>
 </html>

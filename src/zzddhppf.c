@@ -163,6 +163,46 @@ static integer c__4 = 4;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.20.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL. */
+
+/* -    SPICELIB Version 1.19.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-CC_C. */
+
+/* -    SPICELIB Version 1.18.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-64BIT-CC_C. */
+
+/* -    SPICELIB Version 1.17.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-NATIVE_C. */
+
+/* -    SPICELIB Version 1.16.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-WINDOWS-64BIT-IFORT. */
+
+/* -    SPICELIB Version 1.15.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 1.14.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-64BIT-MS_C. */
+
+/* -    SPICELIB Version 1.13.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-INTEL_C. */
+
+/* -    SPICELIB Version 1.12.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 1.11.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-GFORTRAN. */
+
 /* -    SPICELIB Version 1.10.0, 18-MAR-2009 (BVS) */
 
 /*        Updated for PC-LINUX-GFORTRAN. */
@@ -506,6 +546,46 @@ static integer c__4 = 4;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.20.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL. */
+
+/* -    SPICELIB Version 2.19.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-CC_C. */
+
+/* -    SPICELIB Version 2.18.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-64BIT-CC_C. */
+
+/* -    SPICELIB Version 2.17.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-NATIVE_C. */
+
+/* -    SPICELIB Version 2.16.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-WINDOWS-64BIT-IFORT. */
+
+/* -    SPICELIB Version 2.15.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 2.14.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-64BIT-MS_C. */
+
+/* -    SPICELIB Version 2.13.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-INTEL_C. */
+
+/* -    SPICELIB Version 2.12.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 2.11.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-GFORTRAN. */
+
 /* -    SPICELIB Version 2.10.0, 18-MAR-2009 (BVS) */
 
 /*        Updated for PC-LINUX-GFORTRAN. */
@@ -674,12 +754,12 @@ static integer c__4 = 4;
 	for (i__ = 1; i__ <= 4; ++i__) {
 	    zzddhgsd_("BFF", &i__, strbff + (((i__1 = i__ - 1) < 5 && 0 <= 
 		    i__1 ? i__1 : s_rnge("strbff", i__1, "zzddhppf_", (ftnlen)
-		    444)) << 3), (ftnlen)3, (ftnlen)8);
+		    484)) << 3), (ftnlen)3, (ftnlen)8);
 	}
 	for (i__ = 1; i__ <= 2; ++i__) {
 	    zzddhgsd_("ARCH", &i__, strarc + (((i__1 = i__ - 1) < 2 && 0 <= 
 		    i__1 ? i__1 : s_rnge("strarc", i__1, "zzddhppf_", (ftnlen)
-		    448)) << 3), (ftnlen)4, (ftnlen)8);
+		    488)) << 3), (ftnlen)4, (ftnlen)8);
 	}
 
 /*        Extend STRBFF to include the null BFFID.  This addresses */
@@ -768,11 +848,11 @@ L100001:
 	setmsg_("A request to load the # file, $, has been made by the % sys"
 		"tem.  This operation is not permitted.", (ftnlen)97);
 	errch_("#", strarc + (((i__1 = tstarc - 1) < 2 && 0 <= i__1 ? i__1 : 
-		s_rnge("strarc", i__1, "zzddhppf_", (ftnlen)548)) << 3), (
+		s_rnge("strarc", i__1, "zzddhppf_", (ftnlen)588)) << 3), (
 		ftnlen)1, (ftnlen)8);
 	errfnm_("$", unit, (ftnlen)1);
 	errch_("%", strarc + (((i__1 = *arch - 1) < 2 && 0 <= i__1 ? i__1 : 
-		s_rnge("strarc", i__1, "zzddhppf_", (ftnlen)550)) << 3), (
+		s_rnge("strarc", i__1, "zzddhppf_", (ftnlen)590)) << 3), (
 		ftnlen)1, (ftnlen)8);
 	sigerr_("SPICE(FILARCHMISMATCH)", (ftnlen)22);
 	chkout_("ZZDDHPPF", (ftnlen)8);
@@ -789,7 +869,7 @@ L100001:
 		"the file using IMAGE or BINARY transfer mode from the source."
 		, (ftnlen)180);
 	errch_("$", strarc + (((i__1 = tstarc - 1) < 2 && 0 <= i__1 ? i__1 : 
-		s_rnge("strarc", i__1, "zzddhppf_", (ftnlen)571)) << 3), (
+		s_rnge("strarc", i__1, "zzddhppf_", (ftnlen)611)) << 3), (
 		ftnlen)1, (ftnlen)8);
 	errfnm_("#", unit, (ftnlen)1);
 	sigerr_("SPICE(FTPXFERERROR)", (ftnlen)19);

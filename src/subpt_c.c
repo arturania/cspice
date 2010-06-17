@@ -444,6 +444,10 @@
  
 -Version
 
+   -CSPICE Version 1.0.4, 19-MAY-2010 (BVS)
+
+        Index line now states that this routine is deprecated.
+
    -CSPICE Version 1.0.3, 07-FEB-2008 (NJB)
 
         Abstract now states that this routine is deprecated.
@@ -464,7 +468,7 @@
  
 -Index_Entries
  
-   sub-observer point
+   DEPRECATED sub-observer point
  
 -&
 */

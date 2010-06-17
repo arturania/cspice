@@ -196,29 +196,39 @@
 </PRE>
 <h4><a name="Particulars">Particulars</a></h4>
 <PRE>
-   <b>boddef_c</b> is one of three related subroutines,
+   <b>boddef_c</b> is one of five related subroutines,
 
+      <a href="bods2c_c.html">bods2c_c</a>      Body string to code
+      <a href="bodc2s_c.html">bodc2s_c</a>      Body code to string
       <a href="bodn2c_c.html">bodn2c_c</a>      Body name to code
-
       <a href="bodc2n_c.html">bodc2n_c</a>      Body code to name
-
       <b>boddef_c</b>      Body name/code definition
 
-   <a href="bodn2c_c.html">bodn2c_c</a> and <a href="bodc2n_c.html">bodc2n_c</a> perform translations between body names
-   and their corresponding integer ID codes which are used
-   in SPK and PCK files and routines.  A set of name/code
-   pairs are automatically defined during the first call to
-   one of these subroutines. Additional name/code pairs may
-   be defined via <b>boddef_c</b> for two purposes:
+   <a href="bods2c_c.html">bods2c_c</a>, <a href="bodc2s_c.html">bodc2s_c</a>, <a href="bodn2c_c.html">bodn2c_c</a>, and <a href="bodc2n_c.html">bodc2n_c</a> perform translations between 
+   body names and their corresponding integer ID codes which are 
+   used in SPICE files and routines.
 
-      1.  to associate another, perhaps more familiar or
-          abbreviated, name with a particular body integer
-          code that has already been defined, or
+   <a href="bods2c_c.html">bods2c_c</a> is a slightly more general version of <a href="bodn2c_c.html">bodn2c_c</a>: support
+   for strings containing ID codes in string format enables a caller
+   to identify a body using a string, even when no name is
+   associated with that body.
 
-      2.  to define a new body integer code and name,
+   <a href="bodc2s_c.html">bodc2s_c</a> is a general version of <a href="bodc2n_c.html">bodc2n_c</a>; the routine returns either
+   the name assigned in the body ID to name mapping or a string
+   representation of the CODE value if no mapping exists.
+
+   <b>boddef_c</b> assigns a body name to ID mapping. The mapping has priority 
+   in name-to-ID and ID-to-name translations.
+
+   Refer to NAIF_IDs for the list of name/code associations built into
+   SPICE, and for details concerning adding new name/code
+   associations at run time by loading text kernels.
+
+   Modifying the SPICE name-ID mapping set
+   =======================================
 
    Each body has a unique integer 'code', but may have several
-   names.  Thus you may associate more than one name with
+   names. Thus you may associate more than one name with
    a particular integer code.
 
    'code' may already have a name as defined by a previous
@@ -226,29 +236,25 @@
    definitions.  That previous definition will remain,
    and a translation of that name will still give the
    same 'code'.  However, future translations of 'code' will
-   give the new NAME instead of the previous one.  This
+   give the new 'name' instead of the previous one.  This
    feature is useful for assigning a more familiar or
    abbreviated name to a body. For example, in addition
-   to the default name for body 5, 'JUPITER BARYCENTER',
-   you could define the abbreviation 'JB' to mean 5.
- 
-   Note: In the case where <b>boddef_c</b> performs a body/ID mapping
+   to the default name for body 5, &quot;JUPITER BARYCENTER&quot;,
+   you could define the abbreviation &quot;JB&quot; to mean 5.
+
+   Note: In the case where <b>boddef_c</b> performs a name-to-ID mapping
    assignment for an unused body name and unused ID value,
-   any subsequent assignment to NAME destroys the pervious
+   any subsequent assignment to NAME destroys the previous
    mapping.
- 
-      <b>boddef_c</b>( &quot;spud&quot;, 22 );
- 
+
+      <b>boddef_c</b> ( &quot;spud&quot;, 22)
+
    then
- 
-      <b>boddef_c</b>(&quot;spud&quot;, 23 );
- 
+
+      <b>boddef_c</b> ( &quot;spud&quot;, 23)
+
    results in the state &quot;spud&quot; maps to 23, 23 maps to &quot;spud&quot;,
    and 22 maps to nothing ('found' in <a href="bodc2n_c.html">bodc2n_c</a> returns SPICEFALSE).
- 
-   Please refer to the NAIF_IDS Required Reading document for
-   details about kernel pool name-code definitions, masking,
-   and assignment precedence.
 </PRE>
 <h4><a name="Examples">Examples</a></h4>
 <PRE>
@@ -295,6 +301,10 @@
 </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
+   -CSPICE Version 2.2.2, 16-MAY-2009 (EDW) 
+
+       Edit to Particulars section to document the <a href="bodc2s_c.html">bodc2s_c</a> routine.
+
    -CSPICE Version 2.2.1, 27-FEB-2008 (BVS)
 
        Corrected the contents of the Required_Reading section of 
@@ -343,7 +353,7 @@
   </tbody>
 </table>
 
-   <pre>Thu Apr 16 08:57:22 2009</pre>
+   <pre>Wed Jun  9 13:05:19 2010</pre>
 
 </body>
 </html>

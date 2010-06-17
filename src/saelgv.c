@@ -112,8 +112,7 @@ static integer c__3 = 3;
 
 /*     SMAJOR */
 /*     SMINOR         are semi-major and semi-minor axes of the ellipse, */
-/*                    respectively.  SMAJOR and SMINOR may overwrite */
-/*                    either of VEC1 or VEC2. */
+/*                    respectively. */
 
 /* $ Parameters */
 
@@ -133,10 +132,9 @@ static integer c__3 = 3;
 
 /* $ Particulars */
 
-/*     We note here that two linearly independent but not necessarily */
-/*     orthogonal vectors VEC1 and VEC2 can define an ellipse */
-/*     centered at the origin:  the ellipse is the set of points in */
-/*     3-space */
+/*     Two linearly independent but not necessarily orthogonal vectors */
+/*     VEC1 and VEC2 can define an ellipse centered at the origin:  the */
+/*     ellipse is the set of points in 3-space */
 
 /*        CENTER  +  cos(theta) VEC1  +  sin(theta) VEC2 */
 
@@ -229,6 +227,11 @@ static integer c__3 = 3;
 /*     W.L. Taber     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.1, 22-APR-2010 (NJB) */
+
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
 /* -    SPICELIB Version 1.1.0, 02-SEP-2005 (NJB) */
 
@@ -436,13 +439,13 @@ static integer c__3 = 3;
     }
     for (i__ = 1; i__ <= 3; ++i__) {
 	tmpvc1[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("tmpvc1", 
-		i__1, "saelgv_", (ftnlen)432)] = tmpvc1[(i__2 = i__ - 1) < 3 
+		i__1, "saelgv_", (ftnlen)435)] = tmpvc1[(i__2 = i__ - 1) < 3 
 		&& 0 <= i__2 ? i__2 : s_rnge("tmpvc1", i__2, "saelgv_", (
-		ftnlen)432)] / scale;
+		ftnlen)435)] / scale;
 	tmpvc2[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("tmpvc2", 
-		i__1, "saelgv_", (ftnlen)433)] = tmpvc2[(i__2 = i__ - 1) < 3 
+		i__1, "saelgv_", (ftnlen)436)] = tmpvc2[(i__2 = i__ - 1) < 3 
 		&& 0 <= i__2 ? i__2 : s_rnge("tmpvc2", i__2, "saelgv_", (
-		ftnlen)433)] / scale;
+		ftnlen)436)] / scale;
     }
 
 /*     Compute S and diagonalize it: */
@@ -470,13 +473,13 @@ static integer c__3 = 3;
 	minor = 1;
     }
     vlcom_(&c__[(i__1 = (major << 1) - 2) < 4 && 0 <= i__1 ? i__1 : s_rnge(
-	    "c", i__1, "saelgv_", (ftnlen)466)], tmpvc1, &c__[(i__2 = (major 
+	    "c", i__1, "saelgv_", (ftnlen)469)], tmpvc1, &c__[(i__2 = (major 
 	    << 1) - 1) < 4 && 0 <= i__2 ? i__2 : s_rnge("c", i__2, "saelgv_", 
-	    (ftnlen)466)], tmpvc2, smajor);
+	    (ftnlen)469)], tmpvc2, smajor);
     vlcom_(&c__[(i__1 = (minor << 1) - 2) < 4 && 0 <= i__1 ? i__1 : s_rnge(
-	    "c", i__1, "saelgv_", (ftnlen)467)], tmpvc1, &c__[(i__2 = (minor 
+	    "c", i__1, "saelgv_", (ftnlen)470)], tmpvc1, &c__[(i__2 = (minor 
 	    << 1) - 1) < 4 && 0 <= i__2 ? i__2 : s_rnge("c", i__2, "saelgv_", 
-	    (ftnlen)467)], tmpvc2, sminor);
+	    (ftnlen)470)], tmpvc2, sminor);
 
 /*     Undo the initial scaling. */
 

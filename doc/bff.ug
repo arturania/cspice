@@ -1,0 +1,75 @@
+ 
+BFF User's Guide
+===========================================================================
+ 
+   Last revised on 2008 JAN 16 by B. V. Semenov.
+ 
+ 
+Abstract
+--------------------------------------------------------
+ 
+   BFF is a command line program that displays the binary file format ID
+   for one or more binary kernel files.
+ 
+ 
+Summary
+--------------------------------------------------------
+ 
+   BFF -- ``Binary File Format'' -- is a command line program that displays
+   the binary file format ID for one or more binary kernel files specified
+   on the command line.
+ 
+ 
+Usage
+--------------------------------------------------------
+ 
+   The program usage is:
+ 
+      % bff <file1> [<file2> .... <fileN>]
+ 
+   When the program is run with a single file name on the command line it
+   displays only the binary file format ID for that file:
+ 
+      <bff>
+ 
+   When the program is run with two or more file names on the command line
+   it displays the binary file format ID followed by the file name for each
+   of the input files on a separate line:
+ 
+      <bff>    <file1>
+      <bff>    <file2>
+      ...
+      <bff>    <fileN>
+ 
+   The binary file format ID, <bff>, is 'BIG-IEEE', 'LTL-IEEE', 'VAX-GFLT',
+   'VAX-DFLT' or 'UNK' for binary DAF and DAS files or 'N/A' for all other
+   types of files.
+ 
+   If the command line is blank or contains the '-h', '-help', '-u', or
+   -usage' keys, the program displays usage.
+ 
+ 
+Examples
+--------------------------------------------------------
+ 
+   In this example the program is run to display the binary file format ID
+   for a single SPK file in the current directory:
+ 
+      % bff mer2_surf_rover.bsp
+      BIG-IEEE
+      %
+ 
+   In this example the program is run to display the binary file format ID
+   for all CK, SPK, FK, and transfer SPK files in the current directory:
+ 
+      % bff ./*.bc ./*.bsp ./*.tf ./*.xsp
+      BIG-IEEE ./MRO_PHX_EDL_07260_PASS1_sc_20070917181502.bc
+      LTL-IEEE ./070416BP_IRRE_00256_14363.bsp
+      LTL-IEEE ./mars_north.bsp
+      BIG-IEEE ./mer2_surf_rover.bsp
+      LTL-IEEE ./sb406-20pb.bsp
+      LTL-IEEE ./zero_offset.bsp
+      N/A      ./vo.tf
+      N/A      ./mgn06127.xsp
+      %
+ 

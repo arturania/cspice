@@ -127,29 +127,39 @@
 
 /* $ Particulars */
 
-/*     BODDEF is one of three related subroutines, */
+/*     BODDEF is one of five related subroutines, */
 
+/*        BODS2C      Body string to code */
+/*        BODC2S      Body code to string */
 /*        BODN2C      Body name to code */
-
 /*        BODC2N      Body code to name */
-
 /*        BODDEF      Body name/code definition */
 
-/*     BODN2C and BODC2N perform translations between body names */
-/*     and their corresponding integer ID codes which are used */
-/*     in SPK and PCK files and routines.  A set of name/code */
-/*     pairs are automatically defined during the first call to */
-/*     one of these subroutines.  Additional name/code pairs may */
-/*     be defined via BODDEF for two purposes: */
+/*     BODS2C, BODC2S, BODN2C, and BODC2N perform translations between */
+/*     body names and their corresponding integer ID codes which are */
+/*     used in SPICE files and routines. */
 
-/*        1.  to associate another, perhaps more familiar or */
-/*            abbreviated, name with a particular body integer */
-/*            code that has already been defined, or */
+/*     BODS2C is a slightly more general version of BODN2C: support */
+/*     for strings containing ID codes in string format enables a caller */
+/*     to identify a body using a string, even when no name is */
+/*     associated with that body. */
 
-/*        2.  to define a new body integer code and name, */
+/*     BODC2S is a general version of BODC2N; the routine returns either */
+/*     the name assigned in the body ID to name mapping or a string */
+/*     representation of the CODE value if no mapping exists. */
+
+/*     BODDEF assigns a body name to ID mapping. The mapping has */
+/*     priority in name-to-ID and ID-to-name translations. */
+
+/*     Refer to NAIF_IDs for the list of name/code associations built */
+/*     into SPICE, and for details concerning adding new name/code */
+/*     associations at run time by loading text kernels. */
+
+/*     Modifying the SPICE name-ID mapping set */
+/*     ======================================= */
 
 /*     Each body has a unique integer CODE, but may have several */
-/*     names.  Thus you may associate more than one name with */
+/*     names. Thus you may associate more than one name with */
 /*     a particular integer code. */
 
 /*     CODE may already have a name as defined by a previous */
@@ -163,9 +173,9 @@
 /*     to the default name for body 5, 'JUPITER BARYCENTER', */
 /*     you could define the abbreviation 'JB' to mean 5. */
 
-/*     Note: In the case where BODDEF performs a body/ID mapping */
+/*     Note: In the case where BODDEF performs a name-to-ID mapping */
 /*     assignment for an unused body name and unused ID value, */
-/*     any subsequent assignment to NAME destroys the pervious */
+/*     any subsequent assignment to NAME destroys the previous */
 /*     mapping. */
 
 /*        BODDEF( 'spud', 22) */
@@ -174,12 +184,8 @@
 
 /*        BODDEF( 'spud', 23) */
 
-/*     results in the state "spud" maps to 23, 23 maps to "spud", */
+/*     results in the state 'spud' maps to 23, 23 maps to 'spud', */
 /*     and 22 maps to nothing (FOUND in BODC2N returns FALSE). */
-
-/*     Please refer to the NAIF_IDS Required Reading document for */
-/*     details about kernel pool name-code definitions, masking, */
-/*     and assignment precedence. */
 
 /* $ Examples */
 
@@ -225,6 +231,10 @@
 /*     E.D. Wright     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.2, 16-MAY-2009 (EDW) */
+
+/*        Edit to Particulars section to document the BODC2S routine. */
 
 /* -    SPICELIB Version 1.1.1, 28-FEB-2008 (BVS) */
 

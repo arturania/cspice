@@ -7,7 +7,7 @@
 
 /* Table of constant values */
 
-static integer c__117 = 117;
+static integer c__121 = 121;
 static integer c__0 = 0;
 static integer c__1 = 1;
 static integer c__8 = 8;
@@ -30,8 +30,8 @@ static integer c__100 = 100;
     /* Subroutine */ int s_copy(char *, char *, ftnlen, ftnlen);
 
     /* Local variables */
-    static char name__[32*117], line[80*8];
-    static integer item, type__[117];
+    static char name__[32*121], line[80*8];
+    static integer item, type__[121];
     extern /* Subroutine */ int zzdynbid_(char *, integer *, char *, integer *
 	    , ftnlen, ftnlen);
     static char look2[32];
@@ -51,20 +51,20 @@ static integer c__100 = 100;
 	    integer *, logical *, ftnlen);
     static integer id;
     extern logical failed_(void);
-    static integer idcode[117];
+    static integer idcode[121];
     static char lcname[36];
     extern integer bschoc_(char *, integer *, char *, integer *, ftnlen, 
 	    ftnlen);
     static char lcfram[32];
     extern integer bschoi_(integer *, integer *, integer *, integer *);
-    static integer kvclid, corder[117], centrd[117], center[117];
+    static integer kvclid, corder[121], centrd[121], center[121];
     static char kvbuff[32*100];
     extern /* Subroutine */ int gcpool_(char *, integer *, integer *, integer 
 	    *, char *, logical *, ftnlen, ftnlen);
-    static integer norder[117];
+    static integer norder[121];
     extern /* Subroutine */ int gipool_(char *, integer *, integer *, integer 
 	    *, integer *, logical *, ftnlen), sigerr_(char *, ftnlen);
-    static integer typeid[117], values[8];
+    static integer typeid[121], values[8];
     extern /* Subroutine */ int chkout_(char *, ftnlen), setmsg_(char *, 
 	    ftnlen), zzfdat_(integer *, char *, integer *, integer *, integer 
 	    *, integer *, integer *, integer *, integer *, ftnlen);
@@ -248,6 +248,16 @@ static integer c__100 = 100;
 /*     None. */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.4.0, 11-MAY-2010 (BVS) */
+
+/*        Increased the number of non-inertial frames from 96 to 100 */
+/*        in order to accomodate the following PCK based frames: */
+
+/*           IAU_BORRELLY */
+/*           IAU_TEMPEL_1 */
+/*           IAU_VESTA */
+/*           IAU_ITOKAWA */
 
 /* -    SPICELIB Version 1.3.0, 12-DEC-2002 (BVS) */
 
@@ -841,7 +851,7 @@ L_namfrm:
 
     if (first) {
 	first = FALSE_;
-	zzfdat_(&c__117, name__, idcode, center, type__, typeid, norder, 
+	zzfdat_(&c__121, name__, idcode, center, type__, typeid, norder, 
 		corder, centrd, (ftnlen)32);
     }
 
@@ -850,13 +860,13 @@ L_namfrm:
 
     ljust_(frname, pname, frname_len, (ftnlen)32);
     ucase_(pname, pname, (ftnlen)32, (ftnlen)32);
-    item = bschoc_(pname, &c__117, name__, norder, (ftnlen)32, (ftnlen)32);
+    item = bschoc_(pname, &c__121, name__, norder, (ftnlen)32, (ftnlen)32);
 
 /*     If the name is in our list, we can just look up its idcode in */
 /*     the parallel array. */
 
     if (item > 0) {
-	*frcode = idcode[(i__1 = item - 1) < 117 && 0 <= i__1 ? i__1 : s_rnge(
+	*frcode = idcode[(i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 : s_rnge(
 		"idcode", i__1, "framex_", (ftnlen)627)];
     } else {
 
@@ -1072,12 +1082,12 @@ L_frmnam:
 
     if (first) {
 	first = FALSE_;
-	zzfdat_(&c__117, name__, idcode, center, type__, typeid, norder, 
+	zzfdat_(&c__121, name__, idcode, center, type__, typeid, norder, 
 		corder, centrd, (ftnlen)32);
     }
-    item = bschoi_(frcode, &c__117, idcode, corder);
+    item = bschoi_(frcode, &c__121, idcode, corder);
     if (item != 0) {
-	s_copy(frname, name__ + (((i__1 = item - 1) < 117 && 0 <= i__1 ? i__1 
+	s_copy(frname, name__ + (((i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 
 		: s_rnge("name", i__1, "framex_", (ftnlen)868)) << 5), 
 		frname_len, (ftnlen)32);
     } else {
@@ -1348,24 +1358,24 @@ L_frinfo:
 
     if (first) {
 	first = FALSE_;
-	zzfdat_(&c__117, name__, idcode, center, type__, typeid, norder, 
+	zzfdat_(&c__121, name__, idcode, center, type__, typeid, norder, 
 		corder, centrd, (ftnlen)32);
     }
 
 /*     Determine the location of the requested item in the array */
 /*     of ID codes. */
 
-    item = bschoi_(frcode, &c__117, idcode, corder);
+    item = bschoi_(frcode, &c__121, idcode, corder);
 
 /*     If the name is in our list, we can just look up its ID code in */
 /*     the parallel array. */
 
     if (item > 0) {
-	*cent = center[(i__1 = item - 1) < 117 && 0 <= i__1 ? i__1 : s_rnge(
+	*cent = center[(i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 : s_rnge(
 		"center", i__1, "framex_", (ftnlen)1173)];
-	*class__ = type__[(i__1 = item - 1) < 117 && 0 <= i__1 ? i__1 : 
+	*class__ = type__[(i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 : 
 		s_rnge("type", i__1, "framex_", (ftnlen)1174)];
-	*clssid = typeid[(i__1 = item - 1) < 117 && 0 <= i__1 ? i__1 : s_rnge(
+	*clssid = typeid[(i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 : s_rnge(
 		"typeid", i__1, "framex_", (ftnlen)1175)];
 	*found = TRUE_;
     } else {
@@ -1625,7 +1635,7 @@ L_cidfrm:
 
     if (first) {
 	first = FALSE_;
-	zzfdat_(&c__117, name__, idcode, center, type__, typeid, norder, 
+	zzfdat_(&c__121, name__, idcode, center, type__, typeid, norder, 
 		corder, centrd, (ftnlen)32);
     }
 
@@ -1671,11 +1681,11 @@ L_cidfrm:
 /*           We've got the name:  See if we have this in our handy list */
 /*           of built-in names. */
 
-	    item = bschoc_(pname, &c__117, name__, norder, (ftnlen)32, (
+	    item = bschoc_(pname, &c__121, name__, norder, (ftnlen)32, (
 		    ftnlen)32);
 	    if (item > 0) {
 		s_copy(frname, pname, frname_len, (ftnlen)32);
-		*frcode = idcode[(i__1 = item - 1) < 117 && 0 <= i__1 ? i__1 :
+		*frcode = idcode[(i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 :
 			 s_rnge("idcode", i__1, "framex_", (ftnlen)1517)];
 		*found = TRUE_;
 	    } else {
@@ -1707,12 +1717,12 @@ L_cidfrm:
 /*           We've got the frame ID, see if we already know about this */
 /*           id-code. */
 
-	    item = bschoi_(values, &c__117, center, centrd);
+	    item = bschoi_(values, &c__121, center, centrd);
 	    if (item != 0) {
 
 /*              Just look up the name and set the frame code. */
 
-		s_copy(frname, name__ + (((i__1 = item - 1) < 117 && 0 <= 
+		s_copy(frname, name__ + (((i__1 = item - 1) < 121 && 0 <= 
 			i__1 ? i__1 : s_rnge("name", i__1, "framex_", (ftnlen)
 			1565)) << 5), frname_len, (ftnlen)32);
 		*frcode = values[0];
@@ -1762,15 +1772,15 @@ L_cidfrm:
 /*     Determine the location of the requested item in the array */
 /*     of centers. */
 
-    item = bschoi_(cent, &c__117, center, centrd);
+    item = bschoi_(cent, &c__121, center, centrd);
 
 /*     If the name is in our list, we can just look up its ID code and */
 /*     name in the parallel array. */
 
     if (item > 0) {
-	*frcode = idcode[(i__1 = item - 1) < 117 && 0 <= i__1 ? i__1 : s_rnge(
+	*frcode = idcode[(i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 : s_rnge(
 		"idcode", i__1, "framex_", (ftnlen)1632)];
-	s_copy(frname, name__ + (((i__1 = item - 1) < 117 && 0 <= i__1 ? i__1 
+	s_copy(frname, name__ + (((i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 
 		: s_rnge("name", i__1, "framex_", (ftnlen)1633)) << 5), 
 		frname_len, (ftnlen)32);
 	*found = TRUE_;
@@ -1993,7 +2003,7 @@ L_cnmfrm:
 
     if (first) {
 	first = FALSE_;
-	zzfdat_(&c__117, name__, idcode, center, type__, typeid, norder, 
+	zzfdat_(&c__121, name__, idcode, center, type__, typeid, norder, 
 		corder, centrd, (ftnlen)32);
     }
 
@@ -2040,11 +2050,11 @@ L_cnmfrm:
 /*           We've got the name:  See if we have this in our handy list */
 /*           of built-in names. */
 
-	    item = bschoc_(pname, &c__117, name__, norder, (ftnlen)32, (
+	    item = bschoc_(pname, &c__121, name__, norder, (ftnlen)32, (
 		    ftnlen)32);
 	    if (item > 0) {
 		s_copy(frname, pname, frname_len, (ftnlen)32);
-		*frcode = idcode[(i__1 = item - 1) < 117 && 0 <= i__1 ? i__1 :
+		*frcode = idcode[(i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 :
 			 s_rnge("idcode", i__1, "framex_", (ftnlen)1926)];
 		*found = TRUE_;
 	    } else {
@@ -2079,12 +2089,12 @@ L_cnmfrm:
 /*           We've got the frame ID, see if we already know about this */
 /*           id-code. */
 
-	    item = bschoi_(values, &c__117, idcode, corder);
+	    item = bschoi_(values, &c__121, idcode, corder);
 	    if (item != 0) {
 
 /*              Just look up the name and set the frame code. */
 
-		s_copy(frname, name__ + (((i__1 = item - 1) < 117 && 0 <= 
+		s_copy(frname, name__ + (((i__1 = item - 1) < 121 && 0 <= 
 			i__1 ? i__1 : s_rnge("name", i__1, "framex_", (ftnlen)
 			1977)) << 5), frname_len, (ftnlen)32);
 		*frcode = values[0];
@@ -2130,13 +2140,13 @@ L_cnmfrm:
 /*     Determine the location of the requested item in the array */
 /*     of centers. */
 
-    item = bschoc_(frname, &c__117, name__, norder, frname_len, (ftnlen)32);
+    item = bschoc_(frname, &c__121, name__, norder, frname_len, (ftnlen)32);
 
 /*     If the name is in our list, we can just look up its ID code and */
 /*     name in the parallel array. */
 
     if (item > 0) {
-	*frcode = idcode[(i__1 = item - 1) < 117 && 0 <= i__1 ? i__1 : s_rnge(
+	*frcode = idcode[(i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 : s_rnge(
 		"idcode", i__1, "framex_", (ftnlen)2038)];
 	*found = TRUE_;
     } else {
@@ -2350,7 +2360,7 @@ L_ccifrm:
 
     if (first) {
 	first = FALSE_;
-	zzfdat_(&c__117, name__, idcode, center, type__, typeid, norder, 
+	zzfdat_(&c__121, name__, idcode, center, type__, typeid, norder, 
 		corder, centrd, (ftnlen)32);
     }
 
@@ -2500,20 +2510,20 @@ L_ccifrm:
 /*     frame specification in the kernel pool. Check the built-in */
 /*     frame list. Unfortunately, this is a linear search. */
 
-    for (i__ = 1; i__ <= 117; ++i__) {
-	if (type__[(i__1 = i__ - 1) < 117 && 0 <= i__1 ? i__1 : s_rnge("type",
+    for (i__ = 1; i__ <= 121; ++i__) {
+	if (type__[(i__1 = i__ - 1) < 121 && 0 <= i__1 ? i__1 : s_rnge("type",
 		 i__1, "framex_", (ftnlen)2434)] == *class__ && typeid[(i__2 =
-		 i__ - 1) < 117 && 0 <= i__2 ? i__2 : s_rnge("typeid", i__2, 
+		 i__ - 1) < 121 && 0 <= i__2 ? i__2 : s_rnge("typeid", i__2, 
 		"framex_", (ftnlen)2434)] == *clssid) {
 
 /*           We have a match. Assign the output arguments and return. */
 
-	    s_copy(frname, name__ + (((i__1 = i__ - 1) < 117 && 0 <= i__1 ? 
+	    s_copy(frname, name__ + (((i__1 = i__ - 1) < 121 && 0 <= i__1 ? 
 		    i__1 : s_rnge("name", i__1, "framex_", (ftnlen)2439)) << 
 		    5), frname_len, (ftnlen)32);
-	    *frcode = idcode[(i__1 = i__ - 1) < 117 && 0 <= i__1 ? i__1 : 
+	    *frcode = idcode[(i__1 = i__ - 1) < 121 && 0 <= i__1 ? i__1 : 
 		    s_rnge("idcode", i__1, "framex_", (ftnlen)2440)];
-	    *cent = center[(i__1 = i__ - 1) < 117 && 0 <= i__1 ? i__1 : 
+	    *cent = center[(i__1 = i__ - 1) < 121 && 0 <= i__1 ? i__1 : 
 		    s_rnge("center", i__1, "framex_", (ftnlen)2441)];
 	    *found = TRUE_;
 	    chkout_("CCIFRM", (ftnlen)6);

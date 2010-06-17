@@ -21,8 +21,8 @@
 
 /* $ Abstract */
 
-/*      Normalize a double precision vector of arbitrary dimension and */
-/*      return its magnitude. */
+/*     Normalize a double precision vector of arbitrary dimension and */
+/*     return its magnitude. */
 
 /* $ Disclaimer */
 
@@ -55,59 +55,35 @@
 
 /* $ Keywords */
 
-/*      VECTOR */
+/*     VECTOR */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*       V1        I     Vector to be normalized. */
-/*       NDIM      I     Dimension of V1 (and also VOUT). */
-/*       VOUT      O     Unit vector V1 / |V1|. */
-/*                       If V1 = 0, VOUT will also be zero. */
-/*                       VOUT can overwrite V1. */
-/*       VMAG      O     Magnitude of V1, that is, |V1|. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     V1         I   Vector to be normalized. */
+/*     NDIM       I   Dimension of V1 (and also VOUT). */
+/*     VOUT       O   Unit vector V1 / |V1|. */
+/*                    If V1 = 0, VOUT will also be zero. */
+/*     VMAG       O   Magnitude of V1, that is, |V1|. */
 
 /* $ Detailed_Input */
 
-/*      V1      This variable may contain any vector of arbitrary */
-/*              dimension, including the zero vector. */
-/*      NDIM    This is the dimension of V1 and VOUT. */
+/*     V1      This variable may contain any vector of arbitrary */
+/*             dimension, including the zero vector. */
+/*     NDIM    This is the dimension of V1 and VOUT. */
 
 /* $ Detailed_Output */
 
-/*      VOUT    This variable contains the unit vector in the direction */
-/*              of V1.  If V1 is the zero vector, then VOUT will also be */
-/*              the zero vector. */
-/*      VMAG    This is the magnitude of V1. */
+/*     VOUT    This variable contains the unit vector in the direction */
+/*             of V1.  If V1 is the zero vector, then VOUT will also be */
+/*             the zero vector. */
+/*     VMAG    This is the magnitude of V1. */
 
 /* $ Parameters */
 
-/*      None. */
-
-/* $ Particulars */
-
-/*      UNORMG references a function called VNORMG (which itself is */
-/*      numerically stable) to calculate the norm of the input vector V1. */
-/*      If the norm is equal to zero, then each component of the output */
-/*      vector VOUT is set to zero.  Otherwise, VOUT is calculated by */
-/*      dividing V1 by the norm.  No error detection or correction is */
-/*      implemented. */
-
-/* $ Examples */
-
-/*      The following table shows how selected V1 implies VOUT and MAG. */
-
-/*      V1                    NDIM   VOUT                   MAG */
-/*      ----------------------------------------------------------------- */
-/*      (5, 12)               2      (5/13, 12/13)          13 */
-/*      (1D-7, 2D-7, 2D-7)    3      (1/3, 2/3, 2/3)        3D-7 */
-
-/* $ Restrictions */
-
-/*      No error checking is implemented in this subroutine to guard */
-/*      against numeric overflow. */
+/*     None. */
 
 /* $ Exceptions */
 
@@ -115,18 +91,46 @@
 
 /* $ Files */
 
-/*      None. */
+/*     None. */
 
-/* $ Author_and_Institution */
+/* $ Particulars */
 
-/*      W.M. Owen       (JPL) */
-/*      W.L. Taber      (JPL) */
+/*     UNORMG references a function called VNORMG (which itself is */
+/*     numerically stable) to calculate the norm of the input vector V1. */
+/*     If the norm is equal to zero, then each component of the output */
+/*     vector VOUT is set to zero.  Otherwise, VOUT is calculated by */
+/*     dividing V1 by the norm.  No error detection or correction is */
+/*     implemented. */
+
+/* $ Examples */
+
+/*     The following table shows how selected V1 implies VOUT and MAG. */
+
+/*        V1                    NDIM   VOUT                   MAG */
+/*        -------------------------------------------------------- */
+/*        (5, 12)               2      (5/13, 12/13)          13 */
+/*        (1D-7, 2D-7, 2D-7)    3      (1/3, 2/3, 2/3)        3D-7 */
+
+/* $ Restrictions */
+
+/*     No error checking is implemented in this subroutine to guard */
+/*     against numeric overflow. */
 
 /* $ Literature_References */
 
 /*     None. */
 
+/* $ Author_and_Institution */
+
+/*     W.M. Owen       (JPL) */
+/*     W.L. Taber      (JPL) */
+
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.2, 23-APR-2010 (NJB) */
+
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
 /* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
 
@@ -168,15 +172,15 @@
 	i__1 = *ndim;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    vout[(i__2 = i__ - 1) < vout_dim1 && 0 <= i__2 ? i__2 : s_rnge(
-		    "vout", i__2, "unormg_", (ftnlen)157)] = v1[(i__3 = i__ - 
+		    "vout", i__2, "unormg_", (ftnlen)161)] = v1[(i__3 = i__ - 
 		    1) < v1_dim1 && 0 <= i__3 ? i__3 : s_rnge("v1", i__3, 
-		    "unormg_", (ftnlen)157)] / *vmag;
+		    "unormg_", (ftnlen)161)] / *vmag;
 	}
     } else {
 	i__1 = *ndim;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    vout[(i__2 = i__ - 1) < vout_dim1 && 0 <= i__2 ? i__2 : s_rnge(
-		    "vout", i__2, "unormg_", (ftnlen)161)] = 0.;
+		    "vout", i__2, "unormg_", (ftnlen)165)] = 0.;
 	}
     }
 

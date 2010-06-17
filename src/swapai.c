@@ -210,6 +210,10 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.1.1, 18-MAY-2010 (BVS) */
+
+/*        Removed "C$" marker from text in the header. */
+
 /* -    SPICELIB Version 1.1.0, 09-SEP-2005 (NJB) */
 
 /*        Updated to remove non-standard use of duplicate arguments */
@@ -237,7 +241,7 @@
 
 /* -    Beta Version 2.0.0, 3-JAN-1989 (HAN) */
 
-/*        The "C$ Particulars" section stated that by setting N [M] */
+/*        The "Particulars" section stated that by setting N [M] */
 /*        to zero, the second [first] group is removed from its current */
 /*        location and inserted in front of ARRAY(LOCM) [ARRAY(LOCN)]. */
 /*        That statement was incorrect. Insertion occurs in front of */
@@ -247,7 +251,7 @@
 /*        greater than one, not zero as specified before. If they are */
 /*        not, and error is signalled. */
 
-/*        More examples were added to the "C$ Examples" section, and */
+/*        More examples were added to the "Examples" section, and */
 /*        the long error messages were revised. */
 
 /* -& */

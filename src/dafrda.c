@@ -100,10 +100,6 @@
 
 /*      None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     1) If BEGIN is zero or negative, the error SPICE(DAFNEGADDR) */
@@ -118,6 +114,10 @@
 
 /*     4) If HANDLE is invalid, routines in the call tree of DAFRDA */
 /*        signal an appropriate error. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -171,6 +171,10 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.0.2, 18-MAY-2010 (BVS) */
+
+/*        Index line now states that this routine is deprecated. */
+
 /* -    SPICELIB Version 2.0.1, 27-OCT-2003 (NJB) */
 
 /*        The header now states that this routine is deprecated. */
@@ -195,7 +199,7 @@
 /* -& */
 /* $ Index_Entries */
 
-/*     read data from daf address */
+/*     DEPRECATED read data from daf address */
 
 /* -& */
 /* $ Revisions */

@@ -155,6 +155,10 @@ integer wncard_(doublereal *window)
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.1, 24-APR-2010 (EDW) */
+
+/*       Minor edit to code comments eliminating typo. */
+
 /* -    SPICELIB Version 1.0.0, 10-AUG-2007 (EDW) */
 
 /* -& */

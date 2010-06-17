@@ -146,7 +146,10 @@
 <h4><a name="Exceptions">Exceptions</a></h4>
 <PRE>
  
-   Error free. 
+   1) A negative input dimension causes this routine to
+      leave the output order vector unchanged.
+
+   This routine is error free. 
 </PRE>
 <h4><a name="Files">Files</a></h4>
 <PRE>
@@ -178,10 +181,10 @@
             .
             .
       /.
-      Sort the object arrays by name. 
+      Sort the object arrays by ID code. 
       ./ 
 
-      <a href="orderc_c.html">orderc_c</a> ( namlen, names, n,  iorder ); 
+      <b>orderi_c</b> ( codes,  n,         iorder ); 
 
       <a href="reordc_c.html">reordc_c</a> ( iorder, n, namlen, names  );
       <a href="reordd_c.html">reordd_c</a> ( iorder, n,         masses ); 
@@ -207,6 +210,12 @@
 <h4><a name="Version">Version</a></h4>
 <PRE>
  
+   -CSPICE Version 1.0.1, 23-MAR-2010 (NJB)
+
+      Header example was updated to show use of this routine.
+      Exceptions section was updated. Header sections were
+      re-ordered.
+
    -CSPICE Version 1.0.0, 08-JUL-2002 (NJB) (IMU)
 </PRE>
 <h4><a name="Index_Entries">Index_Entries</a></h4>
@@ -221,7 +230,7 @@
   </tbody>
 </table>
 
-   <pre>Thu Apr 16 08:58:45 2009</pre>
+   <pre>Wed Jun  9 13:05:27 2010</pre>
 
 </body>
 </html>

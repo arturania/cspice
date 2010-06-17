@@ -97,6 +97,7 @@
       <A HREF="#Summary of mnemonics">Summary of mnemonics</A>
       <A HREF="#Summary of Calling Sequences">Summary of Calling Sequences</A>
       <A HREF="#Revisions">Revisions</A>
+         <A HREF="#February 24, 2010 EDW (JPL)">February 24, 2010 EDW (JPL)</A>
          <A HREF="#April 1, 2009">April 1, 2009</A>
          <A HREF="#Feb. 06, 2002">Feb. 06, 2002</A>
          <A HREF="#Jan. 15, 2002">Jan. 15, 2002</A>
@@ -110,7 +111,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> E-Kernel Required Reading
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2009 APR 01 by B. V. Semenov.
+   Last revised on 2010 APR 07 by E. D. Wright.
 <P>
  
 <BR><BR>
@@ -144,7 +145,7 @@
 <TT>4.</TT> [278] COMMNT User's Guide (<a href="../ug/commnt.html">commnt.ug</a>)
 <BR><BR></UL>
 <UL>
-<TT>5.</TT> [284] INSPEKT User's Guide (inpekt.ug)
+<TT>5.</TT> [284] INSPEKT User's Guide (<a href="../ug/inspekt.html">inspekt.ug</a>)
 <BR><BR></UL>
 <UL>
 <TT>6.</TT> [286] DAS Required Reading (<a href="../req/das.html">das.req</a>)
@@ -269,7 +270,7 @@ Kernel Notebook Component ENB''
    with event data that fit the relational database paradigm: specifically,
    data that can be meaningfully and advantageously represented as a series
    of tables, each one of which is characterized by a collection of rows
-   and columns. This type of organization is likely to be appropriate when:
+   and columns. This type of organization is likely appropriate when:
 <P>
  
 <UL>
@@ -358,12 +359,12 @@ fashion, for items of interest is required
    software capable of accessing those files. The EK API contains
    ``writer'' software that enables users to create sequence EK files that
    contain data organized in a tabular fashion. The data then can be
-   accessed via ``reader'' functions from the EK API, or interactively via
-   the EK browsing program INSPEKT.
+   accessed using ``reader'' functions from the EK API, or interactively
+   using the EK browsing program INSPEKT.
 <P>
  
    Sequence EK files are binary files and therefore cannot be read directly
-   via text editing programs. However, the program INSPEKT can dump any
+   using text editing programs. However, the program INSPEKT can dump any
    selected portion of any sequence EK as a text file, using user-specified
    formats, so in a sense sequence EK files are more flexible than flat
    text files as a repository for event information. By using a
@@ -421,14 +422,14 @@ fashion, for items of interest is required
  
    The sequence EK subsystem provides an application programming interface
    (API) for creating, modifying, reading, summarizing, and annotating
-   sequence EK files. In particular, the API supports reading via a
+   sequence EK files. In particular, the API supports reading using a
    query-and-fetch mechanism: an application passes a request for data
-   called a ``query'' to the EK subsystem, then retrieves the data via a
+   called a ``query'' to the EK subsystem, then retrieves the data using a
    suite of API routines. Queries are expressed in a simple language that
    closely resembles the standard relational database query language SQL.
 <P>
  
-   The sequence EK query capability is also provided via the CSPICE
+   The sequence EK query capability is also provided using the CSPICE
    interactive browsing utility INSPEKT. However, INSPEKT does not support
    any sequence EK writing functionality.
 <P>
@@ -504,7 +505,7 @@ There is no limit imposed by the EK subsystem on the dimension of a
 column's entries.
 <BR><BR></UL>
 <UL>
-<TT>&#32;&#32;</TT> Array-valued columns may not be referenced in query contraints.
+<TT>&#32;&#32;</TT> Array-valued columns may not be referenced in query constraints.
 <BR><BR></UL>
 <UL>
 <TT>--</TT> String length (applies only to character columns)
@@ -540,8 +541,8 @@ entries, entries may be designated as null when segments are written.
    rows that satisfy the constraints as ``matching rows.''
 <P>
  
-   The selected data will be retrievable via the EK fetch routines <a href="../cspice/ekgc_c.html">ekgc_c</a>,
-   <a href="../cspice/ekgd_c.html">ekgd_c</a>, and <a href="../cspice/ekgi_c.html">ekgi_c</a>.
+   The selected data will be retrievable using the EK fetch routines
+   <a href="../cspice/ekgc_c.html">ekgc_c</a>, <a href="../cspice/ekgd_c.html">ekgd_c</a>, and <a href="../cspice/ekgi_c.html">ekgi_c</a>.
 <P>
  
    The query consists of four clauses, the third and fourth of which are
@@ -568,9 +569,9 @@ entries, entries may be designated as null when segments are written.
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> The SELECT clause
 </H3><P><BR><BR>
-   The SELECT clause specifies a list of columns from which data are to be
-   selected. In a simple (non-join) query, these columns must belong to the
-   single table specified in the FROM clause.
+   The SELECT clause specifies a list of columns from which to select data.
+   In a simple (non-join) query, these columns must belong to the single
+   table specified in the FROM clause.
 <P>
  
    The form of a SELECT clause is
@@ -609,9 +610,9 @@ entries, entries may be designated as null when segments are written.
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> The FROM clause
 </H3><P><BR><BR>
-   The FROM clause specifies the tables from which data are to be selected.
-   In simple queries, only one table is listed. In this case the form of
-   the FROM clause is
+   The FROM clause specifies the tables from which to select data. In
+   simple queries, only one table is listed. In this case the form of the
+   FROM clause is
 <P>
  
 <PRE>
@@ -691,8 +692,7 @@ entries, entries may be designated as null when segments are written.
 <P>
  
 <PRE>
-   EQ, GE, GT, LE, LIKE, LT, NE, NOT LIKE, &lt;, &lt;=,
-   =, &gt;, &gt;=, !=, &lt;&gt;
+   EQ, GE, GT, LE, LIKE, LT, NE, NOT LIKE, &lt;, &lt;=, =, &gt;, &gt;=, !=, &lt;&gt;
 </PRE>
    For comparison with null values, the special expressions
 <P>
@@ -1236,7 +1236,7 @@ entries, entries may be designated as null when segments are written.
    order TIME                         {ORDER BY phrase is
                                        lacking BY keyword}
  
-   select COL1 from table where
+   select COL1 from table
    where COL1 eq MOC_EVENT            {literal string on
                                        right-hand-side of
                                        operator is not quoted}
@@ -1312,7 +1312,7 @@ entries, entries may be designated as null when segments are written.
    Sequence EK files contain data organized in a series of logical tables
    called ``segments.'' This organization is logical, not physical---the
    physical layout of the data in the file is transparent to applications
-   that access sequence EKs via the EK API.
+   that access sequence EKs using the EK API.
 <P>
  
    Each segment contains data belonging to one EK table. A sequence EK file
@@ -1408,7 +1408,7 @@ entries, entries may be designated as null when segments are written.
    Since sequence EKs are instances of DAS files, the DAS file transfer
    mechanisms apply. The CSPICE utilities TOXFR and TOBIN may be used to
    convert binary sequence EKs to ASCII transfer format and back to binary
-   format. See the CONVERT users's guide, <a href="../ug/convert.html">convert.ug</a>, [333] for details.
+   format. See the CONVERT user's guide, <a href="../ug/convert.html">convert.ug</a>, [333] for details.
 <P>
  
 <BR><BR>
@@ -1441,18 +1441,14 @@ entries, entries may be designated as null when segments are written.
 <PRE>
    <a href="../cspice/furnsh_c.html">furnsh_c</a> ( &lt;fname&gt; );                 {Load SPICE kernel}
 </PRE>
-   <a href="../cspice/furnsh_c.html">furnsh_c</a> in turn invokes the low-level EK-specific loader <a href="../cspice/eklef_c.html">eklef_c</a>.
-<P>
- 
    A limited number of EK files may be loaded at any one time. The current
    maximum limit is 20 files.
 <P>
  
    The inverse routine corresponding to <a href="../cspice/furnsh_c.html">furnsh_c</a> is <a href="../cspice/unload_c.html">unload_c</a>. unload_c
    removes a loaded kernel from the CSPICE system: the file is closed, and
-   data stuctures referring to the file are updated to reflect the absence
-   of the file. <a href="../cspice/unload_c.html">unload_c</a> invokes the EK-specific unload routine <a href="../cspice/ekuef_c.html">ekuef_c</a> to
-   carry out its task.
+   data structures referring to the file are updated to reflect the absence
+   of the file.
 <P>
  
    See [218] for further information on <a href="../cspice/furnsh_c.html">furnsh_c</a> and <a href="../cspice/unload_c.html">unload_c</a>.
@@ -1509,7 +1505,7 @@ entries, entries may be designated as null when segments are written.
                                                             satisfy
                                                             query}
 </PRE>
-   Here
+   With the arguments:
 <P>
  
 <DL><DT>
@@ -1526,25 +1522,24 @@ language'' above for a complete description of the language.<BR>
 </B><BR><BR>
 <DD>
  is the number of ``matching rows'': rows satisfying the query
-constraints, if any. `nmrows' is defined only if the query executed
-successfully.<BR>
+constraints, if any. `nmrows' has a valid value only if the query
+successfully executed.<BR>
 </DL>
 <DL><DT>
 <B>
  `error'
 </B><BR><BR>
 <DD>
- is a logical flag indicting whether the query executed successfully. If
-the input query is incorrect, `error' will be returned with the value
-SPICETRUE.<BR>
+ is a logical flag indicating whether the query executed successfully.
+If the input query is incorrect, `error' will return true.<BR>
 </DL>
 <DL><DT>
 <B>
  `errmsg'
 </B><BR><BR>
 <DD>
- is a string containing an error diagnosis. `errmsg' is set when `error'
-is SPICETRUE. and is undefined otherwise.<BR>
+ is a string containing an error diagnosis. `errmsg' has a valid value
+only if when `error' is true.<BR>
 </DL>
    Query errors fall into a few categories:
 <P>
@@ -1564,8 +1559,8 @@ syntactically invalid.
 column or table names in a query.
 <BR><BR></UL>
 <UL>
-<TT>--</TT> Time resolution errors---these result from use of time strings that cannot
-be parsed.
+<TT>--</TT> Time resolution errors---these result when a failure occurs during the
+parse of a time string.
 <BR><BR></UL>
 <UL>
 <TT>--</TT> Miscellaneous semantic errors---these result from a syntactically valid
@@ -1585,8 +1580,8 @@ query that violates a limit or a restriction on values used in a query.
 <TT>--</TT> A SCLK value is used in a query before an SCLK kernel for the appropriate
 spacecraft clock has been loaded.
 <BR><BR></UL>
-   These problems cause a SPICE error to be signaled. The outputs of
-   <a href="../cspice/ekfind_c.html">ekfind_c</a> are undefined in this case.
+   These problems cause a SPICE error to signal. The outputs of <a href="../cspice/ekfind_c.html">ekfind_c</a>
+   are undefined in this case.
 <P>
  
 <BR><BR>
@@ -1609,7 +1604,7 @@ spacecraft clock has been loaded.
    <a href="../cspice/ekgc_c.html">ekgc_c</a> ( &lt;selidx&gt;, &lt;row&gt;, &lt;elment&gt;, &lt;lenout&gt;,        {Get character
              cdata, &amp;null, &amp;found );                     data}
 </PRE>
-   Here
+   With the arguments:
 <P>
  
 <DL><DT>
@@ -1676,6 +1671,7 @@ found.<BR>
 <PRE>
    <a href="../cspice/ekgd_c.html">ekgd_c</a> ( &lt;selidx&gt;, &lt;row&gt;, &lt;elment&gt;,
             &amp;ddata,   &amp;null, &amp;found   );               {Get d.p. data}
+ 
 </PRE>
    The arguments have the same meanings as the corresponding arguments of
    <a href="../cspice/ekgc_c.html">ekgc_c</a>, except that `ddata' represents a double precision number.
@@ -1706,7 +1702,7 @@ found.<BR>
 <PRE>
    nelts = <a href="../cspice/eknelt_c.html">eknelt_c</a> ( &lt;selidx&gt;, &lt;row&gt; );      {Get number of elements}
 </PRE>
-   Here
+   With the arguments:
 <P>
  
 <DL><DT>
@@ -1765,13 +1761,13 @@ nmrows-1 where `nmrows' is the number of matching rows returned by
 <P>
  
 <PRE>
-   <a href="../cspice/ekpsel_c.html">ekpsel_c</a>  ( query,   msglen,  tablen,  collen,
+   <a href="../cspice/ekpsel_c.html">ekpsel_c</a>  ( &lt;query&gt;, &lt;msglen&gt;, &lt;tablen&gt;, &lt;collen&gt;,
                n,       xbegs,   xends,   xtypes,
                xclass,  tabs,    cols,    error,  errmsg ); { Parse
                                                               SELECT
                                                               clause }
 </PRE>
-   Here
+   With the arguments:
 <P>
  
 <DL><DT>
@@ -1902,19 +1898,17 @@ Otherwise, ERRMSG is returned empty.<BR>
 <P>
  
 <PRE>
-   <a href="../cspice/ekopr_c.html">ekopr_c</a> ( &lt;fname&gt;, &amp;handle );              {EK, open for read}
+   <a href="../cspice/ekopr_c.html">ekopr_c</a> ( &lt;fname&gt;, &amp;handle );            {EK, open for read}
 </PRE>
-   If the EK to be read is to be queried, then the EK should be loaded via
-   <a href="../cspice/eklef_c.html">eklef_c</a> or <a href="../cspice/furnsh_c.html">furnsh_c</a>.
+   If the EK to be read is to be queried, then the EK should be loaded
+   using <a href="../cspice/furnsh_c.html">furnsh_c</a>.
 <P>
  
 <PRE>
-   <a href="../cspice/eklef_c.html">eklef_c</a>  ( &lt;fname&gt;, &amp;handle );        {EK, load event file}
- 
    <a href="../cspice/furnsh_c.html">furnsh_c</a> ( &lt;fname&gt; );                 {Load SPICE kernel}
 </PRE>
-   If <a href="../cspice/furnsh_c.html">furnsh_c</a> is used, the file's handle may be obtained via a call to the
-   CSPICE function <a href="../cspice/kinfo_c.html">kinfo_c</a>.
+   The file's handle may be obtained using a call to the CSPICE function
+   <a href="../cspice/kinfo_c.html">kinfo_c</a>.
 <P>
  
 <BR><BR>
@@ -1927,13 +1921,10 @@ Otherwise, ERRMSG is returned empty.<BR>
 <P>
  
 <PRE>
-   <a href="../cspice/ekrcec_c.html">ekrcec_c</a>  ( &lt;handle&gt;, &lt;segno&gt;,  &lt;recno&gt;,  &lt;column&gt;,
-               &lt;lenout&gt;  &amp;nvals,   cvals,    isnull   );
- 
-                                                       {read character
-                                                        column entry}
+   <a href="../cspice/ekrcec_c.html">ekrcec_c</a>  ( &lt;handle&gt;, &lt;segno&gt;, &lt;recno&gt;, &lt;column&gt;,   {read character
+               &lt;lenout&gt;  &amp;nvals,  cvals,   isnull   );  column entry}
 </PRE>
-   Here
+   With the arguments:
 <P>
  
 <DL><DT>
@@ -2000,11 +1991,8 @@ column entry is non-null.<BR>
 <P>
  
 <PRE>
-   <a href="../cspice/ekrced_c.html">ekrced_c</a>  ( &lt;handle&gt;, &lt;segno&gt;,  &lt;recno&gt;, &lt;column&gt;,
-               &amp;nvals,   dvals,    isnull            );
- 
-                                                       {read d.p.
-                                                        column entry}
+   <a href="../cspice/ekrced_c.html">ekrced_c</a>  ( &lt;handle&gt;, &lt;segno&gt;,  &lt;recno&gt;, &lt;column&gt;,    {read d.p.
+               &amp;nvals,   dvals,    isnull            );   column entry}
 </PRE>
    The arguments have the same meanings as the corresponding arguments of
    <a href="../cspice/ekrced_c.html">ekrced_c</a>, except that `dvals' represents a double precision array.
@@ -2014,11 +2002,8 @@ column entry is non-null.<BR>
 <P>
  
 <PRE>
-   <a href="../cspice/ekrcei_c.html">ekrcei_c</a>  ( &lt;handle&gt;, &lt;segno&gt;,  &lt;recno&gt;, &lt;column&gt;,
-               &amp;nvals,   ivals,    isnull            );
- 
-                                                       {read integer
-                                                        column entry}
+   <a href="../cspice/ekrcei_c.html">ekrcei_c</a>  ( &lt;handle&gt;, &lt;segno&gt;,  &lt;recno&gt;, &lt;column&gt;,     {read integer
+               &amp;nvals,   ivals,    isnull            );    column entry}
 </PRE>
    The arguments have the same meanings as the corresponding arguments of
    <a href="../cspice/ekrcec_c.html">ekrcec_c</a>, except that `ivals' represents an integer array.
@@ -2036,7 +2021,7 @@ column entry is non-null.<BR>
 </H3><P><BR><BR>
    To summarize an EK file, the file must be open for read or write access,
    and the file handle must be available. If the file is open for write
-   access, the file must be structually valid: for example, a fast write
+   access, the file must be structurally valid: for example, a fast write
    operation on the file must not be partially executed.
 <P>
  
@@ -2051,10 +2036,10 @@ column entry is non-null.<BR>
 <P>
  
 <PRE>
-   n = <a href="../cspice/eknseg_c.html">eknseg_c</a> ( &lt;handle&gt;, &lt;segno&gt;, &amp;segsum );        {Summarize
-                                                        segment}
+   n = <a href="../cspice/ekssum_c.html">ekssum_c</a> ( &lt;handle&gt;, &lt;segno&gt;, &amp;segsum );       {Summarize
+                                                       segment}
 </PRE>
-   Here
+   With the arguments:
 <P>
  
 <DL><DT>
@@ -2088,7 +2073,7 @@ segment. See the header SpiceEK.h for details.<BR>
    A ``loaded EK table'' is a virtual table consisting of the union of all
    rows of data from segments having a given table name and schema, where
    the segments belong to loaded EKs. These tables exist in the EK query
-   subsystem when EKs are loaded via <a href="../cspice/furnsh_c.html">furnsh_c</a>.
+   subsystem when EKs are loaded using <a href="../cspice/furnsh_c.html">furnsh_c</a>.
 <P>
  
    The number of loaded tables may be found by calling <a href="../cspice/ekntab_c.html">ekntab_c</a>:
@@ -2111,7 +2096,7 @@ segment. See the header SpiceEK.h for details.<BR>
    <a href="../cspice/ekccnt_c.html">ekccnt_c</a> ( &lt;table&gt;, &amp;ccount );             {Return column count}
 </PRE>
    The name and attributes of the column having a specified ordinal
-   position within in a specified, loaded table may be found by calling
+   position within a specified, loaded table may be found by calling
    <a href="../cspice/ekcii_c.html">ekcii_c</a>:
 <P>
  
@@ -2121,7 +2106,7 @@ segment. See the header SpiceEK.h for details.<BR>
                                                  of column specified
                                                  by index}
 </PRE>
-   Here
+   With the arguments:
 <P>
  
 <DL><DT>
@@ -2208,14 +2193,14 @@ physically written out, and closes the file.
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Beginning a new sequence EK
 </H3><P><BR><BR>
-   A new sequence EK is opened and prepared for writing via a call to
+   A new sequence EK is opened and prepared for writing using a call to
    <a href="../cspice/ekopn_c.html">ekopn_c</a>:
 <P>
  
 <PRE>
    <a href="../cspice/ekopn_c.html">ekopn_c</a> (  &lt;fname&gt;, &lt;ifname&gt;, &lt;ncomch&gt;, &amp;handle );  {Open new EK}
 </PRE>
-   Here
+   With the arguments:
 <P>
  
 <DL><DT>
@@ -2262,7 +2247,7 @@ to other sequence EK functions.<BR>
 <P>
  
 <PRE>
-   <a href="../cspice/ekopw_c.html">ekopw_c</a> (  &lt;fname&gt;, &amp;handle );           {Open EK for writing}
+   <a href="../cspice/ekopw_c.html">ekopw_c</a> ( &lt;fname&gt;, &amp;handle );            {Open EK for writing}
 </PRE>
    The arguments of <a href="../cspice/ekopw_c.html">ekopw_c</a> have the same meanings as the corresponding
    arguments of <a href="../cspice/ekopn_c.html">ekopn_c</a>.
@@ -2279,8 +2264,8 @@ to other sequence EK functions.<BR>
  
    Record-oriented writing allows records to be added to a segment one at a
    time; this approach simplifies creating records from a streaming data
-   source. In fact, records may be added to a segment in arbitrary order.
-   Also, it is possible to build multiple segments simultaneously using the
+   source. Records may be added to a segment in arbitrary order. Also, it
+   is possible to build multiple segments simultaneously using the
    record-oriented writers.
 <P>
  
@@ -2304,7 +2289,7 @@ to other sequence EK functions.<BR>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Specifying segment attributes
 </H3><P><BR><BR>
-   When starting a new segment via either the record-oriented or fast
+   When starting a new segment using either the record-oriented or fast
    writers, it is necessary to specify the name of the table the segment
    belongs to and the names and attributes of the columns in the table.
    When using the fast writers, it is also necessary to specify the number
@@ -2352,7 +2337,7 @@ to other sequence EK functions.<BR>
    &lt;is the column indexed?&gt;
    &lt;does the column allow null values?&gt;
 </PRE>
-   When a segment is started via <a href="../cspice/ekbseg_c.html">ekbseg_c</a> or <a href="../cspice/ekifld_c.html">ekifld_c</a>, an array of column
+   When a segment is started using <a href="../cspice/ekbseg_c.html">ekbseg_c</a> or <a href="../cspice/ekifld_c.html">ekifld_c</a>, an array of column
    declarations must be supplied as an input. The form of a column
    declaration string is a list of ``keyword=value'' assignments, delimited
    by commas, as shown:
@@ -2378,8 +2363,8 @@ to other sequence EK functions.<BR>
    white space is optional; case is not significant.
 <P>
  
-   The order in which the attribute keywords are listed in declaration is
-   not significant.
+   The order in which the attribute keywords are listed in the declaration
+   is not significant.
 <P>
  
    Data type specifications are required for each column.
@@ -2460,7 +2445,7 @@ to other sequence EK functions.<BR>
 <P>
  
    Optionally, any column can allow null values; this is indicated by the
-   assigment
+   assignment
 <P>
  
 <PRE>
@@ -2503,9 +2488,8 @@ to other sequence EK functions.<BR>
 <P>
  
 <PRE>
-   <a href="../cspice/ekbseg_c.html">ekbseg_c</a> ( &lt;handle&gt;, &lt;tabnam&gt;, &lt;ncols&gt;, &lt;cnmlen&gt;,
-              &lt;cnames&gt;, &lt;declen&gt;, &lt;decls&gt;, &amp;segno   ); {Begin
-                                                        segment}
+   <a href="../cspice/ekbseg_c.html">ekbseg_c</a> ( &lt;handle&gt;, &lt;tabnam&gt;, &lt;ncols&gt;, &lt;cnmlen&gt;,    {Begin
+              &lt;cnames&gt;, &lt;declen&gt;, &lt;decls&gt;, &amp;segno   );   segment}
 </PRE>
    The inputs to <a href="../cspice/ekbseg_c.html">ekbseg_c</a> are described below:
 <P>
@@ -2581,7 +2565,7 @@ segment in the file. Segment numbers start at 0 in CSPICE.<BR>
    sequence EK segments one record at a time.
 <P>
  
-   A new segment is prepared for record-oriented writing via a call to
+   A new segment is prepared for record-oriented writing using a call to
    <a href="../cspice/ekbseg_c.html">ekbseg_c</a> (see ``Starting a new segment'' above). Next, records are added
    to the segment. Records may be appended or may be inserted into the
    segment.
@@ -2593,7 +2577,7 @@ segment in the file. Segment numbers start at 0 in CSPICE.<BR>
 <PRE>
    <a href="../cspice/ekappr_c.html">ekappr_c</a> ( &lt;handle&gt;, &lt;segno&gt;, &amp;recno );         {Append record}
 </PRE>
-   Here
+   With the arguments:
 <P>
  
 <DL><DT>
@@ -2622,7 +2606,7 @@ number obtained from <a href="../cspice/ekbseg_c.html">ekbseg_c</a>.<BR>
 <P>
  
 <PRE>
-   <a href="../cspice/ekappr_c.html">ekappr_c</a> ( &lt;handle&gt;, &lt;segno&gt;, &lt;recno&gt; );         {Insert record}
+   <a href="../cspice/ekinsr_c.html">ekinsr_c</a> ( &lt;handle&gt;, &lt;segno&gt;, &lt;recno&gt; );         {Insert record}
 </PRE>
    The arguments are the same as those of <a href="../cspice/ekappr_c.html">ekappr_c</a>, except that here
    `recno' is an input. `recno' is the desired ordinal position of the new
@@ -2636,7 +2620,7 @@ number obtained from <a href="../cspice/ekbseg_c.html">ekbseg_c</a>.<BR>
 <P>
  
    Each new record starts out empty. The column entries in the record are
-   filled in one by one via calls to the ``add column entry'' functions
+   filled in one-by-one using calls to the ``add column entry'' functions
    <a href="../cspice/ekacec_c.html">ekacec_c</a>, <a href="../cspice/ekaced_c.html">ekaced_c</a>, and <a href="../cspice/ekacei_c.html">ekacei_c</a>. The column entries of a record may be
    written in any order.
 <P>
@@ -2645,13 +2629,10 @@ number obtained from <a href="../cspice/ekbseg_c.html">ekbseg_c</a>.<BR>
 <P>
  
 <PRE>
-   <a href="../cspice/ekacec_c.html">ekacec_c</a> ( &lt;handle&gt;, &lt;segno&gt;,  &lt;recno&gt;, &lt;column&gt;,
-              &lt;nvals&gt;,  &lt;vallen&gt;, &lt;cvals&gt;, &lt;isnull&gt;  );
- 
-                                                        {Add character
-                                                         column entry}
+   <a href="../cspice/ekacec_c.html">ekacec_c</a> ( &lt;handle&gt;, &lt;segno&gt;,  &lt;recno&gt;, &lt;column&gt;,      {Add character
+              &lt;nvals&gt;,  &lt;vallen&gt;, &lt;cvals&gt;, &lt;isnull&gt;  );    column entry}
 </PRE>
-   Here
+   With the arguments:
 <P>
  
 <DL><DT>
@@ -2685,6 +2666,14 @@ number obtained from <a href="../cspice/ekbseg_c.html">ekbseg_c</a>.<BR>
 </DL>
 <DL><DT>
 <B>
+ `nvals'
+</B><BR><BR>
+<DD>
+ is the number of elements in the column entry. For scalar entries,
+`nvals' is 1. For null-valued entries, NVALS is ignored.<BR>
+</DL>
+<DL><DT>
+<B>
  `vallen'
 </B><BR><BR>
 <DD>
@@ -2692,11 +2681,10 @@ number obtained from <a href="../cspice/ekbseg_c.html">ekbseg_c</a>.<BR>
 </DL>
 <DL><DT>
 <B>
- `nvals'
+ `cvals_len'
 </B><BR><BR>
 <DD>
- is the number of elements in the column entry. For scalar entries,
-`nvals' is 1. For null-valued entries, NVALS is ignored.<BR>
+ is the string length of the elements of `cvals'.<BR>
 </DL>
 <DL><DT>
 <B>
@@ -2719,32 +2707,27 @@ added is null, the size of the entry is considered to be 1.<BR>
 <P>
  
 <PRE>
-   <a href="../cspice/ekaced_c.html">ekaced_c</a> ( &lt;handle&gt;, &lt;segno&gt;,  &lt;recno&gt;, &lt;column&gt;,
-              &lt;nvals&gt;,  &lt;dvals&gt;,  &lt;isnull&gt;          );
-                                                         {Add d.p.
-                                                          column entry}
+   <a href="../cspice/ekaced_c.html">ekaced_c</a> ( &lt;handle&gt;, &lt;segno&gt;,  &lt;recno&gt;, &lt;column&gt;,      {Add d.p.
+              &lt;nvals&gt;,  &lt;dvals&gt;,  &lt;isnull&gt;          );     column entry}
 </PRE>
    The arguments have the same meanings as the corresponding arguments of
    <a href="../cspice/ekacec_c.html">ekacec_c</a>, except that `dvals' represents a double precision array.
 <P>
  
-   Value of type TIME are also added via <a href="../cspice/ekaced_c.html">ekaced_c</a>. When a column contains
-   TIME values (as indicated by its declared data type), the values are
-   stored as ephemeris seconds past J2000 TDB. When starting with UTC or
-   SCLK time values, the CSPICE conversion routines <a href="../cspice/str2et_c.html">str2et_c</a> or <a href="../cspice/scs2e_c.html">scs2e_c</a> may
-   be used to obtain equivalent double precision TDB values. See the
-   <a href="../req/time.html">TIME.REQ</a> or <a href="../req/sclk.html">SCLK.REQ</a> Required Reading for details.
+   Values of type TIME are also added using <a href="../cspice/ekaced_c.html">ekaced_c</a>. When a column
+   contains TIME values (as indicated by its declared data type), the
+   values are stored as ephemeris seconds past J2000 TDB. When starting
+   with UTC or SCLK time values, the CSPICE conversion routines <a href="../cspice/str2et_c.html">str2et_c</a> or
+   <a href="../cspice/scs2e_c.html">scs2e_c</a> may be used to obtain equivalent double precision TDB values.
+   See the <a href="../req/time.html">TIME.REQ</a> or <a href="../req/sclk.html">SCLK.REQ</a> Required Reading for details.
 <P>
  
    Integer column entries are written by <a href="../cspice/ekacei_c.html">ekacei_c</a>:
 <P>
  
 <PRE>
-   <a href="../cspice/ekacei_c.html">ekacei_c</a> ( &lt;handle&gt;, &lt;segno&gt;,  &lt;recno&gt;, &lt;column&gt;,
-              &lt;nvals&gt;,  &lt;ivals&gt;,  &lt;isnull&gt;          );
- 
-                                                        {Add integer
-                                                         column entry}
+   <a href="../cspice/ekacei_c.html">ekacei_c</a> ( &lt;handle&gt;, &lt;segno&gt;,  &lt;recno&gt;, &lt;column&gt;,     {Add integer
+              &lt;nvals&gt;,  &lt;ivals&gt;,  &lt;isnull&gt;          );    column entry}
 </PRE>
    The arguments have the same meanings as the corresponding arguments of
    <a href="../cspice/ekacec_c.html">ekacec_c</a>, except that `ivals' represents an integer array.
@@ -2756,7 +2739,7 @@ added is null, the size of the entry is considered to be 1.<BR>
  
    No action is required to ``finish`` a segment created by the
    record-oriented writers, although <a href="../cspice/ekcls_c.html">ekcls_c</a> must be called to close the
-   file when all segments been written.
+   file when all segments have been written.
 <P>
  
 <BR><BR>
@@ -2771,8 +2754,8 @@ added is null, the size of the entry is considered to be 1.<BR>
 <P>
  
    The fast write approach involves creating one new segment at a time.
-   Segments are constructed one column at at time: each column is added to
-   a segment in one shot.
+   Segments are constructed one column at a time: each column is added to a
+   segment in one shot.
 <P>
  
    In order to add a segment to a sequence EK, the sequence EK must be open
@@ -2805,9 +2788,6 @@ information required to make the segment readable.
    closed by calling <a href="../cspice/ekcls_c.html">ekcls_c</a>.
 <P>
  
-   Below, we discuss the calling sequences of the fast writer functions.
-<P>
- 
 <BR><BR>
 <A NAME="Initiating a fast write"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
@@ -2819,10 +2799,9 @@ information required to make the segment readable.
 <P>
  
 <PRE>
-   <a href="../cspice/ekifld_c.html">ekifld_c</a> ( &lt;handle&gt;, &lt;tabnam&gt;, &lt;ncols&gt;,  &lt;nrows&gt;,
-              &lt;cnmlen&gt;, &lt;cnames&gt;, &lt;declen&gt;, &lt;decls&gt;,
-              &amp;segno,    rcptrs                     ); { Initiate
-                                                         fast write }
+   <a href="../cspice/ekifld_c.html">ekifld_c</a> ( &lt;handle&gt;, &lt;tabnam&gt;, &lt;ncols&gt;,  &lt;nrows&gt;,     {Initiate
+              &lt;cnmlen&gt;, &lt;cnames&gt;, &lt;declen&gt;, &lt;decls&gt;,      fast write }
+              &amp;segno,    rcptrs                     );
 </PRE>
    The inputs to <a href="../cspice/ekifld_c.html">ekifld_c</a> are described below.
 <P>
@@ -2903,10 +2882,10 @@ segment in the file. Segment numbers start at 0 in CSPICE.<BR>
  `rcptrs'
 </B><BR><BR>
 <DD>
- This is an integer work space array which must not be modified by the
-caller. `rcptrs' must have dimension at least equal to the number of
-rows in the segment. `rcptrs' is passed as an input to the other fast
-writer routines.<BR>
+ This is an integer work space array the caller must not modify.
+`rcptrs' must have dimension at least equal to the number of rows in
+the segment. `rcptrs' is passed as an input to the other fast writer
+routines.<BR>
 </DL>
 <BR><BR>
 <A NAME="Adding columns to the segment"></A>
@@ -2921,11 +2900,11 @@ writer routines.<BR>
 <P>
  
 <PRE>
-   <a href="../cspice/ekaclc_c.html">ekaclc_c</a> ( &lt;handle&gt;, &lt;segno&gt;,  &lt;column&gt;, &lt;vallen&gt;,
-              &lt;cvals&gt;,  &lt;entszs&gt;, &lt;nlflgs&gt;, &lt;rcptrs&gt;,
-              wkindx                                 ); { Add
-                                                          character
-                                                          column}
+   <a href="../cspice/ekaclc_c.html">ekaclc_c</a> ( &lt;handle&gt;, &lt;segno&gt;,  &lt;column&gt;, &lt;vallen&gt;,   {Add
+              &lt;cvals&gt;,  &lt;entszs&gt;, &lt;nlflgs&gt;, &lt;rcptrs&gt;,    character
+              wkindx                                 );  column}
+ 
+ 
 </PRE>
    The inputs to <a href="../cspice/ekaclc_c.html">ekaclc_c</a> are described below.
 <P>
@@ -3009,31 +2988,27 @@ dimension at least equal to the number of rows in the segment.<BR>
 <P>
  
 <PRE>
-   <a href="../cspice/ekacld_c.html">ekacld_c</a> ( &lt;handle&gt;, &lt;segno&gt;,  &lt;column&gt;, &lt;dvals&gt;,
-              &lt;entszs&gt;, &lt;nlflgs&gt;, &lt;rcptrs&gt;, wkindx  ); { Add
-                                                         d.p.
-                                                         column}
+   <a href="../cspice/ekacld_c.html">ekacld_c</a> ( &lt;handle&gt;, &lt;segno&gt;,  &lt;column&gt;, &lt;dvals&gt;,   {Add d.p.
+              &lt;entszs&gt;, &lt;nlflgs&gt;, &lt;rcptrs&gt;, wkindx  );  column}
 </PRE>
    The arguments have the same meanings as the corresponding arguments of
    <a href="../cspice/ekaclc_c.html">ekaclc_c</a>, except that `dvals' represents a double precision array.
 <P>
  
-   Value of type TIME are also added via <a href="../cspice/ekacld_c.html">ekacld_c</a>. When a column contains
-   TIME values (as indicated by its declared data type), the values are
-   stored as ephemeris seconds past J2000 TDB. When starting with UTC or
-   SCLK time values, the CSPICE conversion routines <a href="../cspice/str2et_c.html">str2et_c</a> or <a href="../cspice/scs2e_c.html">scs2e_c</a> may
-   be used to obtain equivalent double precision TDB values. See the
-   <a href="../req/time.html">TIME.REQ</a> or <a href="../req/sclk.html">SCLK.REQ</a> Required Reading for details.
+   Values of type TIME are also added using <a href="../cspice/ekacld_c.html">ekacld_c</a>. When a column
+   contains TIME values (as indicated by its declared data type), the
+   values are stored as ephemeris seconds past J2000 TDB. When starting
+   with UTC or SCLK time values, the CSPICE conversion routines <a href="../cspice/str2et_c.html">str2et_c</a> or
+   <a href="../cspice/scs2e_c.html">scs2e_c</a> may be used to obtain equivalent double precision TDB values.
+   See the <a href="../req/time.html">TIME.REQ</a> or <a href="../req/sclk.html">SCLK.REQ</a> Required Reading for details.
 <P>
  
    To add an integer column to a segment, call <a href="../cspice/ekacli_c.html">ekacli_c</a>:
 <P>
  
 <PRE>
-   <a href="../cspice/ekacli_c.html">ekacli_c</a> ( &lt;handle&gt;, &lt;segno&gt;,  &lt;column&gt;, &lt;ivals&gt;,
-              &lt;entszs&gt;, &lt;nlflgs&gt;, &lt;rcptrs&gt;, wkindx  ); { Add
-                                                         integer
-                                                         column}
+   <a href="../cspice/ekacli_c.html">ekacli_c</a> ( &lt;handle&gt;, &lt;segno&gt;,  &lt;column&gt;, &lt;ivals&gt;,      {Add integer
+              &lt;entszs&gt;, &lt;nlflgs&gt;, &lt;rcptrs&gt;, wkindx  );     column}
 </PRE>
    The arguments have the same meanings as the corresponding arguments of
    <a href="../cspice/ekaclc_c.html">ekaclc_c</a>, except that `ivals' represents an integer array.
@@ -3045,11 +3020,11 @@ dimension at least equal to the number of rows in the segment.<BR>
 <H3> Completing a fast write
 </H3><P><BR><BR>
    Once all columns have been added to the segment, the fast write
-   operation on the segment is completed via a call to <a href="../cspice/ekffld_c.html">ekffld_c</a>:
+   operation on the segment is completed using a call to <a href="../cspice/ekffld_c.html">ekffld_c</a>:
 <P>
  
 <PRE>
-   <a href="../cspice/ekffld_c.html">ekffld_c</a> ( &lt;handle&gt;, &lt;segno&gt;, &lt;rcptrs&gt; ) {Finish fast write}
+   <a href="../cspice/ekffld_c.html">ekffld_c</a> ( &lt;handle&gt;, &lt;segno&gt;, &lt;rcptrs&gt; )    {Finish fast write}
 </PRE>
    The meanings of the arguments of <a href="../cspice/ekffld_c.html">ekffld_c</a> are identical to those of the
    same names belonging to <a href="../cspice/ekifld_c.html">ekifld_c</a>.
@@ -3060,7 +3035,7 @@ dimension at least equal to the number of rows in the segment.<BR>
 <P>
  
    Once the fast write operation has been completed, the segment may be
-   modified via the record-oriented writers.
+   modified using the record-oriented writers.
 <P>
  
 <BR><BR>
@@ -3068,8 +3043,8 @@ dimension at least equal to the number of rows in the segment.<BR>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Restrictions
 </H3><P><BR><BR>
-   Creating a segment via the fast writer routines should be regarded as an
-   ``indivisible'' process: other EK operations should not be performed
+   Creating a segment using the fast writer routines should be regarded as
+   an ``indivisible'' process: other EK operations should not be performed
    when a fast write is in progress.
 <P>
  
@@ -3088,8 +3063,8 @@ dimension at least equal to the number of rows in the segment.<BR>
 <P>
  
    One cannot extend an existing segment using the fast write functions.
-   However, a segment created using the fast writers, once completed via a
-   call to <a href="../cspice/ekffld_c.html">ekffld_c</a>, may be modified using the record-oriented write,
+   However, a segment created using the fast writers, once completed using
+   a call to <a href="../cspice/ekffld_c.html">ekffld_c</a>, may be modified using the record-oriented write,
    update, or delete functions.
 <P>
  
@@ -3103,9 +3078,9 @@ dimension at least equal to the number of rows in the segment.<BR>
    records, deleting records, or updating individual column entries.
 <P>
  
-   Adding records is done via the record-oriented writers, which are
+   Adding records is done using the record-oriented writers, which are
    described above. Column entries may be updated using the functions
-   <a href="../cspice/ekucec_c.html">ekucec_c</a>, <a href="../cspice/ekuced_c.html">ekuced_c</a>, and EKUCEI, which operate on, respectively,
+   <a href="../cspice/ekucec_c.html">ekucec_c</a>, <a href="../cspice/ekuced_c.html">ekuced_c</a>, and <a href="../cspice/ekucei_c.html">ekucei_c</a>, which operate on, respectively,
    character, double precision (or time), and integer column entries. The
    argument lists of these functions are identical to the record-oriented
    column entry addition functions of the corresponding data types.
@@ -3120,13 +3095,13 @@ dimension at least equal to the number of rows in the segment.<BR>
    non-null values and vice versa.
 <P>
  
-   Records are deleted via a call to <a href="../cspice/ekdelr_c.html">ekdelr_c</a>:
+   Records are deleted using a call to <a href="../cspice/ekdelr_c.html">ekdelr_c</a>:
 <P>
  
 <PRE>
-   <a href="../cspice/ekdelr_c.html">ekdelr_c</a> ( &lt;handle&gt;, &lt;segno&gt;, &lt;recno&gt; ); {Delete record}
+   <a href="../cspice/ekdelr_c.html">ekdelr_c</a> ( &lt;handle&gt;, &lt;segno&gt;, &lt;recno&gt; );   {Delete record}
 </PRE>
-   Here
+   With the arguments:
 <P>
  
 <DL><DT>
@@ -3164,15 +3139,15 @@ must be a segment number obtained from <a href="../cspice/ekbseg_c.html">ekbseg_
    closed by calling <a href="../cspice/ekcls_c.html">ekcls_c</a>. This step is necessary to create a
    structurally correct sequence EK, since some written data may be
    buffered but not yet written to the physical sequence EK after the last
-   segment has been completed. Also, <a href="../cspice/ekcls_c.html">ekcls_c</a> re-organizes (via the DAS
+   segment has been completed. Also, <a href="../cspice/ekcls_c.html">ekcls_c</a> re-organizes (using the DAS
    subsystem) the physical records in the sequence EK to enhance read
    performance when the file is reopened.
 <P>
  
    The record-oriented read routines may be used to read data from a
    sequence EK before it has been closed. However, a sequence EK open for
-   write access may not loaded by <a href="../cspice/furnsh_c.html">furnsh_c</a> or <a href="../cspice/eklef_c.html">eklef_c</a>, and hence is not
-   accessible by the sequence EK query and fetch routines.
+   write access may not by loaded by <a href="../cspice/furnsh_c.html">furnsh_c</a> and hence is not accessible
+   by the sequence EK query and fetch routines.
 <P>
  
 <BR><BR>
@@ -3245,7 +3220,7 @@ must be a segment number obtained from <a href="../cspice/ekbseg_c.html">ekbseg_
       <a href="../cspice/ekucei_c.html">ekucei_c</a>   ( EK, update integer column entry            )
       <a href="../cspice/ekuef_c.html">ekuef_c</a>    ( EK, unload event file                      )
  
-   Low-level routines converted via f2c:
+   Low-level routines converted by f2c:
  
       eksrch_    ( EK, search for events                      )
 </PRE>
@@ -3262,8 +3237,6 @@ must be a segment number obtained from <a href="../cspice/ekbseg_c.html">ekbseg_
 <P>
  
 <PRE>
-   <a href="../cspice/eklef_c.html">eklef_c</a>  ( fname, &amp;handle )
-   <a href="../cspice/ekuef_c.html">ekuef_c</a>  ( handle )
    <a href="../cspice/furnsh_c.html">furnsh_c</a> ( fname )
    <a href="../cspice/unload_c.html">unload_c</a> ( fname )
 </PRE>
@@ -3292,7 +3265,7 @@ must be a segment number obtained from <a href="../cspice/ekbseg_c.html">ekbseg_
    <a href="../cspice/ekccnt_c.html">ekccnt_c</a> ( table, &amp;ccount )
    <a href="../cspice/ekcii_c.html">ekcii_c</a>  ( table, cindex, lenout, column, &amp;attdsc )
    <a href="../cspice/ekntab_c.html">ekntab_c</a> ( &amp;n )
-   <a href="../cspice/ektnam_c.html">ektnam_c</a> ( n,     lenout, table )
+   <a href="../cspice/ektnam_c.html">ektnam_c</a> ( n, lenout, table )
 </PRE>
    Query and fetch:
 <P>
@@ -3303,10 +3276,10 @@ must be a segment number obtained from <a href="../cspice/ekbseg_c.html">ekbseg_
               &amp;found                                         )
    <a href="../cspice/ekgd_c.html">ekgd_c</a>   ( selidx, row,    elment,  ddata, &amp;null,  &amp;found )
    <a href="../cspice/ekgi_c.html">ekgi_c</a>   ( selidx, row,    elment,  idata, &amp;null,  &amp;found )
-   <a href="../cspice/eknelt_c.html">eknelt_c</a> ( selidx, row );
+   <a href="../cspice/eknelt_c.html">eknelt_c</a> ( selidx, row )
    <a href="../cspice/ekpsel_c.html">ekpsel_c</a> ( query,  msglen, tablen, collen, &amp;n,
               xbegs,  xends,  xtypes, xclass, tabs,
-              cols,   &amp;error, errmsg                );
+              cols,   &amp;error, errmsg                )
 </PRE>
    Record-oriented read:
 <P>
@@ -3318,7 +3291,6 @@ must be a segment number obtained from <a href="../cspice/ekbseg_c.html">ekbseg_
               &amp;isnull                                       )
    <a href="../cspice/ekrcei_c.html">ekrcei_c</a> ( handle, segno,  recno, column, &amp;nvals, ivals,
               &amp;isnull                                       )
- 
 </PRE>
    Fast write:
 <P>
@@ -3372,6 +3344,14 @@ must be a segment number obtained from <a href="../cspice/ekbseg_c.html">ekbseg_
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Revisions
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<BR><BR>
+<A NAME="February 24, 2010 EDW (JPL)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> February 24, 2010 EDW (JPL)
+</H3><P><BR><BR>
+   Documentation expanded to include descriptions of Icy functions.
+<P>
+ 
 <BR><BR>
 <A NAME="April 1, 2009"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>

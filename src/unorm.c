@@ -13,7 +13,7 @@
 
 /* $ Abstract */
 
-/*      Normalize a double precision 3-vector and return its magnitude. */
+/*     Normalize a double precision 3-vector and return its magnitude. */
 
 /* $ Disclaimer */
 
@@ -46,55 +46,35 @@
 
 /* $ Keywords */
 
-/*      VECTOR */
+/*     VECTOR */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*       V1        I     Vector to be normalized. */
-/*       VOUT      O     Unit vector V1 / |V1|. */
-/*                       If V1 is the zero vector, then VOUT will also */
-/*                       be zero. VOUT can overwrite V1. */
-/*       VMAG      O     Magnitude of V1, i.e. |V1|. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     V1         I   Vector to be normalized. */
+/*     VOUT       O   Unit vector V1 / |V1|. */
+/*                    If V1 is the zero vector, then VOUT will also */
+/*                    be zero. */
+/*     VMAG       O   Magnitude of V1, i.e. |V1|. */
 
 /* $ Detailed_Input */
 
-/*      V1      This variable may contain any 3-vector, including the */
-/*              zero vector. */
+/*     V1      This variable may contain any 3-vector, including the */
+/*             zero vector. */
 
 /* $ Detailed_Output */
 
-/*      VOUT    This variable contains the unit vector in the direction */
-/*              of V1.  If V1 is the zero vector, then VOUT will also be */
-/*              the zero vector. */
-/*      VMAG    This is the magnitude of V1. */
+/*     VOUT    This variable contains the unit vector in the direction */
+/*             of V1.  If V1 is the zero vector, then VOUT will also be */
+/*             the zero vector. */
+
+/*     VMAG    This is the magnitude of V1. */
 
 /* $ Parameters */
 
-/*      None. */
-
-/* $ Particulars */
-
-/*      UNORM references a function called VNORM (which itself is */
-/*      numerically stable) to calculate the norm of the input vector V1. */
-/*      If the norm is equal to zero, then each component of the output */
-/*      vector VOUT is set to zero.  Otherwise, VOUT is calculated by */
-/*      dividing V1 by the norm. */
-
-/* $ Examples */
-
-/*      The following table shows how selected V1 implies VOUT and MAG. */
-
-/*      V1                    VOUT                   MAG */
-/*      ------------------    ------------------     ------ */
-/*      (5, 12, 0)            (5/13, 12/13, 0)       13 */
-/*      (1D-7, 2D-7, 2D-7)    (1/3, 2/3, 2/3)        3D-7 */
-
-/* $ Restrictions */
-
-/*      None */
+/*     None. */
 
 /* $ Exceptions */
 
@@ -102,18 +82,44 @@
 
 /* $ Files */
 
-/*      None */
+/*     None. */
 
-/* $ Author_and_Institution */
+/* $ Particulars */
 
-/*      W.M. Owen       (JPL) */
-/*      W.L. Taber      (JPL) */
+/*     UNORM references a function called VNORM (which itself is */
+/*     numerically stable) to calculate the norm of the input vector V1. */
+/*     If the norm is equal to zero, then each component of the output */
+/*     vector VOUT is set to zero.  Otherwise, VOUT is calculated by */
+/*     dividing V1 by the norm. */
+
+/* $ Examples */
+
+/*     The following table shows how selected V1 implies VOUT and MAG. */
+
+/*        V1                    VOUT                   MAG */
+/*        ------------------    ------------------     ---- */
+/*        (5, 12, 0)            (5/13, 12/13, 0)       13 */
+/*        (1D-7, 2D-7, 2D-7)    (1/3, 2/3, 2/3)        3D-7 */
+
+/* $ Restrictions */
+
+/*     None. */
 
 /* $ Literature_References */
 
-/*      None */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     W.M. Owen       (JPL) */
+/*     W.L. Taber      (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.2, 23-APR-2010 (NJB) */
+
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
 /* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
 

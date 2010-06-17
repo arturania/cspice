@@ -4,7 +4,7 @@
 
 -Abstract
 
-   Store the contents of argv and argc for later access..
+   Store the contents of argv and argc for later access.
 
 -Disclaimer
 
@@ -66,7 +66,7 @@
    --------  ---  --------------------------------------------------
    argc      I/O   The number of command line arguments.
    argv      I/O   The vector of command line arguments.
-   init       I    Bollean indicating whether the call should
+   init       I    Boolean indicating whether the call should
                    initialize the internal storage variables.
 
 -Detailed_Input
@@ -77,7 +77,7 @@
              Each entry entry contains one argument.  argv[0] holds the
              command name.
 
-   init      conains SPICETRUE if the call is to store the argv and argc
+   init      contains SPICETRUE if the call is to store the argv and argc
              data, and SPICEFALSE if the call is to retrieve the data.
 
 -Detailed_Output
@@ -103,12 +103,12 @@
 
 -Particulars
 
-   Do not call this directly!
+   Do not directly call zzgetcml_c!
 
    This routine allows access to argv and argc from any program module.
    The routine must be initialized in the main module prior to any
    retrieval.  Initialization occurs in putcml_c, access to stored
-   information occurs via getcml_c.  Use only those calls!!
+   information occurs via getcml_c.  
 
 -Examples
 
@@ -179,7 +179,10 @@
 
 -Restrictions
 
-   None.
+   This routine includes ifdef delimited code specific to the 
+   Metrowerks compiler for the classic Macintosh operating system.
+   NAIF no longer supports that environment and so has not
+   tested this routine in that environment.
 
 -Literature_References
 
@@ -191,16 +194,21 @@
 
 -Version
 
+   -CSPICE Version 1.2.0  19-JAN-2010   (EDW)
+   
+      Copy operation now performs a deep copy of argv rather than a shallow copy
+      of pointer values.
+
    -CSPICE Version 1.1.1  08-MAR-2002   (EDW)
 
-       Corrected typo in header. Procedure name from getclm_c to zzgetcml.
+      Corrected typo in header. Procedure renamed from getclm_c to zzgetcml.
    
    -CSPICE Version 1.1.0  11-OCT-2001   (EDW)
 
-       Included Mac PPC classic specific code for the Metrowerks compiler. The
-       code causes a window to display for input of command line arguments.
+      Included Mac PPC classic specific code for the Metrowerks compiler. The
+      code causes a window to display for input of command line arguments.
        
-       Update examples.
+      Update examples.
 
    -CSPICE Version 1.0.0  08-FEB-1998   (EDW)
 
@@ -220,6 +228,8 @@
 
    static SpiceBoolean      first    = SPICETRUE;
 
+   SpiceInt                 i;
+
 
    /* Participate in error tracing. */
 
@@ -227,8 +237,8 @@
 
 
    /*
-   If this is the first time into the routine, store the information
-   then leave.  If not first, load the stored information into the
+   On first entry into the routine, store the information
+   then leave. If not first, load the stored information into the
    return variables.
 
    Check that putcml_c called this routine before getcml_c, and that
@@ -239,8 +249,9 @@
       {
 
       /* 
-         First call from putcml_c.  Store the values. If a Mac, and
-         using CodeWarrior, open a window for command line access.
+      First call from putcml_c.  Deep store the values for later use.
+      If a Mac, and using CodeWarrior, open a window for command line 
+      access.
       */
 
       #ifdef CSPICE_MACPPC
@@ -249,10 +260,59 @@
 
       #endif
 
-      CML_argc  = *argc;
-      CML_argv  = *argv;
-      
-      /* Set the first flag to false. This block needs run only once. */
+      CML_argc = *argc;
+   
+      /*
+      Allocate an array of pointers for the argv array.
+      */
+      CML_argv = (SpiceChar**)malloc( sizeof(SpiceChar*) * CML_argc );
+
+      /*
+      Check for a malloc failure. Signal a SPICE error if error found.
+      */
+      if ( CML_argv == NULL )
+         {
+
+         setmsg_c ( "Malloc failed to allocate space for a "
+                    "SpiceChar* array of length #. ");
+         errint_c ( "#", (SpiceInt) CML_argc );
+         sigerr_c ( "SPICE(MALLOCFAILED)"    );
+         chkout_c ( "zzgetcml_c"             );
+         return;
+         }
+
+      /*
+      Copy from argv to the local CML_argv array.
+      */
+      for ( i=0; i< *argc; ++i)
+         {
+         SpiceInt len = strlen((*argv)[i]);
+         
+         /*
+         Allocate the needed memory for each argv string.
+         */
+         CML_argv[i] = (SpiceChar*)malloc( sizeof(SpiceChar) 
+                                           *
+                                          (1 + len) 
+                                          );
+
+         if ( CML_argv[i] == NULL )
+            {
+
+            setmsg_c ( "Malloc failed to allocate space for a "
+                       "SpiceChar array of length #. ");
+            errint_c ( "#", (SpiceInt) (1 + len) );
+            sigerr_c ( "SPICE(MALLOCFAILED)"     );
+            chkout_c ( "zzgetcml_c"              );
+            return;
+            }
+
+         (void)strncpy( CML_argv[i], (*argv)[i], 1 + len );
+         }
+
+      /* 
+      Set the first flag to false. This block needs run only once. 
+      */
 
       first     = SPICEFALSE;
 
@@ -270,7 +330,6 @@
       sigerr_c ( "SPICE(PUTCMLNOTCALLED)"                          );
       chkout_c ( "zzgetcml_c" );
       return;
-
       }
 
    else if ( !first && init )
@@ -278,11 +337,10 @@
 
       /* This is not the first call, but the call came from putcml_c */
 
-      setmsg_c ( "Ilegal attempt to reinitialize with putcml_c" );
-      sigerr_c ( "SPICE(PUTCMLCALLEDTWICE)"                     );
+      setmsg_c ( "Illegal attempt to reinitialize with putcml_c" );
+      sigerr_c ( "SPICE(PUTCMLCALLEDTWICE)"                      );
       chkout_c ( "zzgetcml_c" );
       return;
-
       }
 
    else

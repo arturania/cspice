@@ -66,25 +66,26 @@ doublereal dvsep_(doublereal *s1, doublereal *s2)
 /* $ Keywords */
 
 /*     GEOMETRY */
+/*     DERIVATIVES */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
 /*     VARIABLE  I/O  DESCRIPTION */
 /*     --------  ---  -------------------------------------------------- */
-/*     S1         I   State vector of the first body */
-/*     S2         I   State vector of the second  body */
+/*     S1         I   State vector of the first body. */
+/*     S2         I   State vector of the second body. */
 
 /* $ Detailed_Input */
 
 /*     S1         the state vector of the first target body as seen from */
-/*                the observer */
+/*                the observer. */
 
 /*     S2         the state vector of the second target body as seen from */
-/*                the observer */
+/*                the observer. */
 
 /*     An implicit assumption exists that both states lie in the same */
-/*     refrence frame with the same observer for the same epoch. If this */
+/*     reference frame with the same observer for the same epoch. If this */
 /*     is not the case, the numerical result has no meaning. */
 
 /* $ Detailed_Output */
@@ -228,7 +229,7 @@ doublereal dvsep_(doublereal *s1, doublereal *s2)
 /*           CALL FURNSH ('standard.tm') */
 
 /*     C */
-/*     C     Ab arbitrary time. */
+/*     C     An arbitrary time. */
 /*     C */
 /*           BEGSTR = 'JAN 1 2009' */
 /*           CALL STR2ET( BEGSTR, ET ) */
@@ -271,7 +272,11 @@ doublereal dvsep_(doublereal *s1, doublereal *s2)
 
 /* $ Version */
 
-/* -    SPICELIB Version 1.0.0, 31-MAR-2009 (EDW) */
+/* -    SPICELIB Version 1.0.1, 15-MAR-2010 (EDW) */
+
+/*       Trivial header format clean-up. */
+
+/* -    SPICELIB Version 1.0.1, 31-MAR-2009 (EDW) */
 
 /* -& */
 /* $ Index_Entries */
@@ -329,7 +334,7 @@ doublereal dvsep_(doublereal *s1, doublereal *s2)
 
     numr = vdot_(u1, &u2[3]) + vdot_(&u1[3], u2);
     denom = vnorm_(pcross);
-    safe = denom > abs(numr) / dpmax_() * 10.;
+    safe = denom > abs(numr) * 10. / dpmax_();
     if (! safe) {
 	ret_val = 0.;
 	setmsg_("Numerical overflow event.", (ftnlen)25);

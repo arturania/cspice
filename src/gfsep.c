@@ -7,9 +7,10 @@
 
 /* Table of constant values */
 
+static integer c__5 = 5;
 static integer c__0 = 0;
 static integer c__8 = 8;
-static doublereal c_b26 = 1e-6;
+static doublereal c_b32 = 1e-6;
 static logical c_false = FALSE_;
 
 /* $Procedure GFSEP (GF, angular separation search) */
@@ -41,8 +42,8 @@ static logical c_false = FALSE_;
     doublereal qdpars[8];
     integer qipars[8];
     logical qlpars[8];
-    extern /* Subroutine */ int setmsg_(char *, ftnlen), errint_(char *, 
-	    integer *, ftnlen), sigerr_(char *, ftnlen), chkout_(char *, 
+    extern /* Subroutine */ int setmsg_(char *, ftnlen), sigerr_(char *, 
+	    ftnlen), chkout_(char *, ftnlen), errint_(char *, integer *, 
 	    ftnlen), gfsstp_(doublereal *), gfevnt_(U_fp, U_fp, char *, 
 	    integer *, char *, char *, doublereal *, integer *, logical *, 
 	    char *, doublereal *, doublereal *, doublereal *, doublereal *, 
@@ -151,6 +152,11 @@ static logical c_false = FALSE_;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+
+/*       Added NWRR parameter. */
+/*       Added NWUDS parameter. */
+
 /* -    SPICELIB Version 1.0.0, 21-FEB-2009 (NJB) (LSE) (EDW) */
 
 /* -& */
@@ -186,6 +192,14 @@ static logical c_false = FALSE_;
 
 /*     Callers of GFSEP should declare their workspace window */
 /*     count using NWSEP. */
+
+
+/*     Callers of GFRR should declare their workspace window */
+/*     count using NWRR. */
+
+
+/*     Callers of GFUDS should declare their workspace window */
+/*     count using NWUDS. */
 
 
 /*     ADDWIN is a parameter used to expand each interval of the search */
@@ -374,269 +388,274 @@ static logical c_false = FALSE_;
 
 /* $ Detailed_Input */
 
-/*     TARG1       the string naming the first body of interest. You can */
-/*                 also supply the integer ID code for the object as an */
-/*                 integer string.  For example both 'MOON' and '301' */
-/*                 are legitimate strings that indicate the moon is the */
-/*                 target body. */
+/*     TARG1    the string naming the first body of interest. You can */
+/*              also supply the integer ID code for the object as an */
+/*              integer string.  For example both 'MOON' and '301' */
+/*              are legitimate strings that indicate the moon is the */
+/*              target body. */
 
-/*     SHAPE1      the string naming the geometric model used to */
-/*                 represent the shape of the TARG1 body. Models */
-/*                 supported by this routine: */
+/*     SHAPE1   the string naming the geometric model used to */
+/*              represent the shape of the TARG1 body. Models */
+/*              supported by this routine: */
 
-/*                   'ELLIPSOID'     Use a triaxial ellipsoid model, */
-/*                                   with radius values provided by the */
-/*                                   kernel pool. A kernel variable */
-/*                                   having a name of the form */
+/*                'SPHERE'        Treat the body as a sphere with */
+/*                                radius equal to the maximum value of */
+/*                                BODYnnn_RADII */
 
-/*                                      'BODYnnn_RADII' */
-
-/*                                   where nnn represents the NAIF */
-/*                                   integer code associated with the */
-/*                                   body, must be present in the kernel */
-/*                                   pool. This variable must be */
-/*                                   associated with three numeric */
-/*                                   values giving the lengths of the */
-/*                                   ellipsoid's X, Y, and Z semi-axes. */
-
-/*                                   *This option not yet implemented.* */
-
-/*                   'SPHERE'        Treat the body as a sphere with */
-/*                                   radius equal to the maximum value of */
-/*                                   BODYnnn_RADII */
-
-/*                   'POINT'         Treat the body as a point; */
+/*                'POINT'         Treat the body as a point; */
 /*                                   radius has value zero. */
 
-/*                 The SHAPE1 string lacks sensitivity to case, leading */
-/*                 and trailing blanks. */
+/*              The SHAPE1 string lacks sensitivity to case, leading */
+/*              and trailing blanks. */
 
-/*     FRAME1      the string naming the body-fixed reference frame */
-/*                 corresponding to TARG1. */
+/*     FRAME1   the string naming the body-fixed reference frame */
+/*              corresponding to TARG1. GFSEP does not currently use */
+/*              this argument's value, its use is reserved for future */
+/*              shape models. The value 'NULL' will suffice for */
+/*              "POINT" and "SPHERE" shaped bodies. */
 
-/*     TARG2       the string naming the second body of interest. You can */
-/*                 also supply the integer ID code for the object as an */
-/*                 integer string.  For example both 'MOON' and '301' */
-/*                 are legitimate strings that indicate the moon is the */
-/*                 target body. */
+/*     TARG2    the string naming the second body of interest. You can */
+/*              also supply the integer ID code for the object as an */
+/*              integer string.  For example both 'MOON' and '301' */
+/*              are legitimate strings that indicate the moon is the */
+/*              target body. */
 
-/*     SHAPE2      the string naming the geometric model used to */
-/*                 represent the shape of the TARG2. Models supported by */
-/*                 this routine: */
+/*     SHAPE2   the string naming the geometric model used to */
+/*              represent the shape of the TARG2. Models supported by */
+/*              this routine: */
 
-/*                   'ELLIPSOID'     Use a triaxial ellipsoid model, */
-/*                                   with radius values provided by the */
-/*                                   kernel pool. A kernel variable */
-/*                                   having a name of the form */
+/*                'SPHERE'        Treat the body as a sphere with */
+/*                                radius equal to the maximum value of */
+/*                                BODYnnn_RADII */
 
-/*                                      'BODYnnn_RADII' */
+/*                'POINT'         Treat the body as a single point; */
+/*                                radius has value zero. */
 
-/*                                   where nnn represents the NAIF */
-/*                                   integer code associated with the */
-/*                                   body, must be present in the kernel */
-/*                                   pool. This variable must be */
-/*                                   associated with three numeric */
-/*                                   values giving the lengths of the */
-/*                                   ellipsoid's X, Y, and Z semi-axes. */
+/*              The SHAPE2 string lacks sensitivity to case, leading */
+/*              and trailing blanks. */
 
-/*                   'SPHERE'        Treat the body as a sphere with */
-/*                                   radius equal to the maximum value of */
-/*                                   BODYnnn_RADII */
+/*     FRAME2   the string naming the body-fixed reference frame */
+/*              corresponding to TARG2. GFSEP does not currently use */
+/*              this argument's value, its use is reserved for future */
+/*              shape models. The value 'NULL' will suffice for */
+/*              "POINT" and "SPHERE" shaped bodies. */
 
-/*                   'POINT'         Treat the body as a single point; */
-/*                                   radius has value zero. */
+/*     ABCORR   the string description of the aberration corrections */
+/*              to apply to the state evaluations to account for */
+/*              one-way light time and stellar aberration. */
 
-/*                 The SHAPE2 string lacks sensitivity to case, leading */
-/*                 and trailing blanks. */
+/*              This routine accepts the same aberration corrections */
+/*              as does the SPICE routine SPKEZR. See the header of */
+/*              SPKEZR for a detailed description of the aberration */
+/*              correction options. For convenience, the options are */
+/*              listed below: */
 
-/*     FRAME2      the string naming the body-fixed reference frame */
-/*                 corresponding to TARG2. */
+/*                 'NONE'     Apply no correction. */
 
-/*     ABCORR      the string description of the aberration corrections */
-/*                 to apply to the state evaluations to account for */
-/*                 one-way light time and stellar aberration. */
+/*                 'LT'       "Reception" case:  correct for */
+/*                            one-way light time using a Newtonian */
+/*                            formulation. */
 
-/*                 This routine accepts the same aberration corrections */
-/*                 as does the SPICE routine SPKEZR. See the header of */
-/*                 SPKEZR for a detailed description of the aberration */
-/*                 correction options. For convenience, the options are */
-/*                 listed below: */
+/*                 'LT+S'     "Reception" case:  correct for */
+/*                            one-way light time and stellar */
+/*                            aberration using a Newtonian */
+/*                            formulation. */
 
-/*                    'NONE'     Apply no correction. */
+/*                 'CN'       "Reception" case:  converged */
+/*                            Newtonian light time correction. */
 
-/*                    'LT'       "Reception" case:  correct for */
-/*                               one-way light time using a Newtonian */
-/*                               formulation. */
+/*                 'CN+S'     "Reception" case:  converged */
+/*                            Newtonian light time and stellar */
+/*                            aberration corrections. */
 
-/*                    'LT+S'     "Reception" case:  correct for */
-/*                               one-way light time and stellar */
-/*                               aberration using a Newtonian */
-/*                               formulation. */
+/*                 'XLT'      "Transmission" case:  correct for */
+/*                            one-way light time using a Newtonian */
+/*                            formulation. */
 
-/*                    'CN'       "Reception" case:  converged */
-/*                               Newtonian light time correction. */
+/*                 'XLT+S'    "Transmission" case:  correct for */
+/*                            one-way light time and stellar */
+/*                            aberration using a Newtonian */
+/*                            formulation. */
 
-/*                    'CN+S'     "Reception" case:  converged */
-/*                               Newtonian light time and stellar */
-/*                               aberration corrections. */
+/*                 'XCN'      "Transmission" case:  converged */
+/*                            Newtonian light time correction. */
 
-/*                    'XLT'      "Transmission" case:  correct for */
-/*                               one-way light time using a Newtonian */
-/*                               formulation. */
+/*                 'XCN+S'    "Transmission" case:  converged */
+/*                            Newtonian light time and stellar */
+/*                            aberration corrections. */
 
-/*                    'XLT+S'    "Transmission" case:  correct for */
-/*                               one-way light time and stellar */
-/*                               aberration using a Newtonian */
-/*                               formulation. */
+/*              The ABCORR string lacks sensitivity to case, leading */
+/*              and trailing blanks. */
 
-/*                    'XCN'      "Transmission" case:  converged */
-/*                               Newtonian light time correction. */
+/*     OBSRVR   the string naming the observing body. Optionally, you */
+/*              may supply the ID code of the object as an integer */
+/*              string. For example, both 'EARTH' and '399' are */
+/*              legitimate strings to supply to indicate the */
+/*              observer is Earth. */
 
-/*                    'XCN+S'    "Transmission" case:  converged */
-/*                               Newtonian light time and stellar */
-/*                               aberration corrections. */
+/*     RELATE   the string identifying the relational operator used to */
+/*              define a constraint on the angular separation. The */
+/*              result window found by this routine indicates the time */
+/*              intervals where the constraint is satisfied. Supported */
+/*              values of RELATE and corresponding meanings are shown */
+/*              below: */
 
-/*                 The ABCORR string lacks sensitivity to case, leading */
-/*                 and trailing blanks. */
+/*                 '>'      Separation is greater than the reference */
+/*                          value REFVAL. */
 
-/*     OBSRVR      the string naming the observing body. Optionally, you */
-/*                 may supply the ID code of the object as an integer */
-/*                 string. For example, both 'EARTH' and '399' are */
-/*                 legitimate strings to supply to indicate the */
-/*                 observer is Earth. */
+/*                 '='      Separation is equal to the reference */
+/*                          value REFVAL. */
 
-/*     RELATE      the string identifying the relational operator used to */
-/*                 define a constraint on the angular separation. The */
-/*                 result window found by this routine indicates the time */
-/*                 intervals where the constraint is satisfied. Supported */
-/*                 values of RELATE and corresponding meanings are shown */
-/*                 below: */
+/*                 '<'      Separation is less than the reference */
+/*                          value REFVAL. */
 
-/*                    '>'      Separation is greater than the reference */
-/*                             value REFVAL. */
+/*                'ABSMAX'  Separation is at an absolute maximum. */
 
-/*                    '='      Separation is equal to the reference */
-/*                             value REFVAL. */
+/*                'ABSMIN'  Separation is at an absolute  minimum. */
 
-/*                    '<'      Separation is less than the reference */
-/*                             value REFVAL. */
+/*                'LOCMAX'  Separation is at a local maximum. */
 
-/*                   'ABSMAX'  Separation is at an absolute maximum. */
+/*                'LOCMIN'  Separation is at a local minimum. */
 
-/*                   'ABSMIN'  Separation is at an absolute  minimum. */
+/*              The caller may indicate that the region of interest */
+/*              is the set of time intervals where the quantity is */
+/*              within a specified angular separation of an absolute */
+/*              extremum. The argument ADJUST (described below) is used */
+/*              to specify this angular separation. */
 
-/*                   'LOCMAX'  Separation is at a local maximum. */
+/*              Local extrema are considered to exist only in the */
+/*              interiors of the intervals comprising the confinement */
+/*              window:  a local extremum cannot exist at a boundary */
+/*              point of the confinement window. */
 
-/*                   'LOCMIN'  Separation is at a local minimum. */
+/*              The RELATE string lacks sensitivity to case, leading */
+/*              and trailing blanks. */
 
-/*                The caller may indicate that the region of interest */
-/*                is the set of time intervals where the quantity is */
-/*                within a specified angular separation of an absolute */
-/*                extremum. The argument ADJUST (described below) is used */
-/*                to specify this angular separation. */
+/*     REFVAL   the double precision reference value used together with */
+/*              RELATE argument to define an equality or inequality to */
+/*              be satisfied by the angular separation between the */
+/*              specified target and observer. See the discussion of */
+/*              RELATE above for further information. */
 
-/*                Local extrema are considered to exist only in the */
-/*                interiors of the intervals comprising the confinement */
-/*                window:  a local extremum cannot exist at a boundary */
-/*                point of the confinement window. */
+/*              The units of REFVAL are radians. */
 
-/*                The RELATE string lacks sensitivity to case, leading */
-/*                and trailing blanks. */
+/*     ADJUST   a double precision value used to modify searches for */
+/*              absolute extrema: when RELATE is set to ABSMAX or */
+/*              ABSMIN and ADJUST is set to a positive value, GFSEP */
+/*              finds times when the angular separation between the */
+/*              bodies is within ADJUST radians of the specified */
+/*              extreme value. */
 
-/*     REFVAL     the double precision reference value used together with */
-/*                RELATE argument to define an equality or inequality to */
-/*                be satisfied by the angular separation between the */
-/*                specified target and observer. See the discussion of */
-/*                RELATE above for further information. */
+/*              For RELATE set to ABSMAX, the RESULT window contains */
+/*              time intervals when the angular separation has */
+/*              values between ABSMAX - ADJUST and ABSMAX. */
 
-/*                The units of REFVAL are radians. */
+/*              For RELATE set to ABSMIN, the RESULT window contains */
+/*              time intervals when the angular separation has */
+/*              values between ABSMIN and ABSMIN + ADJUST. */
 
-/*     ADJUST     a double precision value used to modify searches for */
-/*                absolute extrema: when RELATE is set to ABSMAX or */
-/*                ABSMIN and ADJUST is set to a positive value, GFSEP */
-/*                finds times when the angular separation between the */
-/*                bodies is within ADJUST radians of the specified */
-/*                extreme value. */
+/*              ADJUST is not used for searches for local extrema, */
+/*              equality or inequality conditions. */
 
-/*                For RELATE set to ABSMAX, the RESULT window contains */
-/*                time intervals when the angular separation has */
-/*                values between ABSMAX - ADJUST and ABSMAX. */
+/*     CNFINE   a double precision SPICE window that confines the time */
+/*              period over which the specified search is conducted. */
+/*              CNFINE may consist of a single interval or a collection */
+/*              of intervals. */
 
-/*                For RELATE set to ABSMIN, the RESULT window contains */
-/*                time intervals when the angular separation has */
-/*                values between ABSMIN and ABSMIN + ADJUST. */
+/*              In some cases the confinement window can be used to */
+/*              greatly reduce the time period that must be searched */
+/*              for the desired solution. See the Particulars section */
+/*              below for further discussion. */
 
-/*                ADJUST is not used for searches for local extrema, */
-/*                equality or inequality conditions. */
+/*              See the Examples section below for a code example */
+/*              that shows how to create a confinement window. */
 
-/*     CNFINE     a double precision SPICE window that confines the time */
-/*                period over which the specified search is conducted. */
-/*                CNFINE may consist of a single interval or a collection */
-/*                of intervals. */
+/*              CNFINE must be initialized by the caller using the */
+/*              SPICELIB routine SSIZED. */
 
-/*                In some cases the confinement window can be used to */
-/*                greatly reduce the time period that must be searched */
-/*                for the desired solution. See the Particulars section */
-/*                below for further discussion. */
+/*     STEP     the double precision time step size to use in the */
+/*              search. */
 
-/*                See the Examples section below for a code example */
-/*                that shows how to create a confinement window. */
+/*              STEP must be short enough to for a search using this */
+/*              step size to locate the time intervals where the */
+/*              specified angular separation function is monotone */
+/*              increasing or decreasing. However, STEP must not be */
+/*              *too* short, or the search will take an unreasonable */
+/*              amount of time. */
 
-/*                CNFINE must be initialized by the caller using the */
-/*                SPICELIB routine SSIZED. */
+/*              The choice of STEP affects the completeness but not */
+/*              the precision of solutions found by this routine; the */
+/*              precision is controlled by the convergence tolerance. */
+/*              See the discussion of the parameter CNVTOL for */
+/*              details. */
 
-/*     STEP       the double precision time step size to use in the */
-/*                search. */
+/*              STEP has units of TDB seconds. */
 
-/*                STEP must be short enough to for a search using this */
-/*                step size to locate the time intervals where the */
-/*                specified angular separation function is monotone */
-/*                increasing or decreasing. However, STEP must not be */
-/*                *too* short, or the search will take an unreasonable */
-/*                amount of time. */
+/*     MW       is a parameter specifying the length of the SPICE */
+/*              windows in the workspace array WORK (see description */
+/*              below) used by this routine. */
 
-/*                The choice of STEP affects the completeness but not */
-/*                the precision of solutions found by this routine; the */
-/*                precision is controlled by the convergence tolerance. */
-/*                See the discussion of the parameter CNVTOL for */
-/*                details. */
+/*              MW should be set to a number at least twice as large */
+/*              as the maximum number of intervals required by any */
+/*              workspace window. In many cases, it's not necessary to */
+/*              compute an accurate estimate of how many intervals are */
+/*              needed; rather, the user can pick a size considerably */
+/*              larger than what's really required. */
 
-/*                STEP has units of TDB seconds. */
+/*              However, since excessively large arrays can prevent */
+/*              applications from compiling, linking, or running */
+/*              properly, sometimes MW must be set according to */
+/*              the actual workspace requirement. A rule of thumb */
+/*              for the number of intervals NINTVLS needed is */
 
-/*     MW         an integer value specifying the length of the workspace */
-/*                array WORK (see description below) used by this */
-/*                routine. MW should be at least as large as TWICE */
-/*                number of intervals within the search region on which */
-/*                the specified angular separation function is monotone */
-/*                increasing or decreasing. It does no harm to pick a */
-/*                value of MW larger than the minimum required to execute */
-/*                the specified search, but if MW is too small, the */
-/*                search will fail. */
+/*                  NINTVLS  =  2*N  +  ( M / STEP ) */
 
-/*     NW         an integer value specifying the number of windows in */
-/*                the workspace array WORK. An effective general use */
-/*                value for his argument, NWMAX, defined in gf.inc. */
+/*              where */
 
-/*     WORK       a double precision array used to store workspace */
-/*                windows. This array should be declared by the caller */
-/*                as shown: */
+/*                  N     is the number of intervals in the confinement */
+/*                        window */
 
-/*                    DOUBLE PRECISION     WORK ( LBCELL : MW, NW ) */
+/*                  M     is the measure of the confinement window, in */
+/*                        units of seconds */
 
-/*                where MW and NW integers value declared by the caller. */
+/*                  STEP  is the search step size in seconds */
 
-/*                WORK need not be initialized by the caller. */
+/*              MW should then be set to */
 
-/*     RESULT     a double precision SPICE window which will contain the */
-/*                search results. RESULT must be initialized using */
-/*                a call to SSIZED. RESULT must be declared and */
-/*                initialized with sufficient size to capture the full */
-/*                set of time intervals within the search region on which */
-/*                the specified constraint is satisfied. */
+/*                  2 * NINTVLS */
 
-/*                If RESULT is non-empty on input, its contents */
-/*                will be discarded before GFSEP conducts its */
-/*                search. */
+/*     NW       is a parameter specifying the number of SPICE windows */
+/*              in the workspace array WORK (see description below) */
+/*              used by this routine. NW should be set to the */
+/*              parameter NWSEP; this parameter is declared in the */
+/*              include file gf.inc. (The reason this dimension is */
+/*              an input argument is that this allows run-time */
+/*              error checking to be performed.) */
+
+/*     WORK     is an array used to store workspace windows. This */
+/*              array should be declared by the caller as shown: */
+
+/*                 INCLUDE 'gf.inc' */
+/*                    ... */
+
+/*                 DOUBLE PRECISION    WORK ( LBCELL : MW, NWSEP ) */
+
+/*              where MW is a constant declared by the caller and */
+/*              NWSEP is a constant defined in the SPICELIB INCLUDE */
+/*              file gf.inc. See the discussion of MW above. */
+
+/*              WORK need not be initialized by the caller. */
+
+/*     RESULT   a double precision SPICE window which will contain the */
+/*              search results. RESULT must be initialized using */
+/*              a call to SSIZED. RESULT must be declared and */
+/*              initialized with sufficient size to capture the full */
+/*              set of time intervals within the search region on which */
+/*              the specified constraint is satisfied. */
+
+/*              If RESULT is non-empty on input, its contents */
+/*              will be discarded before GFSEP conducts its */
+/*              search. */
 
 /* $ Detailed_Output */
 
@@ -704,22 +723,28 @@ static logical c_false = FALSE_;
 /*         RESULT window. One technique to handle such a situation, */
 /*         slightly contract RESULT using the window routine WNCOND. */
 
-/*     3)  If the window size MW is less than 2 or not an even value, */
-/*         the error SPICE(INVALIDDIMENSION) will signal. */
+/*     3)  If the workspace window size MW is less than 2 or not an even */
+/*         value, the error SPICE(INVALIDDIMENSION) will signal. If the */
+/*         size of the workspace is too small, an error is signaled by a */
+/*         routine in the call tree of this routine. */
 
-/*     4)  If the window size of RESULT is less than 2 or not an */
-/*         even value, the error SPICE(INVALIDDIMENSION) will signal. */
+/*     4)  If the size of the SPICE window RESULT is less than 2 or */
+/*         not an even value, the error SPICE(INVALIDDIMENSION) will */
+/*         signal. If RESULT has insufficient capacity to contain the */
+/*         number of intervals on which the specified distance condition */
+/*         is met, the error will be diagnosed by a routine in the call */
+/*         tree of this routine. */
 
-/*     5)  If an error (typically cell overflow) occurs during */
+/*     5)  If the window count NW is less than NWSEP, the error */
+/*         SPICE(INVALIDDIMENSION) will be signaled. */
+
+/*     6)  If an error (typically cell overflow) occurs during */
 /*         window arithmetic, the error will be diagnosed by a routine */
 /*         in the call tree of this routine. */
 
-/*     6)  If the relational operator RELATE is not recognized, an */
+/*     7)  If the relational operator RELATE is not recognized, an */
 /*         error is signaled by a routine in the call tree of this */
 /*         routine. */
-
-/*     7)  If the size of the workspace is too small, an error is */
-/*         signaled by a routine in the call tree of this routine. */
 
 /*     8)  If ADJUST is negative, an error is signaled by a routine in */
 /*         the call tree of this routine. */
@@ -1179,6 +1204,12 @@ static logical c_false = FALSE_;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.1, 29-DEC-2009 (EDW) */
+
+/*        Edited argument descriptions. Removed mention of "ELLIPSOID" */
+/*        shape from SHAPE1 and SHAPE2 as that option is not yet */
+/*        implemented. */
+
 /* -    SPICELIB Version 1.0.0, 19-FEB-2009 (NJB) (EDW) */
 
 /* -& */
@@ -1215,10 +1246,29 @@ static logical c_false = FALSE_;
 	return 0;
     }
     chkin_("GFSEP", (ftnlen)5);
+
+/*     Check the step size. */
+
+    if (*step <= 0.) {
+	setmsg_("Step size was #; step size must be positive.", (ftnlen)44);
+	errdp_("#", step, (ftnlen)1);
+	sigerr_("SPICE(INVALIDSTEP)", (ftnlen)18);
+	chkout_("GFSEP", (ftnlen)5);
+	return 0;
+    }
     if (*mw < 2 || ! even_(mw)) {
 	setmsg_("Workspace window size was #; size must be at least 2 and an"
 		" even value.", (ftnlen)71);
 	errint_("#", mw, (ftnlen)1);
+	sigerr_("SPICE(INVALIDDIMENSION)", (ftnlen)23);
+	chkout_("GFSEP", (ftnlen)5);
+	return 0;
+    }
+    if (*nw < 5) {
+	setmsg_("Workspace window count was #; count must be at least #.", (
+		ftnlen)55);
+	errint_("#", nw, (ftnlen)1);
+	errint_("#", &c__5, (ftnlen)1);
 	sigerr_("SPICE(INVALIDDIMENSION)", (ftnlen)23);
 	chkout_("GFSEP", (ftnlen)5);
 	return 0;
@@ -1261,29 +1311,21 @@ static logical c_false = FALSE_;
 
 /*     Set the step size. */
 
-    if (*step <= 0.) {
-	setmsg_("Step size was #; step size must be positive.", (ftnlen)44);
-	errdp_("#", step, (ftnlen)1);
-	sigerr_("SPICE(INVALIDSTEP)", (ftnlen)18);
-	chkout_("GFSEP", (ftnlen)5);
-	return 0;
-    }
-
-/*     Set the step size. */
-
     gfsstp_(step);
 
-/*     Initialize the RESULT window. */
+/*     Initialize the RESULT window to empty. */
 
     scardd_(&c__0, result);
+
+/*     Look for solutions. */
 
 /*     Progress report and bail-out options are set to .FALSE. */
 
     gfevnt_((U_fp)gfstep_, (U_fp)gfrefn_, "ANGULAR SEPARATION", &c__8, qpnams,
-	     qcpars, qdpars, qipars, qlpars, relate, refval, &c_b26, adjust, 
+	     qcpars, qdpars, qipars, qlpars, relate, refval, &c_b32, adjust, 
 	    cnfine, &c_false, (U_fp)gfrepi_, (U_fp)gfrepu_, (U_fp)gfrepf_, mw,
-	     nw, work, &c_false, (L_fp)gfbail_, result, (ftnlen)18, (ftnlen)
-	    80, (ftnlen)80, relate_len);
+	     &c__5, work, &c_false, (L_fp)gfbail_, result, (ftnlen)18, (
+	    ftnlen)80, (ftnlen)80, relate_len);
     chkout_("GFSEP", (ftnlen)5);
     return 0;
 } /* gfsep_ */

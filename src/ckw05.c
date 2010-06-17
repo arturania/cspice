@@ -30,9 +30,8 @@ static integer c__1 = 1;
 	    integer *, doublereal *, integer *, doublereal *);
     doublereal descr[5];
     extern /* Subroutine */ int errch_(char *, char *, ftnlen, ftnlen), 
-	    errdp_(char *, doublereal *, ftnlen);
-    doublereal n2;
-    extern /* Subroutine */ int dafada_(doublereal *, integer *);
+	    errdp_(char *, doublereal *, ftnlen), dafada_(doublereal *, 
+	    integer *);
     doublereal dc[2];
     extern /* Subroutine */ int dafbna_(integer *, doublereal *, char *, 
 	    ftnlen);
@@ -48,8 +47,7 @@ static integer c__1 = 1;
 	    ftnlen), setmsg_(char *, ftnlen), errint_(char *, integer *, 
 	    ftnlen);
     extern integer lstltd_(doublereal *, integer *, doublereal *);
-    extern doublereal vnormg_(doublereal *, integer *);
-    extern logical return_(void);
+    extern logical vzerog_(doublereal *, integer *), return_(void);
     integer winsiz;
     extern logical odd_(integer *);
 
@@ -408,9 +406,8 @@ static integer c__1 = 1;
 /*         the data stored in the segment will not be subject to this */
 /*         sort of ambiguity. */
 
-/*    12)  If the squared length of any quaternion differe from 1 */
-/*         by more than 1.0D-2, the error SPICE(NONUNITQUATERNION) is */
-/*         signaled. */
+/*    12)  If any quaternion has magnitude zero, the error */
+/*         SPICE(ZEROQUATERNION) is signaled. */
 
 /*    13)  If the interpolation window size implied by DEGREE is not */
 /*         even, the error SPICE(INVALIDDEGREE) is signaled.  The window */
@@ -682,6 +679,11 @@ static integer c__1 = 1;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.0.0, 08-FEB-2010 (NJB) */
+
+/*        The check for non-unit quaternions has been replaced */
+/*        with a check for zero-length quaternions. */
+
 /* -    SPICELIB Version 1.1.0, 26-FEB-2008 (NJB) */
 
 /*        Updated header; added information about SPICE */
@@ -700,6 +702,17 @@ static integer c__1 = 1;
 /* $ Index_Entries */
 
 /*     write ck type_5 data segment */
+
+/* -& */
+/* $ Revisions */
+
+/* -    SPICELIB Version 2.0.0, 08-FEB-2010 (NJB) */
+
+/*        The check for non-unit quaternions has been replaced */
+/*        with a check for zero-length quaternions. */
+
+/*        This change was made to accommodate CK generation, */
+/*        via the non-SPICE utility MEX2KER, for European missions. */
 
 /* -& */
 
@@ -875,29 +888,21 @@ static integer c__1 = 1;
 	return 0;
     }
 
-/*     Make sure that the quaternions all have unit length. */
+/*     Make sure that the quaternions are non-zero. This is just */
+/*     a check for uninitialized data. */
 
     i__1 = *n;
     for (i__ = 1; i__ <= i__1; ++i__) {
 
-/*        We have to address the quaternion explicitly, since */
-/*        the shape of the packet array is not known at compile */
-/*        time. */
+/*        We have to address the quaternion explicitly, since the shape */
+/*        of the packet array is not known at compile time. */
 
 	addr__ = packsz * (i__ - 1) + 1;
-/* Computing 2nd power */
-	d__1 = vnormg_(&packts[addr__ - 1], &c__4);
-	n2 = d__1 * d__1;
-
-/*        This is only a sanity check.  We make sure that */
-/*        we have a unit quaternion to single precision. */
-
-	if ((d__1 = 1. - n2, abs(d__1)) > .01) {
-	    setmsg_("The #'th quaternion is not a unit quaternion. Its squar"
-		    "ed length is #. ", (ftnlen)71);
+	if (vzerog_(&packts[addr__ - 1], &c__4)) {
+	    setmsg_("The quaternion at index # has magnitude zero.", (ftnlen)
+		    45);
 	    errint_("#", &i__, (ftnlen)1);
-	    errdp_("#", &n2, (ftnlen)1);
-	    sigerr_("SPICE(NONUNITQUATERNION)", (ftnlen)24);
+	    sigerr_("SPICE(ZEROQUATERNION)", (ftnlen)21);
 	    chkout_("CKW05", (ftnlen)5);
 	    return 0;
 	}

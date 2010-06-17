@@ -98,7 +98,7 @@
 <h4><a name="Abstract">Abstract</a></h4>
 <PRE>
  
-   Convert ephemeris seconds past <a href="j2000_c.html">j2000_c</a> (ET) to continuous encoded  
+   Convert ephemeris seconds past J2000 (ET) to continuous encoded  
    spacecraft clock (`ticks').  Non-integral tick values may be 
    returned. 
  </PRE>
@@ -122,7 +122,7 @@
    Variable  I/O  Description 
    --------  ---  -------------------------------------------------- 
    sc         I   NAIF spacecraft ID code. 
-   et         I   Ephemeris time, seconds past <a href="j2000_c.html">j2000_c</a>. 
+   et         I   Ephemeris time, seconds past J2000. 
    sclkdp     O   SCLK, encoded as ticks since spacecraft clock 
                   start.  sclkdp need not be integral. 
  </PRE>
@@ -307,6 +307,12 @@
  </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
+   -CSPICE Version 1.0.2, 09-NOV-2009   (EDW)
+
+      Corrected typo in header; <a href="j2000_c.html">j2000_c</a> replaced with J2000. Mention of
+      the J2000 epoch in the previous header used the word &quot;<a href="j2000_c.html">j2000_c</a>&quot; (wrong) 
+      instead of &quot;J2000&quot; (correct).
+
    -CSPICE Version 1.0.1, 14-AUG-2006   (EDW)
 
       Replace mention of <a href="ldpool_c.html">ldpool_c</a> with <a href="furnsh_c.html">furnsh_c</a>.
@@ -325,7 +331,7 @@
   </tbody>
 </table>
 
-   <pre>Thu Apr 16 08:59:03 2009</pre>
+   <pre>Wed Jun  9 13:05:29 2010</pre>
 
 </body>
 </html>

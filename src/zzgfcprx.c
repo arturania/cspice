@@ -227,7 +227,7 @@ static doublereal c_b38 = 0.;
 
 /*     Note: the sum of these lengths, plus the length of the */
 /*     "percent complete" substring, should not be long enough */
-/*     to cause wrap-around on any platforms's terminal window. */
+/*     to cause wrap-around on any platform's terminal window. */
 
 
 /*     Total progress report message length upper bound: */

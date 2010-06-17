@@ -5,7 +5,12 @@
 
 #include "f2c.h"
 
-/* $Procedure      ZZRVBF ( Read the next variable from buffer ) */
+/* Table of constant values */
+
+static integer c__32 = 32;
+static integer c__132 = 132;
+
+/* $Procedure ZZRVBF ( Private --- Pool, read the next buffer variable ) */
 /* Subroutine */ int zzrvbf_(char *buffer, integer *bsize, integer *linnum, 
 	integer *namlst, integer *nmpool, char *names, integer *datlst, 
 	integer *dppool, doublereal *dpvals, integer *chpool, char *chvals, 
@@ -48,17 +53,16 @@
     static integer iequal;
     static doublereal dvalue;
     extern integer lastpc_(char *, ftnlen), lnknfn_(integer *);
-    static integer ilparn, irparn, itmark, dirctv, lookat;
-    static logical intokn;
-    static integer iquote;
+    static integer ilparn, irparn, itmark, dirctv, lookat, iquote;
     extern integer zzhash_(char *, ftnlen);
-    static logical insepf;
-    extern /* Subroutine */ int chkout_(char *, ftnlen), setmsg_(char *, 
-	    ftnlen), errint_(char *, integer *, ftnlen);
+    static integer varlen;
+    static logical intokn, insepf;
+    extern /* Subroutine */ int chkout_(char *, ftnlen);
     extern logical return_(void);
     static logical inquot;
     static integer status, vartyp, nxttok;
-    extern /* Subroutine */ int sigerr_(char *, ftnlen), lnkfsl_(integer *, 
+    extern /* Subroutine */ int setmsg_(char *, ftnlen), errint_(char *, 
+	    integer *, ftnlen), sigerr_(char *, ftnlen), lnkfsl_(integer *, 
 	    integer *, integer *), tparse_(char *, doublereal *, char *, 
 	    ftnlen, ftnlen), nparsd_(char *, doublereal *, char *, integer *, 
 	    ftnlen, ftnlen);
@@ -192,10 +196,8 @@
 
 /*      LINLEN      is the maximum length of a line in the buffer. */
 
-
-/* $ Files */
-
-/*     None. */
+/*      MAXLEN      is the maximum length of the variable names that */
+/*                  can be stored in the kernel pool (defined in pool.f). */
 
 /* $ Exceptions */
 
@@ -220,6 +222,13 @@
 /*        has a first value of one type (numeric or character) and */
 /*        a subsequent component has the other type. */
 
+/*     7) The error 'SPICE(BADVARNAME)' signals if a kernel pool */
+/*        variable name length exceeds MAXLEN. */
+
+/* $ Files */
+
+/*     None. */
+
 /* $ Particulars */
 
 /*     None. */
@@ -241,6 +250,11 @@
 /*     W.L. Taber (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.0, 09-FEB-2010 (EDW) */
+
+/*        Added an error check on the length of the kernel pool variable */
+/*        names read from BUFFER. */
 
 /* -    SPICELIB Version 1.0.0, 29-MAR-1999 (WLT) */
 
@@ -404,13 +418,13 @@
 		    if (code == iequal) {
 			++count;
 			begs[(i__1 = count - 1) < 132 && 0 <= i__1 ? i__1 : 
-				s_rnge("begs", i__1, "zzrvbf_", (ftnlen)530)] 
+				s_rnge("begs", i__1, "zzrvbf_", (ftnlen)544)] 
 				= i__;
 			type__[(i__1 = count - 1) < 132 && 0 <= i__1 ? i__1 : 
-				s_rnge("type", i__1, "zzrvbf_", (ftnlen)531)] 
+				s_rnge("type", i__1, "zzrvbf_", (ftnlen)545)] 
 				= 5;
 			ends[(i__1 = count - 1) < 132 && 0 <= i__1 ? i__1 : 
-				s_rnge("ends", i__1, "zzrvbf_", (ftnlen)532)] 
+				s_rnge("ends", i__1, "zzrvbf_", (ftnlen)546)] 
 				= i__;
 			if (i__ > 1) {
 
@@ -428,58 +442,58 @@
 
 				type__[(i__1 = count - 1) < 132 && 0 <= i__1 ?
 					 i__1 : s_rnge("type", i__1, "zzrvbf_"
-					, (ftnlen)548)] = 6;
+					, (ftnlen)562)] = 6;
 				begs[(i__1 = count - 1) < 132 && 0 <= i__1 ? 
 					i__1 : s_rnge("begs", i__1, "zzrvbf_",
-					 (ftnlen)549)] = i__ - 1;
+					 (ftnlen)563)] = i__ - 1;
 				if (begs[(i__1 = count - 2) < 132 && 0 <= 
 					i__1 ? i__1 : s_rnge("begs", i__1, 
-					"zzrvbf_", (ftnlen)551)] == ends[(
+					"zzrvbf_", (ftnlen)565)] == ends[(
 					i__2 = count - 2) < 132 && 0 <= i__2 ?
 					 i__2 : s_rnge("ends", i__2, "zzrvbf_"
-					, (ftnlen)551)]) {
+					, (ftnlen)565)]) {
 				    --count;
 				    begs[(i__1 = count - 1) < 132 && 0 <= 
 					    i__1 ? i__1 : s_rnge("begs", i__1,
-					     "zzrvbf_", (ftnlen)555)] = i__ - 
+					     "zzrvbf_", (ftnlen)569)] = i__ - 
 					    1;
 				    ends[(i__1 = count - 1) < 132 && 0 <= 
 					    i__1 ? i__1 : s_rnge("ends", i__1,
-					     "zzrvbf_", (ftnlen)556)] = i__;
+					     "zzrvbf_", (ftnlen)570)] = i__;
 				    type__[(i__1 = count - 1) < 132 && 0 <= 
 					    i__1 ? i__1 : s_rnge("type", i__1,
-					     "zzrvbf_", (ftnlen)557)] = 6;
+					     "zzrvbf_", (ftnlen)571)] = 6;
 				} else {
 				    ends[(i__1 = count - 2) < 132 && 0 <= 
 					    i__1 ? i__1 : s_rnge("ends", i__1,
-					     "zzrvbf_", (ftnlen)561)] = ends[(
+					     "zzrvbf_", (ftnlen)575)] = ends[(
 					    i__2 = count - 2) < 132 && 0 <= 
 					    i__2 ? i__2 : s_rnge("ends", i__2,
-					     "zzrvbf_", (ftnlen)561)] - 1;
+					     "zzrvbf_", (ftnlen)575)] - 1;
 				}
 			    }
 			}
 		    } else if (code == irparn) {
 			++count;
 			begs[(i__1 = count - 1) < 132 && 0 <= i__1 ? i__1 : 
-				s_rnge("begs", i__1, "zzrvbf_", (ftnlen)572)] 
+				s_rnge("begs", i__1, "zzrvbf_", (ftnlen)586)] 
 				= i__;
 			ends[(i__1 = count - 1) < 132 && 0 <= i__1 ? i__1 : 
-				s_rnge("ends", i__1, "zzrvbf_", (ftnlen)573)] 
+				s_rnge("ends", i__1, "zzrvbf_", (ftnlen)587)] 
 				= i__;
 			type__[(i__1 = count - 1) < 132 && 0 <= i__1 ? i__1 : 
-				s_rnge("type", i__1, "zzrvbf_", (ftnlen)574)] 
+				s_rnge("type", i__1, "zzrvbf_", (ftnlen)588)] 
 				= 4;
 		    } else if (code == ilparn) {
 			++count;
 			begs[(i__1 = count - 1) < 132 && 0 <= i__1 ? i__1 : 
-				s_rnge("begs", i__1, "zzrvbf_", (ftnlen)579)] 
+				s_rnge("begs", i__1, "zzrvbf_", (ftnlen)593)] 
 				= i__;
 			ends[(i__1 = count - 1) < 132 && 0 <= i__1 ? i__1 : 
-				s_rnge("ends", i__1, "zzrvbf_", (ftnlen)580)] 
+				s_rnge("ends", i__1, "zzrvbf_", (ftnlen)594)] 
 				= i__;
 			type__[(i__1 = count - 1) < 132 && 0 <= i__1 ? i__1 : 
-				s_rnge("type", i__1, "zzrvbf_", (ftnlen)581)] 
+				s_rnge("type", i__1, "zzrvbf_", (ftnlen)595)] 
 				= 3;
 		    }
 		}
@@ -499,13 +513,13 @@
 		    inquot = TRUE_;
 		    ++count;
 		    begs[(i__1 = count - 1) < 132 && 0 <= i__1 ? i__1 : 
-			    s_rnge("begs", i__1, "zzrvbf_", (ftnlen)604)] = 
+			    s_rnge("begs", i__1, "zzrvbf_", (ftnlen)618)] = 
 			    i__;
 		    type__[(i__1 = count - 1) < 132 && 0 <= i__1 ? i__1 : 
-			    s_rnge("type", i__1, "zzrvbf_", (ftnlen)605)] = 1;
+			    s_rnge("type", i__1, "zzrvbf_", (ftnlen)619)] = 1;
 		}
 		ends[(i__1 = count - 1) < 132 && 0 <= i__1 ? i__1 : s_rnge(
-			"ends", i__1, "zzrvbf_", (ftnlen)609)] = i__;
+			"ends", i__1, "zzrvbf_", (ftnlen)623)] = i__;
 	    } else {
 
 /*              This is some character other than a quote, or */
@@ -529,13 +543,13 @@
 		    intokn = TRUE_;
 		    ++count;
 		    begs[(i__1 = count - 1) < 132 && 0 <= i__1 ? i__1 : 
-			    s_rnge("begs", i__1, "zzrvbf_", (ftnlen)634)] = 
+			    s_rnge("begs", i__1, "zzrvbf_", (ftnlen)648)] = 
 			    i__;
 		    type__[(i__1 = count - 1) < 132 && 0 <= i__1 ? i__1 : 
-			    s_rnge("type", i__1, "zzrvbf_", (ftnlen)635)] = 2;
+			    s_rnge("type", i__1, "zzrvbf_", (ftnlen)649)] = 2;
 		}
 		ends[(i__1 = count - 1) < 132 && 0 <= i__1 ? i__1 : s_rnge(
-			"ends", i__1, "zzrvbf_", (ftnlen)638)] = i__;
+			"ends", i__1, "zzrvbf_", (ftnlen)652)] = i__;
 	    }
 	}
 
@@ -572,13 +586,31 @@
 		setmsg_("There is a non-printing character embedded in line "
 			"# of the text buffer.  Non-printing characters are n"
 			"ot allowed in kernel variable assignments.  The non-"
-			"printing character has ascii code #. ", (ftnlen)192);
+			"printing character has ASCII code #. ", (ftnlen)192);
 		errint_("#", linnum, (ftnlen)1);
 		i__1 = *(unsigned char *)&line[at - 1];
 		errint_("#", &i__1, (ftnlen)1);
 		sigerr_("SPICE(NONPRINTINGCHAR)", (ftnlen)22);
 		chkout_("ZZRVBF", (ftnlen)6);
 		return 0;
+	    }
+
+/*           Check the variable name length; signal an error */
+/*           if longer than MAXLEN. */
+
+	    i__1 = begs[0] - 1;
+	    varlen = i_len(line + i__1, ends[0] - i__1);
+	    if (varlen > 32) {
+		setmsg_("A kernel pool variable name in the input buffer exc"
+			"eeds the maximum allowed length #1. The actual lengt"
+			"h of the variable name is #2, the offending variable"
+			" name to #3 characters: '#4'.", (ftnlen)184);
+		errint_("#1", &c__32, (ftnlen)2);
+		errint_("#2", &varlen, (ftnlen)2);
+		errint_("#3", &c__132, (ftnlen)2);
+		i__1 = begs[0] - 1;
+		errch_("#4", line + i__1, (ftnlen)2, ends[0] - i__1);
+		sigerr_("SPICE(BADVARNAME)", (ftnlen)17);
 	    }
 
 /*           The variable name is ok. How about the directive. */
@@ -731,7 +763,7 @@
 		nxttok = 3;
 		++count;
 		type__[(i__1 = count - 1) < 132 && 0 <= i__1 ? i__1 : s_rnge(
-			"type", i__1, "zzrvbf_", (ftnlen)883)] = 4;
+			"type", i__1, "zzrvbf_", (ftnlen)921)] = 4;
 	    }
 
 /*        For subsequent lines, treat everything as a new value. */
@@ -748,15 +780,15 @@
 /*        Dates begin with @; anything else is presumed to be a number. */
 
 	while(type__[(i__1 = nxttok - 1) < 132 && 0 <= i__1 ? i__1 : s_rnge(
-		"type", i__1, "zzrvbf_", (ftnlen)903)] != 4 && nxttok <= 
+		"type", i__1, "zzrvbf_", (ftnlen)941)] != 4 && nxttok <= 
 		count) {
 
 /*           Get the begin and end of this token. */
 
 	    b = begs[(i__1 = nxttok - 1) < 132 && 0 <= i__1 ? i__1 : s_rnge(
-		    "begs", i__1, "zzrvbf_", (ftnlen)907)];
+		    "begs", i__1, "zzrvbf_", (ftnlen)945)];
 	    e = ends[(i__1 = nxttok - 1) < 132 && 0 <= i__1 ? i__1 : s_rnge(
-		    "ends", i__1, "zzrvbf_", (ftnlen)908)];
+		    "ends", i__1, "zzrvbf_", (ftnlen)946)];
 	    if (vartyp == 3) {
 
 /*              We need to determine which category of variable we */
@@ -764,10 +796,10 @@
 /*              type. */
 
 		if (type__[(i__1 = nxttok - 1) < 132 && 0 <= i__1 ? i__1 : 
-			s_rnge("type", i__1, "zzrvbf_", (ftnlen)916)] == 1) {
+			s_rnge("type", i__1, "zzrvbf_", (ftnlen)954)] == 1) {
 		    vartyp = 1;
 		} else if (type__[(i__1 = nxttok - 1) < 132 && 0 <= i__1 ? 
-			i__1 : s_rnge("type", i__1, "zzrvbf_", (ftnlen)920)] 
+			i__1 : s_rnge("type", i__1, "zzrvbf_", (ftnlen)958)] 
 			== 2) {
 		    vartyp = 2;
 		} else {
@@ -795,7 +827,7 @@
 /*              First make sure that this token represents a string. */
 
 		if (type__[(i__1 = nxttok - 1) < 132 && 0 <= i__1 ? i__1 : 
-			s_rnge("type", i__1, "zzrvbf_", (ftnlen)958)] != 1) {
+			s_rnge("type", i__1, "zzrvbf_", (ftnlen)996)] != 1) {
 
 /*                 First perform the clean up function. */
 
@@ -889,7 +921,7 @@
 
 	    } else {
 		if (type__[(i__1 = nxttok - 1) < 132 && 0 <= i__1 ? i__1 : 
-			s_rnge("type", i__1, "zzrvbf_", (ftnlen)1079)] != 2) {
+			s_rnge("type", i__1, "zzrvbf_", (ftnlen)1117)] != 2) {
 
 /*                 First perform the clean up function. */
 

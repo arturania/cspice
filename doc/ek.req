@@ -2,7 +2,7 @@
 E-Kernel Required Reading
 ===========================================================================
  
-   Last revised on 2009 APR 01 by B. V. Semenov.
+   Last revised on 2010 APR 07 by E. D. Wright.
  
  
 Abstract
@@ -26,7 +26,7 @@ References
  
        4.   [278] COMMNT User's Guide (commnt.ug)
  
-       5.   [284] INSPEKT User's Guide (inpekt.ug)
+       5.   [284] INSPEKT User's Guide (inspekt.ug)
  
        6.   [286] DAS Required Reading (das.req)
  
@@ -127,7 +127,7 @@ EK sequence component
    with event data that fit the relational database paradigm: specifically,
    data that can be meaningfully and advantageously represented as a series
    of tables, each one of which is characterized by a collection of rows
-   and columns. This type of organization is likely to be appropriate when:
+   and columns. This type of organization is likely appropriate when:
  
        --   The structure of the data is regular
  
@@ -204,11 +204,11 @@ EK sequence component
    software capable of accessing those files. The EK API contains
    ``writer'' software that enables users to create sequence EK files that
    contain data organized in a tabular fashion. The data then can be
-   accessed via ``reader'' functions from the EK API, or interactively via
-   the EK browsing program INSPEKT.
+   accessed using ``reader'' functions from the EK API, or interactively
+   using the EK browsing program INSPEKT.
  
    Sequence EK files are binary files and therefore cannot be read directly
-   via text editing programs. However, the program INSPEKT can dump any
+   using text editing programs. However, the program INSPEKT can dump any
    selected portion of any sequence EK as a text file, using user-specified
    formats, so in a sense sequence EK files are more flexible than flat
    text files as a repository for event information. By using a
@@ -256,13 +256,13 @@ Relational database functionality
  
    The sequence EK subsystem provides an application programming interface
    (API) for creating, modifying, reading, summarizing, and annotating
-   sequence EK files. In particular, the API supports reading via a
+   sequence EK files. In particular, the API supports reading using a
    query-and-fetch mechanism: an application passes a request for data
-   called a ``query'' to the EK subsystem, then retrieves the data via a
+   called a ``query'' to the EK subsystem, then retrieves the data using a
    suite of API routines. Queries are expressed in a simple language that
    closely resembles the standard relational database query language SQL.
  
-   The sequence EK query capability is also provided via the CSPICE
+   The sequence EK query capability is also provided using the CSPICE
    interactive browsing utility INSPEKT. However, INSPEKT does not support
    any sequence EK writing functionality.
  
@@ -322,7 +322,8 @@ Column attributes
             variable, ``variable-sized.'' There is no limit imposed by the
             EK subsystem on the dimension of a column's entries.
  
-            Array-valued columns may not be referenced in query contraints.
+            Array-valued columns may not be referenced in query
+            constraints.
  
        --   String length (applies only to character columns)
  
@@ -352,8 +353,8 @@ Query syntax
    constraints that entries in the tables' rows must match. We refer to
    rows that satisfy the constraints as ``matching rows.''
  
-   The selected data will be retrievable via the EK fetch routines ekgc_c,
-   ekgd_c, and ekgi_c.
+   The selected data will be retrievable using the EK fetch routines
+   ekgc_c, ekgd_c, and ekgi_c.
  
    The query consists of four clauses, the third and fourth of which are
    optional. The general form of a query is
@@ -374,9 +375,9 @@ Query syntax
  
 The SELECT clause
  
-   The SELECT clause specifies a list of columns from which data are to be
-   selected. In a simple (non-join) query, these columns must belong to the
-   single table specified in the FROM clause.
+   The SELECT clause specifies a list of columns from which to select data.
+   In a simple (non-join) query, these columns must belong to the single
+   table specified in the FROM clause.
  
    The form of a SELECT clause is
  
@@ -404,9 +405,9 @@ The SELECT clause
  
 The FROM clause
  
-   The FROM clause specifies the tables from which data are to be selected.
-   In simple queries, only one table is listed. In this case the form of
-   the FROM clause is
+   The FROM clause specifies the tables from which to select data. In
+   simple queries, only one table is listed. In this case the form of the
+   FROM clause is
  
       FROM <table name>
  
@@ -464,8 +465,7 @@ The WHERE clause
  
    is any of
  
-      EQ, GE, GT, LE, LIKE, LT, NE, NOT LIKE, <, <=,
-      =, >, >=, !=, <>
+      EQ, GE, GT, LE, LIKE, LT, NE, NOT LIKE, <, <=, =, >, >=, !=, <>
  
    For comparison with null values, the special expressions
  
@@ -916,7 +916,7 @@ Examples of syntactically invalid queries
       order TIME                         {ORDER BY phrase is
                                           lacking BY keyword}
  
-      select COL1 from table where
+      select COL1 from table
       where COL1 eq MOC_EVENT            {literal string on
                                           right-hand-side of
                                           operator is not quoted}
@@ -982,7 +982,7 @@ Segments
    Sequence EK files contain data organized in a series of logical tables
    called ``segments.'' This organization is logical, not physical---the
    physical layout of the data in the file is transparent to applications
-   that access sequence EKs via the EK API.
+   that access sequence EKs using the EK API.
  
    Each segment contains data belonging to one EK table. A sequence EK file
    may contain multiple segments for one or more distinct tables. Segments
@@ -1054,7 +1054,7 @@ TOXFR and TOBIN
    Since sequence EKs are instances of DAS files, the DAS file transfer
    mechanisms apply. The CSPICE utilities TOXFR and TOBIN may be used to
    convert binary sequence EKs to ASCII transfer format and back to binary
-   format. See the CONVERT users's guide, convert.ug, [333] for details.
+   format. See the CONVERT user's guide, convert.ug, [333] for details.
  
  
 SPACIT
@@ -1079,16 +1079,13 @@ Loading and unloading sequence EKs
  
       furnsh_c ( <fname> );                 {Load SPICE kernel}
  
-   furnsh_c in turn invokes the low-level EK-specific loader eklef_c.
- 
    A limited number of EK files may be loaded at any one time. The current
    maximum limit is 20 files.
  
    The inverse routine corresponding to furnsh_c is unload_c. unload_c
    removes a loaded kernel from the CSPICE system: the file is closed, and
-   data stuctures referring to the file are updated to reflect the absence
-   of the file. unload_c invokes the EK-specific unload routine ekuef_c to
-   carry out its task.
+   data structures referring to the file are updated to reflect the absence
+   of the file.
  
    See [218] for further information on furnsh_c and unload_c.
  
@@ -1131,23 +1128,22 @@ Issuing queries
                                                                satisfy
                                                                query}
  
-   Here
+   With the arguments:
  
          `query'    is a string containing an EK query. See the section
                     ``The EK query language'' above for a complete
                     description of the language.
  
          `nmrows'   is the number of ``matching rows'': rows satisfying the
-                    query constraints, if any. `nmrows' is defined only if
-                    the query executed successfully.
+                    query constraints, if any. `nmrows' has a valid value
+                    only if the query successfully executed.
  
-         `error'    is a logical flag indicting whether the query executed
+         `error'    is a logical flag indicating whether the query executed
                     successfully. If the input query is incorrect, `error'
-                    will be returned with the value SPICETRUE.
+                    will return true.
  
-         `errmsg'   is a string containing an error diagnosis. `errmsg' is
-                    set when `error' is SPICETRUE. and is undefined
-                    otherwise.
+         `errmsg'   is a string containing an error diagnosis. `errmsg' has
+                    a valid value only if when `error' is true.
  
    Query errors fall into a few categories:
  
@@ -1163,8 +1159,8 @@ Issuing queries
        --   Name resolution errors---these result from referencing invalid
             or ambiguous column or table names in a query.
  
-       --   Time resolution errors---these result from use of time strings
-            that cannot be parsed.
+       --   Time resolution errors---these result when a failure occurs
+            during the parse of a time string.
  
        --   Miscellaneous semantic errors---these result from a
             syntactically valid query that violates a limit or a
@@ -1181,8 +1177,8 @@ Issuing queries
        --   A SCLK value is used in a query before an SCLK kernel for the
             appropriate spacecraft clock has been loaded.
  
-   These problems cause a SPICE error to be signaled. The outputs of
-   ekfind_c are undefined in this case.
+   These problems cause a SPICE error to signal. The outputs of ekfind_c
+   are undefined in this case.
  
  
 Fetching data from matching rows
@@ -1198,7 +1194,7 @@ Fetching data from matching rows
       ekgc_c ( <selidx>, <row>, <elment>, <lenout>,        {Get character
                 cdata, &null, &found );                     data}
  
-   Here
+   With the arguments:
  
          `selidx'   is the index of the column of interest in the SELECT
                     clause of the query. Column indices range from 0 :
@@ -1231,6 +1227,7 @@ Fetching data from matching rows
       ekgd_c ( <selidx>, <row>, <elment>,
                &ddata,   &null, &found   );               {Get d.p. data}
  
+ 
    The arguments have the same meanings as the corresponding arguments of
    ekgc_c, except that `ddata' represents a double precision number.
  
@@ -1252,7 +1249,7 @@ Query support utilities
  
       nelts = eknelt_c ( <selidx>, <row> );      {Get number of elements}
  
-   Here
+   With the arguments:
  
          `selidx'   is the index of the column of interest in the SELECT
                     clause of the query. Column indices range from 0 :
@@ -1290,13 +1287,13 @@ Query support utilities
  
    Calls to ekpsel_c are made as shown:
  
-      ekpsel_c  ( query,   msglen,  tablen,  collen,
+      ekpsel_c  ( <query>, <msglen>, <tablen>, <collen>,
                   n,       xbegs,   xends,   xtypes,
                   xclass,  tabs,    cols,    error,  errmsg ); { Parse
                                                                  SELECT
                                                                  clause }
  
-   Here
+   With the arguments:
  
          `query'    is the query to be analyzed.
  
@@ -1363,17 +1360,15 @@ Opening files for record-oriented reading
    or write access. If the EK is to be opened for read access, the function
    ekopr_c is convenient:
  
-      ekopr_c ( <fname>, &handle );              {EK, open for read}
+      ekopr_c ( <fname>, &handle );            {EK, open for read}
  
-   If the EK to be read is to be queried, then the EK should be loaded via
-   eklef_c or furnsh_c.
- 
-      eklef_c  ( <fname>, &handle );        {EK, load event file}
+   If the EK to be read is to be queried, then the EK should be loaded
+   using furnsh_c.
  
       furnsh_c ( <fname> );                 {Load SPICE kernel}
  
-   If furnsh_c is used, the file's handle may be obtained via a call to the
-   CSPICE function kinfo_c.
+   The file's handle may be obtained using a call to the CSPICE function
+   kinfo_c.
  
  
 Column entry readers
@@ -1381,13 +1376,10 @@ Column entry readers
    The record-oriented readers return a specified column entry from a
    specified EK. To read a character column entry, call ekrcec_c:
  
-      ekrcec_c  ( <handle>, <segno>,  <recno>,  <column>,
-                  <lenout>  &nvals,   cvals,    isnull   );
+      ekrcec_c  ( <handle>, <segno>, <recno>, <column>,   {read character
+                  <lenout>  &nvals,  cvals,   isnull   );  column entry}
  
-                                                          {read character
-                                                           column entry}
- 
-   Here
+   With the arguments:
  
          `handle'   is the file handle of the sequence EK to be read.
  
@@ -1412,22 +1404,16 @@ Column entry readers
  
    To read a double precision or TIME column entry, call ekrced_c:
  
-      ekrced_c  ( <handle>, <segno>,  <recno>, <column>,
-                  &nvals,   dvals,    isnull            );
- 
-                                                          {read d.p.
-                                                           column entry}
+      ekrced_c  ( <handle>, <segno>,  <recno>, <column>,    {read d.p.
+                  &nvals,   dvals,    isnull            );   column entry}
  
    The arguments have the same meanings as the corresponding arguments of
    ekrced_c, except that `dvals' represents a double precision array.
  
    To read an integer column entry, call ekrcei_c:
  
-      ekrcei_c  ( <handle>, <segno>,  <recno>, <column>,
-                  &nvals,   ivals,    isnull            );
- 
-                                                          {read integer
-                                                           column entry}
+      ekrcei_c  ( <handle>, <segno>,  <recno>, <column>,     {read integer
+                  &nvals,   ivals,    isnull            );    column entry}
  
    The arguments have the same meanings as the corresponding arguments of
    ekrcec_c, except that `ivals' represents an integer array.
@@ -1441,7 +1427,7 @@ Summarizing EK files
  
    To summarize an EK file, the file must be open for read or write access,
    and the file handle must be available. If the file is open for write
-   access, the file must be structually valid: for example, a fast write
+   access, the file must be structurally valid: for example, a fast write
    operation on the file must not be partially executed.
  
    The number of segments in an EK is found by calling eknseg_c:
@@ -1451,10 +1437,10 @@ Summarizing EK files
    The summary of the segment at ordinal position `segno' is returned by
    ekssum_c:
  
-      n = eknseg_c ( <handle>, <segno>, &segsum );        {Summarize
-                                                           segment}
+      n = ekssum_c ( <handle>, <segno>, &segsum );       {Summarize
+                                                          segment}
  
-   Here
+   With the arguments:
  
          `handle'   is the file handle of the sequence EK containing the
                     segment of interest.
@@ -1472,7 +1458,7 @@ Summarizing loaded tables
    A ``loaded EK table'' is a virtual table consisting of the union of all
    rows of data from segments having a given table name and schema, where
    the segments belong to loaded EKs. These tables exist in the EK query
-   subsystem when EKs are loaded via furnsh_c.
+   subsystem when EKs are loaded using furnsh_c.
  
    The number of loaded tables may be found by calling ekntab_c:
  
@@ -1488,7 +1474,7 @@ Summarizing loaded tables
       ekccnt_c ( <table>, &ccount );             {Return column count}
  
    The name and attributes of the column having a specified ordinal
-   position within in a specified, loaded table may be found by calling
+   position within a specified, loaded table may be found by calling
    ekcii_c:
  
       ekcii_c ( <table>, <cindex>, <lenout>,
@@ -1496,7 +1482,7 @@ Summarizing loaded tables
                                                     of column specified
                                                     by index}
  
-   Here
+   With the arguments:
  
          `table'    is the name of the table containing the column of
                     interest.
@@ -1551,12 +1537,12 @@ Opening a sequence EK for writing
  
 Beginning a new sequence EK
  
-   A new sequence EK is opened and prepared for writing via a call to
+   A new sequence EK is opened and prepared for writing using a call to
    ekopn_c:
  
       ekopn_c (  <fname>, <ifname>, <ncomch>, &handle );  {Open new EK}
  
-   Here
+   With the arguments:
  
          `fname'    is the name of the new sequence EK.
  
@@ -1581,7 +1567,7 @@ Opening an existing sequence EK for writing
  
    Use ekopw_c to open an existing sequence EK for writing:
  
-      ekopw_c (  <fname>, &handle );           {Open EK for writing}
+      ekopw_c ( <fname>, &handle );            {Open EK for writing}
  
    The arguments of ekopw_c have the same meanings as the corresponding
    arguments of ekopn_c.
@@ -1595,8 +1581,8 @@ Choosing a writing method
  
    Record-oriented writing allows records to be added to a segment one at a
    time; this approach simplifies creating records from a streaming data
-   source. In fact, records may be added to a segment in arbitrary order.
-   Also, it is possible to build multiple segments simultaneously using the
+   source. Records may be added to a segment in arbitrary order. Also, it
+   is possible to build multiple segments simultaneously using the
    record-oriented writers.
  
    The significant limitation of the record-oriented approach is that it is
@@ -1615,7 +1601,7 @@ Choosing a writing method
  
 Specifying segment attributes
  
-   When starting a new segment via either the record-oriented or fast
+   When starting a new segment using either the record-oriented or fast
    writers, it is necessary to specify the name of the table the segment
    belongs to and the names and attributes of the columns in the table.
    When using the fast writers, it is also necessary to specify the number
@@ -1651,7 +1637,7 @@ Column declarations
       <is the column indexed?>
       <does the column allow null values?>
  
-   When a segment is started via ekbseg_c or ekifld_c, an array of column
+   When a segment is started using ekbseg_c or ekifld_c, an array of column
    declarations must be supplied as an input. The form of a column
    declaration string is a list of ``keyword=value'' assignments, delimited
    by commas, as shown:
@@ -1672,8 +1658,8 @@ Column declarations
    Commas are required to separate the assignments within declarations;
    white space is optional; case is not significant.
  
-   The order in which the attribute keywords are listed in declaration is
-   not significant.
+   The order in which the attribute keywords are listed in the declaration
+   is not significant.
  
    Data type specifications are required for each column.
  
@@ -1734,7 +1720,7 @@ Column declarations
    By default, columns are not indexed.
  
    Optionally, any column can allow null values; this is indicated by the
-   assigment
+   assignment
  
       NULLS_OK = TRUE
  
@@ -1765,9 +1751,8 @@ Beginning a segment
    writers is to define the new segment's schema. This is done by calling
    ekbseg_c:
  
-      ekbseg_c ( <handle>, <tabnam>, <ncols>, <cnmlen>,
-                 <cnames>, <declen>, <decls>, &segno   ); {Begin
-                                                           segment}
+      ekbseg_c ( <handle>, <tabnam>, <ncols>, <cnmlen>,    {Begin
+                 <cnames>, <declen>, <decls>, &segno   );   segment}
  
    The inputs to ekbseg_c are described below:
  
@@ -1803,7 +1788,7 @@ Adding records to a segment
    The record-oriented sequence EK write functions support building
    sequence EK segments one record at a time.
  
-   A new segment is prepared for record-oriented writing via a call to
+   A new segment is prepared for record-oriented writing using a call to
    ekbseg_c (see ``Starting a new segment'' above). Next, records are added
    to the segment. Records may be appended or may be inserted into the
    segment.
@@ -1812,7 +1797,7 @@ Adding records to a segment
  
       ekappr_c ( <handle>, <segno>, &recno );         {Append record}
  
-   Here
+   With the arguments:
  
          `handle'   is the EK's file handle.
  
@@ -1824,7 +1809,7 @@ Adding records to a segment
  
    To insert a new, empty record into a segment, use ekinsr_c:
  
-      ekappr_c ( <handle>, <segno>, <recno> );         {Insert record}
+      ekinsr_c ( <handle>, <segno>, <recno> );         {Insert record}
  
    The arguments are the same as those of ekappr_c, except that here
    `recno' is an input. `recno' is the desired ordinal position of the new
@@ -1835,19 +1820,16 @@ Adding records to a segment
    where `nrec' is the number of records already in the segment.
  
    Each new record starts out empty. The column entries in the record are
-   filled in one by one via calls to the ``add column entry'' functions
+   filled in one-by-one using calls to the ``add column entry'' functions
    ekacec_c, ekaced_c, and ekacei_c. The column entries of a record may be
    written in any order.
  
    Character column entries are written by ekacec_c:
  
-      ekacec_c ( <handle>, <segno>,  <recno>, <column>,
-                 <nvals>,  <vallen>, <cvals>, <isnull>  );
+      ekacec_c ( <handle>, <segno>,  <recno>, <column>,      {Add character
+                 <nvals>,  <vallen>, <cvals>, <isnull>  );    column entry}
  
-                                                           {Add character
-                                                            column entry}
- 
-   Here
+   With the arguments:
  
          `handle'   is the DAS file handle obtained from ekopn_c.
  
@@ -1860,11 +1842,13 @@ Adding records to a segment
          `column'   is the name of the column to which data is to be
                     written.
  
-         `vallen'   is the string length of the elements of `cvals'.
- 
          `nvals'    is the number of elements in the column entry. For
                     scalar entries, `nvals' is 1. For null-valued entries,
                     NVALS is ignored.
+ 
+         `vallen'   is the string length of the elements of `cvals'.
+ 
+         `cvals_l   is the string length of the elements of `cvals'.
  
          `cvals'    is the string or array of strings comprising the column
                     entry. `cvals' is ignored if the entry being added is
@@ -1877,28 +1861,23 @@ Adding records to a segment
  
    Double precision column entries are written by ekaced_c:
  
-      ekaced_c ( <handle>, <segno>,  <recno>, <column>,
-                 <nvals>,  <dvals>,  <isnull>          );
-                                                            {Add d.p.
-                                                             column entry}
+      ekaced_c ( <handle>, <segno>,  <recno>, <column>,      {Add d.p.
+                 <nvals>,  <dvals>,  <isnull>          );     column entry}
  
    The arguments have the same meanings as the corresponding arguments of
    ekacec_c, except that `dvals' represents a double precision array.
  
-   Value of type TIME are also added via ekaced_c. When a column contains
-   TIME values (as indicated by its declared data type), the values are
-   stored as ephemeris seconds past J2000 TDB. When starting with UTC or
-   SCLK time values, the CSPICE conversion routines str2et_c or scs2e_c may
-   be used to obtain equivalent double precision TDB values. See the
-   TIME.REQ or SCLK.REQ Required Reading for details.
+   Values of type TIME are also added using ekaced_c. When a column
+   contains TIME values (as indicated by its declared data type), the
+   values are stored as ephemeris seconds past J2000 TDB. When starting
+   with UTC or SCLK time values, the CSPICE conversion routines str2et_c or
+   scs2e_c may be used to obtain equivalent double precision TDB values.
+   See the TIME.REQ or SCLK.REQ Required Reading for details.
  
    Integer column entries are written by ekacei_c:
  
-      ekacei_c ( <handle>, <segno>,  <recno>, <column>,
-                 <nvals>,  <ivals>,  <isnull>          );
- 
-                                                           {Add integer
-                                                            column entry}
+      ekacei_c ( <handle>, <segno>,  <recno>, <column>,     {Add integer
+                 <nvals>,  <ivals>,  <isnull>          );    column entry}
  
    The arguments have the same meanings as the corresponding arguments of
    ekacec_c, except that `ivals' represents an integer array.
@@ -1908,7 +1887,7 @@ Adding records to a segment
  
    No action is required to ``finish`` a segment created by the
    record-oriented writers, although ekcls_c must be called to close the
-   file when all segments been written.
+   file when all segments have been written.
  
  
 Using the fast writers
@@ -1920,8 +1899,8 @@ Using the fast writers
    the expense of some flexibility.
  
    The fast write approach involves creating one new segment at a time.
-   Segments are constructed one column at at time: each column is added to
-   a segment in one shot.
+   Segments are constructed one column at a time: each column is added to a
+   segment in one shot.
  
    In order to add a segment to a sequence EK, the sequence EK must be open
    for write access. New sequence EK files are opened by calling ekopn_c;
@@ -1948,8 +1927,6 @@ Using the fast writers
    When all segments in a sequence EK are complete, the sequence EK must be
    closed by calling ekcls_c.
  
-   Below, we discuss the calling sequences of the fast writer functions.
- 
  
 Initiating a fast write
  
@@ -1957,10 +1934,9 @@ Initiating a fast write
    define the new segment's attributes, specifically its schema and the
    number of rows in the segment. This is done by calling ekifld_c:
  
-      ekifld_c ( <handle>, <tabnam>, <ncols>,  <nrows>,
-                 <cnmlen>, <cnames>, <declen>, <decls>,
-                 &segno,    rcptrs                     ); { Initiate
-                                                            fast write }
+      ekifld_c ( <handle>, <tabnam>, <ncols>,  <nrows>,     {Initiate
+                 <cnmlen>, <cnames>, <declen>, <decls>,      fast write }
+                 &segno,    rcptrs                     );
  
    The inputs to ekifld_c are described below.
  
@@ -1993,11 +1969,10 @@ Initiating a fast write
                     position of the segment in the file. Segment numbers
                     start at 0 in CSPICE.
  
-         `rcptrs'   This is an integer work space array which must not be
-                    modified by the caller. `rcptrs' must have dimension at
-                    least equal to the number of rows in the segment.
-                    `rcptrs' is passed as an input to the other fast writer
-                    routines.
+         `rcptrs'   This is an integer work space array the caller must not
+                    modify. `rcptrs' must have dimension at least equal to
+                    the number of rows in the segment. `rcptrs' is passed
+                    as an input to the other fast writer routines.
  
  
 Adding columns to the segment
@@ -2007,11 +1982,11 @@ Adding columns to the segment
  
    To add a character column to a segment, call ekaclc_c:
  
-      ekaclc_c ( <handle>, <segno>,  <column>, <vallen>,
-                 <cvals>,  <entszs>, <nlflgs>, <rcptrs>,
-                 wkindx                                 ); { Add
-                                                             character
-                                                             column}
+      ekaclc_c ( <handle>, <segno>,  <column>, <vallen>,   {Add
+                 <cvals>,  <entszs>, <nlflgs>, <rcptrs>,    character
+                 wkindx                                 );  column}
+ 
+ 
  
    The inputs to ekaclc_c are described below.
  
@@ -2060,27 +2035,23 @@ Adding columns to the segment
  
    To add a double precision column to a segment, call ekacld_c:
  
-      ekacld_c ( <handle>, <segno>,  <column>, <dvals>,
-                 <entszs>, <nlflgs>, <rcptrs>, wkindx  ); { Add
-                                                            d.p.
-                                                            column}
+      ekacld_c ( <handle>, <segno>,  <column>, <dvals>,   {Add d.p.
+                 <entszs>, <nlflgs>, <rcptrs>, wkindx  );  column}
  
    The arguments have the same meanings as the corresponding arguments of
    ekaclc_c, except that `dvals' represents a double precision array.
  
-   Value of type TIME are also added via ekacld_c. When a column contains
-   TIME values (as indicated by its declared data type), the values are
-   stored as ephemeris seconds past J2000 TDB. When starting with UTC or
-   SCLK time values, the CSPICE conversion routines str2et_c or scs2e_c may
-   be used to obtain equivalent double precision TDB values. See the
-   TIME.REQ or SCLK.REQ Required Reading for details.
+   Values of type TIME are also added using ekacld_c. When a column
+   contains TIME values (as indicated by its declared data type), the
+   values are stored as ephemeris seconds past J2000 TDB. When starting
+   with UTC or SCLK time values, the CSPICE conversion routines str2et_c or
+   scs2e_c may be used to obtain equivalent double precision TDB values.
+   See the TIME.REQ or SCLK.REQ Required Reading for details.
  
    To add an integer column to a segment, call ekacli_c:
  
-      ekacli_c ( <handle>, <segno>,  <column>, <ivals>,
-                 <entszs>, <nlflgs>, <rcptrs>, wkindx  ); { Add
-                                                            integer
-                                                            column}
+      ekacli_c ( <handle>, <segno>,  <column>, <ivals>,      {Add integer
+                 <entszs>, <nlflgs>, <rcptrs>, wkindx  );     column}
  
    The arguments have the same meanings as the corresponding arguments of
    ekaclc_c, except that `ivals' represents an integer array.
@@ -2089,9 +2060,9 @@ Adding columns to the segment
 Completing a fast write
  
    Once all columns have been added to the segment, the fast write
-   operation on the segment is completed via a call to ekffld_c:
+   operation on the segment is completed using a call to ekffld_c:
  
-      ekffld_c ( <handle>, <segno>, <rcptrs> ) {Finish fast write}
+      ekffld_c ( <handle>, <segno>, <rcptrs> )    {Finish fast write}
  
    The meanings of the arguments of ekffld_c are identical to those of the
    same names belonging to ekifld_c.
@@ -2100,13 +2071,13 @@ Completing a fast write
    structurally valid until this call has been made.
  
    Once the fast write operation has been completed, the segment may be
-   modified via the record-oriented writers.
+   modified using the record-oriented writers.
  
  
 Restrictions
  
-   Creating a segment via the fast writer routines should be regarded as an
-   ``indivisible'' process: other EK operations should not be performed
+   Creating a segment using the fast writer routines should be regarded as
+   an ``indivisible'' process: other EK operations should not be performed
    when a fast write is in progress.
  
    Record-oriented append, insert, and delete operations are not supported
@@ -2121,8 +2092,8 @@ Restrictions
    Only one segment can be created at a time using the fast writers.
  
    One cannot extend an existing segment using the fast write functions.
-   However, a segment created using the fast writers, once completed via a
-   call to ekffld_c, may be modified using the record-oriented write,
+   However, a segment created using the fast writers, once completed using
+   a call to ekffld_c, may be modified using the record-oriented write,
    update, or delete functions.
  
  
@@ -2133,9 +2104,9 @@ Updating an existing sequence EK
    open for write access may be updated. Updates may consist of adding
    records, deleting records, or updating individual column entries.
  
-   Adding records is done via the record-oriented writers, which are
+   Adding records is done using the record-oriented writers, which are
    described above. Column entries may be updated using the functions
-   ekucec_c, ekuced_c, and EKUCEI, which operate on, respectively,
+   ekucec_c, ekuced_c, and ekucei_c, which operate on, respectively,
    character, double precision (or time), and integer column entries. The
    argument lists of these functions are identical to the record-oriented
    column entry addition functions of the corresponding data types.
@@ -2147,11 +2118,11 @@ Updating an existing sequence EK
    For columns that allow null values, null entries can be updated with
    non-null values and vice versa.
  
-   Records are deleted via a call to ekdelr_c:
+   Records are deleted using a call to ekdelr_c:
  
-      ekdelr_c ( <handle>, <segno>, <recno> ); {Delete record}
+      ekdelr_c ( <handle>, <segno>, <recno> );   {Delete record}
  
-   Here
+   With the arguments:
  
          `handle'   is the DAS file handle obtained from ekopn_c or
                     ekopw_c.
@@ -2173,14 +2144,14 @@ Closing a sequence EK
    closed by calling ekcls_c. This step is necessary to create a
    structurally correct sequence EK, since some written data may be
    buffered but not yet written to the physical sequence EK after the last
-   segment has been completed. Also, ekcls_c re-organizes (via the DAS
+   segment has been completed. Also, ekcls_c re-organizes (using the DAS
    subsystem) the physical records in the sequence EK to enhance read
    performance when the file is reopened.
  
    The record-oriented read routines may be used to read data from a
    sequence EK before it has been closed. However, a sequence EK open for
-   write access may not loaded by furnsh_c or eklef_c, and hence is not
-   accessible by the sequence EK query and fetch routines.
+   write access may not by loaded by furnsh_c and hence is not accessible
+   by the sequence EK query and fetch routines.
  
  
 Appendix A --- Summary of E-kernel Functions
@@ -2246,7 +2217,7 @@ Summary of mnemonics
          ekucei_c   ( EK, update integer column entry            )
          ekuef_c    ( EK, unload event file                      )
  
-      Low-level routines converted via f2c:
+      Low-level routines converted by f2c:
  
          eksrch_    ( EK, search for events                      )
  
@@ -2259,8 +2230,6 @@ Summary of Calling Sequences
  
    Load files for query access, unload files:
  
-      eklef_c  ( fname, &handle )
-      ekuef_c  ( handle )
       furnsh_c ( fname )
       unload_c ( fname )
  
@@ -2283,7 +2252,7 @@ Summary of Calling Sequences
       ekccnt_c ( table, &ccount )
       ekcii_c  ( table, cindex, lenout, column, &attdsc )
       ekntab_c ( &n )
-      ektnam_c ( n,     lenout, table )
+      ektnam_c ( n, lenout, table )
  
    Query and fetch:
  
@@ -2292,10 +2261,10 @@ Summary of Calling Sequences
                  &found                                         )
       ekgd_c   ( selidx, row,    elment,  ddata, &null,  &found )
       ekgi_c   ( selidx, row,    elment,  idata, &null,  &found )
-      eknelt_c ( selidx, row );
+      eknelt_c ( selidx, row )
       ekpsel_c ( query,  msglen, tablen, collen, &n,
                  xbegs,  xends,  xtypes, xclass, tabs,
-                 cols,   &error, errmsg                );
+                 cols,   &error, errmsg                )
  
    Record-oriented read:
  
@@ -2305,7 +2274,6 @@ Summary of Calling Sequences
                  &isnull                                       )
       ekrcei_c ( handle, segno,  recno, column, &nvals, ivals,
                  &isnull                                       )
- 
  
    Fast write:
  
@@ -2349,6 +2317,11 @@ Summary of Calling Sequences
  
 Revisions
 --------------------------------------------------------
+ 
+ 
+February 24, 2010 EDW (JPL)
+ 
+   Documentation expanded to include descriptions of Icy functions.
  
  
 April 1, 2009

@@ -77,7 +77,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> MKSPK User's Guide
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2009 MAR 06 by B. V. Semenov.
+   Last revised on 2010 JUN 03 by B. V. Semenov.
 <P>
  
 <BR><BR>
@@ -635,7 +635,10 @@ J2000 this keyword must be set to the following special value:<BR>
  start time. This keyword defines the first valid epoch of the output
 SPK file. This value is always required for output SPK Types 15 and 17.
 If this value is absent for other output types, the MKSPK program
-calculates it using input data.<BR>
+calculates it using input data. This keyword does not apply when making
+'TL_ELEMENTS'/SPK 10 SPK files. For these files the output SPK coverage
+start time is automatically set to be 12 hours before the time of the
+first input two-line elements set.<BR>
 </DL>
 <DL><DT>
 <B>
@@ -645,7 +648,10 @@ calculates it using input data.<BR>
  stop time. This keyword defines the last valid epoch of the output SPK
 file. This value is always required for output SPK Types 15 and 17. If
 this value is absent for other output types, the MKSPK program
-calculates it using input data.<BR>
+calculates it using input data. This keyword does not apply when making
+'TL_ELEMENTS'/SPK 10 SPK files. For these files the output SPK coverage
+stop time is automatically set to be 12 hours after the time of the
+last input two-line elements set.<BR>
 </DL>
 <DL><DT>
 <B>
@@ -2696,7 +2702,10 @@ tag in an input record if the delimiter is comma or white space.<BR>
    no keywords describing input data format are present in the setup file.
    These keywords are not needed for 'TL_ELEMENTS'/SPK 10 program runs
    because two-line elements files have fixed format and are processed by
-   the program as a special case.
+   the program as a special case. Also note that the output SPK coverage
+   start and stop times are automatically set to be 12 hours before the
+   time of the first input two-line elements set and 12 hours after the
+   time of the last input two-line elements set correspondingly.
 <P>
  
    Setup file:
@@ -2718,7 +2727,7 @@ tag in an input record if the delimiter is comma or white space.<BR>
    \begintext
 </PRE>
    Input data file (the first two characters on each line of the sample
-   two-line element record -- '1 ' for the line '16609U 86017A 97 ...' and
+   two-line elements record -- '1 ' for the line '16609U 86017A 97 ...' and
    '2 ' for the line '16609 51.6542 51...' -- were taken out to fit the
    sample record into the page):
 <P>

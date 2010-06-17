@@ -157,10 +157,12 @@
 
    2) If the input string length lenvals is not at least 2, the error
       SPICE(STRINGTOOLSHORT) will be signaled.
-   
-   3) All other exceptions are diagnosed by routines in the call tree of 
-      this routine.
-       </PRE>
+
+   3) The error 'SPICE(BADVARNAME)' signals if a kernel pool
+      variable name length exceeds 32.
+
+   4) Other exceptions are diagnosed by routines in the call tree of 
+      this routine.</PRE>
 <h4><a name="Files">Files</a></h4>
 <PRE>
  
@@ -172,10 +174,12 @@
    This routine allows you to store a text kernel in an internal 
    array of your program and load this array into the kernel pool 
    without first storing its contents as a text kernel. 
+
+   Kernel pool variable names are restricted to a length of 32
+   characters or less.
  </PRE>
 <h4><a name="Examples">Examples</a></h4>
 <PRE>
- 
  
    Suppose that your application is not particularly sensitive 
    to the current number of leapseconds but that you would 
@@ -241,7 +245,11 @@
  </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
- 
+   -CSPICE Version 1.3.1,  10-FEB-2010 (EDW)
+
+      Added mention of the restriction on kernel pool variable 
+      names to 32 characters or less.
+
    -CSPICE Version 1.3.0, 12-JUL-2002 (NJB)
 
       Call to C2F_CreateStrArr_Sig replaced with call to C2F_MapStrArr.
@@ -269,7 +277,7 @@
   </tbody>
 </table>
 
-   <pre>Thu Apr 16 08:58:29 2009</pre>
+   <pre>Wed Jun  9 13:05:25 2010</pre>
 
 </body>
 </html>

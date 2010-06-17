@@ -2,7 +2,7 @@
 Reference Frames
 ===========================================================================
  
-   Last revised on 2009 APR 08 by B. V. Semenov.
+   Last revised on 2010 JUN 03 by B. V. Semenov.
  
  
 Abstract
@@ -307,7 +307,7 @@ Guidelines for Frame Specification
  
 Selecting a Name
  
-   The name chosen for a frame must no exceed 26 characters taken from the
+   The name chosen for a frame must not exceed 26 characters taken from the
    set including uppercase letters, numbers, underscore, and plus and minus
    signs. It should have some mnemonic value so that users can recognize
    what the name means. Finally, it should not be the name of one of the
@@ -323,15 +323,15 @@ Selecting a Name
  
 Selecting a Frame ID
  
-   What you choose for a frame ID depends upon the class of the frame. If
-   the class is CK, you may use the same ID as you use for the CLASS_ID. If
-   the frame is a PCK frame and you are working without consultation with
-   NAIF, select an integer in the range from 1400000 to 2000000. In the
-   previous example, we selected the Frame ID to be 1234567. (Since our
-   example frame is of class 3, a CK frame, we would normally use the same
-   number for the frame ID as we used for the class ID. However, in this
-   example, we have chosen a different value to illustrate the connection
-   between the frame ID and the variables needed to define the frame.)
+   What you choose for a frame ID depends upon the class of the frame.
+ 
+   If the class is CK, you may use the same ID as you use for the CLASS_ID.
+   In the previous example, we selected the Frame ID to be 1234567. (Since
+   our example frame above is of class 3, a CK frame, we would normally use
+   the same number for the frame ID as we used for the class ID. However,
+   in this example, we have chosen a different value to illustrate the
+   connection between the frame ID and the variables needed to define the
+   frame.)
  
    For TK frames, the frame and class IDs must be identical. For TK frames
    associated with an instrument, the instrument ID is used for both frame
@@ -344,6 +344,10 @@ Selecting a Frame ID
    landing site, both frame ID and class ID are based on the ID of the
    lander (for example frame and class ID of -222999 would be the natural
    choice for the lander with ID -222.)
+ 
+   If the frame is a PCK frame or a dynamic frame and you are working
+   without consultation with NAIF, select an integer in the range from
+   1400000 to 2000000.
  
  
 Selecting the Class
@@ -386,7 +390,9 @@ Selecting a Class ID
    look up reference frame information.
  
    If your frame is a PCK class frame the CLASS_ID is the ID code for the
-   body described by the PCK file.
+   body for which rotation constants are provided in the text PCK file or
+   the ID associated with the orientation data provided in the binary PCK
+   file.
  
    If your frame is a CK class frame, the CLASS_ID is the ID code used in
    the C-kernel to describe the orientation of the spacecraft.
@@ -551,11 +557,11 @@ Inertial Frames
  
       \begindata
  
-         FRAME_EME2000         = 2000000
-         FRAME_2000000_NAME    = 'EME2000'
-         FRAME_2000000_CLASS   = 1
-         FRAME_2000000_CENTER  = 0
-         FRAME_2000000_CLASSID = 1
+         FRAME_EME2000          = 2000000
+         FRAME_2000000_NAME     = 'EME2000'
+         FRAME_2000000_CLASS    = 1
+         FRAME_2000000_CENTER   = 0
+         FRAME_2000000_CLASS_ID = 1
  
       \begintext
  
@@ -2575,6 +2581,7 @@ Appendix. ``Built in'' PCK-Based IAU Body-Fixed Reference Frames
       IAU_ATLAS
       IAU_BELINDA
       IAU_BIANCA
+      IAU_BORRELLY
       IAU_CALLIRRHOE
       IAU_CALLISTO
       IAU_CALYPSO
@@ -2606,6 +2613,7 @@ Appendix. ``Built in'' PCK-Based IAU Body-Fixed Reference Frames
       IAU_IO
       IAU_IOCASTE
       IAU_ISONOE
+      IAU_ITOKAWA
       IAU_JANUS
       IAU_JULIET
       IAU_JUPITER
@@ -2643,6 +2651,7 @@ Appendix. ``Built in'' PCK-Based IAU Body-Fixed Reference Frames
       IAU_SUN
       IAU_TAYGETE
       IAU_TELESTO
+      IAU_TEMPEL_1
       IAU_TETHYS
       IAU_THALASSA
       IAU_THEBE
@@ -2653,6 +2662,7 @@ Appendix. ``Built in'' PCK-Based IAU Body-Fixed Reference Frames
       IAU_UMBRIEL
       IAU_URANUS
       IAU_VENUS
+      IAU_VESTA
  
  
 Appendix. High Precision Earth Fixed Frames
@@ -2714,9 +2724,9 @@ Appendix. Frame Identifiers Reserved for Earth Fixed Frames
  
    Note that this specification leaves out the items below
  
-      FRAME_<DSN Frame-ID>_CENTER  = 399
-      FRAME_<DSN Frame-ID>_CLASS   = 2
-      FRAME_<DSN Frame-ID>_CLASSID = <DSN Frame-ID  - 10000>
+      FRAME_<DSN Frame-ID>_CENTER   = 399
+      FRAME_<DSN Frame-ID>_CLASS    = 2
+      FRAME_<DSN Frame-ID>_CLASS_ID = <DSN Frame-ID  - 10000>
  
    You may supply these values if you like, but they have no effect on the
    frame subsystem's recognition and interpretation of the frame with the
@@ -3127,7 +3137,7 @@ Example: Roll-Celestial Spacecraft Frame
       FRAME_<frame_ID>_DEF_STYLE      = 'PARAMETERIZED'
       FRAME_<frame_ID>_FAMILY         = 'TWO-VECTOR'
       FRAME_<frame_ID>_PRI_AXIS       = 'Z'
-      FRAME_<frame_ID>_PRI_VECTOR_DEF = 'OBSEVER_TARGET_POSITION'
+      FRAME_<frame_ID>_PRI_VECTOR_DEF = 'OBSERVER_TARGET_POSITION'
       FRAME_<frame_ID>_PRI_OBSERVER   = <spacecraft_ID/name>
       FRAME_<frame_ID>_PRI_TARGET     = 'EARTH'
       FRAME_<frame_ID>_PRI_ABCORR     = 'NONE'
@@ -3193,7 +3203,7 @@ Earth Mean Equator and Equinox of Date Frames
       FRAME_<frame_ID>_FREEZE_EPOCH  = @1949-DEC-31/22:09:46.861901
  
  
-Examples of a True Equator and Equinox of Date Frames
+Examples of True Equator and Equinox of Date Frames
 --------------------------------------------------------
  
    Definition of the Earth True Equator and Equinox of Date frame:

@@ -20,8 +20,8 @@
 
 /* $ Abstract */
 
-/*      VPROJ finds the projection of one vector onto another vector. */
-/*      All vectors are 3-dimensional. */
+/*     VPROJ finds the projection of one vector onto another vector. */
+/*     All vectors are 3-dimensional. */
 
 /* $ Disclaimer */
 
@@ -54,91 +54,96 @@
 
 /* $ Keywords */
 
-/*      VECTOR */
+/*     VECTOR */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*       A         I    The vector to be projected. */
-/*       B         I    The vector onto which A is to be projected. */
-/*       P         O    The projection of A onto B. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     A          I   The vector to be projected. */
+/*     B          I   The vector onto which A is to be projected. */
+/*     P          O   The projection of A onto B. */
 
 /* $ Detailed_Input */
 
-/*      A     is a double precision, 3-dimensional vector.  This */
-/*            vector is to be projected onto the vector B. */
+/*     A     is a double precision, 3-dimensional vector.  This */
+/*           vector is to be projected onto the vector B. */
 
-/*      B     is a double precision, 3-dimensional vector.  This */
-/*            vector is the vector which receives the projection. */
+/*     B     is a double precision, 3-dimensional vector.  This */
+/*           vector is the vector which receives the projection. */
 
 /* $ Detailed_Output */
 
-/*      P     is a double precision, 3-dimensional vector containing */
-/*            the projection of A onto B.  P may overwrite either */
-/*            A or B.  (P is necessarily parallel to B.)  If B is */
-/*            the zero vector then P will be returned as the zero vector. */
+/*     P     is a double precision, 3-dimensional vector containing the */
+/*           projection of A onto B.  (P is necessarily parallel to B.) */
+/*           If B is the zero vector then P will be returned as the zero */
+/*           vector. */
 
 /* $ Parameters */
 
 /*     None. */
 
-/* $ Particulars */
-
-/*      The given any vectors A and B there is a unique decomposition */
-/*      of A as a sum V + P such that V  the dot product of V and B */
-/*      is zero, and the dot product of P with B is equal the product */
-/*      of the lengths of P and B.  P is called the projection of */
-/*      A onto B.  It can be expressed mathematically as */
-
-/*            DOT(A,B) */
-/*            -------- * B */
-/*            DOT(B,B) */
-
-/*      (This is not necessarily the prescription used to compute */
-/*      the projection. It is intended only for descriptive purposes.) */
-
-/* $ Examples */
-
-/*      The following table gives sample inputs and results from calling */
-/*      VPROJ. */
-
-/*      A                  B           NDIM               P */
-/*      ----------------------------------------------------------------- */
-/*      (6, 6, 6)      ( 2, 0, 0)        3            (6, 0, 0) */
-/*      (6, 6, 6)      (-3, 0, 0)        3            (6, 0, 0) */
-/*      (6, 6, 0)      ( 0, 7, 0)        3            (0, 6, 0) */
-/*      (6, 0, 0)      ( 0, 0, 9)        3            (0, 0, 0) */
-
-/* $ Restrictions */
-
-/*      None. */
-
 /* $ Exceptions */
 
-/*      Error free. */
+/*     Error free. */
 
 /* $ Files */
 
-/*      None. */
+/*     None. */
 
-/* $ Author_and_Institution */
+/* $ Particulars */
 
-/*      W.L. Taber      (JPL) */
+/*     The given any vectors A and B there is a unique decomposition of */
+/*     A as a sum V + P such that V  the dot product of V and B is zero, */
+/*     and the dot product of P with B is equal the product of the */
+/*     lengths of P and B.  P is called the projection of A onto B.  It */
+/*     can be expressed mathematically as */
+
+/*        DOT(A,B) */
+/*        -------- * B */
+/*        DOT(B,B) */
+
+/*     (This is not necessarily the prescription used to compute the */
+/*     projection. It is intended only for descriptive purposes.) */
+
+/* $ Examples */
+
+/*     The following table gives sample inputs and results from calling */
+/*     VPROJ. */
+
+/*        A                  B           NDIM               P */
+/*        ------------------------------------------------------- */
+/*        (6, 6, 6)      ( 2, 0, 0)        3            (6, 0, 0) */
+/*        (6, 6, 6)      (-3, 0, 0)        3            (6, 0, 0) */
+/*        (6, 6, 0)      ( 0, 7, 0)        3            (0, 6, 0) */
+/*        (6, 0, 0)      ( 0, 0, 9)        3            (0, 0, 0) */
+
+/* $ Restrictions */
+
+/*     None. */
 
 /* $ Literature_References */
 
-/*      REFERENCE: Any reasonable calculus text (for example Thomas) */
+/*     Any reasonable calculus text (for example Thomas) */
+
+/* $ Author_and_Institution */
+
+/*     W.L. Taber      (JPL) */
 
 /* $ Version */
 
-/* -     SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+/* -    SPICELIB Version 1.0.2, 23-APR-2010 (NJB) */
 
-/*         Comment section for permuted index source lines was added */
-/*         following the header. */
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
-/* -     SPICELIB Version 1.0.0, 31-JAN-1990 (WLT) */
+/* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
+
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (WLT) */
 
 /* -& */
 /* $ Index_Entries */

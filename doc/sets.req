@@ -2,13 +2,13 @@
 Sets
 ===========================================================================
  
-   Last revised on 2002 SEP 04 by N. J. Bachman.
+   Last revised on 2010 MAY 18 by B. V. Semenov.
  
  
 Abstract
 --------------------------------------------------------
  
-   Sets are SPICE data structures that are a special case of SPICE sets --
+   Sets are SPICE data structures that are a special case of SPICE cells --
    vectors of type double precision, integer, or character -- carrying with
    them their own dimension and knowledge of how many components have been
    used.

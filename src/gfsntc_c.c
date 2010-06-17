@@ -81,12 +81,14 @@
    Variable  I/O  Description 
    --------  ---  -------------------------------------------------- 
    SPICE_GF_CNVTOL     
-              P   Convergence tolerance. 
+              P   Convergence tolerance
    target     I   Name of the target body
    fixref     I   Body fixed frame associated with 'target'
    method     I   Name of method type for surface intercept calculation
    abcorr     I   Aberration correction flag
    obsrvr     I   Name of the observing body
+   dref       I   Reference frame of direction vector 'dvec'
+   dvec       I   Pointing direction vector from 'obsrvr'
    crdsys     I   Name of the coordinate system containing COORD
    coord      I   Name of the coordinate of interest
    relate     I   Operator that either looks for an extreme value
@@ -298,7 +300,17 @@
               equality or inequality conditions.
 
    step       the double precision time step size to use in the search.
-     
+
+              Selection of the time step for surface intercept geometry 
+              requires consideration of the mechanics of a surface intercept 
+              event. In most cases, two distinct searches will be needed, 
+              one to determine the windows when the boresight vector 
+              intercepts the surface and then the search based on the user 
+              defined constraints within those windows. The boresight of 
+              nadir pointing instrument may continually intercept a body, but 
+              an instrument scanning across a disc will have configurations 
+              when the boresight does not intercept the body.
+
               The step size must be smaller than the shortest interval
               within the confinement window over which the intercept exists
               and also smaller than the shortest interval over which the 
@@ -311,7 +323,7 @@
      
               For LONGITUDE and RIGHT ASCENSION, the step size must 
               be shorter than the shortest interval, within the 
-              confinement window, over which either the sin or cosin
+              confinement window, over which either the sin or cos
               of the coordinate is monotone increasing or decreasing.
 
               The choice of 'step' affects the completeness but not
@@ -716,7 +728,7 @@
       Create the needed windows. Note, one window
       consists of two values, so the total number
       of cell values to allocate is twice
-      the number of windows.
+      the number of intervals.
       ./
       SPICEDOUBLE_CELL ( result, 2*MAXWIN );
       SPICEDOUBLE_CELL ( cnfine, 2       );
@@ -882,7 +894,7 @@
          Create the needed windows. Note, one window
          consists of two values, so the total number
          of cell values to allocate equals twice
-         the number of windows.
+         the number of intervals.
          ./
          SPICEDOUBLE_CELL ( result1, 2*MAXWIN );
          SPICEDOUBLE_CELL ( result2, 2*MAXWIN );
@@ -920,7 +932,7 @@
          /.  
          Load kernels.
          ./
-         furnsh_c( "/kernels/standard.tm" );
+         furnsh_c( "standard.tm" );
          furnsh_c( "sem.tf" );
    
          /.  
@@ -1136,7 +1148,12 @@
    E.D. Wright    (JPL) 
  
 -Version
- 
+
+   -CSPICE Version 1.0.1, 16-FEB-2010 (NJB) (EDW)
+
+       Edits to and corrections of argument descriptions and
+       header.
+      
    -CSPICE Version 1.0.0, 17-FEB-2009, EDW (JPL) 
 
 -Index_Entries

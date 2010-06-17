@@ -84,7 +84,7 @@
               returned for this variable.  (Usually it is the amount
               of room available in the array values). If room is
               less than 1 the error SPICE(BADARRAYSIZE) will be
-              signalled.
+              signaled.
 
 -Detailed_Output
 
@@ -109,7 +109,7 @@
 -Exceptions
 
    1) If the value of room is less than one the error
-      SPICE(BADARRAYSIZE) is signalled.
+      SPICE(BADARRAYSIZE) is signaled.
 
    2) If the input string pointer is null, the error SPICE(NULLPOINTER)
       will be signaled.

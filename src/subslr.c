@@ -987,6 +987,12 @@ static integer c__10 = 10;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.1.0, 18-MAY-2010 (NJB) */
+
+/*        Bug fix: calls to FAILED() have been added after */
+/*        SPK calls, target radius lookup, near point */
+/*        and surface intercept computations. */
+
 /* -    SPICELIB Version 1.0.1, 17-MAR-2009 (NJB) */
 
 /*        Typo correction: changed FIXFRM to FIXREF in header */
@@ -1280,6 +1286,10 @@ static integer c__10 = 10;
 
     spkezp_(&trgcde, et, fixref, abcorr, &obscde, tpos, &lt, fixref_len, 
 	    abcorr_len);
+    if (failed_()) {
+	chkout_("SUBSLR", (ftnlen)6);
+	return 0;
+    }
 
 /*     Negate the target's position to obtain the position of the */
 /*     observer relative to the target. */
@@ -1305,6 +1315,10 @@ static integer c__10 = 10;
 /*        Get the radii of the target body from the kernel pool. */
 
 	bodvcd_(&trgcde, "RADII", &c__3, &nradii, radii, (ftnlen)5);
+	if (failed_()) {
+	    chkout_("SUBSLR", (ftnlen)6);
+	    return 0;
+	}
 	range = vnorm_(obspos);
 	if (range == 0.) {
 
@@ -1325,6 +1339,10 @@ static integer c__10 = 10;
 
 	spkezp_(&c__10, trgepc, fixref, abcorr, &trgcde, spos, &slt, 
 		fixref_len, abcorr_len);
+	if (failed_()) {
+	    chkout_("SUBSLR", (ftnlen)6);
+	    return 0;
+	}
 
 /*        Make a first estimate of the sub-solar point. The algorithm */
 /*        we use depends on the sub-solar point definition. */
@@ -1351,6 +1369,10 @@ static integer c__10 = 10;
 		chkout_("SUBSLR", (ftnlen)6);
 		return 0;
 	    }
+	}
+	if (failed_()) {
+	    chkout_("SUBSLR", (ftnlen)6);
+	    return 0;
 	}
 	alt = vdist_(obspos, spoint);
 
@@ -1394,6 +1416,10 @@ static integer c__10 = 10;
 /*        the solar system barycenter at ET. */
 
 	spkssb_(&obscde, et, "J2000", ssbost, (ftnlen)5);
+	if (failed_()) {
+	    chkout_("SUBSLR", (ftnlen)6);
+	    return 0;
+	}
 
 /*        Initialize the variables required to evaluate the */
 /*        loop termination condition. */
@@ -1472,6 +1498,10 @@ static integer c__10 = 10;
 
 	    spkezp_(&c__10, trgepc, fixref, abcorr, &trgcde, spos, &slt, 
 		    fixref_len, abcorr_len);
+	    if (failed_()) {
+		chkout_("SUBSLR", (ftnlen)6);
+		return 0;
+	    }
 
 /*           Find the sub-solar point using the current estimated */
 /*           geometry. */
@@ -1499,6 +1529,10 @@ static integer c__10 = 10;
 		    chkout_("SUBSLR", (ftnlen)6);
 		    return 0;
 		}
+	    }
+	    if (failed_()) {
+		chkout_("SUBSLR", (ftnlen)6);
+		return 0;
 	    }
 	    alt = vdist_(obspos, spoint);
 

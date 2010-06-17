@@ -26,20 +26,19 @@ static integer c__1 = 1;
 	    ), chkin_(char *, ftnlen);
     integer recno, cvlen;
     logical found;
-    integer dtype;
-    extern /* Subroutine */ int dashlu_(integer *, integer *);
+    integer dtype, cmplen;
     extern logical return_(void);
     logical isnull;
-    extern /* Subroutine */ int setmsg_(char *, ftnlen), errfnm_(char *, 
-	    integer *, ftnlen), errint_(char *, integer *, ftnlen);
+    extern /* Subroutine */ int dashlu_(integer *, integer *), setmsg_(char *,
+	     ftnlen), errfnm_(char *, integer *, ftnlen);
     integer prvptr;
-    extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
-	    ftnlen), zzekrsc_(integer *, integer *, integer *, integer *, 
-	    integer *, integer *, char *, logical *, logical *, ftnlen), 
-	    zzekrsd_(integer *, integer *, integer *, integer *, integer *, 
-	    doublereal *, logical *, logical *), zzekrsi_(integer *, integer *
-	    , integer *, integer *, integer *, integer *, logical *, logical *
-	    );
+    extern /* Subroutine */ int errint_(char *, integer *, ftnlen), sigerr_(
+	    char *, ftnlen), chkout_(char *, ftnlen), zzekrsc_(integer *, 
+	    integer *, integer *, integer *, integer *, integer *, char *, 
+	    logical *, logical *, ftnlen), zzekrsd_(integer *, integer *, 
+	    integer *, integer *, integer *, doublereal *, logical *, logical 
+	    *), zzekrsi_(integer *, integer *, integer *, integer *, integer *
+	    , integer *, logical *, logical *);
 
 /* $ Abstract */
 
@@ -543,6 +542,13 @@ static integer c__1 = 1;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.0.0, 31-MAY-2010 (NJB) */
+
+/*        Bug fix: substring bound out-of-range violation */
+/*        in reference to local variable CVAL has been */
+/*        corrected. This error could occur if the a */
+/*        class 3 column entry had length exceeding MAXSTR. */
+
 /* -    Beta Version 1.0.0, 10-OCT-1995 (NJB) */
 
 /* -& */
@@ -571,6 +577,11 @@ static integer c__1 = 1;
     if (dtype == 1) {
 	zzekrsc_(handle, segdsc, coldsc, recptr, &c__1, &cvlen, cval, &isnull,
 		 &found, (ftnlen)1024);
+	if (found && ! isnull) {
+	    cmplen = min(cvlen,1024);
+	} else {
+	    cmplen = 0;
+	}
     } else if (dtype == 2 || dtype == 4) {
 	zzekrsd_(handle, segdsc, coldsc, recptr, &c__1, &dval, &isnull, &
 		found);
@@ -615,7 +626,7 @@ static integer c__1 = 1;
 
     if (dtype == 1) {
 	zzeklerc_(handle, segdsc, coldsc, cval, recptr, &isnull, pos, &prvptr,
-		 cvlen);
+		 cmplen);
     } else if (dtype == 2 || dtype == 4) {
 	zzeklerd_(handle, segdsc, coldsc, &dval, recptr, &isnull, pos, &
 		prvptr);

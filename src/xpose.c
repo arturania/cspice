@@ -12,7 +12,7 @@
 
 /* $ Abstract */
 
-/*      Transpose a 3x3 matrix. */
+/*     Transpose a 3x3 matrix. */
 
 /* $ Disclaimer */
 
@@ -45,44 +45,49 @@
 
 /* $ Keywords */
 
-/*      MATRIX */
+/*     MATRIX */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*       M1        I     Matrix to be transposed. */
-/*       MOUT      O     Transposed matrix (M1)**T. */
-/*                       MOUT can overwrite M1. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     M1        I     Matrix to be transposed. */
+/*     MOUT      O    Transposed matrix (M1)**T. */
 
 /* $ Detailed_Input */
 
-/*      M1      This variable may contain any double precision 3x3 */
-/*              matrix. */
+/*     M1      This variable may contain any double precision 3x3 */
+/*             matrix. */
 
 /* $ Detailed_Output */
 
-/*      MOUT    This variable is a double precision, 3x3 matrix which */
-/*              contains the transpose of M1. MOUT may overwrite M1. */
+/*     MOUT    This variable is a double precision, 3x3 matrix which */
+/*             contains the transpose of M1. */
 
 /* $ Parameters */
 
 /*     None. */
 
+/* $ Exceptions */
+
+/*     Error free. */
+
+/* $ Files */
+
+/*     None. */
+
 /* $ Particulars */
 
-/*      XPOSE first copies the diagonal elements of M1 to MOUT.  Then */
-/*      the off-diagonal elements are transpose using a temporary */
-/*      variable in the following order: (1,2) <---> (2,1), */
-/*      (1,3) <---> (3,1) and finally (2,3) <---> (3,2).  Since a */
-/*      temporary variable is used, it is possible to transpose a matrix */
-/*      in place.  In other words, MOUT may overwrite M1. */
+/*     XPOSE first copies the diagonal elements of M1 to MOUT.  Then */
+/*     the off-diagonal elements are transposed using a temporary */
+/*     variable in the following order: (1,2) <---> (2,1), */
+/*     (1,3) <---> (3,1) and finally (2,3) <---> (3,2). */
 
 /* $ Examples */
 
-/*      Given below is one example of a matrix M1 with the output matrix */
-/*      MOUT which is implied by M1. */
+/*     Given below is one example of a matrix M1 with the output matrix */
+/*     MOUT which is implied by M1. */
 
 /*           | 1  2  3 |                | 1  0  0 | */
 /*      M1 = | 0  4  5 |   then  MOUT = | 2  4  6 | */
@@ -90,32 +95,29 @@
 
 /* $ Restrictions */
 
-/*      None. */
-
-/* $ Exceptions */
-
-/*      Error free. */
-
-/* $ Files */
-
-/*      None. */
-
-/* $ Author_and_Institution */
-
-/*      W.M. Owen       (JPL) */
+/*     None. */
 
 /* $ Literature_References */
 
-/*      None. */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     W.M. Owen       (JPL) */
 
 /* $ Version */
 
-/* -     SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+/* -    SPICELIB Version 1.0.2, 23-APR-2010 (NJB) */
 
-/*         Comment section for permuted index source lines was added */
-/*         following the header. */
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
-/* -     SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
+/* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
+
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
 
 /* -& */
 /* $ Index_Entries */

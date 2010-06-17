@@ -1,0 +1,437 @@
+ 
+PINPOINT User's Guide
+===========================================================================
+ 
+   Last revised on 2009 MAR 26 by N. J. Bachman.
+ 
+ 
+Abstract
+--------------------------------------------------------
+ 
+   PINPOINT is a program that creates SPK files containing fixed or slowly
+   changing locations of objects -- landmarks on the surface of celestial
+   bodies, offsets between manipulator joints, etc. PINPOINT optionally
+   creates topocentric frame kernels for these objects.
+ 
+ 
+Summary
+--------------------------------------------------------
+ 
+   This program provides SPICE users with a mechanism for creating SPK
+   files for landmarks on the surface of celestial bodies. More generally,
+   this utility can be used to create an ephemeris for any object that has
+   a constant or slowly changing (motion that is well-approximated by a
+   constant velocity vector) offset (relative to some other ephemeris
+   object in some reference frame recognized by the SPICE frames subsystem.
+ 
+   This program can also create a frame kernel specifying topocentric
+   frames associated with each ephemeris object listed in the input
+   definitions file.
+ 
+ 
+Usage
+--------------------------------------------------------
+ 
+   The program expects the following command line arguments:
+ 
+      pinpoint -def defns -spk spkfile [-pck txtpck] [-fk fk] [flags]
+ 
+   where
+ 
+         defns     is the name of a file that defines the names and
+                   locations of landmarks.
+ 
+         spkfile   is the name of the SPK file to create.
+ 
+         txtpck    is the name of a text PCK kernel that is needed if you
+                   specify landmarks in terms of latitude, longitude and
+                   altitude. This argument is optional in some cases.
+ 
+         fk        is the name of a topocentric frame specification kernel
+                   to be created. This argument is optional. If an FK is to
+                   be created, a PCK must be specified to provide radii of
+                   the reference ellipsoid for each central body associated
+                   with any site.
+ 
+   The program prompts for any required item that is not supplied on the
+   command line.
+ 
+ 
+Batch Mode
+ 
+   As discussed above, pinpoint normally requests information needed that
+   has not been supplied on the command line. When you use the program
+   interactively, this is often a friendlier response than issuing an error
+   message if some value is left out. However, if you are using this
+   utility in a script that cannot respond to user requests, you will want
+   to repress the normal prompting behavior of pinpoint. To do this add the
+   flag "-batch" to the other values supplied on the command line.
+ 
+      pinpoint -def defns -spk spkfile [-pck txtpck] [-fk fk] -batch
+ 
+   If some required input is not supplied, the program simply stops. No
+   prompts for input are issued and no SPK file is created.
+ 
+ 
+Information Modes
+ 
+   The program also supplies general information about how to use it, the
+   current version. The following illustrate the various information modes.
+ 
+      help   : pinpoint -h[elp]
+      version: pinpoint -v[ersion]
+      usage  : pinpoint -usage
+ 
+ 
+Particulars
+--------------------------------------------------------
+ 
+   Pinpoint creates a binary SPK file for a objects that have constant
+   positions or constant velocities relative to some object in some
+   reference frame. Normally, you will use pinpoint to create an SPK file
+   for landmarks or station locations. PINPOINT can optionally create a
+   frame kernel that specifies topocentric reference frames associated with
+   each object.
+ 
+   To create the SPK file (and FK) you need to create a landmark
+   definitions file (defns in the Usage section). The definitions take the
+   form of KEYWORD = VALUE. The KEYWORD = VALUE format used in the
+   definition file is the same format as used by any text kernel.
+ 
+ 
+Inputs
+ 
+   You list the names of your landmarks via the variable:
+ 
+      SITES
+ 
+   This is an array of character strings giving the names of the various
+   sites. The names should have no embedded spaces and be less than 24
+   characters in length.
+ 
+   For example
+ 
+      SITES = ( 'GOLDSTONE',
+                'CANBERRA',
+                'MADRID'     )
+ 
+   For each NAMEd site you need to supply the following variables
+ 
+      <NAME>_FRAME   =  a reference frame available via NAMFRM
+      <NAME>_IDCODE  =  the idcode to associate with the name.
+ 
+   Following our previous example you would specify:
+ 
+      GOLDSTONE_FRAME  = 'IAU_EARTH'
+      GOLDSTONE_IDCODE =  399001
+ 
+      CANBERRA_FRAME   = 'IAU_EARTH'
+      CANBERRA_IDCODE  =  399002
+ 
+      MADRID_FRAME     = 'IAU_EARTH'
+      MADRID_IDCODE    =  399003
+ 
+   You define the position of the object in the reference frame via one of
+   the following two variables.
+ 
+      <NAME>_XYZ     =  X, Y, and Z components of the object in km.
+ 
+      <NAME>_LATLON  =  Latitude, Longitude, Altitude in "Gaussian"
+                        coordinates in degrees and km.
+ 
+   Again, following up our previous example you might have:
+ 
+      GOLDSTONE_XYZ   = ( -2353.623, -4641.344,  3667.062 )
+      CANBERRA_XYZ    = ( -4451.074,  2676.822, -3691.361 )
+      MADRID_XYZ      = (  4849.091,  -360.177,  4115.114 )
+ 
+   If you supply latitude-longitude form of coordinates you will need to
+   supply a PCK kernel for the bodies on which the sites are located.
+ 
+   You define the velocity of the object in the reference frame via the
+   variable
+ 
+      <NAME>_DXYZ     =  X, Y, and Z velocity components of the
+                         object in meters/year (NOT km/s).
+ 
+   For example, the velocity of the Goldstone complex might be provided as:
+ 
+      GOLDSTONE_DXYZ  = ( -0.0191,  0.0061, -0.0047 )
+ 
+   Velocity data are optional; the velocity is assumed to be zero if no
+   velocity data are provided.
+ 
+   When velocity is provided, an epoch corresponding to the site position
+   must be supplied via the kernel variable
+ 
+      <NAME>_EPOCH    =  TDB epoch at which the site position is
+                         as given by <NAME>_XYZ or <NAME>_LATLON.
+                         The epoch is expressed in the format
+                         used in the leapseconds kernel.  Example:
+ 
+                            @2000-JAN-1/12:00
+ 
+                         The string must contain no embedded blanks
+                         and is not quoted.  The string is assumed
+                         to represent TDB; no TDB marker may be
+                         added.
+ 
+   For example, the epoch of the position of the Goldstone complex might be
+   provided as:
+ 
+      GOLDSTONE_EPOCH  =  @1993-JAN-1/00:00
+ 
+   Unless you specify otherwise the position of the object will be relative
+   to the center of the reference frame. This is almost always what you
+   want. However, occasionally you may want the position to be relative to
+   some object other than the center of the reference frame. To explicitly
+   specify relative position, supply the variable:
+ 
+      <NAME>_CENTER = NAIF ID code of the relative body.
+ 
+   In our example, we want the relative body to be the center of the earth.
+   This is the default, but to explicitly specify it we supply the
+   variables:
+ 
+      GOLDSTONE_CENTER =  399
+      CANBERRA_CENTER  =  399
+      MADRID_CENTER    =  399
+ 
+   You may also define the bounds for the segment associated with a
+   landmark. (Default bounds are from 1950 Jan 1 ET to 2050 Jan 1 ET.)
+ 
+      <NAME>_BOUNDS  = start and stop time in Ephemeris seconds past
+                       J2000.  This is usually most easily input
+                       via the @yyyy-mon-dd-hh:mm:ss format
+ 
+   Example:
+ 
+      GOLDSTONE_BOUNDS = ( @1972-JAN-1, @2100-JAN-1 )
+      CANBERRA_BOUNDS  = ( @1972-JAN-1, @2100-JAN-1 )
+      MADRID_BOUNDS    = ( @1972-JAN-1, @2100-JAN-1 )
+ 
+   If you command PINPOINT to create a topocentric frame kernel, PINPOINT
+   will attempt to specify a topocentric frame for each site listed in the
+   definitions file.
+ 
+   A topocentric frame associated with a site is centered at that site.
+   Elsewhere in this discussion the term ``central body'' refers not to the
+   site at the center of the topocentric frame, but to the extended body on
+   whose surface the site is located.
+ 
+   To create a topocentric frame kernel, you must specify on the command
+   line a PCK file containing radii of reference ellipsoids for each
+   central body. These ellipsoids must actually have equal-length X and Y
+   axes: they may be oblate spheroids, spheres, or prolate spheroids. Note
+   that this is a more stringent requirement than that for making an SPK
+   file alone: if you're not creating a topocentric frame kernel, the
+   reference ellipsoids may be truly triaxial.
+ 
+   You also must specify the orientation of two of the axes of each
+   topocentric frame. PINPOINT will determine the direction of the third
+   axis using the right-hand rule: the transformation from the topocentric
+   frame to the central body's body-fixed, body-centered frame is always a
+   rotation.
+ 
+   For a site located anywhere except on the Z-axis of the body-centered,
+   body-fixed reference frame designated by the
+ 
+      <NAME>_FRAME
+ 
+   keyword, the topocentric frame's axes are specified by associating two
+   of the optionally signed axis names
+ 
+      '-X',  '-Y',  '-Z',  'X',  'Y',  'Z'
+ 
+   with the local zenith (``up'' direction) and the North direction. This
+   is done via the assignments
+ 
+      <NAME>_UP    = <up_axis>
+      <NAME>_NORTH = <North_axis>
+ 
+   Positive directions may optionally be prefixed with plus signs (+).
+ 
+   Example:
+ 
+   To create a frame centered at GOLDSTONE, with the Z axis pointing toward
+   the zenith and the X axis pointing North, use the assignments:
+ 
+      GOLDSTONE_UP    =  'Z'
+      GOLDSTONE_NORTH =  'X'
+ 
+   Example:
+ 
+   To create a frame centered at HUYGENS, with the -Z axis pointing toward
+   the zenith and the X axis pointing North, use the assignments:
+ 
+      HUYGENS_UP    =  '-Z'
+      HUYGENS_NORTH =  'X'
+ 
+   Since the direction ``North'' is not defined on the Z axis of a
+   body-fixed, body-centered frame, for sites on the Z axis, the
+   topocentric axis pointing in the direction of the prime meridian is
+   specified instead; this is accomplished via the assignment:
+ 
+      <NAME>_PRIME = <axis>
+ 
+   Example:
+ 
+      SANTAS_HOME_UP    =  'Z'
+      SANTAS_HOME_PRIME =  'X'
+ 
+   By default PINPOINT will create topocentric frame specifications using
+   automatically generated frame names and frame ID codes. Default frame
+   names have the form
+ 
+      <NAME>_TOPO
+ 
+   and default frame ID codes are generated by adding 1000000 to the body
+   ID codes of the respective sites, for example:
+ 
+      GOLDSTONE_TOPO
+      1399001
+ 
+   These defaults can be overridden using the assignments:
+ 
+      <NAME>_TOPO_FRAME = <frame name>
+      <NAME>_TOPO_ID    = <frame ID>
+ 
+   Example:
+ 
+      GOLDSTONE_TOPO_FRAME = 'GOLDSTONE_LOCAL_LEVEL'
+      GOLDSTONE_TOPO_ID    = -1399001
+ 
+   For each site having velocity data, PINPOINT will by default create a
+   topocentric frame centered at the location of that site at the epoch
+   specified by the keyword
+ 
+      <NAME>_EPOCH
+ 
+   To specify a separate epoch for a topocentric frame specification, use
+   the assignment
+ 
+      <NAME>_TOPO_EPOCH = <epoch>
+ 
+   The epoch on the right hand side must follow the same time format used
+   for other epoch specifications (see discussion above).
+ 
+   Example:
+ 
+      GOLDSTONE_TOPO_EPOCH = @2005-JUL-15
+ 
+ 
+Examples
+--------------------------------------------------------
+ 
+ 
+DSS 12 and DSS 13 Locations
+ 
+   The following definitions file can be used to create an SPK containing
+   locations of the DSS 12 and DSS 13:
+ 
+ 
+      This paragraph is placeholder comments accompanying an example
+      PINPOINT definitions file. These comments along with the actual
+      definitions from the section below will be copied into the
+      comment area of the output SPK file. In real applications a set
+      of detailed comments describing the origin, accuracy,
+      applicability, etc. of the data below as well as the producer
+      contact information should be provided instead of these
+      ``placeholder comments'' to ensure the SPK's
+      use-ability/trace-ability in the future.
+ 
+      \begindata
+ 
+         SITES         = ( 'DSS-12',
+                           'DSS-13' )
+ 
+         DSS-12_CENTER = 399
+         DSS-12_FRAME  = 'EARTH_FIXED'
+         DSS-12_IDCODE = 399012
+         DSS-12_XYZ    = ( -2350.443812, -4651.980837, +3665.630988 )
+ 
+         DSS-13_CENTER = 399
+         DSS-13_FRAME  = 'EARTH_FIXED'
+         DSS-13_IDCODE = 399013
+         DSS-13_XYZ    = ( -2351.112452, -4655.530771, +3660.912823 )
+ 
+      \begintext
+ 
+   Since XYZ-style position definition is used in the file, PCK file name
+   does not have to be provided on the command line and PINPOINT can be run
+   with just two command line arguments:
+ 
+      > pinpoint -def pinpoint_ex1.defs -spk dss_12_13.bsp
+ 
+   To create a frame kernel for these sites that specifies topocentric
+   frames whose Z axes point toward the zenith and whose X axes point
+   North, extend the inputs above as follows:
+ 
+      \begindata
+ 
+         SITES         = ( 'DSS-12',
+                           'DSS-13' )
+ 
+         DSS-12_CENTER = 399
+         DSS-12_FRAME  = 'EARTH_FIXED'
+         DSS-12_IDCODE = 399012
+         DSS-12_XYZ    = ( -2350.443812, -4651.980837, +3665.630988 )
+         DSS-12_UP     = 'Z'
+         DSS-12_NORTH  = 'X'
+ 
+         DSS-13_CENTER = 399
+         DSS-13_FRAME  = 'EARTH_FIXED'
+         DSS-13_IDCODE = 399013
+         DSS-13_XYZ    = ( -2351.112452, -4655.530771, +3660.912823 )
+         DSS-13_UP     = 'Z'
+         DSS-13_NORTH  = 'X'
+ 
+      \begintext
+ 
+   The command required to run PINPOINT must then specify both an input PCK
+   file and the name of the FK to create, for example:
+ 
+      > pinpoint -def pinpoint_ex1.defs \
+                 -pck pck00008.tpc      \
+                 -spk dss_12_13.bsp     \
+                 -fk  dss_12_13.tf
+ 
+ 
+MER-A Landing Site EP55A2 Location
+ 
+   The following definitions file can be used to create an SPK containing
+   location of the MER-A landing site EP55A2 (areographic coordinates: Lon
+   = 175.298 degrees East, Lat = -14.806408 degrees North, Alt w.r.t. IAU
+   2000 Mars ellipsoid = -2.595 km):
+ 
+ 
+      This paragraph is placeholder comments accompanying an example
+      PINPOINT definitions file. These comments along with the actual
+      definitions from the section below will be copied into the
+      comment area of the output SPK file. In real applications a set
+      of detailed comments describing the origin, accuracy,
+      applicability, etc. of the data below as well as the producer
+      contact information should be provided instead of these
+      ``placeholder comments'' to ensure the SPK's
+      use-ability/trace-ability in the future.
+ 
+      \begindata
+ 
+         SITES     = ( 'LS' )
+ 
+         LS_CENTER = 499
+         LS_FRAME  = 'IAU_MARS'
+         LS_IDCODE = -253900
+         LS_LATLON = ( -14.806408 175.298000 -2.595 )
+         LS_BOUNDS = ( @2001-JAN-01, @2100-JAN-01 )
+ 
+      \begintext
+ 
+   Since the position is given as LON/LAT, a PCK file name should be
+   provided on the command line along with the definitions and spk file
+   names:
+ 
+      > pinpoint -def pinpoint_ex2.defs \
+                 -spk mera_EP55A2.bsp   \
+                 -pck mars_iau2000_v0.tpc
+ 

@@ -131,7 +131,7 @@
          <A HREF="#Example: Roll-Celestial Spacecraft Frame">Example: Roll-Celestial Spacecraft Frame</A>
       <A HREF="#Examples of Mean Equator and Equinox of Date Frames">Examples of Mean Equator and Equinox of Date Frames</A>
          <A HREF="#Earth Mean Equator and Equinox of Date Frames">Earth Mean Equator and Equinox of Date Frames</A>
-      <A HREF="#Examples of a True Equator and Equinox of Date Frames">Examples of a True Equator and Equinox of Date Frames</A>
+      <A HREF="#Examples of True Equator and Equinox of Date Frames">Examples of True Equator and Equinox of Date Frames</A>
       <A HREF="#Example of a Mean Ecliptic and Equinox of Date Frame">Example of a Mean Ecliptic and Equinox of Date Frame</A>
       <A HREF="#Example of an Euler Frame">Example of an Euler Frame</A>
 
@@ -144,7 +144,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Reference Frames
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2009 APR 08 by B. V. Semenov.
+   Last revised on 2010 JUN 03 by B. V. Semenov.
 <P>
  
 <BR><BR>
@@ -505,7 +505,7 @@ associated with dynamic frames is 5.
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Selecting a Name
 </H3><P><BR><BR>
-   The name chosen for a frame must no exceed 26 characters taken from the
+   The name chosen for a frame must not exceed 26 characters taken from the
    set including uppercase letters, numbers, underscore, and plus and minus
    signs. It should have some mnemonic value so that users can recognize
    what the name means. Finally, it should not be the name of one of the
@@ -524,15 +524,16 @@ associated with dynamic frames is 5.
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Selecting a Frame ID
 </H3><P><BR><BR>
-   What you choose for a frame ID depends upon the class of the frame. If
-   the class is CK, you may use the same ID as you use for the CLASS_ID. If
-   the frame is a PCK frame and you are working without consultation with
-   NAIF, select an integer in the range from 1400000 to 2000000. In the
-   previous example, we selected the Frame ID to be 1234567. (Since our
-   example frame is of class 3, a CK frame, we would normally use the same
-   number for the frame ID as we used for the class ID. However, in this
-   example, we have chosen a different value to illustrate the connection
-   between the frame ID and the variables needed to define the frame.)
+   What you choose for a frame ID depends upon the class of the frame.
+<P>
+ 
+   If the class is CK, you may use the same ID as you use for the CLASS_ID.
+   In the previous example, we selected the Frame ID to be 1234567. (Since
+   our example frame above is of class 3, a CK frame, we would normally use
+   the same number for the frame ID as we used for the class ID. However,
+   in this example, we have chosen a different value to illustrate the
+   connection between the frame ID and the variables needed to define the
+   frame.)
 <P>
  
    For TK frames, the frame and class IDs must be identical. For TK frames
@@ -546,6 +547,11 @@ associated with dynamic frames is 5.
    landing site, both frame ID and class ID are based on the ID of the
    lander (for example frame and class ID of -222999 would be the natural
    choice for the lander with ID -222.)
+<P>
+ 
+   If the frame is a PCK frame or a dynamic frame and you are working
+   without consultation with NAIF, select an integer in the range from
+   1400000 to 2000000.
 <P>
  
 <BR><BR>
@@ -599,7 +605,9 @@ associated with dynamic frames is 5.
 <P>
  
    If your frame is a PCK class frame the CLASS_ID is the ID code for the
-   body described by the PCK file.
+   body for which rotation constants are provided in the text PCK file or
+   the ID associated with the orientation data provided in the binary PCK
+   file.
 <P>
  
    If your frame is a CK class frame, the CLASS_ID is the ID code used in
@@ -799,11 +807,11 @@ associated with dynamic frames is 5.
 <PRE>
    \begindata
  
-      FRAME_EME2000         = 2000000
-      FRAME_2000000_NAME    = 'EME2000'
-      FRAME_2000000_CLASS   = 1
-      FRAME_2000000_CENTER  = 0
-      FRAME_2000000_CLASSID = 1
+      FRAME_EME2000          = 2000000
+      FRAME_2000000_NAME     = 'EME2000'
+      FRAME_2000000_CLASS    = 1
+      FRAME_2000000_CENTER   = 0
+      FRAME_2000000_CLASS_ID = 1
  
    \begintext
 </PRE>
@@ -3310,6 +3318,7 @@ are likely to have at best single precision validity.
    IAU_ATLAS
    IAU_BELINDA
    IAU_BIANCA
+   IAU_BORRELLY
    IAU_CALLIRRHOE
    IAU_CALLISTO
    IAU_CALYPSO
@@ -3341,6 +3350,7 @@ are likely to have at best single precision validity.
    IAU_IO
    IAU_IOCASTE
    IAU_ISONOE
+   IAU_ITOKAWA
    IAU_JANUS
    IAU_JULIET
    IAU_JUPITER
@@ -3378,6 +3388,7 @@ are likely to have at best single precision validity.
    IAU_SUN
    IAU_TAYGETE
    IAU_TELESTO
+   IAU_TEMPEL_1
    IAU_TETHYS
    IAU_THALASSA
    IAU_THEBE
@@ -3388,6 +3399,7 @@ are likely to have at best single precision validity.
    IAU_UMBRIEL
    IAU_URANUS
    IAU_VENUS
+   IAU_VESTA
 </PRE>
 <BR><BR>
 <A NAME="Appendix. High Precision Earth Fixed Frames"></A>
@@ -3462,9 +3474,9 @@ are likely to have at best single precision validity.
 <P>
  
 <PRE>
-   FRAME_&lt;DSN Frame-ID&gt;_CENTER  = 399
-   FRAME_&lt;DSN Frame-ID&gt;_CLASS   = 2
-   FRAME_&lt;DSN Frame-ID&gt;_CLASSID = &lt;DSN Frame-ID  - 10000&gt;
+   FRAME_&lt;DSN Frame-ID&gt;_CENTER   = 399
+   FRAME_&lt;DSN Frame-ID&gt;_CLASS    = 2
+   FRAME_&lt;DSN Frame-ID&gt;_CLASS_ID = &lt;DSN Frame-ID  - 10000&gt;
 </PRE>
    You may supply these values if you like, but they have no effect on the
    frame subsystem's recognition and interpretation of the frame with the
@@ -3982,7 +3994,7 @@ the name of the spacecraft<BR>
    FRAME_&lt;frame_ID&gt;_DEF_STYLE      = 'PARAMETERIZED'
    FRAME_&lt;frame_ID&gt;_FAMILY         = 'TWO-VECTOR'
    FRAME_&lt;frame_ID&gt;_PRI_AXIS       = 'Z'
-   FRAME_&lt;frame_ID&gt;_PRI_VECTOR_DEF = 'OBSEVER_TARGET_POSITION'
+   FRAME_&lt;frame_ID&gt;_PRI_VECTOR_DEF = 'OBSERVER_TARGET_POSITION'
    FRAME_&lt;frame_ID&gt;_PRI_OBSERVER   = &lt;spacecraft_ID/name&gt;
    FRAME_&lt;frame_ID&gt;_PRI_TARGET     = 'EARTH'
    FRAME_&lt;frame_ID&gt;_PRI_ABCORR     = 'NONE'
@@ -4057,9 +4069,9 @@ the name of the spacecraft<BR>
    FRAME_&lt;frame_ID&gt;_FREEZE_EPOCH  = @1949-DEC-31/22:09:46.861901
 </PRE>
 <BR><BR>
-<A NAME="Examples of a True Equator and Equinox of Date Frames"></A>
+<A NAME="Examples of True Equator and Equinox of Date Frames"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
-<H2> Examples of a True Equator and Equinox of Date Frames
+<H2> Examples of True Equator and Equinox of Date Frames
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
    Definition of the Earth True Equator and Equinox of Date frame:
 <P>

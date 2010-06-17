@@ -17,7 +17,7 @@
 
 /* $ Abstract */
 
-/*     Transpose a matrix of arbitrary size (in place, the matrix */
+/*     Transpose a matrix of arbitrary size (the matrix */
 /*     need not be square). */
 
 /* $ Disclaimer */
@@ -61,7 +61,7 @@
 /*     MATRIX     I   Matrix to be transposed. */
 /*     NROW       I   Number of rows of input matrix M1. */
 /*     NCOL       I   Number of columns of input matrix M1. */
-/*     XPOSEM     O   Transposed matrix (XPOSEM can overwrite MATRIX). */
+/*     XPOSEM     O   Transposed matrix. */
 
 /* $ Detailed_Input */
 
@@ -73,9 +73,20 @@
 
 /* $ Detailed_Output */
 
-/*     XPOSEM     O   Transposed matrix (XPOSEM can overwrite MATRIX). */
+/*     XPOSEM     O   Transposed matrix. */
 
 /* $ Parameters */
+
+/*     None. */
+
+/* $ Exceptions */
+
+/*     Error Free. */
+
+/*     1) If either NROW or NCOL is less than or equal to zero, no action */
+/*        is taken. The routine simply returns. */
+
+/* $ Files */
 
 /*     None. */
 
@@ -164,14 +175,7 @@
 
 /*     None. */
 
-/* $ Exceptions */
-
-/*     Error Free. */
-
-/*     1) If either NROW or NCOL is less than or equal to zero, no action */
-/*        is taken. The routine simply returns. */
-
-/* $ Files */
+/* $ Literature_References */
 
 /*     None. */
 
@@ -180,11 +184,12 @@
 /*     N.J. Bachman    (JPL) */
 /*     W.L. Taber      (JPL) */
 
-/* $ Literature_References */
-
-/*     None. */
-
 /* $ Version */
+
+/* -    SPICELIB Version 1.2.3, 22-APR-2010 (NJB) */
+
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
 /* -    SPICELIB Version 1.2.2, 4-MAY-1993 (HAN) */
 

@@ -43,79 +43,82 @@
 
 /* $ Keywords */
 
-/*      VECTOR */
+/*     VECTOR */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*       V1        I     First vector to be added. */
-/*       V2        I     Second vector to be added. */
-/*       VOUT      O     Sum vector, V1 + V2. */
-/*                       VOUT can overwrite either V1 or V2. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     V1        I     First vector to be added. */
+/*     V2        I     Second vector to be added. */
+/*     VOUT      O     Sum vector, V1 + V2. */
 
 /* $ Detailed_Input */
 
-/*      V1      This may be any 3-element vector. */
+/*     V1      This may be any 3-element vector. */
 
-/*      V2      Likewise. */
+/*     V2      Likewise. */
 
 /* $ Detailed_Output */
 
-/*      VOUT   This is vector sum of V1 and V2. VOUT may overwrite either */
-/*             V1 or V2. */
+/*     VOUT   This is vector sum of V1 and V2. */
 
 /* $ Parameters */
 
 /*     None. */
 
-/* $ Particulars */
-
-/*      This routine simply performs addition between components of V1 */
-/*      and V2.  No checking is performed to determine whether floating */
-/*      point overflow has occurred. */
-
-/* $ Examples */
-
-/*      The following table shows the output VOUT as a function of the */
-/*      the input V1 and V2 from the subroutine VADD. */
-
-/*      V1                  V2              ---> VOUT */
-/*      --------------      --------------       -------------- */
-/*      (1.0, 2.0, 3.0)     (4.0, 5.0, 6.0)      (5.0, 7.0, 9.0) */
-/*      (1D-7,1D23,0)       (1D24, 1D23, 0.0)    (1D24,2D23,0.0) */
-
-/* $ Restrictions */
-
-/*      The user is required to determine that the magnitude each */
-/*      component of the vectors is within the appropriate range so as */
-/*      not to cause floating point overflow. */
-
 /* $ Exceptions */
 
-/*      Error free. */
+/*     Error free. */
 
 /* $ Files */
 
-/*      None. */
+/*     None. */
 
-/* $ Author_and_Institution */
+/* $ Particulars */
 
-/*      W.M. Owen       (JPL) */
+/*     This routine simply performs addition between components of V1 */
+/*     and V2.  No checking is performed to determine whether floating */
+/*     point overflow has occurred. */
+
+/* $ Examples */
+
+/*     The following table shows the output VOUT as a function of the */
+/*     the input V1 and V2 from the subroutine VADD. */
+
+/*     V1                  V2              ---> VOUT */
+/*     --------------      --------------       -------------- */
+/*     (1.0, 2.0, 3.0)     (4.0, 5.0, 6.0)      (5.0, 7.0, 9.0) */
+/*     (1D-7,1D23,0)       (1D24, 1D23, 0.0)    (1D24,2D23,0.0) */
+
+/* $ Restrictions */
+
+/*     The user is required to determine that the magnitude each */
+/*     component of the vectors is within the appropriate range so as */
+/*     not to cause floating point overflow. */
 
 /* $ Literature_References */
 
-/*      None. */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     W.M. Owen       (JPL) */
 
 /* $ Version */
 
-/* -     SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+/* -    SPICELIB Version 1.0.2, 22-APR-2010 (NJB) */
 
-/*         Comment section for permuted index source lines was added */
-/*         following the header. */
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
-/* -     SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
+/* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
+
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
 
 /* -& */
 /* $ Index_Entries */
@@ -126,7 +129,6 @@
     vout[0] = v1[0] + v2[0];
     vout[1] = v1[1] + v2[1];
     vout[2] = v1[2] + v2[2];
-
     return 0;
 } /* vadd_ */
 

@@ -674,6 +674,10 @@ static integer c__6 = 6;
 
 /* $ Version */
 
+/* -    SPICELIB Version 3.0.3, 18-MAY-2010 (BVS) */
+
+/*        Index lines now state that this routine is deprecated. */
+
 /* -    SPICELIB Version 3.0.2, 08-JAN-2008 (NJB) */
 
 /*        The Abstract section of the header was updated to */
@@ -728,9 +732,9 @@ static integer c__6 = 6;
 /* -& */
 /* $ Index_Entries */
 
-/*     low-level aberration correction */
-/*     apparent state from spk file */
-/*     get apparent state */
+/*     DEPRECATED low-level aberration correction */
+/*     DEPRECATED apparent state from spk file */
+/*     DEPRECATED get apparent state */
 
 /* -& */
 /* $ Revisions */

@@ -249,7 +249,10 @@
  
   11)  If nrec, the number of pointing records, is less than or 
        equal to 0, the error SPICE(INVALIDNUMRECS) is signaled. 
- </PRE>
+ 
+  12)  If any quaternion has magnitude zero, the error
+       SPICE(ZEROQUATERNION) is signaled.
+</PRE>
 <h4><a name="Files">Files</a></h4>
 <PRE>
  
@@ -535,6 +538,12 @@
 <h4><a name="Version">Version</a></h4>
 <PRE>
  
+   -CSPICE Version 2.0.0, 01-JUN-2010 (NJB)
+
+      The check for non-unit quaternions has been replaced
+      with a check for zero-length quaternions. (The
+      implementation of the check is located in ckw02_.)
+
    -CSPICE Version 1.2.1, 27-FEB-2008 (NJB)
 
       Updated header; added information about SPICE 
@@ -568,7 +577,7 @@
   </tbody>
 </table>
 
-   <pre>Thu Apr 16 08:57:31 2009</pre>
+   <pre>Wed Jun  9 13:05:19 2010</pre>
 
 </body>
 </html>

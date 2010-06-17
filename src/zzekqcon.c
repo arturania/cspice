@@ -484,6 +484,76 @@
 /*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
 
 
+/*     Include Section:  EK Operator Codes */
+
+/*        ekopcd.inc  Version 1  30-DEC-1994 (NJB) */
+
+
+/*     Within the EK system, operators used in EK queries are */
+/*     represented by integer codes.  The codes and their meanings are */
+/*     listed below. */
+
+/*     Relational expressions in EK queries have the form */
+
+/*        <column name> <operator> <value> */
+
+/*     For columns containing numeric values, the operators */
+
+/*        EQ,  GE,  GT,  LE,  LT,  NE */
+
+/*     may be used; these operators have the same meanings as their */
+/*     Fortran counterparts.  For columns containing character values, */
+/*     the list of allowed operators includes those in the above list, */
+/*     and in addition includes the operators */
+
+/*        LIKE,  UNLIKE */
+
+/*     which are used to compare strings to a template.  In the character */
+/*     case, the meanings of the parameters */
+
+/*        GE,  GT,  LE,  LT */
+
+/*     match those of the Fortran lexical functions */
+
+/*        LGE, LGT, LLE, LLT */
+
+
+/*     The additional unary operators */
+
+/*        ISNULL, NOTNUL */
+
+/*     are used to test whether a value of any type is null. */
+
+
+
+/*     End Include Section:  EK Operator Codes */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+
 /*     Include Section:  EK Data Types */
 
 /*        ektype.inc Version 1  27-DEC-1994 (NJB) */
@@ -633,12 +703,12 @@
 /*         will not be modified. */
 
 /*     2)  If the input query has not been semantically checked, the */
-/*         error SPICE(NOTSEMCHECKED) will be signalled.  The outputs */
+/*         error SPICE(NOTSEMCHECKED) will be signaled.  The outputs */
 /*         will not be modified. */
 
 /*     3)  If the index N is less than 1 or greater than the number of */
 /*         constraints in the query, the error SPICE(INVALIDINDEX) */
-/*         will be signalled.  The outputs */
+/*         will be signaled.  The outputs */
 /*         will not be modified. */
 
 /* $ Files */
@@ -670,6 +740,13 @@
 /*     N.J. Bachman       (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.0, 29-APR-2009 (NJB) */
+
+/*        Bug fix: this routine now does not attempt to */
+/*        read constraint RHS value parameters from the */
+/*        encoded query when the RHS value is NULL, as */
+/*        indicated by the opcode. */
 
 /* -    Beta Version 1.0.0, 17-OCT-1995 (NJB) */
 
@@ -762,28 +839,46 @@
 /*        The constraint compares a column and a value.  Set the */
 /*        appropriate scalar output, and clear out the other outputs. */
 
-	*dtype = eqryi[base + 20];
-	if (*dtype == 1) {
-	    *cbeg = eqryi[base + 23];
-	    *cend = eqryi[base + 24];
-	    *dval = 0.;
-	    *ival = 0;
-	} else if (*dtype == 3) {
-	    ptr = eqryi[base + 23];
-	    *ival = i_dnnt(&eqryd[ptr - 1]);
-	    *dval = 0.;
+	if (*opcode == 9 || *opcode == 10) {
+
+/*           There's no output value; the opcode implies the value NULL. */
+/*           Set the outputs to innocuous defaults. */
+
 	    *cbeg = 1;
 	    *cend = 1;
+	    *dval = 0.;
+	    *ival = 0;
 	} else {
 
-/*           The data type is DP or TIME. */
+/*           This is the normal case; set the scalar output values */
+/*           according to the RHS data type. */
 
-	    ptr = eqryi[base + 23];
-	    *dval = eqryd[ptr - 1];
-	    *ival = 0;
-	    *cbeg = 1;
-	    *cend = 1;
+	    *dtype = eqryi[base + 20];
+	    if (*dtype == 1) {
+		*cbeg = eqryi[base + 23];
+		*cend = eqryi[base + 24];
+		*dval = 0.;
+		*ival = 0;
+	    } else if (*dtype == 3) {
+		ptr = eqryi[base + 23];
+		*ival = i_dnnt(&eqryd[ptr - 1]);
+		*dval = 0.;
+		*cbeg = 1;
+		*cend = 1;
+	    } else {
+
+/*              The data type is DP or TIME. */
+
+		ptr = eqryi[base + 23];
+		*dval = eqryd[ptr - 1];
+		*ival = 0;
+		*cbeg = 1;
+		*cend = 1;
+	    }
 	}
+
+/*        Set the RHS table and column outputs. */
+
 	*rtidx = 0;
 	s_copy(rtname, " ", rtname_len, (ftnlen)1);
 	*rcidx = 0;

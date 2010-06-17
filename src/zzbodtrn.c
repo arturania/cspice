@@ -7,7 +7,7 @@
 
 /* Table of constant values */
 
-static integer c__696 = 696;
+static integer c__713 = 713;
 static integer c__1 = 1;
 
 /* $Procedure ZZBODTRN ( Private --- Body name and code translation ) */
@@ -43,13 +43,13 @@ static integer c__1 = 1;
     static integer index;
     extern /* Subroutine */ int ljust_(char *, char *, ftnlen, ftnlen);
     extern logical failed_(void);
-    static integer defcod[696], defocd[696];
-    static char defnam[36*696];
+    static integer defcod[713], defocd[713];
+    static char defnam[36*713];
     extern integer bschoc_(char *, integer *, char *, integer *, ftnlen, 
 	    ftnlen), bschoi_(integer *, integer *, integer *, integer *);
     static integer kercod[2000], kerocd[2000], codidx;
-    static char defnor[36*696], kernam[36*2000];
-    static integer defonr[696];
+    static char defnor[36*713], kernam[36*2000];
+    static integer defonr[713];
     static logical update;
     static integer defsiz, nwatch, defosz;
     static char tmpnam[36];
@@ -155,7 +155,7 @@ static integer c__1 = 1;
 
 /* $ Version */
 
-/*     SPICELIB 1.0.0 Fri Mar  6 14:46:37 2009 (EDW) */
+/*     SPICELIB 1.0.0 Thu May 20 07:57:58 2010 (EDW) */
 
 
 /*     A script generates this file. Do not edit by hand. */
@@ -1012,7 +1012,7 @@ L_zzbodn2c:
 /*        Populate the initial values of the DEFNAM, DEFNOR, */
 /*        and DEFCOD arrays from the built-in code list. */
 
-	zzbodget_(&c__696, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
+	zzbodget_(&c__713, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
 		ftnlen)36);
 
 /*        ZZBODGET may signal an error if the toolkit is improperly */
@@ -1100,7 +1100,7 @@ L_zzbodn2c:
 
     i__ = bschoc_(tmpnam, &defsiz, defnor, defonr, (ftnlen)36, (ftnlen)36);
     if (i__ != 0) {
-	*code = defcod[(i__1 = i__ - 1) < 696 && 0 <= i__1 ? i__1 : s_rnge(
+	*code = defcod[(i__1 = i__ - 1) < 713 && 0 <= i__1 ? i__1 : s_rnge(
 		"defcod", i__1, "zzbodtrn_", (ftnlen)1059)];
 	*found = TRUE_;
     }
@@ -1348,7 +1348,7 @@ L_zzbodc2n:
 /*        Populate the initial values of the DEFNAM, DEFNOR, */
 /*        and DEFCOD arrays from the built-in code list. */
 
-	zzbodget_(&c__696, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
+	zzbodget_(&c__713, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
 		ftnlen)36);
 
 /*        ZZBODGET may signal an error if the toolkit is improperly */
@@ -1440,7 +1440,7 @@ L_zzbodc2n:
 /*           Only bother performing this check if there are actually */
 /*           mappings present in the kernel pool lists. */
 
-	    ljust_(defnam + ((i__1 = i__ - 1) < 696 && 0 <= i__1 ? i__1 : 
+	    ljust_(defnam + ((i__1 = i__ - 1) < 713 && 0 <= i__1 ? i__1 : 
 		    s_rnge("defnam", i__1, "zzbodtrn_", (ftnlen)1428)) * 36, 
 		    tmpnam, (ftnlen)36, (ftnlen)36);
 	    ucase_(tmpnam, tmpnam, (ftnlen)36, (ftnlen)36);
@@ -1461,7 +1461,7 @@ L_zzbodc2n:
 /*              No match for DEFNAM(I) in the kernel pool mapping list. */
 /*              Return the name. */
 
-		s_copy(name__, defnam + ((i__1 = i__ - 1) < 696 && 0 <= i__1 ?
+		s_copy(name__, defnam + ((i__1 = i__ - 1) < 713 && 0 <= i__1 ?
 			 i__1 : s_rnge("defnam", i__1, "zzbodtrn_", (ftnlen)
 			1450)) * 36, name_len, (ftnlen)36);
 		*found = TRUE_;
@@ -1471,7 +1471,7 @@ L_zzbodc2n:
 /*           No kernel pool mappings were defined, simply return */
 /*           return the name. */
 
-	    s_copy(name__, defnam + ((i__1 = i__ - 1) < 696 && 0 <= i__1 ? 
+	    s_copy(name__, defnam + ((i__1 = i__ - 1) < 713 && 0 <= i__1 ? 
 		    i__1 : s_rnge("defnam", i__1, "zzbodtrn_", (ftnlen)1461)) 
 		    * 36, name_len, (ftnlen)36);
 	    *found = TRUE_;
@@ -1766,7 +1766,7 @@ L_zzboddef:
 /*        Populate the initial values of the DEFNAM, DEFNOR, */
 /*        and DEFCOD arrays from the built-in code list. */
 
-	zzbodget_(&c__696, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
+	zzbodget_(&c__713, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
 		ftnlen)36);
 
 /*        ZZBODGET may signal an error if the toolkit is improperly */
@@ -1857,7 +1857,7 @@ L_zzboddef:
 /*           .TRUE. */
 
 	    bodchg = TRUE_;
-	    s_copy(defnam + ((i__1 = index - 1) < 696 && 0 <= i__1 ? i__1 : 
+	    s_copy(defnam + ((i__1 = index - 1) < 713 && 0 <= i__1 ? i__1 : 
 		    s_rnge("defnam", i__1, "zzbodtrn_", (ftnlen)1872)) * 36, 
 		    name__, (ftnlen)36, name_len);
 	    chkout_("ZZBODDEF", (ftnlen)8);
@@ -1872,19 +1872,19 @@ L_zzboddef:
 
 	i__1 = defsiz;
 	for (i__ = index + 1; i__ <= i__1; ++i__) {
-	    s_copy(defnam + ((i__2 = i__ - 2) < 696 && 0 <= i__2 ? i__2 : 
+	    s_copy(defnam + ((i__2 = i__ - 2) < 713 && 0 <= i__2 ? i__2 : 
 		    s_rnge("defnam", i__2, "zzbodtrn_", (ftnlen)1888)) * 36, 
-		    defnam + ((i__3 = i__ - 1) < 696 && 0 <= i__3 ? i__3 : 
+		    defnam + ((i__3 = i__ - 1) < 713 && 0 <= i__3 ? i__3 : 
 		    s_rnge("defnam", i__3, "zzbodtrn_", (ftnlen)1888)) * 36, (
 		    ftnlen)36, (ftnlen)36);
-	    s_copy(defnor + ((i__2 = i__ - 2) < 696 && 0 <= i__2 ? i__2 : 
+	    s_copy(defnor + ((i__2 = i__ - 2) < 713 && 0 <= i__2 ? i__2 : 
 		    s_rnge("defnor", i__2, "zzbodtrn_", (ftnlen)1889)) * 36, 
-		    defnor + ((i__3 = i__ - 1) < 696 && 0 <= i__3 ? i__3 : 
+		    defnor + ((i__3 = i__ - 1) < 713 && 0 <= i__3 ? i__3 : 
 		    s_rnge("defnor", i__3, "zzbodtrn_", (ftnlen)1889)) * 36, (
 		    ftnlen)36, (ftnlen)36);
-	    defcod[(i__2 = i__ - 2) < 696 && 0 <= i__2 ? i__2 : s_rnge("defc"
+	    defcod[(i__2 = i__ - 2) < 713 && 0 <= i__2 ? i__2 : s_rnge("defc"
 		    "od", i__2, "zzbodtrn_", (ftnlen)1890)] = defcod[(i__3 = 
-		    i__ - 1) < 696 && 0 <= i__3 ? i__3 : s_rnge("defcod", 
+		    i__ - 1) < 713 && 0 <= i__3 ? i__3 : s_rnge("defcod", 
 		    i__3, "zzbodtrn_", (ftnlen)1890)];
 	}
     } else {
@@ -1892,7 +1892,7 @@ L_zzboddef:
 /*        We need to add this entry to the list.  See if there */
 /*        is room; signal an error and return if there is not. */
 
-	if (defsiz >= 696) {
+	if (defsiz >= 713) {
 	    setmsg_("There is no room available for adding '#'  to the list "
 		    "of name/code pairs. The number of names that can be supp"
 		    "orted is #.  This number has been reached. ", (ftnlen)154)
@@ -1918,13 +1918,13 @@ L_zzboddef:
 /*     Now, we need to add the new entry on to the end of the */
 /*     DEFNAM, DEFNOR, and DEFCOD lists. */
 
-    s_copy(defnam + ((i__1 = defsiz - 1) < 696 && 0 <= i__1 ? i__1 : s_rnge(
+    s_copy(defnam + ((i__1 = defsiz - 1) < 713 && 0 <= i__1 ? i__1 : s_rnge(
 	    "defnam", i__1, "zzbodtrn_", (ftnlen)1933)) * 36, name__, (ftnlen)
 	    36, name_len);
-    s_copy(defnor + ((i__1 = defsiz - 1) < 696 && 0 <= i__1 ? i__1 : s_rnge(
+    s_copy(defnor + ((i__1 = defsiz - 1) < 713 && 0 <= i__1 ? i__1 : s_rnge(
 	    "defnor", i__1, "zzbodtrn_", (ftnlen)1934)) * 36, tmpnam, (ftnlen)
 	    36, (ftnlen)36);
-    defcod[(i__1 = defsiz - 1) < 696 && 0 <= i__1 ? i__1 : s_rnge("defcod", 
+    defcod[(i__1 = defsiz - 1) < 713 && 0 <= i__1 ? i__1 : s_rnge("defcod", 
 	    i__1, "zzbodtrn_", (ftnlen)1935)] = *code;
 
 /*     Compute the new order vectors. */
@@ -2075,7 +2075,7 @@ L_zzbodkik:
 /*        Populate the initial values of the DEFNAM, DEFNOR, */
 /*        and DEFCOD arrays from the built-in code list. */
 
-	zzbodget_(&c__696, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
+	zzbodget_(&c__713, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
 		ftnlen)36);
 
 /*        ZZBODGET may signal an error if the toolkit is improperly */
@@ -2250,7 +2250,7 @@ L_zzbodrst:
 /*        Populate the initial values of the DEFNAM, DEFNOR, */
 /*        and DEFCOD arrays from the built-in code list. */
 
-	zzbodget_(&c__696, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
+	zzbodget_(&c__713, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
 		ftnlen)36);
 
 /*        ZZBODGET may signal an error if the toolkit is improperly */
@@ -2297,7 +2297,7 @@ L_zzbodrst:
 /*        had occurred due to the improper specification of MAXE */
 /*        it would have been signaled already to the user. */
 
-	zzbodget_(&c__696, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
+	zzbodget_(&c__713, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
 		ftnlen)36);
 
 /*        Prepare the order vectors. */

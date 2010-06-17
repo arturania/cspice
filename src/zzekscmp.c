@@ -11,9 +11,11 @@ logical zzekscmp_(integer *op, integer *handle, integer *segdsc, integer *
 	doublereal *dval, integer *ival, logical *null, ftnlen cval_len)
 {
     /* System generated locals */
+    integer i__1;
     logical ret_val;
 
     /* Builtin functions */
+    integer i_len(char *, ftnlen);
     logical l_lt(char *, char *, ftnlen, ftnlen), l_gt(char *, char *, ftnlen,
 	     ftnlen);
 
@@ -22,15 +24,17 @@ logical zzekscmp_(integer *op, integer *handle, integer *segdsc, integer *
     doublereal eltd;
     integer elti, unit;
     extern /* Subroutine */ int chkin_(char *, ftnlen);
+    integer cvlen;
     logical found, enull;
-    extern logical matchi_(char *, char *, char *, char *, ftnlen, ftnlen, 
-	    ftnlen, ftnlen);
-    extern /* Subroutine */ int dashlu_(integer *, integer *);
+    extern logical failed_(void), matchi_(char *, char *, char *, char *, 
+	    ftnlen, ftnlen, ftnlen, ftnlen);
+    integer cmplen;
     doublereal numval;
     integer coltyp, strlen;
     extern /* Subroutine */ int setmsg_(char *, ftnlen), errint_(char *, 
 	    integer *, ftnlen), sigerr_(char *, ftnlen), chkout_(char *, 
-	    ftnlen), errfnm_(char *, integer *, ftnlen);
+	    ftnlen), dashlu_(integer *, integer *), errfnm_(char *, integer *,
+	     ftnlen);
     integer rel;
     extern /* Subroutine */ int zzekrsc_(integer *, integer *, integer *, 
 	    integer *, integer *, integer *, char *, logical *, logical *, 
@@ -592,7 +596,7 @@ logical zzekscmp_(integer *op, integer *handle, integer *segdsc, integer *
 /*     HANDLE     I   EK file handle. */
 /*     SEGDSC     I   Segment descriptor. */
 /*     COLDSC     I   Column descriptor. */
-/*     ROW        I   Row containing column entry to compare. */
+/*     ROW        I   ID of row containing column entry to compare. */
 /*     ELTIDX     I   Index of element in array-valued column entry. */
 /*     DTYPE      I   Data type of input value. */
 /*     CVAL       I   Character string to compare with column entry. */
@@ -630,8 +634,11 @@ logical zzekscmp_(integer *op, integer *handle, integer *segdsc, integer *
 /*     COLDSC         is an EK column descriptor for the column */
 /*                    containing the entry to be compared. */
 
-/*     ROW            is the index of the row containing the column entry */
-/*                    to be compared. */
+/*     ROW            is the identifier of the row containing the column */
+/*                    entry to be compared. Note that these identifiers */
+/*                    are polymorphic: their meaning is a function of */
+/*                    the class of column that contains the entry of */
+/*                    interest. */
 
 /*     ELTIDX         is the index of the column entry element to be */
 /*                    compared, if the column is array-valued.  ELTIDX */
@@ -764,6 +771,13 @@ logical zzekscmp_(integer *op, integer *handle, integer *segdsc, integer *
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.2.0, 31-MAY-2009 (NJB) */
+
+/*        Bug fix: routine failed to account for the possibility */
+/*        that scalar string column entries can have unlimited */
+/*        length. Now at most the first MAXSTR characters of such */
+/*        an entry are used in comparisons. */
+
 /* -    SPICELIB Version 1.1.0, 21-DEC-2001 (NJB) */
 
 /*        Bug fix:  routine now indicates "no match" when operator */
@@ -790,8 +804,34 @@ logical zzekscmp_(integer *op, integer *handle, integer *segdsc, integer *
 
     coltyp = coldsc[1];
     if (coltyp == 1) {
+
+/*        We'll use at most the first MAXSTR characters of the input */
+/*        string. */
+
+/* Computing MIN */
+	i__1 = i_len(cval, cval_len);
+	cvlen = min(i__1,1024);
+
+/*        Fetch the column entry to be compared. Note that ROW */
+/*        is a polymorphic identifier. See ZZEKRSC for details */
+/*        on how ROW is used. */
+
 	zzekrsc_(handle, segdsc, coldsc, row, eltidx, &strlen, eltc, &enull, &
 		found, (ftnlen)1024);
+	if (failed_()) {
+
+/*           Don't check out here because we haven't checked in. */
+
+	    return ret_val;
+	}
+
+/*        Let CMPLEN be the string length to use in comparisons. */
+
+	if (found && ! enull) {
+	    cmplen = min(strlen,1024);
+	} else {
+	    cmplen = 0;
+	}
     } else if (coltyp == 2 || coltyp == 4) {
 	zzekrsd_(handle, segdsc, coldsc, row, eltidx, &eltd, &enull, &found);
     } else if (coltyp == 3) {
@@ -859,9 +899,9 @@ logical zzekscmp_(integer *op, integer *handle, integer *segdsc, integer *
 		chkout_("ZZEKSCMP", (ftnlen)8);
 		return ret_val;
 	    }
-	    if (l_lt(eltc, cval, strlen, cval_len)) {
+	    if (l_lt(eltc, cval, cmplen, cvlen)) {
 		rel = 5;
-	    } else if (l_gt(eltc, cval, strlen, cval_len)) {
+	    } else if (l_gt(eltc, cval, cmplen, cvlen)) {
 		rel = 3;
 	    } else {
 		rel = 1;
@@ -957,15 +997,15 @@ logical zzekscmp_(integer *op, integer *handle, integer *segdsc, integer *
 	if (*null || enull) {
 	    ret_val = FALSE_;
 	} else {
-	    ret_val = matchi_(eltc, cval, "*", "%", strlen, cval_len, (ftnlen)
-		    1, (ftnlen)1);
+	    ret_val = matchi_(eltc, cval, "*", "%", cmplen, cvlen, (ftnlen)1, 
+		    (ftnlen)1);
 	}
     } else if (*op == 8 && *dtype == 1) {
 	if (*null || enull) {
 	    ret_val = FALSE_;
 	} else {
-	    ret_val = ! matchi_(eltc, cval, "*", "%", strlen, cval_len, (
-		    ftnlen)1, (ftnlen)1);
+	    ret_val = ! matchi_(eltc, cval, "*", "%", cmplen, cvlen, (ftnlen)
+		    1, (ftnlen)1);
 	}
     } else {
 

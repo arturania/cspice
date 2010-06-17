@@ -78,7 +78,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> PCK Required Reading
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2009 APR 15 by B. V. Semenov.
+   Last revised on 2010 JUN 03 by B. V. Semenov.
 <P>
  
 <BR><BR>
@@ -117,24 +117,27 @@
 <TT>2.</TT> [219] NAIF IDS Required Reading (<a href="../req/naif_ids.html">naif_ids.req</a>).
 <BR><BR></UL>
 <UL>
-<TT>3.</TT> [168] SPK Required Reading (<a href="../req/spk.html">spk.req</a>).
+<TT>3.</TT> [349] FRAMES Required Reading (<a href="../req/frames.html">frames.req</a>).
 <BR><BR></UL>
 <UL>
-<TT>4.</TT> [225] TIME Required Reading (<a href="../req/time.html">time.req</a>).
+<TT>4.</TT> [168] SPK Required Reading (<a href="../req/spk.html">spk.req</a>).
 <BR><BR></UL>
 <UL>
-<TT>5.</TT> [214] ROTATIONS Required Reading (<a href="../req/rotation.html">rotation.req</a>).
+<TT>5.</TT> [225] TIME Required Reading (<a href="../req/time.html">time.req</a>).
 <BR><BR></UL>
 <UL>
-<TT>6.</TT> [167] Double Precision Array Files (DAF) Required Reading (<a href="../req/daf.html">daf.req</a>).
+<TT>6.</TT> [214] ROTATIONS Required Reading (<a href="../req/rotation.html">rotation.req</a>).
 <BR><BR></UL>
 <UL>
-<TT>7.</TT> [195] ``Planetary Geodetic Control Using Satellite Imaging,'' Journal of
+<TT>7.</TT> [167] Double Precision Array Files (DAF) Required Reading (<a href="../req/daf.html">daf.req</a>).
+<BR><BR></UL>
+<UL>
+<TT>8.</TT> [195] ``Planetary Geodetic Control Using Satellite Imaging,'' Journal of
 Geophysical Research, Vol. 84, No. B3, March 10, 1979, by Thomas C.
 Duxbury.
 <BR><BR></UL>
 <UL>
-<TT>8.</TT> ``Report of the IAU/IAG Working Group on Cartographic Coordinates and
+<TT>9.</TT> ``Report of the IAU/IAG Working Group on Cartographic Coordinates and
 Rotational Elements of the Planets and Satellites: 2000.''
 <BR><BR></UL>
 <BR><BR>
@@ -234,10 +237,18 @@ Ganymede is 503.
 <P>
  
    Within CSPICE, reference frames are usually indicated by short character
-   strings, such as 'J2000'. However, CSPICE also has a system of integer
-   codes used by some routines to name reference frames. This coding system
-   is described in detail in [219]. An example of the correspondence of
-   codes and names is shown below:
+   strings, such as 'J2000'. The names of the body-fixed reference frames
+   are usually constructed by adding the prefix ``IAU_'' to the name of the
+   body, for example ``IAU_MARS'' for Mars. The exception from this rule
+   are body-fixed reference frames associated with high-precision
+   orientation provided in binary PCK files. For more details see FRAMES
+   Required Reading, <a href="../req/frames.html">frames.req</a>.
+<P>
+ 
+   However, CSPICE also has a system of integer codes used by some routines
+   to name reference frames. This coding system is described in detail in
+   <a href="../req/frames.html">frames.req</a>. An example of the correspondence of codes and names is shown
+   below:
 <P>
  
 <PRE>
@@ -328,10 +339,14 @@ order. Thus, the frame is right-handed.
    program to retrieve specified data that has been read from one or more
    PCK files. Higher-level access routines can return quantities derived
    from PCK data that has been loaded; the most commonly used such quantity
-   is a matrix that transforms state vectors between inertial and
-   body-fixed planetocentric coordinates. The CSPICE subroutine <a href="../cspice/sxform_c.html">sxform_c</a>
-   can calculate this transformation. The subroutine <a href="../cspice/bodvrd_c.html">bodvrd_c</a> retrieves
-   information on body orientation and body shape.
+   is a matrix that transforms state vectors or position vectors between
+   inertial and body-fixed planetocentric coordinates. The CSPICE
+   subroutines <a href="../cspice/sxform_c.html">sxform_c</a> and <a href="../cspice/pxform_c.html">pxform_c</a> can calculate this transformation. The
+   names of the body-fixed reference frames used as inputs to these
+   routines are usually constructed by adding the prefix ``IAU_'' to the
+   name of the body, for example ``IAU_MARS'' for Mars (for more details
+   see FRAMES Required Reading, <a href="../req/frames.html">frames.req</a>). The subroutine <a href="../cspice/bodvrd_c.html">bodvrd_c</a>
+   retrieves information on body orientation and body shape.
 <P>
  
    For text PCK files, the PCK software can be thought of as ``buffering''
@@ -383,7 +398,7 @@ order. Thus, the frame is right-handed.
 </PRE>
    denotes the matrix that rotates vectors by -W about the ith coordinate
    axis, using the right hand rule. (This notation is explained in detail
-   in [214]).
+   in <a href="../req/rotation.html">rotation.req</a>).
 <P>
  
    In PCK files, the time arguments of functions that define orientation
@@ -564,7 +579,8 @@ order. Thus, the frame is right-handed.
 <PRE>
    SCLK_KERNEL_ID            = ( @01-MAY-1991/16:25 )
 </PRE>
-   See [218] for a complete discussion of the allowed form of assignments.
+   See <a href="../req/kernel.html">kernel.req</a> for a complete discussion of the allowed form of
+   assignments.
 <P>
  
    The effect of an assignment in a text PCK file is to associate values

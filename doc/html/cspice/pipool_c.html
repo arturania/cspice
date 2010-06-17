@@ -126,7 +126,8 @@
 <PRE>
  
    name       is the name of the kernel pool variable to associate 
-              with the values supplied in the array ivals.
+              with the values supplied in the array ivals. 'name' is
+              restricted to a length of 32 characters or less.
  
    n          is the number of values to insert into the kernel pool. 
  
@@ -162,12 +163,14 @@
  
    5) If the input string name has length zero, the error
       SPICE(EMPTYSTRING) will be signaled.
+
+   6) The error 'SPICE(BADVARNAME)' signals if the kernel pool
+      variable name length exceeds 32.
  </PRE>
 <h4><a name="Files">Files</a></h4>
 <PRE>
- 
-   None. 
- </PRE>
+   None.
+</PRE>
 <h4><a name="Particulars">Particulars</a></h4>
 <PRE>
  
@@ -278,6 +281,12 @@
  </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
+   -CSPICE Version 1.2.2,  10-FEB-2010 (EDW)
+
+      Added mention of the restriction on kernel pool variable 
+      names to 32 characters or less.
+      
+      Reordered header sections to conform to SPICE convention.
  
    -CSPICE Version 1.2.1, 17-NOV-2005 (NJB)
 
@@ -302,7 +311,7 @@
   </tbody>
 </table>
 
-   <pre>Thu Apr 16 08:58:49 2009</pre>
+   <pre>Wed Jun  9 13:05:27 2010</pre>
 
 </body>
 </html>

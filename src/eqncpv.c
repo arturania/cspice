@@ -297,10 +297,14 @@ static doublereal c_b13 = 1.;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.2, 18-MAY-2010 (BVS) */
+
+/*        Removed "C$" marker from text in the header. */
+
 /* -    SPICELIB Version 1.0.1, 31-JAN-2008 (BVS) */
 
 /*        Removed non-standard header section heading */
-/*        'C$    Declarations_of_external_functions'. */
+/*        'Declarations_of_external_functions'. */
 
 /* -    SPICELIB Version 1.0.0, 8-JAN-1997 (WLT) */
 

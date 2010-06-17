@@ -25,10 +25,11 @@
 <PRE>
    <A HREF="#What's New in SPICE">What's New in SPICE</A>
    <A HREF="#Introduction">Introduction</A>
-   <A HREF="#Version 63 --- April 2009">Version 63 --- April 2009</A>
+   <A HREF="#Version 64 --- June 2010">Version 64 --- June 2010</A>
       <A HREF="#Environments">Environments</A>
          <A HREF="#New Environments">New Environments</A>
          <A HREF="#Complete List of Supported Environments">Complete List of Supported Environments</A>
+         <A HREF="#Dynamically Linked Executables">Dynamically Linked Executables</A>
          <A HREF="#Lahey Memory Issue Related to File Opening/Closing">Lahey Memory Issue Related to File Opening/Closing</A>
          <A HREF="#Scratch EK File Issue in Icy on PC/Windows">Scratch EK File Issue in Icy on PC/Windows</A>
       <A HREF="#Geometry Finder (GF) Subsystem">Geometry Finder (GF) Subsystem</A>
@@ -36,21 +37,53 @@
          <A HREF="#CSPICE High-Level GF APIs">CSPICE High-Level GF APIs</A>
          <A HREF="#Icy and Mice High-Level GF APIs">Icy and Mice High-Level GF APIs</A>
       <A HREF="#SPICELIB/CSPICE/Icy/Mice">SPICELIB/CSPICE/Icy/Mice</A>
+         <A HREF="#Kernel Pool Variable Name Length Check">Kernel Pool Variable Name Length Check</A>
+         <A HREF="#CK Buffered Segment Limits">CK Buffered Segment Limits</A>
+         <A HREF="#SPK Buffered Segment Limits">SPK Buffered Segment Limits</A>
+         <A HREF="#Kernel Pool Double Precision Buffer Limit">Kernel Pool Double Precision Buffer Limit</A>
+         <A HREF="#SCLK Coefficient Record Limit">SCLK Coefficient Record Limit</A>
+         <A HREF="#CK writer quaternion magnitude check">CK writer quaternion magnitude check</A>
+         <A HREF="#New SPICELIB Interfaces">New SPICELIB Interfaces</A>
+         <A HREF="#New CSPICE Interfaces">New CSPICE Interfaces</A>
+         <A HREF="#New Icy Interfaces">New Icy Interfaces</A>
+         <A HREF="#New Mice Interfaces">New Mice Interfaces</A>
+         <A HREF="#Built-in NAIF ID Code/Name Definitions">Built-in NAIF ID Code/Name Definitions</A>
+      <A HREF="#Documentation">Documentation</A>
+         <A HREF="#Overwriting Input Arguments Not Allowed">Overwriting Input Arguments Not Allowed</A>
+      <A HREF="#Bug Fixes">Bug Fixes</A>
+         <A HREF="#Kernel Pool Watcher Deletion in TKFRAM">Kernel Pool Watcher Deletion in TKFRAM</A>
+         <A HREF="#Frame Change in CKGP">Frame Change in CKGP</A>
+         <A HREF="#ROTGET Dynamic Frame ID">ROTGET Dynamic Frame ID</A>
+         <A HREF="#ZZEKQCON Initialization Error">ZZEKQCON Initialization Error</A>
+         <A HREF="#ZZEKRD03 Memory Violation Error">ZZEKRD03 Memory Violation Error</A>
+         <A HREF="#EK Strings Longer Than 1024 Characters">EK Strings Longer Than 1024 Characters</A>
+         <A HREF="#RETURN Mode Logic in Various Routines">RETURN Mode Logic in Various Routines</A>
+   <A HREF="#Version 63 --- April 2009">Version 63 --- April 2009</A>
+      <A HREF="#Environments0">Environments</A>
+         <A HREF="#New Environments0">New Environments</A>
+         <A HREF="#Complete List of Supported Environments0">Complete List of Supported Environments</A>
+         <A HREF="#Lahey Memory Issue Related to File Opening/Closing0">Lahey Memory Issue Related to File Opening/Closing</A>
+         <A HREF="#Scratch EK File Issue in Icy on PC/Windows0">Scratch EK File Issue in Icy on PC/Windows</A>
+      <A HREF="#Geometry Finder (GF) Subsystem">Geometry Finder (GF) Subsystem</A>
+         <A HREF="#SPICELIB High-Level GF APIs0">SPICELIB High-Level GF APIs</A>
+         <A HREF="#CSPICE High-Level GF APIs0">CSPICE High-Level GF APIs</A>
+         <A HREF="#Icy and Mice High-Level GF APIs0">Icy and Mice High-Level GF APIs</A>
+      <A HREF="#SPICELIB/CSPICE/Icy/Mice0">SPICELIB/CSPICE/Icy/Mice</A>
          <A HREF="#SURFPV/surfpv_c (SPICELIB/CSPICE only)">SURFPV/surfpv_c (SPICELIB/CSPICE only)</A>
          <A HREF="#DVSEP/dvsep_c (SPICELIB/CSPICE only)">DVSEP/dvsep_c (SPICELIB/CSPICE only)</A>
          <A HREF="#GETFOV">GETFOV</A>
          <A HREF="#FURNSH">FURNSH</A>
          <A HREF="#Improved Error Messages from PXFORM/SXFORM">Improved Error Messages from PXFORM/SXFORM</A>
-         <A HREF="#Built-in NAIF ID Code/Name Definitions">Built-in NAIF ID Code/Name Definitions</A>
+         <A HREF="#Built-in NAIF ID Code/Name Definitions0">Built-in NAIF ID Code/Name Definitions</A>
       <A HREF="#Mice (MATLAB interface to CSPICE) Only">Mice (MATLAB interface to CSPICE) Only</A>
          <A HREF="#New Interfaces">New Interfaces</A>
       <A HREF="#New and Updated Applications">New and Updated Applications</A>
          <A HREF="#FRMDIFF">FRMDIFF</A>
          <A HREF="#CKBRIEF">CKBRIEF</A>
-      <A HREF="#Documentation">Documentation</A>
+      <A HREF="#Documentation0">Documentation</A>
          <A HREF="#Language Specific Required Reading Documents">Language Specific Required Reading Documents</A>
          <A HREF="#CKBRIEF User's Guide">CKBRIEF User's Guide</A>
-      <A HREF="#Bug Fixes">Bug Fixes</A>
+      <A HREF="#Bug Fixes0">Bug Fixes</A>
          <A HREF="#SINCPT, SRFXPT">SINCPT, SRFXPT</A>
          <A HREF="#POOL Watchers">POOL Watchers</A>
          <A HREF="#Frame subsystem">Frame subsystem</A>
@@ -59,14 +92,14 @@
          <A HREF="#MKSPK">MKSPK</A>
          <A HREF="#CKBRIEF0">CKBRIEF</A>
    <A HREF="#Version 62 --- March 2008">Version 62 --- March 2008</A>
-      <A HREF="#Environments0">Environments</A>
-         <A HREF="#New Environments0">New Environments</A>
-         <A HREF="#Complete List of Supported Environments0">Complete List of Supported Environments</A>
+      <A HREF="#Environments1">Environments</A>
+         <A HREF="#New Environments1">New Environments</A>
+         <A HREF="#Complete List of Supported Environments1">Complete List of Supported Environments</A>
          <A HREF="#Use of -m32 Option">Use of -m32 Option</A>
-         <A HREF="#Lahey Memory Issue Related to File Opening/Closing0">Lahey Memory Issue Related to File Opening/Closing</A>
-         <A HREF="#Scratch EK File Issue in Icy on PC/Windows0">Scratch EK File Issue in Icy on PC/Windows</A>
+         <A HREF="#Lahey Memory Issue Related to File Opening/Closing1">Lahey Memory Issue Related to File Opening/Closing</A>
+         <A HREF="#Scratch EK File Issue in Icy on PC/Windows1">Scratch EK File Issue in Icy on PC/Windows</A>
       <A HREF="#Mice">Mice</A>
-      <A HREF="#SPICELIB/CSPICE/Icy/Mice0">SPICELIB/CSPICE/Icy/Mice</A>
+      <A HREF="#SPICELIB/CSPICE/Icy/Mice1">SPICELIB/CSPICE/Icy/Mice</A>
          <A HREF="#New ``Surface Intercept'' routine SINCPT">New ``Surface Intercept'' routine SINCPT</A>
          <A HREF="#New ``Illumination Angles'' routine ILUMIN">New ``Illumination Angles'' routine ILUMIN</A>
          <A HREF="#New ``Sub-observer Point'' routine SUBPNT">New ``Sub-observer Point'' routine SUBPNT</A>
@@ -78,10 +111,10 @@
          <A HREF="#New Routine EDTERM">New Routine EDTERM</A>
          <A HREF="#SCLK Buffer Size Increase">SCLK Buffer Size Increase</A>
          <A HREF="#TABs in Text Kernels">TABs in Text Kernels</A>
-         <A HREF="#Built-in NAIF ID Code/Name Definitions0">Built-in NAIF ID Code/Name Definitions</A>
+         <A HREF="#Built-in NAIF ID Code/Name Definitions1">Built-in NAIF ID Code/Name Definitions</A>
       <A HREF="#Icy (IDL interface to CSPICE) Only">Icy (IDL interface to CSPICE) Only</A>
          <A HREF="#New and Updated Interfaces">New and Updated Interfaces</A>
-      <A HREF="#Documentation0">Documentation</A>
+      <A HREF="#Documentation1">Documentation</A>
          <A HREF="#Permutted Index for Icy and Mice">Permutted Index for Icy and Mice</A>
          <A HREF="#BRIEF User's Guide">BRIEF User's Guide</A>
          <A HREF="#Documentation on NAIF Web Server">Documentation on NAIF Web Server</A>
@@ -89,7 +122,7 @@
       <A HREF="#CKBRIEF1">CKBRIEF</A>
       <A HREF="#MKSPK0">MKSPK</A>
       <A HREF="#SUBPT Cookbook">SUBPT Cookbook</A>
-      <A HREF="#Bug Fixes0">Bug Fixes</A>
+      <A HREF="#Bug Fixes1">Bug Fixes</A>
          <A HREF="#EV2LIN">EV2LIN</A>
          <A HREF="#HYPTOF">HYPTOF</A>
          <A HREF="#INELPL">INELPL</A>
@@ -101,14 +134,14 @@
          <A HREF="#Header Updates">Header Updates</A>
    <A HREF="#Version 61 --- December 2006">Version 61 --- December 2006</A>
       <A HREF="#Rules Regarding Use of SPICE Components">Rules Regarding Use of SPICE Components</A>
-      <A HREF="#Environments1">Environments</A>
-         <A HREF="#New Environments1">New Environments</A>
+      <A HREF="#Environments2">Environments</A>
+         <A HREF="#New Environments2">New Environments</A>
          <A HREF="#Deprecated Environments">Deprecated Environments</A>
-         <A HREF="#Complete List of Supported Environments1">Complete List of Supported Environments</A>
+         <A HREF="#Complete List of Supported Environments2">Complete List of Supported Environments</A>
          <A HREF="#Use of -fPIC/-KPIC Option">Use of -fPIC/-KPIC Option</A>
-         <A HREF="#Lahey Memory Issue Related to File Opening/Closing1">Lahey Memory Issue Related to File Opening/Closing</A>
-         <A HREF="#Scratch EK File Issue in Icy on PC/Windows1">Scratch EK File Issue in Icy on PC/Windows</A>
-      <A HREF="#Documentation1">Documentation</A>
+         <A HREF="#Lahey Memory Issue Related to File Opening/Closing2">Lahey Memory Issue Related to File Opening/Closing</A>
+         <A HREF="#Scratch EK File Issue in Icy on PC/Windows2">Scratch EK File Issue in Icy on PC/Windows</A>
+      <A HREF="#Documentation2">Documentation</A>
       <A HREF="#New Applications">New Applications</A>
          <A HREF="#MSOPCK">MSOPCK</A>
          <A HREF="#SPKDIFF">SPKDIFF</A>
@@ -118,12 +151,12 @@
          <A HREF="#DAF-based Kernel Open Routines">DAF-based Kernel Open Routines</A>
          <A HREF="#DAFONW Routine">DAFONW Routine</A>
          <A HREF="#SPKW02, SPKW03, and SPKW05 Routines">SPKW02, SPKW03, and SPKW05 Routines</A>
-         <A HREF="#Built-in NAIF ID Code/Name Definitions1">Built-in NAIF ID Code/Name Definitions</A>
+         <A HREF="#Built-in NAIF ID Code/Name Definitions2">Built-in NAIF ID Code/Name Definitions</A>
       <A HREF="#CSPICE Only">CSPICE Only</A>
          <A HREF="#New Wrappers">New Wrappers</A>
       <A HREF="#Icy (IDL interface to CSPICE) Only">Icy (IDL interface to CSPICE) Only</A>
          <A HREF="#New Interfaces0">New Interfaces</A>
-      <A HREF="#Bug Fixes1">Bug Fixes</A>
+      <A HREF="#Bug Fixes2">Bug Fixes</A>
          <A HREF="#CKE05">CKE05</A>
          <A HREF="#ET2LST">ET2LST</A>
          <A HREF="#UNLOAD">UNLOAD</A>
@@ -133,16 +166,16 @@
          <A HREF="#Icy">Icy</A>
          <A HREF="#MKSPK1">MKSPK</A>
    <A HREF="#Version 60 --- December 2005">Version 60 --- December 2005</A>
-      <A HREF="#Bug Fixes2">Bug Fixes</A>
+      <A HREF="#Bug Fixes3">Bug Fixes</A>
          <A HREF="#Access to High Precision Binary Earth PCK">Access to High Precision Binary Earth PCK</A>
    <A HREF="#Version 59 --- November 2005">Version 59 --- November 2005</A>
       <A HREF="#Rules Regarding Use of SPICE Components0">Rules Regarding Use of SPICE Components</A>
-      <A HREF="#Environments2">Environments</A>
-         <A HREF="#New Environments2">New Environments</A>
+      <A HREF="#Environments3">Environments</A>
+         <A HREF="#New Environments3">New Environments</A>
          <A HREF="#Supported Environments">Supported Environments</A>
          <A HREF="#Optimization for C/Icy environments">Optimization for C/Icy environments</A>
-         <A HREF="#Lahey Memory Issue Related to File Opening/Closing2">Lahey Memory Issue Related to File Opening/Closing</A>
-         <A HREF="#Scratch EK File Issue in Icy on PC/Windows2">Scratch EK File Issue in Icy on PC/Windows</A>
+         <A HREF="#Lahey Memory Issue Related to File Opening/Closing3">Lahey Memory Issue Related to File Opening/Closing</A>
+         <A HREF="#Scratch EK File Issue in Icy on PC/Windows3">Scratch EK File Issue in Icy on PC/Windows</A>
       <A HREF="#SPICELIB/CSPICE/Icy0">SPICELIB/CSPICE/Icy</A>
          <A HREF="#Loading of Non-Native Text Kernels Files">Loading of Non-Native Text Kernels Files</A>
          <A HREF="#Additional Testing">Additional Testing</A>
@@ -150,14 +183,14 @@
          <A HREF="#``In Place'' Routines">``In Place'' Routines</A>
          <A HREF="#SPK Segment Buffer Increase">SPK Segment Buffer Increase</A>
          <A HREF="#EK Buffer Increased">EK Buffer Increased</A>
-         <A HREF="#Built-in NAIF ID Code/Name Definitions2">Built-in NAIF ID Code/Name Definitions</A>
-         <A HREF="#Documentation2">Documentation</A>
+         <A HREF="#Built-in NAIF ID Code/Name Definitions3">Built-in NAIF ID Code/Name Definitions</A>
+         <A HREF="#Documentation3">Documentation</A>
       <A HREF="#CSPICE">CSPICE</A>
          <A HREF="#New Wrappers0">New Wrappers</A>
       <A HREF="#Icy (Interactive Data Language interface to CSPICE)">Icy (Interactive Data Language interface to CSPICE)</A>
          <A HREF="#Vectorization">Vectorization</A>
          <A HREF="#New interfaces">New interfaces</A>
-      <A HREF="#Bug Fixes3">Bug Fixes</A>
+      <A HREF="#Bug Fixes4">Bug Fixes</A>
          <A HREF="#Non-standard Use of Duplicate Arguments in FORTRAN">Non-standard Use of Duplicate Arguments in FORTRAN</A>
          <A HREF="#NEARPT">NEARPT</A>
          <A HREF="#ET2LST0">ET2LST</A>
@@ -167,21 +200,21 @@
          <A HREF="#INSRTC">INSRTC</A>
          <A HREF="#String Parsing Routines">String Parsing Routines</A>
    <A HREF="#Version 58 --- January 2005">Version 58 --- January 2005</A>
-      <A HREF="#Environments3">Environments</A>
+      <A HREF="#Environments4">Environments</A>
       <A HREF="#SPICELIB/CSPICE/Icy1">SPICELIB/CSPICE/Icy</A>
          <A HREF="#Parameterized Dynamic Frames">Parameterized Dynamic Frames</A>
          <A HREF="#CK/SPK Coverage Summary Routines">CK/SPK Coverage Summary Routines</A>
          <A HREF="#Planetographic Coordinate Conversion Routines">Planetographic Coordinate Conversion Routines</A>
          <A HREF="#``L-sub-S'' Solar Longitude Routine">``L-sub-S'' Solar Longitude Routine</A>
-         <A HREF="#Built-in NAIF ID Code/Name Definitions3">Built-in NAIF ID Code/Name Definitions</A>
-         <A HREF="#Documentation3">Documentation</A>
+         <A HREF="#Built-in NAIF ID Code/Name Definitions4">Built-in NAIF ID Code/Name Definitions</A>
+         <A HREF="#Documentation4">Documentation</A>
       <A HREF="#CSPICE0">CSPICE</A>
          <A HREF="#New Wrappers1">New Wrappers</A>
       <A HREF="#Icy (Interactive Data Language interface to CSPICE)">Icy (Interactive Data Language interface to CSPICE)</A>
          <A HREF="#Vectorization0">Vectorization</A>
          <A HREF="#Windows">Windows</A>
          <A HREF="#Other new interfaces">Other new interfaces</A>
-      <A HREF="#Bug Fixes4">Bug Fixes</A>
+      <A HREF="#Bug Fixes5">Bug Fixes</A>
          <A HREF="#MKSPK Processing of TLE">MKSPK Processing of TLE</A>
          <A HREF="#MKSPK Adding Comments When Appending to Existing SPK">MKSPK Adding Comments When Appending to Existing SPK</A>
          <A HREF="#Icy/cspice_getfov">Icy/cspice_getfov</A>
@@ -189,28 +222,28 @@
          <A HREF="#CSPICE/kdata_c Function">CSPICE/kdata_c Function</A>
          <A HREF="#FRINFO/frinfo_c/cspice_frinfo">FRINFO/frinfo_c/cspice_frinfo</A>
    <A HREF="#Version 57 --- March 2004">Version 57 --- March 2004</A>
-      <A HREF="#Environments4">Environments</A>
+      <A HREF="#Environments5">Environments</A>
       <A HREF="#Icy0">Icy</A>
       <A HREF="#SPICELIB/CSPICE">SPICELIB/CSPICE</A>
          <A HREF="#SRFXPT0">SRFXPT</A>
          <A HREF="#Support for Satellite IDs in the Range 10000-99999">Support for Satellite IDs in the Range 10000-99999</A>
          <A HREF="#Detection of Non-native Text Files">Detection of Non-native Text Files</A>
-         <A HREF="#Documentation4">Documentation</A>
-         <A HREF="#Built-in NAIF ID Code/Name Definitions4">Built-in NAIF ID Code/Name Definitions</A>
+         <A HREF="#Documentation5">Documentation</A>
+         <A HREF="#Built-in NAIF ID Code/Name Definitions5">Built-in NAIF ID Code/Name Definitions</A>
       <A HREF="#INSPEKT">INSPEKT</A>
       <A HREF="#TOBIN">TOBIN</A>
    <A HREF="#Version 56 --- August 2003">Version 56 --- August 2003</A>
-      <A HREF="#Environments5">Environments</A>
+      <A HREF="#Environments6">Environments</A>
       <A HREF="#SPICELIB/CSPICE0">SPICELIB/CSPICE</A>
-         <A HREF="#Documentation5">Documentation</A>
-         <A HREF="#Built-in NAIF ID Code/Name Definitions5">Built-in NAIF ID Code/Name Definitions</A>
+         <A HREF="#Documentation6">Documentation</A>
+         <A HREF="#Built-in NAIF ID Code/Name Definitions6">Built-in NAIF ID Code/Name Definitions</A>
       <A HREF="#CHRONOS0">CHRONOS</A>
-      <A HREF="#Bug Fixes5">Bug Fixes</A>
+      <A HREF="#Bug Fixes6">Bug Fixes</A>
          <A HREF="#Reading Files with MAC-OSX Absoft FORTRAN Toolkit">Reading Files with MAC-OSX Absoft FORTRAN Toolkit</A>
          <A HREF="#DAS Scratch Files">DAS Scratch Files</A>
          <A HREF="#Argument Checking in CSPICE Error Handling Functions">Argument Checking in CSPICE Error Handling Functions</A>
    <A HREF="#Version 55 --- March 2003">Version 55 --- March 2003</A>
-      <A HREF="#Environments6">Environments</A>
+      <A HREF="#Environments7">Environments</A>
       <A HREF="#SPICELIB">SPICELIB</A>
          <A HREF="#SPKW01">SPKW01</A>
          <A HREF="#DASCLS">DASCLS</A>
@@ -219,19 +252,19 @@
          <A HREF="#Type 1 SCLK">Type 1 SCLK</A>
       <A HREF="#CSPICE1">CSPICE</A>
          <A HREF="#New CSPICE wrappers">New CSPICE wrappers</A>
-      <A HREF="#Bug Fixes6">Bug Fixes</A>
-         <A HREF="#Built-in NAIF ID Code/Name Definitions6">Built-in NAIF ID Code/Name Definitions</A>
+      <A HREF="#Bug Fixes7">Bug Fixes</A>
+         <A HREF="#Built-in NAIF ID Code/Name Definitions7">Built-in NAIF ID Code/Name Definitions</A>
          <A HREF="#DASCUD">DASCUD</A>
          <A HREF="#OSCELT">OSCELT</A>
          <A HREF="#CKE050">CKE05</A>
          <A HREF="#CKBRIEF3">CKBRIEF</A>
    <A HREF="#Version 54 --- December 2002">Version 54 --- December 2002</A>
       <A HREF="#Mailing Lists">Mailing Lists</A>
-      <A HREF="#Environments7">Environments</A>
+      <A HREF="#Environments8">Environments</A>
       <A HREF="#COOKBOOK Programs">COOKBOOK Programs</A>
       <A HREF="#New Built-in NAIF ID Code/Name Definitions">New Built-in NAIF ID Code/Name Definitions</A>
-      <A HREF="#Documentation6">Documentation</A>
-      <A HREF="#Bug Fixes7">Bug Fixes</A>
+      <A HREF="#Documentation7">Documentation</A>
+      <A HREF="#Bug Fixes8">Bug Fixes</A>
          <A HREF="#Built-in Body-Fixed Frame for Pan">Built-in Body-Fixed Frame for Pan</A>
          <A HREF="#Surface Intercept Routine">Surface Intercept Routine</A>
          <A HREF="#DAS Writer Routines">DAS Writer Routines</A>
@@ -239,7 +272,7 @@
          <A HREF="#Body Name to Associated Frame Conversion Routine">Body Name to Associated Frame Conversion Routine</A>
          <A HREF="#CHRONOS1">CHRONOS</A>
    <A HREF="#Version 53 --- September 2002">Version 53 --- September 2002</A>
-      <A HREF="#Environments8">Environments</A>
+      <A HREF="#Environments9">Environments</A>
       <A HREF="#CSPICE2">CSPICE</A>
          <A HREF="#New CSPICE wrappers for cell, set, and windows routines">New CSPICE wrappers for cell, set, and windows routines</A>
          <A HREF="#New CSPICE wrappers for sorting and searching routines">New CSPICE wrappers for sorting and searching routines</A>
@@ -249,14 +282,14 @@
          <A HREF="#CK Type 5">CK Type 5</A>
       <A HREF="#BRIEF1">BRIEF</A>
       <A HREF="#COOKBOOK">COOKBOOK</A>
-      <A HREF="#Bug Fixes8">Bug Fixes</A>
+      <A HREF="#Bug Fixes9">Bug Fixes</A>
          <A HREF="#ID-to-name Translation">ID-to-name Translation</A>
          <A HREF="#Built-in Body-Fixed Frames">Built-in Body-Fixed Frames</A>
          <A HREF="#Binary architecture consistency check at run-time">Binary architecture consistency check at run-time</A>
          <A HREF="#Long/truncated lines in text kernel files">Long/truncated lines in text kernel files</A>
          <A HREF="#VMS Read-Only Access File Open Failure">VMS Read-Only Access File Open Failure</A>
    <A HREF="#Version 52 --- January 2002">Version 52 --- January 2002</A>
-      <A HREF="#Environments9">Environments</A>
+      <A HREF="#Environments10">Environments</A>
       <A HREF="#SPICELIB1">SPICELIB</A>
          <A HREF="#Run-Time Binary File Format Translation">Run-Time Binary File Format Translation</A>
          <A HREF="#Open File Limit Increase">Open File Limit Increase</A>
@@ -265,7 +298,7 @@
          <A HREF="#Kernel POOL0">Kernel POOL</A>
          <A HREF="#Jacobian routines">Jacobian routines</A>
          <A HREF="#NAIF ID to Object Name Mapping">NAIF ID to Object Name Mapping</A>
-         <A HREF="#Documentation7">Documentation</A>
+         <A HREF="#Documentation8">Documentation</A>
       <A HREF="#CSPICE3">CSPICE</A>
          <A HREF="#New CSPICE wrappers for EK routines">New CSPICE wrappers for EK routines</A>
          <A HREF="#Miscellaneous new CSPICE wrappers">Miscellaneous new CSPICE wrappers</A>
@@ -273,7 +306,7 @@
       <A HREF="#COMMNT">COMMNT</A>
       <A HREF="#MKSPK2">MKSPK</A>
       <A HREF="#VERSION">VERSION</A>
-      <A HREF="#Bug Fixes9">Bug Fixes</A>
+      <A HREF="#Bug Fixes10">Bug Fixes</A>
          <A HREF="#CK, PCK, and SPK segment buffering and selection">CK, PCK, and SPK segment buffering and selection</A>
          <A HREF="#Const-qualification for various CSPICE interfaces">Const-qualification for various CSPICE interfaces</A>
          <A HREF="#CSPICE function gcpool_c fixed">CSPICE function gcpool_c fixed</A>
@@ -291,7 +324,7 @@
          <A HREF="#Miscellaneous">Miscellaneous</A>
       <A HREF="#MKSPK3">MKSPK</A>
       <A HREF="#SPKMERGE">SPKMERGE</A>
-         <A HREF="#Bug Fixes10">Bug Fixes</A>
+         <A HREF="#Bug Fixes11">Bug Fixes</A>
    <A HREF="#Version 50 --- October 1999">Version 50 --- October 1999</A>
       <A HREF="#CSPICE4">CSPICE</A>
       <A HREF="#Additions and Extensions to SPICE routines">Additions and Extensions to SPICE routines</A>
@@ -308,24 +341,24 @@
          <A HREF="#COMMNT0">COMMNT</A>
          <A HREF="#CKBRIEF5">CKBRIEF</A>
          <A HREF="#MKSPK4">MKSPK</A>
-      <A HREF="#Documentation8">Documentation</A>
+      <A HREF="#Documentation9">Documentation</A>
    <A HREF="#Version 49 --- September 1998">Version 49 --- September 1998</A>
    <A HREF="#Version 48 --- May 1998">Version 48 --- May 1998</A>
    <A HREF="#Version 47 --- July 1997">Version 47 --- July 1997</A>
-      <A HREF="#Documentation9">Documentation</A>
+      <A HREF="#Documentation10">Documentation</A>
       <A HREF="#Software">Software</A>
          <A HREF="#SPK0">SPK</A>
          <A HREF="#Frames">Frames</A>
          <A HREF="#Time">Time</A>
-         <A HREF="#Bug Fixes11">Bug Fixes</A>
+         <A HREF="#Bug Fixes12">Bug Fixes</A>
    <A HREF="#Version 46 --- January 1997">Version 46 --- January 1997</A>
-         <A HREF="#Documentation10">Documentation</A>
+         <A HREF="#Documentation11">Documentation</A>
          <A HREF="#Time0">Time</A>
    <A HREF="#Version 45 --- October 1996">Version 45 --- October 1996</A>
    <A HREF="#Version 44 --- August 1996">Version 44 --- August 1996</A>
          <A HREF="#SPK Subsystem">SPK Subsystem</A>
          <A HREF="#Inspekt">Inspekt</A>
-         <A HREF="#Bug Fixes12">Bug Fixes</A>
+         <A HREF="#Bug Fixes13">Bug Fixes</A>
    <A HREF="#Version 43 --- May 1996">Version 43 --- May 1996</A>
          <A HREF="#Brief">Brief</A>
          <A HREF="#Star Catalogs.">Star Catalogs.</A>
@@ -362,34 +395,35 @@
 <P>
  
 <PRE>
-   Version 63
-   Version 62
-   Version 61
-   Version 60
-   Version 59
-   Version 58
-   Version 57
-   Version 56
-   Version 55
-   Version 54
-   Version 53
-   Version 52
-   Version 51
-   Version 50
-   Version 49
-   Version 48
-   Version 47
-   Version 46
-   Version 45
-   Version 44
-   Version 43
-   Version 42
-   Version 41
+   Version 64 --- June 2010
+   Version 63 --- April 2009
+   Version 62 --- March 2008
+   Version 61 --- December 2006
+   Version 60 --- December 2005
+   Version 59 --- November 2005
+   Version 58 --- January 2005
+   Version 57 --- March 2004
+   Version 56 --- August 2003
+   Version 55 --- March 2003
+   Version 54 --- December 2002
+   Version 53 --- September 2002
+   Version 52 --- January 2002
+   Version 51 --- April 2000
+   Version 50 --- October 1999
+   Version 49 --- September 1998
+   Version 48 --- May 1998
+   Version 47 --- July 1997
+   Version 46 --- January 1997
+   Version 45 --- October 1996
+   Version 44 --- August 1996
+   Version 43 --- May 1996
+   Version 42 --- December 1995
+   Version 41 --- October 1995
 </PRE>
 <BR><BR>
-<A NAME="Version 63 --- April 2009"></A>
+<A NAME="Version 64 --- June 2010"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
-<H1> Version 63 --- April 2009
+<H1> Version 64 --- June 2010
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
 <BR><BR>
 <A NAME="Environments"></A>
@@ -398,6 +432,658 @@
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
 <BR><BR>
 <A NAME="New Environments"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> New Environments
+</H3><P><BR><BR>
+   The SPICE Toolkit is now officially supported on these new environments:
+<P>
+ 
+<PRE>
+   FORTRAN Toolkit:
+ 
+      Mac/Intel    OS-X          GFORTRAN / 64bit
+      Mac/Intel    OS-X          Intel FORTRAN / 64bit
+      PC           Linux         GFORTRAN / 64bit
+      PC           Windows       Intel FORTRAN / 64bit
+      Sun/Intel    Solaris       SUN FORTRAN / 32bit
+ 
+   CSPICE:
+ 
+      Mac/Intel    OS-X          Apple C / 64bit
+      PC           Windows       MS Visual C / 64bit
+      Sun          Solaris       SUN C / 64bit
+      Sun/Intel    Solaris       SUN C / 32bit
+      Sun/Intel    Solaris       SUN C / 64bit
+ 
+   Icy:
+ 
+      Mac/Intel    OS-X          Apple C / IDL 7.x / 64bit
+      PC           Windows       MS Visual C / IDL 7.x / 64bit
+ 
+   Mice:
+ 
+      Mac/Intel    OS-X          Apple C / MATLAB 7.x / 64bit
+      PC           Windows       MS Visual C / MATLAB 7.x / 64bit
+      Sun/Intel    Solaris       SUN C / MATLAB 7.x / 64bit
+ 
+</PRE>
+<BR><BR>
+<A NAME="Complete List of Supported Environments"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Complete List of Supported Environments
+</H3><P><BR><BR>
+   This is the complete list of environments on which the N0064 version of
+   the SPICE Toolkit is supported:
+<P>
+ 
+<PRE>
+   FORTRAN Toolkit:
+ 
+      Mac/Intel    OS-X          GFORTRAN / 32bit
+      Mac/Intel    OS-X          GFORTRAN / 64bit
+      Mac/Intel    OS-X          Intel FORTRAN / 32bit
+      Mac/Intel    OS-X          Intel FORTRAN / 64bit
+      Mac/PowerPC  OS-X          Absoft FORTRAN / 32bit
+      Mac/PowerPC  OS-X          g77 / 32bit
+      PC           CYGWIN        g77 / 32bit
+      PC           Linux         GFORTRAN / 32bit
+      PC           Linux         GFORTRAN / 64bit
+      PC           Linux         Intel FORTRAN / 32bit
+      PC           Linux         g77 / 32bit
+      PC           Windows       Compaq (Digital) FORTRAN / 32bit
+      PC           Windows       Intel FORTRAN / 32bit
+      PC           Windows       Intel FORTRAN / 64bit
+      PC           Windows       Lahey FORTRAN 95 / 32bit
+      Sun          Solaris       SUN FORTRAN / 32bit
+      Sun/Intel    Solaris       SUN FORTRAN / 32bit
+ 
+   CSPICE:
+ 
+      Mac/Intel    OS-X          Apple C / 32bit
+      Mac/Intel    OS-X          Apple C / 64bit
+      Mac/PowerPC  OS-X          Apple C / 32bit
+      PC           CYGWIN        gCC / 32bit
+      PC           Linux         gCC / 32bit
+      PC           Linux         gCC / 64bit
+      PC           Windows       MS Visual C / 32bit
+      PC           Windows       MS Visual C / 64bit
+      Sun          Solaris       SUN C / 32bit
+      Sun          Solaris       SUN C / 64bit
+      Sun          Solaris       gCC / 32bit
+      Sun          Solaris       gCC / 64bit
+      Sun/Intel    Solaris       SUN C / 32bit
+      Sun/Intel    Solaris       SUN C / 64bit
+ 
+   Icy:
+ 
+      Mac/Intel    OS-X          Apple C / IDL 7.x / 32bit
+      Mac/Intel    OS-X          Apple C / IDL 7.x / 64bit
+      Mac/PowerPC  OS-X          Apple C / IDL 6.4 / 32bit
+      PC           Linux         gCC / IDL 6.4 / 32bit
+      PC           Linux         gCC / IDL 6.4 / 64bit
+      PC           Windows       MS Visual C / IDL 7.x / 32bit
+      PC           Windows       MS Visual C / IDL 7.x / 64bit
+      Sun          Solaris       SUN C / IDL 7.x / 32bit
+      Sun          Solaris       gCC / IDL 7.x / 32bit
+      Sun          Solaris       gCC / IDL 7.x / 64bit
+ 
+   Mice:
+ 
+      Mac/Intel    OS-X          Apple C / MATLAB 7.x / 32bit
+      Mac/Intel    OS-X          Apple C / MATLAB 7.x / 64bit
+      Mac/PowerPC  OS-X          Apple C / MATLAB 7.x / 32bit
+      PC           Linux         gCC / MATLAB 7.x / 32bit
+      PC           Linux         gCC / MATLAB 7.x / 64bit
+      PC           Windows       MS Visual C / MATLAB 7.x / 32bit
+      PC           Windows       MS Visual C / MATLAB 7.x / 64bit
+      Sun/Intel    Solaris       SUN C / MATLAB 7.x / 64bit
+ 
+</PRE>
+<BR><BR>
+<A NAME="Dynamically Linked Executables"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Dynamically Linked Executables
+</H3><P><BR><BR>
+   For some environments precompiled executables provided in the generic
+   Toolkit packages and additional utility program executables provided on
+   the Utilities page on the NAIF Web site
+   (http://naif.jpl.nasa.gov/naif/utilities.html) are dynamically linked
+   and, in order to run, require certain dynamic libraries, usually
+   provided with the compiler used to build the executables, to be
+   installed on the user's system. This applies to most Mac/OSX, PC/Linux
+   and Sun/Solaris environments.
+<P>
+ 
+<BR><BR>
+<A NAME="Lahey Memory Issue Related to File Opening/Closing"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Lahey Memory Issue Related to File Opening/Closing
+</H3><P><BR><BR>
+   The Lahey memory issue related to file opening/closing described in the
+   N0061 section of this document persists in the N0064 version of the
+   Toolkit.
+<P>
+ 
+<BR><BR>
+<A NAME="Scratch EK File Issue in Icy on PC/Windows"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Scratch EK File Issue in Icy on PC/Windows
+</H3><P><BR><BR>
+   The scratch EK file issue in Icy on PC/Windows described in the N0061
+   section of this document persists in the N0064 version of the Toolkit.
+<P>
+ 
+<BR><BR>
+<A NAME="Geometry Finder (GF) Subsystem"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Geometry Finder (GF) Subsystem
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   The N0064 version offers a number of additional SPICE Geometry Finder
+   (GF) subsystem interfaces.
+<P>
+ 
+<BR><BR>
+<A NAME="SPICELIB High-Level GF APIs"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> SPICELIB High-Level GF APIs
+</H3><P><BR><BR>
+   The following High-Level GF APIs were added to SPICELIB:
+<P>
+ 
+<PRE>
+      GFRR            determines time intervals when a specified
+                      constraint on the observer-target range rate
+                      is met.
+ 
+      GFUDS           performs a GF search on a user defined scalar
+                      quantity. This API is supported by two
+                      additional routines UDDC and UDDF.
+</PRE>
+<BR><BR>
+<A NAME="CSPICE High-Level GF APIs"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> CSPICE High-Level GF APIs
+</H3><P><BR><BR>
+   The following High-Level GF APIs were added to CSPICE:
+<P>
+ 
+<PRE>
+      <a href="../cspice/gfrr_c.html">gfrr_c</a>          determines time intervals when a specified
+                      constraint on the observer-target range rate
+                      is met.
+ 
+      <a href="../cspice/gfuds_c.html">gfuds_c</a>         performs a GF search on a user defined scalar
+                      quantity. This API is supported by two
+                      additional functions <a href="../cspice/uddc_c.html">uddc_c</a> and <a href="../cspice/uddf_c.html">uddf_c</a>.
+</PRE>
+<BR><BR>
+<A NAME="Icy and Mice High-Level GF APIs"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Icy and Mice High-Level GF APIs
+</H3><P><BR><BR>
+   The following High-Level GF APIs were added to Icy and Mice:
+<P>
+ 
+<PRE>
+      cspice_gfrr     determines time intervals when a specified
+                      constraint on the observer-target range rate
+                      is met.
+</PRE>
+<BR><BR>
+<A NAME="SPICELIB/CSPICE/Icy/Mice"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> SPICELIB/CSPICE/Icy/Mice
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<BR><BR>
+<A NAME="Kernel Pool Variable Name Length Check"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Kernel Pool Variable Name Length Check
+</H3><P><BR><BR>
+   The routines loading SPICE text kernel files now include a check on the
+   length of the kernel pool variable names. The error SPICE(BADVARNAME) is
+   signaled if the length of any variable provided in the text kernel file
+   exceeds 32 characters. Regardless of language, all Toolkits inherit this
+   behavior.
+<P>
+ 
+<BR><BR>
+<A NAME="CK Buffered Segment Limits"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> CK Buffered Segment Limits
+</H3><P><BR><BR>
+   The maximum number of CK segments that can be buffered simultaneously
+   has been increased to 50000.
+<P>
+ 
+<BR><BR>
+<A NAME="SPK Buffered Segment Limits"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> SPK Buffered Segment Limits
+</H3><P><BR><BR>
+   The maximum number of SPK segments that can be buffered simultaneously
+   has been increased to 50000.
+<P>
+ 
+<BR><BR>
+<A NAME="Kernel Pool Double Precision Buffer Limit"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Kernel Pool Double Precision Buffer Limit
+</H3><P><BR><BR>
+   The maximum number of double precision values that can be stored in the
+   kernel pool has been increased to 200000.
+<P>
+ 
+<BR><BR>
+<A NAME="SCLK Coefficient Record Limit"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> SCLK Coefficient Record Limit
+</H3><P><BR><BR>
+   The maximum number of SCLK coefficient records that can be buffered has
+   been increased to 50000. This is also the limit on the number of
+   coefficient records that can be stored in an SCLK kernel.
+<P>
+ 
+<BR><BR>
+<A NAME="CK writer quaternion magnitude check"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> CK writer quaternion magnitude check
+</H3><P><BR><BR>
+   The quaternion magnitude check performed in the CK writers
+<P>
+ 
+<PRE>
+   CKW01 (<a href="../cspice/ckw01_c.html">ckw01_c</a> in CSPICE) (cspice_ckw01 in Icy and Mice)
+   CKW02 (<a href="../cspice/ckw02_c.html">ckw02_c</a> in CSPICE) (cspice_ckw02 in Icy and Mice)
+   CKW03 (<a href="../cspice/ckw03_c.html">ckw03_c</a> in CSPICE) (cspice_ckw03 in Icy and Mice)
+   CKW05 (<a href="../cspice/ckw05_c.html">ckw05_c</a> in CSPICE)
+</PRE>
+   has been relaxed from checking for a magnitude ``close'' to 1 to simply
+   ensuring that the input quaternions are non-zero.
+<P>
+ 
+<BR><BR>
+<A NAME="New SPICELIB Interfaces"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> New SPICELIB Interfaces
+</H3><P><BR><BR>
+   The following 3d and 6d vector APIs were added to SPICELIB:
+<P>
+ 
+<PRE>
+      dvnorm          calculates the derivative of the norm of a
+                      3-vector.
+ 
+      dhfa            calculates the value of the time derivative
+                      of the half angle of a spherical body given
+                      a state vector and body radius.
+</PRE>
+   The following auxiliary APIs were added to SPICELIB:
+<P>
+ 
+<PRE>
+      bodc2s          translates a body ID code to either the
+                      corresponding name, or if no name to ID code
+                      mapping exists, the string representation
+                      of the body ID value.
+</PRE>
+<BR><BR>
+<A NAME="New CSPICE Interfaces"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> New CSPICE Interfaces
+</H3><P><BR><BR>
+   The following 3d and 6d vector APIs were added to CSPICE:
+<P>
+ 
+<PRE>
+      <a href="../cspice/ducrss_c.html">ducrss_c</a>        computes the unit vector parallel to the
+                      cross product of two 3-dimensional vectors,
+                      and the derivative of this unit vector.
+ 
+      <a href="../cspice/dvcrss_c.html">dvcrss_c</a>        computes the cross product of two
+                      3-dimensional vectors and the derivative of
+                      this cross product.
+ 
+      <a href="../cspice/dvnorm_c.html">dvnorm_c</a>        calculates the derivative of the norm of a
+                      3-vector.
+</PRE>
+   The following lower-level DAF access APIs were added to CSPICE:
+<P>
+ 
+<PRE>
+      <a href="../cspice/dafgsr_c.html">dafgsr_c</a>        reads a portion of the contents of a summary
+                      record in a DAF file.
+ 
+      <a href="../cspice/dafrfr_c.html">dafrfr_c</a>        reads the contents of the file record of
+                      a DAF.
+</PRE>
+   The following auxiliary APIs were added to CSPICE:
+<P>
+ 
+<PRE>
+      <a href="../cspice/bodc2s_c.html">bodc2s_c</a>        translates a body ID code to either the
+                      corresponding name, or if no name to ID code
+                      mapping exists, the string representation
+                      of the body ID value.
+ 
+      <a href="../cspice/dp2hx_c.html">dp2hx_c</a>         converts a double precision number to an
+                      equivalent character string using base 16
+                      ``scientific notation.''
+ 
+      <a href="../cspice/hx2dp_c.html">hx2dp_c</a>         converts a string representing a double
+                      precision number in a base 16 ``scientific
+                      notation'' into its equivalent double
+                      precision number.
+</PRE>
+<BR><BR>
+<A NAME="New Icy Interfaces"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> New Icy Interfaces
+</H3><P><BR><BR>
+   The following 3d and 6d vector APIs were added to Icy:
+<P>
+ 
+<PRE>
+      cspice_ducrss   computes the unit vector parallel to the
+                      cross product of two 3-dimensional vectors
+                      and the derivative of this unit vector.
+ 
+      cspice_dvcrss   computes the cross product of two
+                      3-dimensional vectors and the derivative of
+                      this cross product.
+ 
+      cspice_dvnorm   calculates the derivative of the norm of a
+                      3-vector.
+ 
+      cspice_dvsep    calculates the time derivative of the
+                      separation angle between states.
+</PRE>
+   The following auxiliary APIs were added to Icy:
+<P>
+ 
+<PRE>
+      cspice_bodc2s   translates a body ID code to either the
+                      corresponding name or if no name to ID code
+                      mapping exists, the string representation
+                      of the body ID value.
+ 
+      cspice_dp2hx    converts a double precision number to an
+                      equivalent character string using base 16
+                      ``scientific notation.''
+ 
+      cspice_hx2dp    converts a string representing a double
+                      precision number in a base 16 ``scientific
+                      notation'' into its equivalent double
+                      precision number.
+</PRE>
+<BR><BR>
+<A NAME="New Mice Interfaces"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> New Mice Interfaces
+</H3><P><BR><BR>
+   The following 3d and 6d vector APIs were added to Mice:
+<P>
+ 
+<PRE>
+      cspice_ducrss   computes the unit vector parallel to the
+                      cross product of two 3-dimensional vectors
+                      and the derivative of this unit vector.
+ 
+      cspice_dvcrss   computes the cross product of two
+                      3-dimensional vectors and the derivative of
+                      this cross product.
+ 
+      cspice_dvdot    computes the time derivative of the dot
+                      product of two position vectors.
+ 
+      cspice_dvhat    calculates the unit vector corresponding
+                      to a state or states and the derivative of
+                      the unit vector.
+ 
+      cspice_dvnorm   calculates the derivative of the norm of a
+                      3-vector.
+ 
+      cspice_dvsep    calculates the time derivative of the
+                      separation angle between states.
+ 
+      cspice_vnorm    returns the magnitude of a double
+                      precision, 3-dimensional array or set of
+                      such arrays.
+ 
+      cspice_vperp    calculates the component of a vector
+                      perpendicular to a second vector.
+</PRE>
+   The following EK-access APIs were added to Mice:
+<P>
+ 
+<PRE>
+      cspice_ekfind   finds E-kernel data that satisfy a set of
+                      constraints.
+ 
+      cspice_eknelt   returns the number of elements in a
+                      specified column entry in the current row.
+ 
+      cspice_ekgc     returns an element of string (character)
+                      data from a specified row in a specified
+                      column of the set of rows matching
+                      the previous cspice_ekfind query.
+ 
+      cspice_ekgd     returns an element of double precision
+                      data from a specified row in a specified
+                      column of the set of rows matching
+                      the previous cspice_ekfind query.
+ 
+      cspice_ekgi     returns an element of integer
+                      data from a specified row in a specified
+                      column of the set of rows matching
+                      the previous cspice_ekfind query.
+</PRE>
+   The following time conversion APIs were added to Mice:
+<P>
+ 
+<PRE>
+      cspice_unitim   returns the double precision value of
+                      an input epoch converted from one uniform
+                      time scale to another.
+ 
+</PRE>
+   The following auxiliary APIs were added to Mice:
+<P>
+ 
+<PRE>
+      cspice_bodc2s   translates a body ID code to either the
+                      corresponding name, or if no name to ID code
+                      mapping exists, the string representation
+                      of the body ID value.
+</PRE>
+<BR><BR>
+<A NAME="Built-in NAIF ID Code/Name Definitions"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Built-in NAIF ID Code/Name Definitions
+</H3><P><BR><BR>
+   The following new built-in NAIF ID code/name definitions have been added
+   to the Toolkit:
+<P>
+ 
+<PRE>
+   Spacecraft:
+ 
+            -5   AKATSUKI
+            -5   VCO
+          -121   BEPICOLOMBO
+          -177   GRAIL-A
+          -181   GRAIL-B
+          -202   MAVEN
+          -205   SOIL MOISTURE ACTIVE AND PASSIVE
+          -205   SMAP
+          -362   RADIATION BELT STORM PROBE A
+          -362   RBSP_A
+          -363   RADIATION BELT STORM PROBE B
+          -363   RBSP_B
+ 
+   Satellites:
+ 
+           550   HERSE
+           653   AEGAEON
+ 
+   Comets:
+ 
+       1000093   TEMPEL_1
+ 
+   Asteroids:
+ 
+       2000021   LUTETIA
+       2004179   TOUTATIS
+ 
+</PRE>
+<BR><BR>
+<A NAME="Documentation"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Documentation
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<BR><BR>
+<A NAME="Overwriting Input Arguments Not Allowed"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Overwriting Input Arguments Not Allowed
+</H3><P><BR><BR>
+   The following SPICELIB routines were designed to allow applications to
+   call them in such a way that input arguments could overwrite output
+   arguments. However, this usage is a violation of the Fortran 77
+   standard; it also causes failures in some environments when SPICELIB is
+   compiled with optimization (currently SPICELIB is optimized only for
+   Intel Fortran environments). So, the header documentation of affected
+   SPICELIB routines has been updated to not suggest this calling
+   technique. The affected routines are:
+<P>
+ 
+<PRE>
+   CYCLAD  CYCLAI  DUCRSS  DVCRSS  INVERT  INVSTM  MTXM
+   MTXV    MXM     MXMT    MXV     PACKAC  PACKAD  PACKAI
+   ROTMAT  ROTVEC  SAELGV  UNORM   UNORMG  VADD    VADDG
+   VCRSS   VHATG   VMINUG  VMINUS  VPROJ   VPROJG  VSCL
+   VSCLG   VSUB    VSUBG   XPOSBL  XPOSE   XPOSEG
+</PRE>
+<BR><BR>
+<A NAME="Bug Fixes"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Bug Fixes
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<BR><BR>
+<A NAME="Kernel Pool Watcher Deletion in TKFRAM"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Kernel Pool Watcher Deletion in TKFRAM
+</H3><P><BR><BR>
+   The watcher deletion algorithm has been corrected to delete watchers
+   only when the variables they watch are dumped from the local buffer.
+<P>
+ 
+<BR><BR>
+<A NAME="Frame Change in CKGP"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Frame Change in CKGP
+</H3><P><BR><BR>
+   CKGP now computes the transformation from the requested frame to the
+   applicable CK segment's base frame via a call to REFCHG. Formerly CKGP
+   performed this transformation using FRMCHG, which required that angular
+   velocity data describing the relative motion of these frames be
+   available.
+<P>
+ 
+<BR><BR>
+<A NAME="ROTGET Dynamic Frame ID"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> ROTGET Dynamic Frame ID
+</H3><P><BR><BR>
+   ROTGET formerly passed the frame class ID rather than the frame ID to
+   private routine ZZDYNROT, which handles dynamic frame transformations.
+   Since by convention these IDs are identical for dynamic frames, the
+   error had no practical effect. The error has been corrected. The shadow
+   private routine ZZROTGT0 has been corrected as well. Note that the error
+   does not apply to the second-level private shadow routine ZZROTGT1.
+<P>
+ 
+<BR><BR>
+<A NAME="ZZEKQCON Initialization Error"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> ZZEKQCON Initialization Error
+</H3><P><BR><BR>
+   The private routine ZZEKQCON could in some cases access uninitialized
+   variables when working with null column entries. This has been
+   corrected.
+<P>
+ 
+<BR><BR>
+<A NAME="ZZEKRD03 Memory Violation Error"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> ZZEKRD03 Memory Violation Error
+</H3><P><BR><BR>
+   The private routine ZZEKRD03 had a bug that caused it to overwrite local
+   memory. Prior to the N0064 version of SPICELIB, this error had been
+   benign on all supported platforms. The error has been corrected.
+<P>
+ 
+<BR><BR>
+<A NAME="EK Strings Longer Than 1024 Characters"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> EK Strings Longer Than 1024 Characters
+</H3><P><BR><BR>
+   Although the EK Required Reading states that variable-length strings in
+   EK columns are limited to 1024 characters in length, the EK writer
+   routines don't enforce this limit, and some users have created kernels
+   that violate the limit. Various routines that support EK query and fetch
+   operations had assumed that the limit was in effect and were subject to
+   substring boundary violations when these long strings were encountered.
+   In addition, the semantics of string comparisons for excessively long
+   strings were undefined.
+<P>
+ 
+   A compromise solution was selected: EK routines that perform
+   variable-length EK column entry string comparisons now treat only the
+   first 1024 characters of strings as significant.
+<P>
+ 
+   The following private routines were updated to effect this change:
+<P>
+ 
+<PRE>
+   ZZEKECMP
+   ZZEKFRX
+   ZZEKSCMP
+   ZZEKVMCH
+</PRE>
+   This fix also corrects the substring boundary violations.
+<P>
+ 
+<BR><BR>
+<A NAME="RETURN Mode Logic in Various Routines"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> RETURN Mode Logic in Various Routines
+</H3><P><BR><BR>
+   The following routines were corrected to ensure that they avoid making
+   branch decisions based on uninitialized data after encountering a SPICE
+   error while in RETURN mode:
+<P>
+ 
+<PRE>
+   ILUMIN
+   SPKAPO
+   SPKEZ
+   SUBPNT
+   SUBSLR
+   ZZSPKEZ0
+   ZZSPKEZ1
+</PRE>
+<BR><BR>
+<A NAME="Version 63 --- April 2009"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Version 63 --- April 2009
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="Environments0"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Environments
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<BR><BR>
+<A NAME="New Environments0"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> New Environments
 </H3><P><BR><BR>
@@ -421,7 +1107,7 @@
  
 </PRE>
 <BR><BR>
-<A NAME="Complete List of Supported Environments"></A>
+<A NAME="Complete List of Supported Environments0"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Complete List of Supported Environments
 </H3><P><BR><BR>
@@ -478,7 +1164,7 @@
  
 </PRE>
 <BR><BR>
-<A NAME="Lahey Memory Issue Related to File Opening/Closing"></A>
+<A NAME="Lahey Memory Issue Related to File Opening/Closing0"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Lahey Memory Issue Related to File Opening/Closing
 </H3><P><BR><BR>
@@ -488,7 +1174,7 @@
 <P>
  
 <BR><BR>
-<A NAME="Scratch EK File Issue in Icy on PC/Windows"></A>
+<A NAME="Scratch EK File Issue in Icy on PC/Windows0"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Scratch EK File Issue in Icy on PC/Windows
 </H3><P><BR><BR>
@@ -525,7 +1211,7 @@ as range or phase angle, is within a specified range.
 <P>
  
 <BR><BR>
-<A NAME="SPICELIB High-Level GF APIs"></A>
+<A NAME="SPICELIB High-Level GF APIs0"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> SPICELIB High-Level GF APIs
 </H3><P><BR><BR>
@@ -576,7 +1262,7 @@ as range or phase angle, is within a specified range.
                       one target occulted by another.
 </PRE>
 <BR><BR>
-<A NAME="CSPICE High-Level GF APIs"></A>
+<A NAME="CSPICE High-Level GF APIs0"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> CSPICE High-Level GF APIs
 </H3><P><BR><BR>
@@ -627,7 +1313,7 @@ as range or phase angle, is within a specified range.
                       one target occulted by another.
 </PRE>
 <BR><BR>
-<A NAME="Icy and Mice High-Level GF APIs"></A>
+<A NAME="Icy and Mice High-Level GF APIs0"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Icy and Mice High-Level GF APIs
 </H3><P><BR><BR>
@@ -678,7 +1364,7 @@ as range or phase angle, is within a specified range.
                       one target occulted by another.
 </PRE>
 <BR><BR>
-<A NAME="SPICELIB/CSPICE/Icy/Mice"></A>
+<A NAME="SPICELIB/CSPICE/Icy/Mice0"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> SPICELIB/CSPICE/Icy/Mice
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -736,7 +1422,7 @@ as range or phase angle, is within a specified range.
 <P>
  
 <BR><BR>
-<A NAME="Built-in NAIF ID Code/Name Definitions"></A>
+<A NAME="Built-in NAIF ID Code/Name Definitions0"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Built-in NAIF ID Code/Name Definitions
 </H3><P><BR><BR>
@@ -820,7 +1506,7 @@ as range or phase angle, is within a specified range.
 <P>
  
 <BR><BR>
-<A NAME="Documentation"></A>
+<A NAME="Documentation0"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Documentation
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -852,7 +1538,7 @@ as range or phase angle, is within a specified range.
 <P>
  
 <BR><BR>
-<A NAME="Bug Fixes"></A>
+<A NAME="Bug Fixes0"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Bug Fixes
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -955,12 +1641,12 @@ as range or phase angle, is within a specified range.
 <H1> Version 62 --- March 2008
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
 <BR><BR>
-<A NAME="Environments0"></A>
+<A NAME="Environments1"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Environments
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
 <BR><BR>
-<A NAME="New Environments0"></A>
+<A NAME="New Environments1"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> New Environments
 </H3><P><BR><BR>
@@ -974,7 +1660,7 @@ as range or phase angle, is within a specified range.
  
 </PRE>
 <BR><BR>
-<A NAME="Complete List of Supported Environments0"></A>
+<A NAME="Complete List of Supported Environments1"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Complete List of Supported Environments
 </H3><P><BR><BR>
@@ -1036,7 +1722,7 @@ as range or phase angle, is within a specified range.
 <P>
  
 <BR><BR>
-<A NAME="Lahey Memory Issue Related to File Opening/Closing0"></A>
+<A NAME="Lahey Memory Issue Related to File Opening/Closing1"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Lahey Memory Issue Related to File Opening/Closing
 </H3><P><BR><BR>
@@ -1046,7 +1732,7 @@ as range or phase angle, is within a specified range.
 <P>
  
 <BR><BR>
-<A NAME="Scratch EK File Issue in Icy on PC/Windows0"></A>
+<A NAME="Scratch EK File Issue in Icy on PC/Windows1"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Scratch EK File Issue in Icy on PC/Windows
 </H3><P><BR><BR>
@@ -1069,7 +1755,7 @@ as range or phase angle, is within a specified range.
 <P>
  
 <BR><BR>
-<A NAME="SPICELIB/CSPICE/Icy/Mice0"></A>
+<A NAME="SPICELIB/CSPICE/Icy/Mice1"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> SPICELIB/CSPICE/Icy/Mice
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -1367,7 +2053,7 @@ frame.<BR>
 <P>
  
 <BR><BR>
-<A NAME="Built-in NAIF ID Code/Name Definitions0"></A>
+<A NAME="Built-in NAIF ID Code/Name Definitions1"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Built-in NAIF ID Code/Name Definitions
 </H3><P><BR><BR>
@@ -1538,7 +2224,7 @@ frame.<BR>
    cspice_spkw17
 </PRE>
 <BR><BR>
-<A NAME="Documentation0"></A>
+<A NAME="Documentation1"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Documentation
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -1645,7 +2331,7 @@ transfer format kernels, etc.)
 <P>
  
 <BR><BR>
-<A NAME="Bug Fixes0"></A>
+<A NAME="Bug Fixes1"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Bug Fixes
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -1758,12 +2444,12 @@ transfer format kernels, etc.)
 <P>
  
 <BR><BR>
-<A NAME="Environments1"></A>
+<A NAME="Environments2"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Environments
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
 <BR><BR>
-<A NAME="New Environments1"></A>
+<A NAME="New Environments2"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> New Environments
 </H3><P><BR><BR>
@@ -1805,7 +2491,7 @@ transfer format kernels, etc.)
  
 </PRE>
 <BR><BR>
-<A NAME="Complete List of Supported Environments1"></A>
+<A NAME="Complete List of Supported Environments2"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Complete List of Supported Environments
 </H3><P><BR><BR>
@@ -1859,7 +2545,7 @@ transfer format kernels, etc.)
 <P>
  
 <BR><BR>
-<A NAME="Lahey Memory Issue Related to File Opening/Closing1"></A>
+<A NAME="Lahey Memory Issue Related to File Opening/Closing2"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Lahey Memory Issue Related to File Opening/Closing
 </H3><P><BR><BR>
@@ -1883,7 +2569,7 @@ transfer format kernels, etc.)
 <P>
  
 <BR><BR>
-<A NAME="Scratch EK File Issue in Icy on PC/Windows1"></A>
+<A NAME="Scratch EK File Issue in Icy on PC/Windows2"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Scratch EK File Issue in Icy on PC/Windows
 </H3><P><BR><BR>
@@ -1899,7 +2585,7 @@ transfer format kernels, etc.)
 <P>
  
 <BR><BR>
-<A NAME="Documentation1"></A>
+<A NAME="Documentation2"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Documentation
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -2100,7 +2786,7 @@ headers and provided with an alphabetical index
 <P>
  
 <BR><BR>
-<A NAME="Built-in NAIF ID Code/Name Definitions1"></A>
+<A NAME="Built-in NAIF ID Code/Name Definitions2"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Built-in NAIF ID Code/Name Definitions
 </H3><P><BR><BR>
@@ -2209,7 +2895,7 @@ headers and provided with an alphabetical index
    cspice_inter   cspice_kclear   cspice_valid
 </PRE>
 <BR><BR>
-<A NAME="Bug Fixes1"></A>
+<A NAME="Bug Fixes2"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Bug Fixes
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -2341,7 +3027,7 @@ headers and provided with an alphabetical index
 <P>
  
 <BR><BR>
-<A NAME="Bug Fixes2"></A>
+<A NAME="Bug Fixes3"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Bug Fixes
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -2381,12 +3067,12 @@ headers and provided with an alphabetical index
 <P>
  
 <BR><BR>
-<A NAME="Environments2"></A>
+<A NAME="Environments3"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Environments
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
 <BR><BR>
-<A NAME="New Environments2"></A>
+<A NAME="New Environments3"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> New Environments
 </H3><P><BR><BR>
@@ -2445,7 +3131,7 @@ headers and provided with an alphabetical index
 <P>
  
 <BR><BR>
-<A NAME="Lahey Memory Issue Related to File Opening/Closing2"></A>
+<A NAME="Lahey Memory Issue Related to File Opening/Closing3"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Lahey Memory Issue Related to File Opening/Closing
 </H3><P><BR><BR>
@@ -2469,7 +3155,7 @@ headers and provided with an alphabetical index
 <P>
  
 <BR><BR>
-<A NAME="Scratch EK File Issue in Icy on PC/Windows2"></A>
+<A NAME="Scratch EK File Issue in Icy on PC/Windows3"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Scratch EK File Issue in Icy on PC/Windows
 </H3><P><BR><BR>
@@ -2565,7 +3251,7 @@ headers and provided with an alphabetical index
 <P>
  
 <BR><BR>
-<A NAME="Built-in NAIF ID Code/Name Definitions2"></A>
+<A NAME="Built-in NAIF ID Code/Name Definitions3"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Built-in NAIF ID Code/Name Definitions
 </H3><P><BR><BR>
@@ -2608,7 +3294,7 @@ headers and provided with an alphabetical index
         399064   DSS-64
 </PRE>
 <BR><BR>
-<A NAME="Documentation2"></A>
+<A NAME="Documentation3"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Documentation
 </H3><P><BR><BR>
@@ -2668,7 +3354,7 @@ headers and provided with an alphabetical index
    cspice_sdiff    cspice_set      cspice_srfrec   cspice_union
 </PRE>
 <BR><BR>
-<A NAME="Bug Fixes3"></A>
+<A NAME="Bug Fixes4"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Bug Fixes
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -2762,7 +3448,7 @@ headers and provided with an alphabetical index
 <H1> Version 58 --- January 2005
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
 <BR><BR>
-<A NAME="Environments3"></A>
+<A NAME="Environments4"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Environments
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -2902,7 +3588,7 @@ of time.
 <P>
  
 <BR><BR>
-<A NAME="Built-in NAIF ID Code/Name Definitions3"></A>
+<A NAME="Built-in NAIF ID Code/Name Definitions4"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Built-in NAIF ID Code/Name Definitions
 </H3><P><BR><BR>
@@ -2933,7 +3619,7 @@ of time.
         398989         NOTO
 </PRE>
 <BR><BR>
-<A NAME="Documentation3"></A>
+<A NAME="Documentation4"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Documentation
 </H3><P><BR><BR>
@@ -3010,7 +3696,7 @@ of time.
    cspice_spkcov   cspice_spkobj   cspice_ssize
 </PRE>
 <BR><BR>
-<A NAME="Bug Fixes4"></A>
+<A NAME="Bug Fixes5"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Bug Fixes
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -3078,7 +3764,7 @@ of time.
 <H1> Version 57 --- March 2004
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
 <BR><BR>
-<A NAME="Environments4"></A>
+<A NAME="Environments5"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Environments
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -3145,7 +3831,7 @@ of time.
 <P>
  
 <BR><BR>
-<A NAME="Documentation4"></A>
+<A NAME="Documentation5"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Documentation
 </H3><P><BR><BR>
@@ -3163,7 +3849,7 @@ of time.
 <P>
  
 <BR><BR>
-<A NAME="Built-in NAIF ID Code/Name Definitions4"></A>
+<A NAME="Built-in NAIF ID Code/Name Definitions5"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Built-in NAIF ID Code/Name Definitions
 </H3><P><BR><BR>
@@ -3206,7 +3892,7 @@ of time.
 <H1> Version 56 --- August 2003
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
 <BR><BR>
-<A NAME="Environments5"></A>
+<A NAME="Environments6"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Environments
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -3229,7 +3915,7 @@ of time.
 <H2> SPICELIB/CSPICE
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
 <BR><BR>
-<A NAME="Documentation5"></A>
+<A NAME="Documentation6"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Documentation
 </H3><P><BR><BR>
@@ -3253,7 +3939,7 @@ of time.
 <TT>--</TT> to improve examples.
 <BR><BR></UL>
 <BR><BR>
-<A NAME="Built-in NAIF ID Code/Name Definitions5"></A>
+<A NAME="Built-in NAIF ID Code/Name Definitions6"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Built-in NAIF ID Code/Name Definitions
 </H3><P><BR><BR>
@@ -3331,7 +4017,7 @@ of time.
 <P>
  
 <BR><BR>
-<A NAME="Bug Fixes5"></A>
+<A NAME="Bug Fixes6"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Bug Fixes
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -3369,7 +4055,7 @@ of time.
 <H1> Version 55 --- March 2003
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
 <BR><BR>
-<A NAME="Environments6"></A>
+<A NAME="Environments7"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Environments
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -3444,12 +4130,12 @@ of time.
 <P>
  
 <BR><BR>
-<A NAME="Bug Fixes6"></A>
+<A NAME="Bug Fixes7"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Bug Fixes
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
 <BR><BR>
-<A NAME="Built-in NAIF ID Code/Name Definitions6"></A>
+<A NAME="Built-in NAIF ID Code/Name Definitions7"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Built-in NAIF ID Code/Name Definitions
 </H3><P><BR><BR>
@@ -3547,7 +4233,7 @@ of time.
 <P>
  
 <BR><BR>
-<A NAME="Environments7"></A>
+<A NAME="Environments8"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Environments
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -3596,7 +4282,7 @@ of time.
            527     PRAXIDIKE
 </PRE>
 <BR><BR>
-<A NAME="Documentation6"></A>
+<A NAME="Documentation7"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Documentation
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -3605,7 +4291,7 @@ of time.
 <P>
  
 <BR><BR>
-<A NAME="Bug Fixes7"></A>
+<A NAME="Bug Fixes8"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Bug Fixes
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -3680,7 +4366,7 @@ of time.
 <H1> Version 53 --- September 2002
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
 <BR><BR>
-<A NAME="Environments8"></A>
+<A NAME="Environments9"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Environments
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -3814,7 +4500,7 @@ of time.
 <P>
  
 <BR><BR>
-<A NAME="Bug Fixes8"></A>
+<A NAME="Bug Fixes9"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Bug Fixes
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -3874,7 +4560,7 @@ of time.
 <H1> Version 52 --- January 2002
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
 <BR><BR>
-<A NAME="Environments9"></A>
+<A NAME="Environments10"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Environments
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -4047,7 +4733,7 @@ of time.
    MER
 </PRE>
 <BR><BR>
-<A NAME="Documentation7"></A>
+<A NAME="Documentation8"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Documentation
 </H3><P><BR><BR>
@@ -4148,7 +4834,7 @@ of time.
 <P>
  
 <BR><BR>
-<A NAME="Bug Fixes9"></A>
+<A NAME="Bug Fixes10"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Bug Fixes
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -4322,7 +5008,7 @@ of time.
 <P>
  
 <BR><BR>
-<A NAME="Bug Fixes10"></A>
+<A NAME="Bug Fixes11"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Bug Fixes
 </H3><P><BR><BR>
@@ -4636,7 +5322,7 @@ headers of SPICE routines.
 <P>
  
 <BR><BR>
-<A NAME="Documentation8"></A>
+<A NAME="Documentation9"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Documentation
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -4733,7 +5419,7 @@ headers of SPICE routines.
 <P>
  
 <BR><BR>
-<A NAME="Documentation9"></A>
+<A NAME="Documentation10"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Documentation
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -4812,7 +5498,7 @@ conventions that will be adhered to by NAIF.
 <P>
  
 <BR><BR>
-<A NAME="Bug Fixes11"></A>
+<A NAME="Bug Fixes12"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Bug Fixes
 </H3><P><BR><BR>
@@ -4845,7 +5531,7 @@ conventions that will be adhered to by NAIF.
 <P>
  
 <BR><BR>
-<A NAME="Documentation10"></A>
+<A NAME="Documentation11"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Documentation
 </H3><P><BR><BR>
@@ -4971,7 +5657,7 @@ FORTRAN WRITE statement.<BR>
 <P>
  
 <BR><BR>
-<A NAME="Bug Fixes12"></A>
+<A NAME="Bug Fixes13"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Bug Fixes
 </H3><P><BR><BR>

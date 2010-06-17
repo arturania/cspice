@@ -1218,6 +1218,10 @@ static integer c__500 = 500;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.4, 18-MAY-2010 (BVS) */
+
+/*        Removed "C$" marker from text in the header. */
+
 /* -    SPICELIB Version 1.0.3, 19-DEC-2001 (NJB) */
 
 /*        Restrictions section was updated. */
@@ -1231,7 +1235,7 @@ static integer c__500 = 500;
 
 /* -    SPICELIB Version 1.0.1, 16-AUG-1996 (NJB) */
 
-/*        C$ Exceptions section of header was updated to indicate that */
+/*        Exceptions section of header was updated to indicate that */
 /*        calling this routine while no E-kernels are loaded will cause */
 /*        an error to be signalled.  Previous version line was changed */
 /*        from "Beta" to "SPICELIB," and the previous version was */

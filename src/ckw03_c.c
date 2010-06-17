@@ -244,6 +244,10 @@
    14)  If the start time of the first interval and the time of the
         first pointing instance are not the same, the error
         SPICE(TIMESDONTMATCH) is signaled.
+ 
+   15)  If any quaternion has magnitude zero, the error
+        SPICE(ZEROQUATERNION) is signaled.
+
 
 -Files
  
@@ -558,6 +562,12 @@
  
 -Version
  
+   -CSPICE Version 2.0.0, 01-JUN-2010 (NJB)
+
+      The check for non-unit quaternions has been replaced
+      with a check for zero-length quaternions. (The
+      implementation of the check is located in ckw03_.)
+
    -CSPICE Version 1.4.2, 27-FEB-2008 (NJB)
 
       Updated header; added information about SPICE 

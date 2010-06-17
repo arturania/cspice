@@ -29,7 +29,7 @@ static integer c__10 = 10;
 	    "                                    " "DISTANCE                 "
 	    "                                                       " "COORDI"
 	    "NATE                                                            "
-	    "          " "                                                   "
+	    "          " "RANGE RATE                                         "
 	    "                             " "                                "
 	    "                                                " "             "
 	    "                                                                "
@@ -84,12 +84,12 @@ static integer c__10 = 10;
 	    "                                         " "DVEC                "
 	    "                                                            " 
 	    "DREF                                                           "
-	    "                 " "TARGET1                                     "
-	    "                                    " "TARGET2                  "
-	    "                                                       " "OBSERV"
-	    "ER                                                              "
-	    "          " "ABCORR                                             "
-	    "                             " "REFERENCE FRAME                 "
+	    "                 " "TARGET                                      "
+	    "                                    " "OBSERVER                 "
+	    "                                                       " "ABCORR"
+	    "                                                                "
+	    "          " "                                                   "
+	    "                             " "                                "
 	    "                                                " "             "
 	    "                                                                "
 	    "   " "                                                          "
@@ -152,8 +152,8 @@ static integer c__10 = 10;
     extern /* Subroutine */ int zzgfdidc_();
     extern /* Subroutine */ int zzgfdiin_(char *, char *, char *, doublereal *
 	    , ftnlen, ftnlen, ftnlen);
-    extern /* Subroutine */ int zzgfdigq_(), zzgfspdc_(), zzgfdilt_(), 
-	    zzgfgsep_(), zzgfdiur_();
+    extern /* Subroutine */ int zzgfdigq_(), zzgfspdc_(), zzgfrrdc_(), 
+	    zzgfdilt_(), zzgfgsep_(), zzgfdiur_();
     extern /* Subroutine */ int zzgfcslv_(char *, char *, char *, char *, 
 	    char *, char *, char *, doublereal *, char *, char *, char *, 
 	    doublereal *, doublereal *, doublereal *, U_fp, U_fp, logical *, 
@@ -161,8 +161,10 @@ static integer c__10 = 10;
 	    doublereal *, doublereal *, doublereal *, ftnlen, ftnlen, ftnlen, 
 	    ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen), 
 	    zzgfspin_(char *, char *, char *, char *, doublereal *, char *, 
-	    ftnlen, ftnlen, ftnlen, ftnlen, ftnlen);
-    extern /* Subroutine */ int zzgfsplt_(), zzgfspur_();
+	    ftnlen, ftnlen, ftnlen, ftnlen, ftnlen), zzgfrrin_(char *, char *,
+	     char *, doublereal *, doublereal *, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ int zzgfrrgq_(), zzgfsplt_(), zzgfrrlt_(), 
+	    zzgfspur_(), zzgfrrur_();
     integer i__;
     char frame[80*2];
     extern /* Subroutine */ int chkin_(char *, ftnlen);
@@ -176,7 +178,9 @@ static integer c__10 = 10;
     integer npass;
     extern /* Subroutine */ int ljust_(char *, char *, ftnlen, ftnlen);
     integer qtnum;
-    char of[80*2], vecdef[80];
+    char of[80*2];
+    doublereal dt;
+    char vecdef[80];
     extern integer isrchc_(char *, integer *, char *, ftnlen, ftnlen);
     extern logical return_(void);
     char abcorr[80], cornam[80], corsys[80], method[80], obsrvr[80], pnames[
@@ -297,6 +301,11 @@ static integer c__10 = 10;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+
+/*       Added NWRR parameter. */
+/*       Added NWUDS parameter. */
+
 /* -    SPICELIB Version 1.0.0, 21-FEB-2009 (NJB) (LSE) (EDW) */
 
 /* -& */
@@ -332,6 +341,14 @@ static integer c__10 = 10;
 
 /*     Callers of GFSEP should declare their workspace window */
 /*     count using NWSEP. */
+
+
+/*     Callers of GFRR should declare their workspace window */
+/*     count using NWRR. */
+
+
+/*     Callers of GFUDS should declare their workspace window */
+/*     count using NWUDS. */
 
 
 /*     ADDWIN is a parameter used to expand each interval of the search */
@@ -509,7 +526,7 @@ static integer c__10 = 10;
 
 /*     Note: the sum of these lengths, plus the length of the */
 /*     "percent complete" substring, should not be long enough */
-/*     to cause wrap-around on any platforms's terminal window. */
+/*     to cause wrap-around on any platform's terminal window. */
 
 
 /*     Total progress report message length upper bound: */
@@ -775,12 +792,13 @@ static integer c__10 = 10;
 /*                   'COORDINATE' */
 /*                   'DISTANCE' */
 /*                   'ANGULAR SEPARATION' */
+/*                   'RANGE RATE' */
 
 /*                GQUANT strings are case insensitive.  Values, */
 /*                meanings, and associated parameters are discussed */
 /*                below. */
 
-/*                COORDINATE */
+/*             COORDINATE */
 
 /*                   is a coordinate of a specified vector in a specified */
 /*                   reference frame and coordinate system.  For example, */
@@ -923,7 +941,7 @@ static integer c__10 = 10;
 /*                      QCPARS(6) = <body reference frame name> */
 /*                      QCPARS(7) = <vector definition> */
 /*                      QCPARS(8) = <computation method> */
-/*                      QCPARS(9) = <refence frame of DVEC pointing */
+/*                      QCPARS(9) = <reference frame of DVEC pointing */
 /*                                             vector, defined in QDPAR> */
 
 /*                      QDPARS(1) = <DVEC pointing vector x component */
@@ -933,7 +951,7 @@ static integer c__10 = 10;
 /*                      QDPARS(3) = <DVEC pointing vector z component */
 /*                                                        from observer> */
 
-/*                DISTANCE */
+/*             DISTANCE */
 
 /*                   is the apparent distance between a target body and */
 /*                   an observing body. Distances are always measured */
@@ -950,7 +968,7 @@ static integer c__10 = 10;
 /*                      QCPARS(2) = <name of observer> */
 /*                      QCPARS(3) = <aberration correction> */
 
-/*                ANGULAR SEPARATION */
+/*             ANGULAR SEPARATION */
 
 /*                   is the apparent angular separation of two target */
 /*                   bodies as seen from an observing body. */
@@ -999,6 +1017,20 @@ static integer c__10 = 10;
 /*                   (In this case, the angular separation is the angle */
 /*                   between the centers of the spheres minus the sum of */
 /*                   the apparent angular radii of the spheres.) */
+
+/*             RANGE RATE */
+
+/*                   is the apparent range rate between a target body */
+/*                   and an observing body. */
+
+/*                      QNPARS    = 3 */
+/*                      QPNAMS(1) = 'TARGET' */
+/*                      QPNAMS(2) = 'OBSERVER' */
+/*                      QPNAMS(3) = 'ABCORR' */
+
+/*                      QCPARS(1) = <name of target> */
+/*                      QCPARS(2) = <name of observer> */
+/*                      QCPARS(3) = <aberration correction> */
 
 /*                The aberration correction parameter indicates the */
 /*                aberration corrections to be applied to the state of */
@@ -1248,10 +1280,44 @@ static integer c__10 = 10;
 
 /*                may be used. */
 
-/*     MW         is the cell size of the windows in the workspace array */
-/*                WORK. */
+/*     MW         is a parameter specifying the length of the SPICE */
+/*                windows in the workspace array WORK (see description */
+/*                below) used by this routine. */
 
-/*     NW         is the number of workspace windows of size MW. */
+/*                MW should be set to a number at least twice as large */
+/*                as the maximum number of intervals required by any */
+/*                workspace window. In many cases, it's not necessary to */
+/*                compute an accurate estimate of how many intervals are */
+/*                needed; rather, the user can pick a size considerably */
+/*                larger than what's really required. */
+
+/*                However, since excessively large arrays can prevent */
+/*                applications from compiling, linking, or running */
+/*                properly, sometimes MW must be set according to */
+/*                the actual workspace requirement. A rule of thumb */
+/*                for the number of intervals NINTVLS needed is */
+
+/*                  NINTVLS  =  2*N  +  ( M / STEP ) */
+
+/*               where */
+
+/*                   N     is the number of intervals in the confinement */
+/*                         window */
+
+/*                   M     is the measure of the confinement window, in */
+/*                         units of seconds */
+
+/*                   STEP  is the search step size in seconds */
+
+/*               MW should then be set to */
+
+/*                  2 * NINTVLS */
+
+/*     NW         is a parameter specifying the number of SPICE windows */
+/*                in the workspace array WORK (see description below) */
+/*                used by this routine.  (The reason this dimension is */
+/*                an input argument is that this allows run-time */
+/*                error checking to be performed.) */
 
 /*     WORK       is an array used to store workspace windows. This */
 /*                array should be declared by the caller as shown: */
@@ -1316,9 +1382,13 @@ static integer c__10 = 10;
 /*         When GQUANT has value 'ANGULAR SEPARATION' then all three */
 /*         must be distinct. */
 
-/*         When GQUANT has value 'DISTANCE' or 'COORDINATE'  then */
+/*         When GQUANT has value of either */
 
-/*            The QCPARS(1) and QCPARS(2) objects must be distinct. */
+/*            'DISTANCE' */
+/*            'COORDINATE' */
+/*            'RANGE RATE' */
+
+/*         the QCPARS(1) and QCPARS(2) objects must be distinct. */
 
 /*     2)  If any of the bodies involved do not have NAIF ID codes, the */
 /*         error SPICE(IDCODENOTFOUND) will be signaled. */
@@ -1345,10 +1415,11 @@ static integer c__10 = 10;
 /*         this routine. */
 
 /*     9)  If ADJUST is negative, the error SPICE(VALUEOUTOFRANGE) will */
-/*         signaled by routines called by this routine. A non-zero */
-/*         value for ADJUST when OP has any value other than */
-/*         "ABSMIN" or "ABSMAX" causes routines called by this */
-/*         routine to signal the error SPICE(INVALIDVALUE). */
+/*         signal from a routine in the call tree of this routine. */
+
+/*         A non-zero value for ADJUST when OP has any value other than */
+/*         "ABSMIN" or "ABSMAX" causes the error SPICE(INVALIDVALUE) to */
+/*         signal from a routine in the call tree of this routine. */
 
 /*    10)  The user must take care when searching for an extremum */
 /*         (ABSMAX, ABSMIN, LOCMAX, LOCMIN) of an angular quantity. */
@@ -1402,7 +1473,7 @@ static integer c__10 = 10;
 /*     Applications that require do not require support for progress */
 /*     reporting, interrupt handling, non-default step or refinement */
 /*     functions, or non-default convergence tolerance normally should */
-/*     call GFSEP, GFDIST, GFPOSC, GFSUBC, or GFSNTC rather than */
+/*     call GFSEP, GFDIST, GFPOSC, GFSUBC, GFRR, or GFSNTC rather than */
 /*     this routine. */
 
 /*     The Search Process */
@@ -1821,6 +1892,14 @@ static integer c__10 = 10;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.1.0, 09-OCT-2009 (NJB) (EDW) */
+
+/*        Edits to argument descriptions. */
+
+/*        Added geometric quantities: */
+
+/*           Range Rate */
+
 /* -    SPICELIB Version 1.0.0, 19-MAR-2009 (NJB) (EDW) */
 
 /* -& */
@@ -1837,6 +1916,9 @@ static integer c__10 = 10;
 
 
 /*     Distance routines. */
+
+
+/*     Range rate routines. */
 
 
 /*     Quantity codes: */
@@ -1926,13 +2008,13 @@ static integer c__10 = 10;
 		ftnlen)30);
 	s_copy(srcpre + 110, "Distance pass 1 of # ", (ftnlen)55, (ftnlen)21);
 	s_copy(srcpre + 165, "Distance pass 2 of # ", (ftnlen)55, (ftnlen)21);
-	s_copy(srcpre + 330, "Angular Rate pass 1 of #", (ftnlen)55, (ftnlen)
+	s_copy(srcpre + 440, "Angular Rate pass 1 of #", (ftnlen)55, (ftnlen)
 		24);
-	s_copy(srcpre + 385, "Angular Rate pass 2 of #", (ftnlen)55, (ftnlen)
+	s_copy(srcpre + 495, "Angular Rate pass 2 of #", (ftnlen)55, (ftnlen)
 		24);
-	s_copy(srcpre + 440, "Range Rate pass 1 of #", (ftnlen)55, (ftnlen)22)
+	s_copy(srcpre + 330, "Range Rate pass 1 of #", (ftnlen)55, (ftnlen)22)
 		;
-	s_copy(srcpre + 495, "Range Rate pass 2 of #", (ftnlen)55, (ftnlen)22)
+	s_copy(srcpre + 385, "Range Rate pass 2 of #", (ftnlen)55, (ftnlen)22)
 		;
 	s_copy(srcpre + 550, "Phase search pass 1 of #", (ftnlen)55, (ftnlen)
 		24);
@@ -1944,10 +2026,10 @@ static integer c__10 = 10;
 	s_copy(srcsuf + 13, "done.", (ftnlen)13, (ftnlen)5);
 	s_copy(srcsuf + 26, "done.", (ftnlen)13, (ftnlen)5);
 	s_copy(srcsuf + 39, "done.", (ftnlen)13, (ftnlen)5);
-	s_copy(srcsuf + 78, "done.", (ftnlen)13, (ftnlen)5);
-	s_copy(srcsuf + 91, "done.", (ftnlen)13, (ftnlen)5);
 	s_copy(srcsuf + 104, "done.", (ftnlen)13, (ftnlen)5);
 	s_copy(srcsuf + 117, "done.", (ftnlen)13, (ftnlen)5);
+	s_copy(srcsuf + 78, "done.", (ftnlen)13, (ftnlen)5);
+	s_copy(srcsuf + 91, "done.", (ftnlen)13, (ftnlen)5);
 	s_copy(srcsuf + 130, "done.", (ftnlen)13, (ftnlen)5);
 	s_copy(srcsuf + 143, "done.", (ftnlen)13, (ftnlen)5);
 	s_copy(srcsuf + 156, "done.", (ftnlen)13, (ftnlen)5);
@@ -1987,18 +2069,18 @@ static integer c__10 = 10;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	ljust_(qpnams + (i__ - 1) * qpnams_len, pnames + ((i__2 = i__ - 1) < 
 		10 && 0 <= i__2 ? i__2 : s_rnge("pnames", i__2, "gfevnt_", (
-		ftnlen)1651)) * 80, qpnams_len, (ftnlen)80);
+		ftnlen)1720)) * 80, qpnams_len, (ftnlen)80);
 	ucase_(pnames + ((i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		"pnames", i__2, "gfevnt_", (ftnlen)1652)) * 80, pnames + ((
+		"pnames", i__2, "gfevnt_", (ftnlen)1721)) * 80, pnames + ((
 		i__3 = i__ - 1) < 10 && 0 <= i__3 ? i__3 : s_rnge("pnames", 
-		i__3, "gfevnt_", (ftnlen)1652)) * 80, (ftnlen)80, (ftnlen)80);
+		i__3, "gfevnt_", (ftnlen)1721)) * 80, (ftnlen)80, (ftnlen)80);
 	ljust_(qcpars + (i__ - 1) * qcpars_len, cpars + ((i__2 = i__ - 1) < 
 		10 && 0 <= i__2 ? i__2 : s_rnge("cpars", i__2, "gfevnt_", (
-		ftnlen)1654)) * 80, qcpars_len, (ftnlen)80);
+		ftnlen)1723)) * 80, qcpars_len, (ftnlen)80);
 	ucase_(cpars + ((i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		"cpars", i__2, "gfevnt_", (ftnlen)1655)) * 80, cpars + ((i__3 
+		"cpars", i__2, "gfevnt_", (ftnlen)1724)) * 80, cpars + ((i__3 
 		= i__ - 1) < 10 && 0 <= i__3 ? i__3 : s_rnge("cpars", i__3, 
-		"gfevnt_", (ftnlen)1655)) * 80, (ftnlen)80, (ftnlen)80);
+		"gfevnt_", (ftnlen)1724)) * 80, (ftnlen)80, (ftnlen)80);
     }
 
 /*     Make sure all parameters have been supplied for the requested */
@@ -2006,23 +2088,23 @@ static integer c__10 = 10;
 
     for (i__ = 1; i__ <= 10; ++i__) {
 	if (s_cmp(qpars + ((i__1 = i__ + qtnum * 10 - 11) < 70 && 0 <= i__1 ? 
-		i__1 : s_rnge("qpars", i__1, "gfevnt_", (ftnlen)1665)) * 80, 
+		i__1 : s_rnge("qpars", i__1, "gfevnt_", (ftnlen)1734)) * 80, 
 		" ", (ftnlen)80, (ftnlen)1) != 0) {
 
 /*           The Ith parameter must be supplied by the caller. */
 
 	    loc = isrchc_(qpars + ((i__1 = i__ + qtnum * 10 - 11) < 70 && 0 <=
 		     i__1 ? i__1 : s_rnge("qpars", i__1, "gfevnt_", (ftnlen)
-		    1669)) * 80, qnpars, pnames, (ftnlen)80, (ftnlen)80);
+		    1738)) * 80, qnpars, pnames, (ftnlen)80, (ftnlen)80);
 	    if (loc == 0) {
 		setmsg_("The parameter # is required in order to compute eve"
 			"nts pertaining to the quantity #; this parameter was"
 			" not supplied.", (ftnlen)117);
 		errch_("#", qpars + ((i__1 = i__ + qtnum * 10 - 11) < 70 && 0 
 			<= i__1 ? i__1 : s_rnge("qpars", i__1, "gfevnt_", (
-			ftnlen)1678)) * 80, (ftnlen)1, (ftnlen)80);
+			ftnlen)1747)) * 80, (ftnlen)1, (ftnlen)80);
 		errch_("#", qnames + ((i__1 = qtnum - 1) < 7 && 0 <= i__1 ? 
-			i__1 : s_rnge("qnames", i__1, "gfevnt_", (ftnlen)1679)
+			i__1 : s_rnge("qnames", i__1, "gfevnt_", (ftnlen)1748)
 			) * 80, (ftnlen)1, (ftnlen)80);
 		sigerr_("SPICE(MISSINGVALUE)", (ftnlen)19);
 		chkout_("GFEVNT", (ftnlen)6);
@@ -2060,7 +2142,7 @@ static integer c__10 = 10;
     loc = isrchc_("TARGET", qnpars, pnames, (ftnlen)6, (ftnlen)80);
     if (loc > 0) {
 	s_copy(target, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1723)) * 80, (ftnlen)
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1792)) * 80, (ftnlen)
 		80, (ftnlen)80);
     }
 
@@ -2069,7 +2151,7 @@ static integer c__10 = 10;
     loc = isrchc_("OBSERVER", qnpars, pnames, (ftnlen)8, (ftnlen)80);
     if (loc > 0) {
 	s_copy(obsrvr, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1735)) * 80, (ftnlen)
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1804)) * 80, (ftnlen)
 		80, (ftnlen)80);
     }
 
@@ -2078,16 +2160,16 @@ static integer c__10 = 10;
     loc = isrchc_("TARGET1", qnpars, pnames, (ftnlen)7, (ftnlen)80);
     if (loc > 0) {
 	s_copy(of, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1747)) * 80, (ftnlen)
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1816)) * 80, (ftnlen)
 		80, (ftnlen)80);
     }
 
-/*     -TARGET1- */
+/*     -TARGET2- */
 
     loc = isrchc_("TARGET2", qnpars, pnames, (ftnlen)7, (ftnlen)80);
     if (loc > 0) {
 	s_copy(of + 80, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1759)) * 80, (ftnlen)
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1828)) * 80, (ftnlen)
 		80, (ftnlen)80);
     }
 
@@ -2096,7 +2178,7 @@ static integer c__10 = 10;
     loc = isrchc_("FRAME1", qnpars, pnames, (ftnlen)6, (ftnlen)80);
     if (loc > 0) {
 	s_copy(frame, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1771)) * 80, (ftnlen)
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1840)) * 80, (ftnlen)
 		80, (ftnlen)80);
     }
 
@@ -2105,7 +2187,7 @@ static integer c__10 = 10;
     loc = isrchc_("FRAME2", qnpars, pnames, (ftnlen)6, (ftnlen)80);
     if (loc > 0) {
 	s_copy(frame + 80, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 
-		: s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1782)) * 80, (
+		: s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1851)) * 80, (
 		ftnlen)80, (ftnlen)80);
     }
 
@@ -2114,7 +2196,7 @@ static integer c__10 = 10;
     loc = isrchc_("SHAPE1", qnpars, pnames, (ftnlen)6, (ftnlen)80);
     if (loc > 0) {
 	s_copy(shape, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1794)) * 80, (ftnlen)
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1863)) * 80, (ftnlen)
 		80, (ftnlen)80);
     }
 
@@ -2123,7 +2205,7 @@ static integer c__10 = 10;
     loc = isrchc_("SHAPE2", qnpars, pnames, (ftnlen)6, (ftnlen)80);
     if (loc > 0) {
 	s_copy(shape + 80, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 
-		: s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1806)) * 80, (
+		: s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1875)) * 80, (
 		ftnlen)80, (ftnlen)80);
     }
 
@@ -2132,7 +2214,7 @@ static integer c__10 = 10;
     loc = isrchc_("ABCORR", qnpars, pnames, (ftnlen)6, (ftnlen)80);
     if (loc > 0) {
 	s_copy(abcorr, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1818)) * 80, (ftnlen)
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1887)) * 80, (ftnlen)
 		80, (ftnlen)80);
     }
 
@@ -2141,7 +2223,7 @@ static integer c__10 = 10;
     loc = isrchc_("REFERENCE FRAME", qnpars, pnames, (ftnlen)15, (ftnlen)80);
     if (loc > 0) {
 	s_copy(ref, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1830)) * 80, (ftnlen)
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1899)) * 80, (ftnlen)
 		80, (ftnlen)80);
     }
 
@@ -2191,7 +2273,7 @@ static integer c__10 = 10;
     loc = isrchc_("DREF", qnpars, pnames, (ftnlen)4, (ftnlen)80);
     if (loc > 0) {
 	s_copy(dref, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1901)) * 80, (ftnlen)
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1970)) * 80, (ftnlen)
 		80, (ftnlen)80);
     }
 
@@ -2241,9 +2323,9 @@ static integer c__10 = 10;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    repmi_(srcpre + ((i__2 = i__ + (qtnum << 1) - 3) < 14 && 0 <= 
 		    i__2 ? i__2 : s_rnge("srcpre", i__2, "gfevnt_", (ftnlen)
-		    1966)) * 55, "#", &npass, rptpre + ((i__3 = i__ - 1) < 2 
+		    2035)) * 55, "#", &npass, rptpre + ((i__3 = i__ - 1) < 2 
 		    && 0 <= i__3 ? i__3 : s_rnge("rptpre", i__3, "gfevnt_", (
-		    ftnlen)1966)) * 55, (ftnlen)55, (ftnlen)1, (ftnlen)55);
+		    ftnlen)2035)) * 55, (ftnlen)55, (ftnlen)1, (ftnlen)55);
 	}
     }
 
@@ -2286,20 +2368,29 @@ static integer c__10 = 10;
 		L_fp)udbail, mw, nw, work, cnfine, result, (ftnlen)80, (
 		ftnlen)80, (ftnlen)80, (ftnlen)80, (ftnlen)80, (ftnlen)80, (
 		ftnlen)80, (ftnlen)80, (ftnlen)80, op_len);
-    } else if (qtnum == 4) {
+    } else if (qtnum == 5) {
 
 /*        d( sep ) */
 /*        -------- */
 /*        dt */
 
 /*                ---Not yet implemented--- */
-    } else if (qtnum == 5) {
+    } else if (qtnum == 4) {
 
-/*        d( ||r|| ) */
-/*        ---------- */
-/*        dt */
+/*        Range rate condition initializer. */
 
-/*                ---Not yet implemented--- */
+
+/*        Set the interval for the QDERIV call in ZZGFRRDC to one */
+/*        TDB second. */
+
+	dt = 1.;
+	zzgfrrin_(target, abcorr, obsrvr, refval, &dt, (ftnlen)80, (ftnlen)80,
+		 (ftnlen)80);
+	zzgfrel_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfrrdc_, (U_fp)zzgfrrlt_,
+		 (U_fp)zzgfrrgq_, (U_fp)zzgfrrur_, op, refval, tol, adjust, 
+		cnfine, mw, nw, work, rpt, (U_fp)udrepi, (U_fp)udrepu, (U_fp)
+		udrepf, rptpre, srcsuf + 78, bail, (L_fp)udbail, result, 
+		op_len, (ftnlen)55, (ftnlen)13);
     } else if (qtnum == 6) {
 /*                ---Not yet implemented--- */
     } else if (qtnum == 7) {
@@ -2310,7 +2401,8 @@ static integer c__10 = 10;
 /*        never execute since we already checked the input quantity */
 /*        name string. */
 
-	setmsg_("Unknown event '#'.", (ftnlen)18);
+	setmsg_("Unknown event '#'. This error indicates a bug. Please conta"
+		"ct NAIF.", (ftnlen)67);
 	errch_("#", gquant, (ftnlen)1, gquant_len);
 	sigerr_("SPICE(BUG)", (ftnlen)10);
 	chkout_("GFEVNT", (ftnlen)6);

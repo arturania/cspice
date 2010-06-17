@@ -11,8 +11,8 @@ static integer c__15 = 15;
 static integer c__7 = 7;
 static integer c__0 = 0;
 static integer c__1 = 1;
-static doublereal c_b66 = 1.;
-static doublereal c_b67 = 0.;
+static doublereal c_b69 = 1.;
+static doublereal c_b70 = 0.;
 
 /* $Procedure ZZGFLONG ( GF, longitude solver ) */
 /* Subroutine */ int zzgflong_(char *vecdef, char *method, char *target, char 
@@ -74,7 +74,7 @@ static doublereal c_b67 = 0.;
     extern /* Subroutine */ int ljust_(char *, char *, ftnlen, ftnlen);
     extern doublereal twopi_(void);
     integer q1, q2, q3, q4;
-    extern /* Subroutine */ int bodc2n_(integer *, char *, logical *, ftnlen);
+    extern /* Subroutine */ int bodc2s_(integer *, char *, ftnlen);
     extern logical failed_(void);
     extern doublereal pi_(void);
     doublereal cv, et;
@@ -221,6 +221,11 @@ static doublereal c_b67 = 0.;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+
+/*       Added NWRR parameter. */
+/*       Added NWUDS parameter. */
+
 /* -    SPICELIB Version 1.0.0, 21-FEB-2009 (NJB) (LSE) (EDW) */
 
 /* -& */
@@ -256,6 +261,14 @@ static doublereal c_b67 = 0.;
 
 /*     Callers of GFSEP should declare their workspace window */
 /*     count using NWSEP. */
+
+
+/*     Callers of GFRR should declare their workspace window */
+/*     count using NWRR. */
+
+
+/*     Callers of GFUDS should declare their workspace window */
+/*     count using NWUDS. */
 
 
 /*     ADDWIN is a parameter used to expand each interval of the search */
@@ -433,7 +446,7 @@ static doublereal c_b67 = 0.;
 
 /*     Note: the sum of these lengths, plus the length of the */
 /*     "percent complete" substring, should not be long enough */
-/*     to cause wrap-around on any platforms's terminal window. */
+/*     to cause wrap-around on any platform's terminal window. */
 
 
 /*     Total progress report message length upper bound: */
@@ -1201,6 +1214,11 @@ static doublereal c_b67 = 0.;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.0.0 12-MAY-2009 (NJB) */
+
+/*        Upgraded to support targets and observers having */
+/*        no names associated with their ID codes. */
+
 /* -    SPICELIB Version 1.0.0  23-FEB-2009 (NJB) (EDW) */
 
 /* -& */
@@ -1482,7 +1500,7 @@ static doublereal c_b67 = 0.;
     for (i__ = 1; i__ <= 7; ++i__) {
 	ssized_(mw, &work[(i__1 = (i__ + 5) * work_dim1 - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgflong_", (ftnlen)1279)]);
+		i__1, "zzgflong_", (ftnlen)1284)]);
     }
 
 /*     Initialize the workspace window pool. Set up the parallel */
@@ -1491,7 +1509,7 @@ static doublereal c_b67 = 0.;
     lnkini_(&c__7, wwpool);
     for (i__ = 1; i__ <= 7; ++i__) {
 	wix[(i__1 = i__ - 1) < 7 && 0 <= i__1 ? i__1 : s_rnge("wix", i__1, 
-		"zzgflong_", (ftnlen)1289)] = i__ + 5;
+		"zzgflong_", (ftnlen)1294)] = i__ + 5;
     }
 
 /*     Get an upper case, left-justified version of the */
@@ -1704,13 +1722,21 @@ static doublereal c_b67 = 0.;
 
 	namfrm_(ref, &frcode, ref_len);
 	frinfo_(&frcode, &refctr, &class__, &clssid, &found);
-	bodc2n_(&refctr, rctrnm, &found, (ftnlen)36);
-	if (failed_() || ! found) {
-	    setmsg_("ZZGFCOIN didn't do it's job.", (ftnlen)28);
+	if (failed_()) {
+	    chkout_("ZZGFLONG", (ftnlen)8);
+	    return 0;
+	}
+	if (! found) {
+	    setmsg_("FRINFO didn't find data for frame # which has frame ID "
+		    "code #. This frame should have been validated by ZZGFCOI"
+		    "N.", (ftnlen)113);
+	    errch_("#", ref, (ftnlen)1, ref_len);
+	    errint_("#", &frcode, (ftnlen)1);
 	    sigerr_("SPICE(BUG)", (ftnlen)10);
 	    chkout_("ZZGFLONG", (ftnlen)8);
 	    return 0;
 	}
+	bodc2s_(&refctr, rctrnm, (ftnlen)36);
 
 /*        Find the longitude of the +Y axis. If this longitude */
 /*        is greater than pi, the sense is positive West. Note */
@@ -1718,7 +1744,7 @@ static doublereal c_b67 = 0.;
 /*        equatorial radius and flattening factor: 1 and 0, */
 /*        respectively, are just fine. */
 
-	recpgr_(rctrnm, y, &c_b66, &c_b67, &lon, &lat, &alt, (ftnlen)36);
+	recpgr_(rctrnm, y, &c_b69, &c_b70, &lon, &lat, &alt, (ftnlen)36);
 
 /*        Planetographic longitude ranges from 0 to 2*pi, so */
 /*        longitudes corresponding to positive Y values are */
@@ -1843,7 +1869,7 @@ static doublereal c_b67 = 0.;
 
 	lnkan_(wwpool, &node);
 	f1 = wix[(i__1 = node - 1) < 7 && 0 <= i__1 ? i__1 : s_rnge("wix", 
-		i__1, "zzgflong_", (ftnlen)1728)];
+		i__1, "zzgflong_", (ftnlen)1746)];
 
 /*        Make sure the coordinate utilities have been initialized */
 /*        with the actual values we'll use for our search. */
@@ -1863,11 +1889,11 @@ static doublereal c_b67 = 0.;
 
 	    zzgfrel_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfcosd_, (U_fp)
 		    zzgfcosl_, (S_fp)zzgfcosg_, (U_fp)zzgfcour_, "=", &prxval,
-		     &loctol, &c_b67, cnfine, mw, nw, work, rpt, (U_fp)udrepi,
+		     &loctol, &c_b70, cnfine, mw, nw, work, rpt, (U_fp)udrepi,
 		     (U_fp)udrepu, (U_fp)udrepf, rptpre, rptsuf, bail, (L_fp)
 		    udbail, &work[(i__1 = f1 * work_dim1 - 5 - work_offset) < 
 		    work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work",
-		     i__1, "zzgflong_", (ftnlen)1747)], (ftnlen)1, (ftnlen)80,
+		     i__1, "zzgflong_", (ftnlen)1765)], (ftnlen)1, (ftnlen)80,
 		     (ftnlen)80);
 	} else {
 
@@ -1876,11 +1902,11 @@ static doublereal c_b67 = 0.;
 
 	    zzgfrel_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfcocd_, (U_fp)
 		    zzgfcocl_, (S_fp)zzgfcocg_, (U_fp)zzgfcour_, "=", &prxval,
-		     &loctol, &c_b67, cnfine, mw, nw, work, rpt, (U_fp)udrepi,
+		     &loctol, &c_b70, cnfine, mw, nw, work, rpt, (U_fp)udrepi,
 		     (U_fp)udrepu, (U_fp)udrepf, rptpre, rptsuf, bail, (L_fp)
 		    udbail, &work[(i__1 = f1 * work_dim1 - 5 - work_offset) < 
 		    work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work",
-		     i__1, "zzgflong_", (ftnlen)1760)], (ftnlen)1, (ftnlen)80,
+		     i__1, "zzgflong_", (ftnlen)1778)], (ftnlen)1, (ftnlen)80,
 		     (ftnlen)80);
 	}
 	if (failed_()) {
@@ -1901,12 +1927,12 @@ static doublereal c_b67 = 0.;
 
 	n = cardd_(&work[(i__1 = f1 * work_dim1 - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgflong_", (ftnlen)1788)]);
+		i__1, "zzgflong_", (ftnlen)1806)]);
 	i__1 = n;
 	for (i__ = 1; i__ <= i__1; i__ += 2) {
 	    start = work[(i__2 = i__ + f1 * work_dim1 - work_offset) < 
 		    work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : s_rnge("work",
-		     i__2, "zzgflong_", (ftnlen)1792)];
+		     i__2, "zzgflong_", (ftnlen)1810)];
 	    if (s_cmp(prxfun, "SIN", (ftnlen)50, (ftnlen)3) == 0) {
 
 /*              Get the cosine of the coordinate at the interval start */
@@ -1959,7 +1985,7 @@ static doublereal c_b67 = 0.;
 
 	lnkan_(wwpool, &node);
 	left = wix[(i__1 = node - 1) < 7 && 0 <= i__1 ? i__1 : s_rnge("wix", 
-		i__1, "zzgflong_", (ftnlen)1855)];
+		i__1, "zzgflong_", (ftnlen)1873)];
 	s_copy(rptpre, "Coordinate pass 1 of 6", (ftnlen)80, (ftnlen)22);
 	s_copy(rptpre + 80, "Coordinate pass 2 of 6", (ftnlen)80, (ftnlen)22);
 	s_copy(prxrel, "<", (ftnlen)6, (ftnlen)1);
@@ -1970,11 +1996,11 @@ static doublereal c_b67 = 0.;
 		ftnlen)32);
 	zzgfrel_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfcocd_, (U_fp)zzgfcocl_,
 		 (S_fp)zzgfcocg_, (U_fp)zzgfcour_, prxrel, &prxval, &loctol, &
-		c_b67, cnfine, mw, nw, work, rpt, (U_fp)udrepi, (U_fp)udrepu, 
+		c_b70, cnfine, mw, nw, work, rpt, (U_fp)udrepi, (U_fp)udrepu, 
 		(U_fp)udrepf, rptpre, rptsuf, bail, (L_fp)udbail, &work[(i__1 
 		= left * work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 
 		&& 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgflong_", (
-		ftnlen)1867)], (ftnlen)6, (ftnlen)80, (ftnlen)80);
+		ftnlen)1885)], (ftnlen)6, (ftnlen)80, (ftnlen)80);
 
 /*        Handle interrupts if necessary. */
 
@@ -1993,10 +2019,10 @@ static doublereal c_b67 = 0.;
 
 	lnkan_(wwpool, &node);
 	compl = wix[(i__1 = node - 1) < 7 && 0 <= i__1 ? i__1 : s_rnge("wix", 
-		i__1, "zzgflong_", (ftnlen)1893)];
+		i__1, "zzgflong_", (ftnlen)1911)];
 	lnkan_(wwpool, &node);
 	right = wix[(i__1 = node - 1) < 7 && 0 <= i__1 ? i__1 : s_rnge("wix", 
-		i__1, "zzgflong_", (ftnlen)1896)];
+		i__1, "zzgflong_", (ftnlen)1914)];
 	s_copy(rptpre, "Coordinate pass 3 of 6", (ftnlen)80, (ftnlen)22);
 	s_copy(rptpre + 80, "Coordinate pass 4 of 6", (ftnlen)80, (ftnlen)22);
 	s_copy(prxrel, "<", (ftnlen)6, (ftnlen)1);
@@ -2007,13 +2033,13 @@ static doublereal c_b67 = 0.;
 		ftnlen)32);
 	zzgfrel_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfcocd_, (U_fp)zzgfcocl_,
 		 (S_fp)zzgfcocg_, (U_fp)zzgfcour_, prxrel, &prxval, &loctol, &
-		c_b67, &work[(i__1 = left * work_dim1 - 5 - work_offset) < 
+		c_b70, &work[(i__1 = left * work_dim1 - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgflong_", (ftnlen)1909)], mw, nw, work, rpt, (U_fp)
+		i__1, "zzgflong_", (ftnlen)1927)], mw, nw, work, rpt, (U_fp)
 		udrepi, (U_fp)udrepu, (U_fp)udrepf, rptpre, rptsuf, bail, (
 		L_fp)udbail, &work[(i__2 = compl * work_dim1 - 5 - 
 		work_offset) < work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : 
-		s_rnge("work", i__2, "zzgflong_", (ftnlen)1909)], (ftnlen)6, (
+		s_rnge("work", i__2, "zzgflong_", (ftnlen)1927)], (ftnlen)6, (
 		ftnlen)80, (ftnlen)80);
 
 /*        Handle interrupts if necessary. */
@@ -2030,9 +2056,9 @@ static doublereal c_b67 = 0.;
 
 	wndifd_(cnfine, &work[(i__1 = compl * work_dim1 - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgflong_", (ftnlen)1931)], &work[(i__2 = right * 
+		i__1, "zzgflong_", (ftnlen)1949)], &work[(i__2 = right * 
 		work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 && 0 <= 
-		i__2 ? i__2 : s_rnge("work", i__2, "zzgflong_", (ftnlen)1931)]
+		i__2 ? i__2 : s_rnge("work", i__2, "zzgflong_", (ftnlen)1949)]
 		);
 
 /*        We're now going to find local extrema of the coordinate in the */
@@ -2050,7 +2076,7 @@ static doublereal c_b67 = 0.;
 		s_copy(prxcrd, "RIGHT ASCENSION", (ftnlen)32, (ftnlen)15);
 		lnkan_(wwpool, &node);
 		res1 = wix[(i__1 = node - 1) < 7 && 0 <= i__1 ? i__1 : s_rnge(
-			"wix", i__1, "zzgflong_", (ftnlen)1950)];
+			"wix", i__1, "zzgflong_", (ftnlen)1968)];
 		res = res1;
 		s_copy(rptpre, "Coordinate pass 5 of 6", (ftnlen)80, (ftnlen)
 			22);
@@ -2061,26 +2087,26 @@ static doublereal c_b67 = 0.;
 		s_copy(prxcrd, "LONGITUDE", (ftnlen)32, (ftnlen)9);
 		lnkan_(wwpool, &node);
 		res2 = wix[(i__1 = node - 1) < 7 && 0 <= i__1 ? i__1 : s_rnge(
-			"wix", i__1, "zzgflong_", (ftnlen)1963)];
+			"wix", i__1, "zzgflong_", (ftnlen)1981)];
 		res = res2;
 		s_copy(rptpre, "Coordinate pass 6 of 6", (ftnlen)80, (ftnlen)
 			22);
 		s_copy(rptpre + 80, " ", (ftnlen)80, (ftnlen)1);
 	    }
 	    zzgfcoin_(vecdef, method, target, ref, abcorr, obsrvr, dref, dvec,
-		     prxsys, prxcrd, &c_b67, vecdef_len, method_len, 
+		     prxsys, prxcrd, &c_b70, vecdef_len, method_len, 
 		    target_len, ref_len, abcorr_len, obsrvr_len, dref_len, (
 		    ftnlen)32, (ftnlen)32);
 	    zzgfrel_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfcodc_, (U_fp)
-		    zzgfcolt_, (S_fp)zzgfcog_, (U_fp)zzgfcour_, uop, &c_b67, &
-		    loctol, &c_b67, &work[(i__1 = s * work_dim1 - 5 - 
+		    zzgfcolt_, (S_fp)zzgfcog_, (U_fp)zzgfcour_, uop, &c_b70, &
+		    loctol, &c_b70, &work[(i__1 = s * work_dim1 - 5 - 
 		    work_offset) < work_dim1 * work_dim2 && 0 <= i__1 ? i__1 :
-		     s_rnge("work", i__1, "zzgflong_", (ftnlen)1976)], mw, nw,
+		     s_rnge("work", i__1, "zzgflong_", (ftnlen)1994)], mw, nw,
 		     work, rpt, (U_fp)udrepi, (U_fp)udrepu, (U_fp)udrepf, 
 		    rptpre, rptsuf, bail, (L_fp)udbail, &work[(i__2 = res * 
 		    work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 && 0 
 		    <= i__2 ? i__2 : s_rnge("work", i__2, "zzgflong_", (
-		    ftnlen)1976)], (ftnlen)6, (ftnlen)80, (ftnlen)80);
+		    ftnlen)1994)], (ftnlen)6, (ftnlen)80, (ftnlen)80);
 
 /*           Handle interrupts if necessary. */
 
@@ -2096,9 +2122,9 @@ static doublereal c_b67 = 0.;
 
 	wnunid_(&work[(i__1 = res1 * work_dim1 - 5 - work_offset) < work_dim1 
 		* work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgf"
-		"long_", (ftnlen)1999)], &work[(i__2 = res2 * work_dim1 - 5 - 
+		"long_", (ftnlen)2017)], &work[(i__2 = res2 * work_dim1 - 5 - 
 		work_offset) < work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : 
-		s_rnge("work", i__2, "zzgflong_", (ftnlen)1999)], result);
+		s_rnge("work", i__2, "zzgflong_", (ftnlen)2017)], result);
 
 /*        End of the LOCMIN and LOCMAX cases. RESULT is set. */
 
@@ -2148,7 +2174,7 @@ static doublereal c_b67 = 0.;
     }
     for (i__ = 1; i__ <= 2; ++i__) {
 	repmi_(tmplat, "#", &i__, rptpre + ((i__1 = i__ - 1) < 2 && 0 <= i__1 
-		? i__1 : s_rnge("rptpre", i__1, "zzgflong_", (ftnlen)2055)) * 
+		? i__1 : s_rnge("rptpre", i__1, "zzgflong_", (ftnlen)2073)) * 
 		80, (ftnlen)80, (ftnlen)1, (ftnlen)80);
     }
 
@@ -2161,17 +2187,17 @@ static doublereal c_b67 = 0.;
     lnkan_(wwpool, &node);
     head = node;
     top = wix[(i__1 = node - 1) < 7 && 0 <= i__1 ? i__1 : s_rnge("wix", i__1, 
-	    "zzgflong_", (ftnlen)2067)];
+	    "zzgflong_", (ftnlen)2085)];
     prxval = sin(1e-11);
     zzgfcoin_(vecdef, method, target, ref, abcorr, obsrvr, dref, dvec, nrmsys,
 	     nrmcrd, &prxval, vecdef_len, method_len, target_len, ref_len, 
 	    abcorr_len, obsrvr_len, dref_len, (ftnlen)32, (ftnlen)32);
     zzgfrel_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfcosd_, (U_fp)zzgfcosl_, (
-	    S_fp)zzgfcosg_, (U_fp)zzgfcour_, ">", &prxval, &loctol, &c_b67, 
+	    S_fp)zzgfcosg_, (U_fp)zzgfcour_, ">", &prxval, &loctol, &c_b70, 
 	    cnfine, mw, nw, work, rpt, (U_fp)udrepi, (U_fp)udrepu, (U_fp)
 	    udrepf, rptpre, rptsuf, bail, (L_fp)udbail, &work[(i__1 = top * 
 	    work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 && 0 <= i__1 
-	    ? i__1 : s_rnge("work", i__1, "zzgflong_", (ftnlen)2075)], (
+	    ? i__1 : s_rnge("work", i__1, "zzgflong_", (ftnlen)2093)], (
 	    ftnlen)1, (ftnlen)80, (ftnlen)80);
 
 /*     2 passes done. */
@@ -2196,22 +2222,22 @@ static doublereal c_b67 = 0.;
 	i__2 = total + i__;
 	repmi_(tmplat, "#", &i__2, rptpre + ((i__1 = i__ - 1) < 2 && 0 <= 
 		i__1 ? i__1 : s_rnge("rptpre", i__1, "zzgflong_", (ftnlen)
-		2105)) * 80, (ftnlen)80, (ftnlen)1, (ftnlen)80);
+		2123)) * 80, (ftnlen)80, (ftnlen)1, (ftnlen)80);
     }
     lnkan_(wwpool, &node);
     lnkila_(&head, &node, wwpool);
     bot = wix[(i__1 = node - 1) < 7 && 0 <= i__1 ? i__1 : s_rnge("wix", i__1, 
-	    "zzgflong_", (ftnlen)2111)];
+	    "zzgflong_", (ftnlen)2129)];
     prxval = -sin(1e-11);
     zzgfcoin_(vecdef, method, target, ref, abcorr, obsrvr, dref, dvec, nrmsys,
 	     nrmcrd, &prxval, vecdef_len, method_len, target_len, ref_len, 
 	    abcorr_len, obsrvr_len, dref_len, (ftnlen)32, (ftnlen)32);
     zzgfrel_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfcosd_, (U_fp)zzgfcosl_, (
-	    S_fp)zzgfcosg_, (U_fp)zzgfcour_, "<", &prxval, &loctol, &c_b67, 
+	    S_fp)zzgfcosg_, (U_fp)zzgfcour_, "<", &prxval, &loctol, &c_b70, 
 	    cnfine, mw, nw, work, rpt, (U_fp)udrepi, (U_fp)udrepu, (U_fp)
 	    udrepf, rptpre, rptsuf, bail, (L_fp)udbail, &work[(i__1 = bot * 
 	    work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 && 0 <= i__1 
-	    ? i__1 : s_rnge("work", i__1, "zzgflong_", (ftnlen)2120)], (
+	    ? i__1 : s_rnge("work", i__1, "zzgflong_", (ftnlen)2138)], (
 	    ftnlen)1, (ftnlen)80, (ftnlen)80);
 
 /*     4 passes done. */
@@ -2234,7 +2260,7 @@ static doublereal c_b67 = 0.;
 	i__2 = total + i__;
 	repmi_(tmplat, "#", &i__2, rptpre + ((i__1 = i__ - 1) < 2 && 0 <= 
 		i__1 ? i__1 : s_rnge("rptpre", i__1, "zzgflong_", (ftnlen)
-		2148)) * 80, (ftnlen)80, (ftnlen)1, (ftnlen)80);
+		2166)) * 80, (ftnlen)80, (ftnlen)1, (ftnlen)80);
     }
 
 /*     We'll keep all of the allocated nodes linked together. */
@@ -2246,16 +2272,16 @@ static doublereal c_b67 = 0.;
     lnkan_(wwpool, &node);
     lnkila_(&head, &node, wwpool);
     right = wix[(i__1 = node - 1) < 7 && 0 <= i__1 ? i__1 : s_rnge("wix", 
-	    i__1, "zzgflong_", (ftnlen)2160)];
+	    i__1, "zzgflong_", (ftnlen)2178)];
     zzgfcoin_(vecdef, method, target, ref, abcorr, obsrvr, dref, dvec, nrmsys,
-	     nrmcrd, &c_b67, vecdef_len, method_len, target_len, ref_len, 
+	     nrmcrd, &c_b70, vecdef_len, method_len, target_len, ref_len, 
 	    abcorr_len, obsrvr_len, dref_len, (ftnlen)32, (ftnlen)32);
     zzgfrel_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfcocd_, (U_fp)zzgfcocl_, (
-	    S_fp)zzgfcocg_, (U_fp)zzgfcour_, ">", &c_b67, &loctol, &c_b67, 
+	    S_fp)zzgfcocg_, (U_fp)zzgfcour_, ">", &c_b70, &loctol, &c_b70, 
 	    cnfine, mw, nw, work, rpt, (U_fp)udrepi, (U_fp)udrepu, (U_fp)
 	    udrepf, rptpre, rptsuf, bail, (L_fp)udbail, &work[(i__1 = right * 
 	    work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 && 0 <= i__1 
-	    ? i__1 : s_rnge("work", i__1, "zzgflong_", (ftnlen)2166)], (
+	    ? i__1 : s_rnge("work", i__1, "zzgflong_", (ftnlen)2184)], (
 	    ftnlen)1, (ftnlen)80, (ftnlen)80);
 
 /*     6 passes done. */
@@ -2291,11 +2317,11 @@ static doublereal c_b67 = 0.;
 	    lnkan_(wwpool, &node);
 	    lnkila_(&head, &node, wwpool);
 	    q2 = wix[(i__1 = node - 1) < 7 && 0 <= i__1 ? i__1 : s_rnge("wix",
-		     i__1, "zzgflong_", (ftnlen)2211)];
+		     i__1, "zzgflong_", (ftnlen)2229)];
 	    lnkan_(wwpool, &node);
 	    lnkila_(&head, &node, wwpool);
 	    q3 = wix[(i__1 = node - 1) < 7 && 0 <= i__1 ? i__1 : s_rnge("wix",
-		     i__1, "zzgflong_", (ftnlen)2215)];
+		     i__1, "zzgflong_", (ftnlen)2233)];
 
 /*           Compute windows for the second and third quadrants. Note */
 /*           that these windows are bounded away from the branch cut */
@@ -2304,20 +2330,20 @@ static doublereal c_b67 = 0.;
 
 	    wndifd_(&work[(i__1 = top * work_dim1 - 5 - work_offset) < 
 		    work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work",
-		     i__1, "zzgflong_", (ftnlen)2223)], &work[(i__2 = right * 
+		     i__1, "zzgflong_", (ftnlen)2241)], &work[(i__2 = right * 
 		    work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 && 0 
 		    <= i__2 ? i__2 : s_rnge("work", i__2, "zzgflong_", (
-		    ftnlen)2223)], &work[(i__3 = q2 * work_dim1 - 5 - 
+		    ftnlen)2241)], &work[(i__3 = q2 * work_dim1 - 5 - 
 		    work_offset) < work_dim1 * work_dim2 && 0 <= i__3 ? i__3 :
-		     s_rnge("work", i__3, "zzgflong_", (ftnlen)2223)]);
+		     s_rnge("work", i__3, "zzgflong_", (ftnlen)2241)]);
 	    wndifd_(&work[(i__1 = bot * work_dim1 - 5 - work_offset) < 
 		    work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work",
-		     i__1, "zzgflong_", (ftnlen)2224)], &work[(i__2 = right * 
+		     i__1, "zzgflong_", (ftnlen)2242)], &work[(i__2 = right * 
 		    work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 && 0 
 		    <= i__2 ? i__2 : s_rnge("work", i__2, "zzgflong_", (
-		    ftnlen)2224)], &work[(i__3 = q3 * work_dim1 - 5 - 
+		    ftnlen)2242)], &work[(i__3 = q3 * work_dim1 - 5 - 
 		    work_offset) < work_dim1 * work_dim2 && 0 <= i__3 ? i__3 :
-		     s_rnge("work", i__3, "zzgflong_", (ftnlen)2224)]);
+		     s_rnge("work", i__3, "zzgflong_", (ftnlen)2242)]);
 	    if (s_cmp(uop, "ABSMAX", (ftnlen)6, (ftnlen)6) == 0) {
 		region[0] = q2;
 		region[1] = right;
@@ -2338,15 +2364,15 @@ static doublereal c_b67 = 0.;
 	    lnkan_(wwpool, &node);
 	    lnkila_(&head, &node, wwpool);
 	    q1 = wix[(i__1 = node - 1) < 7 && 0 <= i__1 ? i__1 : s_rnge("wix",
-		     i__1, "zzgflong_", (ftnlen)2247)];
+		     i__1, "zzgflong_", (ftnlen)2265)];
 	    lnkan_(wwpool, &node);
 	    lnkila_(&head, &node, wwpool);
 	    left = wix[(i__1 = node - 1) < 7 && 0 <= i__1 ? i__1 : s_rnge(
-		    "wix", i__1, "zzgflong_", (ftnlen)2251)];
+		    "wix", i__1, "zzgflong_", (ftnlen)2269)];
 	    lnkan_(wwpool, &node);
 	    lnkila_(&head, &node, wwpool);
 	    q4 = wix[(i__1 = node - 1) < 7 && 0 <= i__1 ? i__1 : s_rnge("wix",
-		     i__1, "zzgflong_", (ftnlen)2255)];
+		     i__1, "zzgflong_", (ftnlen)2273)];
 
 /*           Compute windows for the first and fourth quadrants. Note */
 /*           that these windows are bounded away from the branch cut */
@@ -2356,26 +2382,26 @@ static doublereal c_b67 = 0.;
 
 	    wnintd_(&work[(i__1 = right * work_dim1 - 5 - work_offset) < 
 		    work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work",
-		     i__1, "zzgflong_", (ftnlen)2264)], &work[(i__2 = top * 
+		     i__1, "zzgflong_", (ftnlen)2282)], &work[(i__2 = top * 
 		    work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 && 0 
 		    <= i__2 ? i__2 : s_rnge("work", i__2, "zzgflong_", (
-		    ftnlen)2264)], &work[(i__3 = q1 * work_dim1 - 5 - 
+		    ftnlen)2282)], &work[(i__3 = q1 * work_dim1 - 5 - 
 		    work_offset) < work_dim1 * work_dim2 && 0 <= i__3 ? i__3 :
-		     s_rnge("work", i__3, "zzgflong_", (ftnlen)2264)]);
+		     s_rnge("work", i__3, "zzgflong_", (ftnlen)2282)]);
 	    wnintd_(&work[(i__1 = right * work_dim1 - 5 - work_offset) < 
 		    work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work",
-		     i__1, "zzgflong_", (ftnlen)2265)], &work[(i__2 = bot * 
+		     i__1, "zzgflong_", (ftnlen)2283)], &work[(i__2 = bot * 
 		    work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 && 0 
 		    <= i__2 ? i__2 : s_rnge("work", i__2, "zzgflong_", (
-		    ftnlen)2265)], &work[(i__3 = q4 * work_dim1 - 5 - 
+		    ftnlen)2283)], &work[(i__3 = q4 * work_dim1 - 5 - 
 		    work_offset) < work_dim1 * work_dim2 && 0 <= i__3 ? i__3 :
-		     s_rnge("work", i__3, "zzgflong_", (ftnlen)2265)]);
+		     s_rnge("work", i__3, "zzgflong_", (ftnlen)2283)]);
 	    wndifd_(cnfine, &work[(i__1 = right * work_dim1 - 5 - work_offset)
 		     < work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge(
-		    "work", i__1, "zzgflong_", (ftnlen)2266)], &work[(i__2 = 
+		    "work", i__1, "zzgflong_", (ftnlen)2284)], &work[(i__2 = 
 		    left * work_dim1 - 5 - work_offset) < work_dim1 * 
 		    work_dim2 && 0 <= i__2 ? i__2 : s_rnge("work", i__2, 
-		    "zzgflong_", (ftnlen)2266)]);
+		    "zzgflong_", (ftnlen)2284)]);
 	    if (s_cmp(uop, "ABSMAX", (ftnlen)6, (ftnlen)6) == 0) {
 		region[0] = q4;
 		region[1] = left;
@@ -2421,11 +2447,11 @@ static doublereal c_b67 = 0.;
 /*           cuts near the region boundaries. */
 
 	    if (region[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge(
-		    "region", i__1, "zzgflong_", (ftnlen)2316)] == q1 || 
+		    "region", i__1, "zzgflong_", (ftnlen)2334)] == q1 || 
 		    region[(i__2 = i__ - 1) < 3 && 0 <= i__2 ? i__2 : s_rnge(
-		    "region", i__2, "zzgflong_", (ftnlen)2316)] == q4 || 
+		    "region", i__2, "zzgflong_", (ftnlen)2334)] == q4 || 
 		    region[(i__3 = i__ - 1) < 3 && 0 <= i__3 ? i__3 : s_rnge(
-		    "region", i__3, "zzgflong_", (ftnlen)2316)] == right) {
+		    "region", i__3, "zzgflong_", (ftnlen)2334)] == right) {
 		s_copy(prxsys, "LATITUDINAL", (ftnlen)32, (ftnlen)11);
 		s_copy(prxcrd, "LONGITUDE", (ftnlen)32, (ftnlen)9);
 	    } else {
@@ -2433,16 +2459,16 @@ static doublereal c_b67 = 0.;
 		s_copy(prxcrd, "RIGHT ASCENSION", (ftnlen)32, (ftnlen)15);
 	    }
 	    zzgfcoin_(vecdef, method, target, ref, abcorr, obsrvr, dref, dvec,
-		     prxsys, prxcrd, &c_b67, vecdef_len, method_len, 
+		     prxsys, prxcrd, &c_b70, vecdef_len, method_len, 
 		    target_len, ref_len, abcorr_len, obsrvr_len, dref_len, (
 		    ftnlen)32, (ftnlen)32);
 	    zzgfrel_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfcodc_, (U_fp)
-		    zzgfcolt_, (S_fp)zzgfcocg_, (U_fp)zzgfcour_, uop, &c_b67, 
-		    &loctol, &c_b67, &work[(i__2 = region[(i__1 = i__ - 1) < 
+		    zzgfcolt_, (S_fp)zzgfcocg_, (U_fp)zzgfcour_, uop, &c_b70, 
+		    &loctol, &c_b70, &work[(i__2 = region[(i__1 = i__ - 1) < 
 		    3 && 0 <= i__1 ? i__1 : s_rnge("region", i__1, "zzgflong_"
-		    , (ftnlen)2332)] * work_dim1 - 5 - work_offset) < 
+		    , (ftnlen)2350)] * work_dim1 - 5 - work_offset) < 
 		    work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : s_rnge("work",
-		     i__2, "zzgflong_", (ftnlen)2332)], mw, nw, work, rpt, (
+		     i__2, "zzgflong_", (ftnlen)2350)], mw, nw, work, rpt, (
 		    U_fp)udrepi, (U_fp)udrepu, (U_fp)udrepf, rptpre, rptsuf, 
 		    bail, (L_fp)udbail, result, (ftnlen)6, (ftnlen)80, (
 		    ftnlen)80);
@@ -2451,10 +2477,10 @@ static doublereal c_b67 = 0.;
 /*           window was non-empty. */
 
 	    if (cardd_(&work[(i__2 = region[(i__1 = i__ - 1) < 3 && 0 <= i__1 
-		    ? i__1 : s_rnge("region", i__1, "zzgflong_", (ftnlen)2345)
+		    ? i__1 : s_rnge("region", i__1, "zzgflong_", (ftnlen)2363)
 		    ] * work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 
 		    && 0 <= i__2 ? i__2 : s_rnge("work", i__2, "zzgflong_", (
-		    ftnlen)2345)]) > 0) {
+		    ftnlen)2363)]) > 0) {
 
 /*              Another pass has been completed. */
 
@@ -2490,7 +2516,7 @@ static doublereal c_b67 = 0.;
 
 	et = result[6];
 	zzgfcoin_(vecdef, method, target, ref, abcorr, obsrvr, dref, dvec, 
-		nrmsys, nrmcrd, &c_b67, vecdef_len, method_len, target_len, 
+		nrmsys, nrmcrd, &c_b70, vecdef_len, method_len, target_len, 
 		ref_len, abcorr_len, obsrvr_len, dref_len, (ftnlen)32, (
 		ftnlen)32);
 	zzgfcog_(&et, &extval);
@@ -2585,54 +2611,54 @@ static doublereal c_b67 = 0.;
 	i__1 = nl;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    if (s_cmp(rlist + (((i__2 = i__ - 1) < 7 && 0 <= i__2 ? i__2 : 
-		    s_rnge("rlist", i__2, "zzgflong_", (ftnlen)2498)) << 5), 
+		    s_rnge("rlist", i__2, "zzgflong_", (ftnlen)2516)) << 5), 
 		    "LEFT", (ftnlen)32, (ftnlen)4) == 0 && left == 0) {
 		lnkan_(wwpool, &node);
 		lnkila_(&head, &node, wwpool);
 		left = wix[(i__2 = node - 1) < 7 && 0 <= i__2 ? i__2 : s_rnge(
-			"wix", i__2, "zzgflong_", (ftnlen)2502)];
+			"wix", i__2, "zzgflong_", (ftnlen)2520)];
 		wndifd_(cnfine, &work[(i__2 = right * work_dim1 - 5 - 
 			work_offset) < work_dim1 * work_dim2 && 0 <= i__2 ? 
-			i__2 : s_rnge("work", i__2, "zzgflong_", (ftnlen)2504)
+			i__2 : s_rnge("work", i__2, "zzgflong_", (ftnlen)2522)
 			], &work[(i__3 = left * work_dim1 - 5 - work_offset) <
 			 work_dim1 * work_dim2 && 0 <= i__3 ? i__3 : s_rnge(
-			"work", i__3, "zzgflong_", (ftnlen)2504)]);
+			"work", i__3, "zzgflong_", (ftnlen)2522)]);
 	    } else if (s_cmp(rlist + (((i__2 = i__ - 1) < 7 && 0 <= i__2 ? 
-		    i__2 : s_rnge("rlist", i__2, "zzgflong_", (ftnlen)2506)) 
+		    i__2 : s_rnge("rlist", i__2, "zzgflong_", (ftnlen)2524)) 
 		    << 5), "Q1", (ftnlen)32, (ftnlen)2) == 0 && q1 == 0) {
 		if (q1 == 0) {
 		    lnkan_(wwpool, &node);
 		    lnkila_(&head, &node, wwpool);
 		    q1 = wix[(i__2 = node - 1) < 7 && 0 <= i__2 ? i__2 : 
-			    s_rnge("wix", i__2, "zzgflong_", (ftnlen)2512)];
+			    s_rnge("wix", i__2, "zzgflong_", (ftnlen)2530)];
 		}
 		wnintd_(&work[(i__2 = right * work_dim1 - 5 - work_offset) < 
 			work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : s_rnge(
-			"work", i__2, "zzgflong_", (ftnlen)2516)], &work[(
+			"work", i__2, "zzgflong_", (ftnlen)2534)], &work[(
 			i__3 = top * work_dim1 - 5 - work_offset) < work_dim1 
 			* work_dim2 && 0 <= i__3 ? i__3 : s_rnge("work", i__3,
-			 "zzgflong_", (ftnlen)2516)], &work[(i__4 = q1 * 
+			 "zzgflong_", (ftnlen)2534)], &work[(i__4 = q1 * 
 			work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 
 			&& 0 <= i__4 ? i__4 : s_rnge("work", i__4, "zzgflong_"
-			, (ftnlen)2516)]);
+			, (ftnlen)2534)]);
 	    } else if (s_cmp(rlist + (((i__2 = i__ - 1) < 7 && 0 <= i__2 ? 
-		    i__2 : s_rnge("rlist", i__2, "zzgflong_", (ftnlen)2519)) 
+		    i__2 : s_rnge("rlist", i__2, "zzgflong_", (ftnlen)2537)) 
 		    << 5), "Q2", (ftnlen)32, (ftnlen)2) == 0 && q2 == 0) {
 		lnkan_(wwpool, &node);
 		lnkila_(&head, &node, wwpool);
 		q2 = wix[(i__2 = node - 1) < 7 && 0 <= i__2 ? i__2 : s_rnge(
-			"wix", i__2, "zzgflong_", (ftnlen)2523)];
+			"wix", i__2, "zzgflong_", (ftnlen)2541)];
 		wndifd_(&work[(i__2 = top * work_dim1 - 5 - work_offset) < 
 			work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : s_rnge(
-			"work", i__2, "zzgflong_", (ftnlen)2525)], &work[(
+			"work", i__2, "zzgflong_", (ftnlen)2543)], &work[(
 			i__3 = right * work_dim1 - 5 - work_offset) < 
 			work_dim1 * work_dim2 && 0 <= i__3 ? i__3 : s_rnge(
-			"work", i__3, "zzgflong_", (ftnlen)2525)], &work[(
+			"work", i__3, "zzgflong_", (ftnlen)2543)], &work[(
 			i__4 = q2 * work_dim1 - 5 - work_offset) < work_dim1 *
 			 work_dim2 && 0 <= i__4 ? i__4 : s_rnge("work", i__4, 
-			"zzgflong_", (ftnlen)2525)]);
+			"zzgflong_", (ftnlen)2543)]);
 	    } else if (s_cmp(rlist + (((i__2 = i__ - 1) < 7 && 0 <= i__2 ? 
-		    i__2 : s_rnge("rlist", i__2, "zzgflong_", (ftnlen)2528)) 
+		    i__2 : s_rnge("rlist", i__2, "zzgflong_", (ftnlen)2546)) 
 		    << 5), "Q3", (ftnlen)32, (ftnlen)2) == 0 && q3 == 0) {
 
 /*              Note: we need the bottom window in order to compute Q3! */
@@ -2640,18 +2666,18 @@ static doublereal c_b67 = 0.;
 		lnkan_(wwpool, &node);
 		lnkila_(&head, &node, wwpool);
 		q3 = wix[(i__2 = node - 1) < 7 && 0 <= i__2 ? i__2 : s_rnge(
-			"wix", i__2, "zzgflong_", (ftnlen)2534)];
+			"wix", i__2, "zzgflong_", (ftnlen)2552)];
 		wndifd_(&work[(i__2 = bot * work_dim1 - 5 - work_offset) < 
 			work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : s_rnge(
-			"work", i__2, "zzgflong_", (ftnlen)2536)], &work[(
+			"work", i__2, "zzgflong_", (ftnlen)2554)], &work[(
 			i__3 = right * work_dim1 - 5 - work_offset) < 
 			work_dim1 * work_dim2 && 0 <= i__3 ? i__3 : s_rnge(
-			"work", i__3, "zzgflong_", (ftnlen)2536)], &work[(
+			"work", i__3, "zzgflong_", (ftnlen)2554)], &work[(
 			i__4 = q3 * work_dim1 - 5 - work_offset) < work_dim1 *
 			 work_dim2 && 0 <= i__4 ? i__4 : s_rnge("work", i__4, 
-			"zzgflong_", (ftnlen)2536)]);
+			"zzgflong_", (ftnlen)2554)]);
 	    } else if (s_cmp(rlist + (((i__2 = i__ - 1) < 7 && 0 <= i__2 ? 
-		    i__2 : s_rnge("rlist", i__2, "zzgflong_", (ftnlen)2539)) 
+		    i__2 : s_rnge("rlist", i__2, "zzgflong_", (ftnlen)2557)) 
 		    << 5), "Q4", (ftnlen)32, (ftnlen)2) == 0 && q4 == 0) {
 
 /*              NOTE: We need the bottom window in order to compute Q4! */
@@ -2659,16 +2685,16 @@ static doublereal c_b67 = 0.;
 		lnkan_(wwpool, &node);
 		lnkila_(&head, &node, wwpool);
 		q4 = wix[(i__2 = node - 1) < 7 && 0 <= i__2 ? i__2 : s_rnge(
-			"wix", i__2, "zzgflong_", (ftnlen)2545)];
+			"wix", i__2, "zzgflong_", (ftnlen)2563)];
 		wnintd_(&work[(i__2 = right * work_dim1 - 5 - work_offset) < 
 			work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : s_rnge(
-			"work", i__2, "zzgflong_", (ftnlen)2547)], &work[(
+			"work", i__2, "zzgflong_", (ftnlen)2565)], &work[(
 			i__3 = bot * work_dim1 - 5 - work_offset) < work_dim1 
 			* work_dim2 && 0 <= i__3 ? i__3 : s_rnge("work", i__3,
-			 "zzgflong_", (ftnlen)2547)], &work[(i__4 = q4 * 
+			 "zzgflong_", (ftnlen)2565)], &work[(i__4 = q4 * 
 			work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 
 			&& 0 <= i__4 ? i__4 : s_rnge("work", i__4, "zzgflong_"
-			, (ftnlen)2547)]);
+			, (ftnlen)2565)]);
 	    }
 	}
 	if (failed_()) {
@@ -2747,7 +2773,7 @@ static doublereal c_b67 = 0.;
 
 	    next = lnknxt_(&node, wwpool);
 	    if (! elemi_(&wix[(i__1 = node - 1) < 7 && 0 <= i__1 ? i__1 : 
-		    s_rnge("wix", i__1, "zzgflong_", (ftnlen)2664)], needwn)) 
+		    s_rnge("wix", i__1, "zzgflong_", (ftnlen)2682)], needwn)) 
 		    {
 
 /*              Delete NODE; update HEAD if we deleted the head node. */
@@ -2777,16 +2803,16 @@ static doublereal c_b67 = 0.;
 		lnkan_(wwpool, &node);
 		lnkila_(&head, &node, wwpool);
 		f1 = wix[(i__1 = node - 1) < 7 && 0 <= i__1 ? i__1 : s_rnge(
-			"wix", i__1, "zzgflong_", (ftnlen)2701)];
+			"wix", i__1, "zzgflong_", (ftnlen)2719)];
 		wnunid_(&work[(i__1 = q3 * work_dim1 - 5 - work_offset) < 
 			work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge(
-			"work", i__1, "zzgflong_", (ftnlen)2703)], &work[(
+			"work", i__1, "zzgflong_", (ftnlen)2721)], &work[(
 			i__2 = right * work_dim1 - 5 - work_offset) < 
 			work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : s_rnge(
-			"work", i__2, "zzgflong_", (ftnlen)2703)], &work[(
+			"work", i__2, "zzgflong_", (ftnlen)2721)], &work[(
 			i__3 = f1 * work_dim1 - 5 - work_offset) < work_dim1 *
 			 work_dim2 && 0 <= i__3 ? i__3 : s_rnge("work", i__3, 
-			"zzgflong_", (ftnlen)2703)]);
+			"zzgflong_", (ftnlen)2721)]);
 	    } else if (quad == 3) {
 		f1 = 0;
 	    } else {
@@ -2812,16 +2838,16 @@ static doublereal c_b67 = 0.;
 		lnkan_(wwpool, &node);
 		lnkila_(&head, &node, wwpool);
 		f1 = wix[(i__1 = node - 1) < 7 && 0 <= i__1 ? i__1 : s_rnge(
-			"wix", i__1, "zzgflong_", (ftnlen)2740)];
+			"wix", i__1, "zzgflong_", (ftnlen)2758)];
 		wnunid_(&work[(i__1 = left * work_dim1 - 5 - work_offset) < 
 			work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge(
-			"work", i__1, "zzgflong_", (ftnlen)2742)], &work[(
+			"work", i__1, "zzgflong_", (ftnlen)2760)], &work[(
 			i__2 = q1 * work_dim1 - 5 - work_offset) < work_dim1 *
 			 work_dim2 && 0 <= i__2 ? i__2 : s_rnge("work", i__2, 
-			"zzgflong_", (ftnlen)2742)], &work[(i__3 = f1 * 
+			"zzgflong_", (ftnlen)2760)], &work[(i__3 = f1 * 
 			work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 
 			&& 0 <= i__3 ? i__3 : s_rnge("work", i__3, "zzgflong_"
-			, (ftnlen)2742)]);
+			, (ftnlen)2760)]);
 	    }
 	}
 	if (failed_()) {
@@ -2842,15 +2868,15 @@ static doublereal c_b67 = 0.;
 	    i__2 = total + i__;
 	    repmi_(tmplat, "#", &i__2, rptpre + ((i__1 = i__ - 1) < 2 && 0 <= 
 		    i__1 ? i__1 : s_rnge("rptpre", i__1, "zzgflong_", (ftnlen)
-		    2764)) * 80, (ftnlen)80, (ftnlen)1, (ftnlen)80);
+		    2782)) * 80, (ftnlen)80, (ftnlen)1, (ftnlen)80);
 	}
 	lnkan_(wwpool, &node);
 	lnkila_(&head, &node, wwpool);
 	f2 = wix[(i__1 = node - 1) < 7 && 0 <= i__1 ? i__1 : s_rnge("wix", 
-		i__1, "zzgflong_", (ftnlen)2770)];
+		i__1, "zzgflong_", (ftnlen)2788)];
 	scardd_(&c__0, &work[(i__1 = f2 * work_dim1 - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgflong_", (ftnlen)2772)]);
+		i__1, "zzgflong_", (ftnlen)2790)]);
 	if (s_cmp(prxfun, "LONGITUDE", (ftnlen)50, (ftnlen)9) == 0) {
 
 /*           Initialize the proxy search in sector S, then perform the */
@@ -2862,14 +2888,14 @@ static doublereal c_b67 = 0.;
 		    dref_len, (ftnlen)11, (ftnlen)9);
 	    zzgfrel_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfcodc_, (U_fp)
 		    zzgfcolt_, (S_fp)zzgfcog_, (U_fp)zzgfcour_, "<", &prxval, 
-		    &loctol, &c_b67, &work[(i__1 = s * work_dim1 - 5 - 
+		    &loctol, &c_b70, &work[(i__1 = s * work_dim1 - 5 - 
 		    work_offset) < work_dim1 * work_dim2 && 0 <= i__1 ? i__1 :
-		     s_rnge("work", i__1, "zzgflong_", (ftnlen)2783)], mw, nw,
+		     s_rnge("work", i__1, "zzgflong_", (ftnlen)2801)], mw, nw,
 		     work, rpt, (U_fp)udrepi, (U_fp)udrepu, (U_fp)udrepf, 
 		    rptpre, rptsuf, bail, (L_fp)udbail, &work[(i__2 = f2 * 
 		    work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 && 0 
 		    <= i__2 ? i__2 : s_rnge("work", i__2, "zzgflong_", (
-		    ftnlen)2783)], (ftnlen)1, (ftnlen)80, (ftnlen)80);
+		    ftnlen)2801)], (ftnlen)1, (ftnlen)80, (ftnlen)80);
 	} else {
 
 /*           Initialize the proxy search in sector S, then perform the */
@@ -2881,14 +2907,14 @@ static doublereal c_b67 = 0.;
 		    dref_len, (ftnlen)6, (ftnlen)15);
 	    zzgfrel_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfcodc_, (U_fp)
 		    zzgfcolt_, (S_fp)zzgfcog_, (U_fp)zzgfcour_, "<", &prxval, 
-		    &loctol, &c_b67, &work[(i__1 = s * work_dim1 - 5 - 
+		    &loctol, &c_b70, &work[(i__1 = s * work_dim1 - 5 - 
 		    work_offset) < work_dim1 * work_dim2 && 0 <= i__1 ? i__1 :
-		     s_rnge("work", i__1, "zzgflong_", (ftnlen)2801)], mw, nw,
+		     s_rnge("work", i__1, "zzgflong_", (ftnlen)2819)], mw, nw,
 		     work, rpt, (U_fp)udrepi, (U_fp)udrepu, (U_fp)udrepf, 
 		    rptpre, rptsuf, bail, (L_fp)udbail, &work[(i__2 = f2 * 
 		    work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 && 0 
 		    <= i__2 ? i__2 : s_rnge("work", i__2, "zzgflong_", (
-		    ftnlen)2801)], (ftnlen)1, (ftnlen)80, (ftnlen)80);
+		    ftnlen)2819)], (ftnlen)1, (ftnlen)80, (ftnlen)80);
 	}
 
 /*        7 + 0:2 passes done for adjusted extrema. */
@@ -2906,14 +2932,14 @@ static doublereal c_b67 = 0.;
 	if (f1 != 0) {
 	    wnunid_(&work[(i__1 = f1 * work_dim1 - 5 - work_offset) < 
 		    work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work",
-		     i__1, "zzgflong_", (ftnlen)2827)], &work[(i__2 = f2 * 
+		     i__1, "zzgflong_", (ftnlen)2845)], &work[(i__2 = f2 * 
 		    work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 && 0 
 		    <= i__2 ? i__2 : s_rnge("work", i__2, "zzgflong_", (
-		    ftnlen)2827)], result);
+		    ftnlen)2845)], result);
 	} else {
 	    copyd_(&work[(i__1 = f2 * work_dim1 - 5 - work_offset) < 
 		    work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work",
-		     i__1, "zzgflong_", (ftnlen)2829)], result);
+		     i__1, "zzgflong_", (ftnlen)2847)], result);
 	}
 
 /*        Last step: complement the result if necessary. */
@@ -2927,45 +2953,45 @@ static doublereal c_b67 = 0.;
 
 	    lnkan_(wwpool, &node);
 	    wh = wix[(i__1 = node - 1) < 7 && 0 <= i__1 ? i__1 : s_rnge("wix",
-		     i__1, "zzgflong_", (ftnlen)2843)];
+		     i__1, "zzgflong_", (ftnlen)2861)];
 	    if (s_cmp(nrmcrd, "LONGITUDE", (ftnlen)32, (ftnlen)9) == 0) {
 		wnunid_(&work[(i__1 = q2 * work_dim1 - 5 - work_offset) < 
 			work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge(
-			"work", i__1, "zzgflong_", (ftnlen)2847)], &work[(
+			"work", i__1, "zzgflong_", (ftnlen)2865)], &work[(
 			i__2 = right * work_dim1 - 5 - work_offset) < 
 			work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : s_rnge(
-			"work", i__2, "zzgflong_", (ftnlen)2847)], &work[(
+			"work", i__2, "zzgflong_", (ftnlen)2865)], &work[(
 			i__3 = f2 * work_dim1 - 5 - work_offset) < work_dim1 *
 			 work_dim2 && 0 <= i__3 ? i__3 : s_rnge("work", i__3, 
-			"zzgflong_", (ftnlen)2847)]);
+			"zzgflong_", (ftnlen)2865)]);
 		wnunid_(&work[(i__1 = q3 * work_dim1 - 5 - work_offset) < 
 			work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge(
-			"work", i__1, "zzgflong_", (ftnlen)2848)], &work[(
+			"work", i__1, "zzgflong_", (ftnlen)2866)], &work[(
 			i__2 = f2 * work_dim1 - 5 - work_offset) < work_dim1 *
 			 work_dim2 && 0 <= i__2 ? i__2 : s_rnge("work", i__2, 
-			"zzgflong_", (ftnlen)2848)], &work[(i__3 = wh * 
+			"zzgflong_", (ftnlen)2866)], &work[(i__3 = wh * 
 			work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 
 			&& 0 <= i__3 ? i__3 : s_rnge("work", i__3, "zzgflong_"
-			, (ftnlen)2848)]);
+			, (ftnlen)2866)]);
 	    } else {
 		wnunid_(&work[(i__1 = q1 * work_dim1 - 5 - work_offset) < 
 			work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge(
-			"work", i__1, "zzgflong_", (ftnlen)2850)], &work[(
+			"work", i__1, "zzgflong_", (ftnlen)2868)], &work[(
 			i__2 = left * work_dim1 - 5 - work_offset) < 
 			work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : s_rnge(
-			"work", i__2, "zzgflong_", (ftnlen)2850)], &work[(
+			"work", i__2, "zzgflong_", (ftnlen)2868)], &work[(
 			i__3 = f2 * work_dim1 - 5 - work_offset) < work_dim1 *
 			 work_dim2 && 0 <= i__3 ? i__3 : s_rnge("work", i__3, 
-			"zzgflong_", (ftnlen)2850)]);
+			"zzgflong_", (ftnlen)2868)]);
 		wnunid_(&work[(i__1 = q4 * work_dim1 - 5 - work_offset) < 
 			work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge(
-			"work", i__1, "zzgflong_", (ftnlen)2851)], &work[(
+			"work", i__1, "zzgflong_", (ftnlen)2869)], &work[(
 			i__2 = f2 * work_dim1 - 5 - work_offset) < work_dim1 *
 			 work_dim2 && 0 <= i__2 ? i__2 : s_rnge("work", i__2, 
-			"zzgflong_", (ftnlen)2851)], &work[(i__3 = wh * 
+			"zzgflong_", (ftnlen)2869)], &work[(i__3 = wh * 
 			work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 
 			&& 0 <= i__3 ? i__3 : s_rnge("work", i__3, "zzgflong_"
-			, (ftnlen)2851)]);
+			, (ftnlen)2869)]);
 	    }
 
 /*           We use F2 as a temporary window index, since F2 is */
@@ -2973,13 +2999,13 @@ static doublereal c_b67 = 0.;
 
 	    wndifd_(&work[(i__1 = wh * work_dim1 - 5 - work_offset) < 
 		    work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work",
-		     i__1, "zzgflong_", (ftnlen)2858)], result, &work[(i__2 = 
+		     i__1, "zzgflong_", (ftnlen)2876)], result, &work[(i__2 = 
 		    f2 * work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 
 		    && 0 <= i__2 ? i__2 : s_rnge("work", i__2, "zzgflong_", (
-		    ftnlen)2858)]);
+		    ftnlen)2876)]);
 	    copyd_(&work[(i__1 = f2 * work_dim1 - 5 - work_offset) < 
 		    work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work",
-		     i__1, "zzgflong_", (ftnlen)2859)], result);
+		     i__1, "zzgflong_", (ftnlen)2877)], result);
 	}
     }
     chkout_("ZZGFLONG", (ftnlen)8);

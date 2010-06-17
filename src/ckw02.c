@@ -21,11 +21,9 @@ static integer c__1 = 1;
 {
     /* System generated locals */
     integer i__1, i__2;
-    doublereal d__1;
 
     /* Local variables */
     integer ndir, i__;
-    doublereal l;
     extern /* Subroutine */ int chkin_(char *, ftnlen), dafps_(integer *, 
 	    integer *, doublereal *, integer *, doublereal *);
     doublereal descr[5];
@@ -42,7 +40,7 @@ static integer c__1 = 1;
     extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
 	    ftnlen), setmsg_(char *, ftnlen), errint_(char *, integer *, 
 	    ftnlen);
-    extern logical return_(void);
+    extern logical vzerog_(doublereal *, integer *), return_(void);
     doublereal dcd[2];
     integer icd[6];
 
@@ -488,6 +486,11 @@ static integer c__1 = 1;
 
 /* $ Version */
 
+/* -    SPICELIB Version 3.0.0, 01-JUN-2010 (NJB) */
+
+/*        The check for non-unit quaternions has been replaced */
+/*        with a check for zero-length quaternions. */
+
 /* -    SPICELIB Version 2.2.0, 26-FEB-2008 (NJB) */
 
 /*        Updated header; added information about SPICE */
@@ -774,24 +777,16 @@ static integer c__1 = 1;
 	}
     }
 
-/*     Make sure that the quaternions all have unit length. */
+/*     Make sure that the quaternions are non-zero. This is just */
+/*     a check for uninitialized data. */
 
     i__1 = *nrec;
     for (i__ = 1; i__ <= i__1; ++i__) {
-	l = quats[(i__ << 2) - 4] * quats[(i__ << 2) - 4] + quats[(i__ << 2) 
-		- 3] * quats[(i__ << 2) - 3] + quats[(i__ << 2) - 2] * quats[(
-		i__ << 2) - 2] + quats[(i__ << 2) - 1] * quats[(i__ << 2) - 1]
-		;
-
-/*        This is only a sanity check.  We make sure that */
-/*        we have a unit quaternion to single precision. */
-
-	if ((d__1 = 1. - l, abs(d__1)) > .01) {
-	    setmsg_("The #'th quaternion is not a unit quaternion. Its squar"
-		    "ed length is #. ", (ftnlen)71);
+	if (vzerog_(&quats[(i__ << 2) - 4], &c__4)) {
+	    setmsg_("The quaternion at index # has magnitude zero.", (ftnlen)
+		    45);
 	    errint_("#", &i__, (ftnlen)1);
-	    errdp_("#", &l, (ftnlen)1);
-	    sigerr_("SPICE(NONUNITQUATERNION)", (ftnlen)24);
+	    sigerr_("SPICE(ZEROQUATERNION)", (ftnlen)21);
 	    chkout_("CKW02", (ftnlen)5);
 	    return 0;
 	}

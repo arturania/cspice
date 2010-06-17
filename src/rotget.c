@@ -205,10 +205,6 @@ static integer c__1 = 1;
 
 /*     None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     1) If a rotation matrix cannot be located, then */
@@ -217,6 +213,10 @@ static integer c__1 = 1;
 
 /*     2) If the class of the requested frame is not recognized the */
 /*        exception 'SPICE(UNKNOWNFRAMETYPE)' will be signalled. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -231,16 +231,23 @@ static integer c__1 = 1;
 
 /*     None. */
 
+/* $ Literature_References */
+
+/*     None. */
+
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
 /*     W.L. Taber      (JPL) */
 
-/* $ Literature_References */
-
-/*     None. */
-
 /* $ Version */
+
+/* -    SPICELIB Version 2.1.0, 02-MAR-2010 (NJB) */
+
+/*        Bug fix: frame ID rather than frame class ID */
+/*        is now passed to dynamic frame evaluation */
+/*        routine ZZDYNROT. Order of header sections was */
+/*        corrected. */
 
 /* -    SPICELIB Version 2.0.0, 18-DEC-2004 (NJB) */
 
@@ -278,7 +285,7 @@ static integer c__1 = 1;
 	for (i__ = 1; i__ <= 3; ++i__) {
 	    for (j = 1; j <= 3; ++j) {
 		rotate[(i__1 = i__ + j * 3 - 4) < 9 && 0 <= i__1 ? i__1 : 
-			s_rnge("rotate", i__1, "rotget_", (ftnlen)196)] = 0.;
+			s_rnge("rotate", i__1, "rotget_", (ftnlen)203)] = 0.;
 	    }
 	}
 	chkout_("ROTGET", (ftnlen)6);
@@ -303,7 +310,7 @@ static integer c__1 = 1;
 /*        routine ZZDYNROT requires the input frame ID rather than the */
 /*        dynamic frame class ID. ZZDYNROT also requires the center ID */
 /*        we found via the FRINFO call. */
-	zzdynrot_(&typeid, &center, et, rotate, outfrm);
+	zzdynrot_(infrm, &center, et, rotate, outfrm);
 
 /*        The FOUND flag was set by FRINFO earlier; we don't touch */
 /*        it here.  If ZZDYNROT signaled an error, FOUND will be set */
@@ -325,7 +332,7 @@ static integer c__1 = 1;
 	for (i__ = 1; i__ <= 3; ++i__) {
 	    for (j = 1; j <= 3; ++j) {
 		rotate[(i__1 = i__ + j * 3 - 4) < 9 && 0 <= i__1 ? i__1 : 
-			s_rnge("rotate", i__1, "rotget_", (ftnlen)265)] = 0.;
+			s_rnge("rotate", i__1, "rotget_", (ftnlen)272)] = 0.;
 	    }
 	}
 	*found = FALSE_;

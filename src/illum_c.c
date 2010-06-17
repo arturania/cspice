@@ -541,6 +541,10 @@
  
 -Version
  
+   -CSPICE Version 1.0.4, 19-MAY-2010 (BVS)
+
+        Index lines now state that this routine is deprecated.
+
    -CSPICE Version 1.0.3, 07-FEB-2008 (NJB)
 
         Abstract now states that this routine is deprecated.
@@ -572,11 +576,11 @@
 
 -Index_Entries
  
-   illumination angles 
-   lighting angles
-   phase angle
-   emission angle
-   solar incidence angle
+   DEPRECATED illumination angles 
+   DEPRECATED lighting angles
+   DEPRECATED phase angle
+   DEPRECATED emission angle
+   DEPRECATED solar incidence angle
  
 -&
 */

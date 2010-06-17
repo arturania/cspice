@@ -1,0 +1,3205 @@
+ 
+Spy User's Guide
+===========================================================================
+ 
+   Last revised on 2010 JUN 06 by N. J. Bachman.
+ 
+ 
+Abstract
+--------------------------------------------------------
+ 
+   Spy is a command-driven utility for validating, inspecting, and
+   analyzing SPK files.
+ 
+ 
+Introduction
+--------------------------------------------------------
+ 
+   Spy enables SPICE users to perform detailed inspections of the contents
+   of binary SPK files in several ways:
+ 
+       --   Sampling evaluated ephemeris data as a time series
+ 
+       --   Dumping specified portions of an SPK file's contents
+ 
+       --   Finding times when specified geometric criteria are satisfied
+            by an ephemeris
+ 
+       --   Checking sampled ephemeris data for excursions beyond specified
+            value ranges
+ 
+       --   Checking SPK file structure and low-level semantic validity
+ 
+   Spy's user interface is implemented in standard Fortran 77, so all
+   inputs and outputs are text-oriented. Spy is controlled via a command
+   language; users enter commands at the Spy prompt. Optionally commands
+   may be supplied via command file. By default, Spy writes results to the
+   standard output stream. Optionally results may be captured in a
+   specified ``save'' file. Spy also records in a log file the user
+   commands issued during an interactive or batch session.
+ 
+ 
+Spy Command Set
+--------------------------------------------------------
+ 
+   The principal Spy command set consists of the following:
+ 
+      SAMPLE command --- sample evaluated ephemeris data
+      DUMP command --- display SPK contents
+      FIND command --- find times when geometric constraints are met
+      CHECK command --- perform semantic checks on files or data
+ 
+   To support the above, the following additional commands control and
+   display program settings:
+ 
+      LOAD command --- load SPICE kernels
+      UNLOAD command --- unload SPICE kernels
+      SET command --- set defaults
+      RESET command --- restore original settings of defaults
+      SHOW command --- show defaults
+ 
+   Finally, there are commands that control starting, stopping, logging,
+   and assist with command entry:
+ 
+      DEFINE command --- define a symbol
+      DISCARD command --- close file opened by SAVE TO
+      DO command --- repeat a previous command
+      ECHO command --- show translated symbols
+      EDIT command --- edit a previous command
+      EXIT command --- exit the program
+      HELP command --- display this text
+      NO ECHO command --- disable echoing
+      RECALL command--- show command history
+      SAVE TO command --- save results to a file
+      SET EDITOR command --- specify a command editor
+      SHOW SYMBOL command --- show symbol definitions
+      START command --- execute a command file
+      UNDEFINE command --- delete a symbol definition
+ 
+ 
+Command Language Basics
+--------------------------------------------------------
+ 
+ 
+Command Syntax
+ 
+       --   Words in commands must be separated by blanks.
+ 
+       --   Each command must end with a semicolon (except when running Spy
+            in command-line mode).
+ 
+       --   Commands can be continued across multiple lines. No
+            continuation character is needed; just hit one carriage return
+            and continue typing.
+ 
+       --   In a continued command, leaving a line entirely blank causes
+            the command to be discarded.
+ 
+       --   Commands are case-insensitive, except for file names and time
+            format tokens.
+ 
+ 
+Symbols
+ 
+   Use symbols to abbreviate words or commands. The syntax is
+ 
+      DEFINE <symbol> <meaning>;
+ 
+   for example,
+ 
+      DEFINE QUIT EXIT;
+      DEFINE ABCORR ABERRATION CORRECTION;
+ 
+   Symbols are evaluated recursively, for example:
+ 
+      DEFINE COORDS COORDINATES;
+      DEFINE LAT LATITUDINAL;
+      DEFINE LATSAM SAMPLE STATES COORDS LAT;
+ 
+   Symbols may not be used to override built-in commands such as DEFINE.
+ 
+   Use
+ 
+      SHOW SYMBOL <symbol>;
+ 
+   to see the translation of a specific symbol; use
+ 
+      SHOW SYMBOL *;
+ 
+   to see all symbol translations.
+ 
+   Use
+ 
+      UNDEFINE <symbol>;
+ 
+   to delete a user-defined symbol.
+ 
+ 
+Command files
+--------------------------------------------------------
+ 
+   You can create Spy ``command files'' by placing in a text file the same
+   commands you'd normally execute interactively. Use command files to
+   conveniently collect and execute groups of commands. For instance, a
+   start-up command file is helpful for loading leapseconds kernels and
+   defining your commonly used symbols.
+ 
+   Command file comments are started with semicolons.
+ 
+   In this document we'll use the expression ``execute a command file'' as
+   a shortcut meaning ``execute the commands contained in a command file.''
+ 
+   In interactive mode, execute a command file by using the START command:
+ 
+      START <command file name>;
+ 
+   As a simple example, let the file
+ 
+      lsk_cmd
+ 
+   contain the lines:
+ 
+      ;
+      ;  My setup file:
+      ;
+      LOAD leapseconds.ker;
+      DEFINE QUIT EXIT;
+      ;
+ 
+   Commands that require interaction, such as EDIT, aren't supported in
+   command files.
+ 
+ 
+Start-up
+--------------------------------------------------------
+ 
+ 
+Interactive Mode
+ 
+   To run Spy in interactive mode, type the program name (all lower case):
+ 
+      spy
+ 
+   Spy will display a start-up banner followed by the Spy interactive
+   command prompt
+ 
+      Spy >
+ 
+   To make Spy execute a command file at start up, specify the command file
+   after the -start keyword:
+ 
+      spy -start <command file name>
+ 
+   The command file name may include any needed path specification.
+ 
+   Spy will execute the commands in the file before displaying the command
+   prompt. Typically a command file will contain names of kernels to load
+   and any symbol definitions used to create command shortcuts.
+ 
+   By default Spy creates a command log file when run in interactive mode.
+   Log file creation is disabled using the ``-nolog'' option:
+ 
+      spy -nolog -start <command file name>
+ 
+   In interactive mode, when an input command error is detected, a brief
+   diagnostic message will be displayed. Additional information about the
+   error can be obtained by typing
+ 
+      ?;
+ 
+   When the detailed error message contains a description of the syntax of
+   the expected command, often only a portion of the actual syntax
+   description is shown. To see the full syntax of any Spy command, consult
+   the syntax diagrams at the end of this document.
+ 
+   Often shortcuts are available to simplify recovery from command errors.
+   Spy supports display, editing and re-execution of past commands, so it
+   is usually unnecessary to start from scratch when correcting a command
+   failure. See the sections below on the RECALL, DO, and EDIT commands for
+   details.
+ 
+ 
+Batch Mode
+ 
+   To run Spy in batch mode, specify the name of a command file following
+   the
+ 
+      -start
+ 
+   keyword; Spy will execute the commands in the file and then terminate.
+   By default Spy will create a log file. No prompt will be shown. The
+   ``-b'' option invokes batch mode:
+ 
+      spy -b -start <command file name>
+ 
+ 
+Command line mode
+ 
+   In this mode, Spy will optionally execute a specified command file, then
+   execute a command typed on the host system command line. This method
+   doesn't create a log file; SAVE TO and DISCARD (see Logging below) are
+   not supported. Use output redirection to capture results in a file. The
+   ``-cl'' option invokes command line mode:
+ 
+      spy -cl -start <command file name> <Spy command>
+ 
+   For example, to see summary and parameter information from an SPK file,
+   using the example command file lsk_cmd shown above, you could use the
+   command
+ 
+      spy -cl -start lsk_cmd DUMP DATA SPK <SPK file name>
+      SUMMARIES PARAMETERS BORDERS
+ 
+   Spy commands entered on the host command line are not terminated with a
+   semi-colon. They are continued across lines in the same
+   (system-dependent) manner as any other host command.
+ 
+   Some Spy commands executed in command-line mode don't require a set-up
+   file because these commands don't perform time conversion or other
+   computations dependent on auxiliary loaded kernels. For example, to see
+   the file record information from an SPK file, you could use the command
+ 
+      spy -cl DUMP FILE RECORD SPK <SPK file name>
+ 
+   Spy's command-line mode can be convenient for processing multiple files
+   using the host command language. For example, on a Unix system, one
+   could run Spy's CHECK INTEGRITY command on a set of files having names
+   of the form
+ 
+      *.bsp
+ 
+   as follows:
+ 
+      foreach file (*.bsp)
+        spy -cl -start lsk_cmd CHECK INTEGRITY SPK $file MESSAGE LIMIT 3
+      end
+ 
+ 
+The RECALL and DO Commands
+--------------------------------------------------------
+ 
+   The RECALL command displays a short, numbered list of recent commands.
+   This list is called the ``command buffer,'' ``command history list,'' or
+   the ``history list.'' For example, after entering the commands
+ 
+      set target 5;
+      set observer earth;
+      sample position frame j2000 aberration correction LT+S
+      start time jan 1 2006 stop time jan 1 2007 n 10;
+ 
+   the command
+ 
+      recall;
+ 
+   produces the output
+ 
+      3  set target 5;
+      2  set observer earth;
+      1  sample position frame j2000 aberration correction LT+S
+         start time jan 1 2006 stop time jan 1 2007 n 10;
+ 
+   The most recent command always has index 1. As each new command is
+   entered, the indices of buffered commands are incremented.
+ 
+   Any of the commands in the list may be repeated using the DO command.
+   For example, the command
+ 
+      do 1;
+ 
+   will execute the SAMPLE command above.
+ 
+   The command serving as the target of a RECALL or DO command may be
+   identified by either its integer index in the history list or by an
+   initial substring of the first word of the command, if that word is
+   sufficient to identify the command. When a substring is used to identify
+   the command and the substring matches multiple history list entries, the
+   most recent matching command is selected.
+ 
+   Continuing the example above, we can execute the SAMPLE command by
+   typing any of
+ 
+      do 1;
+      do sample;
+      do sam;
+      do s;
+ 
+   When a command in the
+ 
+   To re-execute the most recent SET command, we could type either of
+ 
+      do set;
+      do 2;
+ 
+   The earlier SET command can only be referenced by its list index:
+ 
+      do 3;
+ 
+   If we simply want to see rather than execute a previous command, we can
+   use the reference methods shown above together with the verb RECALL in
+   place of DO. Given the command history shown above, for example, the
+   command
+ 
+      recall 3;
+ 
+   displays, but does not execute, the command
+ 
+      set target 5;
+ 
+ 
+The EDIT Command
+--------------------------------------------------------
+ 
+   Previous commands can be modified and re-executed using the EDIT
+   command. As with the RECALL and DO commands, previous commands to be
+   edited may be referenced by command history index or by initial command
+   substring. For example, if the RECALL command displays the command
+   history
+ 
+      3  load lsk;
+      2  set page width 170;
+      1  load de405s.bsp;
+ 
+   we can edit the most recent LOAD command by typing
+ 
+      edit load;
+ 
+   We can edit the earlier LOAD command by typing
+ 
+      edit 3;
+ 
+   The EDIT command presents the selected command in an editor buffer,
+   where the command text may modified and saved, after which the saved
+   command is executed.
+ 
+   The editor may be selected at run time via the SET EDITOR command. For
+   example, on a Unix system, to switch from the default vi editor to the
+   xemacs editor, type
+ 
+      set editor xemacs;
+ 
+   The selected editor must be specified with sufficient path information
+   in order for the host system to run it.
+ 
+   To see the current editor setting, type
+ 
+      show environment;
+ 
+ 
+Loading and Unloading Kernels
+--------------------------------------------------------
+ 
+   To make kernels available for use by Spy, use the LOAD command.
+   Typically a leapseconds kernel should be loaded at start-up.
+ 
+      LOAD <kernel>;
+ 
+   You can make Spy unload a kernel using the UNLOAD command:
+ 
+      UNLOAD <kernel>;
+ 
+   In many cases you need to load supporting kernels to enable operation of
+   certain SAMPLE, FIND, or CHECK commands. Examples:
+ 
+       --   You may need to load multiple SPK files to define state vectors
+            of interest.
+ 
+       --   You will need to load a PCK file to provide body spin sense and
+            reference ellipsoid shape data in order to sample states in
+            planetographic coordinates.
+ 
+       --   You also may load CK, PCK or FK kernels to define certain
+            reference frames. For example, you might load a frame kernel
+            defining a view frame for a particular spacecraft.
+ 
+       --   To sample ephemeris information in the form of osculating
+            elements, you must load a text kernel containing GM data for
+            the central body. The form of the kernel data is
+ 
+               BODYnnn_GM = <value>
+ 
+            where nnn is the NAIF integer ID code of the body and the GM
+            value is specified in units of
+ 
+                 3   2
+               km / s
+ 
+            For example, the GM for the Earth may be specified as
+ 
+               BODY399_GM = 3.98600436E5
+ 
+   You do not need to load SPK files that are the target of DUMP commands;
+   this is because these commands operate on a specific file that is named
+   in the command or is identified as a default.
+ 
+ 
+Managing Default Settings
+--------------------------------------------------------
+ 
+   Spy maintains several program variables that control Spy's behavior; the
+   values of these variables are called Spy's ``default settings.''
+ 
+   Use the SHOW ALL to see the default settings. Loaded kernels are
+   included in the display. At start-up, the command
+ 
+      show all;
+ 
+   yields
+ 
+ 
+       Spy default settings
+      ==================================================================
+       Aberration Correction:  NONE
+       Angular Units        :  DEGREES
+       Coordinates          :  RECTANGULAR
+       Frame                :  is not set
+       N                    :  10
+       Number Format        :  1PE15.8
+       Observer             :  is not set
+       Page Width           :  150
+       Reference Body       :  is not set
+       SPK                  :  is not set
+       Start Time           :  is not set
+       Step Size            :  is not set
+       Stop Time            :  is not set
+       Target               :  is not set
+       Time Format          :  YYYY-MON-DD HR:MN:SC.###### (TDB) ::TDB
+      ==================================================================
+ 
+   Use
+ 
+      SHOW <item>;
+ 
+   to see only a particular default item.
+ 
+   Use
+ 
+      SET <item>
+ 
+   to change a default value. Examples:
+ 
+      set target moon;
+      set observer earth;
+      set frame j2000;
+      set page width 175;
+      set number format E24.16;
+      set time format numeric E15.6;
+      set step size 1.e3;
+      set coordinates geodetic;
+      set reference body earth;
+      set spk de405s.bsp;
+ 
+   Setting defaults allows you to abbreviate some commands, since Spy will
+   use applicable default values when required arguments are omitted from a
+   command.
+ 
+   Note that the set of loaded kernels can't be changed by a SET command,
+   but you can set the default SPK file so that you don't need to specify
+   it by name when using commands such as DUMP DATA that operate on a
+   single target SPK file.
+ 
+   Use RESET <item> to set a default to its original value, for example:
+ 
+      reset time format;
+ 
+ 
+Page Width
+--------------------------------------------------------
+ 
+   The variable ``PAGE WIDTH'' refers to the number of columns Spy assumes
+   are available for formatting its output. By default, Spy's output
+   occupies 150 columns. The minimum page width setting Spy supports is 80
+   columns.
+ 
+   Spy will automatically wrap outputs to accommodate the specified page
+   width.
+ 
+ 
+Number and Time Formats
+--------------------------------------------------------
+ 
+   Many Spy commands, such as SAMPLE and DUMP, produce output in the form
+   of double precision numbers and time strings. Spy allows you to
+   customize the formats of these outputs.
+ 
+ 
+Number Formats
+ 
+   On output, double precision data can be expressed as formatted floating
+   point decimal or hexadecimal numbers. The syntax of a number format
+   specification is
+ 
+      NUMBER FORMAT <format string>
+ 
+   Number format specifications may by used to set the default number
+   format via the SET NUMBER FORMAT command or as options in other
+   commands.
+ 
+   Specify double precision number formats using either Fortran floating
+   point formats such as
+ 
+      E15.8
+      1PE24.16
+      F19.6
+ 
+   or the string
+ 
+      HEX
+ 
+   The latter invokes formatting using SPICELIB hexadecimal scientific
+   notation.
+ 
+   Hexadecimal formats allow comparison of outputs at the bit level: if two
+   numbers have the same hexadecimal representation (as output by Spy),
+   they are identical. Such comparisons are generally not valid when
+   decimal formats are used, even when mantissas are displayed to full
+   double precision (about 16 digits for IEEE-compliant double precision
+   implementations).
+ 
+ 
+Time Formats
+ 
+   The syntax of an output time format specification is
+ 
+      TIME FORMAT <format string>
+ 
+   Output time format specifications may by used to set the default output
+   time format via the SET TIME FORMAT command or as options in other
+   commands.
+ 
+   Output time formats can be either string formats supported by the
+   SPICELIB routine TIMOUT (timout_c in CSPICE) or numeric formats.
+ 
+   TIMOUT supports a wide variety of formats; we cover just a few examples
+   here. See the text below the examples for an explanation of the tokens
+   used in the example format strings.
+ 
+   Suppose the time value to be displayed is
+ 
+      2006 Jan 2 03:04:05.678 TDB
+ 
+   Then the following format strings produce the outputs shown:
+ 
+      Format String                        Output
+      -------------                        ------
+      YYYY-MON-DD HR:MN:SC.### ::TDB TDB   2006-JAN-02 03:04:05.678  TDB
+      MM/DD/YYYY  HR:MN:SC.##  ::TDB       01/02/2006  03:04:05.67
+      MM/DD/YYYY  HR:MN:SC.##  ::TDB::RND  01/02/2006  03:04:05.68
+      MM-DD-YYYY  HR:MN:SC.### ::UTC UTC   01-02-2006  03:03:00.494  UTC
+      DD MM YYYY Wkd HR:MN:SC.### ::UTC    02 01 2006 Mon 03:03:00.494
+      YYYY-MM-DDTHR:MN:SC.######           2006-01-02T03:03:00.494042
+      YYYY-DOY/HR:MN:SC                    2006-032/06:03:59
+      JULIAND.######## ::TDB               2453737.62784350
+      JULIAND.######## ::TDB JD TDB        2453737.62784350  JD TDB
+      JULIAND.########                     2453737.62708900
+      JULIAND.########  (JD UTC)           2453737.62708900  (JD UTC)
+      JULIAND.## JDUTC ::RND               2453737.63 JDUTC
+ 
+   In TIMOUT-style format strings, the following tokens are among those
+   recognized and which receive special handling by TIMOUT.
+ 
+      Token        Meaning
+      -----        -------
+      YYYY         4-digit year
+      MON          3-letter month
+      MM           2-digit month
+      DD           2-digit day
+      DOY          3-digit day of year
+      HR           2-digit hour
+      MN           2-digit minute
+      SC           2-digit integral second
+      Wkd          3-letter day of week, first letter capitalized
+      .###         3-digit fraction of second or day
+      JULIAND      integer portion of Julian date
+      ::TDB        Output is expressed in TDB time system
+      ::TDT        Output is expressed in TDT (TT) time system
+      ::TDB        Output is expressed in UTC time system
+      ::RND        Output is to be rounded rather than truncated
+ 
+   The tokens below, which appear in the examples, are not recognized by
+   TIMOUT and are simply copied into the output string. These tokens are
+   labels which disambiguate the strings:
+ 
+       TDB
+       UTC
+       JD TDB
+       (JD UTC)
+       JDUTC
+ 
+   Note that TIMOUT-style string format specifications are case-sensitive
+   and must be entered in the exact form expected by TIMOUT. Unrecognized
+   tokens will be copied verbatim into output strings. See the header of
+   the SPICELIB routine TIMOUT (or the CSPICE routine timout_c) for a
+   detailed discussion of supported output formats.
+ 
+   Specify numeric output time formats using the phrase
+ 
+      NUMERIC <number format>
+ 
+   where
+ 
+      <number format>
+ 
+   is one of the numeric formats described in the section ``Number
+   Formats'' above.
+ 
+   Numeric formats always display times in the form of seconds past J2000
+   TDB. Use TIMOUT-style formats such as those shown above to obtain Julian
+   date output formats.
+ 
+   Spy's allowed input time formats are those supported by the SPICELIB
+   routine STR2ET (str2et_c in CSPICE). Because input time strings must be
+   unambiguous, the set of supported input formats is not nearly as large
+   as the set of supported output formats. Below are a few examples of
+   recognized strings:
+ 
+      String                         Time string is interpreted as
+      ------                         -----------------------------
+      2006 JAN 2 03:04:05.678 TDB    TDB calendar date
+      jan 2 2006 03:04:05.678 tdt    TDT calendar date
+      01/02/2006 03:03:00.494 UTC    UTC calendar date
+      01/02/2006 03:03:00.494        UTC calendar date
+      2453737.62784350  jd Tdb       TDB Julian date
+      2453737.62784350 JD utc        UTC Julian date
+      2453737.6                      UTC Julian date
+ 
+   Time string inputs, unlike output time formats, are case-insensitive.
+   See the header of the SPICELIB routine STR2ET (or the CSPICE routine
+   str2et_c) for a detailed discussion of supported input formats.
+ 
+ 
+Body names and IDs
+--------------------------------------------------------
+ 
+   In general, bodies (ephemeris objects) may be identified in Spy commands
+   by either their names or their integer ID codes. Body names are
+   case-insensitive. For example, Jupiter may be identified by the strings
+   'JUPITER' or 'jupiter', or by the ID code 599.
+ 
+   Spy supports body names containing up to five words separated by blanks.
+   Bodies whose names contain more than five words must be specified by
+   integer ID codes.
+ 
+   Additional name-ID associations may be introduced to Spy at run time by
+   loading a text kernel containing the associations. See the NAIF_IDS
+   Required Reading for further information.
+ 
+ 
+Logging
+--------------------------------------------------------
+ 
+   In modes other than command-line, Spy will create a command log by
+   default. Use the keyword -nolog at start-up to disable command logging:
+ 
+      spy -nolog
+ 
+   Spy will attempt to create the command log in the current working
+   directory. If a log file cannot be opened due to inadequate user
+   permissions, Spy will display an error message and continue running.
+ 
+   To save results to a specified file while continuing to send results to
+   the standard output stream, use the command
+ 
+      save to <file>;
+ 
+   You can only save to one file at a time; a second SAVE command will cut
+   off output to the previous SAVE file.
+ 
+   To command Spy to discontinue saving results to the file, type
+ 
+      discard;
+ 
+ 
+Shut-down
+--------------------------------------------------------
+ 
+   To exit Spy gracefully, type
+ 
+      EXIT;
+ 
+   If you prefer to use an alternative command such as the verb ``quit''
+   you can define that verb as a symbol in your start-up file:
+ 
+      DEFINE QUIT EXIT;
+ 
+   To kill Spy immediately, type the host system interrupt command, for
+   example ``Control C.''
+ 
+   Note that the Unix command ``Control D'' is not recognized by Spy.
+ 
+ 
+Sampling Ephemeris Data
+===========================================================================
+ 
+ 
+The SAMPLE Command
+--------------------------------------------------------
+ 
+   The SAMPLE command allows you to see a time-tagged list of evaluated
+   states or other ephemeris data. Like the SPICE SPK system's subroutine
+   API, the SAMPLE command can draw on data from multiple loaded SPK files
+   or other kernels.
+ 
+   The basic form of the SAMPLE command is
+ 
+      SAMPLE <ephemeris item> <parameters>
+ 
+   Here the ephemeris item may be any of
+ 
+      ACCELERATION (obtained via numerical differentiation)
+      ACCELERATION MAGNITUDE (magnitude of derived acceleration)
+      DISTANCE
+      DERIVED SPEED (magnitude of derived velocity)
+      DERIVED VELOCITY (obtained via numerical differentiation)
+      ELEMENTS
+      POSITION
+      SPEED
+      STATE
+      VELOCITY
+ 
+   The quantities ACCELERATION and DERIVED VELOCITY are obtained via
+   numerical differentiation; ACCELERATION MAGNITUDE and DERIVED SPEED are
+   the respective magnitudes of the former quantities.
+ 
+   Derived velocity can be compared to velocity obtained directly from the
+   SPICE SPK system (via the SAMPLE VELOCITY command) to identify
+   mathematical inconsistencies between an SPK file's position and velocity
+   data.
+ 
+   Sampled data are expressed in the units
+ 
+                    2                              2
+      km, km/s, km/s, degrees, degrees/s, degrees/s
+ 
+   Angular units may be reset to any units supported by the SPICELIB
+   routine CONVRT (convrt_c in CSPICE). Length and time units are not
+   adjustable.
+ 
+   The parameters may be set within the command or may be supplied as
+   defaults. Parameters specified in a command override default values. The
+   minimum parameter set that must be provided is
+ 
+      START TIME <time string>
+      STOP TIME <time string>
+      STEP SIZE <d.p. number of seconds>
+      N <sample count>
+      FRAME <reference frame name>
+      OBSERVER <observer name>
+      TARGET <target name>
+ 
+   Only one of the parameter settings
+ 
+      STEP SIZE <d.p. number of seconds>
+      N <sample count>
+ 
+   should be used in the command. When a step size is used, the sampling
+   times are separated by the indicated step; the first sample is taken at
+   the start time. When a sample count greater than 1 is specified, that
+   number of samples are taken at evenly spaced intervals; the sample times
+   range from the specified start and stop times, inclusive. When the
+   sample count is 1, the sample is taken at the start time.
+ 
+   All SAMPLE parameters other than those listed above have defaults. (In
+   the case of aberration correction you should reset the default or
+   specify a value as needed.) The full set of additional parameters is
+ 
+      ABERRATION CORRECTION <string>
+      ANGULAR UNITS <units>
+      COORDINATES <coordinate system>
+      DELTAS
+      INDICES
+      NUMBER FORMAT <format>
+      TIME FORMAT <format>
+      REFERENCE BODY <body name or ID>
+ 
+   The keyword DELTAS indicates that differences of successive values,
+   rather than the values themselves, should be displayed.
+ 
+   The keyword INDICES indicates that sample indices should be displayed in
+   the first column.
+ 
+   The supported coordinate systems are
+ 
+      CYLINDRICAL
+      GEODETIC
+      LATITUDINAL
+      PLANETOGRAPHIC
+      RECTANGULAR
+      SPHERICAL
+ 
+   For planetographic and geodetic coordinates, a reference body must be
+   specified (via the REFERENCE BODY parameter). For coordinate systems
+   having angular coordinates, the ANGULAR UNITS parameter may be used.
+ 
+   The default coordinate system is RECTANGULAR. For rectangular
+   coordinates, the order of the state outputs is
+ 
+      X  Y  Z  dX/dt dY/dt dZ/dt
+ 
+   For the other systems, the order follows that of the outputs of the
+   corresponding SPICELIB (or CSPICE) coordinate conversion routine.
+   Specifically, for latitudinal coordinates, the order is
+ 
+      radius(r) longitude(lon) latitude(lat) d(r)/dt d(lon)/dt d(lat)/dt
+ 
+   For spherical coordinates:
+ 
+      radius(r) colatitude(colat) longitude(lon) d(r)/dt d(colat)/dt
+      d(lon)/dt
+ 
+   For cylindrical coordinates:
+ 
+      radius(r) longitude(lon) Z  d(r)/dt d(lon)/dt d(Z)/dt
+ 
+   For geodetic coordinates (this term is also used for bodies other than
+   the earth):
+ 
+      longitude(lon) latitude(lat) altitude(alt) d(lon)/dt d(lat)/dt
+      d(alt)/dt
+ 
+   For planetographic coordinates:
+ 
+      longitude(lon) latitude(lat) altitude(alt) d(lon)/dt d(lat)/dt
+      d(alt)/dt
+ 
+ 
+SAMPLE Command Examples
+--------------------------------------------------------
+ 
+   Below we show the outputs produced by various SAMPLE commands.
+ 
+   Note: the format of the output shown here is not representative of what
+   would be seen in a normal interactive session because the format of this
+   document allows a maximum page width of just 66 columns for
+   illustrations. In some of the examples below, we've used a combination
+   of custom number and time formats as well as artificial wrapping of
+   results to fit the illustrations into the available space. The custom
+   format specifications used as command arguments can be omitted in
+   practice.
+ 
+ 
+Basic State Vector Lookup
+ 
+   Here we sample geometric states of the Moon as seen from the Earth. We
+   load kernels, then execute a SAMPLE command. We use an 80-column page
+   width, so the output lines containing the state data are wrapped. We
+   modify the time format to make the output actually fit in 66 columns.
+ 
+   Normally each state and its corresponding time tag would be written on a
+   single line.
+ 
+   After executing the setup commands
+ 
+      load leapseconds.ker;
+      load de405.bsp;
+      set page width 80;
+ 
+   the command
+ 
+      sample states
+      observer earth
+      target moon
+      frame J2000
+      aberration correction none
+      time format YYYY-MON-DD HR:MN:SC.#### (TDB) ::TDB
+      step size 10
+      start time jan 1 2006 00:00:00 TDB
+      stop time jan 1 2007 00:00:40 TDB;
+ 
+   produces the output
+ 
+      Sample STATE Results
+      ==================================================================
+       Target               :  moon
+       Observer             :  earth
+       Frame                :  J2000
+       Aberration Correction:  none
+       Coordinate System    :  RECTANGULAR
+      ------------------------------
+       State Components: X, Y, Z, dX, dY, dZ
+      ------------------------------
+       2006-JAN-01 00:00:00.0000 (TDB)    1.37046910E+05 -2.94369329E+05
+                                         -1.61097759E+05  9.99443795E-01
+                                          3.82255017E-01  1.91557861E-01
+       2006-JAN-01 00:00:10.0000 (TDB)    1.37056904E+05 -2.94365507E+05
+                                         -1.61095844E+05  9.99432205E-01
+                                          3.82279681E-01  1.91571404E-01
+       2006-JAN-01 00:00:20.0000 (TDB)    1.37066898E+05 -2.94361684E+05
+                                         -1.61093928E+05  9.99420614E-01
+                                          3.82304344E-01  1.91584947E-01
+       2006-JAN-01 00:00:30.0000 (TDB)    1.37076893E+05 -2.94357861E+05
+                                         -1.61092012E+05  9.99409023E-01
+                                          3.82329007E-01  1.91598490E-01
+       2006-JAN-01 00:00:40.0000 (TDB)    1.37086887E+05 -2.94354037E+05
+                                         -1.61090096E+05  9.99397431E-01
+                                          3.82353669E-01  1.91612032E-01
+      ==================================================================
+ 
+   In the interest of readability, we repeat the above example with a few
+   changes: we sample position only, and we use a numeric time format to
+   save space. The query is:
+ 
+      sample position
+      observer earth
+      target moon
+      frame J2000
+      aberration correction none
+      start time jan 1 2006 00:00:00 TDB
+      stop time jan 1 2007 00:00:40 TDB
+      time format numeric 1PE15.8
+      step size 10;
+ 
+   and the result is
+ 
+      Sample POSITION Results
+      ==================================================================
+       Target               :  moon
+       Observer             :  earth
+       Frame                :  J2000
+       Aberration Correction:  none
+       Coordinate System    :  RECTANGULAR
+      ------------------------------
+       Coordinates: X, Y, Z
+      ------------------------------
+        1.89345600E+08    1.37046910E+05 -2.94369329E+05 -1.61097759E+05
+        1.89345610E+08    1.37056904E+05 -2.94365507E+05 -1.61095844E+05
+        1.89345620E+08    1.37066898E+05 -2.94361684E+05 -1.61093928E+05
+        1.89345630E+08    1.37076893E+05 -2.94357861E+05 -1.61092012E+05
+        1.89345640E+08    1.37086887E+05 -2.94354037E+05 -1.61090096E+05
+      ==================================================================
+ 
+ 
+Sampling Delta Values
+ 
+   We repeat the position query of the last section, this time displaying
+   differences of successive positions:
+ 
+      sample position deltas
+      observer earth
+      target moon
+      frame J2000
+      aberration correction none
+      start time jan 1 2006 00:00:00 TDB
+      stop time jan 1 2006 00:00:40 TDB
+      step size 10
+      time format numeric 1PE15.8;
+ 
+   and the result is
+ 
+      Sample POSITION Deltas Results
+      ==================================================================
+       Target               :  moon
+       Observer             :  earth
+       Frame                :  J2000
+       Aberration Correction:  none
+       Coordinate System    :  RECTANGULAR
+      ------------------------------
+       Coordinates: X, Y, Z
+      ------------------------------
+        1.89345600E+08    0.00000000E+00  0.00000000E+00  0.00000000E+00
+        1.89345610E+08    9.99438000E+00  3.82267349E+00  1.91564633E+00
+        1.89345620E+08    9.99426410E+00  3.82292012E+00  1.91578176E+00
+        1.89345630E+08    9.99414819E+00  3.82316675E+00  1.91591718E+00
+        1.89345640E+08    9.99403227E+00  3.82341338E+00  1.91605261E+00
+      ==================================================================
+ 
+   Since our time step is relatively small, we can compare these results to
+   those we'd obtain by sampling velocity directly. The deltas (other than
+   the first) should have magnitudes approximately 10 times those of the
+   corresponding velocity values. The command
+ 
+      sample velocity
+      observer earth
+      target moon
+      frame J2000
+      aberration correction none
+      start time jan 1 2006 00:00:00 TDB
+      stop time jan 1 2006 00:00:40 TDB
+      step size 10
+      time format numeric 1PE15.8;
+ 
+   yields the results
+ 
+      Sample VELOCITY Results
+      ==================================================================
+       Target               :  moon
+       Observer             :  earth
+       Frame                :  J2000
+       Aberration Correction:  none
+       Coordinate System    :  RECTANGULAR
+      ------------------------------
+       Coordinates: X, Y, Z
+      ------------------------------
+        1.89345600E+08    9.99443795E-01  3.82255017E-01  1.91557861E-01
+        1.89345610E+08    9.99432205E-01  3.82279681E-01  1.91571404E-01
+        1.89345620E+08    9.99420614E-01  3.82304344E-01  1.91584947E-01
+        1.89345630E+08    9.99409023E-01  3.82329007E-01  1.91598490E-01
+        1.89345640E+08    9.99397431E-01  3.82353669E-01  1.91612032E-01
+      ==================================================================
+ 
+ 
+Sampling Osculating Elements
+ 
+   In order to sample osculating elements, we must load a text kernel
+   providing the GM of the observer, which is always considered to be the
+   central body. We also must use an inertial reference frame (or a frame
+   that rotates very slowly) in order for the elements to be sensible.
+ 
+   We repeat the state lookup of the Moon relative to the Earth, this time
+   expressing the states as elements. First we load the required gravity
+   data:
+ 
+      load /ftp/pub/naif/generic_kernels/pck/de-403-masses.tpc;
+ 
+   Next we issue the sample command:
+ 
+      sample elements
+      observer earth
+      target moon
+      frame J2000
+      aberration correction none
+      start time jan 1 2006 00:00:00 TDB
+      stop time jan 1 2006 00:00:40 TDB
+      step size 10
+      time format numeric 1PE15.8;
+ 
+   This yields the result
+ 
+      Sample ELEMENTS Results
+      ==================================================================
+       Target               :  moon
+       Observer             :  earth
+       Frame                :  J2000
+       Aberration Correction:  none
+      ------------------------------
+       Elements:
+          Perifocal Distance
+          Eccentricity
+          Inclination
+          Longitude of Ascending Node
+          Argument of Periapse
+          Mean Anomaly at Epoch
+          Epoch
+          Mu
+      ------------------------------
+        1.89345600E+08    3.61790800E+05  7.63459175E-02  2.83911314E+01
+                          1.58807839E+00  3.04061420E+02  3.48656010E+02
+                          1.89345600E+08  3.98600436E+05
+        1.89345610E+08    3.61790791E+05  7.63457626E-02  2.83911321E+01
+                          1.58807438E+00  3.04061520E+02  3.48657399E+02
+                          1.89345610E+08  3.98600436E+05
+        1.89345620E+08    3.61790783E+05  7.63456077E-02  2.83911329E+01
+                          1.58807037E+00  3.04061620E+02  3.48658788E+02
+                          1.89345620E+08  3.98600436E+05
+        1.89345630E+08    3.61790774E+05  7.63454527E-02  2.83911336E+01
+                          1.58806636E+00  3.04061721E+02  3.48660177E+02
+                          1.89345630E+08  3.98600436E+05
+        1.89345640E+08    3.61790765E+05  7.63452978E-02  2.83911343E+01
+                          1.58806235E+00  3.04061821E+02  3.48661566E+02
+                          1.89345640E+08  3.98600436E+05
+      ==================================================================
+ 
+ 
+Varying the Coordinate System
+ 
+   Here we sample states of Titan relative to Saturn using the command file
+   ``sam.cmd'' which contains:
+ 
+      load lsk;
+      load sat252.bsp;
+      load de405s.bsp;
+      load pck00008.tpc;
+      set observer saturn;
+      set target titan;
+      set frame iau_saturn;
+      set reference body saturn;
+      set aberration correction none;
+      set start time jan 1 2007 TDB;
+      set stop time jan 2 2007 TDB;
+      set page width 80;
+      set time format numeric E15.8;
+      set number format E15.8;
+      set n 2;
+      sample states;
+      sample states coordinates latitudinal;
+      sample states coordinates geodetic reference body saturn;
+      sample states coordinates planetographic reference body saturn;
+      sample states coordinates spherical;
+      sample states coordinates cylindrical;
+ 
+   In this file, ``lsk'' refers to a leapseconds kernel; ``sat252.bsp'' is
+   a Saturn satellite ephemeris.
+ 
+   We've used a numeric time format and we've set the page width to 80
+   columns to save space.
+ 
+   Instead of setting a step size, we've used a sample count: the command
+ 
+      set n 2;
+ 
+   requests two samples for each SAMPLE command; this produces two state
+   outputs in each of the six specified coordinate systems.
+ 
+   We execute the command file as follows:
+ 
+      Spy > start sam.cmd;
+ 
+   The output created by this command file is:
+ 
+ 
+      Sample STATE Results
+      ==================================================================
+       Target               :  titan
+       Observer             :  saturn
+       Frame                :  iau_saturn
+       Aberration Correction:  none
+       Coordinate System    :  RECTANGULAR
+      ------------------------------
+       State Components: X, Y, Z, dX, dY, dZ
+      ------------------------------
+        0.22088160E+09   -0.11947926E+07  0.23620869E+06 -0.63931429E+04
+                          0.37760582E+02  0.19017604E+03 -0.21065860E-01
+        0.22096800E+09   -0.22967837E+06  0.11825947E+07 -0.76651518E+04
+                          0.18817244E+03  0.36401369E+02 -0.79148806E-02
+      ==================================================================
+ 
+      Sample STATE Results
+      ==================================================================
+       Target               :  titan
+       Observer             :  saturn
+       Frame                :  iau_saturn
+       Aberration Correction:  none
+       Coordinate System    :  latitudinal
+      ------------------------------
+       State Components: Radius, Longitude, Latitude, d Radius, d Longitu
+      de, d Latitude
+      ------------------------------
+        0.22088160E+09    0.12179346E+07  0.16881692E+03 -0.30075653E+00
+                         -0.15985823E+00 -0.91213002E-02 -0.10304990E-05
+        0.22096800E+09    0.12047162E+07  0.10099091E+03 -0.36455374E+00
+                         -0.14195119E+00 -0.91154943E-02 -0.41939168E-06
+      ==================================================================
+ 
+      Sample STATE Results
+      ==================================================================
+       Target               :  titan
+       Observer             :  saturn
+       Frame                :  iau_saturn
+       Aberration Correction:  none
+       Coordinate System    :  geodetic
+       Reference Body       :  saturn
+      ------------------------------
+       State Components: Longitude, Latitude, Altitude, d Longitude, d La
+      titude, d Altitude
+      ------------------------------
+        0.22088160E+09    0.16881692E+03 -0.30355533E+00  0.11576668E+07
+                         -0.91213002E-02 -0.10404591E-05 -0.15985716E+00
+        0.22096800E+09    0.10099091E+03 -0.36798378E+00  0.11444485E+07
+                         -0.91154943E-02 -0.42374546E-06 -0.14195066E+00
+      ==================================================================
+ 
+      Sample STATE Results
+      ==================================================================
+       Target               :  titan
+       Observer             :  saturn
+       Frame                :  iau_saturn
+       Aberration Correction:  none
+       Coordinate System    :  planetographic
+       Reference Body       :  saturn
+      ------------------------------
+       State Components: Longitude, Latitude, Altitude, d Longitude, d La
+      titude, d Altitude
+      ------------------------------
+        0.22088160E+09    0.19118308E+03 -0.30355533E+00  0.11576668E+07
+                          0.91213002E-02 -0.10404591E-05 -0.15985716E+00
+        0.22096800E+09    0.25900909E+03 -0.36798378E+00  0.11444485E+07
+                          0.91154943E-02 -0.42374546E-06 -0.14195066E+00
+      ==================================================================
+ 
+      Sample STATE Results
+      ==================================================================
+       Target               :  titan
+       Observer             :  saturn
+       Frame                :  iau_saturn
+       Aberration Correction:  none
+       Coordinate System    :  spherical
+      ------------------------------
+       State Components: Radius, Colatitude, Longitude, d Radius, d Colat
+      itude, d Longitude
+      ------------------------------
+        0.22088160E+09    0.12179346E+07  0.90300757E+02  0.16881692E+03
+                         -0.15985823E+00  0.10304990E-05 -0.91213002E-02
+        0.22096800E+09    0.12047162E+07  0.90364554E+02  0.10099091E+03
+                         -0.14195119E+00  0.41939168E-06 -0.91154943E-02
+      ==================================================================
+ 
+      Sample STATE Results
+      ==================================================================
+       Target               :  titan
+       Observer             :  saturn
+       Frame                :  iau_saturn
+       Aberration Correction:  none
+       Coordinate System    :  cylindrical
+      ------------------------------
+       State Components: Radius, Longitude, Z, d Radius, d Longitude, d Z
+      ------------------------------
+        0.22088160E+09    0.12179178E+07  0.16881692E+03 -0.63931429E+04
+                         -0.15997102E+00 -0.91213002E-02 -0.21065860E-01
+        0.22096800E+09    0.12046918E+07  0.10099091E+03 -0.76651518E+04
+                         -0.14200443E+00 -0.91154943E-02 -0.79148806E-02
+      ==================================================================
+ 
+ 
+Dumping SPK Contents
+===========================================================================
+ 
+   ``Dumping'' refers to display of file contents, as opposed to evaluated
+   quantities such as state vectors.
+ 
+   The supported kinds of SPK file dumps are
+ 
+      DUMP DATA SPK <file name> <parameters>
+      DUMP COVERAGE SPK <file> <parameters>
+      DUMP COMMENTS SPK <file name>
+      DUMP FILE RECORD SPK <file name>
+      DUMP LINKS SPK <file name>
+      DUMP ADDRESS RANGE SPK <file name> <parameters>
+ 
+   DUMP commands always act on a single, specified SPK file. The file may
+   be identified as the default using the SET SPK command.
+ 
+ 
+The DUMP DATA Command
+--------------------------------------------------------
+ 
+   The DUMP DATA command displays contents of SPK segments, along with
+   their associated descriptors and segment identifiers.
+ 
+ 
+Restricting Output
+ 
+   Because SPK files often contain a great deal of data, it's usually
+   advisable to specify constraints to limit the set of data to be
+   displayed. The DUMP DATA command supports constraints on segments,
+   packets, time intervals, and bodies.
+ 
+   The segment selection parameters are:
+ 
+      SEGMENT INDEX <integer>
+      START SEGMENT <integer>
+      STOP SEGMENT <integer>
+ 
+   ``Packets'' are time-tagged data sets such as state vectors, two-line
+   element sets, or Chebyshev coefficient sets. The packet selection
+   parameters are:
+ 
+      PACKET INDEX <integer>
+      START PACKET START <integer>
+      STOP PACKET <integer>
+ 
+   Packet range specifiers apply only to packet-oriented SPK data types;
+   these specifiers are ignored for other data types. Currently (as of
+   December 2006) all SPK data types are packet-oriented except for types
+   15 and 17.
+ 
+   Time bounds are specified as for the SAMPLE command:
+ 
+      START TIME <time string>
+      STOP TIME <time string>
+ 
+   Bodies are selected by name or NAIF ID code:
+ 
+      BODIES <list of names or IDs>
+ 
+   The body specifications are separated by commas.
+ 
+   NAIF IDs of spacecraft are usually negative numbers. See the NAIF_IDS
+   Required Reading or Tutorial for details concerning ID code conventions
+   and built-in name-ID associations.
+ 
+   When no body list is supplied, all bodies are considered for dumping.
+ 
+   All of the constraints shown above operate in conjunction with each
+   other: the selected data must satisfy all provided constraints.
+ 
+   Example: show only the first three packets of each segment for body
+   Jupiter, in SPK file de405.bsp:
+ 
+      DUMP DATA SPK de405.bsp STOP PACKET 3 BODIES JUPITER;
+ 
+ 
+Selecting Display Components
+ 
+   The keywords for the components of a DUMP DATA display are:
+ 
+      ADDRESSES
+      BORDERS
+      DIRECTORIES
+      EPOCHS
+      FULL
+      INDICES
+      LEGENDS
+      METADATA
+      PACKETS
+      PARAMETERS
+      SUMMARIES
+ 
+   By default, a DUMP DATA command shows these components:
+ 
+      BORDERS
+      EPOCHS
+      INDICES
+      LEGENDS
+      PACKETS
+      PARAMETERS
+      SUMMARIES
+ 
+   The default display includes horizontal borders and packet indices, for
+   readability, as well as a legend describing packet layout.
+ 
+   The full set of components includes bookkeeping data and DAF address
+   labels. The full display is invoked by adding the keyword
+ 
+      FULL
+ 
+   to a DUMP DATA command.
+ 
+   One can also select any subset of components. For example, to see only
+   segment summaries (and horizontal display separators), use the command
+ 
+      DUMP DATA SPK <file name> BORDERS SUMMARIES;
+ 
+   The keyword METADATA applies to generic segment metadata (not
+   descriptive comments). These data are found only in type 10 and type 14
+   segments.
+ 
+ 
+Using Reference Values
+ 
+   Time tags can be displayed as offsets from a specified reference epoch;
+   to do this add the phrase
+ 
+      REFERENCE TIME <epoch specifier>
+ 
+   to a DUMP DATA command. Here
+ 
+      <epoch specifier>
+ 
+   can be any of
+ 
+      DESCRIPTOR BEGIN
+      DESCRIPTOR END
+      <time string>
+      INDEX: <integer>
+ 
+   To use this feature, the output time format setting must be numeric.
+ 
+   For example, the command
+ 
+      DUMP DATA SPK <file name> REFERENCE TIME INDEX:3
+      TIME FORMAT NUMERIC E15.8
+      SEGMENT INDEX 2;
+ 
+   will show, in place of each time tag, the difference between that tag
+   and the time tag of the third packet of the second segment.
+ 
+   Packet contents also can be displayed as offsets from a specified
+   packet; to do this, add the phrase
+ 
+      REFERENCE PACKET <integer>
+ 
+   to a DUMP DATA command.
+ 
+   For example, the command
+ 
+      DUMP DATA SPK <file name> REFERENCE PACKET 3
+      SEGMENT INDEX 2;
+ 
+   will show, in place of each packet element, the difference between that
+   element and the corresponding element of the third packet of the second
+   segment.
+ 
+   Reference times and packets may be used together or separately.
+ 
+   Reference specifiers apply only to packet-oriented SPK data types; these
+   specifiers are ignored for other data types.
+ 
+ 
+Using Delta Values
+ 
+   Time tags and packets also can be displayed as ``deltas'': differences
+   from their predecessors. Add the phrase
+ 
+      EPOCH DELTAS
+ 
+   to a DUMP command to show time tag differences.
+ 
+   The output time format setting must be numeric to use this feature.
+ 
+   For example, the command
+ 
+      DUMP DATA SPK <file name> EPOCH DELTAS SEGMENT INDEX 3
+      TIME FORMAT NUMERIC 1PE15.8;
+ 
+   will show the time tags of the third segment with the first tag equal to
+   zero, the second tag equal to the difference of the actual second tag
+   and the first, and so on.
+ 
+   For commands where specific display components are listed, such as
+ 
+      DUMP DATA SPK <file name> BORDERS
+      SUMMARIES PACKETS EPOCHS;
+ 
+   The phrase
+ 
+      EPOCH DELTAS
+ 
+   must be added; it doesn't replace the token
+ 
+      EPOCHS
+ 
+   So to modify the above command to show epoch deltas, one would type
+ 
+      DUMP DATA SPK <file name> BORDERS
+      SUMMARIES PACKETS EPOCHS EPOCH DELTAS;
+ 
+   Add the phrase
+ 
+      PACKET DELTAS
+ 
+   to a DUMP command to show packet differences. Each element is shown as
+   the difference of its actual value and the value of the corresponding
+   element of the preceding packet.
+ 
+   For example, the command
+ 
+      DUMP DATA SPK <file name> PACKET DELTAS SEGMENT INDEX 3;
+ 
+   will show the packets of the third segment with all entries of the first
+   packet equal to zero, those of the second packet equal to the difference
+   of their actual values and those of the corresponding elements of the
+   first packet, and so on.
+ 
+   For commands where specific display components are listed, such as
+ 
+      DUMP DATA SPK <file name> BORDERS
+      SUMMARIES PACKETS EPOCHS;
+ 
+   The phrase
+ 
+      PACKET DELTAS
+ 
+   must be added; it doesn't replace the token
+ 
+      PACKETS
+ 
+   So to modify the above command to show packet deltas, one would type
+ 
+      DUMP DATA SPK <file name> BORDERS
+      SUMMARIES PACKETS EPOCHS PACKET DELTAS;
+ 
+   Epoch and packet delta specifiers apply only to packet-oriented SPK data
+   types; these specifiers are ignored for other data types.
+ 
+ 
+Specifying a Non-native Reference Frame
+ 
+   As a convenience, segment data may optionally be displayed in a
+   reference frame other than that associated with the segment. To do this
+   use the phrase
+ 
+      FRAME <frame name>
+ 
+   in the command.
+ 
+   This command is only applicable to SPK data types that use a vector
+   representation of ephemeris data: types 5, 8, 9, 12, 13, and 18.
+ 
+   Example:
+ 
+      DUMP DATA SPK <file name> FRAME ECLIPJ2000;
+ 
+ 
+DUMP DATA Command Examples
+--------------------------------------------------------
+ 
+ 
+Dump Summary Information for an SPK File
+ 
+   We can dump a spacit-style summary for the first two segments of the SPK
+   file
+ 
+      de405s.bsp
+ 
+   using the command
+ 
+      dump data spk de405s.bsp summaries borders stop segment 2;
+ 
+   The results will be as follows:
+ 
+ 
+      Dump of SPK File de405s.bsp
+      ==================================================================
+      Segment number 1
+      ------------------------------
+      Segment Summary:
+ 
+       Segment ID       : DE-405
+       Target Body      : Body 1, MERCURY BARYCENTER
+       Center Body      : Body 0, SOLAR SYSTEM BARYCENTER
+       Reference Frame  : Frame 1, J2000
+       SPK Data Type    : Type 2
+          Description   : Fixed Width, Fixed Order Chebyshev Polynomials
+      : Pos
+       UTC Start Time   : 1997 JAN 01 00:00:00.000
+       UTC Stop Time    : 2010 JAN 01 23:59:58.000
+       ET Start Time    : 1997-JAN-01 00:01:02.183935 (TDB)
+       ET Stop Time     : 2010-JAN-02 00:01:03.183953 (TDB)
+       DAF Begin Address: 1025
+       DAF End Address  : 27164
+      ==================================================================
+      ==================================================================
+      Segment number 2
+      ------------------------------
+      Segment Summary:
+ 
+       Segment ID       : DE-405
+       Target Body      : Body 2, VENUS BARYCENTER
+       Center Body      : Body 0, SOLAR SYSTEM BARYCENTER
+       Reference Frame  : Frame 1, J2000
+       SPK Data Type    : Type 2
+          Description   : Fixed Width, Fixed Order Chebyshev Polynomials
+      : Pos
+       UTC Start Time   : 1997 JAN 01 00:00:00.000
+       UTC Stop Time    : 2010 JAN 01 23:59:58.000
+       ET Start Time    : 1997-JAN-01 00:01:02.183935 (TDB)
+       ET Stop Time     : 2010-JAN-02 00:01:03.183953 (TDB)
+       DAF Begin Address: 27165
+       DAF End Address  : 36672
+      ==================================================================
+ 
+   Omitting the ``stop segment'' phrase would give us a summary for all 15
+   segments in the file.
+ 
+ 
+Basic Data Dump
+ 
+   We can dump the third and fourth Chebyshev (type 2) coefficient sets
+   from the second segment of the planetary SPK file
+ 
+      de405s.bsp
+ 
+   using the command
+ 
+      dump data spk de405s.bsp
+      segment index 2
+      start packet 3
+      stop packet 4
+      number format 1PE18.11
+      time format numeric 1PE15.8;
+ 
+   The results will be as follows:
+ 
+      Dump of SPK File /kernels/gen/spk/de405.bsp
+      ==================================================================
+      Segment number 2
+      ------------------------------
+      Segment Summary:
+ 
+       Segment ID       : DE-405
+       Target Body      : Body 2, VENUS BARYCENTER
+       Center Body      : Body 0, SOLAR SYSTEM BARYCENTER
+       Reference Frame  : Frame 1, J2000
+       SPK Data Type    : Type 2
+          Description   : Fixed Width, Fixed Order Chebyshev Polynomials
+      :Pos
+       UTC Start Time   : 1950 JAN 01 00:00:00.000
+       UTC Stop Time    : 2049 DEC 31 23:59:59.000
+       ET Start Time    : -1.57787996E+09
+       ET Stop Time     : 1.57788006E+09
+       DAF Begin Address: 201933
+       DAF End Address  : 274992
+      ------------------------------
+      Segment Parameters:
+ 
+       Packet Count     :  2283
+       First epoch      :  -1.57805280E+09
+       Interval Length  :  1.38240000000E+06
+       Record Size      :  32
+       Polynomial Degree:  9
+      ------------------------------
+      Time Tags and Packets:
+ 
+            Type 2 Packet Components:
+ 
+               Coverage Interval Midpoint (TDB sec past J2000)
+               Coverage Interval Radius (sec)
+               Chebyshev Coefficients for Position X-Component (10 value
+      s)
+               Chebyshev Coefficients for Position Y-Component (10 value
+      s)
+               Chebyshev Coefficients for Position Z-Component (10 value
+      s)
+ 
+                  Position units are km.
+ 
+       3         -1.57459680E+09   -1.57459680000E+09  6.91200000000E+05
+                                   -8.57163242518E+07 -1.42083822149E+07
+                                    1.10460100555E+06  3.01192721048E+04
+                                   -1.20759336033E+03 -1.99120233601E+01
+                                    5.98857055631E-01  7.24160041723E-03
+                                   -2.31675961740E-04 -2.19010962199E-06
+                                    5.50445206328E+07 -1.82087237116E+07
+                                   -7.04328819817E+05  3.89574968396E+04
+                                    7.55372509132E+02 -2.66706297844E+01
+                                   -3.48849396926E-01  1.08203250783E-02
+                                    1.08190517215E-04 -3.77754348091E-06
+                                    3.01716281502E+07 -7.28913321825E+06
+                                   -3.86703320895E+05  1.56125656037E+04
+                                    4.16201833643E+02 -1.07349478850E+01
+                                   -1.94896646002E-01  4.42688196468E-03
+                                    6.31029961401E-05 -1.74994680948E-06
+ 
+       4         -1.57321440E+09   -1.57321440000E+09  6.91200000000E+05
+                                   -1.04400191611E+08 -4.27922839843E+06
+                                    1.33964168504E+06  8.44603856263E+03
+                                   -1.45019866128E+03 -3.98342120069E+00
+                                    6.92455998924E-01 -5.63519882562E-04
+                                   -2.34557779237E-04  1.58526670353E-06
+                                    1.45895989107E+07 -2.18108939007E+07
+                                   -1.83104621968E+05  4.64295685831E+04
+                                    1.64219359885E+02 -3.11538742197E+01
+                                   -2.00804701315E-02  1.18364659449E-02
+                                   -4.59011910823E-05 -3.97907930505E-06
+                                    1.31612628998E+07 -9.53789482682E+06
+                                   -1.67182136454E+05  2.03455239104E+04
+                                    1.65686405247E+02 -1.37586789409E+01
+                                   -5.28177994273E-02  5.35485315572E-03
+                                   -5.80360925053E-06 -1.85920043200E-06
+      ==================================================================
+ 
+   If we wish to have the output annotated with the addresses of the
+   displayed segment components, we add the qualifier FULL to the command:
+ 
+      dump data spk de405s.bsp
+      segment index 2
+      start packet 3
+      stop packet 4
+      number format 1PE18.11
+      time format numeric 1PE15.8
+      full;
+ 
+   This command yields the result
+ 
+      Dump of SPK File /kernels/gen/spk/de405.bsp
+      ==================================================================
+      Segment number 2
+      ------------------------------
+      Segment Summary:
+ 
+       Segment ID       : DE-405
+       Target Body      : Body 2, VENUS BARYCENTER
+       Center Body      : Body 0, SOLAR SYSTEM BARYCENTER
+       Reference Frame  : Frame 1, J2000
+       SPK Data Type    : Type 2
+          Description   : Fixed Width, Fixed Order Chebyshev Polynomials
+      : Pos
+       UTC Start Time   : 1950 JAN 01 00:00:00.000
+       UTC Stop Time    : 2049 DEC 31 23:59:59.000
+       ET Start Time    : -1.57787996E+09
+       ET Stop Time     : 1.57788006E+09
+       DAF Begin Address: 201933
+       DAF End Address  : 274992
+ 
+       Descriptor DAF address range is         777:781
+       Segment identifier DAF address range is 905:909
+      ------------------------------
+      Segment Parameters:
+ 
+       Packet Count      (DAF Address 274992):  2283
+       First epoch       (DAF Address 274989):  -1.57805280E+09
+       Interval Length   (DAF Address 274990):  1.38240000000E+06
+       Record Size       (DAF Address 274991):  32
+       Polynomial Degree (Derived)           :  9
+      ------------------------------
+      Time Tags and Packets:
+ 
+            Type 2 Packet Components:
+ 
+               Coverage Interval Midpoint (TDB sec past J2000)
+               Coverage Interval Radius (sec)
+               Chebyshev Coefficients for Position X-Component (10 value
+      s)
+               Chebyshev Coefficients for Position Y-Component (10 value
+      s)
+               Chebyshev Coefficients for Position Z-Component (10 value
+      s)
+ 
+                  Position units are km.
+ 
+       3         -1.57459680E+09   -1.57459680000E+09  6.91200000000E+05
+                                   -8.57163242518E+07 -1.42083822149E+07
+                                    1.10460100555E+06  3.01192721048E+04
+                                   -1.20759336033E+03 -1.99120233601E+01
+                                    5.98857055631E-01  7.24160041723E-03
+                                   -2.31675961740E-04 -2.19010962199E-06
+                                    5.50445206328E+07 -1.82087237116E+07
+                                   -7.04328819817E+05  3.89574968396E+04
+                                    7.55372509132E+02 -2.66706297844E+01
+                                   -3.48849396926E-01  1.08203250783E-02
+                                    1.08190517215E-04 -3.77754348091E-06
+                                    3.01716281502E+07 -7.28913321825E+06
+                                   -3.86703320895E+05  1.56125656037E+04
+                                    4.16201833643E+02 -1.07349478850E+01
+                                   -1.94896646002E-01  4.42688196468E-03
+                                    6.31029961401E-05 -1.74994680948E-06
+                 Time tag DAF address is 201997; packet DAF address rang
+      e is 201997:202028
+ 
+       4         -1.57321440E+09   -1.57321440000E+09  6.91200000000E+05
+                                   -1.04400191611E+08 -4.27922839843E+06
+                                    1.33964168504E+06  8.44603856263E+03
+                                   -1.45019866128E+03 -3.98342120069E+00
+                                    6.92455998924E-01 -5.63519882562E-04
+                                   -2.34557779237E-04  1.58526670353E-06
+                                    1.45895989107E+07 -2.18108939007E+07
+                                   -1.83104621968E+05  4.64295685831E+04
+                                    1.64219359885E+02 -3.11538742197E+01
+                                   -2.00804701315E-02  1.18364659449E-02
+                                   -4.59011910823E-05 -3.97907930505E-06
+                                    1.31612628998E+07 -9.53789482682E+06
+                                   -1.67182136454E+05  2.03455239104E+04
+                                    1.65686405247E+02 -1.37586789409E+01
+                                   -5.28177994273E-02  5.35485315572E-03
+                                   -5.80360925053E-06 -1.85920043200E-06
+                 Time tag DAF address is 202029; packet DAF address rang
+      e is 202029:202060
+ 
+      ==================================================================
+ 
+ 
+Dump Using Reference Packet and Time
+ 
+   We can dump data from the Mars Express SPK file
+ 
+      /ftp/pub/naif/MEX/kernels/spk/ORMM__060901000000_00307.BSP
+ 
+   expressing the packet contents as differences from the values contained
+   in a specified packet. For example, we'll dump packets 10 through 15
+   from segment 500, using packet 12 as a reference packet. We'll limit the
+   displayed components to borders, epochs, and packets. The command
+ 
+      dump data spk
+      /ftp/pub/naif/MEX/kernels/spk/ORMM__060901000000_00307.BSP
+      segment index 500
+      borders epochs packets
+      start packet 10
+      stop packet 15
+      reference packet 12
+      reference time index:12
+      time format numeric E15.8;
+ 
+   yields
+ 
+      Dump of SPK File /ftp/pub/naif/MEX/kernels/spk/ORMM__060901000000_
+      00307.BSP
+      ==================================================================
+      Segment number 500
+      ------------------------------
+      Time Tags and Packets:
+ 
+       -1.69686877E+02    1.51038763E+02  1.04606936E+02 -7.78721818E+01
+                         -2.62567804E-02  1.32206988E-02 -2.72737970E-02
+                         -2.62567804E-02  1.32206988E-02 -2.72737970E-02
+                         -2.25684846E-06 -2.03484143E-06  1.77664076E-06
+       -8.48728073E+01    7.49885976E+01  5.26019929E+01 -3.95280649E+01
+                         -1.31808021E-02  6.56947869E-03 -1.36039364E-02
+                         -1.31808021E-02  6.56947869E-03 -1.36039364E-02
+                         -1.13414042E-06 -1.01307185E-06  8.80470945E-07
+        0.00000000E+00    0.00000000E+00  0.00000000E+00  0.00000000E+00
+                          0.00000000E+00  0.00000000E+00  0.00000000E+00
+                          0.00000000E+00  0.00000000E+00  0.00000000E+00
+                          0.00000000E+00  0.00000000E+00  0.00000000E+00
+        8.49224770E+01   -7.39087055E+01 -5.31871940E+01  4.07036597E+01
+                          1.32853325E-02 -6.48764678E-03  1.35377820E-02
+                          1.32853325E-02 -6.48764678E-03  1.35377820E-02
+                          1.14608075E-06  1.00477187E-06 -8.65093667E-07
+        1.69885532E+02   -1.46719543E+02 -1.06947527E+02  8.25741507E+01
+                          2.66749118E-02 -1.28933643E-02  2.70091741E-02
+                          2.66749118E-02 -1.28933643E-02  2.70091741E-02
+                          2.30460747E-06  2.00164145E-06 -1.71513243E-06
+        2.20558824E+02   -1.89602026E+02 -1.39268877E+02  1.08090190E+02
+                          3.47077083E-02 -1.66736315E-02  3.50095646E-02
+                          3.47077083E-02 -1.66736315E-02  3.50095646E-02
+                          3.00148879E-06  2.59241088E-06 -2.21492217E-06
+ 
+      ==================================================================
+ 
+ 
+Dump Using Packet and Epoch Deltas
+ 
+   We can modify the previous example to display deltas of successive
+   epochs and packets. The command
+ 
+      dump data spk
+      /ftp/pub/naif/MEX/kernels/spk/ORMM__060901000000_00307.BSP
+      segment index 500
+      borders epochs packets
+      start packet 10
+      stop packet 15
+      epoch deltas
+      packet deltas
+      time format numeric E15.8;
+ 
+   yields
+ 
+      Dump of SPK File /ftp/pub/naif/MEX/kernels/spk/ORMM__060901000000_
+      00307.BSP
+      ==================================================================
+      Segment number 500
+      ------------------------------
+      Time Tags and Packets:
+ 
+        0.00000000E+00    0.00000000E+00  0.00000000E+00  0.00000000E+00
+                          0.00000000E+00  0.00000000E+00  0.00000000E+00
+                          0.00000000E+00  0.00000000E+00  0.00000000E+00
+                          0.00000000E+00  0.00000000E+00  0.00000000E+00
+        8.48140694E+01   -7.60501652E+01 -5.20049429E+01  3.83441169E+01
+                          1.30759782E-02 -6.65122012E-03  1.36698606E-02
+                          1.30759782E-02 -6.65122012E-03  1.36698606E-02
+                          1.12270803E-06  1.02176958E-06 -8.96169819E-07
+        8.48728073E+01   -7.49885976E+01 -5.26019929E+01  3.95280649E+01
+                          1.31808021E-02 -6.56947869E-03  1.36039364E-02
+                          1.31808021E-02 -6.56947869E-03  1.36039364E-02
+                          1.13414042E-06  1.01307185E-06 -8.80470945E-07
+        8.49224770E+01   -7.39087055E+01 -5.31871940E+01  4.07036597E+01
+                          1.32853325E-02 -6.48764678E-03  1.35377820E-02
+                          1.32853325E-02 -6.48764678E-03  1.35377820E-02
+                          1.14608075E-06  1.00477187E-06 -8.65093667E-07
+        8.49630548E+01   -7.28108375E+01 -5.37603334E+01  4.18704910E+01
+                          1.33895793E-02 -6.40571754E-03  1.34713922E-02
+                          1.33895793E-02 -6.40571754E-03  1.34713922E-02
+                          1.15852672E-06  9.96869580E-07 -8.50038759E-07
+        5.06732923E+01   -4.28824825E+01 -3.23213496E+01  2.55160394E+01
+                          8.03279644E-03 -3.78026722E-03  8.00039048E-03
+                          8.03279644E-03 -3.78026722E-03  8.00039048E-03
+                          6.96881323E-07  5.90769429E-07 -4.99789746E-07
+      ==================================================================
+ 
+ 
+The DUMP COVERAGE Command
+--------------------------------------------------------
+ 
+   The DUMP COVERAGE command displays a time window of coverage for each
+   body in a specified SPK file. Optionally the time format may be
+   specified in the command (see the section Time Formats above).
+ 
+   Example: the command
+ 
+      Spy > dump coverage spk de405s.bsp;
+ 
+   produces the output (the wrapping shown here is artificial; normally
+   there is one line of output per body):
+ 
+      Coverage of SPK File de405s.bsp
+      ==================================================================
+       ID code     Name                      Start of Interval
+                End of Interval
+ 
+       1           MERCURY BARYCENTER        1997-JAN-01 00:01:02.183935
+      (TDB)    2010-JAN-02 00:01:03.183953 (TDB)
+       2           VENUS BARYCENTER          1997-JAN-01 00:01:02.183935
+      (TDB)    2010-JAN-02 00:01:03.183953 (TDB)
+       3           EARTH BARYCENTER          1997-JAN-01 00:01:02.183935
+      (TDB)    2010-JAN-02 00:01:03.183953 (TDB)
+       4           MARS BARYCENTER           1997-JAN-01 00:01:02.183935
+      (TDB)    2010-JAN-02 00:01:03.183953 (TDB)
+       5           JUPITER BARYCENTER        1997-JAN-01 00:01:02.183935
+      (TDB)    2010-JAN-02 00:01:03.183953 (TDB)
+       6           SATURN BARYCENTER         1997-JAN-01 00:01:02.183935
+      (TDB)    2010-JAN-02 00:01:03.183953 (TDB)
+       7           URANUS BARYCENTER         1997-JAN-01 00:01:02.183935
+      (TDB)    2010-JAN-02 00:01:03.183953 (TDB)
+       8           NEPTUNE BARYCENTER        1997-JAN-01 00:01:02.183935
+      (TDB)    2010-JAN-02 00:01:03.183953 (TDB)
+       9           PLUTO BARYCENTER          1997-JAN-01 00:01:02.183935
+      (TDB)    2010-JAN-02 00:01:03.183953 (TDB)
+       10          SUN                       1997-JAN-01 00:01:02.183935
+      (TDB)    2010-JAN-02 00:01:03.183953 (TDB)
+       199         MERCURY                   1997-JAN-01 00:01:02.183935
+      (TDB)    2010-JAN-02 00:01:03.183953 (TDB)
+       299         VENUS                     1997-JAN-01 00:01:02.183935
+      (TDB)    2010-JAN-02 00:01:03.183953 (TDB)
+       301         MOON                      1997-JAN-01 00:01:02.183935
+      (TDB)    2010-JAN-02 00:01:03.183953 (TDB)
+       399         EARTH                     1997-JAN-01 00:01:02.183935
+      (TDB)    2010-JAN-02 00:01:03.183953 (TDB)
+       499         MARS                      1997-JAN-01 00:01:02.183935
+      (TDB)    2010-JAN-02 00:01:03.183953 (TDB)
+      ==================================================================
+ 
+ 
+The DUMP COMMENTS Command
+--------------------------------------------------------
+ 
+   The DUMP COMMENTS command displays information on the attributes of the
+   comment area of a specified SPK file, followed by the contents of the
+   comment area.
+ 
+   Example: the command
+ 
+      Spy > dump comments spk de405s.bsp;
+ 
+   produces the output (the wrapping shown here is artificial; by default
+   Spy doesn't wrap lines shorter than 150 characters):
+ 
+ 
+      Comment Area of SPK File de405s.bsp
+      ==================================================================
+      Comment Area Attributes
+      ------------------------------
+       Total number of records in comment area, including any unused rec
+      ords:
+            5
+       Maximum available room for comment characters, excluding end-of-c
+      omments
+       marker:
+            4999
+       Number of records in use in comment area:
+            5
+       Index of end-of-comments marker in last used comment record:
+            68
+       Number of characters comprising comment text, excluding end-of-co
+      mments marker:
+            4067
+       Number of properly terminated lines in comment text:
+            99
+       Length of longest line:
+            255
+      ------------------------------
+      Comment Text
+      ------------------------------
+      ; de405s.bsp LOG FILE
+      ;
+      ; Created 1997-12-19/18:07:31.00.
+      ;
+      ; BEGIN NIOSPK COMMANDS
+ 
+      LEAPSECONDS_FILE    = /kernels/gen/lsk/naif0006.tls
+      SPK_FILE            = de405s.bsp
+        SOURCE_NIO_FILE   = /usr2/nio/gen/de405.nio
+          BODIES          = 1 2 3 4 5 6 7 8 9 10 301 399 199 299 499
+          BEGIN_TIME      = CAL-ET 1997 JAN 01 00:01:02.183
+          END_TIME        = CAL-ET 2010 JAN 02 00:01:03.183
+ 
+      ; END NIOSPK COMMANDS
+ 
+ 
+ 
+      [some comment text deleted for brevity]
+ 
+ 
+ 
+      CONCLUSION
+ 
+      DE405 represents the most accurate planetary positions available.
+      Certainly, they are not perfect; extrapolation forward or backward
+       in time
+      will always show some amount of deterioration. Subsequent improvem
+      ents
+      will continue with further acquisition of observational measuremen
+      ts.
+ 
+              >>> End of extract from Standish's DE405 memo <<<
+      ==================================================================
+ 
+ 
+The DUMP FILE RECORD Command
+--------------------------------------------------------
+ 
+   The DUMP FILE RECORD command shows the ID word, the binary file format
+   (usually big-endian or little-endian), the internal file name, the
+   status of the FTP validation string, DAF link pointers, and the first
+   free address of a specified SPK file.
+ 
+   Example: the command
+ 
+      Spy > dump file record
+      /ftp/pub/naif/MEX/kernels/spk/ORMM__060901000000_00307.BSP;
+ 
+   produces the output
+ 
+      File Record Contents of SPK File /ftp/pub/naif/MEX/kernels/spk/ORM
+      M__060901000000_00307.BSP
+      ==================================================================
+       File Architecture      :  DAF
+       Binary File Format     :  LTL-IEEE
+       FTP Validation String  :  Present and Intact
+       Internal File Name     :  ../temp/ORMM__060901000000_00307.BSP
+       ID Word                :  DAF/SPK
+       ND                     :  2
+       NI                     :  6
+       Forward Record Pointer :  9
+       Backward Record Pointer:  7169
+       First Free Address     :  953383
+      ==================================================================
+ 
+ 
+The DUMP LINKS Command
+--------------------------------------------------------
+ 
+   The DUMP LINKS command shows the DAF summary record links and summary
+   record descriptor counts of a specified SPK file.
+ 
+   Example: the command
+ 
+      Spy > dump links spk
+            /ftp/pub/naif/MEX/kernels/spk/ORMM__060901000000_00307.BSP;
+ 
+   produces the output
+ 
+      DAF descriptor links in SPK file /ftp/pub/naif/MEX/kernels/spk/ORM
+      M__060901000000_00307.BSP
+      ==================================================================
+       Record Number   Next Record    Previous Record   Descriptor Count
+ 
+       9               333            0                 25
+       333             606            9                 25
+       606             876            333               25
+       876             1094           606               25
+       1094            1364           876               25
+       1364            1626           1094              25
+       1626            1897           1364              25
+       1897            2165           1626              25
+       2165            2445           1897              25
+       2445            2707           2165              25
+       2707            2976           2445              25
+       2976            3245           2707              25
+       3245            3513           2976              25
+       3513            3790           3245              25
+       3790            4048           3513              25
+       4048            4332           3790              25
+       4332            4607           4048              25
+       4607            4826           4332              25
+       4826            5096           4607              25
+       5096            5411           4826              25
+       5411            5680           5096              25
+       5680            5974           5411              25
+       5974            6349           5680              25
+       6349            6757           5974              25
+       6757            7169           6349              25
+       7169            0              6757              20
+      ==================================================================
+ 
+ 
+The DUMP ADDRESS RANGE Command
+--------------------------------------------------------
+ 
+   The DUMP ADDRESS RANGE command shows the contents of a specified range
+   of DAF addresses in a specified SPK file. The syntax is:
+ 
+      DUMP ADDRESS RANGE SPK <file name> <range specification>
+                             <integer flag> <number format>
+ 
+   Here
+ 
+      <range specification>
+ 
+   may be either or both of
+ 
+      START <integer>
+      STOP <integer>
+ 
+   The integer flag indicates that each dumped number should be expressed
+   both as a double precision number and an array of two integers related
+   by Fortran EQUIVALENCE to the double precision value. This flag is
+ 
+      INTEGERS
+ 
+   The number format is applied to all output numbers, including integers.
+   This format specification is identical to that used for the SET command.
+ 
+   This command treats the specified range as a sequence of double
+   precision numbers. The user must ensure that this assumption is true for
+   the specified address range. It is safe to dump subsets of the address
+   range given by a segment descriptor (presuming the file in question is
+   not corrupted).
+ 
+   Summary (descriptor) records contain some double precision data and some
+   pairs of integers packed into double precision values via Fortran
+   EQUIVALENCE. Contents of descriptor records are best viewed using the
+   INTEGERS flag. Note that the packed integer values are
+   platform-dependent.
+ 
+   Address ranges that span the file record, comment area, or name records
+   contain bit patterns that are not meaningful when expressed as double
+   precision numbers.
+ 
+ 
+DUMP ADDRESS RANGE Example
+ 
+   We'll look at the contents of a segment descriptor (aka a ``segment
+   summary'') from the planetary SPK file
+ 
+      de405s.bsp
+ 
+   First we'll use a DUMP DATA command to view the descriptor for the
+   second segment in the file:
+ 
+      dump data spk de405s.bsp
+      segment index 2
+      summaries addresses borders
+      time format numeric 1PE15.8;
+ 
+   This yields
+ 
+      Dump of SPK File de405s.bsp
+      ==================================================================
+      Segment number 2
+      ------------------------------
+      Segment Summary:
+ 
+       Segment ID       : DE-405
+       Target Body      : Body 2, VENUS BARYCENTER
+       Center Body      : Body 0, SOLAR SYSTEM BARYCENTER
+       Reference Frame  : Frame 1, J2000
+       SPK Data Type    : Type 2
+          Description   : Fixed Width, Fixed Order Chebyshev Polynomials
+      : Pos
+       UTC Start Time   : 1997 JAN 01 00:00:00.000
+       UTC Stop Time    : 2010 JAN 01 23:59:58.000
+       ET Start Time    : -9.46511378E+07
+       ET Stop Time     : 3.15662463E+08
+       DAF Begin Address: 27165
+       DAF End Address  : 36672
+ 
+       Descriptor DAF address range is         777:781
+       Segment identifier DAF address range is 905:909
+      ==================================================================
+ 
+   Next we issue a DUMP ADDRESS RANGE command to dump the address range
+   occupied by the segment descriptor. We use the INTEGERS option to show
+   the contents of each descriptor element as pairs of integers, in
+   addition to the default display, which treats each element as a double
+   precision number.
+ 
+      dump address range spk de405s.bsp
+      start 777 stop 781 integers;
+ 
+   This yields
+ 
+      DAF Address Range Dump of SPK File de405s.bsp
+      ==================================================================
+       Address    D.P. Value      Integer 1       Integer 2
+ 
+       777       -9.46511378E+07  1.21874035E+08 -1.04709708E+09
+       778        3.15662463E+08  2.13379266E+09  1.10223786E+09
+       779        9.88131292-324  2.00000000E+00  0.00000000E+00
+       780        4.24399158-314  1.00000000E+00  2.00000000E+00
+       781        7.78178297-310  2.71650000E+04  3.66720000E+04
+      ==================================================================
+ 
+   The first two double precision values (at addresses 777 and 778) should
+   match the descriptor time bounds. The last six integer values (at
+   addresses 779 through 781) should match, respectively, the segment's
+   body, center, frame ID code, data type, and start and end DAF addresses.
+   Comparison with the segment descriptor displayed previously confirms the
+   match.
+ 
+ 
+Searching for Geometric Events
+===========================================================================
+ 
+   Spy enables you to find time windows when certain geometric events
+   occur.
+ 
+ 
+The FIND Command
+--------------------------------------------------------
+ 
+   The geometric event search commands supported by Spy are:
+ 
+      FIND DISTANCE <relation> <parameters>
+      FIND ELEVATION <relation> <parameters>
+ 
+   The relations supported are:
+ 
+      ABSOLUTE MAXIMUM
+      ABSOLUTE MINIMUM
+      LOCAL MAXIMUM
+      LOCAL MINIMUM
+      EQ <d.p. value> <optional units>
+      GT <d.p. value> <optional units>
+      LT <d.p. value> <optional units>
+ 
+   Required parameters for both search types are
+ 
+      ABERRATION CORRECTION <string>
+      OBSERVER <observer name or ID>
+      START TIME <time string>
+      STEP SIZE <d.p. number of seconds>
+      STOP TIME <time string>
+      TARGET <target name or ID>
+ 
+   In addition, the FIND ELEVATION command requires the parameter
+ 
+      FRAME <reference frame name>
+ 
+   The choice of step size is critical for effective searching. The step
+   size must be small enough so that at most one instance of the event of
+   interest occurs within any interval whose length equals the step size.
+   The step size must be large enough so that the search completes in a
+   reasonable time.
+ 
+   The search algorithm works well with smooth, well-behaved functions. It
+   should not be expected to work with pathological functions such as a
+   perfect step function.
+ 
+   As an example of an event search, find the closest approach of the Moon
+   to the Earth during a specified time interval, using geometric (without
+   aberration corrections) position data.
+ 
+      FIND DISTANCE local minimum
+      OBSERVER MOON
+      TARGET EARTH
+      START TIME JAN 1 2000
+      STOP TIME JAN 1 2001
+      STEP SIZE 86400
+      ABERRATION CORRECTION NONE;
+ 
+   Using the planetary ephemeris
+ 
+      de405.bsp
+ 
+   this search produces the results
+ 
+      Find DISTANCE Results
+      ==================================================================
+                 Time                                 Distance (km)
+ 
+       1         2000-JAN-19 22:48:38.259049 (TDB)    3.59361381E+05
+       2         2000-FEB-17 02:33:00.852411 (TDB)    3.64494318E+05
+       3         2000-MAR-14 23:39:58.364425 (TDB)    3.69533058E+05
+       4         2000-APR-08 22:06:55.572540 (TDB)    3.68257920E+05
+       5         2000-MAY-06 09:06:39.333320 (TDB)    3.63168858E+05
+       6         2000-JUN-03 13:19:25.202491 (TDB)    3.59089451E+05
+       7         2000-JUL-01 22:17:27.418019 (TDB)    3.57362458E+05
+       8         2000-JUL-30 07:45:14.400913 (TDB)    3.58375186E+05
+       9         2000-AUG-27 13:58:35.099766 (TDB)    3.61906294E+05
+       10        2000-SEP-24 08:22:26.034294 (TDB)    3.66961123E+05
+       11        2000-OCT-19 21:59:01.512934 (TDB)    3.70115555E+05
+       12        2000-NOV-14 23:02:27.900415 (TDB)    3.66047281E+05
+       13        2000-DEC-12 22:21:37.634223 (TDB)    3.60601721E+05
+      ==================================================================
+ 
+   A second example: given the settings above, find the highest apparent
+   elevation of the Moon relative to the J2000 equator:
+ 
+      FIND ELEVATION ABSOLUTE MAXIMUM STEP SIZE 1.E5
+      OBSERVER EARTH
+      TARGET MOON
+      START TIME JAN 1 2000
+      STOP TIME JAN 1 2001
+      ABERRATION CORRECTION LT+S;
+ 
+   Using the planetary ephemeris
+ 
+      de405.bsp
+ 
+   this search produces the results
+ 
+      Find ELEVATION Results
+      ==================================================================
+                 Time                                 Elevation (deg)
+ 
+       1         2000-DEC-12 00:29:27.009391 (TDB)    2.61399988E+01
+      ==================================================================
+ 
+   When the observer is a site on the Earth's surface, for example a DSN
+   station, and the reference frame is a topocentric frame centered at the
+   site, the FIND ELEVATION command can be used to find approximate view
+   periods for a specified target. High-precision binary PCKs should be
+   loaded in order to conduct such a search. Note that tropospheric
+   effects, which may be significant, are not modeled in this computation.
+   Also, constraints such as cable wrap limits or other physical antenna
+   pointing limitations are not addressed by this type of search.
+ 
+ 
+Validating SPK files
+===========================================================================
+ 
+   Spy's CHECK commands perform a variety of SPK validation functions.
+ 
+   Spy can perform structural and low-level semantic checks automatically.
+   These built-in checks can identify improperly constructed files but do
+   not address the issue of whether an ephemeris ``makes sense.''
+ 
+   All other validation functions require user inputs to specify how checks
+   are to be performed. For example, checking that evaluated ephemeris data
+   lie in expected numeric ranges requires user-supplied specifications of
+   the times at which the ephemeris is to be sampled, the specific
+   quantities to be checked, and the interval within which the data are
+   expected to lie.
+ 
+ 
+The CHECK INTEGRITY Command
+--------------------------------------------------------
+ 
+   The CHECK INTEGRITY command inspects a specified SPK file and indicates
+   whether any structural or basic semantic errors are detected.
+ 
+   The CHECK INTEGRITY command has the form
+ 
+      CHECK INTEGRITY SPK <file name>     <epoch spacing constraints>
+                          <number format> <time format>
+                          <silent flag>   <message limit>
+ 
+   The optional epoch spacing constraints cause Spy to flag epochs that
+   violate the constraints. The constraints may indicate minimum and
+   maximum spacing limits, as well as a bound on the maximum ratio of
+   lengths of consecutive intervals between epochs. The syntax for the
+   constraints is:
+ 
+      MIN     EPOCH SPACING <number>
+      MINIMUM EPOCH SPACING <number>
+      MAX     EPOCH SPACING <number>
+      MAXIMUM EPOCH SPACING <number>
+      MAX     SPACING RATIO <number>
+      MAXIMUM SPACING RATIO <number>
+ 
+   These limits only apply to packet-oriented segments; for other segments
+   the limits are ignored.
+ 
+   The number and time format specifiers follow the same syntax as those
+   used in the SET command.
+ 
+   The silent flag, when set, causes Spy to abort if any condition
+   resulting in a warning or error is found. When Spy aborts, it returns an
+   ``error'' exit code, if this feature is supported on the host platform.
+   This feature is intended for use in command line mode. The token for
+   silent operation is
+ 
+      SILENT
+ 
+   The optional message limit indicates the maximum number of
+   informational, warning, or error messages to be displayed.
+ 
+   Example: run default checks on a specified SPK file; flag any epochs
+   separated by less than a millisecond, and display no more than three
+   diagnostics.
+ 
+      check integrity spk de405.bsp min epoch spacing 1.e-3
+      error limit 3;
+ 
+ 
+CHECK INTEGRITY Examples
+ 
+   First, check a file known to be valid:
+ 
+      check integrity spk de405s.bsp;
+ 
+   This yields:
+ 
+      Structure Inspection of SPK File de405s.bsp
+      ==================================================================
+      No error diagnostics and no warnings generated for SPK file de405s
+      .bsp
+      ==================================================================
+ 
+   Next, check a file that has a structural problem:
+ 
+      check integrity
+      spk /ftp/pub/naif/GLL/misc/NIMS/030707/GLL920514.BSP;
+ 
+   This yields the diagnostic output
+ 
+      Structure Inspection of SPK File /ftp/pub/naif/GLL/misc/NIMS/03070
+      7/GLL920514.BSP
+      ==================================================================
+      Segment Number 6
+      ------------------------------
+      Segment Summary:
+ 
+       Segment ID       : PFILE T-920514-GAS   EPHEMERIS ID: 1005
+       Target Body      : Body -77, GALILEO ORBITER
+       Center Body      : Body 10, SUN
+       Reference Frame  : Frame 11, DE-125
+       SPK Data Type    : Type 1
+          Description   : Modified Difference Array
+       UTC Start Time   : 1991 JUL 12 23:59:02.000
+       UTC Stop Time    : 1991 OCT 26 22:31:09.264
+       ET Start Time    : 1991-JUL-13 00:00:00.183784 (TDB)
+       ET Stop Time     : 1991-OCT-26 22:32:07.446721 (TDB)
+       DAF Begin Address: 5284
+       DAF End Address  : 11548
+      ------------------------------
+      %% Error:  Descriptor Time Bounds Error
+ 
+          The segment descriptor reports time bounds
+               1991-JUL-13 00:00:00.183784 (TDB)
+               1991-OCT-26 22:32:07.446721 (TDB)
+          while the last time tag is
+               1991-OCT-26 22:32:07.446721 (TDB)
+          The difference (DC(2) - last tag) is
+               2.98023224E-08
+          In order to prevent extrapolation, the descriptor end time mus
+      t not follow the last time tag.
+      ------------------------------
+      One error diagnostic and no warnings generated for SPK file /ftp/p
+      ub/naif/GLL/misc/NIMS/030707/GLL920514.BSP
+      ==================================================================
+ 
+ 
+The CHECK BOUNDS Command
+--------------------------------------------------------
+ 
+   The CHECK BOUNDS command finds times when magnitudes or components of
+   specified ephemeris quantities exceed specified limits.
+ 
+   The CHECK BOUNDS command has the forms
+ 
+      CHECK BOUNDS LOWER <value> <quantity specification>;
+      CHECK BOUNDS UPPER <value> <quantity specification>;
+      CHECK BOUNDS LOWER <value> UPPER <value> <quantity specification>;
+ 
+   or
+ 
+      CHECK BOUNDS LOWER <value> COMPONENT <integer> <quantity
+      specification>;
+ 
+      CHECK BOUNDS UPPER <value> COMPONENT <integer> <quantity
+      specification>;
+ 
+      CHECK BOUNDS LOWER <value> UPPER <value> COMPONENT <integer>
+      <quantity specification>;
+ 
+   Quantity specifications are just like those of the SAMPLE command.
+ 
+   When the checked quantity is a vector, its magnitude is used in the
+   comparisons.
+ 
+   Example (set-up not shown):
+ 
+      check bounds upper 5.65e-4 acceleration
+      observer earth target smart-1
+      start time sep 2 2006
+      stop time sep 3 2006
+      step size 60
+      frame J2000
+      aberration correction none;
+ 
+ 
+CHECK BOUNDS Examples
+ 
+   We sample the magnitude of the geometric acceleration the Moon relative
+   to the Earth over a time interval of 30 days and flag any samples where
+   the magnitude exceeds
+ 
+                  2
+      3.08e-6 km/s
+ 
+   We first load a leapseconds kernel and a planetary SPK file:
+ 
+      load lsk;
+      load de405s.bsp;
+ 
+   Now perform the check. We display the indices as well as the sample
+   times of the values that exceed the limit.
+ 
+      check bounds upper 3.08e-6 acceleration magnitude
+      observer earth
+      target moon
+      frame J2000
+      aberration correction none
+      start time 2006 nov 1 TDB
+      stop time 2006 dec 1 TDB
+      indices
+      n 1000;
+ 
+   This yields
+ 
+      ACCELERATION MAGNITUDE Bound Check Results
+      ==================================================================
+       Target               :  moon
+       Observer             :  earth
+       Frame                :  J2000
+       Aberration Correction:  none
+       Coordinate System    :  RECTANGULAR
+      ------------------------------
+       82        2006-NOV-03 10:22:42.162162 (TDB)    3.08008928E-06
+       83        2006-NOV-03 11:05:56.756757 (TDB)    3.08027962E-06
+       84        2006-NOV-03 11:49:11.351351 (TDB)    3.08044784E-06
+       85        2006-NOV-03 12:32:25.945946 (TDB)    3.08059389E-06
+       86        2006-NOV-03 13:15:40.540540 (TDB)    3.08071774E-06
+       87        2006-NOV-03 13:58:55.135135 (TDB)    3.08081932E-06
+       88        2006-NOV-03 14:42:09.729730 (TDB)    3.08089861E-06
+       89        2006-NOV-03 15:25:24.324324 (TDB)    3.08095554E-06
+       90        2006-NOV-03 16:08:38.918919 (TDB)    3.08099010E-06
+       91        2006-NOV-03 16:51:53.513513 (TDB)    3.08100223E-06
+       92        2006-NOV-03 17:35:08.108108 (TDB)    3.08099191E-06
+       93        2006-NOV-03 18:18:22.702702 (TDB)    3.08095911E-06
+       94        2006-NOV-03 19:01:37.297297 (TDB)    3.08090379E-06
+       95        2006-NOV-03 19:44:51.891892 (TDB)    3.08082594E-06
+       96        2006-NOV-03 20:28:06.486486 (TDB)    3.08072553E-06
+       97        2006-NOV-03 21:11:21.081081 (TDB)    3.08060254E-06
+       98        2006-NOV-03 21:54:35.675675 (TDB)    3.08045696E-06
+       99        2006-NOV-03 22:37:50.270270 (TDB)    3.08028876E-06
+       100       2006-NOV-03 23:21:04.864865 (TDB)    3.08009795E-06
+      ==================================================================
+ 
+   Next, we check the x-component of acceleration. In this example, we
+   check for the x-component taking values below
+ 
+                     2
+      -3.068e-06 km/s
+ 
+   We adjust the number format to make the output fit in our narrow page.
+   The command is:
+ 
+      check bounds
+      lower -3.068e-6
+      component 1
+      acceleration
+      observer earth
+      target moon
+      frame J2000
+      aberration correction none
+      start time 2006 nov 1 TDB
+      stop time 2006 dec 1 TDB
+      indices
+      n 1000
+      number format E19.12;
+ 
+   This yields
+ 
+      ACCELERATION Bound Check Results
+      ==================================================================
+       Target               :  moon
+       Observer             :  earth
+       Frame                :  J2000
+       Aberration Correction:  none
+       Coordinate System    :  RECTANGULAR
+      ------------------------------
+       57        2006-NOV-02 16:21:37.297297 (TDB)   -3.068205727721E-06
+                                                      1.844942226770E-08
+                                                     -2.276084870578E-08
+       58        2006-NOV-02 17:04:51.891892 (TDB)   -3.068872942241E-06
+                                                     -2.573043722531E-09
+                                                     -3.423100053412E-08
+       59        2006-NOV-02 17:48:06.486486 (TDB)   -3.069332972675E-06
+                                                     -2.361684520169E-08
+                                                     -4.571047262925E-08
+       60        2006-NOV-02 18:31:21.081081 (TDB)   -3.069585293437E-06
+                                                     -4.468013409253E-08
+                                                     -5.719825130202E-08
+       61        2006-NOV-02 19:14:35.675675 (TDB)   -3.069629404998E-06
+                                                     -6.576105160416E-08
+                                                     -6.869331736770E-08
+       62        2006-NOV-02 19:57:50.270270 (TDB)   -3.069464834110E-06
+                                                     -8.685772873163E-08
+                                                     -8.019464642350E-08
+       63        2006-NOV-02 20:41:04.864865 (TDB)   -3.069091134192E-06
+                                                     -1.079682860339E-07
+                                                     -9.170120862656E-08
+       64        2006-NOV-02 21:24:19.459459 (TDB)   -3.068507885486E-06
+                                                     -1.290908340779E-07
+                                                     -1.032119689715E-07
+ 
+ 
+The CHECK ADDRESS RANGE Command
+--------------------------------------------------------
+ 
+   The CHECK ADDRESS RANGE command inspects a specified range of DAF
+   addresses and indicates whether any invalid bit patterns are detected.
+ 
+   Spy checks only the portion of the specified address range that lies
+   within data regions of SPK segments. The file record, comment area,
+   descriptor records, and name records are not checked.
+ 
+   The CHECK ADDRESS RANGE command has the form
+ 
+      CHECK ADDRESS RANGE SPK <file name> <start address> <stop address>
+                              <bit display specification> <error limit>
+ 
+   The start and stop address specifications have the form
+ 
+      START <integer>
+      STOP <integer>
+ 
+   If either bound is omitted, the bounds default to the first and last
+   address of the file, respectively.
+ 
+   The optional bit display specification indicates whether a pictorial
+   representation of invalid bit patterns is to be displayed. The bit
+   display specification consists of the token
+ 
+      BITS
+ 
+   The optional error limit indicates the maximum number of error messages
+   to be displayed. The error limit syntax is
+ 
+      ERROR LIMIT <integer>
+ 
+   Example: check the first 100000 d.p. numbers of the SPK file de405s.bsp,
+   displaying showing no more than three error messages:
+ 
+      check address range spk de405.bsp
+      start 1 stop 100000 bits error limit 3;
+ 
+ 
+CHECK ADDRESS RANGE Examples
+ 
+   First, we check a file known to be valid:
+ 
+      check address range spk de405s.bsp
+ 
+   Since we omitted start and stop values, the entire file will be checked.
+   The resulting output is:
+ 
+      Checking D.P. Numbers in SPK File de405s.bsp
+      ==================================================================
+       No invalid double precision values were found.
+      ==================================================================
+ 
+   Next we check a file into which invalid bit patterns have been inserted.
+   We ask for a display of any invalid bit patterns found.
+ 
+      check address range spk poke.bsp bits;
+ 
+   This yields
+ 
+      Checking D.P. Numbers in SPK File poke.bsp
+      ==================================================================
+       Address 385:                SUBNORMAL
+          0000 0000 0000 0000 0000 0000 0000 1000 0000 0000 0000 0000 00
+      00 0000 0000 0000
+       Address 387:                SUBNORMAL
+          0000 0000 0000 0000 0000 0000 0010 0000 0000 0000 0000 0000 00
+      00 0000 0000 0000
+       Address 39293:              -INFINITY
+          1111 1111 1111 0000 0000 0000 0000 0000 0000 0000 0000 0000 00
+      00 0000 0000 0000
+      ------------------------------
+       3 invalid double precision values were found.
+      ==================================================================
+ 
+   Note that the bit pattern display is always big-endian, regardless of
+   the binary format of the checked file.
+ 
+ 
+Spy Command Syntax
+===========================================================================
+ 
+ 
+Meta/2 Syntax Description Language
+--------------------------------------------------------
+ 
+   Spy's command language is word-oriented. The words in a command must
+   match a pattern called the ``syntax'' of the command. The syntax of each
+   of Spy's commands can be expressed in a language called Meta/2, which
+   was developed by NAIF. The sections below describe the various
+   constructs that make up a Meta/2 syntax specification.
+ 
+ 
+Keywords
+ 
+   Every Spy command begins with a keyword. Keywords define the structure
+   of a command: for the most part, a command is a collection of keywords,
+   some of which are associated with non-keyword arguments. The keywords of
+   a Meta/2 syntax description are the words that do not begin with one of
+   the special characters in the list below:
+ 
+      "("   the left parenthesis
+      "@"   the "at" sign
+      "|"   the vertical bar
+      "}"    the right  brace
+ 
+   The simplest Meta/2 expressions consist entirely of keywords. Some of
+   Spy's commands that fall into this category are shown below.
+ 
+      SHOW KERNELS;
+      SET COORDINATES LATITUDINAL;
+      RESET NUMBER FORMAT;
+ 
+   When you type a command, you may enter the keywords in upper, lower or
+   mixed case.
+ 
+ 
+Class Templates
+--------------------------------------------------------
+ 
+   Keywords can be associated with non-keyword values. The values
+   associated with a keyword always immediately follow that keyword. A
+   collection of values is terminated by another keyword, or by the end of
+   the command.
+ 
+   Class templates are used to indicate that the values associated with a
+   particular keyword belong to a class of values. For example the Meta/2
+   expression of the rule that the keyword SPK is to be followed by a file
+   name looks like this:
+ 
+      SPK @word ...
+ 
+   The symbol ``@word'' indicates that the next word in the command
+   following the keyword SPK should be a sequence of contiguous, printable,
+   non-white-space characters.
+ 
+ 
+number
+ 
+   The template ``@number'' matches any number. Examples are
+ 
+      1
+      3.14
+      0.07281D-10
+ 
+ 
+int
+ 
+   The template ``@int'' matches only integer values. Examples are
+ 
+      -3
+      26172771
+      0.24E6
+ 
+ 
+word
+ 
+   The template ``@word'' matches any string of contiguous, non-blank,
+   printing characters. Examples are
+ 
+      alpine
+      /u/user/naif/etc/data/spam
+      ^&HANNk228***(JASNSK
+ 
+ 
+name
+ 
+   The template @name matches any word that begins with a letter and
+   contains from one to 32 letters, numbers, underscores, and hyphens.
+   Examples are
+ 
+      Andrea
+      BRORSEN-METCALF
+      COMMAND_STEM
+      X11J9
+ 
+ 
+calendar
+ 
+   The template ``@calendar'' matches a sequence of words that make up a
+   calendar date. The rules for matching this template are somewhat
+   complicated: for the most part, any unambiguous format will be accepted.
+   Examples are
+ 
+      JAN 1, 1992 12:28:28
+      1992-3-18 18:28
+      5 APR 1993 18:00:00.289
+      12-1-1995
+      Nov 30 2006 18:00:05.234 TDB
+ 
+   All formats accepted by the SPICELIB (CSPICE) routine STR2ET (str2et_c)
+   may be used to express calendar dates.
+ 
+ 
+Template Quantifiers
+ 
+   The construct
+ 
+      TIME FORMAT (1:10)@word
+ 
+   matches the keywords TIME FORMAT followed by between one and ten words.
+   The quantifier
+ 
+      (n:m)
+ 
+   when prefixed to any class template has similar meaning. The lower bound
+   is always present, and is always positive. The upper bound is optional:
+   for example, template
+ 
+      (2:)@int
+ 
+   matches any sequence of two or more integer words.
+ 
+ 
+Numeric Qualifiers
+ 
+   The construct
+ 
+      START PACKET @int(8:80)
+ 
+   matches the keywords START PACKET followed by an integer between 8 and
+   80 inclusive. The qualifier
+ 
+      (n:m)
+ 
+   when suffixed to any numeric class template has similar meaning. Both
+   bounds are optional: for example the templates
+ 
+      @number(2:)
+      @number(:1000)
+ 
+   are matched by numeric words whose values are greater than or equal to
+   two and less than or equal to 1000 respectively.
+ 
+ 
+Character Qualifiers
+ 
+   The construct
+ 
+      DIRECTORY @word([*]|*%:[*]|*:)
+ 
+   matches any word that matches one of the individual wildcard templates
+ 
+      [*]
+ 
+      *%:[*]
+ 
+      *:
+ 
+   The wildcard characters (asterisk and percent sign) match any substring
+   and any character respectively. The qualifier
+ 
+      (t1|...|tn)
+ 
+   when suffixed to any character class template has a similar meaning.
+ 
+ 
+Combining Quantifiers with Qualifiers
+ 
+   Quantifiers and qualifiers may be combined in any combination. The
+   following are all valid class templates.
+ 
+      @int(-5:5)
+ 
+      (3:)@name(A*|B*|*X)
+ 
+      (1:3)@name(John|Bobby|Teddy)
+ 
+ 
+Switches
+--------------------------------------------------------
+ 
+   The construct
+ 
+         (0:4){     START @int(1:)
+                  | STOP @int(1:)
+                  | ERROR LIMIT @int(1:)
+                  | BITS                   }
+ 
+   is called a switch. It is the final construct that you need to know.
+   Although it looks forbidding, it is really quite simple. A switch is a
+   list of keyword-template phrases, separated by vertical bars, and
+   surrounded by braces. The left brace is prefixed with a quantifier,
+ 
+         (n:m){ ... }
+ 
+   Whenever you see a switch, it means that at least n and not more than m
+   of the phrases separated by vertical bars must appear; however, they may
+   appear in any order. Thus, the syntax
+ 
+         (0:4){     START @int(1:)
+                  | STOP @int(1:)
+                  | ERROR LIMIT @int(1:)
+                  | BITS                   }
+ 
+   matches all of the following sequences of words:
+ 
+      START 1 STOP 100
+      STOP 100 BITS START 1 ERROR LIMIT 3
+      STOP 100 BITS
+      ERROR LIMIT 3 BITS
+      BITS
+      <empty sequence>
+ 
+ 
+Nesting Switches
+ 
+   Switches cannot be nested. The construct
+ 
+         (a:b){ ...
+              | (c:d){ ...  }
+              }
+ 
+   is illegal.
+ 
+ 
+Spy Command Syntax Diagrams
+--------------------------------------------------------
+ 
+   The diagrams below are Meta/2 syntax descriptions. These descriptions
+   specify patterns that valid commands must match. However, these
+   descriptions do not completely specify the Spy command language, because
+   some elements of Spy's command language, such as number and time
+   formats, don't lend themselves to concise descriptions in the Meta/2
+   language.
+ 
+      CHECK ADDRESS RANGE
+         (0:1){     SPK @word }
+         (0:4){     START @int(1:)
+                  | STOP @int(1:)
+                  | ERROR LIMIT @int(1:)
+                  | BITS                   }
+ 
+      CHECK BOUNDS
+         (1:2){     LOWER @number
+                  | UPPER @number }
+         (0:1){     COMPONENT @int(1:)  }
+         (1:1){     ACCELERATION
+                  | ACCELERATION MAGNITUDE
+                  | ACCELERATION MAGNITUDES
+                  | ACCELERATIONS
+                  | DERIVED SPEED
+                  | DERIVED SPEEDS
+                  | DERIVED VELOCITIES
+                  | DERIVED VELOCITY
+                  | DISTANCE
+                  | DISTANCES
+                  | ELEMENTS
+                  | POSITION
+                  | POSITIONS
+                  | SPEED
+                  | SPEEDS
+                  | STATE
+                  | STATES
+                  | VELOCITIES
+                  | VELOCITY
+                  | ELEMENTS
+         (0:16){    ABCORR @word
+                  | ABERRATION CORRECTION @word
+                  | ANGULAR UNITS @word
+                  | COORDINATES @word
+                  | DELTAS
+                  | FRAME @word
+                  | INDICES
+                  | N @int(1:)
+                  | NUMBER FORMAT @word
+                  | OBSERVER (1:5)@word
+                  | REFERENCE BODY (1:5)@word
+                  | START TIME @calendar
+                  | STEP SIZE @number(0:)
+                  | STOP TIME @calendar
+                  | TARGET (1:5)@word
+                  | TIME FORMAT (1:10)@word  }
+ 
+      CHECK INTEGRITY
+         (0:1) {    SPK @word }
+         (0:10){    MIN     EPOCH SPACING @number
+                  | MINIMUM EPOCH SPACING @number
+                  | MAX     EPOCH SPACING @number
+                  | MAXIMUM EPOCH SPACING @number
+                  | MAX     SPACING RATIO @number
+                  | MAXIMUM SPACING RATIO @number
+                  | MESSAGE LIMIT @int(1:)
+                  | NUMBER FORMAT @word
+                  | TIME FORMAT (1:10)@word
+                  | SILENT                        }
+ 
+      DEFINE @word (1:)word
+ 
+      DISCARD
+ 
+      DO @word
+      DO @int(1:)
+ 
+      DUMP ADDRESS RANGE
+         (0:1){ SPK @word[spk] }
+         (0:4){   START @int(1:)
+                | STOP  @int(1:)
+                | INTEGERS
+                | NUMBER FORMAT @word }
+ 
+      DUMP COMMENTS
+         (0:1){ SPK @word[spk] }
+ 
+      DUMP COVERAGE
+         (0:1){ SPK @word }
+         (0:1){ TIME FORMAT (1:10)@word }
+ 
+      DUMP DATA
+         (0:1 ){    SPK @word }
+         (0:27){    ADDRESSES
+                  | BODIES (1:10)@word
+                  | BORDERS
+                  | DIRECTORIES
+                  | EPOCH DELTAS
+                  | EPOCHS
+                  | FRAME @word
+                  | FULL
+                  | INDICES
+                  | LEGENDS
+                  | METADATA
+                  | NUMBER FORMAT @word
+                  | PACKET DELTAS
+                  | PACKET INDEX @int
+                  | PACKETS
+                  | PARAMETERS
+                  | REFERENCE PACKET @int
+                  | REFERENCE TIME (1:10)@word
+                  | SEGMENT INDEX @int
+                  | START PACKET @int
+                  | START SEGMENT @int
+                  | START TIME @calendar
+                  | STOP PACKET @int
+                  | STOP SEGMENT @int
+                  | STOP TIME @calendar
+                  | SUMMARIES
+                  | TIME FORMAT (1:10)@word  }
+ 
+      DUMP FILE RECORD
+         (0:1){ SPK @word }
+ 
+      DUMP LINKS
+          (0:1){ SPK @word }
+ 
+      ECHO
+ 
+      EDIT @word
+      EDIT @int(1:)
+ 
+      EXIT
+ 
+      FIND
+         (1:1){     DISTANCE
+                  | ELEVATION  }
+         (1:1){     ABSOLUTE MAXIMUM
+                  | ABSOLUTE MINIMUM
+                  | EQ @number  (0:1)@unit  }
+                  | GT @number (0:1)@unit
+                  | LOCAL MAXIMUM
+                  | LOCAL MINIMUM
+                  | LT @number (0:1)@unit   }
+         (0:9){     ABERRATION CORRECTION @word
+                  | FRAME @word
+                  | NUMBER FORMAT @word
+                  | OBSERVER (1:5)@word
+                  | START TIME @calendar
+                  | STEP SIZE @number(0:)
+                  | STOP TIME @calendar
+                  | TARGET (1:5)@word
+                  | TIME FORMAT (1:10)@word }
+ 
+      HELP
+ 
+      LOAD @word
+ 
+      NO ECHO
+ 
+      RECALL @word
+      RECALL @int(1:)
+ 
+      RESET ABCORR
+      RESET ABERRATION CORRECTION
+      RESET ANGULAR UNITS
+      RESET COORDINATES
+      RESET FRAME
+      RESET N
+      RESET NUMBER FORMAT
+      RESET OBSERVER
+      RESET PAGE WIDTH
+      RESET REFERENCE BODY
+      RESET SPK
+      RESET START TIME
+      RESET STEP SIZE
+      RESET STOP TIME
+      RESET TARGET
+      RESET TIME FORMAT
+ 
+      SAMPLE
+         (1:1) {    ACCELERATION
+                  | ACCELERATION MAGNITUDE
+                  | ACCELERATION MAGNITUDES
+                  | ACCELERATIONS
+                  | DERIVED SPEED
+                  | DERIVED SPEEDS
+                  | DERIVED VELOCITIES
+                  | DERIVED VELOCITY
+                  | DISTANCE
+                  | DISTANCES
+                  | ELEMENTS
+                  | POSITION
+                  | POSITIONS
+                  | SPEED
+                  | SPEEDS
+                  | STATE
+                  | STATES
+                  | VELOCITIES
+                  | VELOCITY    }
+         (0:16){    ABCORR @word
+                  | ABERRATION CORRECTION @word
+                  | ANGULAR UNITS @word
+                  | COORDINATES @word
+                  | DELTAS
+                  | FRAME @word
+                  | INDICES
+                  | N @int(1:)
+                  | NUMBER FORMAT @word
+                  | OBSERVER (1:5)@word
+                  | REFERENCE BODY (1:5)@word
+                  | START TIME @calendar
+                  | STEP SIZE @number(0:)
+                  | STOP TIME @calendar
+                  | TARGET (1:5)@word
+                  | TIME FORMAT (1:10)@word  }
+ 
+ 
+      SAVE TO @word
+ 
+      SET ABCORR @word
+      SET ABERRATION CORRECTION @word
+      SET ANGULAR UNITS @unit
+      SET COORDINATES @word
+      SET EDITOR @word
+      SET FRAME @word
+      SET N @int(1:)
+      SET NUMBER FORMAT @word
+      SET OBSERVER (1:5)@word
+      SET PAGE WIDTH @int
+      SET REFERENCE BODY (1:5)@word
+      SET SPK @word
+      SET START TIME @calendar
+      SET STEP SIZE @number
+      SET STOP TIME @calendar
+      SET TARGET (1:5)@word
+      SET TIME FORMAT (1:10)@word
+ 
+      SHOW ABCORR
+      SHOW ABERRATION CORRECTION
+      SHOW ALL
+      SHOW ANGULAR UNITS
+      SHOW COORDINATES
+      SHOW ENVIRONMENT
+      SHOW FRAME
+      SHOW KERNELS
+      SHOW N
+      SHOW NUMBER FORMAT
+      SHOW OBSERVER
+      SHOW PAGE WIDTH
+      SHOW REFERENCE BODY
+      SHOW SPK
+      SHOW START TIME
+      SHOW STEP SIZE
+      SHOW STOP TIME
+      SHOW TARGET
+      SHOW TIME FORMAT
+ 
+      START @word
+ 
+      UNDEFINE @word
+ 
+      UNLOAD @word
+ 
+ 
+Appendix: Document Revision History
+===========================================================================
+ 
+ 
+June 6, 2010
+ 
+   Examples of ``sample'' command outputs were updated to show new column
+   titles. Minor edit to eliminate typo.
+ 
+ 
+March 2, 2008
+ 
+   Initial release by by N. J. Bachman.
+ 

@@ -9,7 +9,7 @@
 
 static integer c__6 = 6;
 static integer c__3 = 3;
-static doublereal c_b48 = 1.;
+static doublereal c_b40 = 1.;
 
 /* $Procedure      ZZGFSSOB ( GF, state of sub-observer point ) */
 /* Subroutine */ int zzgfssob_(char *method, integer *trgid, doublereal *et, 
@@ -60,7 +60,7 @@ static doublereal c_b48 = 1.;
     extern logical eqstr_(char *, char *, ftnlen, ftnlen);
     doublereal xform[36]	/* was [6][6] */;
     logical uselt;
-    extern /* Subroutine */ int bodc2n_(integer *, char *, logical *, ftnlen);
+    extern /* Subroutine */ int bodc2s_(integer *, char *, ftnlen);
     doublereal ssbtg0[6];
     extern logical failed_(void);
     doublereal sa[3];
@@ -75,22 +75,22 @@ static doublereal c_b48 = 1.;
 	    sastat[6], spoint[3], srfvec[3], ssbobs[6], ssbtrg[6], trgepc;
     integer center, clssid, frclss;
     logical attblk[6], usestl;
-    extern /* Subroutine */ int setmsg_(char *, ftnlen), errint_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ int setmsg_(char *, ftnlen), sigerr_(char *, 
+	    ftnlen);
     logical fnd;
-    extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
-	    ftnlen), namfrm_(char *, integer *, ftnlen), frinfo_(integer *, 
-	    integer *, integer *, integer *, logical *), spkgeo_(integer *, 
-	    doublereal *, char *, integer *, doublereal *, doublereal *, 
-	    ftnlen), vminug_(doublereal *, integer *, doublereal *), dnearp_(
+    extern /* Subroutine */ int chkout_(char *, ftnlen), namfrm_(char *, 
+	    integer *, ftnlen), frinfo_(integer *, integer *, integer *, 
+	    integer *, logical *), errint_(char *, integer *, ftnlen), 
+	    spkgeo_(integer *, doublereal *, char *, integer *, doublereal *, 
+	    doublereal *, ftnlen), vminug_(doublereal *, integer *, 
+	    doublereal *), dnearp_(doublereal *, doublereal *, doublereal *, 
+	    doublereal *, doublereal *, doublereal *, logical *), surfpv_(
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
-	    doublereal *, doublereal *, logical *), surfpv_(doublereal *, 
-	    doublereal *, doublereal *, doublereal *, doublereal *, 
-	    doublereal *, logical *), subpnt_(char *, char *, doublereal *, 
-	    char *, char *, char *, doublereal *, doublereal *, doublereal *, 
-	    ftnlen, ftnlen, ftnlen, ftnlen, ftnlen), spkssb_(integer *, 
-	    doublereal *, char *, doublereal *, ftnlen), sxform_(char *, char 
-	    *, doublereal *, doublereal *, ftnlen, ftnlen);
+	    doublereal *, doublereal *, logical *), subpnt_(char *, char *, 
+	    doublereal *, char *, char *, char *, doublereal *, doublereal *, 
+	    doublereal *, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen), spkssb_(
+	    integer *, doublereal *, char *, doublereal *, ftnlen), sxform_(
+	    char *, char *, doublereal *, doublereal *, ftnlen, ftnlen);
     doublereal dlt;
     extern /* Subroutine */ int qderiv_(integer *, doublereal *, doublereal *,
 	     doublereal *, doublereal *), invstm_(doublereal *, doublereal *);
@@ -199,6 +199,11 @@ static doublereal c_b48 = 1.;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+
+/*       Added NWRR parameter. */
+/*       Added NWUDS parameter. */
+
 /* -    SPICELIB Version 1.0.0, 21-FEB-2009 (NJB) (LSE) (EDW) */
 
 /* -& */
@@ -234,6 +239,14 @@ static doublereal c_b48 = 1.;
 
 /*     Callers of GFSEP should declare their workspace window */
 /*     count using NWSEP. */
+
+
+/*     Callers of GFRR should declare their workspace window */
+/*     count using NWRR. */
+
+
+/*     Callers of GFUDS should declare their workspace window */
+/*     count using NWUDS. */
 
 
 /*     ADDWIN is a parameter used to expand each interval of the search */
@@ -411,7 +424,7 @@ static doublereal c_b48 = 1.;
 
 /*     Note: the sum of these lengths, plus the length of the */
 /*     "percent complete" substring, should not be long enough */
-/*     to cause wrap-around on any platforms's terminal window. */
+/*     to cause wrap-around on any platform's terminal window. */
 
 
 /*     Total progress report message length upper bound: */
@@ -627,31 +640,27 @@ static doublereal c_b48 = 1.;
 
 /* $ Exceptions */
 
-/*     1)  If either the ID code of the target or of the observer */
-/*         cannot be mapped to a body name, the error */
-/*         SPICE(NOTRANSLATION) will be signaled. */
-
-/*     2)  If the aberration correction ABCORR is not recognized, */
+/*     1)  If the aberration correction ABCORR is not recognized, */
 /*         the error will be diagnosed by routines in the call tree */
 /*         of this routine. */
 
-/*     3)  If the frame FIXREF is not recognized by the frames */
+/*     2)  If the frame FIXREF is not recognized by the frames */
 /*         subsystem, the error will be diagnosed by routines in the */
 /*         call tree of this routine. */
 
-/*     4)  FIXREF must be centered on the target body; if it isn't, */
+/*     3)  FIXREF must be centered on the target body; if it isn't, */
 /*         the error will be diagnosed by routines in the call tree */
 /*         of this routine. */
 
-/*     5)  Any error that occurs while look up the state of the target */
+/*     4)  Any error that occurs while look up the state of the target */
 /*         or observer will be diagnosed by routines in the call tree of */
 /*         this routine. */
 
-/*     6)  Any error that occurs while look up the orientation of */
+/*     5)  Any error that occurs while look up the orientation of */
 /*         the target will be diagnosed by routines in the call tree of */
 /*         this routine. */
 
-/*     7)  If the input method is not recognized, the error */
+/*     6)  If the input method is not recognized, the error */
 /*         SPICE(NOTSUPPORTED) will be signaled. */
 
 /* $ Files */
@@ -730,6 +739,11 @@ static doublereal c_b48 = 1.;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.0.0 12-MAY-2009 (NJB) */
+
+/*        Upgraded to support targets and observers having */
+/*        no names associated with their ID codes. */
+
 /* -    SPICELIB Version 1.0.0 05-MAR-2009 (NJB) */
 
 /* -& */
@@ -761,25 +775,11 @@ static doublereal c_b48 = 1.;
     }
     chkin_("ZZGFSSOB", (ftnlen)8);
     if (first || *trgid != prvtrg) {
-	bodc2n_(trgid, svtarg, &fnd, (ftnlen)36);
-	if (! fnd) {
-	    setmsg_("Could not translate target ID code #.", (ftnlen)37);
-	    errint_("#", trgid, (ftnlen)1);
-	    sigerr_("SPICE(NOTRANSLATION)", (ftnlen)20);
-	    chkout_("ZZGFSSOB", (ftnlen)8);
-	    return 0;
-	}
+	bodc2s_(trgid, svtarg, (ftnlen)36);
 	prvtrg = *trgid;
     }
     if (first || *obsid != prvobs) {
-	bodc2n_(obsid, svobs, &fnd, (ftnlen)36);
-	if (! fnd) {
-	    setmsg_("Could not translate observer ID code #.", (ftnlen)39);
-	    errint_("#", obsid, (ftnlen)1);
-	    sigerr_("SPICE(NOTRANSLATION)", (ftnlen)20);
-	    chkout_("ZZGFSSOB", (ftnlen)8);
-	    return 0;
-	}
+	bodc2s_(obsid, svobs, (ftnlen)36);
 	prvobs = *obsid;
     }
     first = FALSE_;
@@ -993,7 +993,7 @@ static doublereal c_b48 = 1.;
 		t = *et + ((i__ << 1) - 3) * 1.;
 		spkssb_(obsid, &t, "J2000", &obssta[(i__1 = i__ * 6 - 6) < 12 
 			&& 0 <= i__1 ? i__1 : s_rnge("obssta", i__1, "zzgfss"
-			"ob_", (ftnlen)671)], (ftnlen)5);
+			"ob_", (ftnlen)652)], (ftnlen)5);
 	    }
 	    if (failed_()) {
 		chkout_("ZZGFSSOB", (ftnlen)8);
@@ -1003,7 +1003,7 @@ static doublereal c_b48 = 1.;
 /*           Compute the observer's acceleration using a quadratic */
 /*           approximation. */
 
-	    qderiv_(&c__3, &obssta[3], &obssta[9], &c_b48, acc);
+	    qderiv_(&c__3, &obssta[3], &obssta[9], &c_b40, acc);
 	}
 
 /*        The rest of the algorithm is iterative. On the first */

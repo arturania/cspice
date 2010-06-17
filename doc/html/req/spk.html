@@ -110,7 +110,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> SPK Required Reading
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2009 APR 15 by B. V. Semenov.
+   Last revised on 2010 MAR 23 by N. J. Bachman.
 <P>
  
 <BR><BR>
@@ -126,7 +126,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Purpose
 </H3><P><BR><BR>
-   The purpose of this document is to describe the NAIF Toolkit software
+   The purpose of this document is to describe the SPICE Toolkit software
    provided in the software library CSPICE, (C SPICE library) used for
    producing and accessing SPICE ephemeris data. In addition this document
    describes SPK---the common file format for NAIF's S-kernel and ephemeris
@@ -482,7 +482,7 @@ collection of papers and memos; assembled by I. Underwood; 11 Dec 1989
 <P>
  
    The SPK format is supported by a collection of functions that are part
-   of the CSPICE library---the major component of the NAIF Toolkit. This
+   of the CSPICE library---the major component of the SPICE Toolkit. This
    family of SPK functions provides the following capabilities:
 <P>
  
@@ -547,9 +547,9 @@ frame.
    NAIF provides two utility programs---TOXFR and SPACIT for converting
    SPICE binary kernels to a ``transfer format'' suitable for text copying
    from one computer to another. Once the transfer format file has been
-   copied, the NAIF utilities TOBIN and SPACIT are available for converting
-   the transfer format file to the binary format suitable for the new
-   machine.
+   copied, the SPICE utilities TOBIN and SPACIT are available for
+   converting the transfer format file to the binary format suitable for
+   the new machine.
 <P>
  
    The utilities TOXFR and TOBIN are ``command line'' programs. To convert
@@ -588,10 +588,10 @@ frame.
 </H3><P><BR><BR>
    Since SPK files are binary files, you can't just open them with your
    favorite text editor to determine which ephemeris objects are
-   represented in the file. Instead you need to use one of the NAIF utility
-   programs that allow you to summarize the ephemeris contents of an SPK
-   file. The first of these is SPACIT which was introduced above. The
-   second is the command line utility BRIEF.
+   represented in the file. Instead you need to use one of the SPICE
+   utility programs that allow you to summarize the ephemeris contents of
+   an SPK file. The first of these is SPACIT which was introduced above.
+   The second is the command line utility BRIEF.
 <P>
  
    BRIEF gives a quick summary of the contents of the file and supports a
@@ -717,7 +717,7 @@ measure of ET.<BR>
  In the SPK system times are specified as a count of seconds past a
 particular epoch---the epoch of the J2000 reference frame. This
 reference epoch is within a second or two of the UTC epoch:
-12:01:02.184 Jan 1, 2000 UTC. (See the document <a href="../req/time.html">TIME.REQ</a> for a more
+12:01:02.184 Jan 1, 2000 UTC. (See the document <a href="../req/time.html">time.req</a> for a more
 thorough discussion of the J2000 epoch). Epochs prior to this epoch are
 represented as negative numbers. The ``units'' of ET are designated in
 several different ways: seconds past 2000, seconds past J2000, seconds
@@ -1175,7 +1175,7 @@ reference frame as it was oriented at ET - LT_F.
                &amp;lt                                ); { Easier state }
 </PRE>
    Consult the NAIF IDS Required Reading file, <a href="../req/naif_ids.html">naif_ids.req</a>, for the
-   current list of body codes recognized by the NAIF Toolkit software.
+   current list of body codes recognized by the SPICE Toolkit software.
 <P>
  
 <BR><BR>
@@ -1388,7 +1388,7 @@ reference frame as it was oriented at ET - LT_F.
    There are currently four classes of reference frames that are supported
    by the SPICE system. We give a brief overview of these frames here. For
    a more thorough discussion of the various types of frames see the
-   recommended reading file ``<a href="../req/frames.html">FRAMES.REQ</a>.''
+   recommended reading file ``<a href="../req/frames.html">frames.req</a>.''
 <P>
  
    Inertial frames
@@ -1480,7 +1480,7 @@ frames and instrument frames. TK frames are loaded via the function
    above. (If the producer of the file has done his or her homework this
    step should be unnecessary.) The frame definition file is a SPICE text
    kernel that specifies the type of the frame, the center of the frame,
-   the name of the frame, and its ID code. (See <a href="../req/frames.html">FRAMES.REQ</a> for more details
+   the name of the frame, and its ID code. (See <a href="../req/frames.html">frames.req</a> for more details
    concerning frame definitions.)
 <P>
  
@@ -1521,7 +1521,7 @@ frames and instrument frames. TK frames are loaded via the function
    or an arbitrary point for which an ephemeris has been calculated. Each
    body in the solar system is associated with a unique integer code. A
    list of names and codes for the planets, major satellites, spacecraft,
-   asteroids and comets can be found in the document <a href="../req/naif_ids.html">NAIF_IDS.REQ</a>
+   asteroids and comets can be found in the document <a href="../req/naif_ids.html">naif_ids.req</a>
 <P>
  
    The states computed from the ephemeris data in a segment must be
@@ -1582,7 +1582,7 @@ the segment, given in ephemeris seconds past Julian year 2000.
    However, segment order does imply priority. For a given target body,
    segment priority increases with distance from the start of the file:
    segments closer to the end of the file have higher priority than
-   segments for the same target tody that occur earlier in the file. When a
+   segments for the same target body that occur earlier in the file. When a
    data request for a specified target body is made, the segment for that
    target body with highest priority, and whose time interval includes the
    request time, will be selected to satisfy the request.
@@ -2115,7 +2115,7 @@ the segment, given in ephemeris seconds past Julian year 2000.
    }
 </PRE>
    Additional, working examples of using the principal SPK functions may be
-   found in the ``Cookbook'' programs distributed with the NAIF Toolkit.
+   found in the ``Cookbook'' programs distributed with the SPICE Toolkit.
 <P>
  
 <BR><BR>
@@ -2153,7 +2153,7 @@ type is normally used for satellites whose orbits are computed directly
 from theories.
 <BR><BR></UL>
 <UL>
-<TT>4.</TT> Reserved for future use (TRW elements for TDRS and Spacetelescope).
+<TT>4.</TT> Reserved for future use (TRW elements for TDRS and Space Telescope).
 <BR><BR></UL>
 <UL>
 <TT>5.</TT> Discrete states (two body propagation).
@@ -2272,8 +2272,11 @@ SPK system of spacecraft ephemerides used by the European Space Agency
    from a particular record and epoch.
 <P>
  
-   The records within a segment are ordered by increasing final epoch. A
-   segment of this type is structured as follows:
+   The records within a segment are ordered by increasing final epoch. The
+   final epochs associated with the records must be distinct.
+<P>
+ 
+   A segment of this type is structured as follows:
 <P>
  
 <PRE>
@@ -3338,7 +3341,7 @@ information about the generic segment.
  
    The storage, arrangement and retrieval of packets is handled by the
    SPICE generic segment software. That software is documented in the
-   document GENSEG.REQ. (The document GENSEG.REQ is currently in
+   document genseg.req. (The document genseg.req is currently in
    preparation.) We only review the pertinent points about generic segments
    here.
 <P>
@@ -4065,7 +4068,7 @@ for each position and velocity component.
    descriptive documentation in the comments portion of the SPK file. You
    can use the utility program COMMNT to insert comments into the file, or
    you may use the functions in the SPC family to insert the comments when
-   you create the SPK file. (See <a href="../ug/commnt.html">COMMNT.UG</a> or <a href="../req/spc.html">SPC.REQ</a> for further details.)
+   you create the SPK file. (See <a href="../ug/commnt.html">commnt.ug</a> or <a href="../req/spc.html">spc.req</a> for further details.)
 <P>
  
    This appendix addresses the contents of your comments. What will others
@@ -4321,11 +4324,12 @@ for each position and velocity component.
 <H3> October 14, 1999
 </H3><P><BR><BR>
    This is the initial release of the CSPICE edition of the SPK "Required
-   Reading" document. The underlying Fortran NAIF Toolkit version is N0050.
+   Reading" document. The underlying Fortran SPICE Toolkit version is
+   N0050.
 <P>
  
    The SPICE system has been extended to include CSPICE---a version of the
-   NAIF Toolkit software coded in the ANSI C programming language.
+   SPICE Toolkit software coded in the ANSI C programming language.
 <P>
  
    To better accommodate CSPICE users, NAIF translated the Fortran SPK
@@ -4419,7 +4423,7 @@ encapsulate C code generated by running f2c on Fortran source code.
 </PRE>
    When the SPK system was introduced, states of objects (positions and
    velocities) were stored relative to inertial frames and retrieved
-   relative to inertial frames. Beginning with version 41 of the NAIF
+   relative to inertial frames. Beginning with version 41 of the SPICE
    Toolkit, states can be stored relative to both inertial and non-inertial
    frames. Moreover, states may be retrieved relative to both inertial and
    non-inertial frames. Non-inertial frames may be tied to the rotation of

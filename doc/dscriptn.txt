@@ -19,8 +19,8 @@ Introduction
 Version Information
 --------------------------------------------------------
  
-      Creation Date: Thu Apr 16 15:10:18 PDT 2009
-      Version      : CSPICE.............V.N0063
+      Creation Date: Thu Jun 10 12:01:50 PDT 2010
+      Version      : CSPICE.............V.N0064
  
  
 Directory Structure and Contents
@@ -248,7 +248,7 @@ LIB
    The LIB directory contains the object libraries for this cspice Toolkit
    package.
  
-   All libraries are compiled using the following compiler options:
+   All static libraries are compiled using the following compiler options:
  
       /c /O2 -D_COMPLEX_DEFINED -DMSDOS -DOMIT_BLANK_CC
       -DNON_ANSI_STDIO
@@ -770,6 +770,8 @@ Appendix -- NAIF's File Naming Conventions
  
       *.m             MATLAB source code files.
  
+      *.java          Java source code files.
+ 
    Executables, libraries, object files:
  
       (no ext)        Executable files.
@@ -789,6 +791,8 @@ Appendix -- NAIF's File Naming Conventions
  
       *.dlm           IDL and MATLAB library definition modules.
       *.def
+ 
+      *.class         Java class files.
  
    Documents:
  
@@ -810,6 +814,10 @@ Appendix -- NAIF's File Naming Conventions
  
       *.htm           HTML files.
       *.html
+ 
+      *.css           Style sheet files.
+ 
+      *.args          Javadoc arguments files.
  
    SPICE Kernel files:
  

@@ -19,7 +19,7 @@
 
 /* $ Abstract */
 
-/*      Determine the order of elements in a double precision array. */
+/*     Determine the order of elements in a double precision array. */
 
 /* $ Disclaimer */
 
@@ -52,56 +52,67 @@
 
 /* $ Keywords */
 
-/*      ARRAY,  SORT */
+/*     ARRAY,  SORT */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*      ARRAY      I    Input array. */
-/*      NDIM       I    Dimension of ARRAY. */
-/*      IORDER     O    Order vector for ARRAY. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     ARRAY      I    Input array. */
+/*     NDIM       I    Dimension of ARRAY. */
+/*     IORDER     O    Order vector for ARRAY. */
 
 /* $ Detailed_Input */
 
-/*      ARRAY       is the input array. */
+/*     ARRAY       is the input array. */
 
-/*      NDIM        is the number of elements in the input array. */
+/*     NDIM        is the number of elements in the input array. */
 
 /* $ Detailed_Output */
 
-/*      IORDER      is the order vector for the input array. */
-/*                  IORDER(1) is the index of the smallest element */
-/*                  of ARRAY; IORDER(2) is the index of the next */
-/*                  smallest; and so on. */
+/*     IORDER      is the order vector for the input array. */
+/*                 IORDER(1) is the index of the smallest element */
+/*                 of ARRAY; IORDER(2) is the index of the next */
+/*                 smallest; and so on. */
 
 /* $ Parameters */
 
 /*     None. */
 
+/* $ Exceptions */
+
+/*     1) A negative input dimension causes this routine to */
+/*        leave the output order vector unchanged. */
+
+/*     This routine is error free. */
+
+/* $ Files */
+
+/*     None. */
+
 /* $ Particulars */
 
-/*      ORDERD finds the index of the smallest element of the input */
-/*      array. This becomes the first element of the order vector. */
-/*      The process is repeated for the rest of the elements. */
+/*     ORDERD finds the index of the smallest element of the input */
+/*     array. This becomes the first element of the order vector. */
+/*     The process is repeated for the rest of the elements. */
 
-/*      The order vector returned by ORDERD may be used by any of */
-/*      the REORD routines to sort sets of related arrays, as shown */
-/*      in the example below. */
+/*     The order vector returned by ORDERD may be used by any of */
+/*     the REORD routines to sort sets of related arrays, as shown */
+/*     in the example below. */
 
 /* $ Examples */
 
-/*      In the following example, the ORDER and REORD routines are */
-/*      used to sort four related arrays (containing the names, */
-/*      masses, integer ID codes, and visual magnitudes for a group */
-/*      of satellites). This is representative of the typical use of */
-/*      these routines. */
+/*     In the following example, the ORDER and REORD routines are */
+/*     used to sort four related arrays (containing the names, */
+/*     masses, integer ID codes, and visual magnitudes for a group */
+/*     of satellites). This is representative of the typical use of */
+/*     these routines. */
 
 /*            C */
-/*            C     Sort the object arrays by name. */
+/*            C     Sort the object arrays by visual magnitude. */
 /*            C */
-/*                  CALL ORDERC ( NAMES, N, IORDER ) */
+/*                  CALL ORDERD ( VMAGS,  N, IORDER ) */
 
 /*                  CALL REORDC ( IORDER, N, NAMES ) */
 /*                  CALL REORDD ( IORDER, N, MASSES ) */
@@ -110,32 +121,30 @@
 
 /* $ Restrictions */
 
-/*      None. */
-
-/* $ Exceptions */
-
-/*      Error free. */
-
-/* $ Files */
-
-/*      None. */
-
-/* $ Author_and_Institution */
-
-/*      I.M. Underwood  (JPL) */
+/*     None. */
 
 /* $ Literature_References */
 
-/*      None. */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     I.M. Underwood  (JPL) */
 
 /* $ Version */
 
-/* -     SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+/* -    SPICELIB Version 1.0.2, 23-MAR-2010 (NJB) */
 
-/*         Comment section for permuted index source lines was added */
-/*         following the header. */
+/*        Header example was updated to show use of this routine. */
+/*        Exceptions section was updated. Header sections were */
+/*        re-ordered. */
 
-/* -     SPICELIB Version 1.0.0, 31-JAN-1990 (IMU) */
+/* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
+
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (IMU) */
 
 /* -& */
 /* $ Index_Entries */

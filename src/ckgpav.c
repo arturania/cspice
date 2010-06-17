@@ -218,6 +218,16 @@ static integer c__9 = 9;
 /*                and within TOL units of SCLKDP.  (More in Particulars, */
 /*                below.) */
 
+/*                In general, because using a non-zero tolerance */
+/*                affects selection of the segment from which the */
+/*                data is obtained, users are strongly discouraged */
+/*                from using a non-zero tolerance when reading CKs */
+/*                with continuous data. Using a non-zero tolerance */
+/*                should be reserved exclusively to reading CKs with */
+/*                discrete data because in practice obtaining data */
+/*                from such CKs using a zero tolerance is often not */
+/*                possible due to time round off. */
+
 /*     REF        is the desired reference frame for the returned */
 /*                pointing and angular velocity.  The returned C-matrix */
 /*                CMAT gives the orientation of the instrument */
@@ -554,8 +564,8 @@ static integer c__9 = 9;
 
 
 /*     Case 4:  Pointing is available in the first segment searched. */
-/*              Because segment A has the highest priority and can */
-/*              satisfy the request, segment C is not searched. */
+/*              Because segment C has the highest priority and can */
+/*              satisfy the request, segment A is not searched. */
 
 /*                                             SCLKDP */
 /*                                            / */
@@ -571,8 +581,42 @@ static integer c__9 = 9;
 /*                                CKGPAV returns this instance */
 
 /*     Segment A          (0-----------------0--------0--0-----0) */
+/*                                           ^ */
+/*                                           | */
+/*                                     "Best" answer */
 
 
+/*     The next case illustrates an unfortunate side effect of using */
+/*     a non-zero tolerance when reading multi-segment CKs with */
+/*     continuous data. In all cases when the look-up interval */
+/*     formed using tolerance overlaps a segment boundary and */
+/*     the request time falls within the coverage of the lower */
+/*     priority segment, the data at the end of the higher priority */
+/*     segment will be picked instead of the data from the lower */
+/*     priority segment. */
+
+
+/*     Case 5:  Pointing is available in the first segment searched. */
+/*              Because segment C has the highest priority and can */
+/*              satisfy the request, segment A is not searched. */
+
+/*                                             SCLKDP */
+/*                                            / */
+/*                                           |  TOL */
+/*                                           | / */
+/*                                           |/\ */
+/*     Your request                       [--+--] */
+/*                                        .  .  . */
+/*                                        .  .  . */
+/*     Segment C                                (===============) */
+/*                                              ^ */
+/*                                              | */
+/*                                CKGPAV returns this instance */
+
+/*     Segment A          (=====================) */
+/*                                           ^ */
+/*                                           | */
+/*                                     "Best" answer */
 
 /* $ Examples */
 
@@ -740,11 +784,18 @@ static integer c__9 = 9;
 /*     N.J. Bachman   (JPL) */
 /*     W.L. Taber     (JPL) */
 /*     J.M. Lynch     (JPL) */
+/*     B.V. Semenov   (JPL) */
 /*     M.J. Spencer   (JPL) */
 /*     R.E. Thurman   (JPL) */
 /*     I.M. Underwood (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 5.2.1, 03-JUN-2010 (BVS) */
+
+/*        Header update: description of the tolerance and Particulars */
+/*        section were expanded to address some problems arising from */
+/*        using a non-zero tolerance. */
 
 /* -    SPICELIB Version 5.2.0, 25-AUG-2005 (NJB) */
 

@@ -40,6 +40,7 @@
 
    VECTOR
    DERIVATIVE
+   MATH
 
 */
    #include "SpiceUsr.h"
@@ -75,10 +76,6 @@
 
    None.
 
--Files
-
-   None.
-
 -Exceptions
 
    Error free.
@@ -87,6 +84,10 @@
       component of sout will also be the zero vector.  The
       velocity component will be the velocity component
       of s1.
+
+-Files
+
+   None.
 
 -Particulars
 
@@ -98,36 +99,102 @@
 
 -Examples
 
-   Suppose that STATE gives the apparent state of a body with
+   Any numerical results shown for this example may differ between
+   platforms as the results depend on the SPICE kernels used as input
+   and the machine specific arithmetic implementation.
+ 
+   Suppose that 'state' gives the apparent state of a body with
    respect to an observer.  This routine can be used to compute the
    instantaneous angular rate of the object across the sky as seen
    from the observers vantage.
 
-      dvhat_c ( state, ustate );
+      #include "SpiceUsr.h"
+      #include <stdio.h>
+      #include <math.h>
 
-      vel[0] = ustate[3];
-      vel[1] = ustate[4];
-      vel[2] = ustate[5];
+      int main()
+         {
 
-      angular_rate = vnorm_c ( vel );
+         SpiceDouble       et;
+         SpiceDouble       ltime;
+         SpiceDouble       omega;
+         SpiceDouble       state  [6];
+         SpiceDouble       ustate [6];
 
+         SpiceChar       * epoch  = "Jan 1 2009";
+         SpiceChar       * target = "MOON";
+         SpiceChar       * frame  = "J2000";
+         SpiceChar       * abcorr = "LT+S";
+         SpiceChar       * obsrvr = "EARTH BARYCENTER";
+
+         /.
+         Load SPK, PCK, and LSK kernels, use a meta kernel for convenience.
+         ./
+         furnsh_c ( "standard.tm" );
+
+         /.
+         Define an arbitrary epoch, convert the epoch to ephemeris time.
+         ./
+         str2et_c ( epoch, &et );
+
+         /.
+         Calculate the state of the moon with respect to the earth-moon
+         barycenter in J2000, corrected for light time and stellar aberration
+         at ET.
+         ./
+
+         spkezr_c ( target, et, frame, abcorr, obsrvr, state, &ltime );
+
+         /.
+         Calculate the unit vector of STATE and the derivative of the
+         unit vector.
+         ./
+         dvhat_c ( state, ustate );
+
+         /.
+         Calculate the instantaneous angular velocity from the magnitude of the
+         derivative of the unit vector.
+
+            v = r x omega
+
+             ||omega|| = ||v||  for  r . v = 0
+                         -----
+                         ||r||
+
+             ||omega|| = ||v||  for  ||r|| = 1
+         ./
+         omega = vnorm_c( &ustate[3] );
+
+         printf( "Instantaneous angular velocity, rad/sec %.10g\n", omega );
+         
+         return 0;
+         }
+
+   The program outputs:
+   
+      Instantaneous angular velocity, rad/sec 2.48106658e-06
 
 -Restrictions
 
    None.
+
+-Literature_References
+
+     None.
 
 -Author_and_Institution
 
      W.L. Taber      (JPL)
      E.D. Wright     (JPL)
 
--Literature_References
-
-     None.
-
 -Version
 
-   -CSPICE Version 1.0.0, 7-JUL-1999
+   -CSPICE Version 1.0.1, 06-MAY-2010  (EDW)
+
+      Reordered header sections to proper NAIF convention.
+      Minor edit to code comments eliminating typo.
+
+   -CSPICE Version 1.0.0, 07-JUL-1999  (EDW)
 
 -Index_Entries
 

@@ -2,7 +2,7 @@
 Rotation
 ===========================================================================
  
-   Last revised on 2005 NOV 17 by N. J. Bachman
+   Last revised on 2010 MAY 27 by E. D. Wright.
  
  
 Abstract
@@ -758,7 +758,7 @@ Rotation derivatives
 Differentiating rotations
  
    The routine drotat_c gives the derivative of a coordinate axis rotation
-   with respect to the rotation angle. For example, the the transformation
+   with respect to the rotation angle. For example, the transformation
  
       [ angle ]
                1
@@ -2741,6 +2741,11 @@ Euler angle recovery: a-b-c case
  
 Appendix A: Document Revision History
 ===========================================================================
+ 
+ 
+May 27, 2010
+ 
+   Minor edit to eliminate typo.
  
  
 November 17, 2005

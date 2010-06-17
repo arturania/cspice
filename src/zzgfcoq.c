@@ -55,7 +55,7 @@ static integer c__3 = 3;
     /* Local variables */
     extern /* Subroutine */ int chkin_(char *, ftnlen), errch_(char *, char *,
 	     ftnlen, ftnlen), moved_(doublereal *, integer *, doublereal *), 
-	    bodc2n_(integer *, char *, logical *, ftnlen);
+	    bodc2s_(integer *, char *, ftnlen);
     extern logical failed_(void);
     doublereal lt;
     extern /* Subroutine */ int recrad_(doublereal *, doublereal *, 
@@ -67,22 +67,20 @@ static integer c__3 = 3;
     doublereal coords[3], trgepc, srfvec[3];
     integer crdidx, sysidx;
     extern /* Subroutine */ int setmsg_(char *, ftnlen), sigerr_(char *, 
-	    ftnlen), chkout_(char *, ftnlen), errint_(char *, integer *, 
-	    ftnlen), spkezp_(integer *, doublereal *, char *, char *, integer 
-	    *, doublereal *, doublereal *, ftnlen, ftnlen), subpnt_(char *, 
-	    char *, doublereal *, char *, char *, char *, doublereal *, 
-	    doublereal *, doublereal *, ftnlen, ftnlen, ftnlen, ftnlen, 
-	    ftnlen), sincpt_(char *, char *, doublereal *, char *, char *, 
-	    char *, char *, doublereal *, doublereal *, doublereal *, 
-	    doublereal *, logical *, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, 
-	    ftnlen), reclat_(doublereal *, doublereal *, doublereal *, 
-	    doublereal *), recsph_(doublereal *, doublereal *, doublereal *, 
-	    doublereal *), reccyl_(doublereal *, doublereal *, doublereal *, 
-	    doublereal *), recgeo_(doublereal *, doublereal *, doublereal *, 
-	    doublereal *, doublereal *, doublereal *), recpgr_(char *, 
-	    doublereal *, doublereal *, doublereal *, doublereal *, 
+	    ftnlen), chkout_(char *, ftnlen), spkezp_(integer *, doublereal *,
+	     char *, char *, integer *, doublereal *, doublereal *, ftnlen, 
+	    ftnlen), subpnt_(char *, char *, doublereal *, char *, char *, 
+	    char *, doublereal *, doublereal *, doublereal *, ftnlen, ftnlen, 
+	    ftnlen, ftnlen, ftnlen), sincpt_(char *, char *, doublereal *, 
+	    char *, char *, char *, char *, doublereal *, doublereal *, 
+	    doublereal *, doublereal *, logical *, ftnlen, ftnlen, ftnlen, 
+	    ftnlen, ftnlen, ftnlen), reclat_(doublereal *, doublereal *, 
+	    doublereal *, doublereal *), recsph_(doublereal *, doublereal *, 
+	    doublereal *, doublereal *), reccyl_(doublereal *, doublereal *, 
+	    doublereal *, doublereal *), recgeo_(doublereal *, doublereal *, 
+	    doublereal *, doublereal *, doublereal *, doublereal *), recpgr_(
+	    char *, doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, ftnlen);
-    logical fnd;
     doublereal pos[3];
 
 /* $ Abstract */
@@ -188,6 +186,11 @@ static integer c__3 = 3;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+
+/*       Added NWRR parameter. */
+/*       Added NWUDS parameter. */
+
 /* -    SPICELIB Version 1.0.0, 21-FEB-2009 (NJB) (LSE) (EDW) */
 
 /* -& */
@@ -223,6 +226,14 @@ static integer c__3 = 3;
 
 /*     Callers of GFSEP should declare their workspace window */
 /*     count using NWSEP. */
+
+
+/*     Callers of GFRR should declare their workspace window */
+/*     count using NWRR. */
+
+
+/*     Callers of GFUDS should declare their workspace window */
+/*     count using NWUDS. */
 
 
 /*     ADDWIN is a parameter used to expand each interval of the search */
@@ -400,7 +411,7 @@ static integer c__3 = 3;
 
 /*     Note: the sum of these lengths, plus the length of the */
 /*     "percent complete" substring, should not be long enough */
-/*     to cause wrap-around on any platforms's terminal window. */
+/*     to cause wrap-around on any platform's terminal window. */
 
 
 /*     Total progress report message length upper bound: */
@@ -680,25 +691,17 @@ static integer c__3 = 3;
 /*         the error will be diagnosed by routines in the call tree */
 /*         of this routine. */
 
-/*     9)  If VECDEF calls for a computation involving a target surface */
-/*         point and ID codes of target and observer can't be converted */
-/*         to names, the error SPICE(NOTRANSLATION) is signaled. */
-
-/*     10) If the coordinate system is planetographic and the ID code */
-/*         of the coordinate's frame REF's center can't be converted to */
-/*         a name, the error SPICE(NOTRANSLATION) is signaled. */
-
-/*     11) If ephemeris data are required but not available to compute */
+/*     9)  If ephemeris data are required but not available to compute */
 /*         the state of the target, the coordinate frame REF's center, */
 /*         or the input ray's frame DREF's center relative to the */
 /*         observer, the error will be diagnosed by routines in the call */
 /*         tree of this routine. */
 
-/*     12) If orientation data for the frame REF are not available, */
+/*     10) If orientation data for the frame REF are not available, */
 /*         the error will be diagnosed by routines in the call tree */
 /*         of this routine. */
 
-/*     13) If orientation data for the frame DREF are required but */
+/*     11) If orientation data for the frame DREF are required but */
 /*         not available, the error will be diagnosed by routines in the */
 /*         call tree of this routine. */
 
@@ -752,6 +755,11 @@ static integer c__3 = 3;
 /*     N.J. Bachman   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0 12-MAY-2009 (NJB) */
+
+/*        Upgraded to support targets and observers having */
+/*        no names associated with their ID codes. */
 
 /* -    SPICELIB Version 1.0.0 05-MAR-2009 (NJB) */
 
@@ -815,7 +823,7 @@ static integer c__3 = 3;
 	return 0;
     }
     s_copy(sysnam, sysnms + (((i__1 = sysidx - 1) < 7 && 0 <= i__1 ? i__1 : 
-	    s_rnge("sysnms", i__1, "zzgfcoq_", (ftnlen)564)) << 5), (ftnlen)
+	    s_rnge("sysnms", i__1, "zzgfcoq_", (ftnlen)560)) << 5), (ftnlen)
 	    32, (ftnlen)32);
 
 /*     Find the index of the coordinate name in the list of */
@@ -823,7 +831,7 @@ static integer c__3 = 3;
 
     crdidx = isrchc_(crdnam, &c__3, crdnms + (((i__1 = sysidx * 3 - 3) < 21 &&
 	     0 <= i__1 ? i__1 : s_rnge("crdnms", i__1, "zzgfcoq_", (ftnlen)
-	    570)) << 5), crdnam_len, (ftnlen)32);
+	    566)) << 5), crdnam_len, (ftnlen)32);
     if (crdidx == 0) {
 
 /*        We don't recognize this coordinate name. */
@@ -847,38 +855,15 @@ static integer c__3 = 3;
 	    == 0 || s_cmp(sysnam, "PLANETOGRAPHIC", (ftnlen)32, (ftnlen)14) ==
 	     0) {
 	if (first || *trgid != prvtrg) {
-	    bodc2n_(trgid, trgnam, &fnd, (ftnlen)36);
-	    if (! fnd) {
-		setmsg_("Could not translate target ID code #.", (ftnlen)37);
-		errint_("#", trgid, (ftnlen)1);
-		sigerr_("SPICE(NOTRANSLATION)", (ftnlen)20);
-		chkout_("ZZGFCOQ", (ftnlen)7);
-		return 0;
-	    }
+	    bodc2s_(trgid, trgnam, (ftnlen)36);
 	    prvtrg = *trgid;
 	}
 	if (first || *obsid != prvobs) {
-	    bodc2n_(obsid, obsnam, &fnd, (ftnlen)36);
-	    if (! fnd) {
-		setmsg_("Could not translate observer ID code #.", (ftnlen)39)
-			;
-		errint_("#", obsid, (ftnlen)1);
-		sigerr_("SPICE(NOTRANSLATION)", (ftnlen)20);
-		chkout_("ZZGFCOQ", (ftnlen)7);
-		return 0;
-	    }
+	    bodc2s_(obsid, obsnam, (ftnlen)36);
 	    prvobs = *obsid;
 	}
 	if (first || *ctrid != prvctr) {
-	    bodc2n_(ctrid, ctrnam, &fnd, (ftnlen)36);
-	    if (! fnd) {
-		setmsg_("Could not translate frame center ID code #.", (
-			ftnlen)43);
-		errint_("#", ctrid, (ftnlen)1);
-		sigerr_("SPICE(NOTRANSLATION)", (ftnlen)20);
-		chkout_("ZZGFCOQ", (ftnlen)7);
-		return 0;
-	    }
+	    bodc2s_(ctrid, ctrnam, (ftnlen)36);
 	    prvctr = *ctrid;
 	}
 	first = FALSE_;
@@ -967,7 +952,7 @@ static integer c__3 = 3;
 /*     in the list of coordinates for the input coordinate system. */
 
     *value = coords[(i__1 = crdidx - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge(
-	    "coords", i__1, "zzgfcoq_", (ftnlen)768)];
+	    "coords", i__1, "zzgfcoq_", (ftnlen)733)];
 
 /*     Having made it this far means the result was found. */
 

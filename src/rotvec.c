@@ -61,83 +61,47 @@
 
 /* $ Keywords */
 
-/*      ROTATION,  VECTOR */
+/*     ROTATION */
+/*     VECTOR */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*       V1        I    Vector whose coordinate system is to be rotated. */
-/*       ANGLE     I    Angle of rotation in radians. */
-/*       IAXIS     I    Axis of rotation (X=1, Y=2, Z=3). */
-/*       VOUT      O    Resulting vector [ANGLE]      * V1 expressed in */
-/*                                              IAXIS */
-/*                      the new coordinate system. VOUT can overwrite V1. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     V1         I   Vector whose coordinate system is to be rotated. */
+/*     ANGLE      I   Angle of rotation in radians. */
+/*     IAXIS      I   Axis of rotation (X=1, Y=2, Z=3). */
+/*     VOUT       O   Resulting vector [ANGLE]      * V1 expressed in */
+/*                                            IAXIS */
+/*                    the new coordinate system. */
 
 /* $ Detailed_Input */
 
-/*      V1      This is a vector (typically representing a vector fixed */
-/*              in inertial space) which is to be expressed in another */
-/*              coordinate system.  The vector remains fixed but the */
-/*              coordinate system changes. */
+/*     V1      This is a vector (typically representing a vector fixed */
+/*             in inertial space) which is to be expressed in another */
+/*             coordinate system.  The vector remains fixed but the */
+/*             coordinate system changes. */
 
-/*      ANGLE   The angle given in radians, through which the rotation */
-/*              is performed. */
+/*     ANGLE   The angle given in radians, through which the rotation */
+/*             is performed. */
 
-/*      IAXIS   The index of the axis of rotation.  The X, Y, and Z */
-/*              axes have indices 1, 2 and 3 respectively. */
+/*     IAXIS   The index of the axis of rotation.  The X, Y, and Z */
+/*             axes have indices 1, 2 and 3 respectively. */
 
 /* $ Detailed_Output */
 
-/*      VOUT    This is the vector expressed in the new coordinate system */
-/*              specified by the angle of rotation and axis. If */
-/*              [ANGLE]       represents the rotation matrix described by */
-/*                     IAXIS */
-/*              the angle and axis, (refer to the routine ROTATE) */
-/*              then VOUT = [ANGLE]      * V1 */
-/*                                 IAXIS */
+/*     VOUT    This is the vector expressed in the new coordinate system */
+/*             specified by the angle of rotation and axis. If */
+/*             [ANGLE]       represents the rotation matrix described by */
+/*                    IAXIS */
+/*             the angle and axis, (refer to the routine ROTATE) */
+/*             then VOUT = [ANGLE]      * V1 */
+/*                                IAXIS */
 
 /* $ Parameters */
 
-/*      None. */
-
-/* $ Particulars */
-
-/*      A rotation about the first, i.e. x-axis, is described by */
-
-/*      |  1        0          0      | */
-/*      |  0   cos(theta) sin(theta)  | */
-/*      |  0  -sin(theta) cos(theta)  | */
-
-/*      A rotation about the second, i.e. y-axis, is described by */
-
-/*      |  cos(theta)  0  -sin(theta)  | */
-/*      |      0       1        0      | */
-/*      |  sin(theta)  1   cos(theta)  | */
-
-/*      A rotation about the third, i.e. z-axis, is described by */
-
-/*      |  cos(theta) sin(theta)   0   | */
-/*      | -sin(theta) cos(theta)   0   | */
-/*      |       0          0       1   | */
-
-/*      ROTVEC decides which form is appropriate according to the value */
-/*      of IAXIS and applies the rotation to the input vector. */
-
-/* $ Examples */
-
-/*      Suppose that */
-/*      V1 = (1.414, 0, 0), ANGLE = PI/4, IAXIS = 3 */
-/*      then after calling ROTVEC according to */
-
-/*            CALL ROTVEC (V1, ANGLE, IAXIS, VOUT) */
-
-/*      VOUT will be equal to (1, -1, 0). */
-
-/* $ Restrictions */
-
-/*      None */
+/*     None. */
 
 /* $ Exceptions */
 
@@ -149,18 +113,62 @@
 
 /* $ Files */
 
-/*      None */
+/*     None. */
 
-/* $ Author_and_Institution */
+/* $ Particulars */
 
-/*      W.M. Owen       (JPL) */
-/*      W.L. Taber      (JPL) */
+/*     A rotation about the first, i.e. x-axis, is described by */
+
+/*        |  1        0          0      | */
+/*        |  0   cos(theta) sin(theta)  | */
+/*        |  0  -sin(theta) cos(theta)  | */
+
+/*     A rotation about the second, i.e. y-axis, is described by */
+
+/*        |  cos(theta)  0  -sin(theta)  | */
+/*        |      0       1        0      | */
+/*        |  sin(theta)  1   cos(theta)  | */
+
+/*     A rotation about the third, i.e. z-axis, is described by */
+
+/*        |  cos(theta) sin(theta)   0   | */
+/*        | -sin(theta) cos(theta)   0   | */
+/*        |       0          0       1   | */
+
+/*     ROTVEC decides which form is appropriate according to the value */
+/*     of IAXIS and applies the rotation to the input vector. */
+
+/* $ Examples */
+
+/*     Suppose that */
+
+/*        V1 = (1.414, 0, 0), ANGLE = PI/4, IAXIS = 3 */
+
+/*     then after calling ROTVEC according to */
+
+/*        CALL ROTVEC (V1, ANGLE, IAXIS, VOUT) */
+
+/*     VOUT will be equal to (1, -1, 0). */
+
+/* $ Restrictions */
+
+/*     None. */
 
 /* $ Literature_References */
 
-/*      None */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     W.M. Owen       (JPL) */
+/*     W.L. Taber      (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.3, 23-APR-2010 (NJB) */
+
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
 /* -    SPICELIB Version 1.0.2, 04-OCT-1999 (NJB) */
 
@@ -203,31 +211,31 @@
 
     tmp = (*iaxis % 3 + 3) % 3;
     i1 = indexs[(i__1 = tmp) < 5 && 0 <= i__1 ? i__1 : s_rnge("indexs", i__1, 
-	    "rotvec_", (ftnlen)207)];
+	    "rotvec_", (ftnlen)215)];
     i2 = indexs[(i__1 = tmp + 1) < 5 && 0 <= i__1 ? i__1 : s_rnge("indexs", 
-	    i__1, "rotvec_", (ftnlen)208)];
+	    i__1, "rotvec_", (ftnlen)216)];
     i3 = indexs[(i__1 = tmp + 2) < 5 && 0 <= i__1 ? i__1 : s_rnge("indexs", 
-	    i__1, "rotvec_", (ftnlen)209)];
+	    i__1, "rotvec_", (ftnlen)217)];
 
 /*  The coordinate along the axis of rotation does not change. */
 
     temp[0] = v1[(i__1 = i1 - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("v1", i__1, 
-	    "rotvec_", (ftnlen)213)];
+	    "rotvec_", (ftnlen)221)];
     temp[1] = c__ * v1[(i__1 = i2 - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("v1", 
-	    i__1, "rotvec_", (ftnlen)214)] + s * v1[(i__2 = i3 - 1) < 3 && 0 
-	    <= i__2 ? i__2 : s_rnge("v1", i__2, "rotvec_", (ftnlen)214)];
+	    i__1, "rotvec_", (ftnlen)222)] + s * v1[(i__2 = i3 - 1) < 3 && 0 
+	    <= i__2 ? i__2 : s_rnge("v1", i__2, "rotvec_", (ftnlen)222)];
     temp[2] = -s * v1[(i__1 = i2 - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("v1", 
-	    i__1, "rotvec_", (ftnlen)215)] + c__ * v1[(i__2 = i3 - 1) < 3 && 
-	    0 <= i__2 ? i__2 : s_rnge("v1", i__2, "rotvec_", (ftnlen)215)];
+	    i__1, "rotvec_", (ftnlen)223)] + c__ * v1[(i__2 = i3 - 1) < 3 && 
+	    0 <= i__2 ? i__2 : s_rnge("v1", i__2, "rotvec_", (ftnlen)223)];
 
 /*  Move the buffered vector to the output */
 
     vout[(i__1 = i1 - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("vout", i__1, "rot"
-	    "vec_", (ftnlen)219)] = temp[0];
+	    "vec_", (ftnlen)227)] = temp[0];
     vout[(i__1 = i2 - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("vout", i__1, "rot"
-	    "vec_", (ftnlen)220)] = temp[1];
+	    "vec_", (ftnlen)228)] = temp[1];
     vout[(i__1 = i3 - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("vout", i__1, "rot"
-	    "vec_", (ftnlen)221)] = temp[2];
+	    "vec_", (ftnlen)229)] = temp[2];
 
     return 0;
 } /* rotvec_ */

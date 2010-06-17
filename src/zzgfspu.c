@@ -10,7 +10,7 @@
 static integer c__0 = 0;
 static integer c__2 = 2;
 
-/* $Procedure ZZGFSPU ( GF, angular separation utility routines ) */
+/* $Procedure ZZGFSPU ( Private - GF, angular separation routines ) */
 /* Subroutine */ int zzgfspu_0_(int n__, char *of, char *from, char *shape, 
 	char *frame, doublereal *refval, doublereal *et, char *abcorr, 
 	logical *decres, logical *lssthn, doublereal *sep, ftnlen of_len, 
@@ -30,20 +30,23 @@ static integer c__2 = 2;
     /* Subroutine */ int s_copy(char *, char *, ftnlen, ftnlen);
 
     /* Local variables */
+    extern doublereal dhfa_(doublereal *, doublereal *);
     extern /* Subroutine */ int zzgftreb_(integer *, doublereal *);
     doublereal axes1[3], axes2[3];
     extern /* Subroutine */ int zzvalcor_(char *, logical *, ftnlen), chkin_(
 	    char *, ftnlen), ucase_(char *, char *, ftnlen, ftnlen), errch_(
 	    char *, char *, ftnlen, ftnlen);
+    integer class__;
     logical found;
     static doublereal svang;
     extern doublereal dvsep_(doublereal *, doublereal *);
     static char svref[32];
     static integer svobs;
     extern /* Subroutine */ int spkez_(integer *, doublereal *, char *, char *
-	    , integer *, doublereal *, doublereal *, ftnlen, ftnlen), ljust_(
-	    char *, char *, ftnlen, ftnlen), bods2c_(char *, integer *, 
-	    logical *, ftnlen);
+	    , integer *, doublereal *, doublereal *, ftnlen, ftnlen);
+    integer fcode1, fcode2;
+    extern /* Subroutine */ int ljust_(char *, char *, ftnlen, ftnlen), 
+	    bods2c_(char *, integer *, logical *, ftnlen);
     static integer svbod1, svbod2;
     static doublereal svrad1, svrad2;
     static char svref1[32], svref2[32];
@@ -52,15 +55,17 @@ static integer c__2 = 2;
     doublereal lt, dtheta;
     extern integer isrchc_(char *, integer *, char *, ftnlen, ftnlen);
     logical attblk[15];
+    integer clssid;
     static char svabcr[32];
-    extern doublereal zzdhfa_(doublereal *, doublereal *);
-    extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
-	    ftnlen), setmsg_(char *, ftnlen), errint_(char *, integer *, 
-	    ftnlen), cmprss_(char *, integer *, char *, char *, ftnlen, 
-	    ftnlen, ftnlen);
+    extern /* Subroutine */ int namfrm_(char *, integer *, ftnlen), frinfo_(
+	    integer *, integer *, integer *, integer *, logical *), sigerr_(
+	    char *, ftnlen), chkout_(char *, ftnlen), setmsg_(char *, ftnlen),
+	     errint_(char *, integer *, ftnlen), cmprss_(char *, integer *, 
+	    char *, char *, ftnlen, ftnlen, ftnlen);
     doublereal seprtn;
     extern logical return_(void);
     doublereal pv1[6], pv2[6];
+    integer ctr1, ctr2;
     extern /* Subroutine */ int zzgfspq_(doublereal *, integer *, integer *, 
 	    doublereal *, doublereal *, integer *, char *, char *, doublereal 
 	    *, ftnlen, ftnlen);
@@ -250,23 +255,6 @@ static integer c__2 = 2;
 
 /*              Models supported by this routine: */
 
-/*                 'ELLIPSOID'     Use a triaxial ellipsoid model, */
-/*                                 with radius values provided via the */
-/*                                 kernel pool. A kernel variable */
-/*                                 having a name of the form */
-
-/*                                    'BODYnnn_RADII' */
-
-/*                                 where nnn represents the NAIF */
-/*                                 integer code associated with the */
-/*                                 body, must be present in the kernel */
-/*                                 pool. This variable must be */
-/*                                 associated with three numeric */
-/*                                 values giving the lengths of the */
-/*                                 ellipsoid's X, Y, and Z semi-axes. */
-
-/*                                 *This option not yet implemented.* */
-
 /*                 'SPHERE'        Treat the body as a sphere with */
 /*                                 radius equal to the maximum value of */
 /*                                 BODYnnn_RADII */
@@ -406,6 +394,18 @@ static integer c__2 = 2;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.1.0, 29-DEC-2009 (NJB) (EDW) */
+
+/*        Edited argument descriptions. Removed mention of "ELLIPSOID" */
+/*        shape from SHAPE as that option is not yet implemented. */
+
+/*        Added an error check on body frame centers to enforce */
+/*        a body frame center is the body. This check does not apply */
+/*        to "POINT" or "SPHERE" shape targets, and so will not */
+/*        execute for this version of the routine. */
+
+/*        Rename of the ZZDHA call to DHFA. */
+
 /* -    SPICELIB Version 1.0.0 19-FEB-2009 (NJB) (EDW) */
 
 /* -& */
@@ -454,7 +454,7 @@ static integer c__2 = 2;
     sigerr_("SPICE(BOGUSENTRY)", (ftnlen)17);
     chkout_("ZZGFSPU", (ftnlen)7);
     return 0;
-/* $Procedure ZZGFSPIN (GF, angular separation initialization routine) */
+/* $Procedure ZZGFSPIN ( Private - GF, angular separation initialization ) */
 
 L_zzgfspin:
 /* $ Abstract */
@@ -529,23 +529,6 @@ L_zzgfspin:
 /*              and OF is 1-to-1. */
 
 /*              Models supported by this routine: */
-
-/*                 'ELLIPSOID'     Use a triaxial ellipsoid model, */
-/*                                 with radius values provided via the */
-/*                                 kernel pool. A kernel variable */
-/*                                 having a name of the form */
-
-/*                                    'BODYnnn_RADII' */
-
-/*                                 where nnn represents the NAIF */
-/*                                 integer code associated with the */
-/*                                 body, must be present in the kernel */
-/*                                 pool. This variable must be */
-/*                                 associated with three numeric */
-/*                                 values giving the lengths of the */
-/*                                 ellipsoid's X, Y, and Z semi-axes. */
-
-/*                                 *This option not yet implemented.* */
 
 /*                 'SPHERE'        Treat the body as a sphere with */
 /*                                 radius equal to the maximum value of */
@@ -652,6 +635,16 @@ L_zzgfspin:
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.1.0, 29-DEC-2009 (NJB) (EDW) */
+
+/*        Edited argument descriptions. Removed mention of "ELLIPSOID" */
+/*        shape from SHAPE as that option is not yet implemented. */
+
+/*        Added an error check on body frame centers to enforce */
+/*        a body frame center is the body. This check does not apply */
+/*        to "POINT" or "SPHERE" shape targets, and so will not */
+/*        execute for this version of the routine. */
+
 /* -    SPICELIB Version 1.0.0 14-APR-2008 (NJB) (EDW) */
 
 /* -& */
@@ -732,11 +725,13 @@ L_zzgfspin:
     svang = *refval;
     s_copy(svref1, frame, (ftnlen)32, frame_len);
     s_copy(svref2, frame + frame_len, (ftnlen)32, frame_len);
+
+/*     Check shapes... */
+
     ljust_(shape, shape, shape_len, shape_len);
     ucase_(shape, shape, shape_len, shape_len);
 
-/*     If we pass the error check, then SHAPE(1) */
-/*     exists in SVSHAP. */
+/*     If we pass the error check, then SHAPE(1) exists in SVSHAP. */
 
     svshp1 = isrchc_(shape, &c__2, svshap, shape_len, (ftnlen)32);
     if (svshp1 == 0) {
@@ -773,8 +768,7 @@ L_zzgfspin:
     ljust_(shape + shape_len, shape + shape_len, shape_len, shape_len);
     ucase_(shape + shape_len, shape + shape_len, shape_len, shape_len);
 
-/*     If we pass the error check, then SHAPE(2) */
-/*     exists in SVSHAP. */
+/*     If we pass the error check, then SHAPE(2) exists in SVSHAP. */
 
     svshp2 = isrchc_(shape + shape_len, &c__2, svshap, shape_len, (ftnlen)32);
     if (svshp2 == 0) {
@@ -808,9 +802,60 @@ L_zzgfspin:
 	chkout_("ZZGFSPIN", (ftnlen)8);
 	return 0;
     }
+
+/*     Confirm the center of the input reference frames correspond */
+/*     to the target bodies for non-point, non-sperical bodies. */
+
+/*        FRAME1 centered on TARG1 */
+/*        FRAME2 centered on TARG2 */
+
+/*     This check does not apply to POINT or SPHERE shapes. */
+
+    if (svshp1 != 1 && svshp1 != 2) {
+	namfrm_(svref1, &fcode1, (ftnlen)32);
+	frinfo_(&fcode1, &ctr1, &class__, &clssid, &found);
+	if (! found) {
+	    setmsg_("Frame system did not recognize frame #.", (ftnlen)39);
+	    errch_("#", svref1, (ftnlen)1, (ftnlen)32);
+	    sigerr_("SPICE(NOFRAME)", (ftnlen)14);
+	    chkout_("ZZGFSPIN", (ftnlen)8);
+	    return 0;
+	}
+	if (svbod1 != ctr1) {
+	    setmsg_("The reference frame #1 associated with target body #2 i"
+		    "s not centered on #2. The frame must be centered on the "
+		    "target body.", (ftnlen)123);
+	    errch_("#1", svref1, (ftnlen)2, (ftnlen)32);
+	    errch_("#2", of, (ftnlen)2, of_len);
+	    sigerr_("SPICE(INVALIDFRAME)", (ftnlen)19);
+	    chkout_("ZZGFSPIN", (ftnlen)8);
+	    return 0;
+	}
+    }
+    if (svshp2 != 1 && svshp2 != 2) {
+	namfrm_(svref2, &fcode2, (ftnlen)32);
+	frinfo_(&fcode2, &ctr2, &class__, &clssid, &found);
+	if (! found) {
+	    setmsg_("Frame system did not recognize frame #.", (ftnlen)39);
+	    errch_("#", svref2, (ftnlen)1, (ftnlen)32);
+	    sigerr_("SPICE(NOFRAME)", (ftnlen)14);
+	    chkout_("ZZGFSPIN", (ftnlen)8);
+	    return 0;
+	}
+	if (svbod2 != ctr2) {
+	    setmsg_("The reference frame #1 associated with target body #2 i"
+		    "s not centered on #2. The frame must be centered on the "
+		    "target body.", (ftnlen)123);
+	    errch_("#1", svref2, (ftnlen)2, (ftnlen)32);
+	    errch_("#2", of + of_len, (ftnlen)2, of_len);
+	    sigerr_("SPICE(INVALIDFRAME)", (ftnlen)19);
+	    chkout_("ZZGFSPIN", (ftnlen)8);
+	    return 0;
+	}
+    }
     chkout_("ZZGFSPIN", (ftnlen)8);
     return 0;
-/* $Procedure ZZGFSPUR (GF, update angular separation reference value ) */
+/* $Procedure ZZGFSPUR ( Private - GF, update angular reference value ) */
 
 L_zzgfspur:
 /* $ Abstract */
@@ -919,7 +964,7 @@ L_zzgfspur:
 /* -& */
     svang = *refval;
     return 0;
-/* $Procedure ZZGFSPDC (GF, angular separation decreasing) */
+/* $Procedure ZZGFSPDC ( Private - GF, angular separation decreasing) */
 
 L_zzgfspdc:
 /* $ Abstract */
@@ -1027,6 +1072,10 @@ L_zzgfspdc:
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.1 06-JUL-2009 (NJB) (EDW) */
+
+/*        Rename of the ZZDHA call to DHFA. */
+
 /* -    SPICELIB Version 1.0.0 29-APR-2008 (NJB) */
 
 /* -& */
@@ -1085,7 +1134,7 @@ L_zzgfspdc:
 	chkout_("ZZGFSPDC", (ftnlen)8);
 	return 0;
     }
-    dtheta = dtheta - zzdhfa_(pv1, &svrad1) - zzdhfa_(pv2, &svrad2);
+    dtheta = dtheta - dhfa_(pv1, &svrad1) - dhfa_(pv2, &svrad2);
     if (dtheta < 0.) {
 	*decres = TRUE_;
     } else {
@@ -1093,7 +1142,7 @@ L_zzgfspdc:
     }
     chkout_("ZZGFSPDC", (ftnlen)8);
     return 0;
-/* $Procedure ZZGFGSEP (GF, calculate angular separation between bodies ) */
+/* $Procedure ZZGFGSEP ( Private - GF, calculate angular separation ) */
 
 L_zzgfgsep:
 /* $ Abstract */
@@ -1208,7 +1257,7 @@ L_zzgfgsep:
     zzgfspq_(et, &svbod1, &svbod2, &svrad1, &svrad2, &svobs, svabcr, svref, 
 	    sep, (ftnlen)32, (ftnlen)32);
     return 0;
-/* $Procedure ZZGFSPLT  (GF, angular separation less than reference ) */
+/* $Procedure ZZGFSPLT  ( Private - GF, angular separation < reference ) */
 
 L_zzgfsplt:
 /* $ Abstract */
@@ -1261,8 +1310,8 @@ L_zzgfsplt:
 /*     VARIABLE  I/O  DESCRIPTION */
 /*     --------  ---  -------------------------------------------------- */
 /*     ET         I   Ephemeris seconds past J2000 TDB. */
-/*     LSSTHN     O   .TRUE. if separation is less than REFVAL, */
-/*                    .FALSE. otherwise. */
+/*     LSSTHN     O   True if separation is less than REFVAL, */
+/*                    false otherwise. */
 
 /* $ Detailed_Input */
 
@@ -1272,9 +1321,9 @@ L_zzgfsplt:
 
 /* $ Detailed_Output */
 
-/*     LSSTHN     is .TRUE. if the angle between the two bodies is less */
-/*                than the reference angle at time ET and .FALSE. */
-/*                otherwise. */
+/*     LSSTHN     a scalar boolean indicating if the angle between the */
+/*                two bodies is less than the reference angle at */
+/*                time ET. */
 
 /* $ Parameters */
 
@@ -1309,7 +1358,6 @@ L_zzgfsplt:
 
 /*        Use OP values of 'ABSMIN' or 'LOCMIN' to detect such an event. */
 
-
 /* $ Literature_References */
 
 /*     None. */
@@ -1322,7 +1370,7 @@ L_zzgfsplt:
 
 /* $ Version */
 
-/* -    SPICELIB Version 1.0.0 19-FEB-2009 (EDW) */
+/* -    SPICELIB Version 1.0.0  19-FEB-2009 (EDW) */
 
 /* -& */
 /* $ Index_Entries */

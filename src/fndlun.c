@@ -250,6 +250,46 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 6.21.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL. */
+
+/* -    SPICELIB Version 6.20.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-CC_C. */
+
+/* -    SPICELIB Version 6.19.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-64BIT-CC_C. */
+
+/* -    SPICELIB Version 6.18.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-NATIVE_C. */
+
+/* -    SPICELIB Version 6.17.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-WINDOWS-64BIT-IFORT. */
+
+/* -    SPICELIB Version 6.16.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 6.15.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-64BIT-MS_C. */
+
+/* -    SPICELIB Version 6.14.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-INTEL_C. */
+
+/* -    SPICELIB Version 6.13.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 6.12.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-GFORTRAN. */
+
 /* -    SPICELIB Version 6.11.0, 18-MAR-2009 (BVS) */
 
 /*        Updated for PC-LINUX-GFORTRAN. */
@@ -463,13 +503,13 @@
     if (first) {
 	for (i__ = 1; i__ <= 99; ++i__) {
 	    resvd[(i__1 = i__ - 1) < 99 && 0 <= i__1 ? i__1 : s_rnge("resvd", 
-		    i__1, "fndlun_", (ftnlen)473)] = FALSE_;
+		    i__1, "fndlun_", (ftnlen)513)] = FALSE_;
 	}
 	for (i__ = 1; i__ <= 3; ++i__) {
 	    resvd[(i__2 = resnum[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : 
-		    s_rnge("resnum", i__1, "fndlun_", (ftnlen)477)] - 1) < 99 
+		    s_rnge("resnum", i__1, "fndlun_", (ftnlen)517)] - 1) < 99 
 		    && 0 <= i__2 ? i__2 : s_rnge("resvd", i__2, "fndlun_", (
-		    ftnlen)477)] = TRUE_;
+		    ftnlen)517)] = TRUE_;
 	}
 	first = FALSE_;
     }
@@ -480,7 +520,7 @@
 
     for (i__ = last + 1; i__ <= 99; ++i__) {
 	if (resvd[(i__1 = i__ - 1) < 99 && 0 <= i__1 ? i__1 : s_rnge("resvd", 
-		i__1, "fndlun_", (ftnlen)491)]) {
+		i__1, "fndlun_", (ftnlen)531)]) {
 	    opened = TRUE_;
 	} else {
 	    ioin__1.inerr = 1;
@@ -520,7 +560,7 @@
     i__1 = last;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	if (resvd[(i__2 = i__ - 1) < 99 && 0 <= i__2 ? i__2 : s_rnge("resvd", 
-		i__2, "fndlun_", (ftnlen)518)]) {
+		i__2, "fndlun_", (ftnlen)558)]) {
 	    opened = TRUE_;
 	} else {
 	    ioin__1.inerr = 1;
@@ -743,13 +783,13 @@ L_reslun:
     if (first) {
 	for (i__ = 1; i__ <= 99; ++i__) {
 	    resvd[(i__1 = i__ - 1) < 99 && 0 <= i__1 ? i__1 : s_rnge("resvd", 
-		    i__1, "fndlun_", (ftnlen)741)] = FALSE_;
+		    i__1, "fndlun_", (ftnlen)781)] = FALSE_;
 	}
 	for (i__ = 1; i__ <= 3; ++i__) {
 	    resvd[(i__2 = resnum[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : 
-		    s_rnge("resnum", i__1, "fndlun_", (ftnlen)745)] - 1) < 99 
+		    s_rnge("resnum", i__1, "fndlun_", (ftnlen)785)] - 1) < 99 
 		    && 0 <= i__2 ? i__2 : s_rnge("resvd", i__2, "fndlun_", (
-		    ftnlen)745)] = TRUE_;
+		    ftnlen)785)] = TRUE_;
 	}
 	first = FALSE_;
     }
@@ -759,7 +799,7 @@ L_reslun:
 
     if (*unit >= 1 && *unit <= 99) {
 	resvd[(i__1 = *unit - 1) < 99 && 0 <= i__1 ? i__1 : s_rnge("resvd", 
-		i__1, "fndlun_", (ftnlen)757)] = TRUE_;
+		i__1, "fndlun_", (ftnlen)797)] = TRUE_;
     }
     return 0;
 /* $Procedure FRELUN ( Free a reserved logical unit ) */
@@ -953,13 +993,13 @@ L_frelun:
     if (first) {
 	for (i__ = 1; i__ <= 99; ++i__) {
 	    resvd[(i__1 = i__ - 1) < 99 && 0 <= i__1 ? i__1 : s_rnge("resvd", 
-		    i__1, "fndlun_", (ftnlen)962)] = FALSE_;
+		    i__1, "fndlun_", (ftnlen)1002)] = FALSE_;
 	}
 	for (i__ = 1; i__ <= 3; ++i__) {
 	    resvd[(i__2 = resnum[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : 
-		    s_rnge("resnum", i__1, "fndlun_", (ftnlen)966)] - 1) < 99 
-		    && 0 <= i__2 ? i__2 : s_rnge("resvd", i__2, "fndlun_", (
-		    ftnlen)966)] = TRUE_;
+		    s_rnge("resnum", i__1, "fndlun_", (ftnlen)1006)] - 1) < 
+		    99 && 0 <= i__2 ? i__2 : s_rnge("resvd", i__2, "fndlun_", 
+		    (ftnlen)1006)] = TRUE_;
 	}
 	first = FALSE_;
     }
@@ -970,12 +1010,12 @@ L_frelun:
     if (*unit >= 1 && *unit <= 99) {
 	for (i__ = 1; i__ <= 3; ++i__) {
 	    if (*unit == resnum[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : 
-		    s_rnge("resnum", i__1, "fndlun_", (ftnlen)980)]) {
+		    s_rnge("resnum", i__1, "fndlun_", (ftnlen)1020)]) {
 		return 0;
 	    }
 	}
 	resvd[(i__1 = *unit - 1) < 99 && 0 <= i__1 ? i__1 : s_rnge("resvd", 
-		i__1, "fndlun_", (ftnlen)985)] = FALSE_;
+		i__1, "fndlun_", (ftnlen)1025)] = FALSE_;
     }
     return 0;
 } /* fndlun_ */

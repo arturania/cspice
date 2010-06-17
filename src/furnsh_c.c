@@ -84,7 +84,7 @@
               Each kernel variable is discussed below. 
  
                  KERNELS_TO_LOAD   is a list of SPICE kernels to be 
-                                   loaded into a program. If file 
+                                   loaded into a program.  If file 
                                    names do not fit within the kernel 
                                    pool 80 character limit, they may be 
                                    continued to subsequent array 
@@ -92,42 +92,34 @@
                                    character ('+') at the end of an 
                                    element and then placing the 
                                    remainder of the file name in the 
-                                   next array element. (See the 
+                                   next array element.  (See the 
                                    examples below for an illustration 
                                    of this technique or consult the 
                                    routine stpool_c for further 
                                    details.) 
     
-                                   You may use one or more PATH_SYMBOL
-                                   assignments (see below) to specify
-                                   strings to be substituted for some
-                                   part of a file name.
+                                   Alternatively you may use a
+                                   PATH_SYMBOL (see below) to
+                                   substitute for some part of a file
+                                   name.
     
                  PATH_SYMBOLS      is a list of strings (without 
                                    embedded blanks), which if 
                                    encountered following the '$' 
                                    character will be replaced with the 
                                    corresponding PATH_VALUES string. 
-                                   Note that PATH_SYMBOLS are
-                                   interpreted only in values
-                                   associated with the KERNELS_TO_LOAD
-                                   variable. There must be a one-to-one
-                                   correspondence between the values
-                                   supplied for PATH_SYMBOLS and
-                                   PATH_VALUES. For the purpose of
-                                   determining this correspondence, any
-                                   path value that is continued over
-                                   multiple array elements counts as a
-                                   single value.
+                                   Note that PATH_SYMBOLS are 
+                                   interpreted only in the 
+                                   KERNELS_TO_LOAD variable. There must 
+                                   be a one-to-one correspondence 
+                                   between the values supplied for 
+                                   PATH_SYMBOLS and PATH_VALUES. 
     
                  PATH_VALUES       is a list of expansions to use when 
-                                   PATH_SYMBOLS are encountered. If
-                                   path values do not fit within the
-                                   kernel pool 80 character limit, they
-                                   may be continued in the same way as
-                                   file names (see the KERNELS_TO_LOAD
-                                   description above).
-
+                                   PATH_SYMBOLS are encountered.  See 
+                                   the examples section for an 
+                                   illustration of use of PATH_SYMBOLS 
+                                   and PATH_VALUES. 
  
               These kernel pool variables persist within the kernel 
               pool only until all kernels associated with the 
@@ -143,55 +135,39 @@
  
 -Parameters
  
-   FILSIZ     is the maximum length of a file name that can
-              be loaded by this routine. FILSIZ is currently
-              set to 255 characters.
-  
+   None. 
+ 
 -Exceptions
  
-
-   1) If a problem is encountered while trying to load `file',
-      it will be diagnosed by a routine in the call tree of this
-      routine.
-
-   2) If the input `file' is a meta-kernel and some file in the
-      KERNELS_TO_LOAD assignment cannot be found, or if an error
-      occurs while trying to load a file specified by this
-      assignment, the error will be diagnosed by a routine in the
-      call tree of this routine, and this routine will return. Any
-      files loaded prior to encountering the missing file will
-      remain loaded.
-
-   3) If a PATH_SYMBOLS assignment is specified without a
-      corresponding PATH_VALUES assignment, the error
-      SPICE(NOPATHVALUE) will be signaled.
-
-   4) If a meta-text kernel is supplied to furnsh_c that contains
-      instructions specifying that another meta-text kernel be
-      loaded, the error SPICE(RECURSIVELOADING) will be signaled.
-
-   5) If the input file name has non-blank length exceeding FILSIZ
-      characters, the error SPICE(FILENAMETOOLONG) is signaled.
-
-   6) If the input file is a meta-kernel and some file in the
-      KERNELS_TO_LOAD assignment has name length exceeding FILSIZ
-      characters, the error SPICE(FILENAMETOOLONG) is signaled.
-
-   7) If the input file is a meta-kernel and some value in the
-      PATH_VALUES assignment has length exceeding FILSIZ
-      characters, the error SPICE(PATHTOOLONG) is signaled.
-
-   8) If the input file is a meta-kernel and some file in the
-      KERNELS_TO_LOAD assignment has, after symbol substitution,
-      combined name and path length exceeding FILSIZ characters, the
-      error SPICE(FILENAMETOOLONG) is signaled.
-
-   9) If the input `file' argument pointer is null, the error
+   1) If a problem is encountered while trying to load `file', it will
+      be diagnosed by a routine from the appropriate SPICE subsystem.
+ 
+   2) If the input `file' is a meta-kernel and some file in 
+      the KERNELS_TO_LOAD assignment cannot be found, the error 
+      SPICE(CANTFINDFILE) will be signaled and the routine will 
+      return.  Any files loaded prior to encountering the missing
+      file will remain loaded. 
+ 
+   3) If an error is encountered while trying to load one of the files
+      specified by the KERNELS_TO_LOAD assignment, the routine will
+      discontinue attempting to perform any other tasks and return.
+  
+   4) If a PATH_SYMBOLS assignment is specified without a corresponding
+      PATH_VALUES assignment, the error SPICE(NOPATHVALUE) will be
+      signaled.
+ 
+   5) If a meta-kernel is supplied that contains instructions
+      specifying that another meta-text kernel be loaded, the error
+      SPICE(RECURSIVELOADING) will be signaled.
+ 
+   6) If the input `file' argument pointer is null, the error
       SPICE(NULLPOINTER) will be signaled.
       
-   10) If the input `file' argument is the empty string, the error
-       SPICE(EMPTYSTRING) will be signaled.
+   7) If the input `file' argument is the empty string, the error
+      SPICE(EMPTYSTRING) will be signaled.
 
+   6) The error 'SPICE(BADVARNAME)' signals if the a pool 
+      variable name length exceeds 32.   
    
 -Files
  
@@ -199,7 +175,7 @@
    SPICE subsystem.  If the file is a meta-kernel, any kernels
    specified by the KERNELS_TO_LOAD keyword (and if present,
    the PATH_SYMBOLS and PATH_VALUES keywords) are loaded as well.
-   
+ 
 -Particulars
  
    This routine provides a uniform interface to the SPICE kernel 
@@ -218,7 +194,10 @@
    requires native text files.
    
    Please refer to kernel.req for additional information.
-    
+
+   Kernel pool variable names are restricted to a length of 32
+   characters or less.
+
 -Examples
  
    Example 1
@@ -294,12 +273,14 @@
          We are going to let A substitute for the directory that
          contains SPK files; B substitute for the directory that
          contains C-kernels; and C substitute for the directory that
-         contains text kernels. And we'll let D substitute for
+         contains text kernels.  And we'll let D substitute for
          a "custom" directory that contains a special planetary
          constants kernel made just for our mission.
  
-         Note that our PATH_VALUES and the corresponding
-         PATH_SYMBOLS must be listed in the same order.
+         Note that the order in which we list our PATH_VALUES must be 
+         the same order that the corresponding PATH_SYMBOLS are 
+         listed. 
+          
  
       \begindata 
       
@@ -322,56 +303,6 @@
                            '$C/sclk.tsc', 
                            '$B/c-kernel.bc'         )
  
- 
-   Example 4
-   ---------
-
-   This example illustrates continuation of path values. The
-   meta-kernel shown here is a modified version of that from
-   example 3.
-
-      \begintext
-
-         Here are the SPICE kernels required for my application
-         program.
-
-         We are going to let A substitute for the directory that
-         contains SPK files; B substitute for the directory that
-         contains C-kernels; and C substitute for the directory that
-         contains text kernels. And we'll let D substitute for
-         a "custom" directory that contains a special planetary
-         constants kernel made just for our mission.
-
-         Note that our PATH_VALUES and the corresponding
-         PATH_SYMBOLS must be listed in the same order.
-
-         The values for path symbols A and D are continued over
-         multiple lines.
-
-      \begindata
-
-      PATH_VALUES  = ( '/very_long_top_level_path_name/mydir/+',
-                       'kernels/spk',
-                       '/home/mydir/kernels/ck',
-                       '/home/mydir/kernels/text',
-                       '/very_long_top_level_path_name+',
-                       '/mydir/kernels/custom+',
-                       '/kernel_data'                )
-
-      PATH_SYMBOLS = ( 'A',
-                       'B',
-                       'C',
-                       'D'  )
-
-      KERNELS_TO_LOAD = (  '$A/lowest_priority.bsp',
-                           '$A/next_priority.bsp',
-                           '$A/highest_priority.bsp',
-                           '$C/leapsecond.ker',
-                           '$D/constants.ker',
-                           '$C/sclk.tsc',
-                           '$B/c-kernel.bc'         )
-
-
 -Restrictions
  
    None. 
@@ -385,16 +316,16 @@
    C.H. Acton      (JPL)
    N.J. Bachman    (JPL)
    W.L. Taber      (JPL) 
-   E.D. Wright     (JPL)
  
 -Version
 
-   -CSPICE Version 2.0.0, 02-APR-2009 (NJB)
- 
-        Continued path values are now supported. furnsh_c now rejects
-        file names longer than FILSIZ characters.
+   -CSPICE Version 1.3.2,  10-FEB-2010 (EDW)
 
-   -CSPICE Version 1.0.4 17-OCT-2005 (EDW)
+      Corrected header section order. Added mention of the
+      restriction on kernel pool variable names to 32 characters
+      or less.
+
+   -CSPICE Version 1.0.4, 17-OCT-2005 (EDW)
 
       Added text to Particulars section informing of the
       non-native kernel text file reading capability.
@@ -407,8 +338,8 @@
    -CSPICE Version 1.0.2, 03-JUL-2002 (NJB) 
    
       Documentation fix:  corrected second code example.  The example
-      previously used the kernel variable PATH_NAMES; that name has
-      been replaced with the correct name PATH_VALUES.
+      previously used the kernel variable PATH_NAMES; that name has been
+      replaced with the correct name PATH_VALUES.
  
    -CSPICE Version 1.0.1, 13-APR-2000 (NJB) 
    

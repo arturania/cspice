@@ -10,7 +10,7 @@
 static integer c__9 = 9;
 static integer c__0 = 0;
 static integer c__1 = 1;
-static integer c__30000 = 30000;
+static integer c_b22 = 150000;
 static integer c__9999 = 9999;
 static integer c__10 = 10;
 static integer c__30 = 30;
@@ -77,7 +77,7 @@ static integer c__30 = 30;
     static integer needed, middle, ncoeff;
     static char dpchar[30];
     static integer nfield;
-    static doublereal coeffs[30000]	/* was [3][10000] */, tikdif;
+    static doublereal coeffs[150000]	/* was [3][50000] */, tikdif;
     static char kvname[60*9];
     static doublereal cmpval[10], moduli[10], maxwid, cmptks[10], mxtick, 
 	    offset[10];
@@ -193,6 +193,11 @@ static integer c__30 = 30;
 /*     None. */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 24-MAY-2010 (NJB) */
+
+/*        Increased value of maximum coefficient record count */
+/*        parameter MXCOEF from 10K to 50K. */
 
 /* -    SPICELIB Version 1.0.0, 11-FEB-2008 (NJB) */
 
@@ -948,7 +953,7 @@ L_sctk01:
 	scli01_(namlst + 240, sc, &c__1, &n, &nfield, (ftnlen)60);
 	scli01_(namlst + 420, sc, &c__1, &n, &delcde, (ftnlen)60);
 	scli01_(namlst + 480, sc, &c__1, &ntsys, &timsys, (ftnlen)60);
-	scld01_(namlst + 60, sc, &c__30000, &ncoeff, coeffs, (ftnlen)60);
+	scld01_(namlst + 60, sc, &c_b22, &ncoeff, coeffs, (ftnlen)60);
 	scld01_(namlst + 120, sc, &c__9999, &n, prstrt, (ftnlen)60);
 	scld01_(namlst + 180, sc, &c__9999, &npart, prend, (ftnlen)60);
 	scld01_(namlst + 360, sc, &c__10, &n, moduli, (ftnlen)60);
@@ -1455,7 +1460,7 @@ L_scfm01:
 	scli01_(namlst + 240, sc, &c__1, &n, &nfield, (ftnlen)60);
 	scli01_(namlst + 420, sc, &c__1, &n, &delcde, (ftnlen)60);
 	scli01_(namlst + 480, sc, &c__1, &ntsys, &timsys, (ftnlen)60);
-	scld01_(namlst + 60, sc, &c__30000, &ncoeff, coeffs, (ftnlen)60);
+	scld01_(namlst + 60, sc, &c_b22, &ncoeff, coeffs, (ftnlen)60);
 	scld01_(namlst + 120, sc, &c__9999, &n, prstrt, (ftnlen)60);
 	scld01_(namlst + 180, sc, &c__9999, &npart, prend, (ftnlen)60);
 	scld01_(namlst + 360, sc, &c__10, &n, moduli, (ftnlen)60);
@@ -1970,7 +1975,7 @@ L_scte01:
 	scli01_(namlst + 240, sc, &c__1, &n, &nfield, (ftnlen)60);
 	scli01_(namlst + 420, sc, &c__1, &n, &delcde, (ftnlen)60);
 	scli01_(namlst + 480, sc, &c__1, &ntsys, &timsys, (ftnlen)60);
-	scld01_(namlst + 60, sc, &c__30000, &ncoeff, coeffs, (ftnlen)60);
+	scld01_(namlst + 60, sc, &c_b22, &ncoeff, coeffs, (ftnlen)60);
 	scld01_(namlst + 120, sc, &c__9999, &n, prstrt, (ftnlen)60);
 	scld01_(namlst + 180, sc, &c__9999, &npart, prend, (ftnlen)60);
 	scld01_(namlst + 360, sc, &c__10, &n, moduli, (ftnlen)60);
@@ -2043,7 +2048,7 @@ L_scte01:
 /*           coefficients.  In that case, we don't need to search:  the */
 /*           last SCLK value in the array is the one we want. */
 
-    if (*sclkdp < coeffs[(i__1 = ncoeff / 3 * 3 - 3) < 30000 && 0 <= i__1 ? 
+    if (*sclkdp < coeffs[(i__1 = ncoeff / 3 * 3 - 3) < 150000 && 0 <= i__1 ? 
 	    i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)2069)]) {
 	lower = 1;
 	upper = ncoeff / 3;
@@ -2062,8 +2067,9 @@ L_scte01:
 
 	while(lower < upper - 1) {
 	    middle = (lower + upper) / 2;
-	    if (*sclkdp < coeffs[(i__1 = middle * 3 - 3) < 30000 && 0 <= i__1 
-		    ? i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)2091)]) {
+	    if (*sclkdp < coeffs[(i__1 = middle * 3 - 3) < 150000 && 0 <= 
+		    i__1 ? i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)
+		    2091)]) {
 		upper = middle;
 	    } else {
 		lower = middle;
@@ -2108,12 +2114,12 @@ L_scte01:
 	tikmsc *= moduli[(i__1 = i__ - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge(
 		"moduli", i__1, "sc01_", (ftnlen)2139)];
     }
-    tikdif = *sclkdp - coeffs[(i__1 = lower * 3 - 3) < 30000 && 0 <= i__1 ? 
+    tikdif = *sclkdp - coeffs[(i__1 = lower * 3 - 3) < 150000 && 0 <= i__1 ? 
 	    i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)2142)];
-    const__ = coeffs[(i__1 = lower * 3 - 2) < 30000 && 0 <= i__1 ? i__1 : 
+    const__ = coeffs[(i__1 = lower * 3 - 2) < 150000 && 0 <= i__1 ? i__1 : 
 	    s_rnge("coeffs", i__1, "sc01_", (ftnlen)2143)];
-    rate = coeffs[(i__1 = lower * 3 - 1) < 30000 && 0 <= i__1 ? i__1 : s_rnge(
-	    "coeffs", i__1, "sc01_", (ftnlen)2144)] / tikmsc;
+    rate = coeffs[(i__1 = lower * 3 - 1) < 150000 && 0 <= i__1 ? i__1 : 
+	    s_rnge("coeffs", i__1, "sc01_", (ftnlen)2144)] / tikmsc;
     partim = const__ + rate * tikdif;
 
 /*     Convert the parallel time to TDB, if the system is not TDB. */
@@ -2494,7 +2500,7 @@ L_scet01:
 	scli01_(namlst + 240, sc, &c__1, &n, &nfield, (ftnlen)60);
 	scli01_(namlst + 420, sc, &c__1, &n, &delcde, (ftnlen)60);
 	scli01_(namlst + 480, sc, &c__1, &ntsys, &timsys, (ftnlen)60);
-	scld01_(namlst + 60, sc, &c__30000, &ncoeff, coeffs, (ftnlen)60);
+	scld01_(namlst + 60, sc, &c_b22, &ncoeff, coeffs, (ftnlen)60);
 	scld01_(namlst + 120, sc, &c__9999, &n, prstrt, (ftnlen)60);
 	scld01_(namlst + 180, sc, &c__9999, &npart, prend, (ftnlen)60);
 	scld01_(namlst + 360, sc, &c__10, &n, moduli, (ftnlen)60);
@@ -2573,7 +2579,7 @@ L_scet01:
 /*        The coefficient set to use for extrapolation is the first. */
 
 	lower = 1;
-    } else if (partim < coeffs[(i__1 = ncoeff / 3 * 3 - 2) < 30000 && 0 <= 
+    } else if (partim < coeffs[(i__1 = ncoeff / 3 * 3 - 2) < 150000 && 0 <= 
 	    i__1 ? i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)2642)]) {
 
 /*        In the following loop, we maintain an invariant: */
@@ -2592,8 +2598,8 @@ L_scet01:
 	upper = ncoeff / 3;
 	while(lower < upper - 1) {
 	    middle = (lower + upper) / 2;
-	    if (partim < coeffs[(i__1 = middle * 3 - 2) < 30000 && 0 <= i__1 ?
-		     i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)2664)]) {
+	    if (partim < coeffs[(i__1 = middle * 3 - 2) < 150000 && 0 <= i__1 
+		    ? i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)2664)]) {
 		upper = middle;
 	    } else {
 		lower = middle;
@@ -2637,11 +2643,11 @@ L_scet01:
 /*     We use the generic `nearest whole number' function ANINT to */
 /*     ensure this. */
 
-    timdif = partim - coeffs[(i__1 = lower * 3 - 2) < 30000 && 0 <= i__1 ? 
+    timdif = partim - coeffs[(i__1 = lower * 3 - 2) < 150000 && 0 <= i__1 ? 
 	    i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)2713)];
-    const__ = coeffs[(i__1 = lower * 3 - 3) < 30000 && 0 <= i__1 ? i__1 : 
+    const__ = coeffs[(i__1 = lower * 3 - 3) < 150000 && 0 <= i__1 ? i__1 : 
 	    s_rnge("coeffs", i__1, "sc01_", (ftnlen)2714)];
-    if (coeffs[(i__1 = lower * 3 - 1) < 30000 && 0 <= i__1 ? i__1 : s_rnge(
+    if (coeffs[(i__1 = lower * 3 - 1) < 150000 && 0 <= i__1 ? i__1 : s_rnge(
 	    "coeffs", i__1, "sc01_", (ftnlen)2716)] <= 0.) {
 	setmsg_("Invalid SCLK rate.", (ftnlen)18);
 	sigerr_("SPICE(VALUEOUTOFRANGE)", (ftnlen)22);
@@ -2653,7 +2659,7 @@ L_scet01:
 	tikmsc *= moduli[(i__1 = i__ - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge(
 		"moduli", i__1, "sc01_", (ftnlen)2729)];
     }
-    rate = 1. / (coeffs[(i__1 = lower * 3 - 1) < 30000 && 0 <= i__1 ? i__1 : 
+    rate = 1. / (coeffs[(i__1 = lower * 3 - 1) < 150000 && 0 <= i__1 ? i__1 : 
 	    s_rnge("coeffs", i__1, "sc01_", (ftnlen)2732)] / tikmsc);
     d__1 = const__ + rate * timdif;
     *sclkdp = d_nint(&d__1);
@@ -3009,7 +3015,7 @@ L_scec01:
 	scli01_(namlst + 240, sc, &c__1, &n, &nfield, (ftnlen)60);
 	scli01_(namlst + 420, sc, &c__1, &n, &delcde, (ftnlen)60);
 	scli01_(namlst + 480, sc, &c__1, &ntsys, &timsys, (ftnlen)60);
-	scld01_(namlst + 60, sc, &c__30000, &ncoeff, coeffs, (ftnlen)60);
+	scld01_(namlst + 60, sc, &c_b22, &ncoeff, coeffs, (ftnlen)60);
 	scld01_(namlst + 120, sc, &c__9999, &n, prstrt, (ftnlen)60);
 	scld01_(namlst + 180, sc, &c__9999, &npart, prend, (ftnlen)60);
 	scld01_(namlst + 360, sc, &c__10, &n, moduli, (ftnlen)60);
@@ -3087,7 +3093,7 @@ L_scec01:
 	sigerr_("SPICE(VALUEOUTOFRANGE)", (ftnlen)22);
 	chkout_("SCEC01", (ftnlen)6);
 	return 0;
-    } else if (partim < coeffs[(i__1 = ncoeff / 3 * 3 - 2) < 30000 && 0 <= 
+    } else if (partim < coeffs[(i__1 = ncoeff / 3 * 3 - 2) < 150000 && 0 <= 
 	    i__1 ? i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)3195)]) {
 
 /*        In the following loop, we maintain an invariant: */
@@ -3106,8 +3112,8 @@ L_scec01:
 	upper = ncoeff / 3;
 	while(lower < upper - 1) {
 	    middle = (lower + upper) / 2;
-	    if (partim < coeffs[(i__1 = middle * 3 - 2) < 30000 && 0 <= i__1 ?
-		     i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)3217)]) {
+	    if (partim < coeffs[(i__1 = middle * 3 - 2) < 150000 && 0 <= i__1 
+		    ? i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)3217)]) {
 		upper = middle;
 	    } else {
 		lower = middle;
@@ -3147,11 +3153,11 @@ L_scec01:
 /*     clock count, so we use the conversion factor TIKMSC (`ticks per */
 /*     most significant count') to change the rate to seconds per tick. */
 
-    timdif = partim - coeffs[(i__1 = lower * 3 - 2) < 30000 && 0 <= i__1 ? 
+    timdif = partim - coeffs[(i__1 = lower * 3 - 2) < 150000 && 0 <= i__1 ? 
 	    i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)3262)];
-    const__ = coeffs[(i__1 = lower * 3 - 3) < 30000 && 0 <= i__1 ? i__1 : 
+    const__ = coeffs[(i__1 = lower * 3 - 3) < 150000 && 0 <= i__1 ? i__1 : 
 	    s_rnge("coeffs", i__1, "sc01_", (ftnlen)3263)];
-    if (coeffs[(i__1 = lower * 3 - 1) < 30000 && 0 <= i__1 ? i__1 : s_rnge(
+    if (coeffs[(i__1 = lower * 3 - 1) < 150000 && 0 <= i__1 ? i__1 : s_rnge(
 	    "coeffs", i__1, "sc01_", (ftnlen)3265)] <= 0.) {
 	setmsg_("Invalid SCLK rate.", (ftnlen)18);
 	sigerr_("SPICE(VALUEOUTOFRANGE)", (ftnlen)22);
@@ -3163,7 +3169,7 @@ L_scec01:
 	tikmsc *= moduli[(i__1 = i__ - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge(
 		"moduli", i__1, "sc01_", (ftnlen)3278)];
     }
-    rate = 1. / (coeffs[(i__1 = lower * 3 - 1) < 30000 && 0 <= i__1 ? i__1 : 
+    rate = 1. / (coeffs[(i__1 = lower * 3 - 1) < 150000 && 0 <= i__1 ? i__1 : 
 	    s_rnge("coeffs", i__1, "sc01_", (ftnlen)3281)] / tikmsc);
     *sclkdp = const__ + rate * timdif;
 

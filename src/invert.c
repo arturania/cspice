@@ -54,78 +54,37 @@ static integer c__9 = 9;
 
 /* $ Keywords */
 
-/*      MATRIX,  MATH */
+/*     MATRIX,  MATH */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*      M1         I   Matrix to be inverted. */
-/*      MOUT       O   Inverted matrix (M1)**-1.  If M1 is singular, then */
-/*                     MOUT will be the zero matrix.   MOUT can */
-/*                     overwrite M1. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     M1         I   Matrix to be inverted. */
+/*     MOUT       O   Inverted matrix (M1)**-1.  If M1 is singular, then */
+/*                    MOUT will be the zero matrix. */
 
 /* $ Detailed_Input */
 
-/*      M1    An arbitrary 3x3 matrix.  The limits on the size of */
-/*            elements of M1 are determined by the process of calculating */
-/*            the cofactors of each element of the matrix.  For a 3x3 */
-/*            matrix this amounts to the differencing of two terms, each */
-/*            of which consists of the multiplication of two matrix */
-/*            elements.  This multiplication must not exceed the range */
-/*            of double precision numbers or else an overflow error will */
-/*            occur. */
+/*     M1    An arbitrary 3x3 matrix.  The limits on the size of */
+/*           elements of M1 are determined by the process of calculating */
+/*           the cofactors of each element of the matrix.  For a 3x3 */
+/*           matrix this amounts to the differencing of two terms, each */
+/*           of which consists of the multiplication of two matrix */
+/*           elements.  This multiplication must not exceed the range of */
+/*           double precision numbers or else an overflow error will */
+/*           occur. */
 
 /* $ Detailed_Output */
 
-/*      MOUT  is the inverse of M1 and is calculated explicitly using */
-/*            the matrix of cofactors.  MOUT is set to be the zero matrix */
-/*            if M1 is singular. */
+/*     MOUT  is the inverse of M1 and is calculated explicitly using */
+/*           the matrix of cofactors.  MOUT is set to be the zero matrix */
+/*           if M1 is singular. */
 
 /* $ Parameters */
 
 /*     None. */
-
-/* $ Particulars */
-
-/*      First the determinant is explicitly calculated using the */
-/*      fundamental definition of the determinant.  If this value is less */
-/*      that 10**-16 then the matrix is deemed to be singular and the */
-/*      output value is filled with zeros.  Otherwise, the output matrix */
-/*      is calculated an element at a time by generating the cofactor of */
-/*      each element.  Finally, each element in the matrix of cofactors */
-/*      is multiplied by the reciprocal of the determinant and the result */
-/*      is the inverse of the original matrix.  Since a temporary matrix */
-/*      is used, the output matrix may overwrite the input matrix.  NO */
-/*      INTERNAL CHECKING ON THE INPUT MATRIX M1 IS PERFORMED EXCEPT ON */
-/*      THE SIZE OF ITS DETERMINANT.  THUS IT IS POSSIBLE TO GENERATE A */
-/*      FLOATING POINT OVERFLOW OR UNDERFLOW IN THE PROCESS OF */
-/*      CALCULATING THE MATRIX OF COFACTORS. */
-
-/* $ Examples */
-
-/*      Suppose that M1 is given by the following matrix equation: */
-
-/*           | 0   -1    0 | */
-/*      M1 = | 0.5  0    0 |  then if INVERT is called according to the */
-/*           | 0    0    1 |    FORTRAN code: */
-
-/*      CALL INVERT (M1, M1) */
-
-/*      then M1 will be set to be: */
-
-/*           | 0    2    0 | */
-/*      M1 = |-1    0    0 | */
-/*           | 0    0    1 | */
-
-/* $ Restrictions */
-
-/*      The input matrix must be such that generating the cofactors will */
-/*      not cause a floating point overflow or underflow.  The */
-/*      strictness of this condition depends, of course, on the computer */
-/*      installation and the resultant maximum and minimum values of */
-/*      double precision numbers. */
 
 /* $ Exceptions */
 
@@ -133,24 +92,71 @@ static integer c__9 = 9;
 
 /* $ Files */
 
-/*      None */
+/*     None. */
 
-/* $ Author_and_Institution */
+/* $ Particulars */
 
-/*      W.M. Owen       (JPL) */
+/*     First the determinant is explicitly calculated using the */
+/*     fundamental definition of the determinant.  If this value is less */
+/*     that 10**-16 then the matrix is deemed to be singular and the */
+/*     output value is filled with zeros.  Otherwise, the output matrix */
+/*     is calculated an element at a time by generating the cofactor of */
+/*     each element.  Finally, each element in the matrix of cofactors */
+/*     is multiplied by the reciprocal of the determinant and the result */
+/*     is the inverse of the original matrix. */
+
+/*     NO INTERNAL CHECKING ON THE INPUT MATRIX M1 IS PERFORMED EXCEPT */
+/*     ON THE SIZE OF ITS DETERMINANT.  THUS IT IS POSSIBLE TO GENERATE */
+/*     A FLOATING POINT OVERFLOW OR UNDERFLOW IN THE PROCESS OF */
+/*     CALCULATING THE MATRIX OF COFACTORS. */
+
+/* $ Examples */
+
+/*     Suppose that M1 is given by the following matrix equation: */
+
+/*             | 0   -1    0 | */
+/*        M1 = | 0.5  0    0 | */
+/*             | 0    0    1 | */
+
+/*     If INVERT is called according to the FORTRAN code: */
+
+/*        CALL INVERT (M1, M1) */
+
+/*     then M1 will be set to be: */
+
+/*             | 0    2    0 | */
+/*        M1 = |-1    0    0 | */
+/*             | 0    0    1 | */
+
+/* $ Restrictions */
+
+/*     The input matrix must be such that generating the cofactors will */
+/*     not cause a floating point overflow or underflow.  The strictness */
+/*     of this condition depends, of course, on the computer */
+/*     installation and the resultant maximum and minimum values of */
+/*     double precision numbers. */
 
 /* $ Literature_References */
 
-/*      None */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     W.M. Owen       (JPL) */
 
 /* $ Version */
 
-/* -     SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+/* -    SPICELIB Version 1.0.2, 22-APR-2010 (NJB) */
 
-/*         Comment section for permuted index source lines was added */
-/*         following the header. */
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
-/* -     SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
+/* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
+
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
 
 /* -& */
 /* $ Index_Entries */

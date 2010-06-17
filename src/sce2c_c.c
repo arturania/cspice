@@ -4,7 +4,7 @@
 
 -Abstract
  
-   Convert ephemeris seconds past j2000_c (ET) to continuous encoded  
+   Convert ephemeris seconds past J2000 (ET) to continuous encoded  
    spacecraft clock (`ticks').  Non-integral tick values may be 
    returned. 
  
@@ -60,7 +60,7 @@
    Variable  I/O  Description 
    --------  ---  -------------------------------------------------- 
    sc         I   NAIF spacecraft ID code. 
-   et         I   Ephemeris time, seconds past j2000_c. 
+   et         I   Ephemeris time, seconds past J2000. 
    sclkdp     O   SCLK, encoded as ticks since spacecraft clock 
                   start.  sclkdp need not be integral. 
  
@@ -234,6 +234,12 @@
    N.J. Bachman   (JPL) 
  
 -Version
+
+   -CSPICE Version 1.0.2, 09-NOV-2009   (EDW)
+
+      Corrected typo in header; j2000_c replaced with J2000. Mention of
+      the J2000 epoch in the previous header used the word "j2000_c" (wrong) 
+      instead of "J2000" (correct).
 
    -CSPICE Version 1.0.1, 14-AUG-2006   (EDW)
 

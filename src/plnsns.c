@@ -102,12 +102,6 @@ integer plnsns_(integer *bodid)
 
 /*     None. */
 
-/* $ Files */
-
-/*     A text PCK kernel must be loaded via the routine LDPOOL */
-/*     that contains the orientation information for the body specified */
-/*     by BODID. */
-
 /* $ Exceptions */
 
 /*     Error free. */
@@ -115,6 +109,12 @@ integer plnsns_(integer *bodid)
 /*     1) If sufficient orientation information for the object */
 /*     specified by BODID is not available in the kernel pool, */
 /*     the function returns the value 0. */
+
+/* $ Files */
+
+/*     A text PCK kernel must be loaded via the routine FURNSH */
+/*     that contains the orientation information for the body specified */
+/*     by BODID. */
 
 /* $ Particulars */
 
@@ -177,15 +177,20 @@ integer plnsns_(integer *bodid)
 
 /*     None. */
 
-/* $ Author_and_Institution */
-
-/*     W.L. Taber      (JPL) */
-
 /* $ Literature_References */
 
 /*     None. */
 
+/* $ Author_and_Institution */
+
+/*     W.L. Taber      (JPL) */
+
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1, 11-MAY-2009 (BVS) */
+
+/*        Replaced LDPOOL with FURNSN in the header. Re-ordered header */
+/*        sections. */
 
 /* -    SPICELIB Version 1.0.0, 7-JAN-1997 (WLT) */
 

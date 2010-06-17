@@ -22,7 +22,8 @@
     extern /* Subroutine */ int dafsih_(integer *, char *, ftnlen);
     char idword[8];
     extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
-	    ftnlen), setmsg_(char *, ftnlen);
+	    ftnlen), setmsg_(char *, ftnlen), errint_(char *, integer *, 
+	    ftnlen);
     extern logical return_(void);
 
 /* $ Abstract */
@@ -108,21 +109,21 @@
 
 /*      None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     1) If the handle passed to this routine is not the handle of an */
-/*        open DAF file, the error will be signalled by a routine called */
+/*        open DAF file, the error will be signaled by a routine called */
 /*        by this routine. */
 
 /*     2) If the specified DAF file is not open for read access, the */
 /*        error will be diagnosed by a routine called by this routine. */
 
 /*     3) If the specified record cannot (for some reason) be read, */
-/*        the error SPICE(DAFFRNOTFOUND) is signalled. */
+/*        the error SPICE(DAFFRNOTFOUND) is signaled. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -164,23 +165,45 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 3.1.0, 30-DEC-2009 (EDW) */
+
+/*        Expanded DAFFRNOTFOUND error message to identify the file */
+/*        handle corresponding to the error condition. */
+
+/*        Reordered header sections to conform to SPICE format. */
+/*        Merged the Revisions sections, now deleted, with Version. */
+
 /* -    SPICELIB Version 3.0.0, 16-NOV-2001 (FST) */
 
 /*        Updated this routine to utilize interfaces built on */
 /*        the new handle manager to perform I/O operations. */
-/*        See the Revisions section for details. */
 
+/*        This routine now utilizes ZZDAFGFR to retrieve information */
+/*        from the file record.  As this private interface takes a */
+/*        handle and performs the necessary logical unit to handle */
+/*        mapping, the call to DAFHLU was removed.  The DAFSIH call */
+/*        remains, since this insures that HANDLE is known to DAFAH. */
+/* C */
 /* -    SPICELIB Version 2.0.0, 04-OCT-1993 (KRG) */
 
-/*        The error SPICE(DAFNOIDWORD) is no longer signalled by this */
+/*        The error SPICE(DAFNOIDWORD) is no longer signaled by this */
 /*        routine. The reason for this is that if DAFSIH returns OK then */
 /*        the handle passed to this routine is indeed a valid DAF file */
 /*        handle, otherwise the error is diagnosed by DAFSIH. */
+
+/*        Added a call to DAFSIH to signal an invalid handle and a test */
+/*        of FAILED () after it. This is to make sure that the DAF file */
+/*        is open for reading. If this call succeeds, we know that we */
+/*        have a valid DAF handle, so there is no need to check FAILED */
+/*        after the call to DAFHLU. */
+
+/*        The variable name DAFWRD was changed to IDWORD. */
 
 /*        Added two new exceptions to the $ Exceptions section: 1 and 2. */
 /*        The remaining exception (3) was already present. The exceptions */
 /*        that were added are not new, but are being documented for the */
 /*        first time. */
+
 
 /* -    SPICELIB Version 1.0.3, 6-OCT-1992 (HAN) */
 
@@ -202,37 +225,6 @@
 /* $ Index_Entries */
 
 /*     read daf file record */
-
-/* -& */
-/* $ Revisions */
-
-/* -    SPICELIB Version 3.0.0, 16-NOV-2001 (FST) */
-
-/*        This routine now utilizes ZZDAFGFR to retrieve information */
-/*        from the file record.  As this private interface takes a */
-/*        handle and performs the necessary logical unit to handle */
-/*        mapping, the call to DAFHLU was removed.  The DAFSIH call */
-/*        remains, since this insures that HANDLE is known to DAFAH. */
-
-/* -    SPICELIB Version 2.0.0, 04-OCT-1993 (KRG) */
-
-/*        The error SPICE(DAFNOIDWORD) is no longer signalled by this */
-/*        routine. The reason for this is that if DAFSIH returns OK then */
-/*        the handle passed to this routine is indeed a valid DAF file */
-/*        handle, otherwise the error is diagnosed by DAFSIH. */
-
-/*        Added a call to DAFSIH to signal an invalid handle and a test */
-/*        of FAILED () after it. This is to make sure that the DAF file */
-/*        is open for reading. If this call succeeds, we know that we */
-/*        have a valid DAF handle, so there is no need to check FAILED */
-/*        after the call to DAFHLU. */
-
-/*        The variable name DAFWRD was changed to IDWORD. */
-
-/*        Added two new exceptions to the $ Exceptions section: 1 and 2. */
-/*        The remaining exception (3) was already present. The exceptions */
-/*        that were added are not new, but are being documented for the */
-/*        first time. */
 
 /* -& */
 
@@ -268,12 +260,16 @@
 
 /*     Retrieve all but the internal file name directly from the */
 /*     file record.  Read the internal file name into a temporary */
-/*     string, to be sure of the length.  Check FOUND. */
+/*     string, to be sure of the length. Check FOUND. */
 
     zzdafgfr_(handle, idword, nd, ni, ifname, fward, bward, free, &found, (
 	    ftnlen)8, ifname_len);
     if (! found) {
-	setmsg_("File record not found.", (ftnlen)22);
+	setmsg_("File record not found for file handle #1. Check if program "
+		"code uses handle #2 for a read or write operation.", (ftnlen)
+		109);
+	errint_("#1", handle, (ftnlen)2);
+	errint_("#2", handle, (ftnlen)2);
 	sigerr_("SPICE(DAFFRNOTFOUND)", (ftnlen)20);
 	chkout_("DAFRFR", (ftnlen)6);
 	return 0;

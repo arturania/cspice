@@ -7,7 +7,7 @@
 
 /* Table of constant values */
 
-static integer c__117 = 117;
+static integer c__121 = 121;
 
 /* $Procedure      ZZFDAT ( Initialize frame names and idcodes ) */
 /* Subroutine */ int zzfdat_(integer *ncount, char *name__, integer *idcode, 
@@ -275,6 +275,16 @@ static integer c__117 = 117;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.4.0, 11-MAY-2010 (BVS) */
+
+/*        Increased the number of non-inertial frames from 96 to 100 */
+/*        in order to accomodate the following PCK based frames: */
+
+/*           IAU_BORRELLY */
+/*           IAU_TEMPEL_1 */
+/*           IAU_VESTA */
+/*           IAU_ITOKAWA */
+
 /* -    SPICELIB Version 1.3.0, 12-DEC-2002 (BVS) */
 
 /*        Increased the number of non-inertial frames from 85 to 96 */
@@ -376,13 +386,13 @@ static integer c__117 = 117;
 
 /*     None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     Error free. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -415,6 +425,10 @@ static integer c__117 = 117;
 
 /*     None. */
 
+/* $ Literature_References */
+
+/*     None. */
+
 /* $ Author_and_Institution */
 
 /*     B.V. Semenov    (JPL) */
@@ -422,11 +436,16 @@ static integer c__117 = 117;
 /*     F.S. Turner     (JPL) */
 /*     E.D. Wright     (JPL) */
 
-/* $ Literature_References */
-
-/*     None. */
-
 /* $ Version */
+
+/* -    SPICELIB Version 4.2.0, 11-MAY-2010 (BVS) */
+
+/*        Added the following PCK frames: */
+
+/*           IAU_BORRELLY */
+/*           IAU_TEMPEL_1 */
+/*           IAU_VESTA */
+/*           IAU_ITOKAWA */
 
 /* -    SPICELIB Version 4.1.0, 12-DEC-2002 (BVS) */
 
@@ -534,7 +553,7 @@ static integer c__117 = 117;
 
 /*     Perform the consistency check first. */
 
-    if (*ncount != 117) {
+    if (*ncount != 121) {
 	chkin_("ZZFDAT", (ftnlen)6);
 	setmsg_("There is an inconsistency between the version of the routin"
 		"e calling ZZFDAT and the current version of ZZFDAT. Check to"
@@ -999,20 +1018,44 @@ static integer c__117 = 117;
     typid[116] = 527;
     type__[116] = 2;
 
+/*     Frames for comets and asteroids, for which rotation constants */
+/*     were added in 2006 IAU Report. */
+
+    s_copy(name__ + name_len * 117, "IAU_BORRELLY", name_len, (ftnlen)12);
+    idcode[117] = 10097;
+    center[117] = 1000005;
+    typid[117] = 1000005;
+    type__[117] = 2;
+    s_copy(name__ + name_len * 118, "IAU_TEMPEL_1", name_len, (ftnlen)12);
+    idcode[118] = 10098;
+    center[118] = 1000093;
+    typid[118] = 1000093;
+    type__[118] = 2;
+    s_copy(name__ + name_len * 119, "IAU_VESTA", name_len, (ftnlen)9);
+    idcode[119] = 10099;
+    center[119] = 2000004;
+    typid[119] = 2000004;
+    type__[119] = 2;
+    s_copy(name__ + name_len * 120, "IAU_ITOKAWA", name_len, (ftnlen)11);
+    idcode[120] = 10100;
+    center[120] = 2025143;
+    typid[120] = 2025143;
+    type__[120] = 2;
+
 /*     Below is a template to use for adding another non-inertial */
 /*     frame.  Copy it, fill in the new values and then leave */
 /*     a new template for the next person who needs to modify this */
 /*     routine. */
 
-/*     NAME   ( NINERT + 97 ) =  name */
-/*     IDCODE ( NINERT + 97 ) =  10097 */
-/*     CENTER ( NINERT + 97 ) =  center */
-/*     TYPID  ( NINERT + 97 ) =  type ID code */
-/*     TYPE   ( NINERT + 97 ) =  type (INERTL, PCK, etc. ) */
+/*     NAME   ( NINERT + 101 ) =  name */
+/*     IDCODE ( NINERT + 101 ) =  10101 */
+/*     CENTER ( NINERT + 101 ) =  center */
+/*     TYPID  ( NINERT + 101 ) =  type ID code */
+/*     TYPE   ( NINERT + 101 ) =  type (INERTL, PCK, etc. ) */
 
-    orderc_(name__, &c__117, norder, name_len);
-    orderi_(idcode, &c__117, corder);
-    orderi_(center, &c__117, centrd);
+    orderc_(name__, &c__121, norder, name_len);
+    orderi_(idcode, &c__121, corder);
+    orderi_(center, &c__121, centrd);
     return 0;
 } /* zzfdat_ */
 

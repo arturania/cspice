@@ -865,6 +865,12 @@
    E.D. Wright    (JPL) 
  
 -Version
+
+   -CSPICE Version 1.0.1, 19-AUG-2009 (EDW)
+
+      Corrected typo in the VALUEOUTOFRANGE error message. Corrected
+      the routine name in "chkout_c" call, "gfposc_c", with correct
+      name "gfrr_c."
  
    -CSPICE Version 1.0.0, 10-FEB-2009 (NJB) (EDW)
 
@@ -932,7 +938,7 @@
                  "less than the minimum allowed value of one (1)." );
       errint_c ( "#",  nintvls                              );
       sigerr_c ( "SPICE(VALUEOUTOFRANGE)"                   );
-      chkout_c ( "gfposc_c"                                 );
+      chkout_c ( "gfsep_c"                                 );
       return;
       } 
 

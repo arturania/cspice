@@ -9,7 +9,7 @@
 
 static integer c__1000 = 1000;
 
-/* $Procedure ZZGFSOLV (GF, event finding routine ) */
+/* $Procedure ZZGFSOLV ( Private --- GF, event finding routine ) */
 /* Subroutine */ int zzgfsolv_(S_fp udcond, S_fp udstep, S_fp udrefn, logical 
 	*bail, L_fp udbail, logical *cstep, doublereal *step, doublereal *
 	start, doublereal *finish, doublereal *tol, logical *rpt, S_fp udrepu,
@@ -55,6 +55,9 @@ static integer c__1000 = 1000;
 /*     This routine is a root finding general purpose event location */
 /*     routine. Most of the HARD work has been delegated to other */
 /*     routines (In particular, how the dynamic step size is chosen). */
+
+/*     Sister routine to ZZGFSOLVX. Copy any edits to ZZGFSOLV or */
+/*     ZZGFSOLVX to the sister routine. */
 
 /* $ Disclaimer */
 
@@ -118,33 +121,29 @@ static integer c__1000 = 1000;
 /*     subroutines that this routine will call.  These routines */
 /*     should meet the following specifications. */
 
-/*     UDCOND     the name of the externally specifiedroutine that */
-/*                determines if the system state satisfies some */
-/*                constraint condition at epoch ET. */
+/*     UDCOND     the routine that determines if the system state */
+/*                satisfies some constraint condition at epoch ET. */
 
 /*                The calling sequence: */
 
-/*                CALL UDCOND ( ET, IN_CON ) */
+/*                   CALL UDCOND ( ET, IN_CON ) */
 
 /*                where: */
 
-/*                ET       the ephemeris time at which to evaluate */
-/*                         the state. ET is expressed as seconds past */
-/*                         J2000 TDB. */
+/*                   ET       a double precision value representing */
+/*                            ephemeris time, expressed as seconds past */
+/*                            J2000 TDB, at which to evaluate the state. */
 
-/*                IN_CON   an output LOGICAL value indicating whether */
-/*                         or not the system is in the state of interest */
-/*                         at ET. IN_CON returns as .TRUE. if the system */
-/*                         is in the state of interest otherwise it */
-/*                         returns as .FALSE. */
+/*                   IN_CON   a logical value indicating whether */
+/*                            or not the quantity satisfies the */
+/*                            constraint at ET (TRUE) or not (FALSE). */
 
-/*     UDSTEP     is an externally specified routine that computes a */
-/*                time step in an attempt to find a transition of the */
-/*                state of the specified coordinate. In the context */
-/*                of this routine's algorithm, a "state transition" */
-/*                occurs where the geometric state changes from being */
-/*                in the desired geometric condition event to not, */
-/*                or vice versa. */
+/*     UDSTEP     the routine that computes a time step in an attempt to */
+/*                find a transition of the state of the specified */
+/*                coordinate. In the context of this routine's algorithm, */
+/*                a "state transition" occurs where the geometric state */
+/*                changes from being in the desired geometric condition */
+/*                event to not, or vice versa. */
 
 /*                This routine relies on UDSTEP returning step sizes */
 /*                small enough so that state transitions within the */
@@ -159,12 +158,12 @@ static integer c__1000 = 1000;
 
 /*                where: */
 
-/*                   ET      is the input start time from which the */
-/*                           algorithm is to search forward for a state */
-/*                           transition. ET is expressed as seconds past */
-/*                           J2000 TDB. */
+/*                   ET      a double precision value representing */
+/*                           ephemeris time, expressed as seconds past */
+/*                           J2000 TDB, from which the algorithm is to */
+/*                           search forward for a state transition. */
 
-/*                   STEP    is the output step size.  STEP indicates */
+/*                   STEP    is the output step size. STEP indicates */
 /*                           how far to advance ET so that ET and */
 /*                           ET+STEP may bracket a state transition and */
 /*                           definitely do not bracket more than one */
@@ -181,11 +180,10 @@ static integer c__1000 = 1000;
 
 /*                prior to calling this routine. */
 
-/*     UDREFN     is the name of the externally specified routine that */
-/*                computes a refinement in the times that bracket a */
-/*                transition point. In other words, once a pair of */
-/*                times have been detected such that the system is in */
-/*                different states at each of the two times, UDREFN */
+/*     UDREFN     the routine that computes a refinement in the times */
+/*                that bracket a transition point. In other words, once */
+/*                a pair of times have been detected such that the system */
+/*                is in different states at each of the two times, UDREFN */
 /*                selects an intermediate time which should be closer to */
 /*                the transition state than one of the two known times. */
 /*                The calling sequence for UDREFN is: */
@@ -194,32 +192,26 @@ static integer c__1000 = 1000;
 
 /*                where the inputs are: */
 
-/*                   T1    is a time when the system is in state S1. T1 */
-/*                         is expressed as seconds past J2000 TDB. */
+/*                   T1    a time when the system is in state S1. */
 
-/*                   T2    is a time when the system is in state S2. T2 */
-/*                         is expressed as seconds past J2000 TDB. T2 */
+/*                   T2    a time when the system is in state S2. T2 */
 /*                         is assumed to be larger than T1. */
 
-/*                   S1    is the state of the system at time T1. */
-/*                         S1 is a LOGICAL value. */
+/*                   S1    a logical indicating the state of the system */
+/*                         at time T1. */
 
-/*                   S2    is the state of the system at time T2. */
-/*                         S2 is a LOGICAL value. */
+/*                   S2    a logical indicating the state of the system */
+/*                         at time T2. */
 
 /*                UDREFN may use or ignore the S1 and S2 values. */
 
 /*                The output is: */
 
-/*                   T    is next time to check for a state transition. */
-/*                        T has value between T1 and T2. T is */
-/*                        expressed as seconds past J2000 TDB. */
+/*                   T     a time to check for a state transition */
+/*                         between T1 and T2. */
 
 /*                If a simple bisection method is desired, the routine */
-
-/*                   GFREFN */
-
-/*                may be used. This is the default option. */
+/*                GFREFN may be used. This is the default option. */
 
 /*     BAIL       is a logical indicating whether or not interrupt */
 /*                signaling is enabled. When `bail' is set to TRUE, */
@@ -227,16 +219,15 @@ static integer c__1000 = 1000;
 /*                is used to determine whether an interrupt has been */
 /*                issued. */
 
-/*     UDBAIL     is the name of a user defined logical function that */
-/*                indicates whether an interrupt signal has been */
-/*                issued (for example, from the keyboard).  UDBAIL */
-/*                has no arguments and returns a LOGICAL value. */
+/*     UDBAIL     the routine that indicates whether an interrupt signal */
+/*                has been issued (for example, from the keyboard). */
+/*                UDBAIL has no arguments and returns a logical. */
 /*                The return value is .TRUE. if an interrupt has */
 /*                been issued; otherwise the value is .FALSE. */
 
-/*                ZZGFSOLV uses UDBAIL only when BAIL (see above) is set */
+/*                ZZGFSOLVX uses UDBAIL only when BAIL (see above) is set */
 /*                to .TRUE., indicating that interrupt handling is */
-/*                enabled. When interrupt handling is enabled, ZZGFSOLV */
+/*                enabled. When interrupt handling is enabled, ZZGFSOLVX */
 /*                and will call UDBAIL to determine whether to terminate */
 /*                processing and return immediately. */
 
@@ -256,7 +247,7 @@ static integer c__1000 = 1000;
 
 /*     STEP       is the step size to be used in the search. STEP must */
 /*                be short enough for a search using this step size */
-/*                to locate the time intervals where the gemoetric */
+/*                to locate the time intervals where the geometric */
 /*                event function is monotone increasing or decreasing. */
 /*                However, STEP must not be *too* short, or the */
 /*                search will take an unreasonable amount of time. */
@@ -283,9 +274,8 @@ static integer c__1000 = 1000;
 /*                progress reporting is enabled and the routine */
 /*                UDREPU (see description  below) reports progress. */
 
-/*     UDREPU     is a user-defined subroutine that updates the */
-/*                progress report for a search.  The calling sequence */
-/*                of UDREPU is */
+/*     UDREPU     the routine that updates the progress report for a */
+/*                search. The calling sequence of UDREPU is */
 
 /*                   UDREPU (IVBEG, IVEND, ET ) */
 
@@ -378,13 +368,19 @@ static integer c__1000 = 1000;
 
 /* $ Author_and_Institution */
 
+/*     N.J. Bachman   (JPL) */
 /*     W.L. Taber     (JPL) */
 /*     I.M. Underwood (JPL) */
 /*     L. S. Elson    (JPL) */
 
 /* $ Version */
 
-/* -    SPICELIB Version 1.0.0, 17-MAR-2009 (EDW)(LSE) */
+/* -    SPICELIB Version 1.0.1  21-DEC-2009 (EDW) */
+
+/*        Edit to Abstract to document sister routine ZZGFSOLVX. Added */
+/*        N.J. Bachman citation to Author_and_Institution section. */
+
+/* -    SPICELIB Version 1.0.0, 17-MAR-2009 (EDW)(LSE)(NJB) */
 
 /* -& */
 /* $ Index_Entries */
@@ -493,7 +489,7 @@ static integer c__1000 = 1000;
     curtim = *start;
 
 /*     Determine if the state at the current time satisfies some */
-/*     constraint. This constraint may indicate only existance of */
+/*     constraint. This constraint may indicate only existence of */
 /*     a state. */
 
     (*udcond)(&curtim, &curste);
@@ -756,7 +752,7 @@ static integer c__1000 = 1000;
 		begin = trnstn;
 	    }
 
-/*           A transitition occured either from from in-state to */
+/*           A transition occurred either from from in-state to */
 /*           out-of-state or the inverse. Reverse the value of the */
 /*           INSTAT flag to signify the transition event. */
 
@@ -778,8 +774,9 @@ static integer c__1000 = 1000;
 /*        Add an interval starting at BEGIN and ending at FINISH to the */
 /*        window. */
 
-	s_copy(contxt, "Adding interval [BEGIN,FINISH] to RESULT. FINISHrepr"
-		"esents end of the search interval.", (ftnlen)256, (ftnlen)86);
+	s_copy(contxt, "Adding interval [BEGIN,FINISH] to RESULT. FINISH rep"
+		"resents end of the search interval.", (ftnlen)256, (ftnlen)87)
+		;
 	zzwninsd_(&begin, finish, contxt, result, (ftnlen)256);
     }
 

@@ -153,6 +153,10 @@
 /*     value 0 is used to indicate that no free logical unit was */
 /*     found. */
 
+/* $ Literature_References */
+
+/*     None. */
+
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
@@ -160,18 +164,18 @@
 /*     H.A. Neilan     (JPL) */
 /*     I.M. Underwood  (JPL) */
 
-/* $ Literature_References */
-
-/*     None. */
-
 /* $ Version */
 
-/* -     SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+/* -    SPICELIB Version 1.0.2, 18-MAY-2010 (BVS) */
 
-/*         Comment section for permuted index source lines was added */
-/*         following the header. */
+/*        Removed "C$" marker from text in the header. */
 
-/* -     SPICELIB Version 1.0.0, 31-JAN-1990 (CAC) (IMU) */
+/* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
+
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (CAC) (IMU) */
 
 /* -& */
 /* $ Index_Entries */
@@ -189,7 +193,7 @@
 /*         If there are no free logical units available, UNIT */
 /*         is assigned the value 0, and an error is signalled. */
 
-/*         The "C$ Parameters" section was added to the header. */
+/*         The "Parameters" section was added to the header. */
 
 /* -& */
 

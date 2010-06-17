@@ -1,0 +1,319 @@
+ 
+BINGO User's Guide
+===========================================================================
+ 
+   Last revised on 2010 JUN 03 by B. V. Semenov.
+ 
+ 
+Abstract
+--------------------------------------------------------
+ 
+   BINGO is a command line program that converts SPICE binary kernels
+   between IEEE and PC binary formats and converts SPICE text kernels
+   between UNIX and DOS text file formats.
+ 
+ 
+Summary
+--------------------------------------------------------
+ 
+   BINGO is a program that may be used to convert any SPICE binary kernel
+   based on the DAF file architecture (SPKs, CKs, binary PCKs) or DAS file
+   architecture (EKs, DBKs) between IEEE and PC binary formats. The IEEE
+   binary format, also called ``big-endian'' format, is the format used by
+   UNIX workstations (Sun, HP, and SGI) and Macintosh computers. The PC
+   binary format, also called ``little-endian'' format, is the format used
+   by PCs running Windows or Linux. BINGO does not support conversions for
+   any other binary formats, such as VAX for example.
+ 
+   BINGO also converts text kernels (LSKs, text PCKs, SCLKs, IKs, FKs, and
+   meta kernels) and SPICE transfer format files between UNIX and DOS text
+   formats. The UNIX text format, with lines in the text files terminated
+   with only the ``line feed'' (LF) character, is used by UNIX workstations
+   (Sun, HP, SGI), Macs running OSX, and PCs running Linux. The DOS text
+   format, with lines in text files terminated with the combination of
+   ``carriage return'' and ``line feed'' (CR-LF) characters, is the format
+   used by PCs running Windows. BINGO does not support conversions for any
+   other text formats, such as VAX or classic Mac OS.
+ 
+   The program usage and the conversion specifics and examples for binary
+   DAF, binary DAS, and text kernel files are covered in separate sections
+   of this User's Guide.
+ 
+ 
+Usage
+--------------------------------------------------------
+ 
+   BINGO is a command line program with the following usage:
+ 
+      bingo [OPTION] INPUTFILE OUTPUTFILE
+ 
+   where
+ 
+         OPTION       is the option specifying what type of conversion is
+                      needed,
+ 
+         INPUTFILE    is the name of the input file,
+ 
+         OUTPUTFILE   is the name of the output file.
+ 
+   If the output file exists it will be overwritten by the program.
+ 
+   The OPTION may be one of the following:
+ 
+         -ieee2pc     indicates that the input DAF or DAS kernel file in
+                      IEEE binary format is to be converted to PC binary
+                      format
+ 
+         -pc2ieee     indicates that the input DAF or DAS kernel file in PC
+                      binary format is to be converted to IEEE binary
+                      format
+ 
+         -unix2dos    indicates that the input text kernel or transfer file
+                      in UNIX text format is to be converted to DOS text
+                      format
+ 
+         -dos2unix    indicates that the input text kernel or transfer file
+                      in DOS text format is to be converted to UNIX text
+                      format
+ 
+   Command line arguments must be provided in the order shown above. The
+   input file name and the output file name are both required arguments.
+   OPTION may be omitted in some cases discussed later. The OPTION values
+   are case sensitive and must be provided exactly as shown above (i.e. in
+   lowercase letters.)
+ 
+   Normally in the case of successful conversion BINGO does not produce any
+   screen output. The exception to this is a warning message that BINGO
+   will print out after successfully converting some DAF and DAS files;
+   this warning is discussed later.
+ 
+   If incorrect or inconsistent options are specified or if conversion
+   fails for any reason, BINGO generates a descriptive error message. In
+   either case the output file does not get produced. If a file having the
+   specified output file name exists prior to execution, in some cases it
+   is deleted.
+ 
+ 
+DAF Binary File Conversion
+--------------------------------------------------------
+ 
+   In most cases converting DAF binary files from one format to the other
+   is not necessary because starting with the N0052 release (January, 2002)
+   SPICE Toolkit for most Unix (Sun, HP, SGI), Mac, and PC (Window, Linux,
+   CYGWIN) platforms is able to read DAF binary files (SPK, CK and binary
+   PCK) that were written using a non-native binary format. This so called
+   run-time translation capability eliminated the need to have DAF binary
+   files in the binary format native to the platform being used, taking
+   away the need to use the SPICE transfer format approach to port DAF
+   binary files or to use utility like BINGO for that purpose.
+ 
+   While having a DAF binary file in native format is not necessary for
+   reading, it is required if one wants to modify it. This is due to the
+   fact that non-native file access is implemented in the Toolkit only for
+   reads, not writes. Examples of file modifications are adding new
+   segments to the file or modifying the contents of the file's comment
+   area.
+ 
+   In some cases having DAF kernels in native format may be beneficial as
+   this increases slightly the speed of file read operations performed by
+   the toolkit (an increase of no more than 5 percent was detected in tests
+   performed by NAIF.)
+ 
+ 
+Notes on DAF Binary File Conversion
+ 
+   A few miscellaneous details related to DAF binary file conversion
+   performed by BINGO should be mentioned:
+ 
+       --   specifying ``-ieee2pc'' or ``-pc2ieee'' is not necessary when
+            converting a DAF binary file. BINGO automatically detects the
+            type of the binary input file and generates output of the
+            opposite binary type.
+ 
+       --   if ``-ieee2pc'' or ``-pc2ieee'' has been specified
+            inconsistently with the automatically detected input file type,
+            for example if conversion to IEEE format was requested for a
+            DAF binary file that is already in IEEE format, BINGO generates
+            an error message and does not perform the conversion.
+ 
+       --   if either of the text conversions is specified for an input DAF
+            binary file, BINGO signals an error.
+ 
+       --   in some cases DAF binary files may contain unused records at
+            the end of the file. This usually happens when comments were
+            removed from the comment area of the file but no new comments
+            or fewer new comments were put in. In such cases the output
+            files are smaller in size than input files and BINGO generates
+            a one line advisory message ``Warning: Extra data at end of DAF
+            truncated.''
+ 
+ 
+Examples of DAF Binary File Conversion
+ 
+   Assuming the SPK file ``de405s_ieee.bsp'' is in IEEE binary format, it
+   can be converted to PC binary format using BINGO with either of these
+   two command line directives:
+ 
+      > bingo de405s_ieee.bsp de405s_pc.bsp
+ 
+      > bingo -ieee2pc de405s_ieee.bsp de405s_pc.bsp
+ 
+   To convert the output PC binary file of the previous example back to
+   IEEE format, BINGO can be run as follows:
+ 
+      > bingo de405s_pc.bsp de405s_ieee.bsp
+ 
+      > bingo -pc2ieee de405s_pc.bsp de405s_ieee.bsp
+ 
+ 
+DAS Binary File Conversion
+--------------------------------------------------------
+ 
+   Unlike for DAF-based files, reading of a non-native DAS-based binary
+   file has not yet been implemented in the SPICE Toolkit. Thus having DAS
+   kernels in the native binary format is required in order to access data
+   stored in them using SPICE APIs or SPICE-based applications. While the
+   SPICE transfer file mechanism can still be used to convert DAS binary
+   files to native binary format, BINGO provides a much simpler and quicker
+   way to do that.
+ 
+ 
+Notes on DAS Binary File Conversion
+ 
+   A few miscellaneous details related to DAS binary file conversion
+   performed by BINGO should be mentioned:
+ 
+       --   specifying ``-ieee2pc'' or ``-pc2ieee'' is not necessary when
+            converting newer DAS binary files, i.e. DAS binary files
+            produced using applications linked to SPICE Toolkit N0052 or
+            later. BINGO automatically detects if the input file is a newer
+            DAS file and the file's binary type and generates output of the
+            opposite binary type.
+ 
+       --   specifying ``-ieee2pc'' or ``-pc2ieee'' is necessary when
+            converting older DAS binary files, i.e. DAS binary files
+            produced using applications linked to SPICE Toolkit N0051 or
+            earlier. If neither of these conversion options is specified
+            and BINGO detects that the file is an older DAS binary file, it
+            generates an error message.
+ 
+       --   if ``-ieee2pc'' or ``-pc2ieee'' has been specified
+            inconsistently with the automatically detected input file type
+            for new DAS binary files, for example if conversion to IEEE
+            format was requested for a DAS binary file that is already in
+            IEEE format, BINGO generates an error message and does not
+            perform the conversion.
+ 
+       --   if ``-ieee2pc'' or ``-pc2ieee'' has been specified
+            inconsistently with the input file type for an older DAS binary
+            file, for example if conversion to IEEE format was requested
+            for a DAS binary file that is already in IEEE format, BINGO
+            performs the conversion incorrectly and produces an unusable
+            output file.
+ 
+       --   if either of the text conversions is specified for the input
+            DAS binary file, BINGO signals an error.
+ 
+       --   in some cases DAS binary files may contain unused records at
+            the end of the file. This usually happens when comments were
+            removed from the comment area of the file but no new comments
+            or fewer new comments were put in. In such cases the output
+            files are smaller in size than input files and BINGO generates
+            a one line advisory message ``Warning: Extra data at end of DAS
+            truncated.''
+ 
+ 
+Examples of DAS Binary File Conversion
+ 
+   Assuming the EK file ``10A_ieee.bdb'' is in IEEE binary format, it can
+   be converted to PC binary format using either of these two command line
+   directives:
+ 
+      > bingo 10A_ieee.bdb 10A_pc.bdb
+ 
+      > bingo -ieee2pc 10A_ieee.bdb 10A_pc.bdb
+ 
+   To convert the output PC binary file pf the previous example back to
+   IEEE format, BINGO can be run as follows:
+ 
+      > bingo 10A_pc.bdb 10A_ieee.bdb
+ 
+      > bingo -pc2ieee 10A_pc.bdb 10A_ieee.bdb
+ 
+ 
+Text Kernel and Transfer File Conversion
+--------------------------------------------------------
+ 
+   While reading of non-native text kernels has been implemented in all C,
+   IDL, and MATLAB SPICE toolkits starting with the N0059 release
+   (November, 2005), FORTRAN SPICE Toolkits still require text kernel files
+   to be in native text format.
+ 
+   Since text kernel files and SPICE transfer format files are plain ASCII
+   text files, they can be converted between UNIX and DOS text formats
+   using a variety of ways including transferring with ASCII-mode of FTP,
+   using the widely available ``dos2unix''/``unix2dos'' applications, or
+   using simple Perl or Python scripts. BINGO provides this conversion
+   functionality simply as a convenience to SPICE users who might want to
+   be able to convert both binary and text SPICE kernels using a single
+   NAIF provided tool.
+ 
+ 
+Notes on Text Kernel and Transfer File Conversion
+ 
+   A few miscellaneous details related to text kernel file and transfer
+   file conversion performed by BINGO should be mentioned:
+ 
+       --   text format conversions are done by BINGO in a very simple way.
+            If conversion from UNIX to DOS text format is requested using
+            the ``-unix2dos'' option, every LF in the input file is
+            replaced with CR-LF as the contents of the input file are
+            copied to the output file. If conversion from DOS to UNIX text
+            format is requested using the ``-dos2unix'' option, every CR-LF
+            pair from the input file is replaced with just LF as the
+            contents of the input file are copied to the output file. This
+            behavior may be different from the behavior of the other text
+            format conversion tools mentioned above.
+ 
+       --   If conversion from UNIX to DOS text format is performed on a
+            text file that is already in DOS format, the program does not
+            attempt to detect that and proceeds to add one more CR at the
+            end of each line, making the output file unusable. The
+            ``damaged'' output file can be easily fixed by simply running
+            the program again to convert it to UNIX format; such run will
+            remove one CR from each line.
+ 
+       --   specifying ``-unix2dos'' or ``-dos2unix'' is necessary when
+            converting text kernel files or transfer files because BINGO
+            has no way of reliably detecting the format of the input file.
+            If neither of these conversion options was specified and BINGO
+            detects that the input file is a text kernel or a transfer
+            file, it generates an error message.
+ 
+       --   if either of the binary conversions is specified for an input
+            text kernel file or transfer file, BINGO signals an error.
+ 
+       --   while the text conversion functionality provided in BINGO is
+            intended primarily to facilitate conversion of text kernels and
+            transfer files, the program can also convert an arbitrary text
+            file.
+ 
+       --   If a text conversion is requested for an arbitrary binary file
+            that BINGO cannot recognize as binary DAF or DAS file, the
+            program performs the conversion producing an unusable copy of
+            the input binary file.
+ 
+ 
+Examples of Text Kernel and Transfer File Conversion
+ 
+   Assuming the text LSK file ``naif0008_unix.tls'' is in UNIX text format,
+   it can be converted to DOS text format using either of these two command
+   line directives:
+ 
+      > bingo -unix2dos naif0008_unix.tls naif0008_dos.tls
+ 
+   To convert the output DOS text file of the previous example back to UNIX
+   format, BINGO can be run as follows:
+ 
+      > bingo -dos2unix naif0008_dos.tls naif0008_unix.tls
+ 

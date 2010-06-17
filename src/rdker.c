@@ -193,6 +193,26 @@ static logical c_false = FALSE_;
 
 /* $ Version */
 
+/* -    SPICELIB Version 3.5.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-CC_C. */
+
+/* -    SPICELIB Version 3.4.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-64BIT-CC_C. */
+
+/* -    SPICELIB Version 3.3.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-NATIVE_C. */
+
+/* -    SPICELIB Version 3.2.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-64BIT-MS_C. */
+
+/* -    SPICELIB Version 3.1.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-INTEL_C. */
+
 /* -    SPICELIB Version 3.0.0, 11-FEB-2008 (NJB) */
 
 /*        Entry points RDKNEW and RDKDAT have been updated so as to be */

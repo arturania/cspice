@@ -118,24 +118,37 @@
 
 /* $ Particulars */
 
-/*     BODN2C is one of four related subroutines, */
+/*     BODN2C is one of five related subroutines, */
 
-/*        BODN2C      Body name to integer code */
-/*        BODS2C      Body name or ID code string to integer code */
+/*        BODS2C      Body string to code */
+/*        BODC2S      Body code to string */
+/*        BODN2C      Body name to code */
 /*        BODC2N      Body code to name */
 /*        BODDEF      Body name/code definition */
 
-/*     BODN2C and BODC2N perform translations between body names and */
-/*     their corresponding integer ID codes which are used in SPICE */
-/*     files and routines. */
+/*     BODS2C, BODC2S, BODN2C, and BODC2N perform translations between */
+/*     body names and their corresponding integer ID codes which are */
+/*     used in SPICE files and routines. */
+
+/*     BODS2C is a slightly more general version of BODN2C: support */
+/*     for strings containing ID codes in string format enables a caller */
+/*     to identify a body using a string, even when no name is */
+/*     associated with that body. */
+
+/*     BODC2S is a general version of BODC2N; the routine returns either */
+/*     the name assigned in the body ID to name mapping or a string */
+/*     representation of the CODE value if no mapping exists. */
+
+/*     BODDEF assigns a body name to ID mapping. The mapping has */
+/*     priority in name-to-ID and ID-to-name translations. */
 
 /*     Programmers writing user interface code should consider using the */
 /*     SPICELIB routine BODS2C. BODS2C provides more flexibility in */
 /*     handling input strings, since it accepts both body names and */
 /*     strings representing integer ID codes, for example '399'. */
 
-/*     See NAIF_IDs for the list of name/code associations built into */
-/*     SPICE, and for details concerning adding new name/code */
+/*     Refer to NAIF_IDs for the list of name/code associations built */
+/*     into SPICE, and for details concerning adding new name/code */
 /*     associations at run time by loading text kernels. */
 
 /* $ Examples */
@@ -198,6 +211,10 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.8, 16-MAY-2009 (EDW) */
+
+/*        Edit to Particulars section to document the BODC2S routine. */
+
 /* -    SPICELIB Version 1.0.7, 28-FEB-2008 (BVS) */
 
 /*        Corrected the contents of the Required_Reading section. */
@@ -213,11 +230,11 @@
 
 /* -    SPICELIB Version 1.0.4, 20-JUL-2004 (EDW) */
 
-/*        Removed unneeded assignement of FOUND = .FALSE. */
+/*        Removed unneeded assignment of FOUND = .FALSE. */
 
 /* -    SPICELIB Version 1.0.3, 29-JUL-2003 (NJB) (CHA) */
 
-/*        Various header changes were made to improve clarity.  Some */
+/*        Various header changes were made to improve clarity. Some */
 /*        minor header corrections were made. */
 
 /* -    SPICELIB Version 1.0.2, 26-AUG-2002 (FST) */

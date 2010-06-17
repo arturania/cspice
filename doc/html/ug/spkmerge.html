@@ -46,7 +46,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> SPKMERGE User's Guide
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2001 APR 03 by F. S. Turner, C. H. Acton.
+   Last revised on 2010 JUN 03 by B. V. Semenov.
 <P>
  
 <BR><BR>
@@ -93,6 +93,9 @@
 <P>
  
 <UL>
+<TT>--</TT> Up to 500 assignments may be specified in a single command file.
+<BR><BR></UL>
+<UL>
 <TT>--</TT> An assignment must start on a line by itself. A keyword must appear first,
 followed by an equals sign, followed by a value.
 <BR><BR></UL>
@@ -112,7 +115,7 @@ necessary.
 semi-colon on a line are ignored.
 <BR><BR></UL>
 <UL>
-<TT>--</TT> Values must not exceed 300 characters.
+<TT>--</TT> Values must not exceed 120 characters.
 <BR><BR></UL>
    In addition, there are other non-lexical rules that apply to
    assignments:
@@ -145,6 +148,11 @@ the command file.
    SPK_KERNEL
    SOURCE_SPK_KERNEL
 </PRE>
+   The LEAPSECONDS_KERNEL keyword must appear in the file before the first
+   SPK_KERNEL keyword. An SPK_KERNEL keyword must appear before the first
+   SOURCE_SPK_KERNEL keyword.
+<P>
+ 
    The optional keywords are:
 <P>
  
@@ -227,7 +235,7 @@ the command file.
    This keyword is optional. If present, it restricts which bodies are
    merged. This keyword can appear in one of two places: after a
    `source_spk_kernel' assignment, or before the first `source_spk_kernel'
-   assignemt. In the former case, the keyword lists the bodies that should
+   assignment. In the former case, the keyword lists the bodies that should
    be merged from a specific source SPK file; in the latter case, the
    keyword lists the bodies that should be merged from all source SPK files
    that do not have specific bodies mentioned. A body listed in this
@@ -308,7 +316,7 @@ the command file.
    TDB) as the desired input time system, append TDB to the end of the time
    string. The following example demonstrates the merging of the contents
    of two SPK files for the period between the ephemeris times `15 Feb
-   1998' amd `21 Jul 1998'.
+   1998' and `21 Jul 1998'.
 <P>
  
 <PRE>

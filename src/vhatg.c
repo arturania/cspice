@@ -21,8 +21,8 @@
 
 /* $ Abstract */
 
-/*      Find the unit vector along a double precision vector of */
-/*      arbitrary dimension. */
+/*     Find the unit vector along a double precision vector of */
+/*     arbitrary dimension. */
 
 /* $ Disclaimer */
 
@@ -55,82 +55,86 @@
 
 /* $ Keywords */
 
-/*      VECTOR */
+/*     VECTOR */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*       V1        I     Vector to be normalized. */
-/*       NDIM      I     Dimension of V1 (and also VOUT). */
-/*       VOUT      O     Unit vector V1 / |V1|. */
-/*                       If V1 = 0, VOUT will also be zero. */
-/*                       VOUT can overwrite V1. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     V1         I   Vector to be normalized. */
+/*     NDIM       I   Dimension of V1 (and also VOUT). */
+/*     VOUT       O   Unit vector V1 / |V1|. */
+/*                    If V1 = 0, VOUT will also be zero. */
 
 /* $ Detailed_Input */
 
-/*      V1      This is any double precision vector of arbitrary */
+/*     V1       This is any double precision vector of arbitrary */
 /*              dimension.  This routine will detect if V1 the zero */
 /*              vector, and will not attempt to divide by zero. */
 
-/*      NDIM    is the dimension of V1 (and also VOUT). */
+/*     NDIM     is the dimension of V1 (and also VOUT). */
 
 /* $ Detailed_Output */
 
-/*      VOUT    VOUT contains the unit vector in the direction of V1. If */
+/*     VOUT     VOUT contains the unit vector in the direction of V1. If */
 /*              V1 represents the zero vector, then VOUT will also be the */
-/*              zero vector.  VOUT may overwrite V1. */
+/*              zero vector. */
 
 /* $ Parameters */
 
 /*     None. */
 
-/* $ Particulars */
-
-/*      VHATG determines the magnitude of V1 and then divides each */
-/*      component of V1 by the magnitude.  This process is highly stable */
-/*      over the whole range of multi-dimensional vectors. */
-
-/* $ Examples */
-
-/*      The following table shows how selected V1 implies VOUT. */
-
-/*      V1                    NDIM            VOUT */
-/*      ----------------------------------------------------------------- */
-/*      (5, 12, 0, 0)           4            (5/13, 12/13, 0, 0) */
-/*      (1D-7, 2D-7, 2D-7)      3            (1/3, 2/3, 2/3) */
-
-/* $ Restrictions */
-
-/*      The relative number of cases whereby floating point overflow may */
-/*      occur is negligible. Thus, no error recovery or reporting scheme */
-/*      is incorporated into this subroutine. */
-
 /* $ Exceptions */
 
-/*      Error free. */
+/*     Error free. */
 
 /* $ Files */
 
-/*      None. */
+/*     None. */
 
-/* $ Author_and_Institution */
+/* $ Particulars */
 
-/*      W.M. Owen       (JPL) */
+/*     VHATG determines the magnitude of V1 and then divides each */
+/*     component of V1 by the magnitude.  This process is highly stable */
+/*     over the whole range of multi-dimensional vectors. */
+
+/* $ Examples */
+
+/*     The following table shows how selected V1 implies VOUT. */
+
+/*        V1                    NDIM            VOUT */
+/*        -------------------------------------------------------- */
+/*        (5, 12, 0, 0)           4            (5/13, 12/13, 0, 0) */
+/*        (1D-7, 2D-7, 2D-7)      3            (1/3, 2/3, 2/3) */
+
+/* $ Restrictions */
+
+/*     The relative number of cases whereby floating point overflow may */
+/*     occur is negligible. Thus, no error recovery or reporting scheme */
+/*     is incorporated into this subroutine. */
 
 /* $ Literature_References */
 
-/*      None. */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     W.M. Owen       (JPL) */
 
 /* $ Version */
 
-/* -     SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+/* -    SPICELIB Version 1.0.2, 22-APR-2010 (NJB) */
 
-/*         Comment section for permuted index source lines was added */
-/*         following the header. */
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
-/* -     SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
+/* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
+
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
 
 /* -& */
 /* $ Index_Entries */
@@ -158,15 +162,15 @@
 	i__1 = *ndim;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    vout[(i__2 = i__ - 1) < vout_dim1 && 0 <= i__2 ? i__2 : s_rnge(
-		    "vout", i__2, "vhatg_", (ftnlen)147)] = v1[(i__3 = i__ - 
+		    "vout", i__2, "vhatg_", (ftnlen)151)] = v1[(i__3 = i__ - 
 		    1) < v1_dim1 && 0 <= i__3 ? i__3 : s_rnge("v1", i__3, 
-		    "vhatg_", (ftnlen)147)] / vmag;
+		    "vhatg_", (ftnlen)151)] / vmag;
 	}
     } else {
 	i__1 = *ndim;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    vout[(i__2 = i__ - 1) < vout_dim1 && 0 <= i__2 ? i__2 : s_rnge(
-		    "vout", i__2, "vhatg_", (ftnlen)151)] = 0.;
+		    "vout", i__2, "vhatg_", (ftnlen)155)] = 0.;
 	}
     }
 

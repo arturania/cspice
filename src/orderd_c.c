@@ -81,7 +81,10 @@
  
 -Exceptions
  
-   Error free. 
+   1) A negative input dimension causes this routine to
+      leave the output order vector unchanged.
+
+   This routine is error free. 
  
 -Files
  
@@ -110,10 +113,10 @@
            .
            .
       /.
-      Sort the object arrays by name. 
+      Sort the object arrays by visual magnitude. 
       ./ 
 
-      orderc_c ( namlen, names, n,  iorder ); 
+      orderd_c ( vmags,  n,  iorder ); 
 
       reordc_c ( iorder, n, namlen, names  );
       reordd_c ( iorder, n,         masses ); 
@@ -125,17 +128,23 @@
  
    None. 
  
+-Literature_References
+ 
+   None. 
+ 
 -Author_and_Institution
   
    N.J. Bachman    (JPL)
    I.M. Underwood  (JPL) 
  
--Literature_References
- 
-   None. 
- 
 -Version
  
+   -CSPICE Version 1.0.1, 23-MAR-2010 (NJB)
+
+      Header example was updated to show use of this routine.
+      Exceptions section was updated. Header sections were
+      re-ordered.
+
    -CSPICE Version 1.0.0, 08-JUL-2002 (NJB) (IMU)
 
 -Index_Entries

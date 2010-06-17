@@ -177,6 +177,46 @@ static integer c__0 = 0;
 
 /* $ Version */
 
+/* -    SPICELIB Version 4.20.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL. */
+
+/* -    SPICELIB Version 4.19.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-CC_C. */
+
+/* -    SPICELIB Version 4.18.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-64BIT-CC_C. */
+
+/* -    SPICELIB Version 4.17.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-NATIVE_C. */
+
+/* -    SPICELIB Version 4.16.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-WINDOWS-64BIT-IFORT. */
+
+/* -    SPICELIB Version 4.15.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 4.14.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-64BIT-MS_C. */
+
+/* -    SPICELIB Version 4.13.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-INTEL_C. */
+
+/* -    SPICELIB Version 4.12.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 4.11.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-GFORTRAN. */
+
 /* -    SPICELIB Version 4.10.0, 18-MAR-2009 (BVS) */
 
 /*        Updated for PC-LINUX-GFORTRAN. */
@@ -696,7 +736,7 @@ L_chkin:
 	if (modcnt < 100) {
 	    ++modcnt;
 	    s_copy(stack + (((i__1 = modcnt - 1) < 100 && 0 <= i__1 ? i__1 : 
-		    s_rnge("stack", i__1, "trcpkg_", (ftnlen)706)) << 5), 
+		    s_rnge("stack", i__1, "trcpkg_", (ftnlen)746)) << 5), 
 		    module + (first - 1), (ftnlen)32, module_len - (first - 1)
 		    );
 	} else {
@@ -1031,7 +1071,7 @@ L_chkout:
 	    i__1 = i_len(module, module_len), i__2 = first + 31;
 	    l = min(i__1,i__2);
 	    if (s_cmp(stack + (((i__1 = modcnt - 1) < 100 && 0 <= i__1 ? i__1 
-		    : s_rnge("stack", i__1, "trcpkg_", (ftnlen)1053)) << 5), 
+		    : s_rnge("stack", i__1, "trcpkg_", (ftnlen)1093)) << 5), 
 		    module + (first - 1), (ftnlen)32, l - (first - 1)) != 0) {
 		s_copy(tmpnam, module + (first - 1), (ftnlen)80, module_len - 
 			(first - 1));
@@ -1044,15 +1084,15 @@ L_chkout:
 		i__3[2] = 17, a__1[2] = "; popped name is ";
 		i__3[3] = rtrim_(stack + (((i__2 = modcnt - 1) < 100 && 0 <= 
 			i__2 ? i__2 : s_rnge("stack", i__2, "trcpkg_", (
-			ftnlen)1058)) << 5), (ftnlen)32), a__1[3] = stack + ((
+			ftnlen)1098)) << 5), (ftnlen)32), a__1[3] = stack + ((
 			(i__1 = modcnt - 1) < 100 && 0 <= i__1 ? i__1 : 
-			s_rnge("stack", i__1, "trcpkg_", (ftnlen)1058)) << 5);
+			s_rnge("stack", i__1, "trcpkg_", (ftnlen)1098)) << 5);
 		i__3[4] = 1, a__1[4] = ".";
 		s_cat(ch__1, a__1, i__3, &c__5, (ftnlen)149);
 		wrline_(device, ch__1, (ftnlen)128, rtrim_(tmpnam, (ftnlen)80)
 			 + 36 + rtrim_(stack + (((i__2 = modcnt - 1) < 100 && 
 			0 <= i__2 ? i__2 : s_rnge("stack", i__2, "trcpkg_", (
-			ftnlen)1058)) << 5), (ftnlen)32) + 1);
+			ftnlen)1098)) << 5), (ftnlen)32) + 1);
 	    }
 	    --modcnt;
 	} else {
@@ -1793,7 +1833,7 @@ L_trcnam:
 
 	if (*index <= 100) {
 	    s_copy(name__, frozen + (((i__1 = *index - 1) < 100 && 0 <= i__1 ?
-		     i__1 : s_rnge("frozen", i__1, "trcpkg_", (ftnlen)1828)) 
+		     i__1 : s_rnge("frozen", i__1, "trcpkg_", (ftnlen)1868)) 
 		    << 5), name_len, (ftnlen)32);
 	} else {
 	    s_copy(name__, "<Overflow No Name Available>", name_len, (ftnlen)
@@ -1829,7 +1869,7 @@ L_trcnam:
 
 	if (*index <= 100) {
 	    s_copy(name__, stack + (((i__1 = *index - 1) < 100 && 0 <= i__1 ? 
-		    i__1 : s_rnge("stack", i__1, "trcpkg_", (ftnlen)1858)) << 
+		    i__1 : s_rnge("stack", i__1, "trcpkg_", (ftnlen)1898)) << 
 		    5), name_len, (ftnlen)32);
 	} else {
 	    s_copy(name__, "<Overflow No Name Available>", name_len, (ftnlen)
@@ -2115,11 +2155,11 @@ L_qcktrc:
 	    if (i__ > 1) {
 		suffix_("-->", &c__1, trace, (ftnlen)3, trace_len);
 		suffix_(frozen + (((i__2 = i__ - 1) < 100 && 0 <= i__2 ? i__2 
-			: s_rnge("frozen", i__2, "trcpkg_", (ftnlen)2150)) << 
+			: s_rnge("frozen", i__2, "trcpkg_", (ftnlen)2190)) << 
 			5), &c__1, trace, (ftnlen)32, trace_len);
 	    } else {
 		suffix_(frozen + (((i__2 = i__ - 1) < 100 && 0 <= i__2 ? i__2 
-			: s_rnge("frozen", i__2, "trcpkg_", (ftnlen)2152)) << 
+			: s_rnge("frozen", i__2, "trcpkg_", (ftnlen)2192)) << 
 			5), &c__0, trace, (ftnlen)32, trace_len);
 	    }
 	}
@@ -2142,11 +2182,11 @@ L_qcktrc:
 	    if (i__ > 1) {
 		suffix_("-->", &c__1, trace, (ftnlen)3, trace_len);
 		suffix_(stack + (((i__2 = i__ - 1) < 100 && 0 <= i__2 ? i__2 :
-			 s_rnge("stack", i__2, "trcpkg_", (ftnlen)2177)) << 5)
+			 s_rnge("stack", i__2, "trcpkg_", (ftnlen)2217)) << 5)
 			, &c__1, trace, (ftnlen)32, trace_len);
 	    } else {
 		suffix_(stack + (((i__2 = i__ - 1) < 100 && 0 <= i__2 ? i__2 :
-			 s_rnge("stack", i__2, "trcpkg_", (ftnlen)2179)) << 5)
+			 s_rnge("stack", i__2, "trcpkg_", (ftnlen)2219)) << 5)
 			, &c__0, trace, (ftnlen)32, trace_len);
 	    }
 	}
@@ -2355,9 +2395,9 @@ L_freeze:
     i__1 = modcnt;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	s_copy(frozen + (((i__2 = i__ - 1) < 100 && 0 <= i__2 ? i__2 : s_rnge(
-		"frozen", i__2, "trcpkg_", (ftnlen)2397)) << 5), stack + (((
+		"frozen", i__2, "trcpkg_", (ftnlen)2437)) << 5), stack + (((
 		i__5 = i__ - 1) < 100 && 0 <= i__5 ? i__5 : s_rnge("stack", 
-		i__5, "trcpkg_", (ftnlen)2397)) << 5), (ftnlen)32, (ftnlen)32)
+		i__5, "trcpkg_", (ftnlen)2437)) << 5), (ftnlen)32, (ftnlen)32)
 		;
     }
     return 0;

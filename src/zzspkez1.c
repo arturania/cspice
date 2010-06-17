@@ -1010,6 +1010,10 @@ static integer c__6 = 6;
 
 /* $ Version */
 
+/* -    SPICELIB Version 5.0.1, 18-MAY-2010 (BVS) */
+
+/*        Removed "C$" markers from text blocks in the header. */
+
 /* -    SPICELIB Version 5.0.0, 23-JUL-2007 (NJB) */
 
 /*        Routine was upgraded to more accurately compute aberration- */
@@ -1198,10 +1202,10 @@ static integer c__6 = 6;
 /*        no aberration corrections are requested. */
 
 /*        The other cosmetic changes include the removal of a reference */
-/*        to the SPK User's Guide in C$ Literature_References because */
+/*        to the SPK User's Guide in Literature_References because */
 /*        the User's Guide is the same as SPK Required Reading. */
 
-/*        Also, the item in C$ Restrictions previously said */
+/*        Also, the item in Restrictions previously said */
 
 /*           1) The ephemeris files to be used by SPKEZ must be loaded */
 /*              by SPKLEF before SPKSSB is called. */
@@ -1211,7 +1215,7 @@ static integer c__6 = 6;
 /*        The location of the position and velocity information in the */
 /*        output state vector argument STARG is now spelled out. */
 
-/*        Finally, the C$ Particulars section was updated.  In Version */
+/*        Finally, the Particulars section was updated.  In Version */
 /*        1.0.0 it said that calling SPKEZ was equivalent to calling */
 /*        SPKSSB and SPKAPP. */
 
@@ -1414,7 +1418,7 @@ static integer c__6 = 6;
 	for (i__ = 1; i__ <= 3; ++i__) {
 	    d__1 = ltsign * dltctr + 1.;
 	    vsclip_(&d__1, &xform[(i__1 = i__ * 6 - 3) < 36 && 0 <= i__1 ? 
-		    i__1 : s_rnge("xform", i__1, "zzspkez1_", (ftnlen)1260)]);
+		    i__1 : s_rnge("xform", i__1, "zzspkez1_", (ftnlen)1264)]);
 	}
 
 /*        Now apply the frame transformation XFORM to produce the */

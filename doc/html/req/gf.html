@@ -108,6 +108,8 @@
    <A HREF="#Appendix A --- Summary of GF Functions">Appendix A --- Summary of GF Functions</A>
       <A HREF="#Summary of Mnemonics">Summary of Mnemonics</A>
    <A HREF="#Appendix B---Revision History">Appendix B---Revision History</A>
+         <A HREF="#2010 MAY 13 by E. D. Wright.">2010 MAY 13 by E. D. Wright.</A>
+         <A HREF="#2009 APR 15 by N. J. Bachman.">2009 APR 15 by N. J. Bachman.</A>
 
 </PRE>
 
@@ -118,7 +120,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Geometry Finder Required Reading
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2009 APR 15 by N. J. Bachman.
+   Last revised on 2010 MAY 13 by E. D. Wright.
 <P>
  
 <BR><BR>
@@ -229,14 +231,20 @@ meta-kernels, and program output
 <TT>--</TT> Coordinates of surface intercept points
 <BR><BR></UL>
 <UL>
-<TT>--</TT> Distance between target and observer
-<BR><BR></UL>
-<UL>
 <TT>--</TT> Instrument FOV (Field of view) visibility states (appearance of a specified
 target within an instrument FOV)
 <BR><BR></UL>
 <UL>
+<TT>--</TT> Observer-target distance
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Observer-target range rate
+<BR><BR></UL>
+<UL>
 <TT>--</TT> Occultation states
+<BR><BR></UL>
+<UL>
+<TT>--</TT> User-defined geometric quantities
 <BR><BR></UL>
    At the highest level of the SPICE GF subsystem interface, there is a
    search subroutine for each geometric quantity. The Fortran and C SPICE
@@ -287,10 +295,7 @@ target within an instrument FOV)
 <TT>--</TT> Illumination angles
 <BR><BR></UL>
 <UL>
-<TT>--</TT> Observer-target range rate
-<BR><BR></UL>
-<UL>
-<TT>--</TT> Support for user-defined geometric quantities
+<TT>--</TT> Support for user-defined boolean quantity functions
 <BR><BR></UL>
 <BR><BR>
 <A NAME="Terminology"></A>
@@ -331,6 +336,16 @@ Fundamental Concepts tutorial for details.<BR>
 </DL>
 <DL><DT>
 <B>
+ Boolean quantity function
+</B><BR><BR>
+<DD>
+ A function whose range is comprised of only two values, for example 0
+and 1 or ``true'' and ``false.'' For GF use such a function is
+implemented as a routine with one independent variable (nominally time)
+as input and a boolean variable as output.<BR>
+</DL>
+<DL><DT>
+<B>
  Bounds
 </B><BR><BR>
 <DD>
@@ -344,8 +359,7 @@ that bounds are not equivalent to extrema.<BR>
  Binary state function
 </B><BR><BR>
 <DD>
- A function whose range is comprised of only two values, for example 0
-and 1 or ``true'' and ``false.''<BR>
+ See ``Boolean quantity function.''<BR>
 </DL>
 <DL><DT>
 <B>
@@ -577,9 +591,8 @@ by a function in a neighborhood of a point in the function's domain. At
 a point where a local extremum of a function is attained, there is a
 region or ``neighborhood'' enclosing that point over which the function
 is bounded by that extreme value. For a local maximum, on this region,
-the function is no greater than the the local maximum; for a local
-minimum, the function is no smaller. A function can have multiple local
-extrema.<BR>
+the function is no greater than the local maximum; for a local minimum,
+the function is no smaller. A function can have multiple local extrema.<BR>
 </DL>
 <DL><DT>
 <B>
@@ -640,6 +653,14 @@ two objects, usually target and observer.<BR>
 </DL>
 <DL><DT>
 <B>
+ Range rate
+</B><BR><BR>
+<DD>
+ The derivative with respect to time of the range between two objects.
+For GF use, the objects being an observer and a target body.<BR>
+</DL>
+<DL><DT>
+<B>
  Real line
 </B><BR><BR>
 <DD>
@@ -688,6 +709,15 @@ results.<BR>
 </B><BR><BR>
 <DD>
  The process of locating roots; searching for roots.<BR>
+</DL>
+<DL><DT>
+<B>
+ Scalar quantity function
+</B><BR><BR>
+<DD>
+ A function that returns a scalar value. For GF use such a function is
+implemented as a routine with one independent variable (nominally time)
+as input and the scalar variable as output.<BR>
 </DL>
 <DL><DT>
 <B>
@@ -913,6 +943,14 @@ field of view.<BR>
 </DL>
 <DL><DT>
 <B>
+ <a href="../cspice/gfrr_c.html">gfrr_c</a>
+</B><BR><BR>
+<DD>
+ Rang rate: find time windows when a given constraint on the range rate
+of an observer to target position vector is met.<BR>
+</DL>
+<DL><DT>
+<B>
  <a href="../cspice/gfsep_c.html">gfsep_c</a>
 </B><BR><BR>
 <DD>
@@ -945,6 +983,14 @@ specified target body is met.<BR>
 <DD>
  Target body in instrument field of view search: find time windows when
 a given target body appears in a specified instrument's field of view.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfuds_c.html">gfuds_c</a>
+</B><BR><BR>
+<DD>
+ User-defined scalar quantity function: find time windows when a given
+constraint on a user-defined scalar value function is met.<BR>
 </DL>
 <BR><BR>
 <A NAME="Mid-level GF search routines"></A>
@@ -3790,7 +3836,7 @@ involving constraints on observer-target position vectors, the GF subsystem
 uses the corresponding velocities to conduct these searches. The SPK
 subsystem's stellar aberration correction velocity computation requires
 observer acceleration with respect to the solar system barycenter. The
-acceleration at a given epoch ET is is computed by discrete differentiation
+acceleration at a given epoch ET is computed by discrete differentiation
 using samples taken at ET +/- one second.
 <BR><BR></UL>
 <UL>
@@ -4407,6 +4453,7 @@ rover to be visible.
    <a href="../cspice/gfrepi_c.html">gfrepi_c</a>             GF, initialize progress report
    <a href="../cspice/gfrepu_c.html">gfrepu_c</a>             GF, update progress report
    <a href="../cspice/gfrfov_c.html">gfrfov_c</a>             GF, ray-FOV intersection search
+   <a href="../cspice/gfrr_c.html">gfrr_c</a>               GF, range rate search
    <a href="../cspice/gfsep_c.html">gfsep_c</a>              GF, angular separation search
    <a href="../cspice/gfinth_c.html">gfinth_c</a>             GF, interrupt signal handler
    <a href="../cspice/gfsntc_c.html">gfsntc_c</a>             GF, surface intercept coordinate search
@@ -4414,12 +4461,30 @@ rover to be visible.
    <a href="../cspice/gfstep_c.html">gfstep_c</a>             GF, get search step size
    <a href="../cspice/gfsubc_c.html">gfsubc_c</a>             GF, sub-observer coordinate search
    <a href="../cspice/gftfov_c.html">gftfov_c</a>             GF, target-FOV intersection search
+   <a href="../cspice/gfuds_c.html">gfuds_c</a>              GF, user defined scalar
 </PRE>
 <BR><BR>
 <A NAME="Appendix B---Revision History"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Appendix B---Revision History
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="2010 MAY 13 by E. D. Wright."></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> 2010 MAY 13 by E. D. Wright.
+</H3><P><BR><BR>
+   Documentation expanded to include descriptions of the range rate and
+   user defined scalar function capabilities.
+<P>
+ 
+<BR><BR>
+<A NAME="2009 APR 15 by N. J. Bachman."></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> 2009 APR 15 by N. J. Bachman.
+</H3><P><BR><BR>
+   Initial release.
+<P>
+ 
 
 </TD>
 </TR>

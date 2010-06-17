@@ -702,6 +702,8 @@ static integer c__1 = 1;
 /*                    the string.  This definition applies to both fixed- */
 /*                    and variable-length strings. */
 
+/*                    CVLEN is set to 1 if the column entry is null. */
+
 /*     CVAL           is the value read from the specified column entry. */
 /*                    If CVAL has insufficient length to hold the */
 /*                    returned string value, the output value is */
@@ -761,6 +763,14 @@ static integer c__1 = 1;
 /*     N.J. Bachman   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.3.0, 31-MAY-2010 (NJB) */
+
+/*        Bug fix: call to DASRDI was overwriting local memory. This */
+/*        problem did not affect operation of the routine except on */
+/*        the Mac/Intel/OSX/ifort/32-bit platform, on which it caused */
+/*        a segmentation fault when this routine was compiled with */
+/*        default optimization. */
 
 /* -    SPICELIB Version 1.2.0, 23-JUL-1999 (NJB) */
 
@@ -835,8 +845,7 @@ static integer c__1 = 1;
 /*     and the stored string size. */
 
     ptrloc = *recptr + 2 + colidx;
-    i__1 = ptrloc + 1;
-    dasrdi_(handle, &ptrloc, &i__1, &datptr);
+    dasrdi_(handle, &ptrloc, &ptrloc, &datptr);
     if (datptr > 0) {
 
 /*        Read the value.  This is slightly more complicated than */

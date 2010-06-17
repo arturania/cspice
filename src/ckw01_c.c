@@ -162,6 +162,10 @@
    8)  If nrec, the number of pointing records, is less than or 
        equal to 0, the error SPICE(INVALIDNUMRECS) is signaled. 
  
+   9)  If any quaternion has magnitude zero, the error
+       SPICE(ZEROQUATERNION) is signaled.
+
+
 -Files
  
    This routine adds a type 1 segment to a C-kernel.  The C-kernel 
@@ -444,6 +448,12 @@
    J.M. Lynch      (JPL) 
  
 -Version
+
+   -CSPICE Version 2.0.0, 01-JUN-2010 (NJB)
+
+      The check for non-unit quaternions has been replaced
+      with a check for zero-length quaternions. (The
+      implementation of the check is located in ckw01_.)
 
    -CSPICE Version 1.3.2, 27-FEB-2008 (NJB)
 

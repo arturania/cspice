@@ -2,7 +2,7 @@
 C-Kernel Required Reading
 ===========================================================================
  
-   Last revised on 2009 APR 15 by B. V. Semenov.
+   Last revised on 2010 JUN 03 by B. V. Semenov.
  
  
 Abstract
@@ -20,11 +20,13 @@ References
  
        1.   [167] Double Precision Array Files Required Reading (daf.req)
  
-       2.   [222] Spacecraft Clock Time Required Reading (sclk.req)
+       2.   [349] FRAMES Required Reading (frames.req).
  
-       3.   [214] Rotations Required Reading (rotation.req)
+       3.   [222] Spacecraft Clock Time Required Reading (sclk.req)
  
-       4.   [211] SPC Required Reading: Comments in SPK and CK Files
+       4.   [214] Rotations Required Reading (rotation.req)
+ 
+       5.   [211] SPC Required Reading: Comments in SPK and CK Files
             (spc.req)
  
  
@@ -944,7 +946,43 @@ The General Search Algorithm
                                 CK reader returns this instance
  
       Segment A          (0-----------------0--------0--0-----0)
+                                            ^
+                                            |
+                                      "Best" answer
  
+ 
+   The next example illustrates an unfortunate side effect of using a
+   non-zero tolerance when reading multi-segment CKs with continuous data.
+   In all cases when the look-up interval formed using tolerance overlaps a
+   segment boundary and the request time falls within the coverage of the
+   lower priority segment, the data at the end of the higher priority
+   segment will be picked instead of the data from the lower priority
+   segment.
+ 
+                                              SCLKDP
+                                             /
+                                            |  TOL
+                                            | /
+                                            |/\
+      Your request                       [--+--]
+                                         .  .  .
+                                         .  .  .
+      Segment C                                (===============)
+                                               ^
+                                               |
+                                 CK reader returns this instance
+ 
+      Segment A          (=====================)
+                                            ^
+                                            |
+                                      "Best" answer
+ 
+   In general, because using a non-zero tolerance affects selection of the
+   segment from which the data is obtained, users are strongly discouraged
+   from using a non-zero tolerance when reading CKs with continuous data.
+   Using a non-zero tolerance should be reserved exclusively to reading CKs
+   with discrete data because in practice obtaining data from such CKs
+   using a zero tolerance is often not possible due to time round off.
  
    The next few sections will go into greater detail about how ckgp_c and
    ckgpav_c search through segments.

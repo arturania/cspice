@@ -139,6 +139,11 @@ static integer c__0 = 0;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.0.0, 24-MAY-2010 (NJB) */
+
+/*        Increased value of maximum coefficient record count */
+/*        parameter MXCOEF from 10K to 50K. */
+
 /* -    SPICELIB Version 1.0.0, 11-FEB-2008 (NJB) */
 
 /* -& */

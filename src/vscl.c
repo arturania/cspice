@@ -43,80 +43,85 @@
 
 /* $ Keywords */
 
-/*      VECTOR */
+/*     VECTOR */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*       S         I     Scalar to multiply a vector. */
-/*       V1        I     Vector to be multiplied. */
-/*       VOUT      O     Product vector, S*V1. VOUT can overwrite V1. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     S          I   Scalar to multiply a vector. */
+/*     V1         I   Vector to be multiplied. */
+/*     VOUT       O   Product vector, S*V1. */
 
 /* $ Detailed_Input */
 
-/*      S    This is a double precision scalar used to multiply the */
-/*            vector V1. */
+/*     S    This is a double precision scalar used to multiply the */
+/*          vector V1. */
 
-/*      V1   This is a 3-dimensional, double precision vector which is */
-/*           to be scaled by S. */
+/*     V1   This is a 3-dimensional, double precision vector which is */
+/*          to be scaled by S. */
 
 /* $ Detailed_Output */
 
-/*      VOUT   This is a 3-dimensional, double precision vector which */
-/*             is the scalar multiple of V1.  VOUT = S*V1. */
+/*     VOUT   This is a 3-dimensional, double precision vector which */
+/*            is the scalar multiple of V1.  VOUT = S*V1. */
 
 /* $ Parameters */
 
 /*     None. */
 
-/* $ Particulars */
-
-/*      VSCL multiplies each component of V1 by S to form the respective */
-/*      components of VOUT.  No error checking is performed. */
-
-/* $ Examples */
-
-/*      The following table shows the output VOUT as a function of the */
-/*      the inputs V1, and S from the subroutine VSCL. */
-
-/*      V1                   S         VOUT */
-/*      ------------------------------------------------------- */
-/*      (1D0, -2D0, 0D0)   -1D0       (-1D0, 2D0, 0D0) */
-/*      (0D0, 0D0, 0D0)     5D0       (0D0, 0D0, 0D0) */
-
-/* $ Restrictions */
-
-/*      The user is responsible for insuring that no floating point */
-/*      overflow occurs from multiplying S by any component of V1. */
-/*      No error recovery or reporting scheme is incorporated in this */
-/*      subroutine. */
-
 /* $ Exceptions */
 
-/*      Error free. */
+/*     Error free. */
 
 /* $ Files */
 
-/*      None. */
+/*     None. */
 
-/* $ Author_and_Institution */
+/* $ Particulars */
 
-/*      W.M. Owen       (JPL) */
+/*     VSCL multiplies each component of V1 by S to form the respective */
+/*     components of VOUT.  No error checking is performed. */
+
+/* $ Examples */
+
+/*     The following table shows the output VOUT as a function of the */
+/*     the inputs V1, and S from the subroutine VSCL. */
+
+/*        V1                   S         VOUT */
+/*        ---------------------------------------------- */
+/*        (1D0, -2D0, 0D0)   -1D0       (-1D0, 2D0, 0D0) */
+/*        (0D0, 0D0, 0D0)     5D0       (0D0, 0D0, 0D0) */
+
+/* $ Restrictions */
+
+/*     The user is responsible for insuring that no floating point */
+/*     overflow occurs from multiplying S by any component of V1. No */
+/*     error recovery or reporting scheme is incorporated in this */
+/*     subroutine. */
 
 /* $ Literature_References */
 
-/*      None. */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     W.M. Owen       (JPL) */
 
 /* $ Version */
 
-/* -     SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+/* -    SPICELIB Version 1.0.2, 23-APR-2010 (NJB) */
 
-/*         Comment section for permuted index source lines was added */
-/*         following the header. */
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
-/* -     SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
+/* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
+
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
 
 /* -& */
 /* $ Index_Entries */

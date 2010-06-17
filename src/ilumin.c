@@ -902,6 +902,11 @@ static integer c__3 = 3;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.1.0, 17-MAY-2010 (NJB) */
+
+/*        Bug fix: ILUMIN now returns immediately if a target */
+/*        radius lookup fails. */
+
 /* -    SPICELIB Version 1.0.1, 06-FEB-2009 (NJB) */
 
 /*        Typo correction: changed FIXFRM to FIXREF in header */
@@ -1358,6 +1363,10 @@ static integer c__3 = 3;
 /*        We'll need the radii of the target body. */
 
 	bodvcd_(&trgcde, "RADII", &c__3, &n, radii, (ftnlen)5);
+	if (failed_()) {
+	    chkout_("ILUMIN", (ftnlen)6);
+	    return 0;
+	}
 	surfnm_(radii, &radii[1], &radii[2], spoint, normal);
     } else {
 

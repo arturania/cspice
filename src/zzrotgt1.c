@@ -208,10 +208,6 @@ static integer c__1 = 1;
 
 /*     None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     1) If a rotation matrix cannot be located, then */
@@ -223,6 +219,10 @@ static integer c__1 = 1;
 
 /*     3) If the reference frame REF is dynamic, the error */
 /*        SPICE(RECURSIONTOODEEP) will be signaled. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -237,16 +237,20 @@ static integer c__1 = 1;
 
 /*     1) SPICE Private routine. */
 
+/* $ Literature_References */
+
+/*     None. */
+
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
 /*     W.L. Taber      (JPL) */
 
-/* $ Literature_References */
-
-/*     None. */
-
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1, 02-MAR-2010 (NJB) */
+
+/*        Order of header sections was corrected. */
 
 /* -    SPICELIB Version 1.0.0, 12-DEC-2004 (NJB) */
 
@@ -281,7 +285,7 @@ static integer c__1 = 1;
 	for (i__ = 1; i__ <= 3; ++i__) {
 	    for (j = 1; j <= 3; ++j) {
 		rotate[(i__1 = i__ + j * 3 - 4) < 9 && 0 <= i__1 ? i__1 : 
-			s_rnge("rotate", i__1, "zzrotgt1_", (ftnlen)200)] = 
+			s_rnge("rotate", i__1, "zzrotgt1_", (ftnlen)204)] = 
 			0.;
 	    }
 	}
@@ -324,7 +328,7 @@ static integer c__1 = 1;
 	for (i__ = 1; i__ <= 3; ++i__) {
 	    for (j = 1; j <= 3; ++j) {
 		rotate[(i__1 = i__ + j * 3 - 4) < 9 && 0 <= i__1 ? i__1 : 
-			s_rnge("rotate", i__1, "zzrotgt1_", (ftnlen)264)] = 
+			s_rnge("rotate", i__1, "zzrotgt1_", (ftnlen)268)] = 
 			0.;
 	    }
 	}

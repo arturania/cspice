@@ -1327,11 +1327,15 @@
  
 -Version
 
+   -CSPICE Version 1.0.1, 24-APR-2010 (EDW)
+
+      Minor edit to code comments eliminating typo.
+
    -CSPICE Version 1.0.0, 11-MAR-2009 (EDW) 
 
 -Index_Entries
  
-   GF low-level geometric condition solver
+   determine when a geometric quantity satisfies a condition
 
 -&
 */
@@ -1477,7 +1481,7 @@
    We pass the adapter functions, not those provided as inputs,
    to the f2c'd routine:
    
-      zzadstep_c  adaptor for  udstep
+      zzadstep_c  adapter for  udstep
       zzadrefn_c     ''        udrefn
       zzadrepi_c     ''        udrepi
       zzadrepu_c     ''        udrepu

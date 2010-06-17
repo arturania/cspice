@@ -1,0 +1,402 @@
+ 
+STARSB User's Guide
+===========================================================================
+ 
+   Last revised on 2008 NOV 06 by B. V. Semenov.
+ 
+ 
+Abstract
+--------------------------------------------------------
+ 
+   STARSB is a program that creates a SPICE type 1 star catalog from a
+   ``master star catalog.''
+ 
+ 
+Summary
+--------------------------------------------------------
+ 
+   STARSB is a SPICE master star catalog subsetting program. It uses as
+   input a so-called "master" star catalog in SPICE E-kernel format, and it
+   produces a new catalog, also in E-kernel format, containing a subset of
+   the master catalog data, with proper motion applied to a user specified
+   epoch. The subsetting process is based on user supplied constraints on
+   Right Ascension (RA), Declination (DEC) and Visual Magnitude (VM).
+ 
+   The output catalog is defined as a SPICE Type 1 star catalog. NAIF
+   provides subroutines to read this catalog. Additionally, the NAIF
+   Toolkit program INSPEKT can be used to query a Type 1 star catalog and
+   produce a report showing specified items for stars meeting the query
+   criteria. (See the INSPEKT User's Guide, inspekt.ug, for details about
+   using using INSPEKT.)
+ 
+   The contents of a "master" catalog, and of a Type 1 catalog produced by
+   STARSB, are described in the appendix to this User's Guide, as are the
+   algorithms used to apply proper motion.
+ 
+ 
+USAGE
+--------------------------------------------------------
+ 
+   STARSB requires a properly formatted command file containing the names
+   of the "master" and subset catalogs and subsetting constraints. The name
+   of this command file can be supplied to the program in two ways -- as a
+   command line argument:
+ 
+      prompt> starsb <command file name>
+ 
+   or in response to the program's prompt if it's run with no command line
+   arguments
+ 
+      prompt> starsb
+      Enter the name of the command file
+ 
+      > <command file name>
+ 
+ 
+COMMAND FILE FORMAT
+--------------------------------------------------------
+ 
+   The format of command corresponds to NAIF Text Kernel file format
+   described in the KERNEL Required reading document, kernel.req.
+ 
+   The following keywords must be present in the command file to provide
+   values required for program execution:
+ 
+      STARSB_MASTER_FILE = '<master catalog file name>'
+      STARSB_OUTPUT_FILE = '<output catalog file name>'
+      STARSB_ETCAL_TIME  = '<output catalog epoch, calendar date ET>'
+      STARSB_WESTRA      = <western most right ascension, degrees>
+      STARSB_EASTRA      = <eastern most right ascension, degrees>
+      STARSB_STHDEC      = <southern most declination, degrees>
+      STARSB_NTHDEC      = <northern most declination, degrees>
+      STARSB_VMMAX       = <maximum star visual magnitude>
+ 
+   STARSB_WESTRA, STARSB_EASTRA, STARSB_STHDEC and STARSB_NTHDEC are right
+   ascension and declination constraints giving the western, eastern,
+   southern and northern boundaries of a search rectangle as follows:
+ 
+      RA  BETWEEN WESTRA  AND EASTRA  and
+      DEC BETWEEN STHDEC AND NTHDEC
+ 
+   where RA and DEC are the right ascension and declination of a star.
+   WESTRA always represents "west" side of this rectangle and EASTRA -- the
+   "east" side. STHDEC represents the "south" side of the rectangle, NTHDEC
+   represents the "north" side of the rectangle.
+ 
+   For an observer standing on the surface of the earth at the equator, the
+   west side of the rectangle ( the side associated with WESTRA) rises
+   first. The east side (the side associated with EASTRA) rises last. All
+   meridians that rise between the rising of the west and east edges of the
+   rectangle cross through the RA-DEC rectangle.
+ 
+   To specify the 6 degrees wide RA-DEC square centered on the celestial
+   equator that has western most right ascension of 357 degrees use the
+   following values for WESTRA, EASTRA, STHDEC, and NTHDEC
+ 
+      STARSB_WESTRA  = 357.0
+      STARSB_EASTRA  =   3.0
+      STARSB_STHDEC  =  -3.0
+      STARSB_NTHDEC  =   3.0
+ 
+   To specify a 5 degree wide RA-DEC square that has western most right
+   ascension 10 degrees and eastern most right ascension 15 degrees and
+   southern most declination of 45 degrees, assign the following values to
+   WESTRA, EASTRA, STHDEC and NTHDEC.
+ 
+      STARSB_WESTRA  =  10.0
+      STARSB_EASTRA  =  15.0
+      STARSB_STHDEC  =  45.0
+      STARSB_NTHDEC  =  50.0
+ 
+   All RAs and DECs should be in degrees and relative to the J2000 inertial
+   frame.
+ 
+   All Right Ascension values should be in the interval [0, 360]. The
+   program checks whether Right Ascension values are within this interval
+   and signals error if they are not. All Declination values should be in
+   the interval [-90,90]. The program also checks the Declination values
+   and signals error if this condition in not met.
+ 
+   Keywords must appear in a sections of the command file which is preceded
+   by the string
+ 
+      \begindata
+        ...
+        ...
+ 
+   Descriptive text information can be provided by preceding it with the
+   string
+ 
+      \begintext
+ 
+   None of the keywords listed above can have a blank value. String values
+   (file names and UTC time) must be enclosed in single quotation marks.
+ 
+ 
+EXAMPLE
+--------------------------------------------------------
+ 
+   To create a subset catalog including all stars whose visual magnitude is
+   less than or equal to 5.0 (not dimmer than VM 5.0) the following command
+   file can be used:
+ 
+      This command file will create a subset of the PPM
+      master catalog for all stars with visual magnitude
+      is equal or less than 5.0.
+ 
+      By BVS, NAIF/JPL, May 15, 1996
+ 
+      \begindata
+ 
+         STARSB_MASTER_FILE = 'ppm.dbk'
+         STARSB_OUTPUT_FILE = 'ppm_vm50.dbk'
+         STARSB_ETCAL_TIME  = '1997-JAN-1 12:00:00'
+         STARSB_WESTRA      =   0.0
+         STARSB_EASTRA      = 360.0
+         STARSB_STHDEC      = -90.0
+         STARSB_NTHDEC      =  90.0
+         STARSB_VMMAX       =   5.0
+ 
+      \begintext
+ 
+   To create a subset catalog including all stars in the northern
+   hemisphere whose visual magnitude is less than or equal to 3.0 (not
+   dimmer than VM 3.0) the following command file can be used:
+ 
+      This command file will create a subset of the PPM
+      master catalog for all stars in the northern hemisphere
+      whose visual magnitude is equal to or less than 3.0.
+ 
+      By BVS, NAIF/JPL, May 15, 1996
+ 
+      \begindata
+ 
+         STARSB_MASTER_FILE = 'ppm.dbk'
+         STARSB_OUTPUT_FILE = 'ppm_vm3_north.dbk'
+         STARSB_ETCAL_TIME  = '1997-JAN-1 12:00:00'
+         STARSB_WESTRA      =   0.0
+         STARSB_EASTRA      = 360.0
+         STARSB_STHDEC      =   0.0
+         STARSB_NTHDEC      =  90.0
+         STARSB_VMMAX       =   3.0
+ 
+      \begintext
+ 
+ 
+DISCUSSION
+--------------------------------------------------------
+ 
+   While not pertinent to running the STARSB program, here are a few notes
+   of interest to the user of SPICE star catalogs.
+ 
+   A Type 1 star catalog may contain data ("records") for ALL of the stars
+   found in the master catalog, or, more typically, for a subset of the
+   stars in the master catalog. In both cases, the number of pieces of
+   information provided for each star in a Type 1 catalog is less than what
+   is available in the master catalog. See the appendix for a comparison of
+   the contents of the two catalog types.
+ 
+   "Master" catalogs and subset catalogs are both organized as SPICE Event
+   Kernels (E-Kernels), each consisting of a single logical table. The
+   tables have a separate "row" for each star, and each "column" specifies
+   a particular attribute for all stars. The table has a name which a user
+   must know in order to extract star data from the table. See the "EK
+   Required Reading", ek.req, document for details about EK structure.
+ 
+   The NAIF-supplied readers for a Type 1 star catalog can also read a
+   master catalog. This is possible because the master catalog contains a
+   superset of the information provided in a Type 1 catalog. However,
+   PROPER MOTION IS NOT APPLIED IN THE MASTER CATALOG. Thus, generally
+   speaking the RA and DEC returned from a Type 1 catalog for any
+   particular star will be different from the RA and DEC returned from the
+   master catalog for the same star.
+ 
+   The NAIF Toolkit's INSPEKT program can be used to query either a Type 1
+   (subset) catalog or a master catalog, producing a query report on the
+   user's workstation screen or spooled to a file. See the "INSPEKT User's
+   Guide", inspekt.ug, for details on running this program.
+ 
+   Master star catalogs are made by the NAIF Group at JPL. A master catalog
+   can be made from any of a number of well known star catalogs, such as
+   SAO, PPM and ACRS.
+ 
+ 
+APPENDIX
+===========================================================================
+ 
+ 
+MASTER CATALOG CONTENTS
+--------------------------------------------------------
+ 
+   A "master" catalog is an extended SPICE Type 1 star catalog file. Here
+   "extended" means it contains all items found in a Type 1 catalog, and
+   more. It is a SPICE EK file containing the following columns with
+   essential star position and characteristics information:
+ 
+         COLUMN NAME        TYPE   PARAMETER DESCRIPTION
+ 
+         RA                 DP     J2000 right ascension at initial epoch,
+                                   degrees
+ 
+         RA_SIGMA           DP     uncertainty of right ascension at
+                                   initial epoch, degrees
+ 
+         RA_EPOCH           DP     initial epoch, years since B1950
+ 
+         RA_PM              DP     proper motion in right ascension,
+                                   degrees/year
+ 
+         RA_PM_SIGMA        DP     uncertainty of proper motion in right
+                                   ascension, degrees/year
+ 
+         DEC                DP     J2000 declination at initial epoch,
+                                   degrees
+ 
+         DEC_SIGMA          DP     uncertainty of declination at initial
+                                   epoch, degrees
+ 
+         DEC_EPOCH          DP     epoch, years since B1950
+ 
+         DEC_PM             DP     proper motion in declination,
+                                   degrees/year
+ 
+         DEC_PM_SIGMA       DP     uncertainty of proper motion in
+                                   declination, degrees/year
+ 
+         CATALOG_NUMBER     INT    catalog number of the star
+ 
+         SPECTRAL_TYPE      CH4    four character spectral type identifier
+ 
+         VISUAL_MAGNITUDE   DP     visual magnitude
+ 
+   Data from all columns is used in creation of the output (subset)
+   catalog. If any of the columns is missing the appropriate error will be
+   signalled and the output catalog will not be created.
+ 
+   If additional columns are present in the "master" catalog, they will be
+   ignored by the subsetting program.
+ 
+ 
+TYPE 1 CATALOG CONTENTS
+--------------------------------------------------------
+ 
+   The STARSB program uses data from a "master" catalog and the specified
+   epoch to calculate the position of the stars being written to the output
+   catalog. The output file is a SPICE Type 1 star catalog file. It is an
+   EK file containing only four columns related to star position
+   information (instead of ten in the extended Type 1 "master" catalog) and
+   3 columns related to other star parameters and characteristics:
+ 
+         COLUMN NAME        TYPE   PARAMETER DESCRIPTION
+ 
+         RA                 DP     J2000 right ascension at particular
+                                   epoch, degrees
+ 
+         RA_SIGMA           DP     uncertainty of right ascension at
+                                   particular epoch, degrees
+ 
+         DEC                DP     J2000 declination at particular epoch,
+                                   degrees
+ 
+         DEC_SIGMA          DP     uncertainty of declination at particular
+                                   epoch, degrees
+ 
+         CATALOG_NUMBER     INT    catalog number of the star
+ 
+         SPECTRAL_TYPE      CH4    four character spectral type identifier
+ 
+         VISUAL_MAGNITUDE   DP     visual magnitude
+ 
+   All columns in the output catalog except RA_SIGMA and DEC_SIGMA are
+   indexed to provide faster query results.
+ 
+   The table name given to a subset catalog incorporates the epoch used for
+   applying proper motion. The format of this name is:
+ 
+      <mst_tab_nm>_YYYY_MMM_DD
+ 
+   where
+ 
+         <mst_tab_name>   "master" catalog table name (ex. PPM)
+ 
+         YYYY, MMM, DD    year, month and day of the proper motion epoch.
+ 
+   The command file used for creating the subset catalog is copied to the
+   comment area of the subset catalog along with any contents of the
+   comment area from the master catalog.
+ 
+   Command file parameters -- epoch, visual magnitude, right ascention and
+   declination ranges -- are included in the subset catalog internal file
+   name in the following format:
+ 
+      <mst_tab_name>,UTC<epoch>,VM<max_vm>,RA<min>:<max>,DEC<min>:<max>
+ 
+   where
+ 
+         <mst_tab_name>   "master" catalog table name (ex. PPM)
+ 
+         <epoch>          command file UTC epoch truncated to days(ex.
+                          1996-MAR-08)
+ 
+         <max_vm>         command file maximum visual magnitude (ex. 3.50)
+ 
+         RA<min>:<max>    command file RA range (ex. RA70.0:110.)
+ 
+         DEC<min>:<max>   command file DEC range (ex. DEC-80.0:80.0)
+ 
+ 
+PROPER MOTION ALGORITHMS
+--------------------------------------------------------
+ 
+   The values for position angles and their uncertainties in a subset
+   catalog are calculated by STARSB using the following equations:
+ 
+      RA         = RA0  + DTRA  * RA_PM
+      DEC        = DEC0 + DTDEC * DEC_PM
+      RA_SIGMA   = SQRT( RA_SIGMA0 ** 2 + ( DTRA*RA_PM_SIGMA  ) ** 2 )
+      DEC_SIGMA  = SQRT( DEC_SIGMA0** 2 + ( DTDEC*DEC_PM_SIGMA )** 2 )
+ 
+   where
+ 
+         RA0            is right ascension at initial epoch in degrees
+                        (column RA in "master" catalog)
+ 
+         RA_PM          is proper motion in right ascention in degrees/year
+ 
+         RA_PM_SIGMA    is uncertainty of proper motion in right ascention
+                        in degrees/year
+ 
+         RA_SIGMA0      is uncertainty of right ascention at initial epoch
+                        in degrees (column RA_SIGMA in "master" catalog)
+ 
+         DEC0           is declination at initial epoch in degrees (column
+                        DEC in "master" catalog)
+ 
+         DEC_PM         is proper motion in declination in degrees/year
+ 
+         DEC_PM_SIGMA   is uncertainty of proper motion in declination in
+                        degrees/year
+ 
+         DEC_SIGMA0     is uncertainty of declination at initial epoch
+                        degrees (column DEC_SIGMA in "master" catalog).
+ 
+   DTRA and DTDEC are the time intervals from RA and DEC initial epochs to
+   the user-specified epoch, in Julian years
+ 
+      T = EPOCH/(SPD*JULYR) + ((J2000-J1950)/JULYR)
+      DTRA   = T - RA_EPOCH
+      DTDEC  = T - DEC_EPOCH
+ 
+   where
+ 
+         EPOCH   is the user-specified epoch for applying proper motion, in
+                 seconds past J2000,
+ 
+         SPD     is number of seconds per day (SPD=86400)
+ 
+         J2000   is Julian date of 2000 JAN 01 12:00:00 (J2000=2451545.0)
+ 
+         J1950   is Julian date of 1950 JAN 01 00:00:00 (J1950=2433282.5)
+ 
+         JULYR   is number of days in Julian year (JULYR=365.25)
+ 

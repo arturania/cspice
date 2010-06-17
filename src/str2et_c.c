@@ -122,9 +122,8 @@
    computing contexts. However, we believe that this routine will
    correctly interpret most time formats used throughout the planetary
    science community. For example this routine supports ISO time
-   formats, UNIX `date` output formats, VMS time formats, MS-DOS
-   formats, etc.  One obvious omission from the strings recognized by
-   this routine are strings of the form
+   formats and UNIX `date` output formats. One obvious omission from
+   the strings recognized by this routine are strings of the form
 
         93234.1829  or 1993234.1829
 
@@ -427,7 +426,7 @@
            Month Day Year
            Year Day Month
 
-           Where Month is the name of a month, not its numeric
+           where Month is the name of a month, not its numeric
            value.
 
            When integer components are separated by slashes (/)
@@ -577,6 +576,10 @@
    W.L. Taber         (JPL)
 
 -Version
+
+   -CSPICE Version 1.1.5, 02-NOV-2009   (CHA)
+
+      A few minor grammar fixes in the header.
 
    -CSPICE Version 1.1.4, 16-JAN-2008   (EDW)
 

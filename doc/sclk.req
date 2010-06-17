@@ -2,7 +2,7 @@
 SCLK Required Reading
 ===========================================================================
  
-   Last revised on 2009 APR 01 by B. V. Semenov.
+   Last revised on 2010 MAY 27 by E. D. Wright.
  
  
 Abstract
@@ -375,7 +375,7 @@ SCLK Conversion Functions
    ``ET,'' ``barycentric dynamical time,'' and ``TDB'').
  
    CSPICE contains the following functions to convert between encoded and
-   character SCLK, ET and UTC. Note that the names of the the functions
+   character SCLK, ET and UTC. Note that the names of the functions
    involving SCLK are all prefixed with `sc', for Spacecraft Clock.
  
          et2utc_c   (et, format, prec, lenout, utc)       (Convert ET to a
@@ -1539,6 +1539,11 @@ Sample SCLK kernels
  
 Appendix: Document Revision History
 ===========================================================================
+ 
+ 
+May 27, 2010
+ 
+   Minor edit to eliminate typo.
  
  
 April 1, 2009

@@ -171,6 +171,46 @@ static integer c__1 = 1;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.20.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL. */
+
+/* -    SPICELIB Version 1.19.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-CC_C. */
+
+/* -    SPICELIB Version 1.18.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-64BIT-CC_C. */
+
+/* -    SPICELIB Version 1.17.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-NATIVE_C. */
+
+/* -    SPICELIB Version 1.16.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-WINDOWS-64BIT-IFORT. */
+
+/* -    SPICELIB Version 1.15.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 1.14.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-64BIT-MS_C. */
+
+/* -    SPICELIB Version 1.13.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-INTEL_C. */
+
+/* -    SPICELIB Version 1.12.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 1.11.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-GFORTRAN. */
+
 /* -    SPICELIB Version 1.10.0, 18-MAR-2009 (BVS) */
 
 /*        Updated for PC-LINUX-GFORTRAN. */
@@ -463,6 +503,46 @@ static integer c__1 = 1;
 /*     E.D. Wright     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 4.20.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL. */
+
+/* -    SPICELIB Version 4.19.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-CC_C. */
+
+/* -    SPICELIB Version 4.18.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-64BIT-CC_C. */
+
+/* -    SPICELIB Version 4.17.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-NATIVE_C. */
+
+/* -    SPICELIB Version 4.16.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-WINDOWS-64BIT-IFORT. */
+
+/* -    SPICELIB Version 4.15.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 4.14.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-64BIT-MS_C. */
+
+/* -    SPICELIB Version 4.13.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-INTEL_C. */
+
+/* -    SPICELIB Version 4.12.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 4.11.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-GFORTRAN. */
 
 /* -    SPICELIB Version 4.10.0, 18-MAR-2009 (BVS) */
 
@@ -813,7 +893,7 @@ static integer c__1 = 1;
 	    which = cardi_(handles);
 	    while(which > 0) {
 		dashlu_(&handles[(i__1 = which + 5) < 106 && 0 <= i__1 ? i__1 
-			: s_rnge("handles", i__1, "getfat_", (ftnlen)594)], &
+			: s_rnge("handles", i__1, "getfat_", (ftnlen)634)], &
 			myunit);
 		if (unit == myunit) {
 		    number = myunit;

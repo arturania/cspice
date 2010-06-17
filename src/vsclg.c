@@ -20,8 +20,8 @@
 
 /* $ Abstract */
 
-/*      Multiply a scalar and a double precision vector of arbitrary */
-/*      dimension. */
+/*     Multiply a scalar and a double precision vector of arbitrary */
+/*     dimension. */
 
 /* $ Disclaimer */
 
@@ -54,87 +54,91 @@
 
 /* $ Keywords */
 
-/*      VECTOR */
+/*     VECTOR */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*       S         I     Scalar to multiply a vector. */
-/*       V1        I     Vector to be multiplied. */
-/*       NDIM      I     Dimension of V1 (and also VOUT). */
-/*       VOUT      O     Product vector, S*V1. VOUT can overwrite V1. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     S          I   Scalar to multiply a vector. */
+/*     V1         I   Vector to be multiplied. */
+/*     NDIM       I   Dimension of V1 (and also VOUT). */
+/*     VOUT       O   Product vector, S*V1. */
 
 /* $ Detailed_Input */
 
-/*      S      is a double precision scalar. */
+/*     S      is a double precision scalar. */
 
-/*      V1     is a double precision vector of arbitrary dimension. */
+/*     V1     is a double precision vector of arbitrary dimension. */
 
-/*      NDIM   is the dimension of V1 (and VOUT). */
+/*     NDIM   is the dimension of V1 (and VOUT). */
 
 /* $ Detailed_Output */
 
-/*      VOUT   is a double precision vector of arbitrary dimension */
-/*             containing the product of the scalar with the vector V1. */
-/*             VOUT may overwrite V1. */
+/*     VOUT   is a double precision vector of arbitrary dimension */
+/*            containing the product of the scalar with the vector V1. */
 
 /* $ Parameters */
 
 /*     None. */
 
-/* $ Particulars */
-
-/*      For each value of the index I from 1 to NDIM, this subroutine */
-/*      performs the following multiplication */
-
-/*         VOUT(I) = S * V1(I) */
-
-/*      No error checking is performed to guard against numeric overflow */
-/*      or underflow.  VOUT may overwrite V1. */
-
-/* $ Examples */
-
-/*      The following table shows the results of VSCLG from various */
-/*      inputs. */
-
-/*      V1                 S           NDIM        VOUT */
-/*      ----------------------------------------------------------------- */
-/*      (1, 2, -3, 4)      3            4         ( 3,  6, -9, 12) */
-/*      (1, 2, -3, 4)      0            4         ( 0,  0,  0,  0) */
-/*      (1, 2, -3, 4)     -1            4         (-3, -6,  9,-12) */
-
-/* $ Restrictions */
-
-/*      No error checking is performed to guard against numeric overflow. */
-/*      The programmer is thus required to insure that the values in V1 */
-/*      and S are reasonable and will not cause overflow. */
-
 /* $ Exceptions */
 
-/*      Error free. */
+/*     Error free. */
 
 /* $ Files */
 
-/*      None. */
+/*     None. */
 
-/* $ Author_and_Institution */
+/* $ Particulars */
 
-/*      W.M. Owen       (JPL) */
+/*     For each value of the index I from 1 to NDIM, this subroutine */
+/*     performs the following multiplication */
+
+/*        VOUT(I) = S * V1(I) */
+
+/*     No error checking is performed to guard against numeric overflow */
+/*     or underflow. */
+
+/* $ Examples */
+
+/*     The following table shows the results of VSCLG from various */
+/*     inputs. */
+
+/*        V1                 S           NDIM        VOUT */
+/*        ---------------------------------------------------------- */
+/*        (1, 2, -3, 4)      3            4         ( 3,  6, -9, 12) */
+/*        (1, 2, -3, 4)      0            4         ( 0,  0,  0,  0) */
+/*        (1, 2, -3, 4)     -1            4         (-3, -6,  9,-12) */
+
+/* $ Restrictions */
+
+/*     No error checking is performed to guard against numeric overflow. */
+/*     The programmer is thus required to insure that the values in V1 */
+/*     and S are reasonable and will not cause overflow. */
 
 /* $ Literature_References */
 
-/*      None. */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     W.M. Owen       (JPL) */
 
 /* $ Version */
 
-/* -     SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+/* -    SPICELIB Version 1.0.2, 22-APR-2010 (NJB) */
 
-/*         Comment section for permuted index source lines was added */
-/*         following the header. */
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
-/* -     SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
+/* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
+
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
 
 /* -& */
 /* $ Index_Entries */
@@ -150,9 +154,9 @@
     i__1 = *ndim;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	vout[(i__2 = i__ - 1) < vout_dim1 && 0 <= i__2 ? i__2 : s_rnge("vout",
-		 i__2, "vsclg_", (ftnlen)141)] = *s * v1[(i__3 = i__ - 1) < 
+		 i__2, "vsclg_", (ftnlen)145)] = *s * v1[(i__3 = i__ - 1) < 
 		v1_dim1 && 0 <= i__3 ? i__3 : s_rnge("v1", i__3, "vsclg_", (
-		ftnlen)141)];
+		ftnlen)145)];
     }
     return 0;
 } /* vsclg_ */

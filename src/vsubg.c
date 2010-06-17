@@ -20,8 +20,8 @@
 
 /* $ Abstract */
 
-/*      Compute the difference between two double precision vectors of */
-/*      arbitrary dimension. */
+/*     Compute the difference between two double precision vectors of */
+/*     arbitrary dimension. */
 
 /* $ Disclaimer */
 
@@ -54,95 +54,99 @@
 
 /* $ Keywords */
 
-/*      VECTOR */
+/*     VECTOR */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*       V1        I     First vector (minuend). */
-/*       V2        I     Second vector (subtrahend). */
-/*       NDIM      I     Dimension of V1, V2, and VOUT. */
-/*       VOUT      O     Difference vector, V1 - V2. */
-/*                       VOUT can overwrite either V1 or V2. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     V1         I   First vector (minuend). */
+/*     V2         I   Second vector (subtrahend). */
+/*     NDIM       I   Dimension of V1, V2, and VOUT. */
+/*     VOUT       O   Difference vector, V1 - V2. */
 
 /* $ Detailed_Input */
 
-/*      V1      is a double precision vector of arbitrary dimension which */
-/*              is the minuend (i.e. first or left-hand member) in the */
-/*              vector subtraction. */
+/*     V1      is a double precision vector of arbitrary dimension which */
+/*             is the minuend (i.e. first or left-hand member) in the */
+/*             vector subtraction. */
 
-/*      V2      is a double precision vector of arbitrary dimension which */
-/*              is the subtrahend (i.e. second or right-hand member) in */
-/*              the vector subtraction. */
+/*     V2      is a double precision vector of arbitrary dimension which */
+/*             is the subtrahend (i.e. second or right-hand member) in */
+/*             the vector subtraction. */
 
-/*      NDIM    is the dimension of V1 and V2 (and VOUT). */
+/*     NDIM    is the dimension of V1 and V2 (and VOUT). */
 
 /* $ Detailed_Output */
 
-/*      VOUT    is a double precision vector containing the difference */
-/*              V1 - V2. */
+/*     VOUT    is a double precision vector containing the difference */
+/*             V1 - V2. */
 
 /* $ Parameters */
 
 /*     None. */
 
-/* $ Particulars */
-
-/*      For each value of the index I from 1 to NDIM, this subroutine */
-/*      performs the following subtraction: */
-
-/*         VOUT(I) = V1(I) - V2(I) */
-
-/*      No error checking is performed to guard against numeric overflow */
-/*      or underflow.  VOUT may overwrite V1 or V2. */
-
-/* $ Examples */
-
-/*      The following table shows the results of VSUBG from various */
-/*      inputs. */
-
-/*       V1                V2             NDIM         VOUT */
-/*      ----------------------------------------------------------------- */
-/*      (1, 2, 3, 4)     ( 1, 1, 1, 1 )    4         ( 0, 1, 2, 3 ) */
-/*      (1, 2, 3, 4)     (-1,-2,-3,-4 )    4         ( 2, 4, 6, 8 ) */
-/*      (1, 2, 3, 4)     (-1, 2,-3, 4 )    4         ( 2, 0, 6, 0 ) */
-
-/* $ Restrictions */
-
-/*      No error checking is performed to guard against numeric overflow. */
-/*      The programmer is thus required to insure that the values in V1 */
-/*      and V2 are reasonable and will not cause overflow. */
-
 /* $ Exceptions */
 
-/*      Error free. */
+/*     Error free. */
 
 /* $ Files */
 
-/*      None. */
+/*     None. */
 
-/* $ Author_and_Institution */
+/* $ Particulars */
 
-/*      W.M. Owen       (JPL) */
+/*     For each value of the index I from 1 to NDIM, this subroutine */
+/*     performs the following subtraction: */
+
+/*        VOUT(I) = V1(I) - V2(I) */
+
+/*     No error checking is performed to guard against numeric overflow */
+/*     or underflow. */
+
+/* $ Examples */
+
+/*     The following table shows the results of VSUBG from various */
+/*     inputs. */
+
+/*        V1                V2             NDIM         VOUT */
+/*        ----------------------------------------------------------- */
+/*        (1, 2, 3, 4)     ( 1, 1, 1, 1 )    4         ( 0, 1, 2, 3 ) */
+/*        (1, 2, 3, 4)     (-1,-2,-3,-4 )    4         ( 2, 4, 6, 8 ) */
+/*        (1, 2, 3, 4)     (-1, 2,-3, 4 )    4         ( 2, 0, 6, 0 ) */
+
+/* $ Restrictions */
+
+/*     No error checking is performed to guard against numeric overflow. */
+/*     The programmer is thus required to insure that the values in V1 */
+/*     and V2 are reasonable and will not cause overflow. */
 
 /* $ Literature_References */
 
-/*      None. */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     W.M. Owen       (JPL) */
 
 /* $ Version */
 
-/* -     SPICELIB Version 1.0.2, 10-MAR-1992 (WLT) */
+/* -    SPICELIB Version 1.0.3, 23-APR-2010 (NJB) */
 
-/*         Comment section for permuted index source lines was added */
-/*         following the header. */
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
-/* -     SPICELIB Version 1.0.1, 9-MAY-1990 (HAN) */
+/* -    SPICELIB Version 1.0.2, 10-MAR-1992 (WLT) */
 
-/*         Several errors in the header documentation were corrected. */
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
 
-/* -     SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
+/* -    SPICELIB Version 1.0.1, 9-MAY-1990 (HAN) */
+
+/*        Several errors in the header documentation were corrected. */
+
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
 
 /* -& */
 /* $ Index_Entries */
@@ -159,10 +163,10 @@
     i__1 = *ndim;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	vout[(i__2 = i__ - 1) < vout_dim1 && 0 <= i__2 ? i__2 : s_rnge("vout",
-		 i__2, "vsubg_", (ftnlen)148)] = v1[(i__3 = i__ - 1) < 
+		 i__2, "vsubg_", (ftnlen)152)] = v1[(i__3 = i__ - 1) < 
 		v1_dim1 && 0 <= i__3 ? i__3 : s_rnge("v1", i__3, "vsubg_", (
-		ftnlen)148)] - v2[(i__4 = i__ - 1) < v2_dim1 && 0 <= i__4 ? 
-		i__4 : s_rnge("v2", i__4, "vsubg_", (ftnlen)148)];
+		ftnlen)152)] - v2[(i__4 = i__ - 1) < v2_dim1 && 0 <= i__4 ? 
+		i__4 : s_rnge("v2", i__4, "vsubg_", (ftnlen)152)];
     }
     return 0;
 } /* vsubg_ */

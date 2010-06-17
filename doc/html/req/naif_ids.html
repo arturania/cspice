@@ -57,7 +57,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Revisions
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-   Last revised on 2009 APR 09 by E. D. Wright.
+   Last revised on 2010 MAY 20 by E. D. Wright.
 <P>
  
    This version of the document supersedes all previous versions.
@@ -69,8 +69,8 @@
 <H2> Abstract
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
    The NAIF IDS required reading lists all default ID-name mappings for the
-   SPICE/CSPICE toolkits and a description of functionality of the
-   corresponding software.
+   SPICE toolkits and a description of functionality of the corresponding
+   software.
 <P>
  
 <BR><BR>
@@ -108,22 +108,22 @@
 <P>
  
 <UL>
-<TT>1.</TT> This document and SPICE ID-to-name mapping software include both past and
-current ID-name mappings for cases where both the old and the new ID
-assignments are for spacecraft registered within SPICE. The last mentioned
-ID-to-name mapping in this document is the one that will be used in SPICE
-software to effect ID-to-name translations within SPICE-based code.
+<TT>1.</TT> This document and ID-to-name mapping software include both past and current
+ID-name mappings for cases where both the old and the new ID assignments
+are for spacecraft registered within SPICE. The last mentioned ID-to-name
+mapping in this document is the one that will be used in SPICE software to
+effect ID-to-name translations within SPICE-based code.
 <BR><BR></UL>
 <UL>
-<TT>2.</TT> his document and SPICE ID-to-name mapping software contain only a mapping
-for the current use of a given ID if prior uses involved spacecraft never
+<TT>2.</TT> This document and ID-to-name mapping software contain only a mapping for
+the current use of a given ID if prior uses involved spacecraft never
 registered with SPICE (e.g. many non-planetary missions).
 <BR><BR></UL>
 <UL>
-<TT>3.</TT> This document and SPICE ID-to-name mapping software contain only a mapping
-for a prior use of a given ID if that prior use was for a spacecraft
-registered within SPICE and current use of the ID is for a spacecraft not
-registered within SPICE.
+<TT>3.</TT> This document and ID-to-name mapping software contain only a mapping for a
+prior use of a given ID if that prior use was for a spacecraft registered
+within SPICE and current use of the ID is for a spacecraft not registered
+within SPICE.
 <BR><BR></UL>
    For spacecraft the ID-to-name mapping may be a one-to-many mapping,
    allowing two or more names for a spacecraft to exist for a single
@@ -638,7 +638,7 @@ the integer code assigned to a body. This is not generally true for names.
       547         'EUKELADE'
       548         'CYLLENE'
       549         'KORE'
- 
+      550         'HERSE'
       699         'SATURN'
       601         'MIMAS'                 SI
       602         'ENCELADUS'             SII
@@ -692,6 +692,7 @@ the integer code assigned to a body. This is not generally true for names.
       650         'JARNSAXA'
       651         'GREIP'
       652         'TARQEQ'
+      653         'AEGAEON'
  
       799         'URANUS'
       701         'ARIEL'                 UI
@@ -759,6 +760,8 @@ the integer code assigned to a body. This is not generally true for names.
       NAIF ID     NAME
       ________    ____________________
       -1          'GEOTAIL'
+      -5          'AKATSUKI'
+      -5          'VCO'
       -5          'PLC'
       -5          'PLANET-C'
       -6          'P6'
@@ -816,8 +819,6 @@ the integer code assigned to a body. This is not generally true for names.
       -58         'HALCA'
       -59         'RADIOASTRON'
       -61         'JUNO'
-      -76         'MSL'
-      -76         'MARS SCIENCE LABORATORY'
       -66         'VEGA 1'
       -67         'VEGA 2'
       -68         'MMO'
@@ -827,6 +828,8 @@ the integer code assigned to a body. This is not generally true for names.
       -70         'DEEP IMPACT IMPACTOR SPACECRAFT'
       -74         'MRO'
       -74         'MARS RECON ORBITER'
+      -76         'MSL'
+      -76         'MARS SCIENCE LABORATORY'
       -77         'GLL'
       -77         'GALILEO ORBITER'
       -78         'GIOTTO'
@@ -857,6 +860,7 @@ the integer code assigned to a body. This is not generally true for names.
       -112        'ICE'
       -116        'MARS POLAR LANDER'
       -116        'MPL'
+      -121        'BEPICOLOMBO'
       -127        'MARS CLIMATE ORBITER'
       -127        'MCO'
       -130        'MUSES-C'
@@ -882,8 +886,10 @@ the integer code assigned to a body. This is not generally true for names.
       -164        'SOLAR-A'
       -165        'MAP'
       -166        'IMAGE'
+      -177        'GRAIL-A'
       -178        'PLANET-B'
       -178        'NOZOMI'
+      -181        'GRAIL-B'
       -183        'CLUSTER 1'
       -185        'CLUSTER 2'
       -187        'SOLAR PROBE'
@@ -893,7 +899,10 @@ the integer code assigned to a body. This is not generally true for names.
       -196        'CLUSTER 4'
       -198        'INTEGRAL'
       -200        'CONTOUR'
+      -202        'MAVEN'
       -203        'DAWN'
+      -205        'SOIL MOISTURE ACTIVE AND PASSIVE'
+      -205        'SMAP'
       -212        'STV51'
       -213        'STV52'
       -214        'STV53'
@@ -914,6 +923,10 @@ the integer code assigned to a body. This is not generally true for names.
       -253        'MER-1'
       -254        'SPIRIT'
       -254        'MER-2'
+      -362        'RADIATION BELT STORM PROBE A'
+      -362        'RBSP_A'
+      -363        'RADIATION BELT STORM PROBE B'
+      -363        'RBSP_B'
       -486        'HERSCHEL'
       -489        'PLANCK'
       -500        'RSAT'
@@ -1120,6 +1133,7 @@ the integer code assigned to a body. This is not generally true for names.
       1000090     'SWIFT-GEHRELS'
       1000091     'TAKAMIZAWA'
       1000092     'TAYLOR'
+      1000093     'TEMPEL_1'
       1000093     'TEMPEL 1'
       1000094     'TEMPEL 2'
       1000095     'TEMPEL-TUTTLE'
@@ -1187,6 +1201,7 @@ the integer code assigned to a body. This is not generally true for names.
       2431011     'DACTYL'
       2000001     'CERES'
       2000004     'VESTA'
+      2000021     'LUTETIA'
       2000216     'KLEOPATRA'
       2000433     'EROS'
       2000253     'MATHILDE'
@@ -1194,6 +1209,7 @@ the integer code assigned to a body. This is not generally true for names.
       2009969     '1992KD'
       2009969     'BRAILLE'
       2004015     'WILSON-HARRINGTON'
+      2004179     'TOUTATIS'
       2025143     'ITOKAWA'
 </PRE>
    There are three exceptions to the rule---asteroids Gaspra, Ida and Ida's

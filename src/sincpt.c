@@ -45,7 +45,6 @@ static doublereal c_b65 = 1e-14;
     extern doublereal vsep_(doublereal *, doublereal *);
     extern /* Subroutine */ int vsub_(doublereal *, doublereal *, doublereal *
 	    ), vequ_(doublereal *, doublereal *);
-    integer type__;
     doublereal rpos[3], tpos[3], j2dir[3], j2est[3], j2pos[3];
     integer i__;
     extern /* Subroutine */ int zzprscor_(char *, logical *, ftnlen);
@@ -62,25 +61,23 @@ static doublereal c_b65 = 1e-14;
     doublereal j2geom[3], r2jmat[9]	/* was [3][3] */, j2tmat[9]	/* 
 	    was [3][3] */;
     extern logical failed_(void);
-    integer refcde;
+    integer dfrcde;
     doublereal lt, etdiff;
-    integer obscde;
+    integer fxfcde;
     extern doublereal dasine_(doublereal *, doublereal *);
     doublereal refepc;
-    integer nradii;
-    extern /* Subroutine */ int bodvcd_(integer *, char *, integer *, integer 
-	    *, doublereal *, ftnlen);
+    integer nradii, obscde;
     doublereal ltdiff;
     extern doublereal clight_(void);
-    integer trgcde;
+    integer dclass;
     doublereal maxrad, reject;
     extern doublereal touchd_(doublereal *);
     doublereal ltcent, negpos[3], rayalt, relerr, srflen, obspos[3], prevet, 
 	    stldir[3], trgdir[3];
-    integer center;
+    integer dcentr;
     extern logical return_(void);
     doublereal prevlt, ssbost[6], ssbtst[6], stlerr[3], stltmp[3];
-    integer typeid;
+    integer dtypid, fxcent, fxclss, fxtyid, trgcde;
     logical attblk[15];
     extern /* Subroutine */ int chkout_(char *, ftnlen), setmsg_(char *, 
 	    ftnlen), sigerr_(char *, ftnlen), suffix_(char *, integer *, char 
@@ -92,9 +89,10 @@ static doublereal c_b65 = 1e-14;
 	    doublereal *, doublereal *, ftnlen, ftnlen), spkssb_(integer *, 
 	    doublereal *, char *, doublereal *, ftnlen), stelab_(doublereal *,
 	     doublereal *, doublereal *), stlabx_(doublereal *, doublereal *, 
-	    doublereal *), surfpt_(doublereal *, doublereal *, doublereal *, 
-	    doublereal *, doublereal *, doublereal *, logical *), npedln_(
-	    doublereal *, doublereal *, doublereal *, doublereal *, 
+	    doublereal *), bodvcd_(integer *, char *, integer *, integer *, 
+	    doublereal *, ftnlen), surfpt_(doublereal *, doublereal *, 
+	    doublereal *, doublereal *, doublereal *, doublereal *, logical *)
+	    , npedln_(doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *), vhatip_(doublereal *);
     logical fnd;
     extern /* Subroutine */ int mxv_(doublereal *, doublereal *, doublereal *)
@@ -1465,6 +1463,12 @@ static doublereal c_b65 = 1e-14;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.2.0, 07-APR-2010 (NJB) */
+
+/*        Code style improvement: re-use of variables in */
+/*        FRINFO calls has been eliminated. There is no impact */
+/*        of the behavior of the routine. */
+
 /* -    SPICELIB Version 1.1.0, 17-MAR-2009 (NJB)(EDW) */
 
 /*        Bug fix: quick test for non-intersection is */
@@ -1656,8 +1660,8 @@ static doublereal c_b65 = 1e-14;
 
 /*     Determine the attributes of the frame designated by FIXREF. */
 
-    namfrm_(fixref, &refcde, fixref_len);
-    frinfo_(&refcde, &center, &type__, &typeid, &fnd);
+    namfrm_(fixref, &fxfcde, fixref_len);
+    frinfo_(&fxfcde, &fxcent, &fxclss, &fxtyid, &fnd);
     if (failed_()) {
 	chkout_("SINCPT", (ftnlen)6);
 	return 0;
@@ -1674,12 +1678,12 @@ static doublereal c_b65 = 1e-14;
 
 /*     Make sure that FIXREF is centered at the target body's center. */
 
-    if (center != trgcde) {
+    if (fxcent != trgcde) {
 	setmsg_("Reference frame # is not centered at the target body #. The"
 		" ID code of the frame center is #.", (ftnlen)93);
 	errch_("#", fixref, (ftnlen)1, fixref_len);
 	errch_("#", target, (ftnlen)1, target_len);
-	errint_("#", &center, (ftnlen)1);
+	errint_("#", &fxcent, (ftnlen)1);
 	sigerr_("SPICE(INVALIDFRAME)", (ftnlen)19);
 	chkout_("SINCPT", (ftnlen)6);
 	return 0;
@@ -1751,8 +1755,8 @@ static doublereal c_b65 = 1e-14;
 
 /*     Determine the attributes of the frame designated by DREF. */
 
-    namfrm_(dref, &refcde, dref_len);
-    frinfo_(&refcde, &center, &type__, &typeid, &fnd);
+    namfrm_(dref, &dfrcde, dref_len);
+    frinfo_(&dfrcde, &dcentr, &dclass, &dtypid, &fnd);
     if (failed_()) {
 	chkout_("SINCPT", (ftnlen)6);
 	return 0;
@@ -1775,7 +1779,7 @@ static doublereal c_b65 = 1e-14;
 /*     from frame DREF to J2000, then from J2000 to the target */
 /*     frame. */
 
-    if (type__ == 1) {
+    if (dclass == 1) {
 
 /*        Inertial frames can be evaluated at any epoch. */
 
@@ -1786,7 +1790,7 @@ static doublereal c_b65 = 1e-14;
 /*        otherwise), so there's no time offset. */
 
 	refepc = *et;
-    } else if (center == obscde) {
+    } else if (dcentr == obscde) {
 
 /*        If the center of frame DREF is the observer (which is */
 /*        usually the case if the observer is a spacecraft), then */
@@ -1801,7 +1805,7 @@ static doublereal c_b65 = 1e-14;
 /*        Find the light time from the observer to the center of */
 /*        frame DREF. */
 
-	spkezp_(&center, et, "J2000", abcorr, &obscde, rpos, &ltcent, (ftnlen)
+	spkezp_(&dcentr, et, "J2000", abcorr, &obscde, rpos, &ltcent, (ftnlen)
 		5, abcorr_len);
 	if (failed_()) {
 	    chkout_("SINCPT", (ftnlen)6);

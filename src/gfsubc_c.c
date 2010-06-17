@@ -316,7 +316,7 @@
               the precision of solutions found by this routine; the
               precision is controlled by the convergence tolerance.
 
-              step has units of seconds. 
+              step has units of TDB seconds. 
 
    nintvls    an integer value specifying the number of intervals in the 
               the internal workspace array used by this routine. 'nintvls'
@@ -671,11 +671,11 @@
          85 degrees <= longitude <= 86 degrees
 
       This problem requires four searches, each search on one of the
-      box restrictions. The user needs also realize the temporal behavior
-      of latitude greatly differs from that of the longitude. The
-      the intercept latitude varies between approximately 23.44 degrees
-      and -23.44 degrees during the year. The intercept longitude varies
-      between -180 degrees and 180 degrees in one day.
+      box restrictions. The user needs also realize the temporal 
+      behavior of latitude greatly differs from that of the longitude. The
+      sub-observer point latitude varies between approximately 23.44 degrees
+      and -23.44 degrees during the year. The sub-observer point longitude 
+      varies between -180 degrees and 180 degrees in one day.
 
       #include <stdio.h>
       #include <stdlib.h>
@@ -694,7 +694,7 @@
          Create the needed windows. Note, one window
          consists of two values, so the total number
          of cell values to allocate equals twice
-         the number of windows.
+         the number of intervals.
          ./
          SPICEDOUBLE_CELL ( result1, 2*MAXWIN );
          SPICEDOUBLE_CELL ( result2, 2*MAXWIN );
@@ -935,7 +935,14 @@
    E.D. Wright    (JPL) 
  
 -Version
- 
+
+   -CSPICE Version 1.0.1, 26-AUG-2009, EDW (JPL)
+
+      Edit to Example description, replaced "intercept" with
+      "sub-observer point."
+      
+      Correction of several typos.
+      
    -CSPICE Version 1.0.0, 10-FEB-2009 (NJB) (EDW)
 
 -Index_Entries

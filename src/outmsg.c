@@ -274,6 +274,46 @@ static integer c__1 = 1;
 
 /* $ Version */
 
+/* -    SPICELIB Version 5.22.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL. */
+
+/* -    SPICELIB Version 5.21.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-CC_C. */
+
+/* -    SPICELIB Version 5.20.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-64BIT-CC_C. */
+
+/* -    SPICELIB Version 5.19.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-NATIVE_C. */
+
+/* -    SPICELIB Version 5.18.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-WINDOWS-64BIT-IFORT. */
+
+/* -    SPICELIB Version 5.17.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 5.16.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-64BIT-MS_C. */
+
+/* -    SPICELIB Version 5.15.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-INTEL_C. */
+
+/* -    SPICELIB Version 5.14.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 5.13.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-GFORTRAN. */
+
 /* -    SPICELIB Version 5.12.0, 18-MAR-2009 (BVS) */
 
 /*        Updated for PC-LINUX-GFORTRAN. */
@@ -571,7 +611,7 @@ static integer c__1 = 1;
     i__1 = numwrd;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	ucase_(words + ((i__2 = i__ - 1) < 5 && 0 <= i__2 ? i__2 : s_rnge(
-		"words", i__2, "outmsg_", (ftnlen)553)) * 9, upword, (ftnlen)
+		"words", i__2, "outmsg_", (ftnlen)593)) * 9, upword, (ftnlen)
 		9, (ftnlen)9);
 	if (s_cmp(upword, "SHORT", (ftnlen)9, (ftnlen)5) == 0) {
 	    short__ = TRUE_;
@@ -601,7 +641,7 @@ static integer c__1 = 1;
 /* Writing concatenation */
 	    i__3[0] = 29, a__1[0] = "The invalid message type was ";
 	    i__3[1] = 9, a__1[1] = words + ((i__2 = i__ - 1) < 5 && 0 <= i__2 
-		    ? i__2 : s_rnge("words", i__2, "outmsg_", (ftnlen)590)) * 
+		    ? i__2 : s_rnge("words", i__2, "outmsg_", (ftnlen)630)) * 
 		    9;
 	    s_cat(ch__1, a__1, i__3, &c__2, (ftnlen)38);
 	    wrline_(device, ch__1, (ftnlen)128, (ftnlen)38);
@@ -886,7 +926,7 @@ static integer c__1 = 1;
 
 	for (i__ = 1; i__ <= 4; ++i__) {
 	    wrline_(device, defmsg + ((i__1 = i__ - 1) < 4 && 0 <= i__1 ? 
-		    i__1 : s_rnge("defmsg", i__1, "outmsg_", (ftnlen)911)) * 
+		    i__1 : s_rnge("defmsg", i__1, "outmsg_", (ftnlen)951)) * 
 		    78, (ftnlen)128, (ftnlen)78);
 	}
 	wrline_(device, " ", (ftnlen)128, (ftnlen)1);

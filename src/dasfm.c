@@ -534,6 +534,46 @@ static integer c__256 = 256;
 
 /* $ Version */
 
+/* -    SPICELIB Version 7.18.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL. */
+
+/* -    SPICELIB Version 7.17.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-CC_C. */
+
+/* -    SPICELIB Version 7.16.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-64BIT-CC_C. */
+
+/* -    SPICELIB Version 7.15.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-NATIVE_C. */
+
+/* -    SPICELIB Version 7.14.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-WINDOWS-64BIT-IFORT. */
+
+/* -    SPICELIB Version 7.13.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 7.12.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-64BIT-MS_C. */
+
+/* -    SPICELIB Version 7.11.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-INTEL_C. */
+
+/* -    SPICELIB Version 7.10.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 7.9.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-GFORTRAN. */
+
 /* -    SPICELIB Version 7.8.0, 18-MAR-2009 (BVS) */
 
 /*        Updated for PC-LINUX-GFORTRAN. */
@@ -1306,7 +1346,7 @@ L_dasopr:
 	found = FALSE_;
 	while(! found && findex > 0) {
 	    if (ftlun[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge(
-		    "ftlun", i__1, "dasfm_", (ftnlen)1372)] == number) {
+		    "ftlun", i__1, "dasfm_", (ftnlen)1412)] == number) {
 		found = TRUE_;
 	    } else {
 		findex = lnknxt_(&findex, pool);
@@ -1314,7 +1354,7 @@ L_dasopr:
 	}
 	if (found) {
 	    if (ftacc[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge(
-		    "ftacc", i__1, "dasfm_", (ftnlen)1382)] == 2) {
+		    "ftacc", i__1, "dasfm_", (ftnlen)1422)] == 2) {
 		setmsg_("'#' already opened for write access.", (ftnlen)36);
 		errch_("#", fname, (ftnlen)1, fname_len);
 		sigerr_("SPICE(DASRWCONFLICT)", (ftnlen)20);
@@ -1326,11 +1366,11 @@ L_dasopr:
 /*              of links to this file. */
 
 		ftlnk[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge(
-			"ftlnk", i__1, "dasfm_", (ftnlen)1395)] = ftlnk[(i__2 
+			"ftlnk", i__1, "dasfm_", (ftnlen)1435)] = ftlnk[(i__2 
 			= findex - 1) < 21 && 0 <= i__2 ? i__2 : s_rnge("ftl"
-			"nk", i__2, "dasfm_", (ftnlen)1395)] + 1;
+			"nk", i__2, "dasfm_", (ftnlen)1435)] + 1;
 		*handle = fthan[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 :
-			 s_rnge("fthan", i__1, "dasfm_", (ftnlen)1396)];
+			 s_rnge("fthan", i__1, "dasfm_", (ftnlen)1436)];
 	    }
 	} else {
 
@@ -1440,7 +1480,7 @@ L_dasopr:
 		setmsg_(lngmsg, (ftnlen)1840);
 		errch_("#", fname, (ftnlen)1, fname_len);
 		errch_("#", bfflst + (((i__1 = bff - 1) < 4 && 0 <= i__1 ? 
-			i__1 : s_rnge("bfflst", i__1, "dasfm_", (ftnlen)1516))
+			i__1 : s_rnge("bfflst", i__1, "dasfm_", (ftnlen)1556))
 			 << 3), (ftnlen)1, (ftnlen)8);
 		sigerr_("SPICE(NONNATIVEFILE)", (ftnlen)20);
 		chkout_("DASOPR", (ftnlen)6);
@@ -1525,13 +1565,13 @@ L100001:
 	    fthead = new__;
 	    ++nxthan;
 	    fthan[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("fth"
-		    "an", i__1, "dasfm_", (ftnlen)1582)] = nxthan;
+		    "an", i__1, "dasfm_", (ftnlen)1622)] = nxthan;
 	    ftlun[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("ftl"
-		    "un", i__1, "dasfm_", (ftnlen)1583)] = number;
+		    "un", i__1, "dasfm_", (ftnlen)1623)] = number;
 	    ftacc[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("fta"
-		    "cc", i__1, "dasfm_", (ftnlen)1584)] = 1;
+		    "cc", i__1, "dasfm_", (ftnlen)1624)] = 1;
 	    ftlnk[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("ftl"
-		    "nk", i__1, "dasfm_", (ftnlen)1585)] = 1;
+		    "nk", i__1, "dasfm_", (ftnlen)1625)] = 1;
 
 /*           Fill in the file summary.  We already know how many */
 /*           reserved records and comment records there are.  To find */
@@ -1544,15 +1584,15 @@ L100001:
 
 	    cleari_(&c__14, &ftsum[(i__1 = fthead * 14 - 14) < 294 && 0 <= 
 		    i__1 ? i__1 : s_rnge("ftsum", i__1, "dasfm_", (ftnlen)
-		    1597)]);
+		    1637)]);
 	    ftsum[(i__1 = fthead * 14 - 14) < 294 && 0 <= i__1 ? i__1 : 
-		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)1599)] = locrrc;
+		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)1639)] = locrrc;
 	    ftsum[(i__1 = fthead * 14 - 13) < 294 && 0 <= i__1 ? i__1 : 
-		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)1600)] = locrch;
+		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)1640)] = locrch;
 	    ftsum[(i__1 = fthead * 14 - 12) < 294 && 0 <= i__1 ? i__1 : 
-		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)1601)] = loccrc;
+		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)1641)] = loccrc;
 	    ftsum[(i__1 = fthead * 14 - 11) < 294 && 0 <= i__1 ? i__1 : 
-		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)1602)] = loccch;
+		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)1642)] = loccch;
 
 /*           We'll find the values for each data type separately. */
 
@@ -1567,7 +1607,7 @@ L100001:
 /*              record of the current type. */
 
 		ldrec[(i__1 = type__ - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge(
-			"ldrec", i__1, "dasfm_", (ftnlen)1618)] = 0;
+			"ldrec", i__1, "dasfm_", (ftnlen)1658)] = 0;
 
 /*              Find the last directory containing a descriptor of a */
 /*              record cluster of the current type. */
@@ -1575,7 +1615,7 @@ L100001:
 		dasioi_("READ", &number, &nrec, dirrec, (ftnlen)4);
 		maxadr = dirrec[(i__1 = (type__ << 1) + 1) < 256 && 0 <= i__1 
 			? i__1 : s_rnge("dirrec", i__1, "dasfm_", (ftnlen)
-			1626)];
+			1666)];
 		nxtdir = dirrec[1];
 		while(nxtdir > 0) {
 
@@ -1586,10 +1626,10 @@ L100001:
 		    dasioi_("READ", &number, &nxtdir, dirrec, (ftnlen)4);
 		    if (dirrec[(i__1 = (type__ << 1) + 1) < 256 && 0 <= i__1 ?
 			     i__1 : s_rnge("dirrec", i__1, "dasfm_", (ftnlen)
-			    1638)] > 0) {
+			    1678)] > 0) {
 			maxadr = dirrec[(i__1 = (type__ << 1) + 1) < 256 && 0 
 				<= i__1 ? i__1 : s_rnge("dirrec", i__1, "das"
-				"fm_", (ftnlen)1639)];
+				"fm_", (ftnlen)1679)];
 			nrec = nxtdir;
 		    }
 		    nxtdir = dirrec[1];
@@ -1603,15 +1643,15 @@ L100001:
 
 		ftsum[(i__1 = type__ + 5 + fthead * 14 - 15) < 294 && 0 <= 
 			i__1 ? i__1 : s_rnge("ftsum", i__1, "dasfm_", (ftnlen)
-			1654)] = maxadr;
+			1694)] = maxadr;
 		if (maxadr > 0) {
 		    ftsum[(i__1 = type__ + 8 + fthead * 14 - 15) < 294 && 0 <=
 			     i__1 ? i__1 : s_rnge("ftsum", i__1, "dasfm_", (
-			    ftnlen)1657)] = nrec;
+			    ftnlen)1697)] = nrec;
 		} else {
 		    ftsum[(i__1 = type__ + 8 + fthead * 14 - 15) < 294 && 0 <=
 			     i__1 ? i__1 : s_rnge("ftsum", i__1, "dasfm_", (
-			    ftnlen)1659)] = 0;
+			    ftnlen)1699)] = 0;
 		}
 
 /*              We still need to set the word location of the final */
@@ -1636,36 +1676,36 @@ L100001:
 
 		    last = dirrec[(i__1 = type__ << 1) < 256 && 0 <= i__1 ? 
 			    i__1 : s_rnge("dirrec", i__1, "dasfm_", (ftnlen)
-			    1682)] - 1;
+			    1722)] - 1;
 		    dsctyp = dirrec[8];
 		    prvtyp = prev[(i__1 = dsctyp - 1) < 3 && 0 <= i__1 ? i__1 
-			    : s_rnge("prev", i__1, "dasfm_", (ftnlen)1684)];
+			    : s_rnge("prev", i__1, "dasfm_", (ftnlen)1724)];
 		    endrec = nrec;
 		    pos = 9;
 		    while(last < maxadr) {
 			++pos;
 			if (dirrec[(i__1 = pos - 1) < 256 && 0 <= i__1 ? i__1 
 				: s_rnge("dirrec", i__1, "dasfm_", (ftnlen)
-				1692)] > 0) {
+				1732)] > 0) {
 			    curtyp = next[(i__1 = prvtyp - 1) < 3 && 0 <= 
 				    i__1 ? i__1 : s_rnge("next", i__1, "dasf"
-				    "m_", (ftnlen)1693)];
+				    "m_", (ftnlen)1733)];
 			} else {
 			    curtyp = prev[(i__1 = prvtyp - 1) < 3 && 0 <= 
 				    i__1 ? i__1 : s_rnge("prev", i__1, "dasf"
-				    "m_", (ftnlen)1695)];
+				    "m_", (ftnlen)1735)];
 			}
 			if (curtyp == type__) {
 			    last += nw[(i__1 = type__ - 1) < 3 && 0 <= i__1 ? 
 				    i__1 : s_rnge("nw", i__1, "dasfm_", (
-				    ftnlen)1699)] * (i__3 = dirrec[(i__2 = 
+				    ftnlen)1739)] * (i__3 = dirrec[(i__2 = 
 				    pos - 1) < 256 && 0 <= i__2 ? i__2 : 
 				    s_rnge("dirrec", i__2, "dasfm_", (ftnlen)
-				    1699)], abs(i__3));
+				    1739)], abs(i__3));
 			}
 			endrec += (i__2 = dirrec[(i__1 = pos - 1) < 256 && 0 
 				<= i__1 ? i__1 : s_rnge("dirrec", i__1, "das"
-				"fm_", (ftnlen)1702)], abs(i__2));
+				"fm_", (ftnlen)1742)], abs(i__2));
 			prvtyp = curtyp;
 		    }
 
@@ -1675,9 +1715,9 @@ L100001:
 
 		    ftsum[(i__1 = type__ + 11 + fthead * 14 - 15) < 294 && 0 
 			    <= i__1 ? i__1 : s_rnge("ftsum", i__1, "dasfm_", (
-			    ftnlen)1711)] = pos;
+			    ftnlen)1751)] = pos;
 		    ldrec[(i__1 = type__ - 1) < 3 && 0 <= i__1 ? i__1 : 
-			    s_rnge("ldrec", i__1, "dasfm_", (ftnlen)1712)] = 
+			    s_rnge("ldrec", i__1, "dasfm_", (ftnlen)1752)] = 
 			    endrec;
 		} else {
 
@@ -1685,9 +1725,9 @@ L100001:
 
 		    ftsum[(i__1 = type__ + 11 + fthead * 14 - 15) < 294 && 0 
 			    <= i__1 ? i__1 : s_rnge("ftsum", i__1, "dasfm_", (
-			    ftnlen)1719)] = 0;
+			    ftnlen)1759)] = 0;
 		    ldrec[(i__1 = type__ - 1) < 3 && 0 <= i__1 ? i__1 : 
-			    s_rnge("ldrec", i__1, "dasfm_", (ftnlen)1720)] = 
+			    s_rnge("ldrec", i__1, "dasfm_", (ftnlen)1760)] = 
 			    0;
 		}
 	    }
@@ -1710,13 +1750,13 @@ L100001:
 /*           Now NREC is the last directory record. */
 
 	    ftsum[(i__1 = fthead * 14 - 10) < 294 && 0 <= i__1 ? i__1 : 
-		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)1755)] = max(
+		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)1795)] = max(
 		    ldrmax,nrec) + 1;
 
 /*           Insert the new handle into our handle set. */
 
 	    *handle = fthan[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : 
-		    s_rnge("fthan", i__1, "dasfm_", (ftnlen)1760)];
+		    s_rnge("fthan", i__1, "dasfm_", (ftnlen)1800)];
 	    insrti_(handle, fhlist);
 	}
     }
@@ -2100,7 +2140,7 @@ L_dasopw:
 		setmsg_(lngmsg, (ftnlen)1840);
 		errch_("#", fname, (ftnlen)1, fname_len);
 		errch_("#", bfflst + (((i__1 = bff - 1) < 4 && 0 <= i__1 ? 
-			i__1 : s_rnge("bfflst", i__1, "dasfm_", (ftnlen)2159))
+			i__1 : s_rnge("bfflst", i__1, "dasfm_", (ftnlen)2199))
 			 << 3), (ftnlen)1, (ftnlen)8);
 		sigerr_("SPICE(NONNATIVEFILE)", (ftnlen)20);
 		chkout_("DASOPW", (ftnlen)6);
@@ -2188,13 +2228,13 @@ L100002:
 	    fthead = new__;
 	    ++nxthan;
 	    fthan[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("fth"
-		    "an", i__1, "dasfm_", (ftnlen)2230)] = nxthan;
+		    "an", i__1, "dasfm_", (ftnlen)2270)] = nxthan;
 	    ftlun[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("ftl"
-		    "un", i__1, "dasfm_", (ftnlen)2231)] = number;
+		    "un", i__1, "dasfm_", (ftnlen)2271)] = number;
 	    ftacc[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("fta"
-		    "cc", i__1, "dasfm_", (ftnlen)2232)] = 2;
+		    "cc", i__1, "dasfm_", (ftnlen)2272)] = 2;
 	    ftlnk[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("ftl"
-		    "nk", i__1, "dasfm_", (ftnlen)2233)] = 1;
+		    "nk", i__1, "dasfm_", (ftnlen)2273)] = 1;
 
 /*           Fill in the file summary.  We already know how many */
 /*           reserved records and comment records there are.  To find */
@@ -2207,15 +2247,15 @@ L100002:
 
 	    cleari_(&c__14, &ftsum[(i__1 = fthead * 14 - 14) < 294 && 0 <= 
 		    i__1 ? i__1 : s_rnge("ftsum", i__1, "dasfm_", (ftnlen)
-		    2245)]);
+		    2285)]);
 	    ftsum[(i__1 = fthead * 14 - 14) < 294 && 0 <= i__1 ? i__1 : 
-		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)2247)] = locrrc;
+		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)2287)] = locrrc;
 	    ftsum[(i__1 = fthead * 14 - 13) < 294 && 0 <= i__1 ? i__1 : 
-		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)2248)] = locrch;
+		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)2288)] = locrch;
 	    ftsum[(i__1 = fthead * 14 - 12) < 294 && 0 <= i__1 ? i__1 : 
-		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)2249)] = loccrc;
+		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)2289)] = loccrc;
 	    ftsum[(i__1 = fthead * 14 - 11) < 294 && 0 <= i__1 ? i__1 : 
-		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)2250)] = loccch;
+		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)2290)] = loccch;
 
 /*           We'll find the values for each data type separately. */
 
@@ -2230,7 +2270,7 @@ L100002:
 /*              record of the current type. */
 
 		ldrec[(i__1 = type__ - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge(
-			"ldrec", i__1, "dasfm_", (ftnlen)2266)] = 0;
+			"ldrec", i__1, "dasfm_", (ftnlen)2306)] = 0;
 
 /*              Find the last directory containing a descriptor of a */
 /*              record cluster of the current type. */
@@ -2238,7 +2278,7 @@ L100002:
 		dasioi_("READ", &number, &nrec, dirrec, (ftnlen)4);
 		maxadr = dirrec[(i__1 = (type__ << 1) + 1) < 256 && 0 <= i__1 
 			? i__1 : s_rnge("dirrec", i__1, "dasfm_", (ftnlen)
-			2274)];
+			2314)];
 		nxtdir = dirrec[1];
 		while(nxtdir > 0) {
 
@@ -2249,10 +2289,10 @@ L100002:
 		    dasioi_("READ", &number, &nxtdir, dirrec, (ftnlen)4);
 		    if (dirrec[(i__1 = (type__ << 1) + 1) < 256 && 0 <= i__1 ?
 			     i__1 : s_rnge("dirrec", i__1, "dasfm_", (ftnlen)
-			    2286)] > 0) {
+			    2326)] > 0) {
 			maxadr = dirrec[(i__1 = (type__ << 1) + 1) < 256 && 0 
 				<= i__1 ? i__1 : s_rnge("dirrec", i__1, "das"
-				"fm_", (ftnlen)2287)];
+				"fm_", (ftnlen)2327)];
 			nrec = nxtdir;
 		    }
 		    nxtdir = dirrec[1];
@@ -2266,15 +2306,15 @@ L100002:
 
 		ftsum[(i__1 = type__ + 5 + fthead * 14 - 15) < 294 && 0 <= 
 			i__1 ? i__1 : s_rnge("ftsum", i__1, "dasfm_", (ftnlen)
-			2302)] = maxadr;
+			2342)] = maxadr;
 		if (maxadr > 0) {
 		    ftsum[(i__1 = type__ + 8 + fthead * 14 - 15) < 294 && 0 <=
 			     i__1 ? i__1 : s_rnge("ftsum", i__1, "dasfm_", (
-			    ftnlen)2305)] = nrec;
+			    ftnlen)2345)] = nrec;
 		} else {
 		    ftsum[(i__1 = type__ + 8 + fthead * 14 - 15) < 294 && 0 <=
 			     i__1 ? i__1 : s_rnge("ftsum", i__1, "dasfm_", (
-			    ftnlen)2307)] = 0;
+			    ftnlen)2347)] = 0;
 		}
 
 /*              We still need to set the word location of the final */
@@ -2299,36 +2339,36 @@ L100002:
 
 		    last = dirrec[(i__1 = type__ << 1) < 256 && 0 <= i__1 ? 
 			    i__1 : s_rnge("dirrec", i__1, "dasfm_", (ftnlen)
-			    2331)] - 1;
+			    2371)] - 1;
 		    dsctyp = dirrec[8];
 		    prvtyp = prev[(i__1 = dsctyp - 1) < 3 && 0 <= i__1 ? i__1 
-			    : s_rnge("prev", i__1, "dasfm_", (ftnlen)2333)];
+			    : s_rnge("prev", i__1, "dasfm_", (ftnlen)2373)];
 		    endrec = nrec;
 		    pos = 9;
 		    while(last < maxadr) {
 			++pos;
 			if (dirrec[(i__1 = pos - 1) < 256 && 0 <= i__1 ? i__1 
 				: s_rnge("dirrec", i__1, "dasfm_", (ftnlen)
-				2341)] > 0) {
+				2381)] > 0) {
 			    curtyp = next[(i__1 = prvtyp - 1) < 3 && 0 <= 
 				    i__1 ? i__1 : s_rnge("next", i__1, "dasf"
-				    "m_", (ftnlen)2342)];
+				    "m_", (ftnlen)2382)];
 			} else {
 			    curtyp = prev[(i__1 = prvtyp - 1) < 3 && 0 <= 
 				    i__1 ? i__1 : s_rnge("prev", i__1, "dasf"
-				    "m_", (ftnlen)2344)];
+				    "m_", (ftnlen)2384)];
 			}
 			if (curtyp == type__) {
 			    last += nw[(i__1 = type__ - 1) < 3 && 0 <= i__1 ? 
 				    i__1 : s_rnge("nw", i__1, "dasfm_", (
-				    ftnlen)2348)] * (i__3 = dirrec[(i__2 = 
+				    ftnlen)2388)] * (i__3 = dirrec[(i__2 = 
 				    pos - 1) < 256 && 0 <= i__2 ? i__2 : 
 				    s_rnge("dirrec", i__2, "dasfm_", (ftnlen)
-				    2348)], abs(i__3));
+				    2388)], abs(i__3));
 			}
 			endrec += (i__2 = dirrec[(i__1 = pos - 1) < 256 && 0 
 				<= i__1 ? i__1 : s_rnge("dirrec", i__1, "das"
-				"fm_", (ftnlen)2351)], abs(i__2));
+				"fm_", (ftnlen)2391)], abs(i__2));
 			prvtyp = curtyp;
 		    }
 
@@ -2338,9 +2378,9 @@ L100002:
 
 		    ftsum[(i__1 = type__ + 11 + fthead * 14 - 15) < 294 && 0 
 			    <= i__1 ? i__1 : s_rnge("ftsum", i__1, "dasfm_", (
-			    ftnlen)2360)] = pos;
+			    ftnlen)2400)] = pos;
 		    ldrec[(i__1 = type__ - 1) < 3 && 0 <= i__1 ? i__1 : 
-			    s_rnge("ldrec", i__1, "dasfm_", (ftnlen)2361)] = 
+			    s_rnge("ldrec", i__1, "dasfm_", (ftnlen)2401)] = 
 			    endrec;
 		} else {
 
@@ -2348,9 +2388,9 @@ L100002:
 
 		    ftsum[(i__1 = type__ + 11 + fthead * 14 - 15) < 294 && 0 
 			    <= i__1 ? i__1 : s_rnge("ftsum", i__1, "dasfm_", (
-			    ftnlen)2367)] = 0;
+			    ftnlen)2407)] = 0;
 		    ldrec[(i__1 = type__ - 1) < 3 && 0 <= i__1 ? i__1 : 
-			    s_rnge("ldrec", i__1, "dasfm_", (ftnlen)2368)] = 
+			    s_rnge("ldrec", i__1, "dasfm_", (ftnlen)2408)] = 
 			    0;
 		}
 	    }
@@ -2373,13 +2413,13 @@ L100002:
 /*           Now NREC is the last directory record. */
 
 	    ftsum[(i__1 = fthead * 14 - 10) < 294 && 0 <= i__1 ? i__1 : 
-		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)2403)] = max(
+		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)2443)] = max(
 		    ldrmax,nrec) + 1;
 
 /*           Insert the new handle into our handle set. */
 
 	    *handle = fthan[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : 
-		    s_rnge("fthan", i__1, "dasfm_", (ftnlen)2408)];
+		    s_rnge("fthan", i__1, "dasfm_", (ftnlen)2448)];
 	    insrti_(handle, fhlist);
 	}
     }
@@ -2818,22 +2858,22 @@ L_dasonw:
 	    fthead = new__;
 	    cleari_(&c__14, &ftsum[(i__1 = fthead * 14 - 14) < 294 && 0 <= 
 		    i__1 ? i__1 : s_rnge("ftsum", i__1, "dasfm_", (ftnlen)
-		    2886)]);
+		    2926)]);
 	    fthan[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("fth"
-		    "an", i__1, "dasfm_", (ftnlen)2888)] = nxthan;
+		    "an", i__1, "dasfm_", (ftnlen)2928)] = nxthan;
 	    ftlun[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("ftl"
-		    "un", i__1, "dasfm_", (ftnlen)2889)] = number;
+		    "un", i__1, "dasfm_", (ftnlen)2929)] = number;
 	    ftacc[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("fta"
-		    "cc", i__1, "dasfm_", (ftnlen)2890)] = 2;
+		    "cc", i__1, "dasfm_", (ftnlen)2930)] = 2;
 	    ftlnk[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("ftl"
-		    "nk", i__1, "dasfm_", (ftnlen)2891)] = 1;
+		    "nk", i__1, "dasfm_", (ftnlen)2931)] = 1;
 	    ftsum[(i__1 = fthead * 14 - 10) < 294 && 0 <= i__1 ? i__1 : 
-		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)2892)] = *ncomr + 
+		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)2932)] = *ncomr + 
 		    3;
 	    ftsum[(i__1 = fthead * 14 - 12) < 294 && 0 <= i__1 ? i__1 : 
-		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)2893)] = *ncomr;
+		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)2933)] = *ncomr;
 	    *handle = fthan[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : 
-		    s_rnge("fthan", i__1, "dasfm_", (ftnlen)2895)];
+		    s_rnge("fthan", i__1, "dasfm_", (ftnlen)2935)];
 
 /*           Insert the new handle into our handle set. */
 
@@ -3190,19 +3230,19 @@ L_dasopn:
 	    fthead = new__;
 	    cleari_(&c__14, &ftsum[(i__1 = fthead * 14 - 14) < 294 && 0 <= 
 		    i__1 ? i__1 : s_rnge("ftsum", i__1, "dasfm_", (ftnlen)
-		    3284)]);
+		    3324)]);
 	    fthan[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("fth"
-		    "an", i__1, "dasfm_", (ftnlen)3286)] = nxthan;
+		    "an", i__1, "dasfm_", (ftnlen)3326)] = nxthan;
 	    ftlun[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("ftl"
-		    "un", i__1, "dasfm_", (ftnlen)3287)] = number;
+		    "un", i__1, "dasfm_", (ftnlen)3327)] = number;
 	    ftacc[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("fta"
-		    "cc", i__1, "dasfm_", (ftnlen)3288)] = 2;
+		    "cc", i__1, "dasfm_", (ftnlen)3328)] = 2;
 	    ftlnk[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("ftl"
-		    "nk", i__1, "dasfm_", (ftnlen)3289)] = 1;
+		    "nk", i__1, "dasfm_", (ftnlen)3329)] = 1;
 	    ftsum[(i__1 = fthead * 14 - 10) < 294 && 0 <= i__1 ? i__1 : 
-		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)3290)] = 3;
+		    s_rnge("ftsum", i__1, "dasfm_", (ftnlen)3330)] = 3;
 	    *handle = fthan[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : 
-		    s_rnge("fthan", i__1, "dasfm_", (ftnlen)3292)];
+		    s_rnge("fthan", i__1, "dasfm_", (ftnlen)3332)];
 
 /*           Insert the new handle into our handle set. */
 
@@ -3563,19 +3603,19 @@ L100003:
 		fthead = new__;
 		cleari_(&c__14, &ftsum[(i__1 = fthead * 14 - 14) < 294 && 0 <=
 			 i__1 ? i__1 : s_rnge("ftsum", i__1, "dasfm_", (
-			ftnlen)3650)]);
+			ftnlen)3690)]);
 		fthan[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge(
-			"fthan", i__1, "dasfm_", (ftnlen)3652)] = nxthan;
+			"fthan", i__1, "dasfm_", (ftnlen)3692)] = nxthan;
 		ftlun[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge(
-			"ftlun", i__1, "dasfm_", (ftnlen)3653)] = number;
+			"ftlun", i__1, "dasfm_", (ftnlen)3693)] = number;
 		ftacc[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge(
-			"ftacc", i__1, "dasfm_", (ftnlen)3654)] = 2;
+			"ftacc", i__1, "dasfm_", (ftnlen)3694)] = 2;
 		ftlnk[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge(
-			"ftlnk", i__1, "dasfm_", (ftnlen)3655)] = 1;
+			"ftlnk", i__1, "dasfm_", (ftnlen)3695)] = 1;
 		ftsum[(i__1 = fthead * 14 - 10) < 294 && 0 <= i__1 ? i__1 : 
-			s_rnge("ftsum", i__1, "dasfm_", (ftnlen)3656)] = 3;
+			s_rnge("ftsum", i__1, "dasfm_", (ftnlen)3696)] = 3;
 		*handle = fthan[(i__1 = fthead - 1) < 21 && 0 <= i__1 ? i__1 :
-			 s_rnge("fthan", i__1, "dasfm_", (ftnlen)3658)];
+			 s_rnge("fthan", i__1, "dasfm_", (ftnlen)3698)];
 
 /*              Insert the new handle into our handle set. */
 
@@ -3814,7 +3854,7 @@ L_dasllc:
     found = FALSE_;
     while(! found && findex > 0) {
 	if (fthan[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("fth"
-		"an", i__1, "dasfm_", (ftnlen)3916)] == *handle) {
+		"an", i__1, "dasfm_", (ftnlen)3956)] == *handle) {
 	    found = TRUE_;
 	} else {
 	    findex = lnknxt_(&findex, pool);
@@ -3828,11 +3868,11 @@ L_dasllc:
 
     if (found) {
 	ftlnk[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("ftlnk", 
-		i__1, "dasfm_", (ftnlen)3932)] = ftlnk[(i__2 = findex - 1) < 
+		i__1, "dasfm_", (ftnlen)3972)] = ftlnk[(i__2 = findex - 1) < 
 		21 && 0 <= i__2 ? i__2 : s_rnge("ftlnk", i__2, "dasfm_", (
-		ftnlen)3932)] - 1;
+		ftnlen)3972)] - 1;
 	if (ftlnk[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("ftl"
-		"nk", i__1, "dasfm_", (ftnlen)3934)] == 0) {
+		"nk", i__1, "dasfm_", (ftnlen)3974)] == 0) {
 
 /*           Close this file and delete it from the active list. */
 /*           If this was the head node of the list, the head node */
@@ -3841,7 +3881,7 @@ L_dasllc:
 
 	    cl__1.cerr = 0;
 	    cl__1.cunit = ftlun[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 :
-		     s_rnge("ftlun", i__1, "dasfm_", (ftnlen)3941)];
+		     s_rnge("ftlun", i__1, "dasfm_", (ftnlen)3981)];
 	    cl__1.csta = 0;
 	    f_clos(&cl__1);
 	    if (findex == fthead) {
@@ -4134,7 +4174,7 @@ L_dashfs:
     found = FALSE_;
     while(! found && findex > 0) {
 	if (fthan[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("fth"
-		"an", i__1, "dasfm_", (ftnlen)4259)] == *handle) {
+		"an", i__1, "dasfm_", (ftnlen)4299)] == *handle) {
 	    found = TRUE_;
 	} else {
 	    findex = lnknxt_(&findex, pool);
@@ -4145,28 +4185,28 @@ L_dashfs:
 /*        Give the caller the current summary from the file table. */
 
 	*nresvr = ftsum[(i__1 = findex * 14 - 14) < 294 && 0 <= i__1 ? i__1 : 
-		s_rnge("ftsum", i__1, "dasfm_", (ftnlen)4272)];
+		s_rnge("ftsum", i__1, "dasfm_", (ftnlen)4312)];
 	*nresvc = ftsum[(i__1 = findex * 14 - 13) < 294 && 0 <= i__1 ? i__1 : 
-		s_rnge("ftsum", i__1, "dasfm_", (ftnlen)4273)];
+		s_rnge("ftsum", i__1, "dasfm_", (ftnlen)4313)];
 	*ncomr = ftsum[(i__1 = findex * 14 - 12) < 294 && 0 <= i__1 ? i__1 : 
-		s_rnge("ftsum", i__1, "dasfm_", (ftnlen)4274)];
+		s_rnge("ftsum", i__1, "dasfm_", (ftnlen)4314)];
 	*ncomc = ftsum[(i__1 = findex * 14 - 11) < 294 && 0 <= i__1 ? i__1 : 
-		s_rnge("ftsum", i__1, "dasfm_", (ftnlen)4275)];
+		s_rnge("ftsum", i__1, "dasfm_", (ftnlen)4315)];
 	*free = ftsum[(i__1 = findex * 14 - 10) < 294 && 0 <= i__1 ? i__1 : 
-		s_rnge("ftsum", i__1, "dasfm_", (ftnlen)4276)];
+		s_rnge("ftsum", i__1, "dasfm_", (ftnlen)4316)];
 	for (i__ = 1; i__ <= 3; ++i__) {
 	    lastla[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("lastla",
-		     i__1, "dasfm_", (ftnlen)4279)] = ftsum[(i__2 = i__ + 5 + 
+		     i__1, "dasfm_", (ftnlen)4319)] = ftsum[(i__2 = i__ + 5 + 
 		    findex * 14 - 15) < 294 && 0 <= i__2 ? i__2 : s_rnge(
-		    "ftsum", i__2, "dasfm_", (ftnlen)4279)];
+		    "ftsum", i__2, "dasfm_", (ftnlen)4319)];
 	    lastrc[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("lastrc",
-		     i__1, "dasfm_", (ftnlen)4280)] = ftsum[(i__2 = i__ + 8 + 
+		     i__1, "dasfm_", (ftnlen)4320)] = ftsum[(i__2 = i__ + 8 + 
 		    findex * 14 - 15) < 294 && 0 <= i__2 ? i__2 : s_rnge(
-		    "ftsum", i__2, "dasfm_", (ftnlen)4280)];
+		    "ftsum", i__2, "dasfm_", (ftnlen)4320)];
 	    lastwd[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("lastwd",
-		     i__1, "dasfm_", (ftnlen)4281)] = ftsum[(i__2 = i__ + 11 
+		     i__1, "dasfm_", (ftnlen)4321)] = ftsum[(i__2 = i__ + 11 
 		    + findex * 14 - 15) < 294 && 0 <= i__2 ? i__2 : s_rnge(
-		    "ftsum", i__2, "dasfm_", (ftnlen)4281)];
+		    "ftsum", i__2, "dasfm_", (ftnlen)4321)];
 	}
     } else {
 	setmsg_("There is no DAS file open with handle = #", (ftnlen)41);
@@ -4480,7 +4520,7 @@ L_dasufs:
     found = FALSE_;
     while(! found && findex > 0) {
 	if (fthan[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("fth"
-		"an", i__1, "dasfm_", (ftnlen)4620)] == *handle) {
+		"an", i__1, "dasfm_", (ftnlen)4660)] == *handle) {
 	    found = TRUE_;
 	} else {
 	    findex = lnknxt_(&findex, pool);
@@ -4493,13 +4533,13 @@ L_dasufs:
 /*        open for read access only. */
 
 	if (ftacc[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("fta"
-		"cc", i__1, "dasfm_", (ftnlen)4635)] != 2) {
+		"cc", i__1, "dasfm_", (ftnlen)4675)] != 2) {
 	    chkin_("DASUFS", (ftnlen)6);
 	    setmsg_("DAS file not open for writing. Handle = #, file = '#'.", 
 		    (ftnlen)54);
 	    errint_("#", handle, (ftnlen)1);
 	    errfnm_("#", &ftlun[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 :
-		     s_rnge("ftlun", i__1, "dasfm_", (ftnlen)4641)], (ftnlen)
+		     s_rnge("ftlun", i__1, "dasfm_", (ftnlen)4681)], (ftnlen)
 		    1);
 	    sigerr_("SPICE(DASINVALIDACCESS)", (ftnlen)23);
 	    chkout_("DASUFS", (ftnlen)6);
@@ -4511,18 +4551,18 @@ L_dasufs:
 /*        counts in the file record.  Otherwise, leave the file alone. */
 
 	if (*nresvr != ftsum[(i__1 = findex * 14 - 14) < 294 && 0 <= i__1 ? 
-		i__1 : s_rnge("ftsum", i__1, "dasfm_", (ftnlen)4653)] || *
+		i__1 : s_rnge("ftsum", i__1, "dasfm_", (ftnlen)4693)] || *
 		nresvc != ftsum[(i__2 = findex * 14 - 13) < 294 && 0 <= i__2 ?
-		 i__2 : s_rnge("ftsum", i__2, "dasfm_", (ftnlen)4653)] || *
+		 i__2 : s_rnge("ftsum", i__2, "dasfm_", (ftnlen)4693)] || *
 		ncomr != ftsum[(i__3 = findex * 14 - 12) < 294 && 0 <= i__3 ? 
-		i__3 : s_rnge("ftsum", i__3, "dasfm_", (ftnlen)4653)] || *
+		i__3 : s_rnge("ftsum", i__3, "dasfm_", (ftnlen)4693)] || *
 		ncomc != ftsum[(i__5 = findex * 14 - 11) < 294 && 0 <= i__5 ? 
-		i__5 : s_rnge("ftsum", i__5, "dasfm_", (ftnlen)4653)]) {
+		i__5 : s_rnge("ftsum", i__5, "dasfm_", (ftnlen)4693)]) {
 
 /*           Read the file record. */
 
 	    io___53.ciunit = ftlun[(i__1 = findex - 1) < 21 && 0 <= i__1 ? 
-		    i__1 : s_rnge("ftlun", i__1, "dasfm_", (ftnlen)4661)];
+		    i__1 : s_rnge("ftlun", i__1, "dasfm_", (ftnlen)4701)];
 	    iostat = s_rdue(&io___53);
 	    if (iostat != 0) {
 		goto L100004;
@@ -4566,7 +4606,7 @@ L100004:
 		setmsg_("Attempt to read file record failed. File was '#'.  "
 			"Value of IOSTAT was '#'.", (ftnlen)75);
 		errfnm_("#", &ftlun[(i__1 = findex - 1) < 21 && 0 <= i__1 ? 
-			i__1 : s_rnge("ftlun", i__1, "dasfm_", (ftnlen)4678)],
+			i__1 : s_rnge("ftlun", i__1, "dasfm_", (ftnlen)4718)],
 			 (ftnlen)1);
 		errint_("#", &iostat, (ftnlen)1);
 		sigerr_("SPICE(DASREADFAIL)", (ftnlen)18);
@@ -4574,7 +4614,7 @@ L100004:
 		return 0;
 	    }
 	    io___55.ciunit = ftlun[(i__1 = findex - 1) < 21 && 0 <= i__1 ? 
-		    i__1 : s_rnge("ftlun", i__1, "dasfm_", (ftnlen)4686)];
+		    i__1 : s_rnge("ftlun", i__1, "dasfm_", (ftnlen)4726)];
 	    iostat = s_wdue(&io___55);
 	    if (iostat != 0) {
 		goto L100005;
@@ -4621,13 +4661,13 @@ L100005:
 		chkin_("DASUFS", (ftnlen)6);
 		cl__1.cerr = 0;
 		cl__1.cunit = ftlun[(i__1 = findex - 1) < 21 && 0 <= i__1 ? 
-			i__1 : s_rnge("ftlun", i__1, "dasfm_", (ftnlen)4701)];
+			i__1 : s_rnge("ftlun", i__1, "dasfm_", (ftnlen)4741)];
 		cl__1.csta = 0;
 		f_clos(&cl__1);
 		setmsg_("Attempt to update file record failed. File was '#'."
 			"  Value of IOSTAT was '#'.", (ftnlen)77);
 		errfnm_("#", &ftlun[(i__1 = findex - 1) < 21 && 0 <= i__1 ? 
-			i__1 : s_rnge("ftlun", i__1, "dasfm_", (ftnlen)4706)],
+			i__1 : s_rnge("ftlun", i__1, "dasfm_", (ftnlen)4746)],
 			 (ftnlen)1);
 		errint_("#", &iostat, (ftnlen)1);
 		sigerr_("SPICE(DASWRITEFAIL)", (ftnlen)19);
@@ -4639,28 +4679,28 @@ L100005:
 /*        Update the file table. */
 
 	ftsum[(i__1 = findex * 14 - 14) < 294 && 0 <= i__1 ? i__1 : s_rnge(
-		"ftsum", i__1, "dasfm_", (ftnlen)4719)] = *nresvr;
+		"ftsum", i__1, "dasfm_", (ftnlen)4759)] = *nresvr;
 	ftsum[(i__1 = findex * 14 - 13) < 294 && 0 <= i__1 ? i__1 : s_rnge(
-		"ftsum", i__1, "dasfm_", (ftnlen)4720)] = *nresvc;
+		"ftsum", i__1, "dasfm_", (ftnlen)4760)] = *nresvc;
 	ftsum[(i__1 = findex * 14 - 12) < 294 && 0 <= i__1 ? i__1 : s_rnge(
-		"ftsum", i__1, "dasfm_", (ftnlen)4721)] = *ncomr;
+		"ftsum", i__1, "dasfm_", (ftnlen)4761)] = *ncomr;
 	ftsum[(i__1 = findex * 14 - 11) < 294 && 0 <= i__1 ? i__1 : s_rnge(
-		"ftsum", i__1, "dasfm_", (ftnlen)4722)] = *ncomc;
+		"ftsum", i__1, "dasfm_", (ftnlen)4762)] = *ncomc;
 	ftsum[(i__1 = findex * 14 - 10) < 294 && 0 <= i__1 ? i__1 : s_rnge(
-		"ftsum", i__1, "dasfm_", (ftnlen)4723)] = *free;
+		"ftsum", i__1, "dasfm_", (ftnlen)4763)] = *free;
 	for (i__ = 1; i__ <= 3; ++i__) {
 	    ftsum[(i__1 = i__ + 5 + findex * 14 - 15) < 294 && 0 <= i__1 ? 
-		    i__1 : s_rnge("ftsum", i__1, "dasfm_", (ftnlen)4726)] = 
+		    i__1 : s_rnge("ftsum", i__1, "dasfm_", (ftnlen)4766)] = 
 		    lastla[(i__2 = i__ - 1) < 3 && 0 <= i__2 ? i__2 : s_rnge(
-		    "lastla", i__2, "dasfm_", (ftnlen)4726)];
+		    "lastla", i__2, "dasfm_", (ftnlen)4766)];
 	    ftsum[(i__1 = i__ + 8 + findex * 14 - 15) < 294 && 0 <= i__1 ? 
-		    i__1 : s_rnge("ftsum", i__1, "dasfm_", (ftnlen)4727)] = 
+		    i__1 : s_rnge("ftsum", i__1, "dasfm_", (ftnlen)4767)] = 
 		    lastrc[(i__2 = i__ - 1) < 3 && 0 <= i__2 ? i__2 : s_rnge(
-		    "lastrc", i__2, "dasfm_", (ftnlen)4727)];
+		    "lastrc", i__2, "dasfm_", (ftnlen)4767)];
 	    ftsum[(i__1 = i__ + 11 + findex * 14 - 15) < 294 && 0 <= i__1 ? 
-		    i__1 : s_rnge("ftsum", i__1, "dasfm_", (ftnlen)4728)] = 
+		    i__1 : s_rnge("ftsum", i__1, "dasfm_", (ftnlen)4768)] = 
 		    lastwd[(i__2 = i__ - 1) < 3 && 0 <= i__2 ? i__2 : s_rnge(
-		    "lastwd", i__2, "dasfm_", (ftnlen)4728)];
+		    "lastwd", i__2, "dasfm_", (ftnlen)4768)];
 	}
     } else {
 	chkin_("DASUFS", (ftnlen)6);
@@ -4853,7 +4893,7 @@ L_dashlu:
     found = FALSE_;
     while(! found && findex > 0) {
 	if (fthan[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("fth"
-		"an", i__1, "dasfm_", (ftnlen)4940)] == *handle) {
+		"an", i__1, "dasfm_", (ftnlen)4980)] == *handle) {
 	    found = TRUE_;
 	} else {
 	    findex = lnknxt_(&findex, pool);
@@ -4861,7 +4901,7 @@ L_dashlu:
     }
     if (found) {
 	*unit = ftlun[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge(
-		"ftlun", i__1, "dasfm_", (ftnlen)4951)];
+		"ftlun", i__1, "dasfm_", (ftnlen)4991)];
     } else {
 	chkin_("DASHLU", (ftnlen)6);
 	setmsg_("There is no file open with handle = #", (ftnlen)37);
@@ -5058,7 +5098,7 @@ L_dasluh:
     found = FALSE_;
     while(! found && findex > 0) {
 	if (ftlun[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("ftl"
-		"un", i__1, "dasfm_", (ftnlen)5165)] == *unit) {
+		"un", i__1, "dasfm_", (ftnlen)5205)] == *unit) {
 	    found = TRUE_;
 	} else {
 	    findex = lnknxt_(&findex, pool);
@@ -5066,7 +5106,7 @@ L_dasluh:
     }
     if (found) {
 	*handle = fthan[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge(
-		"fthan", i__1, "dasfm_", (ftnlen)5175)];
+		"fthan", i__1, "dasfm_", (ftnlen)5215)];
     } else {
 	setmsg_("There is no DAS file open with unit = #", (ftnlen)39);
 	errint_("#", unit, (ftnlen)1);
@@ -5277,7 +5317,7 @@ L_dashfn:
     found = FALSE_;
     while(! found && findex > 0) {
 	if (fthan[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("fth"
-		"an", i__1, "dasfm_", (ftnlen)5403)] == *handle) {
+		"an", i__1, "dasfm_", (ftnlen)5443)] == *handle) {
 	    found = TRUE_;
 	} else {
 	    findex = lnknxt_(&findex, pool);
@@ -5286,7 +5326,7 @@ L_dashfn:
     if (found) {
 	ioin__1.inerr = 0;
 	ioin__1.inunit = ftlun[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : 
-		s_rnge("ftlun", i__1, "dasfm_", (ftnlen)5413)];
+		s_rnge("ftlun", i__1, "dasfm_", (ftnlen)5453)];
 	ioin__1.infile = 0;
 	ioin__1.inex = 0;
 	ioin__1.inopen = 0;
@@ -5517,7 +5557,7 @@ L_dasfnh:
     found = FALSE_;
     while(! found && findex > 0) {
 	if (ftlun[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("ftl"
-		"un", i__1, "dasfm_", (ftnlen)5631)] == number) {
+		"un", i__1, "dasfm_", (ftnlen)5671)] == number) {
 	    found = TRUE_;
 	} else {
 	    findex = lnknxt_(&findex, pool);
@@ -5525,7 +5565,7 @@ L_dasfnh:
     }
     if (found) {
 	*handle = fthan[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge(
-		"fthan", i__1, "dasfm_", (ftnlen)5641)];
+		"fthan", i__1, "dasfm_", (ftnlen)5681)];
     } else {
 	setmsg_("There is no DAS file in the table with file name = '#'", (
 		ftnlen)54);
@@ -5992,7 +6032,7 @@ L_dassih:
 	found = FALSE_;
 	while(! found && findex > 0) {
 	    if (fthan[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge(
-		    "fthan", i__1, "dasfm_", (ftnlen)6144)] == *handle) {
+		    "fthan", i__1, "dasfm_", (ftnlen)6184)] == *handle) {
 		found = TRUE_;
 	    } else {
 		findex = lnknxt_(&findex, pool);
@@ -6004,14 +6044,14 @@ L_dassih:
 
 	if (s_cmp(acc, "WRITE", (ftnlen)10, (ftnlen)5) == 0 && ftacc[(i__1 = 
 		findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("ftacc", i__1, 
-		"dasfm_", (ftnlen)6156)] != 2) {
+		"dasfm_", (ftnlen)6196)] != 2) {
 
 /*           If the access type is 'WRITE', the DAS file must be open */
 /*           for writing. */
 
 	    ioin__1.inerr = 0;
 	    ioin__1.inunit = ftlun[(i__1 = findex - 1) < 21 && 0 <= i__1 ? 
-		    i__1 : s_rnge("ftlun", i__1, "dasfm_", (ftnlen)6162)];
+		    i__1 : s_rnge("ftlun", i__1, "dasfm_", (ftnlen)6202)];
 	    ioin__1.infile = 0;
 	    ioin__1.inex = 0;
 	    ioin__1.inopen = 0;
@@ -6244,7 +6284,7 @@ L_dasham:
     found = FALSE_;
     while(! found && findex > 0) {
 	if (fthan[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("fth"
-		"an", i__1, "dasfm_", (ftnlen)6395)] == *handle) {
+		"an", i__1, "dasfm_", (ftnlen)6435)] == *handle) {
 	    found = TRUE_;
 	} else {
 	    findex = lnknxt_(&findex, pool);
@@ -6263,7 +6303,7 @@ L_dasham:
 /*     argument accordingly. */
 
     if (ftacc[(i__1 = findex - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("ftacc", 
-	    i__1, "dasfm_", (ftnlen)6418)] == 1) {
+	    i__1, "dasfm_", (ftnlen)6458)] == 1) {
 	s_copy(access, "READ", access_len, (ftnlen)4);
     } else {
 	s_copy(access, "WRITE", access_len, (ftnlen)5);

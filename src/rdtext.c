@@ -286,6 +286,46 @@ static integer c__1 = 1;
 
 /* $ Version */
 
+/* -    SPICELIB Version 6.20.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL. */
+
+/* -    SPICELIB Version 6.19.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-CC_C. */
+
+/* -    SPICELIB Version 6.18.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-64BIT-CC_C. */
+
+/* -    SPICELIB Version 6.17.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-NATIVE_C. */
+
+/* -    SPICELIB Version 6.16.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-WINDOWS-64BIT-IFORT. */
+
+/* -    SPICELIB Version 6.15.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 6.14.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-64BIT-MS_C. */
+
+/* -    SPICELIB Version 6.13.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-INTEL_C. */
+
+/* -    SPICELIB Version 6.12.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 6.11.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-GFORTRAN. */
+
 /* -    SPICELIB Version 6.10.0, 18-MAR-2009 (BVS) */
 
 /*        Updated for PC-LINUX-GFORTRAN. */
@@ -615,12 +655,12 @@ static integer c__1 = 1;
 
 	    ++n;
 	    units[(i__1 = n - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge("units", 
-		    i__1, "rdtext_", (ftnlen)599)] = unit;
+		    i__1, "rdtext_", (ftnlen)639)] = unit;
 	    index = n;
 	}
 	s_copy(lstfil, file, (ftnlen)128, file_len);
 	lstunt = units[(i__1 = index - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge(
-		"units", i__1, "rdtext_", (ftnlen)605)];
+		"units", i__1, "rdtext_", (ftnlen)645)];
     }
 
 /*     This is the easy part. Read the next line from the file. */
@@ -650,15 +690,15 @@ L100001:
     if (iostat != 0) {
 	cl__1.cerr = 0;
 	cl__1.cunit = units[(i__1 = index - 1) < 20 && 0 <= i__1 ? i__1 : 
-		s_rnge("units", i__1, "rdtext_", (ftnlen)629)];
+		s_rnge("units", i__1, "rdtext_", (ftnlen)669)];
 	cl__1.csta = 0;
 	f_clos(&cl__1);
 	i__1 = n;
 	for (i__ = index + 1; i__ <= i__1; ++i__) {
 	    units[(i__2 = i__ - 2) < 20 && 0 <= i__2 ? i__2 : s_rnge("units", 
-		    i__2, "rdtext_", (ftnlen)632)] = units[(i__3 = i__ - 1) < 
+		    i__2, "rdtext_", (ftnlen)672)] = units[(i__3 = i__ - 1) < 
 		    20 && 0 <= i__3 ? i__3 : s_rnge("units", i__3, "rdtext_", 
-		    (ftnlen)632)];
+		    (ftnlen)672)];
 	}
 	--n;
 
@@ -910,11 +950,11 @@ L_cltext:
     if (index > 0) {
 	cl__1.cerr = 0;
 	cl__1.cunit = units[(i__1 = index - 1) < 20 && 0 <= i__1 ? i__1 : 
-		s_rnge("units", i__1, "rdtext_", (ftnlen)892)];
+		s_rnge("units", i__1, "rdtext_", (ftnlen)932)];
 	cl__1.csta = 0;
 	f_clos(&cl__1);
 	if (units[(i__1 = index - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge("units"
-		, i__1, "rdtext_", (ftnlen)894)] == lstunt) {
+		, i__1, "rdtext_", (ftnlen)934)] == lstunt) {
 	    s_copy(lstfil, " ", (ftnlen)128, (ftnlen)1);
 	}
 
@@ -924,9 +964,9 @@ L_cltext:
 	i__1 = n;
 	for (i__ = index + 1; i__ <= i__1; ++i__) {
 	    units[(i__2 = i__ - 2) < 20 && 0 <= i__2 ? i__2 : s_rnge("units", 
-		    i__2, "rdtext_", (ftnlen)903)] = units[(i__3 = i__ - 1) < 
+		    i__2, "rdtext_", (ftnlen)943)] = units[(i__3 = i__ - 1) < 
 		    20 && 0 <= i__3 ? i__3 : s_rnge("units", i__3, "rdtext_", 
-		    (ftnlen)903)];
+		    (ftnlen)943)];
 	}
 	--n;
     }

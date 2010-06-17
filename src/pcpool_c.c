@@ -69,7 +69,8 @@
 -Detailed_Input
  
    name       is the name of the kernel pool variable to associate 
-              with the values supplied in the array cvals. 
+              with the values supplied in the array cvals. 'name' is
+              restricted to a length of 32 characters or less. 
  
    n          is the number of values to insert into the kernel pool. 
  
@@ -86,10 +87,6 @@
    None. 
  
 -Parameters
- 
-   None. 
- 
--Files
  
    None. 
  
@@ -115,6 +112,13 @@
  
    6) If the input cvals string length is less than 2, the error
       SPICE(STRINGTOOSHORT) will be signaled.
+
+   7) The error 'SPICE(BADVARNAME)' signals if the kernel pool
+      variable name length exceeds 32.
+
+-Files
+ 
+   None. 
  
 -Particulars
  
@@ -212,17 +216,24 @@
  
    None. 
  
+-Literature_References
+ 
+   None. 
+ 
 -Author_and_Institution
  
    N.J. Bachman    (JPL)
    W.L. Taber      (JPL) 
  
--Literature_References
- 
-   None. 
- 
 -Version
- 
+
+   -CSPICE Version 1.3.2,  10-FEB-2010 (EDW)
+
+      Added mention of the restriction on kernel pool variable 
+      names to 32 characters or less.
+
+      Reordered header sections to conform to SPICE convention.
+
    -CSPICE Version 1.3.1, 17-NOV-2005 (NJB)
 
       Replaced code fragment in Examples section of header with 

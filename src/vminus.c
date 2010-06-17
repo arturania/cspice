@@ -10,7 +10,7 @@
 {
 /* $ Abstract */
 
-/*      Negate a double precision 3-dimensional vector. */
+/*     Negate a double precision 3-dimensional vector. */
 
 /* $ Disclaimer */
 
@@ -43,79 +43,81 @@
 
 /* $ Keywords */
 
-/*      VECTOR */
+/*     VECTOR */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*       V1        I     Vector to be negated. */
-/*       VOUT      O     Negated vector -V1. VOUT can overwrite V1. */
-
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     V1         I   Vector to be negated. */
+/*     VOUT       O   Negated vector -V1. */
 
 /* $ Detailed_Input */
 
-/*      V1      This may be any 3-dimensional, double precision vector. */
+/*     V1      This may be any 3-dimensional, double precision vector. */
 
 /* $ Detailed_Output */
 
-/*      VOUT    This will be the negation (additive inverse) of V1.  It */
-/*              is a 3-dimensional, double precision vector.  VOUT may */
-/*              overwrite V1. */
+/*     VOUT    This will be the negation (additive inverse) of V1.  It */
+/*             is a 3-dimensional, double precision vector. */
 
 /* $ Parameters */
 
 /*     None. */
 
-/* $ Particulars */
-
-/*      VMINUS implements (by components) the expression VMINUS = -V1. */
-/*      No error checking is performed since overflow can occur ONLY if */
-/*      the dynamic range of positive floating point numbers is not the */
-/*      same size as the dynamic range of negative floating point */
-/*      numbers AND at least one component of V1 falls outside the */
-/*      common range.  The likelihood of this occuring is so small as to */
-/*      be of no concern. */
-
-/* $ Examples */
-
-/*      The following table shows the output VOUT as a function of the */
-/*      the input V1 from the subroutine VMINUS. */
-
-/*      V1                     VOUT */
-/*      ------------------------------------------------------- */
-/*      (1D0, -2D0, 0D0)       (-1D0, 2D0, 0D0) */
-/*      (0D0, 0D0, 0D0)        (0D0, 0D0, 0D0) */
-
-/* $ Restrictions */
-
-/*      None. */
-
 /* $ Exceptions */
 
-/*      Error free. */
+/*     Error free. */
 
 /* $ Files */
 
-/*      None. */
+/*     None. */
 
-/* $ Author_and_Institution */
+/* $ Particulars */
 
-/*      W.M. Owen       (JPL) */
+/*     VMINUS implements (by components) the expression VMINUS = -V1. No */
+/*     error checking is performed since overflow can occur ONLY if the */
+/*     dynamic range of positive floating point numbers is not the same */
+/*     size as the dynamic range of negative floating point numbers AND */
+/*     at least one component of V1 falls outside the common range.  The */
+/*     likelihood of this occuring is so small as to be of no concern. */
+
+/* $ Examples */
+
+/*     The following table shows the output VOUT as a function of the */
+/*     the input V1 from the subroutine VMINUS. */
+
+/*        V1                     VOUT */
+/*        --------------------------------------- */
+/*        (1D0, -2D0, 0D0)       (-1D0, 2D0, 0D0) */
+/*        (0D0, 0D0, 0D0)        (0D0, 0D0, 0D0) */
+
+/* $ Restrictions */
+
+/*     None. */
 
 /* $ Literature_References */
 
-/*      None. */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     W.M. Owen       (JPL) */
 
 /* $ Version */
 
-/* -     SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+/* -    SPICELIB Version 1.0.2, 23-APR-2010 (NJB) */
 
-/*         Comment section for permuted index source lines was added */
-/*         following the header. */
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
-/* -     SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
+/* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
+
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
 
 /* -& */
 /* $ Index_Entries */

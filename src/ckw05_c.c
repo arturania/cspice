@@ -291,9 +291,8 @@
        the data stored in the segment will not be subject to this 
        sort of ambiguity. 
  
-  12)  If the squared length of any quaternion differe from 1 
-       by more than 1.0e-2, the error SPICE(NONUNITQUATERNION) is 
-       signaled. 
+  12)  If any quaternion is the zero vector, the error 
+       SPICE(ZEROQUATERNION) is signaled. 
  
   13)  If the interpolation window size implied by degree is not 
        even, the error SPICE(INVALIDDEGREE) is signaled.  The window 
@@ -608,6 +607,12 @@
  
 -Version
  
+   -CSPICE Version 2.0.0, 01-JUN-2010 (NJB)
+
+      The check for non-unit quaternions has been replaced
+      with a check for zero-length quaternions. (The
+      implementation of the check is located in ckw05_.)
+
    -CSPICE Version 1.0.2, 27-FEB-2008 (NJB)
 
       Updated header; added information about SPICE 

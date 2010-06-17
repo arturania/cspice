@@ -70,11 +70,11 @@
 
 /*     NORMAL, */
 /*     CONST          are, respectively, a normal vector and constant */
-/*                    defining a plane.  NORMAL need not be a unit */
-/*                    vector.  Let the symbol < a, b > indicate the */
-/*                    inner product of vectors a and b; then the */
-/*                    then the geometric plane is the set of vectors X */
-/*                    in three-dimensional space that satisfy */
+/*                    defining a plane. NORMAL need not be a unit */
+/*                    vector. Let the symbol < a, b > indicate the inner */
+/*                    product of vectors a and b; then the geometric */
+/*                    plane is the set of vectors X in three-dimensional */
+/*                    space that satisfy */
 
 /*                       < X,  NORMAL >  =  CONST. */
 
@@ -173,6 +173,10 @@
 /*     N.J. Bachman   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.1, 02-NOV-2009 (NJB) */
+
+/*        Corrected header typo. */
 
 /* -    SPICELIB Version 1.1.0, 30-AUG-2005 (NJB) */
 

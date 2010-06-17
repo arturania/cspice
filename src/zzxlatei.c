@@ -147,6 +147,46 @@ static integer c__4 = 4;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.20.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL. */
+
+/* -    SPICELIB Version 1.19.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-CC_C. */
+
+/* -    SPICELIB Version 1.18.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-64BIT-CC_C. */
+
+/* -    SPICELIB Version 1.17.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-NATIVE_C. */
+
+/* -    SPICELIB Version 1.16.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-WINDOWS-64BIT-IFORT. */
+
+/* -    SPICELIB Version 1.15.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 1.14.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-64BIT-MS_C. */
+
+/* -    SPICELIB Version 1.13.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-INTEL_C. */
+
+/* -    SPICELIB Version 1.12.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 1.11.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-GFORTRAN. */
+
 /* -    SPICELIB Version 1.10.0, 18-MAR-2009 (BVS) */
 
 /*        Updated for PC-LINUX-GFORTRAN. */
@@ -395,6 +435,46 @@ static integer c__4 = 4;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.20.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL. */
+
+/* -    SPICELIB Version 1.19.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-CC_C. */
+
+/* -    SPICELIB Version 1.18.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-64BIT-CC_C. */
+
+/* -    SPICELIB Version 1.17.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-NATIVE_C. */
+
+/* -    SPICELIB Version 1.16.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-WINDOWS-64BIT-IFORT. */
+
+/* -    SPICELIB Version 1.15.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 1.14.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-64BIT-MS_C. */
+
+/* -    SPICELIB Version 1.13.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-INTEL_C. */
+
+/* -    SPICELIB Version 1.12.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 1.11.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-GFORTRAN. */
+
 /* -    SPICELIB Version 1.10.0, 18-MAR-2009 (BVS) */
 
 /*        Updated for PC-LINUX-GFORTRAN. */
@@ -491,7 +571,7 @@ static integer c__4 = 4;
 	for (i__ = 1; i__ <= 4; ++i__) {
 	    zzddhgsd_("BFF", &i__, strbff + (((i__1 = i__ - 1) < 4 && 0 <= 
 		    i__1 ? i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)
-		    301)) << 3), (ftnlen)3, (ftnlen)8);
+		    341)) << 3), (ftnlen)3, (ftnlen)8);
 	}
 
 /*        Fetch the native binary file format. */
@@ -566,10 +646,10 @@ static integer c__4 = 4;
 			"ur.", (ftnlen)158);
 		errch_("#", strbff + (((i__1 = *inbff - 1) < 4 && 0 <= i__1 ? 
 			i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)
-			396)) << 3), (ftnlen)1, (ftnlen)8);
+			436)) << 3), (ftnlen)1, (ftnlen)8);
 		errch_("#", strbff + (((i__1 = natbff - 1) < 4 && 0 <= i__1 ? 
 			i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)
-			397)) << 3), (ftnlen)1, (ftnlen)8);
+			437)) << 3), (ftnlen)1, (ftnlen)8);
 		sigerr_("SPICE(BUG)", (ftnlen)10);
 		chkout_("ZZXLATEI", (ftnlen)8);
 		return 0;
@@ -586,10 +666,10 @@ static integer c__4 = 4;
 		errint_("#", &numint, (ftnlen)1);
 		errch_("#", strbff + (((i__1 = *inbff - 1) < 4 && 0 <= i__1 ? 
 			i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)
-			416)) << 3), (ftnlen)1, (ftnlen)8);
+			456)) << 3), (ftnlen)1, (ftnlen)8);
 		errch_("#", strbff + (((i__1 = natbff - 1) < 4 && 0 <= i__1 ? 
 			i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)
-			417)) << 3), (ftnlen)1, (ftnlen)8);
+			457)) << 3), (ftnlen)1, (ftnlen)8);
 		errint_("#", space, (ftnlen)1);
 		sigerr_("SPICE(BUG)", (ftnlen)10);
 		chkout_("ZZXLATEI", (ftnlen)8);
@@ -658,10 +738,10 @@ static integer c__4 = 4;
 		    "to #.  This error should never occur and is indicative o"
 		    "f a bug.  Contact NAIF.", (ftnlen)134);
 	    errch_("#", strbff + (((i__1 = *inbff - 1) < 4 && 0 <= i__1 ? 
-		    i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)487)) 
+		    i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)527)) 
 		    << 3), (ftnlen)1, (ftnlen)8);
 	    errch_("#", strbff + (((i__1 = natbff - 1) < 4 && 0 <= i__1 ? 
-		    i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)488)) 
+		    i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)528)) 
 		    << 3), (ftnlen)1, (ftnlen)8);
 	    sigerr_("SPICE(BUG)", (ftnlen)10);
 	    chkout_("ZZXLATEI", (ftnlen)8);
@@ -684,10 +764,10 @@ static integer c__4 = 4;
 			"ur.", (ftnlen)158);
 		errch_("#", strbff + (((i__1 = *inbff - 1) < 4 && 0 <= i__1 ? 
 			i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)
-			515)) << 3), (ftnlen)1, (ftnlen)8);
+			555)) << 3), (ftnlen)1, (ftnlen)8);
 		errch_("#", strbff + (((i__1 = natbff - 1) < 4 && 0 <= i__1 ? 
 			i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)
-			516)) << 3), (ftnlen)1, (ftnlen)8);
+			556)) << 3), (ftnlen)1, (ftnlen)8);
 		sigerr_("SPICE(BUG)", (ftnlen)10);
 		chkout_("ZZXLATEI", (ftnlen)8);
 		return 0;
@@ -704,10 +784,10 @@ static integer c__4 = 4;
 		errint_("#", &numint, (ftnlen)1);
 		errch_("#", strbff + (((i__1 = *inbff - 1) < 4 && 0 <= i__1 ? 
 			i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)
-			535)) << 3), (ftnlen)1, (ftnlen)8);
+			575)) << 3), (ftnlen)1, (ftnlen)8);
 		errch_("#", strbff + (((i__1 = natbff - 1) < 4 && 0 <= i__1 ? 
 			i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)
-			536)) << 3), (ftnlen)1, (ftnlen)8);
+			576)) << 3), (ftnlen)1, (ftnlen)8);
 		errint_("#", space, (ftnlen)1);
 		sigerr_("SPICE(BUG)", (ftnlen)10);
 		chkout_("ZZXLATEI", (ftnlen)8);
@@ -776,10 +856,10 @@ static integer c__4 = 4;
 		    "to #.  This error should never occur and is indicative o"
 		    "f a bug.  Contact NAIF.", (ftnlen)134);
 	    errch_("#", strbff + (((i__1 = *inbff - 1) < 4 && 0 <= i__1 ? 
-		    i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)606)) 
+		    i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)646)) 
 		    << 3), (ftnlen)1, (ftnlen)8);
 	    errch_("#", strbff + (((i__1 = natbff - 1) < 4 && 0 <= i__1 ? 
-		    i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)607)) 
+		    i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)647)) 
 		    << 3), (ftnlen)1, (ftnlen)8);
 	    sigerr_("SPICE(BUG)", (ftnlen)10);
 	    chkout_("ZZXLATEI", (ftnlen)8);
@@ -795,7 +875,7 @@ static integer c__4 = 4;
 		"not currently supported for translation of integers from non"
 		"-native formats.", (ftnlen)135);
 	errch_("#", strbff + (((i__1 = natbff - 1) < 4 && 0 <= i__1 ? i__1 : 
-		s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)625)) << 3), (
+		s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)665)) << 3), (
 		ftnlen)1, (ftnlen)8);
 	sigerr_("SPICE(BUG)", (ftnlen)10);
 	chkout_("ZZXLATEI", (ftnlen)8);

@@ -20,7 +20,6 @@ static integer c__9 = 9;
     integer sclk;
     extern /* Subroutine */ int sct2e_(integer *, doublereal *, doublereal *);
     integer type1, type2;
-    doublereal omega[3];
     char segid[40];
     extern /* Subroutine */ int chkin_(char *, ftnlen);
     doublereal descr[5];
@@ -32,15 +31,13 @@ static integer c__9 = 9;
 	    doublereal *), cksns_(integer *, doublereal *, char *, logical *, 
 	    ftnlen);
     logical gotit;
-    doublereal xform[36]	/* was [6][6] */;
-    extern /* Subroutine */ int xf2rav_(doublereal *, doublereal *, 
-	    doublereal *);
     extern logical failed_(void);
     doublereal av[3], et;
     integer handle;
+    extern /* Subroutine */ int refchg_(integer *, integer *, doublereal *, 
+	    doublereal *);
     logical needav;
-    extern /* Subroutine */ int ckmeta_(integer *, char *, integer *, ftnlen),
-	     frmchg_(integer *, integer *, doublereal *, doublereal *);
+    extern /* Subroutine */ int ckmeta_(integer *, char *, integer *, ftnlen);
     integer refseg, center;
     extern /* Subroutine */ int namfrm_(char *, integer *, ftnlen), frinfo_(
 	    integer *, integer *, integer *, integer *, logical *);
@@ -209,6 +206,16 @@ static integer c__9 = 9;
 /*                The C-matrix returned by CKGP is the one whose time */
 /*                tag is closest to SCLKDP and within TOL units of */
 /*                SCLKDP.  (More in Particulars, below.) */
+
+/*                In general, because using a non-zero tolerance */
+/*                affects selection of the segment from which the */
+/*                data is obtained, users are strongly discouraged */
+/*                from using a non-zero tolerance when reading CKs */
+/*                with continuous data. Using a non-zero tolerance */
+/*                should be reserved exclusively to reading CKs with */
+/*                discrete data because in practice obtaining data */
+/*                from such CKs using a zero tolerance is often not */
+/*                possible due to time round off. */
 
 /*     REF        is the desired reference frame for the returned */
 /*                pointing.  The returned C-matrix CMAT gives the */
@@ -533,8 +540,8 @@ static integer c__9 = 9;
 
 
 /*     Case 4:  Pointing is available in the first segment searched. */
-/*              Because segment A has the highest priority and can */
-/*              satisfy the request, segment C is not searched. */
+/*              Because segment C has the highest priority and can */
+/*              satisfy the request, segment A is not searched. */
 
 /*                                             SCLKDP */
 /*                                            / */
@@ -550,8 +557,42 @@ static integer c__9 = 9;
 /*                                CKGP returns this instance */
 
 /*     Segment A          (0-----------------0--------0--0-----0) */
+/*                                           ^ */
+/*                                           | */
+/*                                     "Best" answer */
 
 
+/*     The next case illustrates an unfortunate side effect of using */
+/*     a non-zero tolerance when reading multi-segment CKs with */
+/*     continuous data. In all cases when the look-up interval */
+/*     formed using tolerance overlaps a segment boundary and */
+/*     the request time falls within the coverage of the lower */
+/*     priority segment, the data at the end of the higher priority */
+/*     segment will be picked instead of the data from the lower */
+/*     priority segment. */
+
+
+/*     Case 5:  Pointing is available in the first segment searched. */
+/*              Because segment C has the highest priority and can */
+/*              satisfy the request, segment A is not searched. */
+
+/*                                             SCLKDP */
+/*                                            / */
+/*                                           |  TOL */
+/*                                           | / */
+/*                                           |/\ */
+/*     Your request                       [--+--] */
+/*                                        .  .  . */
+/*                                        .  .  . */
+/*     Segment C                                (===============) */
+/*                                              ^ */
+/*                                              | */
+/*                                CKGP returns this instance */
+
+/*     Segment A          (=====================) */
+/*                                           ^ */
+/*                                           | */
+/*                                     "Best" answer */
 
 /* $ Examples */
 
@@ -707,11 +748,26 @@ static integer c__9 = 9;
 /*     N.J. Bachman   (JPL) */
 /*     W.L. Taber     (JPL) */
 /*     J.M. Lynch     (JPL) */
+/*     B.V. Semenov   (JPL) */
 /*     M.J. Spencer   (JPL) */
 /*     R.E. Thurman   (JPL) */
 /*     I.M. Underwood (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 5.3.1, 09-JUN-2010 (BVS) */
+
+/*        Header update: description of the tolerance and Particulars */
+/*        section were expanded to address some problems arising from */
+/*        using a non-zero tolerance. */
+
+/* -    SPICELIB Version 5.3.0, 23-APR-2010 (NJB) */
+
+/*        Bug fix: this routine now obtains the rotation */
+/*        from the request frame to the applicable CK segment's */
+/*        base frame via a call to REFCHG. Formerly the routine */
+/*        used FRMCHG, which required that angular velocity data */
+/*        be available for this transformation. */
 
 /* -    SPICELIB Version 5.2.0, 25-AUG-2005 (NJB) */
 
@@ -932,7 +988,7 @@ static integer c__9 = 9;
 		    et = 0.;
 		} else {
 
-/*                 Look up the spacecraft clock id to use to conver */
+/*                 Look up the spacecraft clock id to use to convert */
 /*                 the output CLKOUT to ET. */
 
 		    ckmeta_(inst, "SCLK", &sclk, (ftnlen)4);
@@ -942,9 +998,9 @@ static integer c__9 = 9;
 /*              Get the transformation from the requested frame to */
 /*              the segment frame at ET. */
 
-		frmchg_(&refreq, &refseg, &et, xform);
+		refchg_(&refreq, &refseg, &et, rot);
 
-/*              If FRMCHG detects that the reference frame is invalid */
+/*              If REFCHG detects that the reference frame is invalid */
 /*              then return from this routine with FOUND equal to false. */
 
 		if (failed_()) {
@@ -952,14 +1008,9 @@ static integer c__9 = 9;
 		    return 0;
 		}
 
-/*              Transform the attitude information. */
+/*              Transform the attitude information: convert CMAT so that */
+/*              it maps from request frame to C-matrix frame. */
 
-/*              Get the rotation and angular velocity associated with the */
-/*              transformation from request frame to segment frame. */
-/*              Then convert CMAT so that it maps from request frame */
-/*              to C-matrix frame. */
-
-		xf2rav_(xform, rot, omega);
 		mxm_(cmat, rot, tmpmat);
 		moved_(tmpmat, &c__9, cmat);
 	    }

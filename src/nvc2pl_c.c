@@ -64,12 +64,11 @@
 -Detailed_Input
  
    normal, 
-   constant       are, respectively, a normal vector and constant 
-                  defining a plane.  normal need not be a unit 
-                  vector.  Let the symbol < a, b > indicate the 
-                  inner product of vectors a and b; then the 
-                  then the geometric plane is the set of vectors x 
-                  in three-dimensional space that satisfy 
+   constant       are, respectively, a normal vector and constant
+                  defining a plane.  normal need not be a unit vector.
+                  Let the symbol < a, b > indicate the inner product of
+                  vectors a and b; then the geometric plane is the set
+                  of vectors x in three-dimensional space that satisfy
  
                      < x,  normal >  =  constant. 
  
@@ -173,6 +172,10 @@
  
 -Version
  
+   -CSPICE Version 1.0.1, 02-NOV-2009 (NJB)
+
+      Corrected header typo.
+
    -CSPICE Version 1.0.0, 01-MAR-1999 (NJB)
 
 -Index_Entries

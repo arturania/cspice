@@ -19,7 +19,7 @@
 
 /* $ Abstract */
 
-/*      Negate a double precision vector of arbitrary dimension. */
+/*     Negate a double precision vector of arbitrary dimension. */
 
 /* $ Disclaimer */
 
@@ -48,62 +48,37 @@
 
 /* $ Required_Reading */
 
-/*      None. */
+/*     None. */
 
 /* $ Keywords */
 
-/*      VECTOR */
+/*     VECTOR */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*       VIN       I   NDIM-dimensional double precision vector to */
-/*                     be negated. */
-/*       NDIM      I   Dimension of VIN (and also VOUT). */
-/*       VOUT      O   NDIM-dimensional double precision vector equal to */
-/*                     -VIN. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     VIN        I   NDIM-dimensional double precision vector to */
+/*                    be negated. */
+/*     NDIM       I   Dimension of VIN (and also VOUT). */
+/*     VOUT       O   NDIM-dimensional double precision vector equal to */
+/*                    -VIN. */
 
 /* $ Detailed_Input */
 
-/*      VIN      is double precision vector of arbitrary size. */
+/*     VIN      is double precision vector of arbitrary size. */
 
-/*      NDIM     is the dimension of VIN and VOUT. */
+/*     NDIM     is the dimension of VIN and VOUT. */
 
 /* $ Detailed_Output */
 
-/*      VOUT    is a double precision vector which contains the negation */
-/*              of VIN. VOUT may overwrite VIN. */
+/*     VOUT    is a double precision vector which contains the negation */
+/*             of VIN. */
 
 /* $ Parameters */
 
-/*      None. */
-
-/* $ Particulars */
-
-/*      For each value of the index I from 1 to NDIM, VMINUG negates VIN */
-/*      by the expression: */
-
-/*      VOUT(I) = - VIN(I) */
-
-/* $ Examples */
-
-/*      Let VIN = ( -10.0D0, 15.0D0, -5.0D0, 20.0D0 ) */
-
-/*      The call */
-
-/*      CALL VMINUG ( VIN, 4, VIN ) */
-
-/*      negates all of the components of the vector VIN, and overwrites */
-/*      the original components. The vector VIN then contains the */
-/*      components */
-
-/*      VIN = ( 10.0D0, -15.0D0, 5.0D0, -20.0D0 ) */
-
-/* $ Restrictions */
-
-/*      None. */
+/*     None. */
 
 /* $ Exceptions */
 
@@ -111,17 +86,46 @@
 
 /* $ Files */
 
-/*      None. */
+/*     None. */
 
-/* $ Author_and_Institution */
+/* $ Particulars */
 
-/*      W.M. Owen       (JPL) */
+/*     For each value of the index I from 1 to NDIM, VMINUG negates VIN */
+/*     by the expression: */
+
+/*        VOUT(I) = - VIN(I) */
+
+/* $ Examples */
+
+/*     Let VIN = ( -10.0D0, 15.0D0, -5.0D0, 20.0D0 ) */
+
+/*     The call */
+
+/*        CALL VMINUG ( VIN, 4, VOUT ) */
+
+/*     negates all of the components of the vector VIN. */
+/*     The vector VOUT then contains the components */
+
+/*        VOUT = ( 10.0D0, -15.0D0, 5.0D0, -20.0D0 ) */
+
+/* $ Restrictions */
+
+/*     None. */
 
 /* $ Literature_References */
 
-/*      None. */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     W.M. Owen       (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.2, 23-APR-2010 (NJB) */
+
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
 /* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
 
@@ -145,9 +149,9 @@
     i__1 = *ndim;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	vout[(i__2 = i__ - 1) < vout_dim1 && 0 <= i__2 ? i__2 : s_rnge("vout",
-		 i__2, "vminug_", (ftnlen)134)] = -vin[(i__3 = i__ - 1) < 
+		 i__2, "vminug_", (ftnlen)138)] = -vin[(i__3 = i__ - 1) < 
 		vin_dim1 && 0 <= i__3 ? i__3 : s_rnge("vin", i__3, "vminug_", 
-		(ftnlen)134)];
+		(ftnlen)138)];
     }
     return 0;
 } /* vminug_ */

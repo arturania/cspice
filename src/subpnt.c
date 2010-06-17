@@ -1319,6 +1319,12 @@ static integer c__3 = 3;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.1.0, 18-MAY-2010 (NJB) */
+
+/*        Bug fix: calls to FAILED() have been added after */
+/*        SPK calls, target radius lookup, near point */
+/*        and surface intercept computations. */
+
 /* -    SPICELIB Version 1.0.1, 06-FEB-2009 (NJB) */
 
 /*        Typo correction: changed FIXFRM to FIXREF in header */
@@ -1602,6 +1608,10 @@ static integer c__3 = 3;
 
     spkezp_(&trgcde, et, fixref, abcorr, &obscde, tpos, &lt, fixref_len, 
 	    abcorr_len);
+    if (failed_()) {
+	chkout_("SUBPNT", (ftnlen)6);
+	return 0;
+    }
 
 /*     Negate the target's position to obtain the position of the */
 /*     observer relative to the target. */
@@ -1623,6 +1633,10 @@ static integer c__3 = 3;
 /*        Get the radii of the target body from the kernel pool. */
 
 	bodvcd_(&trgcde, "RADII", &c__3, &nradii, radii, (ftnlen)5);
+	if (failed_()) {
+	    chkout_("SUBPNT", (ftnlen)6);
+	    return 0;
+	}
 	range = vnorm_(obspos);
 	if (range == 0.) {
 
@@ -1664,6 +1678,10 @@ static integer c__3 = 3;
 	    }
 	    alt = vdist_(obspos, spoint);
 	}
+	if (failed_()) {
+	    chkout_("SUBPNT", (ftnlen)6);
+	    return 0;
+	}
 
 /*        Compute the one-way light time and target epoch based on our */
 /*        first computation of SPOINT. The coefficient S has been */
@@ -1703,6 +1721,10 @@ static integer c__3 = 3;
 /*        the solar system barycenter at ET. */
 
 	spkssb_(&obscde, et, "J2000", ssbost, (ftnlen)5);
+	if (failed_()) {
+	    chkout_("SUBPNT", (ftnlen)6);
+	    return 0;
+	}
 
 /*        Initialize the variables required to evaluate the */
 /*        loop termination condition. */
@@ -1803,6 +1825,10 @@ static integer c__3 = 3;
 		    return 0;
 		}
 		alt = vdist_(obspos, spoint);
+	    }
+	    if (failed_()) {
+		chkout_("SUBPNT", (ftnlen)6);
+		return 0;
 	    }
 
 /*           Compute a new light time estimate and new target epoch. */

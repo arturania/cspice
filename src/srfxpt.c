@@ -1077,6 +1077,10 @@ static doublereal c_b45 = 1e-14;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.4.1, 18-MAY-2010 (BVS) */
+
+/*        Index line now states that this routine is deprecated. */
+
 /* -    SPICELIB Version 1.4.0, 23-MAR-2009 (NJB) */
 
 /*        Bug fix: quick test for non-intersection is */
@@ -1118,7 +1122,7 @@ static doublereal c_b45 = 1e-14;
 /* -& */
 /* $ Index_Entries */
 
-/*     surface intercept point */
+/*     DEPRECATED surface intercept point */
 
 /* -& */
 /* $ Revisions */

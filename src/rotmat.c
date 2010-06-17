@@ -35,9 +35,9 @@ static integer c__9 = 9;
 
 /* $ Abstract */
 
-/*      ROTMAT applies a rotation of ANGLE radians about axis IAXIS to a */
-/*      matrix.  This rotation is thought of as rotating the coordinate */
-/*      system. */
+/*     ROTMAT applies a rotation of ANGLE radians about axis IAXIS to a */
+/*     matrix.  This rotation is thought of as rotating the coordinate */
+/*     system. */
 
 /* $ Disclaimer */
 
@@ -70,75 +70,51 @@ static integer c__9 = 9;
 
 /* $ Keywords */
 
-/*      MATRIX,  ROTATION */
+/*     MATRIX */
+/*     ROTATION */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*       M1        I     Matrix to be rotated. */
-/*       ANGLE     I     Angle of rotation (radians). */
-/*       IAXIS     I     Axis of rotation (X=1, Y=2, Z=3). */
-/*       MOUT      O     Resulting rotated matrix [ANGLE]      * M1 */
-/*                                                       IAXIS */
-/*                       MOUT can overwrite M1. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     M1         I   Matrix to be rotated. */
+/*     ANGLE      I   Angle of rotation (radians). */
+/*     IAXIS      I   Axis of rotation (X=1, Y=2, Z=3). */
+/*     MOUT       O   Resulting rotated matrix [ANGLE]      * M1 */
+/*                                                   IAXIS */
 
 /* $ Detailed_Input */
 
-/*      M1      This is a matrix to which a rotation is to be applied. */
+/*     M1       This is a matrix to which a rotation is to be applied. */
 /*              In matrix algebra, the components of the matrix are */
 /*              relevant in one particular coordinate system. Applying */
 /*              ROTMAT changes the components of M1 so that they are */
 /*              relevant to a rotated coordinate system. */
 
-/*      ANGLE   The angle in radians through which the original */
+/*     ANGLE    The angle in radians through which the original */
 /*              coordinate system is to be rotated. */
 
-/*      IAXIS   An index for the axis of the original coordinate system */
+/*     IAXIS    An index for the axis of the original coordinate system */
 /*              about which the rotation by ANGLE is to be performed. */
 /*              IAXIS = 1,2 or 3 designates the x-, y- or z-axis, */
 /*              respectively. */
 
 /* $ Detailed_Output */
 
-/*      MOUT    The matrix resulting from the application of the */
+/*     MOUT     The matrix resulting from the application of the */
 /*              specified rotation to the input matrix M1.  If */
 /*              [ANGLE]        denotes the rotation matrix by ANGLE */
 /*                     IAXIS */
 /*              radians about IAXIS, (refer to the routine ROTATE) then */
 /*              MOUT is given by the following matrix equation: */
 
-/*              MOUT = [ANGLE]      * M1 */
-/*                            IAXIS */
-/*              MOUT can overwrite M1. */
+/*                 MOUT = [ANGLE]      * M1 */
+/*                               IAXIS */
 
 /* $ Parameters */
 
-/*      None. */
-
-/* $ Particulars */
-
-/*      None. */
-
-/* $ Examples */
-
-/*      Suppose that to rotate the a set of inertial axes to body fixed */
-/*      axes, one must first roll the coordinate axes about the x-axis by */
-/*      angle R to get x', y', z'.  From this one must pitch about the */
-/*      y' axis by angle P to get x'', y'', z''.  And finally yaw the */
-/*      x'', y'', z'' about the z'' axis by angle Y to obtain the */
-/*      transformation to bodyfixed coordinates.  If ID is the identity */
-/*      matrix, then the following code fragment generates the */
-/*      transformation from interitial to body fixed. */
-
-/*           CALL ROTMAT ( ID, R,     1,     M1   ) */
-/*           CALL ROTMAT ( M1, P,     2,     M2   ) */
-/*           CALL ROTMAT ( M2, Y,     3,     TIBF ) */
-
-/* $ Restrictions */
-
-/*      None. */
+/*     None. */
 
 /* $ Exceptions */
 
@@ -150,18 +126,46 @@ static integer c__9 = 9;
 
 /* $ Files */
 
-/*      None. */
+/*     None. */
 
-/* $ Author_and_Institution */
+/* $ Particulars */
 
-/*      W.M. Owen       (JPL) */
-/*      W.L. Taber      (JPL) */
+/*     None. */
+
+/* $ Examples */
+
+/*     Suppose that to rotate a set of inertial axes to body fixed */
+/*     axes, one must first roll the coordinate axes about the x-axis by */
+/*     angle R to get x', y', z'.  From this one must pitch about the y' */
+/*     axis by angle P to get x'', y'', z''.  And finally yaw the x'', */
+/*     y'', z'' about the z'' axis by angle Y to obtain the */
+/*     transformation to bodyfixed coordinates.  If ID is the identity */
+/*     matrix, then the following code fragment generates the */
+/*     transformation from inertial to body fixed. */
+
+/*        CALL ROTMAT ( ID, R,     1,     M1   ) */
+/*        CALL ROTMAT ( M1, P,     2,     M2   ) */
+/*        CALL ROTMAT ( M2, Y,     3,     TIBF ) */
+
+/* $ Restrictions */
+
+/*     None. */
 
 /* $ Literature_References */
 
-/*      None. */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     W.M. Owen       (JPL) */
+/*     W.L. Taber      (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.2, 23-APR-2010 (NJB) */
+
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
 /* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
 
@@ -198,31 +202,31 @@ static integer c__9 = 9;
 
     temp = (*iaxis % 3 + 3) % 3;
     i1 = indexs[(i__1 = temp) < 5 && 0 <= i__1 ? i__1 : s_rnge("indexs", i__1,
-	     "rotmat_", (ftnlen)197)];
+	     "rotmat_", (ftnlen)201)];
     i2 = indexs[(i__1 = temp + 1) < 5 && 0 <= i__1 ? i__1 : s_rnge("indexs", 
-	    i__1, "rotmat_", (ftnlen)198)];
+	    i__1, "rotmat_", (ftnlen)202)];
     i3 = indexs[(i__1 = temp + 2) < 5 && 0 <= i__1 ? i__1 : s_rnge("indexs", 
-	    i__1, "rotmat_", (ftnlen)199)];
+	    i__1, "rotmat_", (ftnlen)203)];
 
 /*  Calculate the output matrix column by column */
 
     for (i__ = 1; i__ <= 3; ++i__) {
 	prodm[(i__1 = i1 + i__ * 3 - 4) < 9 && 0 <= i__1 ? i__1 : s_rnge(
-		"prodm", i__1, "rotmat_", (ftnlen)204)] = m1[(i__2 = i1 + i__ 
+		"prodm", i__1, "rotmat_", (ftnlen)208)] = m1[(i__2 = i1 + i__ 
 		* 3 - 4) < 9 && 0 <= i__2 ? i__2 : s_rnge("m1", i__2, "rotma"
-		"t_", (ftnlen)204)];
+		"t_", (ftnlen)208)];
 	prodm[(i__1 = i2 + i__ * 3 - 4) < 9 && 0 <= i__1 ? i__1 : s_rnge(
-		"prodm", i__1, "rotmat_", (ftnlen)205)] = c__ * m1[(i__2 = i2 
+		"prodm", i__1, "rotmat_", (ftnlen)209)] = c__ * m1[(i__2 = i2 
 		+ i__ * 3 - 4) < 9 && 0 <= i__2 ? i__2 : s_rnge("m1", i__2, 
-		"rotmat_", (ftnlen)205)] + s * m1[(i__3 = i3 + i__ * 3 - 4) < 
+		"rotmat_", (ftnlen)209)] + s * m1[(i__3 = i3 + i__ * 3 - 4) < 
 		9 && 0 <= i__3 ? i__3 : s_rnge("m1", i__3, "rotmat_", (ftnlen)
-		205)];
+		209)];
 	prodm[(i__1 = i3 + i__ * 3 - 4) < 9 && 0 <= i__1 ? i__1 : s_rnge(
-		"prodm", i__1, "rotmat_", (ftnlen)206)] = -s * m1[(i__2 = i2 
+		"prodm", i__1, "rotmat_", (ftnlen)210)] = -s * m1[(i__2 = i2 
 		+ i__ * 3 - 4) < 9 && 0 <= i__2 ? i__2 : s_rnge("m1", i__2, 
-		"rotmat_", (ftnlen)206)] + c__ * m1[(i__3 = i3 + i__ * 3 - 4) 
+		"rotmat_", (ftnlen)210)] + c__ * m1[(i__3 = i3 + i__ * 3 - 4) 
 		< 9 && 0 <= i__3 ? i__3 : s_rnge("m1", i__3, "rotmat_", (
-		ftnlen)206)];
+		ftnlen)210)];
     }
 
 /*  Move the buffered matrix into MOUT. */

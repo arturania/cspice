@@ -98,6 +98,16 @@
               and within `tol' units of `sclkdp'.  (More in
               Particulars, below.)
  
+              In general, because using a non-zero tolerance 
+              affects selection of the segment from which the
+              data is obtained, users are strongly discouraged 
+              from using a non-zero tolerance when reading CKs 
+              with continuous data. Using a non-zero tolerance
+              should be reserved exclusively to reading CKs with 
+              discrete data because in practice obtaining data 
+              from such CKs using a zero tolerance is often not 
+              possible due to time round off. 
+
    ref        is the desired reference frame for the returned pointing
               and angular velocity. The returned C-matrix `cmat' gives
               the orientation of the instrument designated by `inst'
@@ -432,29 +442,64 @@
    In the next case, assume that the order of segments A and C in the
    file is reversed:  A is now closer to the front, so data from
    segment C are considered first.
- 
- 
+
+
    Case 4:  Pointing is available in the first segment searched.
-            Because segment A has the highest priority and can
-            satisfy the request, segment C is not searched.
+            Because segment C has the highest priority and can
+            satisfy the request, segment A is not searched.
 
-                                           sclkdp 
-                                          / 
-                                         |  tol 
-                                         | / 
-                                         |/\ 
-   Your request                       [--+--] 
-                                      .  .  . 
-                                      .  .  . 
-   Segment C          (---=============-----====--------==--) 
-                                           ^ 
-                                           | 
-                              ckgpav_c returns this instance 
- 
-   Segment A          (0-----------------0--------0--0-----0) 
- 
- 
+                                           sclkdp
+                                          /
+                                         |  tol
+                                         | /
+                                         |/\
+   Your request                       [--+--]
+                                      .  .  .
+                                      .  .  .
+   Segment C          (---=============-----====--------==--)
+                                           ^
+                                           |
+                              ckgpav_c returns this instance
 
+   Segment A          (0-----------------0--------0--0-----0)
+                                         ^
+                                         |
+                                   "Best" answer
+
+
+   The next case illustrates an unfortunate side effect of using 
+   a non-zero tolerance when reading multi-segment CKs with
+   continuous data. In all cases when the look-up interval 
+   formed using tolerance overlaps a segment boundary and 
+   the request time falls within the coverage of the lower 
+   priority segment, the data at the end of the higher priority
+   segment will be picked instead of the data from the lower 
+   priority segment.
+
+
+   Case 5:  Pointing is available in the first segment searched.
+            Because segment C has the highest priority and can
+            satisfy the request, segment A is not searched.
+
+                                           sclkdp
+                                          /
+                                         |  tol
+                                         | /
+                                         |/\
+   Your request                       [--+--]
+                                      .  .  .
+                                      .  .  .
+   Segment C                                (===============)
+                                            ^
+                                            |
+                              ckgpav_c returns this instance
+
+   Segment A          (=====================)
+                                         ^
+                                         |
+                                   "Best" answer
+
+ 
 -Examples
  
  
@@ -621,12 +666,19 @@
    N.J. Bachman   (JPL)
    W.L. Taber     (JPL) 
    J.M. Lynch     (JPL) 
+   B.V. Semenov   (JPL)
    M.J. Spencer   (JPL) 
    R.E. Thurman   (JPL) 
    I.M. Underwood (JPL) 
  
 -Version
  
+   -CSPICE Version 1.2.3, 03-JUN-2010 (BVS)  
+
+      Header update: description of the tolerance and Particulars
+      section were expanded to address some problems arising from
+      using a non-zero tolerance.  
+
    -CSPICE Version 1.2.2, 29-JAN-2004 (NJB)  
 
       Header update:  the description of the input argument `ref'

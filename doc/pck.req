@@ -2,7 +2,7 @@
 PCK Required Reading
 ===========================================================================
  
-   Last revised on 2009 APR 15 by B. V. Semenov.
+   Last revised on 2010 JUN 03 by B. V. Semenov.
  
  
 Abstract
@@ -29,20 +29,22 @@ References
  
        2.   [219] NAIF IDS Required Reading (naif_ids.req).
  
-       3.   [168] SPK Required Reading (spk.req).
+       3.   [349] FRAMES Required Reading (frames.req).
  
-       4.   [225] TIME Required Reading (time.req).
+       4.   [168] SPK Required Reading (spk.req).
  
-       5.   [214] ROTATIONS Required Reading (rotation.req).
+       5.   [225] TIME Required Reading (time.req).
  
-       6.   [167] Double Precision Array Files (DAF) Required Reading
+       6.   [214] ROTATIONS Required Reading (rotation.req).
+ 
+       7.   [167] Double Precision Array Files (DAF) Required Reading
             (daf.req).
  
-       7.   [195] ``Planetary Geodetic Control Using Satellite Imaging,''
+       8.   [195] ``Planetary Geodetic Control Using Satellite Imaging,''
             Journal of Geophysical Research, Vol. 84, No. B3, March 10,
             1979, by Thomas C. Duxbury.
  
-       8.   ``Report of the IAU/IAG Working Group on Cartographic
+       9.   ``Report of the IAU/IAG Working Group on Cartographic
             Coordinates and Rotational Elements of the Planets and
             Satellites: 2000.''
  
@@ -124,10 +126,17 @@ Epochs and Reference Frames
    J2000 epoch (JED 24515145.0) or the J1950 epoch (JED 2433282.5).
  
    Within CSPICE, reference frames are usually indicated by short character
-   strings, such as 'J2000'. However, CSPICE also has a system of integer
-   codes used by some routines to name reference frames. This coding system
-   is described in detail in [219]. An example of the correspondence of
-   codes and names is shown below:
+   strings, such as 'J2000'. The names of the body-fixed reference frames
+   are usually constructed by adding the prefix ``IAU_'' to the name of the
+   body, for example ``IAU_MARS'' for Mars. The exception from this rule
+   are body-fixed reference frames associated with high-precision
+   orientation provided in binary PCK files. For more details see FRAMES
+   Required Reading, frames.req.
+ 
+   However, CSPICE also has a system of integer codes used by some routines
+   to name reference frames. This coding system is described in detail in
+   frames.req. An example of the correspondence of codes and names is shown
+   below:
  
       Code    Name       Description
       -----   --------   -------------------------------------------
@@ -201,10 +210,14 @@ Using the PCK System: Overview
    program to retrieve specified data that has been read from one or more
    PCK files. Higher-level access routines can return quantities derived
    from PCK data that has been loaded; the most commonly used such quantity
-   is a matrix that transforms state vectors between inertial and
-   body-fixed planetocentric coordinates. The CSPICE subroutine sxform_c
-   can calculate this transformation. The subroutine bodvrd_c retrieves
-   information on body orientation and body shape.
+   is a matrix that transforms state vectors or position vectors between
+   inertial and body-fixed planetocentric coordinates. The CSPICE
+   subroutines sxform_c and pxform_c can calculate this transformation. The
+   names of the body-fixed reference frames used as inputs to these
+   routines are usually constructed by adding the prefix ``IAU_'' to the
+   name of the body, for example ``IAU_MARS'' for Mars (for more details
+   see FRAMES Required Reading, frames.req). The subroutine bodvrd_c
+   retrieves information on body orientation and body shape.
  
    For text PCK files, the PCK software can be thought of as ``buffering''
    all data loaded from PCK files: the data from these files is retained in
@@ -247,7 +260,7 @@ Orientation Models used by PCK Software
  
    denotes the matrix that rotates vectors by -W about the ith coordinate
    axis, using the right hand rule. (This notation is explained in detail
-   in [214]).
+   in rotation.req).
  
    In PCK files, the time arguments of functions that define orientation
    always refer to Barycentric Dynamical Time (TDB), measured in centuries
@@ -393,7 +406,8 @@ NAIF Text Kernel Format
  
       SCLK_KERNEL_ID            = ( @01-MAY-1991/16:25 )
  
-   See [218] for a complete discussion of the allowed form of assignments.
+   See kernel.req for a complete discussion of the allowed form of
+   assignments.
  
    The effect of an assignment in a text PCK file is to associate values
    with a name. The name is referred to as a ``kernel variable.'' When a

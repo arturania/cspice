@@ -200,25 +200,33 @@
 </PRE>
 <h4><a name="Particulars">Particulars</a></h4>
 <PRE>
-   <b>bods2c_c</b> is one of four related routines,
+   <b>bods2c_c</b> is one of five related subroutines,
 
       <b>bods2c_c</b>      Body string to code
+      <a href="bodc2s_c.html">bodc2s_c</a>      Body code to string
       <a href="bodn2c_c.html">bodn2c_c</a>      Body name to code
       <a href="bodc2n_c.html">bodc2n_c</a>      Body code to name
       <a href="boddef_c.html">boddef_c</a>      Body name/code definition
 
-   <b>bods2c_c</b>, <a href="bodn2c_c.html">bodn2c_c</a>, and <a href="bodc2n_c.html">bodc2n_c</a> perform translations between body
-   names and their corresponding integer ID codes which are used in
-   SPICE files and routines.
+   <b>bods2c_c</b>, <a href="bodc2s_c.html">bodc2s_c</a>, <a href="bodn2c_c.html">bodn2c_c</a>, and <a href="bodc2n_c.html">bodc2n_c</a> perform translations between 
+   body names and their corresponding integer ID codes which are 
+   used in SPICE files and routines.
 
-   <b>bods2c_c</b> is a slightly more general version of <a href="bodn2c_c.html">bodn2c_c</a>:  support
+   <b>bods2c_c</b> is a slightly more general version of <a href="bodn2c_c.html">bodn2c_c</a>: support
    for strings containing ID codes in string format enables a caller
    to identify a body using a string, even when no name is
    associated with that body.
 
-   See NAIF_IDs for the list of name/code associations built into
-   SPICE, and for details concerning adding new name/code associations
-   at run time by loading text kernels.
+   <a href="bodc2s_c.html">bodc2s_c</a> is a general version of <a href="bodc2n_c.html">bodc2n_c</a>; the routine returns either
+   the name assigned in the body ID to name mapping or a string
+   representation of the CODE value if no mapping exists.
+
+   <a href="boddef_c.html">boddef_c</a> assigns a body name to ID mapping. The mapping has priority 
+   in name-to-ID and ID-to-name translations.
+
+   Refer to NAIF_IDs for the list of name/code associations built into
+   SPICE, and for details concerning adding new name/code
+   associations at run time by loading text kernels.
 </PRE>
 <h4><a name="Examples">Examples</a></h4>
 <PRE>
@@ -231,8 +239,6 @@
           <b>bods2c_c</b> ( &quot;JUPITER&quot;, &amp;jupid, &amp;found );
 
           bodeul_  ( &amp;jupid, &amp;et, &amp;ra, &amp;dec, &amp;w, &amp;lambda );
-          
-
 
    2.  In this example, we assume that only the set of default 
        name/code pairs has been defined.
@@ -285,6 +291,10 @@
 </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
+   -CSPICE Version 1.0.2, 16-MAY-2009 (EDW) 
+
+       Edit to Particulars section to document the <a href="bodc2s_c.html">bodc2s_c</a> routine.
+
    -CSPICE Version 1.0.1, 27-FEB-2008 (BVS)
 
        Corrected the contents of the Required_Reading section of 
@@ -303,7 +313,7 @@
   </tbody>
 </table>
 
-   <pre>Thu Apr 16 08:57:23 2009</pre>
+   <pre>Wed Jun  9 13:05:19 2010</pre>
 
 </body>
 </html>

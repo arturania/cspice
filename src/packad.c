@@ -21,9 +21,9 @@
 
 /* $ Abstract */
 
-/*      Pack the contents of a double precision array. That is, */
-/*      take a set of arbitrarily spaced elements from an input */
-/*      array, and make them adjacent elements in an output array. */
+/*     Pack the contents of a double precision array. That is, */
+/*     take a set of arbitrarily spaced elements from an input */
+/*     array, and make them adjacent elements in an output array. */
 
 /* $ Disclaimer */
 
@@ -56,112 +56,49 @@
 
 /* $ Keywords */
 
-/*      ARRAY,  ASSIGNMENT,  UTILITY */
+/*     ARRAY */
+/*     ASSIGNMENT */
+/*     UTILITY */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*      IN         I   Input array. */
-/*      PACK       I   Indices of elements to be packed. */
-/*      NPACK      I   Number of indices. */
-/*      MAXOUT     I   Maximum number of elements in the output array. */
-/*      NOUT       O   Number of elements in the output array. */
-/*      OUT        O   Output array. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     IN         I   Input array. */
+/*     PACK       I   Indices of elements to be packed. */
+/*     NPACK      I   Number of indices. */
+/*     MAXOUT     I   Maximum number of elements in the output array. */
+/*     NOUT       O   Number of elements in the output array. */
+/*     OUT        O   Output array. */
 
 /* $ Detailed_Input */
 
-/*      IN          is the input array. */
+/*     IN          is the input array. */
 
-/*      PACK        is the set of elements to be packed into the output */
-/*                  array. PACK(i) is the index of the element in the */
-/*                  input array that is to become the i'th element of */
-/*                  the output array. If the output array is to over- */
-/*                  write the input array, the elements of PACK must */
-/*                  be ordered: PACK(1) < PACK(2) < ... < PACK(NPACK). */
+/*     PACK        is the set of elements to be packed into the output */
+/*                 array. PACK(i) is the index of the element in the */
+/*                 input array that is to become the i'th element of the */
+/*                 output array. */
 
-/*      NPACK       is the number of elements to be packed into the */
-/*                  output array. */
+/*     NPACK       is the number of elements to be packed into the */
+/*                 output array. */
 
-/*      MAXOUT      is the maximum number of elements to be packed */
-/*                  into the output array. If NPACK is larger than */
-/*                  MAXOUT, the extra items are ignored. */
+/*     MAXOUT      is the maximum number of elements to be packed into */
+/*                 the output array. If NPACK is larger than MAXOUT, the */
+/*                 extra items are ignored. */
 
 /* $ Detailed_Output */
 
-/*      NOUT        is the number of elements in the output array. */
-/*                  NOUT may overwrite NPACK or MAXOUT. */
+/*     NOUT        is the number of elements in the output array. */
 
-/*      OUT         is the output array. This array contains up to */
-/*                  MAXOUT elements from the input array, located */
-/*                  in the first NOUT elements of the array. */
+/*     OUT         is the output array. This array contains up to */
+/*                 MAXOUT elements from the input array, located */
+/*                 in the first NOUT elements of the array. */
 
 /* $ Parameters */
 
 /*     None. */
-
-/* $ Particulars */
-
-/*      The indicated elements are moved from their current locations */
-/*      in the input array to consecutive positions in the output array. */
-
-/*            OUT(   1) = IN(PACK(   1)) */
-/*            OUT(   2) = IN(PACK(   2)) */
-/*             . */
-/*             . */
-/*            OUT(NOUT) = IN(PACK(NOUT)) */
-
-/*      NOUT is either NPACK or MAXOUT, whichever is smaller. */
-
-/* $ Examples */
-
-/*      The most common use for this routine is to remove unwanted */
-/*      items from an array or set of arrays. For example, suppose */
-/*      that the arrays NAME, CODE, RADIUS and MASS contain the */
-/*      names, NAIF integer ID codes, radii, and masses of a set of */
-/*      NSAT satellites. Suppose further that the user selects a subset */
-/*      of the original set of satellites from a menu of some sort. */
-/*      Let the indices of these satellites be the NSEL elements of the */
-/*      array SEL. The following sequence would remove the names, */
-/*      codes, etc., of the unselected satellites from the arrays. */
-
-/*            CALL PACKAC ( NAME,   SEL, NSEL, NSAT, NSAT, NAME   ) */
-/*            CALL PACKAI ( CODE,   SEL, NSEL, NSAT, NSAT, CODE   ) */
-/*            CALL PACKAD ( RADIUS, SEL, NSEL, NSAT, NSAT, RADIUS ) */
-/*            CALL PACKAD ( MASS,   SEL, NSEL, NSAT, NSAT, MASS   ) */
-
-/*      Note that in this example, the output array overwrites the */
-/*      input array. Note also that on input NSAT is the maximum */
-/*      number of elements to be transferred to the output array, */
-/*      while on output it is the number of elements in the array. */
-
-/*      In the example above, suppose that NAME and PACK contain */
-/*      the following: */
-
-/*            NAME = 'MIMAS'          PACK = 2, 4, 6, 7 */
-/*                   'ENCELADUS' */
-/*                   'TETHYS' */
-/*                   'DIONE' */
-/*                   'RHEA' */
-/*                   'TITAN' */
-/*                   'HYPERION' */
-/*                   'IAPETUS' */
-/*                   'PHOEBE' */
-
-/*      Then, following the call to PACKAC, NOUT and NAME contain */
-/*      the following: */
-
-/*            NOUT = 4                NAME = 'ENCELADUS' */
-/*                                           'DIONE' */
-/*                                           'TITAN' */
-/*                                           'HYPERION' */
-
-
-/* $ Restrictions */
-
-/*      The elements in the PACK array MUST be ordered if the output */
-/*      array is to overwrite the input array. */
 
 /* $ Exceptions */
 
@@ -170,26 +107,85 @@
 
 /* $ Files */
 
-/*      None. */
+/*     None. */
 
-/* $ Author_and_Institution */
+/* $ Particulars */
 
-/*      H.A. Neilan     (JPL) */
-/*      W.L. Taber      (JPL) */
-/*      I.M. Underwood  (JPL) */
+/*     The indicated elements are moved from their current locations */
+/*     in the input array to consecutive positions in the output array. */
+
+/*        OUT(   1) = IN(PACK(   1)) */
+/*        OUT(   2) = IN(PACK(   2)) */
+/*             . */
+/*             . */
+/*       OUT(NOUT) = IN(PACK(NOUT)) */
+
+/*     NOUT is either NPACK or MAXOUT, whichever is smaller. */
+
+/* $ Examples */
+
+/*     The most common use for this routine is to remove unwanted items */
+/*     from an array or set of arrays. For example, suppose that the */
+/*     arrays NAME, CODE, RADIUS and MASS contain the names, NAIF */
+/*     integer ID codes, radii, and masses of a set of NSAT satellites. */
+/*     Suppose further that the user selects a subset of the original */
+/*     set of satellites from a menu of some sort. Let the indices of */
+/*     these satellites be the NSEL elements of the array SEL. The */
+/*     following sequence would remove the names, codes, etc., of the */
+/*     unselected satellites from the arrays. */
+
+/*        CALL PACKAC ( NAME,   SEL, NSEL, NSAT, NOUT, NAME2   ) */
+/*        CALL PACKAI ( CODE,   SEL, NSEL, NSAT, NOUT, CODE2   ) */
+/*        CALL PACKAD ( RADIUS, SEL, NSEL, NSAT, NOUT, RADIUS2 ) */
+/*        CALL PACKAD ( MASS,   SEL, NSEL, NSAT, NOUT, MASS2   ) */
+
+/*     In the example above, suppose that NAME and PACK contain */
+/*     the following: */
+
+/*        NAME = 'MIMAS'          PACK = 2, 4, 6, 7 */
+/*               'ENCELADUS' */
+/*               'TETHYS' */
+/*               'DIONE' */
+/*               'RHEA' */
+/*               'TITAN' */
+/*               'HYPERION' */
+/*               'IAPETUS' */
+/*               'PHOEBE' */
+
+/*     Then, following the call to PACKAC, NOUT and NAME2 contain */
+/*     the following: */
+
+/*        NOUT = 4                 NAME2 = 'ENCELADUS' */
+/*                                         'DIONE' */
+/*                                         'TITAN' */
+/*                                         'HYPERION' */
+/* $ Restrictions */
+
+/*     None. */
 
 /* $ Literature_References */
 
-/*      None. */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     H.A. Neilan     (JPL) */
+/*     W.L. Taber      (JPL) */
+/*     I.M. Underwood  (JPL) */
 
 /* $ Version */
 
-/* -     SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+/* -    SPICELIB Version 1.0.2, 23-APR-2010 (NJB) */
 
-/*         Comment section for permuted index source lines was added */
-/*         following the header. */
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
-/* -     SPICELIB Version 1.0.0, 31-JAN-1990 (WLT) (IMU) */
+/* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
+
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (WLT) (IMU) */
 
 /* -& */
 /* $ Index_Entries */

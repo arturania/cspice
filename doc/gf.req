@@ -2,7 +2,7 @@
 Geometry Finder Required Reading
 ===========================================================================
  
-   Last revised on 2009 APR 15 by N. J. Bachman.
+   Last revised on 2010 MAY 13 by E. D. Wright.
  
  
 Abstract
@@ -83,12 +83,16 @@ Introduction
  
        --   Coordinates of surface intercept points
  
-       --   Distance between target and observer
- 
        --   Instrument FOV (Field of view) visibility states (appearance of
             a specified target within an instrument FOV)
  
+       --   Observer-target distance
+ 
+       --   Observer-target range rate
+ 
        --   Occultation states
+ 
+       --   User-defined geometric quantities
  
    At the highest level of the SPICE GF subsystem interface, there is a
    search subroutine for each geometric quantity. The Fortran and C SPICE
@@ -130,9 +134,7 @@ Planned enhancements
  
        --   Illumination angles
  
-       --   Observer-target range rate
- 
-       --   Support for user-defined geometric quantities
+       --   Support for user-defined boolean quantity functions
  
  
 Terminology
@@ -142,345 +144,383 @@ Terminology
    finding, convergence, etc. We include brief explanations of these terms
    below.
  
-         Absolute extremum        See Global extremum (below).
+         Absolute extremum           See Global extremum (below).
  
-         API                      ``Application programming interface'': a
-                                  set of routines intended to be called
-                                  directly by SPICE based user application
-                                  programs. Also an adjective indicating
-                                  that a designated routine is a member of
-                                  the set of API routines, for example
-                                  ``gfposc_c is a GF API routine.''
+         API                         ``Application programming interface'':
+                                     a set of routines intended to be
+                                     called directly by SPICE based user
+                                     application programs. Also an
+                                     adjective indicating that a designated
+                                     routine is a member of the set of API
+                                     routines, for example ``gfposc_c is a
+                                     GF API routine.''
  
-         Aberration correction    Correction for light time or stellar
-                                  aberration effects. These corrections can
-                                  involve adjustment of position or
-                                  direction vectors, orientation of
-                                  objects, or times. See the header of
-                                  spkezr_c and the Fundamental Concepts
-                                  tutorial for details.
+         Aberration correction       Correction for light time or stellar
+                                     aberration effects. These corrections
+                                     can involve adjustment of position or
+                                     direction vectors, orientation of
+                                     objects, or times. See the header of
+                                     spkezr_c and the Fundamental Concepts
+                                     tutorial for details.
  
-         Bounds                   Values that constrain the range of values
-                                  in a specified set of numbers: A is a
-                                  lower bound for a set S if no member of S
-                                  is less than A; B is an upper bound for S
-                                  if no member of S is greater than B. Note
-                                  that bounds are not equivalent to
-                                  extrema.
+         Boolean quantity function   A function whose range is comprised of
+                                     only two values, for example 0 and 1
+                                     or ``true'' and ``false.'' For GF use
+                                     such a function is implemented as a
+                                     routine with one independent variable
+                                     (nominally time) as input and a
+                                     boolean variable as output.
  
-         Binary state function    A function whose range is comprised of
-                                  only two values, for example 0 and 1 or
-                                  ``true'' and ``false.''
+         Bounds                      Values that constrain the range of
+                                     values in a specified set of numbers:
+                                     A is a lower bound for a set S if no
+                                     member of S is less than A; B is an
+                                     upper bound for S if no member of S is
+                                     greater than B. Note that bounds are
+                                     not equivalent to extrema.
  
-         Boresight                A vector or ray used to indicate the
-                                  ``look direction'' of an instrument.
+         Binary state function       See ``Boolean quantity function.''
  
-         Bracket                  A number X is bracketed by numbers A and
-                                  B when X lies between A and B, inclusive.
+         Boresight                   A vector or ray used to indicate the
+                                     ``look direction'' of an instrument.
  
-         Closed                   An interval is ``closed'' if it contains
-                                  its endpoints.
+         Bracket                     A number X is bracketed by numbers A
+                                     and B when X lies between A and B,
+                                     inclusive.
  
-         Confinement window       The time window over which a GF search is
-                                  to be conducted, or a SPICE window (see
-                                  below) representing this time window.
+         Closed                      An interval is ``closed'' if it
+                                     contains its endpoints.
  
-         Converge                 A sequence of numbers converges if the
-                                  sequence tends to a limit.
+         Confinement window          The time window over which a GF search
+                                     is to be conducted, or a SPICE window
+                                     (see below) representing this time
+                                     window.
  
-         Convergence              The act of converging; progress toward or
-                                  completion of the process of locating a
-                                  root.
+         Converge                    A sequence of numbers converges if the
+                                     sequence tends to a limit.
  
-         Convergence tolerance    A GF root-finding process is considered
-                                  to have found a root when the root is
-                                  bracketed by upper and lower bounds that
-                                  differ by no more than a specified bound
-                                  called the ``convergence tolerance.''
+         Convergence                 The act of converging; progress toward
+                                     or completion of the process of
+                                     locating a root.
  
-         Coordinate               A spatial parameter belonging to a
-                                  coordinate system.
+         Convergence tolerance       A GF root-finding process is
+                                     considered to have found a root when
+                                     the root is bracketed by upper and
+                                     lower bounds that differ by no more
+                                     than a specified bound called the
+                                     ``convergence tolerance.''
  
-         Coordinate system        In SPICE documentation, three-dimensional
-                                  ``coordinate systems'' are
-                                  parameterizations of three-dimensional
-                                  space: they are mappings that label each
-                                  point in space using an ordered set of
-                                  three spatial parameters such as (X, Y,
-                                  Z) or (radius, longitude, latitude). At
-                                  any point in space, the directions in
-                                  which the three coordinates increase are
-                                  mutually orthogonal. Put another way, the
-                                  Jacobian matrices of these mappings are
-                                  not orthogonal, but they do have
-                                  orthogonal sets of rows and columns.
-                                  (Compare to ``reference frame'' below.)
+         Coordinate                  A spatial parameter belonging to a
+                                     coordinate system.
  
-         Coverage                 In SPICE documentation, ``coverage''
-                                  refers to the extent of data provided by
-                                  a set of SPICE kernels: either the time
-                                  window for which data are available, or
-                                  less commonly, the set of bodies or
-                                  instruments for which data are available.
+         Coordinate system           In SPICE documentation,
+                                     three-dimensional ``coordinate
+                                     systems'' are parameterizations of
+                                     three-dimensional space: they are
+                                     mappings that label each point in
+                                     space using an ordered set of three
+                                     spatial parameters such as (X, Y, Z)
+                                     or (radius, longitude, latitude). At
+                                     any point in space, the directions in
+                                     which the three coordinates increase
+                                     are mutually orthogonal. Put another
+                                     way, the Jacobian matrices of these
+                                     mappings are not orthogonal, but they
+                                     do have orthogonal sets of rows and
+                                     columns. (Compare to ``reference
+                                     frame'' below.)
  
-         Coverage window          The time window over which data of
-                                  interest are available, or a SPICE window
-                                  (see below) representing this time
-                                  window.
+         Coverage                    In SPICE documentation, ``coverage''
+                                     refers to the extent of data provided
+                                     by a set of SPICE kernels: either the
+                                     time window for which data are
+                                     available, or less commonly, the set
+                                     of bodies or instruments for which
+                                     data are available.
  
-         Disjoint                 Non-intersecting.
+         Coverage window             The time window over which data of
+                                     interest are available, or a SPICE
+                                     window (see below) representing this
+                                     time window.
  
-         Domain                   The set of points on which a function
-                                  acts: a function ``maps'' elements of its
-                                  domain to a set called the ``range'' of
-                                  the function.
+         Disjoint                    Non-intersecting.
  
-         DSN                      Deep Space Network.
+         Domain                      The set of points on which a function
+                                     acts: a function ``maps'' elements of
+                                     its domain to a set called the
+                                     ``range'' of the function.
  
-         Eclipse                  An object is ``eclipsed'' or ``in
-                                  eclipse'' when it intersects the shadow
-                                  created by the Sun and another object.
+         DSN                         Deep Space Network.
  
-         Endpoints                The boundary values of an interval on the
-                                  real line. The left endpoint of an
-                                  interval is its smallest value; the right
-                                  endpoint is its greatest.
+         Eclipse                     An object is ``eclipsed'' or ``in
+                                     eclipse'' when it intersects the
+                                     shadow created by the Sun and another
+                                     object.
  
-         Ephemeris object         Any entity whose position and velocity,
-                                  relative to a specified center of motion,
-                                  are given by an SPK file.
+         Endpoints                   The boundary values of an interval on
+                                     the real line. The left endpoint of an
+                                     interval is its smallest value; the
+                                     right endpoint is its greatest.
  
-         Extended Object          Also extended body or extended target. An
-                                  object of finite size; an object
-                                  consisting of more than a single point.
-                                  In SPICE applications, extended objects
-                                  are often represented by ellipsoids.
+         Ephemeris object            Any entity whose position and
+                                     velocity, relative to a specified
+                                     center of motion, are given by an SPK
+                                     file.
  
-         Extrema                  Plural of extremum.
+         Extended Object             Also extended body or extended target.
+                                     An object of finite size; an object
+                                     consisting of more than a single
+                                     point. In SPICE applications, extended
+                                     objects are often represented by
+                                     ellipsoids.
  
-         Extremum                 The minimum or maximum value attained by
-                                  a function. See Global Extremum and Local
-                                  Extremum.
+         Extrema                     Plural of extremum.
  
-         FOV                      Abbreviation of ``field of view.''
+         Extremum                    The minimum or maximum value attained
+                                     by a function. See Global Extremum and
+                                     Local Extremum.
  
-         Field of view            The spatial region that can be viewed by
-                                  a remote sensing instrument, or a
-                                  mathematical model of this region. Often
-                                  an instrument's field of view is modeled
-                                  by a cone or a pyramid having a polygonal
-                                  cross section.
+         FOV                         Abbreviation of ``field of view.''
  
-         Global extremum          A global maximum or minimum: the unique
-                                  greatest or least value attained by a
-                                  function. It is possible for a function
-                                  to have multiple locations in its domain
-                                  at which a global extremum occurs.
+         Field of view               The spatial region that can be viewed
+                                     by a remote sensing instrument, or a
+                                     mathematical model of this region.
+                                     Often an instrument's field of view is
+                                     modeled by a cone or a pyramid having
+                                     a polygonal cross section.
  
-         Instrument               In the GF setting, an instrument is
-                                  usually a camera or other remote-sensing
-                                  radiation detector whose orientation is
-                                  given by a reference frame known to the
-                                  SPICE system and which has a field of
-                                  view modeled by an IK.
+         Global extremum             A global maximum or minimum: the
+                                     unique greatest or least value
+                                     attained by a function. It is possible
+                                     for a function to have multiple
+                                     locations in its domain at which a
+                                     global extremum occurs.
  
-         Interrupt handler        A routine that performs an action in
-                                  response to an interrupt signal, such as
-                                  that generated by a user hitting the
-                                  ``control Y'' key combination at a Unix
-                                  command line.
+         Instrument                  In the GF setting, an instrument is
+                                     usually a camera or other
+                                     remote-sensing radiation detector
+                                     whose orientation is given by a
+                                     reference frame known to the SPICE
+                                     system and which has a field of view
+                                     modeled by an IK.
  
-         Inverse problem          Inverse problems entail finding times
-                                  when geometric quantities take on
-                                  specified values. In general, inverse
-                                  problems involve finding the set S in the
-                                  domain of a function such that the
-                                  function maps S to a specified set.
+         Interrupt handler           A routine that performs an action in
+                                     response to an interrupt signal, such
+                                     as that generated by a user hitting
+                                     the ``control Y'' key combination at a
+                                     Unix command line.
  
-         Local extremum           A local maximum or local minimum: the
-                                  greatest or least value attained by a
-                                  function in a neighborhood of a point in
-                                  the function's domain. At a point where a
-                                  local extremum of a function is attained,
-                                  there is a region or ``neighborhood''
-                                  enclosing that point over which the
-                                  function is bounded by that extreme
-                                  value. For a local maximum, on this
-                                  region, the function is no greater than
-                                  the the local maximum; for a local
-                                  minimum, the function is no smaller. A
-                                  function can have multiple local extrema.
+         Inverse problem             Inverse problems entail finding times
+                                     when geometric quantities take on
+                                     specified values. In general, inverse
+                                     problems involve finding the set S in
+                                     the domain of a function such that the
+                                     function maps S to a specified set.
  
-         Measure                  The measure of a SPICE window is the sum
-                                  of the lengths of the window's intervals.
-                                  (This definition is valid because the
-                                  intervals of a SPICE window are
-                                  disjoint.)
+         Local extremum              A local maximum or local minimum: the
+                                     greatest or least value attained by a
+                                     function in a neighborhood of a point
+                                     in the function's domain. At a point
+                                     where a local extremum of a function
+                                     is attained, there is a region or
+                                     ``neighborhood'' enclosing that point
+                                     over which the function is bounded by
+                                     that extreme value. For a local
+                                     maximum, on this region, the function
+                                     is no greater than the local maximum;
+                                     for a local minimum, the function is
+                                     no smaller. A function can have
+                                     multiple local extrema.
  
-         Meta-kernel              A SPICE text kernel specifying names of
-                                  SPICE kernels to load.
+         Measure                     The measure of a SPICE window is the
+                                     sum of the lengths of the window's
+                                     intervals. (This definition is valid
+                                     because the intervals of a SPICE
+                                     window are disjoint.)
  
-         Number line              The ``real line'' (see below).
+         Meta-kernel                 A SPICE text kernel specifying names
+                                     of SPICE kernels to load.
  
-         Observer                 An ephemeris object, the location of
-                                  which acts as the tail of a position
-                                  vector. The head of the vector is the
-                                  location of another ephemeris object
-                                  called the ``target.''
+         Number line                 The ``real line'' (see below).
  
-         Observer-target vector   A vector emanating from one ephemeris
-                                  object (the observer) and terminating at
-                                  another (the target).
+         Observer                    An ephemeris object, the location of
+                                     which acts as the tail of a position
+                                     vector. The head of the vector is the
+                                     location of another ephemeris object
+                                     called the ``target.''
  
-         Occultation              Blockage of the apparent figure of one
-                                  object by another, as seen from a
-                                  specified vantage point.
+         Observer-target vector      A vector emanating from one ephemeris
+                                     object (the observer) and terminating
+                                     at another (the target).
  
-         Range                    [1] The set of values attained by a
-                                  function: a function ``maps'' elements of
-                                  its domain to its range. [2] The
-                                  Euclidean distance between two objects,
-                                  usually target and observer.
+         Occultation                 Blockage of the apparent figure of one
+                                     object by another, as seen from a
+                                     specified vantage point.
  
-         Real line                A line representing the real numbers. The
-                                  real numbers include zero, all positive
-                                  and negative fractions, and any number
-                                  that's a limit of some sequence of
-                                  fractions. In SPICE documentation, real
-                                  numbers are restricted to those
-                                  representable by the double precision
-                                  floating point data type, excluding
-                                  distinguished values such as +/- Inf and
-                                  NaN.
+         Range                       [1] The set of values attained by a
+                                     function: a function ``maps'' elements
+                                     of its domain to its range. [2] The
+                                     Euclidean distance between two
+                                     objects, usually target and observer.
  
-         Reference frame          A set of three mutually orthogonal
-                                  directions in space and an associated
-                                  center. See the Fundamental Concepts, FK,
-                                  and Using Frames tutorials, as well as
-                                  the Frames Required Reading, frames.req,
-                                  for details. (Compare to ``coordinate
-                                  system'' above.)
+         Range rate                  The derivative with respect to time of
+                                     the range between two objects. For GF
+                                     use, the objects being an observer and
+                                     a target body.
  
-         Result window            In the GF setting, a SPICE window (see
-                                  below) representing the time window over
-                                  which a specified geometric condition is
-                                  satisfied. A result window is an output
-                                  window returned by a CSPICE GF API search
-                                  routine.
+         Real line                   A line representing the real numbers.
+                                     The real numbers include zero, all
+                                     positive and negative fractions, and
+                                     any number that's a limit of some
+                                     sequence of fractions. In SPICE
+                                     documentation, real numbers are
+                                     restricted to those representable by
+                                     the double precision floating point
+                                     data type, excluding distinguished
+                                     values such as +/- Inf and NaN.
  
-         Root                     Solution of an equation; point satisfying
-                                  given constraints. In the GF setting,
-                                  roots are times at which state
-                                  transitions of interest occur, for
-                                  example times when a specified
-                                  occultation starts or stops, or the time
-                                  at which the distance between two
-                                  ephemeris objects attains a local
-                                  minimum. Roots are endpoints of SPICE
-                                  windows representing search results.
+         Reference frame             A set of three mutually orthogonal
+                                     directions in space and an associated
+                                     center. See the Fundamental Concepts,
+                                     FK, and Using Frames tutorials, as
+                                     well as the Frames Required Reading,
+                                     frames.req, for details. (Compare to
+                                     ``coordinate system'' above.)
  
-         Root Finding             The process of locating roots; searching
-                                  for roots.
+         Result window               In the GF setting, a SPICE window (see
+                                     below) representing the time window
+                                     over which a specified geometric
+                                     condition is satisfied. A result
+                                     window is an output window returned by
+                                     a CSPICE GF API search routine.
  
-         SCLK                     Spacecraft clock. See the ``LSK and
-                                  SCLK'' tutorial and the SCLK Required
-                                  Reading, sclk.req, for details.
+         Root                        Solution of an equation; point
+                                     satisfying given constraints. In the
+                                     GF setting, roots are times at which
+                                     state transitions of interest occur,
+                                     for example times when a specified
+                                     occultation starts or stops, or the
+                                     time at which the distance between two
+                                     ephemeris objects attains a local
+                                     minimum. Roots are endpoints of SPICE
+                                     windows representing search results.
  
-         Search window            A confinement window (see above).
+         Root Finding                The process of locating roots;
+                                     searching for roots.
  
-         Singleton                A set consisting of a single point. Also
-                                  short for ``singleton interval.''
+         Scalar quantity function    A function that returns a scalar
+                                     value. For GF use such a function is
+                                     implemented as a routine with one
+                                     independent variable (nominally time)
+                                     as input and the scalar variable as
+                                     output.
  
-         Singleton interval       An interval having equal left and right
-                                  endpoints.
+         SCLK                        Spacecraft clock. See the ``LSK and
+                                     SCLK'' tutorial and the SCLK Required
+                                     Reading, sclk.req, for details.
  
-         Singularity              A point or region in the domain of a
-                                  function at which the function is ``badly
-                                  behaved'': the function is not defined,
-                                  not continuous, or not differentiable.
-                                  For example, longitude has a singularity
-                                  at pi radians. In three dimensional space
-                                  the singular region of longitude is the
-                                  half-plane for which Y = 0 and X <= 0.
+         Search window               A confinement window (see above).
  
-         SPICE window             Also CSPICE window. An abstract data type
-                                  used to represent collections of
-                                  intervals on the real line, especially
-                                  collections of time intervals; also, an
-                                  instance of this type. A SPICE window
-                                  represents a union of zero or more
-                                  disjoint intervals, arranged in
-                                  increasing order: the right endpoint of
-                                  one constituent interval of a window is
-                                  strictly less than the left endpoint of
-                                  the next interval. Intervals in a SPICE
-                                  window may be singletons. SPICE window
-                                  can be empty. SPICE windows are
-                                  implemented as structured arrays in
-                                  Fortran and MATLAB; they're implemented
-                                  as structures in C and IDL. See the
-                                  Windows Required Reading, windows.req,
-                                  for details.
+         Singleton                   A set consisting of a single point.
+                                     Also short for ``singleton interval.''
  
-         Step size                The duration between times at which a
-                                  function is sampled.
+         Singleton interval          An interval having equal left and
+                                     right endpoints.
  
-         Sub-observer point       The point on the surface of an extended
-                                  target that is, depending on the user's
-                                  specification, either closest to the
-                                  observer, or lies on the line connecting
-                                  the observer and the target's center.
+         Singularity                 A point or region in the domain of a
+                                     function at which the function is
+                                     ``badly behaved'': the function is not
+                                     defined, not continuous, or not
+                                     differentiable. For example, longitude
+                                     has a singularity at pi radians. In
+                                     three dimensional space the singular
+                                     region of longitude is the half-plane
+                                     for which Y = 0 and X <= 0.
  
-         Surface intercept        An intersection of a ray and a specified
-                                  surface. When the vertex of the ray is
-                                  associated with an observer, usually the
-                                  surface intercept is understood to be the
-                                  point of intersection closest to the
-                                  observer.
+         SPICE window                Also CSPICE window. An abstract data
+                                     type used to represent collections of
+                                     intervals on the real line, especially
+                                     collections of time intervals; also,
+                                     an instance of this type. A SPICE
+                                     window represents a union of zero or
+                                     more disjoint intervals, arranged in
+                                     increasing order: the right endpoint
+                                     of one constituent interval of a
+                                     window is strictly less than the left
+                                     endpoint of the next interval.
+                                     Intervals in a SPICE window may be
+                                     singletons. SPICE window can be empty.
+                                     SPICE windows are implemented as
+                                     structured arrays in Fortran and
+                                     MATLAB; they're implemented as
+                                     structures in C and IDL. See the
+                                     Windows Required Reading, windows.req,
+                                     for details.
  
-         Target                   Ephemeris object, the location of which
-                                  acts as the head of a position vector.
-                                  The tail of the vector is the location of
-                                  another ephemeris object called the
-                                  ``observer.''
+         Step size                   The duration between times at which a
+                                     function is sampled.
  
-         TDB                      Barycentric Dynamical Time. The
-                                  independent variable used in SPK, PCK,
-                                  and dynamic FK files and all of the SPICE
-                                  API routines, except for the CK readers
-                                  and some time conversion routines. See
-                                  the Time Required Reading, time.req, and
-                                  the Fundamental Concepts tutorial for
-                                  details.
+         Sub-observer point          The point on the surface of an
+                                     extended target that is, depending on
+                                     the user's specification, either
+                                     closest to the observer, or lies on
+                                     the line connecting the observer and
+                                     the target's center.
  
-                                  In SPICE Toolkit documentation, any
-                                  reference to ET (ephemeris time) means a
-                                  TDB time.
+         Surface intercept           An intersection of a ray and a
+                                     specified surface. When the vertex of
+                                     the ray is associated with an
+                                     observer, usually the surface
+                                     intercept is understood to be the
+                                     point of intersection closest to the
+                                     observer.
  
-         Ticks                    Encoded SCLK. Used as the independent
-                                  variable in CK files. See the ``LSK and
-                                  SCLK'' tutorial and the SCLK Required
-                                  Reading, sclk.req, for details.
+         Target                      Ephemeris object, the location of
+                                     which acts as the head of a position
+                                     vector. The tail of the vector is the
+                                     location of another ephemeris object
+                                     called the ``observer.''
  
-         Time interval            The set of times between a start time and
-                                  a stop time, inclusive. The start and
-                                  stop times are also called ``endpoints.''
+         TDB                         Barycentric Dynamical Time. The
+                                     independent variable used in SPK, PCK,
+                                     and dynamic FK files and all of the
+                                     SPICE API routines, except for the CK
+                                     readers and some time conversion
+                                     routines. See the Time Required
+                                     Reading, time.req, and the Fundamental
+                                     Concepts tutorial for details.
  
-         Time window              A set of zero or more closed, disjoint
-                                  time intervals arranged in increasing
-                                  order. Also a SPICE window (see above)
-                                  representing such a set of time
-                                  intervals.
+                                     In SPICE Toolkit documentation, any
+                                     reference to ET (ephemeris time) means
+                                     a TDB time.
  
-         Tolerance                See convergence tolerance.
+         Ticks                       Encoded SCLK. Used as the independent
+                                     variable in CK files. See the ``LSK
+                                     and SCLK'' tutorial and the SCLK
+                                     Required Reading, sclk.req, for
+                                     details.
  
-         Window                   A set of zero or more closed, disjoint
-                                  intervals on the real line, arranged in
-                                  increasing order. Also a SPICE window
-                                  (see above). Windows frequently represent
-                                  time but may be used for other purposes,
-                                  for example to represent sets of angular
-                                  intervals on the unit circle.
+         Time interval               The set of times between a start time
+                                     and a stop time, inclusive. The start
+                                     and stop times are also called
+                                     ``endpoints.''
+ 
+         Time window                 A set of zero or more closed, disjoint
+                                     time intervals arranged in increasing
+                                     order. Also a SPICE window (see above)
+                                     representing such a set of time
+                                     intervals.
+ 
+         Tolerance                   See convergence tolerance.
+ 
+         Window                      A set of zero or more closed, disjoint
+                                     intervals on the real line, arranged
+                                     in increasing order. Also a SPICE
+                                     window (see above). Windows frequently
+                                     represent time but may be used for
+                                     other purposes, for example to
+                                     represent sets of angular intervals on
+                                     the unit circle.
  
  
 GF API Routines
@@ -525,6 +565,10 @@ High-level GF search routines
                     windows when a given ray emanating from an observer is
                     contained in a specified instrument's field of view.
  
+         gfrr_c     Rang rate: find time windows when a given constraint on
+                    the range rate of an observer to target position vector
+                    is met.
+ 
          gfsep_c    Angular separation search: find time windows when a
                     given constraint on the angular separation of two
                     targets as seen by a specified observer is met.
@@ -541,6 +585,10 @@ High-level GF search routines
          gftfov_c   Target body in instrument field of view search: find
                     time windows when a given target body appears in a
                     specified instrument's field of view.
+ 
+         gfuds_c    User-defined scalar quantity function: find time
+                    windows when a given constraint on a user-defined
+                    scalar value function is met.
  
  
 Mid-level GF search routines
@@ -2881,8 +2929,8 @@ Determining SPK and CK coverage at run time
             corresponding velocities to conduct these searches. The SPK
             subsystem's stellar aberration correction velocity computation
             requires observer acceleration with respect to the solar system
-            barycenter. The acceleration at a given epoch ET is is computed
-            by discrete differentiation using samples taken at ET +/- one
+            barycenter. The acceleration at a given epoch ET is computed by
+            discrete differentiation using samples taken at ET +/- one
             second.
  
             For the problem at hand, it happens that this contraction isn't
@@ -3467,6 +3515,7 @@ Summary of Mnemonics
       gfrepi_c             GF, initialize progress report
       gfrepu_c             GF, update progress report
       gfrfov_c             GF, ray-FOV intersection search
+      gfrr_c               GF, range rate search
       gfsep_c              GF, angular separation search
       gfinth_c             GF, interrupt signal handler
       gfsntc_c             GF, surface intercept coordinate search
@@ -3474,8 +3523,20 @@ Summary of Mnemonics
       gfstep_c             GF, get search step size
       gfsubc_c             GF, sub-observer coordinate search
       gftfov_c             GF, target-FOV intersection search
+      gfuds_c              GF, user defined scalar
  
  
 Appendix B---Revision History
 ===========================================================================
+ 
+ 
+2010 MAY 13 by E. D. Wright.
+ 
+   Documentation expanded to include descriptions of the range rate and
+   user defined scalar function capabilities.
+ 
+ 
+2009 APR 15 by N. J. Bachman.
+ 
+   Initial release.
  

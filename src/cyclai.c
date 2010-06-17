@@ -23,7 +23,7 @@
 
 /* $ Abstract */
 
-/*      Cycle the elements of an integer array forward or backward. */
+/*     Cycle the elements of an integer array forward or backward. */
 
 /* $ Disclaimer */
 
@@ -56,123 +56,121 @@
 
 /* $ Keywords */
 
-/*      ARRAY */
+/*     ARRAY */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*      ARRAY      I   Input array. */
-/*      NELT       I   Number of elements. */
-/*      DIR        I   Direction to cycle: 'F' or 'B'. */
-/*      NCYCLE     I   Number of times to cycle. */
-/*      OUT        O   Cycled array. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     ARRAY      I   Input array. */
+/*     NELT       I   Number of elements. */
+/*     DIR        I   Direction to cycle: 'F' or 'B'. */
+/*     NCYCLE     I   Number of times to cycle. */
+/*     OUT        O   Cycled array. */
 
 /* $ Detailed_Input */
 
-/*      ARRAY       is the array to be cycled. */
+/*     ARRAY       is the array to be cycled. */
 
-/*      NELT        is the number of elements in the input array. */
+/*     NELT        is the number of elements in the input array. */
 
-/*      DIR         is the direction in which the elements in the */
-/*                  array are to be cycled. */
+/*     DIR         is the direction in which the elements in the */
+/*                 array are to be cycled. */
 
-/*                        'F' or 'f'  to cycle forward. */
-/*                        'B' or 'b'  to cycle backward. */
+/*                    'F' or 'f'  to cycle forward. */
+/*                    'B' or 'b'  to cycle backward. */
 
-/*      NCYCLE      is the number of times the elements in the array */
-/*                  are to be cycled. */
+/*     NCYCLE      is the number of times the elements in the array */
+/*                 are to be cycled. */
 
 /* $ Detailed_Output */
 
-/*      OUT         is the input array after it has been cycled. */
-/*                  OUT may overwrite ARRAY. */
+/*     OUT         is the input array after it has been cycled. */
 
 /* $ Parameters */
 
 /*     None. */
 
-/* $ Particulars */
-
-/*      An array is cycled when its contents are shifted forward or */
-/*      backward by one place. An element pushed off one end of the */
-/*      array is brought around to the other end of the array instead */
-/*      of disappearing. */
-
-/* $ Examples */
-
-/*      Let the integer array A contain the following elements. */
-
-/*            A(1) = 1 */
-/*            A(2) = 2 */
-/*            A(3) = 3 */
-/*            A(4) = 4 */
-
-/*      Cycling A forward once yields the array */
-
-/*            A(1) = 4 */
-/*            A(2) = 1 */
-/*            A(3) = 2 */
-/*            A(4) = 3 */
-
-/*      Cycling A backward once yields the array */
-
-/*            A(1) = 2 */
-/*            A(2) = 3 */
-/*            A(3) = 4 */
-/*            A(4) = 1 */
-
-/*      Cycling by any multiple of the number of elements in the array */
-/*      yields the same array. */
-
-/* $ Restrictions */
-
-/*      The memory used for the output array must be identical to or */
-/*      disjoint from the memory used for the input array. */
-
-/*      That is: */
-
-/*           CALL CYCLAI ( ARRAY, NELT, DIR, NCYCLE, ARRAY ) */
-
-/*      will produce correct results, while */
-
-/*           CALL CYCLAI ( ARRAY, NELT-3, DIR, NCYCLE, ARRAY(4) ) */
-
-/*      will produce garbage. */
-
 /* $ Exceptions */
 
-/*      1) If the value of DIR is not recognized, the error */
-/*         SPICE(INVALIDDIRECTION) is signalled. */
+/*     1) If the value of DIR is not recognized, the error */
+/*        SPICE(INVALIDDIRECTION) is signaled. */
 
-/*      2) If NELT is less than 1, the output array is not modified. */
+/*     2) If NELT is less than 1, the output array is not modified. */
 
-/*      3) If NCYCLE is negative, the array is cycled NCYCLE times in */
-/*         the opposite direction of DIR. */
+/*     3) If NCYCLE is negative, the array is cycled NCYCLE times in */
+/*        the opposite direction of DIR. */
 
 /* $ Files */
 
-/*      None. */
+/*     None. */
 
-/* $ Author_and_Institution */
+/* $ Particulars */
 
-/*      H.A. Neilan     (JPL) */
-/*      W.L. Taber      (JPL) */
-/*      I.M. Underwood  (JPL) */
+/*     An array is cycled when its contents are shifted forward or */
+/*     backward by one place. An element pushed off one end of the */
+/*     array is brought around to the other end of the array instead */
+/*     of disappearing. */
+
+/* $ Examples */
+
+/*     Let the integer array A contain the following elements. */
+
+/*        A(1) = 1 */
+/*        A(2) = 2 */
+/*        A(3) = 3 */
+/*        A(4) = 4 */
+
+/*     Cycling A forward once yields the array */
+
+/*        A(1) = 4 */
+/*        A(2) = 1 */
+/*        A(3) = 2 */
+/*        A(4) = 3 */
+
+/*     Cycling A backward once yields the array */
+
+/*        A(1) = 2 */
+/*        A(2) = 3 */
+/*        A(3) = 4 */
+/*        A(4) = 1 */
+
+/*     Cycling by any multiple of the number of elements in the array */
+/*     yields the same array. */
+
+/* $ Restrictions */
+
+/*     The memory used for the output array must be disjoint from the */
+/*     memory used for the input array. */
 
 /* $ Literature_References */
 
-/*      None. */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     H.A. Neilan     (JPL) */
+/*     W.L. Taber      (JPL) */
+/*     I.M. Underwood  (JPL) */
 
 /* $ Version */
 
-/* -     SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+/* -    SPICELIB Version 1.0.3, 18-MAY-2010 (BVS) */
 
-/*         Comment section for permuted index source lines was added */
-/*         following the header. */
+/*        Removed "C$" marker from text in the header. */
 
-/* -     SPICELIB Version 1.0.0, 31-JAN-1990 (IMU) (WLT) */
+/* -    SPICELIB Version 1.0.2, 23-APR-2010 (NJB) */
+
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
+
+/* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
+
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (IMU) (WLT) */
 
 /* -& */
 /* $ Index_Entries */
@@ -191,7 +189,7 @@
 /*         input array into the output array if the direction was not */
 /*         recognized.) */
 
-/*         The "C$ Exceptions" section was filled out in more detail. */
+/*         The "Exceptions" section was filled out in more detail. */
 
 /* -& */
 

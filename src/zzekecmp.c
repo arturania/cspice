@@ -26,16 +26,16 @@ integer zzekecmp_(integer *hans, integer *sgdscs, integer *cldscs, integer *
     extern /* Subroutine */ int chkin_(char *, ftnlen);
     integer cvlen[2];
     logical found;
-    extern /* Subroutine */ int dashlu_(integer *, integer *);
-    integer lhstyp, rhstyp;
-    extern /* Subroutine */ int setmsg_(char *, ftnlen), errfnm_(char *, 
-	    integer *, ftnlen), errint_(char *, integer *, ftnlen), sigerr_(
-	    char *, ftnlen), chkout_(char *, ftnlen), zzekrsc_(integer *, 
-	    integer *, integer *, integer *, integer *, integer *, char *, 
-	    logical *, logical *, ftnlen), zzekrsd_(integer *, integer *, 
-	    integer *, integer *, integer *, doublereal *, logical *, logical 
-	    *), zzekrsi_(integer *, integer *, integer *, integer *, integer *
-	    , integer *, logical *, logical *);
+    integer cmplen[2], lhstyp, rhstyp;
+    extern /* Subroutine */ int dashlu_(integer *, integer *), setmsg_(char *,
+	     ftnlen), errfnm_(char *, integer *, ftnlen), errint_(char *, 
+	    integer *, ftnlen), sigerr_(char *, ftnlen), chkout_(char *, 
+	    ftnlen), zzekrsc_(integer *, integer *, integer *, integer *, 
+	    integer *, integer *, char *, logical *, logical *, ftnlen), 
+	    zzekrsd_(integer *, integer *, integer *, integer *, integer *, 
+	    doublereal *, logical *, logical *), zzekrsi_(integer *, integer *
+	    , integer *, integer *, integer *, integer *, logical *, logical *
+	    );
 
 /* $ Abstract */
 
@@ -626,6 +626,13 @@ integer zzekecmp_(integer *hans, integer *sgdscs, integer *cldscs, integer *
 /*         of speed, this routine does not test the value of the SPICELIB */
 /*         function RETURN upon entry. */
 
+/*     2)  This routine depends on the requested comparison to have */
+/*         been semantically checked. Semantically invalid comparisons */
+/*         are treated as bugs. */
+
+/*     3)  Only the first MAXSTR characters of character strings are */
+/*         used in comparisons. */
+
 /* $ Literature_References */
 
 /*     None. */
@@ -635,6 +642,12 @@ integer zzekecmp_(integer *hans, integer *sgdscs, integer *cldscs, integer *
 /*     N.J. Bachman   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.0, 26-MAY-2010 (NJB) */
+
+/*        Bug fix: subscript out of range error caused by */
+/*        column entry strings longer than MAXLEN has been */
+/*        corrected. Also updated Restrictions header section. */
 
 /* -    Beta Version 1.0.0, 10-OCT-1995 (NJB) */
 
@@ -859,9 +872,9 @@ integer zzekecmp_(integer *hans, integer *sgdscs, integer *cldscs, integer *
 	    zzekrsd_(&hans[i__ - 1], &sgdscs[i__ * 24 - 24], &cldscs[i__ * 11 
 		    - 11], &rows[i__ - 1], &elts[i__ - 1], &dval[(i__1 = i__ 
 		    - 1) < 2 && 0 <= i__1 ? i__1 : s_rnge("dval", i__1, "zze"
-		    "kecmp_", (ftnlen)480)], &null[(i__2 = i__ - 1) < 2 && 0 <=
+		    "kecmp_", (ftnlen)494)], &null[(i__2 = i__ - 1) < 2 && 0 <=
 		     i__2 ? i__2 : s_rnge("null", i__2, "zzekecmp_", (ftnlen)
-		    480)], &found);
+		    494)], &found);
 	    if (! found) {
 		dashlu_(&hans[i__ - 1], &unit);
 		chkin_("ZZEKECMP", (ftnlen)8);
@@ -909,11 +922,11 @@ integer zzekecmp_(integer *hans, integer *sgdscs, integer *cldscs, integer *
 	    zzekrsc_(&hans[i__ - 1], &sgdscs[i__ * 24 - 24], &cldscs[i__ * 11 
 		    - 11], &rows[i__ - 1], &elts[i__ - 1], &cvlen[(i__1 = i__ 
 		    - 1) < 2 && 0 <= i__1 ? i__1 : s_rnge("cvlen", i__1, 
-		    "zzekecmp_", (ftnlen)544)], cval + (((i__2 = i__ - 1) < 2 
+		    "zzekecmp_", (ftnlen)558)], cval + (((i__2 = i__ - 1) < 2 
 		    && 0 <= i__2 ? i__2 : s_rnge("cval", i__2, "zzekecmp_", (
-		    ftnlen)544)) << 10), &null[(i__3 = i__ - 1) < 2 && 0 <= 
+		    ftnlen)558)) << 10), &null[(i__3 = i__ - 1) < 2 && 0 <= 
 		    i__3 ? i__3 : s_rnge("null", i__3, "zzekecmp_", (ftnlen)
-		    544)], &found, (ftnlen)1024);
+		    558)], &found, (ftnlen)1024);
 	    if (! found) {
 		dashlu_(&hans[i__ - 1], &unit);
 		chkin_("ZZEKECMP", (ftnlen)8);
@@ -927,6 +940,14 @@ integer zzekecmp_(integer *hans, integer *sgdscs, integer *cldscs, integer *
 		chkout_("ZZEKECMP", (ftnlen)8);
 		return ret_val;
 	    }
+
+/*           Let CMPLEN(I) be the string length to use in comparisons. */
+
+/* Computing MIN */
+	    i__3 = cvlen[(i__2 = i__ - 1) < 2 && 0 <= i__2 ? i__2 : s_rnge(
+		    "cvlen", i__2, "zzekecmp_", (ftnlen)589)];
+	    cmplen[(i__1 = i__ - 1) < 2 && 0 <= i__1 ? i__1 : s_rnge("cmplen",
+		     i__1, "zzekecmp_", (ftnlen)589)] = min(i__3,1024);
 	}
 	if (null[0] || null[1]) {
 	    if (! null[1]) {
@@ -935,9 +956,9 @@ integer zzekecmp_(integer *hans, integer *sgdscs, integer *cldscs, integer *
 		ret_val = 3;
 	    }
 	} else {
-	    if (l_lt(cval, cval + 1024, cvlen[0], cvlen[1])) {
+	    if (l_lt(cval, cval + 1024, cmplen[0], cmplen[1])) {
 		ret_val = 5;
-	    } else if (l_gt(cval, cval + 1024, cvlen[0], cvlen[1])) {
+	    } else if (l_gt(cval, cval + 1024, cmplen[0], cmplen[1])) {
 		ret_val = 3;
 	    } else {
 		ret_val = 1;

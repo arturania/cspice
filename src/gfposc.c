@@ -155,6 +155,11 @@ static logical c_false = FALSE_;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+
+/*       Added NWRR parameter. */
+/*       Added NWUDS parameter. */
+
 /* -    SPICELIB Version 1.0.0, 21-FEB-2009 (NJB) (LSE) (EDW) */
 
 /* -& */
@@ -190,6 +195,14 @@ static logical c_false = FALSE_;
 
 /*     Callers of GFSEP should declare their workspace window */
 /*     count using NWSEP. */
+
+
+/*     Callers of GFRR should declare their workspace window */
+/*     count using NWRR. */
+
+
+/*     Callers of GFUDS should declare their workspace window */
+/*     count using NWUDS. */
 
 
 /*     ADDWIN is a parameter used to expand each interval of the search */
@@ -367,7 +380,7 @@ static logical c_false = FALSE_;
 
 /*     Note: the sum of these lengths, plus the length of the */
 /*     "percent complete" substring, should not be long enough */
-/*     to cause wrap-around on any platforms's terminal window. */
+/*     to cause wrap-around on any platform's terminal window. */
 
 
 /*     Total progress report message length upper bound: */
@@ -710,7 +723,7 @@ static logical c_false = FALSE_;
 
 /*              For LONGITUDE and RIGHT ASCENSION, the step size must */
 /*              be shorter than the shortest interval, within the */
-/*              confinement window, over which either the sin or cosin */
+/*              confinement window, over which either the sin or cos */
 /*              of the coordinate is monotone increasing or decreasing. */
 
 /*              The choice of STEP affects the completeness but not */
@@ -737,26 +750,58 @@ static logical c_false = FALSE_;
 /*              CNFINE must be initialized by the caller using the */
 /*              SPICELIB routine SSIZED. */
 
-/*     MW       an integer value specifying the length of the workspace */
-/*              array WORK (see description below) used by this routine. */
-/*              MW should be at least as large as TWICE number of */
-/*              intervals within the search region on which the */
-/*              specified observer-target vector coordinate function */
-/*              is monotone increasing or decreasing. It does no harm to */
-/*              pick a value of MW larger than the minimum required  to */
-/*              execute the specified search, but if MW is too small, the */
-/*              search will fail. */
+/*     MW       is a parameter specifying the length of the SPICE */
+/*              windows in the workspace array WORK (see description */
+/*              below) used by this routine. */
 
-/*     NW       an integer value specifying the number of windows in */
-/*              the workspace array WORK. An effective general use value */
-/*              for his argument, NWMAX, defined in gf.inc. */
+/*              MW should be set to a number at least twice as large */
+/*              as the maximum number of intervals required by any */
+/*              workspace window. In many cases, it's not necessary to */
+/*              compute an accurate estimate of how many intervals are */
+/*              needed; rather, the user can pick a size considerably */
+/*              larger than what's really required. */
 
-/*     WORK     a double precision array used to store workspace windows. */
-/*              This array should be declared by the caller as shown: */
+/*              However, since excessively large arrays can prevent */
+/*              applications from compiling, linking, or running */
+/*              properly, sometimes MW must be set according to */
+/*              the actual workspace requirement. A rule of thumb */
+/*              for the number of intervals NINTVLS needed is */
 
-/*                    DOUBLE PRECISION     WORK ( LBCELL : MW, NW ) */
+/*                  NINTVLS  =  2*N  +  ( M / STEP ) */
 
-/*              where MW and NW integers value declared by the caller. */
+/*              where */
+
+/*                  N     is the number of intervals in the confinement */
+/*                        window */
+
+/*                  M     is the measure of the confinement window, in */
+/*                        units of seconds */
+
+/*                  STEP  is the search step size in seconds */
+
+/*              MW should then be set to */
+
+/*                  2 * NINTVLS */
+
+/*     NW       is a parameter specifying the number of SPICE windows */
+/*              in the workspace array WORK (see description below) */
+/*              used by this routine. NW should be set to the */
+/*              parameter NWMAX; this parameter is declared in the */
+/*              include file gf.inc. (The reason this dimension is */
+/*              an input argument is that this allows run-time */
+/*              error checking to be performed.) */
+
+/*     WORK     is an array used to store workspace windows. This */
+/*              array should be declared by the caller as shown: */
+
+/*                 INCLUDE 'gf.inc' */
+/*                    ... */
+
+/*                 DOUBLE PRECISION    WORK ( LBCELL : MW, NWMAX ) */
+
+/*              where MW is a constant declared by the caller and */
+/*              NWMAX is a constant defined in the SPICELIB INCLUDE */
+/*              file gf.inc. See the discussion of MW above. */
 
 /*              WORK need not be initialized by the caller. */
 
@@ -1387,6 +1432,10 @@ static logical c_false = FALSE_;
 /*     E.D. Wright    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1, 10-JUN-2009 (NJB) (EDW) */
+
+/*        Edited argument descriptions. */
 
 /* -    SPICELIB Version 1.0.0, 17-FEB-2009 (NJB) (EDW) */
 

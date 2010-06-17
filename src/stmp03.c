@@ -266,6 +266,46 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 3.20.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL. */
+
+/* -    SPICELIB Version 3.19.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-CC_C. */
+
+/* -    SPICELIB Version 3.18.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-64BIT-CC_C. */
+
+/* -    SPICELIB Version 3.17.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-NATIVE_C. */
+
+/* -    SPICELIB Version 3.16.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-WINDOWS-64BIT-IFORT. */
+
+/* -    SPICELIB Version 3.15.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 3.14.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-64BIT-MS_C. */
+
+/* -    SPICELIB Version 3.13.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-INTEL_C. */
+
+/* -    SPICELIB Version 3.12.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 3.11.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-GFORTRAN. */
+
 /* -    SPICELIB Version 3.10.0, 18-MAR-2009 (BVS) */
 
 /*        Updated for PC-LINUX-GFORTRAN. */
@@ -475,7 +515,7 @@
 	first = FALSE_;
 	for (i__ = 1; i__ <= 18; ++i__) {
 	    pairs[(i__1 = i__ - 1) < 18 && 0 <= i__1 ? i__1 : s_rnge("pairs", 
-		    i__1, "stmp03_", (ftnlen)524)] = 1. / ((doublereal) i__ * 
+		    i__1, "stmp03_", (ftnlen)564)] = 1. / ((doublereal) i__ * 
 		    (doublereal) (i__ + 1));
 	}
 	y = log(2.) + log(dpmax_());
@@ -601,7 +641,7 @@
     *c3 = 1.;
     for (i__ = 18; i__ >= 4; i__ += -2) {
 	*c3 = 1. - y * pairs[(i__1 = i__ - 1) < 18 && 0 <= i__1 ? i__1 : 
-		s_rnge("pairs", i__1, "stmp03_", (ftnlen)661)] * *c3;
+		s_rnge("pairs", i__1, "stmp03_", (ftnlen)701)] * *c3;
     }
     *c3 = pairs[1] * *c3;
 
@@ -629,7 +669,7 @@
     *c2 = 1.;
     for (i__ = 17; i__ >= 3; i__ += -2) {
 	*c2 = 1. - y * pairs[(i__1 = i__ - 1) < 18 && 0 <= i__1 ? i__1 : 
-		s_rnge("pairs", i__1, "stmp03_", (ftnlen)692)] * *c2;
+		s_rnge("pairs", i__1, "stmp03_", (ftnlen)732)] * *c2;
     }
     *c2 = pairs[0] * *c2;
 

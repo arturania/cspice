@@ -1,0 +1,156 @@
+ 
+CKSPANIT User's Guide
+===========================================================================
+ 
+   Last revised on 2006 NOV 06 by B. V. Semenov.
+ 
+ 
+Abstract
+--------------------------------------------------------
+ 
+   CKSPANIT is a command-line program that modifies interpolation interval
+   information stored in the segments of a Type 3 CK file. It can also be
+   used to convert a Type 1 CK file to a Type 3 CK file, or from a Type 1
+   or Type 3 CK file to a Type 2 CK file.
+ 
+ 
+Summary
+--------------------------------------------------------
+ 
+   CKSPANIT reads all data from an input CK file containing type 1 and/or 3
+   segments and creates an output type 2 or 3 CK file that provides
+   different coverage for the data from the input file.
+ 
+   If the program is run to create a type 3 CK file (-typ is omitted or set
+   to 3), for each input segment it reads all pointing data from the
+   segment, computes interpolation intervals based on the user-specified
+   tolerance given as SCLK ticks, and writes exactly the same pointing
+   information accompanied by the new interpolation intervals into the
+   output CK file.
+ 
+   If the program is run to create a type 2 CK file (-typ is set to 2), for
+   each input segment it reads all pointing data from the segment, expands
+   each point into a small window with the size equal to the tolerance, and
+   writes exactly the same pointing information as in the input file but
+   now applicable to and constant within these windows into the output CK
+   file.
+ 
+ 
+Usage
+--------------------------------------------------------
+ 
+   CKSPANIT is used as follows:
+ 
+      > ckspanit -in <input CK file>
+                 -out <output CK file>
+                 -tol <tolerance>
+                [-frm <text kernel or furnsh file>]
+                [-typ <type: 2 or 3>]
+ 
+   where inputs provided on the command line are:
+ 
+         INPUT CK FILE                name of an existing CK file
+                                      containing only type 1 and type 3
+                                      segments
+ 
+         OUTPUT CK FILE               name of the output CK file to be
+                                      created
+ 
+         TOLERANCE                    tolerance specified as a number of
+                                      SCLK ticks.
+ 
+                                      If the output CK file is of Type 3
+                                      this tolerance is used to determine
+                                      interpolation intervals as follows:
+                                      if the time interval between two
+                                      adjacent pointing instances in the
+                                      input data is greater than the
+                                      tolerance, the program decides that
+                                      orientation cannot be interpolated
+                                      between these two instances and
+                                      ``declares'' the end of a previous
+                                      interpolation interval at the earlier
+                                      point and the start of a new interval
+                                      at the latter point.
+ 
+                                      If the output CK file is of Type 2
+                                      this tolerance is used to expand each
+                                      of the input data points into a
+                                      window of constant orientation with
+                                      the size equal to tolerance. If the
+                                      spacing between the data points is
+                                      less than the tolerance, the adjacent
+                                      window boundaries are adjusted to be
+                                      the midpoint between the data points
+                                      resulting in windows smaller than the
+                                      tolerance. To make the CK return
+                                      constant orientation during each
+                                      window the angular velocities for all
+                                      points are reset to zero and the
+                                      clock rates are set to 1.
+ 
+         TEXT KERNEL OR FURNSH FILE   [OPTIONAL] name of an FK file or a
+                                      meta kernel providing the FK name.
+                                      This file is required only if
+                                      orientation in the input CK file is
+                                      given relative to a reference frame
+                                      that is not built into the SPICE
+                                      system.
+ 
+         TYPE: 2 OR 3                 [OPTIONAL] type of the output CK
+                                      file. The type can be 2 or 3. If this
+                                      argument is not specified, the output
+                                      CK files is Type 3.
+ 
+   The command line keys ``-in'', ``-out'', ``-tol'', ``-frm'' and ``-typ''
+   must be lowercase. CKSPANIT will display usage information if it's
+   executed without command line parameters.
+ 
+ 
+Practical example
+--------------------------------------------------------
+ 
+   Normally, this program is used either to convert a type 1 CK to type 3
+   or type 2, or to ``fill in'' gaps in type 3 CK files in which
+   interpolation intervals were initially computed with a relatively small
+   tolerance.
+ 
+   An example of the second usage: if an MGS spacecraft CK file contains a
+   few ``gaps'' smaller than 5 minutes which appeared in the file because
+   of orientation telemetry dropouts, and if the file had an initial
+   tolerance of 1 minute, CKSPANIT can be used to create a new file which
+   will allow interpolating over these gaps:
+ 
+      > ckspanit -in mgs_1min.bc -out mgs_5min.bc -tol 76800
+      >
+ 
+   Note that 5 minute tolerance is given as 76800 ticks -- 256 ticks/sec by
+   60 sec/min by 5 min.
+ 
+   For an MGS solar array CK, in a similar situation, a frame definitions
+   file will also have to be provided as an input on the command line
+   because solar array orientation is given relative to the MGS spacecraft
+   frame.
+ 
+      > ckspanit -in sa_1min.bc -out sa_5min.bc -tol 76800 -frm mgs.tf
+      >
+ 
+ 
+A few words of warning
+--------------------------------------------------------
+ 
+   The phrase ``garbage in, garbage out'' applies to kernels created using
+   this program. If the interpolation tolerance supplied is too large to
+   ensure correct interpolation, the output file may contain wildly
+   incorrect pointing or angular velocity data.
+ 
+   Before creating a new CK file, either starting with a type 1 CK or by
+   ``filling gaps'' in an existing type 3 CK, make sure that you really may
+   properly allow interpolation over the new interpolation intervals you
+   define. Try to confirm that relevant spacecraft or spacecraft structure
+   was rotating smoothly and slowly throughout the interpolation intervals,
+   and that the intervals are short enough so that the total angle of
+   rotation over any interpolation interval is small. If the total rotation
+   angle over an interpolation interval is 180 degrees or more, aliasing
+   will occur, yielding nonsensical results.
+ 

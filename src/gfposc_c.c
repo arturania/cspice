@@ -652,7 +652,7 @@
          Create the needed windows. Note, one window
          consists of two values, so the total number
          of cell values to allocate is twice
-         the number of windows.
+         the number of intervals.
          ./
          SPICEDOUBLE_CELL ( result, 2*MAXWIN );
          SPICEDOUBLE_CELL ( cnfine, 2       );
@@ -896,7 +896,11 @@
    E.D. Wright    (JPL) 
  
 -Version
- 
+
+   -CSPICE Version 1.0.1, 26-AUG-2009 (EDW)
+
+      Correction of several typos.
+
    -CSPICE Version 1.0.0, 10-FEB-2009 (NJB) (EDW)
 
 -Index_Entries

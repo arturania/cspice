@@ -63,7 +63,7 @@ static integer c__3 = 3;
 /*     Variable  I/O  Description */
 /*     --------  ---  -------------------------------------------------- */
 /*     MAT        I   A state transformation matrix. */
-/*     INVMAT     O   The inverse of MAT. INVMAT may overwrite MAT. */
+/*     INVMAT     O   The inverse of MAT. */
 
 /* $ Detailed_Input */
 
@@ -95,7 +95,7 @@ static integer c__3 = 3;
 /* $ Detailed_Output */
 
 /*     INVMAT     is the inverse of MAT under the operation of matrix */
-/*                multiplication.  INVMAT may overwrite MAT. */
+/*                multiplication. */
 
 /*                If MAT has the form described above, then INVMAT has */
 /*                the form shown below. */
@@ -176,6 +176,11 @@ static integer c__3 = 3;
 /*     W.L. Taber     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.2, 22-APR-2010 (NJB) */
+
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
 /* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
 

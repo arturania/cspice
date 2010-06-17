@@ -1,0 +1,945 @@
+ 
+prediCkt User's Guide
+===========================================================================
+ 
+   Last revised on 2010 MAY 27 by E. D. Wright.
+ 
+ 
+Abstract
+--------------------------------------------------------
+ 
+   prediCkt is a program that creates C-kernels (usually predict C-kernels)
+   for orientations that can be described by a set of simple geometric
+   descriptions.
+ 
+ 
+Introduction
+--------------------------------------------------------
+ 
+   PrediCkt is a command line program that allows you to transform a ``high
+   level'' description of the time-varying orientation of a spacecraft or
+   other object into a SPICE C-kernel.
+ 
+   The program requires at a minimum two input files:
+ 
+       1.   A SPICE Meta-kernel listing the various SPICE kernels needed to
+            specify the geometry of the ``universe'' in which the C-kernel
+            will ``live'' This file is called the ``furnish'' file in the
+            discussions below.
+ 
+       2.   An orientation specification kernel that defines directions,
+            frames and alignment histories for the spacecraft or other
+            object. This file is called the ``orientation'' kernel in the
+            discussions below.
+ 
+   In addition if you want the C-Kernel to be tied to a specific spacecraft
+   clock kernel you need to supply the name of that kernel.
+ 
+ 
+Usage
+ 
+   You may run prediCkt in one of four modes:
+ 
+       1.   Help mode.
+ 
+                  prediCkt -help
+ 
+            This mode displays the various ways to invoke the program.
+ 
+       2.   Specification Template Generation mode.
+ 
+                  prediCkt -template
+ 
+            This mode writes to standard output a template that you can use
+            to create an orientation kernel. To capture this to a file
+            where you can more easily edit the template use output
+            redirection to a file of your choice.
+ 
+                  prediCkt -template > orientation.spec
+ 
+       3.   Direction Specification mode
+ 
+                  predict -dirspec
+ 
+            This mode writes to standard output a brief description of the
+            various methods that may be used to specify directions.
+ 
+       4.   C-kernel Generation mode.
+ 
+                  prediCkt  -spec <orientation> -furnish <geometry>
+                            -ck <output_ck>
+                            -tol <angle>
+                            <-newsclk|-sclk> <sclkToMake|sclkToUse>
+ 
+   where
+ 
+         orientation   is a SPICE text kernel that contains the
+                       specification of the C-kernel structures and
+                       orientation. This file is discussed at great length
+                       later in this User's Guide.
+ 
+         geometry      is a SPICE meta-kernel that lists the various spk,
+                       pck, ck, sclk, leapseconds and frame kernels needed
+                       to specify the positions and orientations of the
+                       various objects that will be used to define the
+                       orientation of the C-kernel objects that will be
+                       created by prediCkt.
+ 
+         output_ck     is the name of the C-kernel that will be created by
+                       prediCkt. It is customary to use the file extension
+                       ``.bc'' for the name of c-kernels. For example
+                       ``phoenix.bc'' would be a good name for a C-kernel
+                       describing the orientation of the spacecraft
+                       ``phoenix.''
+ 
+         angle         is a tolerance specifying how well the C-kernel
+                       should fit the analytic description of the
+                       orientation (as provided in the orientation
+                       specification file ``orientation''). This field may
+                       include units as in ``1 arcminute''. If units are
+                       not provided, it shall be assumed that the tolerance
+                       is given in degrees.
+ 
+         sclkToMake    if the flag '-newsclk' is used, the word that
+                       follows it will be assumed to be the name of an SCLK
+                       kernel that will be created and used in the
+                       construction of the output C-kernel.
+ 
+         sclkToUse     if the flag '-sclk' is used, the word that follows
+                       it will be assumed to be the name of the SCLK kernel
+                       that should be used when converting between
+                       ``ticks'' and ephemeris time.
+ 
+ 
+The Orientation File
+ 
+   The characteristics of the output C-kernel are determined by the
+   orientation specification given in the ``orientation'' file. This file
+   is a SPICE text kernel. A template for this kernel can be produced using
+   template generation mode of prediCkt
+ 
+         prediCkt -template
+ 
+   The specific format of a SPICE text kernel is discussed in the Toolkit
+   document kernel.req.
+ 
+ 
+Overview
+--------------------------------------------------------
+ 
+   Before getting into the structural and syntactic specifics, we'll go
+   over the general framework used for describing the attitude of
+   spacecraft structures. There are three components in this framework:
+ 
+       1.   Orientations
+ 
+       2.   Directions
+ 
+       3.   C-kernel Orientation Sequence
+ 
+ 
+Orientations
+ 
+   C-kernels are specified by defining the pointing directions of the axes
+   of a Cartesian reference frame fixed to a spacecraft or other structure
+   of interest. A collection of directions that uniquely define where these
+   axes point relative to some base frame is called an ``orientation'' An
+   orientation has 4 components:
+ 
+       1.   A name. This must a single word containing 32 or fewer
+            characters. It must begin with a letter and may contain only
+            only letters, digits and underscores. Names of orientations are
+            case sensitive.
+ 
+       2.   A principle direction. This is some direction in space to which
+            one of the axes (or its opposite) must always point.
+ 
+       3.   A secondary direction. This is a direction in space to which a
+            second axis of the orientation must point. Note that since
+            arbitrary directions are not usually orthogonal, the second
+            axis is not likely to point directly at the secondary
+            direction. Instead the secondary axis points as closely as
+            possible to the second direction. The second axis, secondary
+            direction and primary direction all lie in the same plane. This
+            plane is called the reference plane of the orientation. The
+            primary direction cuts the reference plane into two reference
+            half planes. The second axis and secondary direction lie in the
+            same reference half-plane.
+ 
+       4.   A base frame. This is the SPICE frame in which the principle
+            and secondary directions will be constructed when determining
+            the orientation of the C-kernel structure.
+ 
+ 
+Directions
+ 
+   A directions is defined using the position or velocity of an object
+   relative to some observer, coordinate system or reference surface. A
+   direction can also be defined in terms of other directions. For example,
+   you can define a direction SUN_ANGLE to be the direction obtained by
+   rotating the direction from the spacecraft to the sun (SUN_DIRECTION) 30
+   degrees towards the velocity direction (VELOCITY) of the spacecraft. The
+   direction SUN_ANGLE could then be used to define yet another direction.
+ 
+   Directions that can be defined without reference to other directions are
+   called ``unary'' directions. Those that are defined in terms of two
+   other directions are called ``binary'' directions.
+ 
+   To define a direction, you need two parts
+ 
+       1.   A name. This is the name that you will use when constructing
+            orientations. Make it something descriptive. Names of
+            directions are subject to the same restrictions as are names of
+            orientations.
+ 
+       2.   A description. The description of a direction must match one of
+            the syntactic templates that are outlined later in this User's
+            Guide. The descriptions attempt to mimic a ``natural'' English
+            description. For example
+ 
+                       POSITION OF SUN FROM -999 CORRECTION LT+S
+ 
+            is used to specify the direction of the sun as observed from
+            the spacecraft with Id-code -999, using both light time (LT)
+            and stellar aberration (+S) corrections.
+ 
+ 
+C-kernel Orientation Sequence
+ 
+   Once your set of orientations has been specified using various
+   directions, you can construct a C-kernel. This is done by providing one
+   or more specifications of orientation to be maintained by the C-kernel
+   over some interval of time. For example if you would like the C-kernel
+   for the bus of our mythical spacecraft Phoenix (Id-code -999) to
+   maintain the ``SUN_POINTED'' orientation for a month, then turn to
+   ``EARTH_POINTED'' over the course of half an hour and remain in that
+   orientation for a day and then over half an hour turn back to the
+   ``SUN_POINTED'' orientation for a week, you specify this behavior as
+   shown here.
+ 
+ 
+          CK-999ORIENTATION += 'SUN_POINTED'
+          CK-999START       += @1-SEP-2010
+          CK-999STOP        += @1-OCT-2010
+ 
+          CK-999ORIENTATION += 'EARTH_POINTED'
+          CK-999START       += @1-OCT-2010-00:30:00
+          CK-999STOP        += @2-OCT-2010
+ 
+          CK-999ORIENTATION += 'SUN_POINTED'
+          CK-999START       += @2-OCT-2010-01:00:00
+          CK-999STOP        += @9-OCT-2010
+ 
+ 
+   During the half hour gaps in the time line above, prediCkt will fill in
+   a ``minimum-turn'' slew that carries the C-kernel orientation from one
+   named orientation to the next.
+ 
+   This ``high-level'' description of the orientation makes it relatively
+   easy to modify the predicted orientation of the spacecraft or its
+   structures.
+ 
+ 
+Structure of the Orientation Specification
+--------------------------------------------------------
+ 
+   The orientation specification follows the SPICE text kernel (keyword =
+   value) format. The general format of the SPICE text kernel is spelled
+   out in the SPICE document ``Kernels.req.'' We won't go into the details
+   of that format here. Instead we'll concentrate on the keywords that must
+   appear in the orientation specification.
+ 
+ 
+SCLK and SPK Id-codes
+ 
+   C-kernels contain orientation data tagged with epochs represented as
+   ``ticks'' of a spacecraft clock. Since SPICE geometry calculations are
+   computed in ephemeris time, we will need a SPICE SCLK kernel for
+   converting the ephemeris time based orientations into the SCLK time
+   based orientations stored in the C-kernel. We need a way to identify the
+   clock to use. In addition we need to specify the center of the
+   orientation. We use the spacecraft Id-code for this. These two items are
+   represented using the keywords CK-SCLK and CK-SPK.
+ 
+         CK-SCLK   = <-scid>
+         CK-SPK    = <scid>
+ 
+   The right hand sides of the above assignments must be integers.
+ 
+   For example for the spacecraft with Id-code -999 these assignments would
+   be
+ 
+         CK-SCLK   = 999
+         CK-SPK    = -999
+ 
+   In rare cases when a spacecraft has multiple on-board clocks the keyword
+   CK-SCLK might be set to something other than negative of the spacecraft
+   ID.
+ 
+ 
+Directions
+ 
+   Directions are defined using the keyword DIRECTION_SPECS. The right hand
+   side of each DIRECTION_SPECS assignment must be a string that specifies
+   the direction.
+ 
+          DIRECTION_SPECS += '<direction specification>'
+ 
+   A direction specification (the stuff inside the quotes) should have the
+   following form:
+ 
+         'directionName = description'
+ 
+         directionName   is a name of your choosing. It must be 32
+                         characters or fewer in length. Must start with a
+                         letter and may contain only letters, digits, and
+                         underscores. Direction names are case sensitive.
+                         The names 'ToEarth' and 'toEarth' are different
+                         direction names.
+ 
+         description     is a string that describes the direction.
+ 
+   Here's how you would create a direction named 'ToJupiter' that is the
+   direction to Jupiter as seen from earth, corrected for light time and
+   stellar aberration.
+ 
+         DIRECTION_SPECS += ( 'ToJupiter = POSITION OF JUPITER -',
+                                         ' FROM EARTH -',
+                                         ' CORRECTION LT+S' )
+ 
+   In this example the name of the direction is 'ToJupiter' and the
+   description is:
+ 
+         POSITION OF JUPITER FROM EARTH CORRECTION LT+S
+ 
+   Note that we have had to continue the description of the direction
+   across several lines in order to comply with restrictions imposed by the
+   SPICE text kernel format (the maximum length of a string value that can
+   be assigned to a SPICE text kernel keyword of 80 characters and the
+   total maximum length of any line in a data section of no more than 132
+   characters.) Whenever a specification needs to be continued you do so by
+   placing a dash (-) at the end of a component of the DIRECTION_SPECS
+   string and then start the next component with the next portion of the
+   description.
+ 
+   Since the DIRECTION_SPECS is just a kernel pool variable, you can insert
+   the assignment into prediCkt in several different ways. The method
+   recommended above and further illustrated below is intended to improve
+   readability.
+ 
+   Here's another example that shows the definition of several directions.
+ 
+      DIRECTION_SPECS += ( 'SunDirection = POSITION OF SUN -',
+                                         ' FROM PHOENIX -',
+                                         ' CORRECTION LT+S',
+                        'TowardsEarth = POSITION OF EARTH -',
+                                      ' FROM PHOENIX -',
+                                      ' CORRECTION LT+S',
+                        'CelstialNorth = FIXED J2000 XYZ 0 0 1',
+                        'SunOffset     = ROTATE SunDirection -',
+                                       ' 10 degrees TOWARDS -',
+                                       ' CelestialNorth',
+                        'PositionAngle = ROTATE SunOffset -',
+                                       ' 90 degrees ABOUT - ',
+                                       ' SunDirection' )
+ 
+ 
+   Five directions have been defined in the above example. An equivalent
+   definition is:
+ 
+      DIRECTION_SPECS += ( 'SunDirection = POSITION OF SUN -',
+                                         ' FROM PHOENIX -',
+                                         ' CORRECTION LT+S' )
+ 
+      DIRECTION_SPECS += ( 'TowardsEarth = POSITION OF EARTH -',
+                                         ' FROM PHOENIX -',
+                                         ' CORRECTION LT+S' )
+ 
+      DIRECTION_SPECS += 'CelstialNorth = FIXED J2000 XYZ 0 0 1'
+ 
+ 
+      DIRECTION_SPECS += ( 'SunOffset = ROTATE SunDirection -',
+                                      ' 10 degrees TOWARDS -',
+                                      ' CelestialNorth' )
+ 
+      DIRECTION_SPECS += ( 'PositionAngle = ROTATE SunOffset -',
+                                          ' 90 degrees ABOUT - ',
+                                          ' SunDirection' )
+ 
+   The second form is a bit easier to read. Note that you MUST use the '+='
+   operator if you use the second form. If you write this as:
+ 
+      DIRECTION_SPECS = ( 'SunDirection = POSITION OF SUN -',
+                                        ' FROM PHOENIX -',
+                                        ' CORRECTION LT+S' )
+              .
+              .
+              .
+ 
+      DIRECTION_SPECS = ( 'SunOffset = ROTATE SunDirection -',
+                                     ' 10 degrees TOWARDS -',
+                                     ' CelestialNorth' )
+ 
+      DIRECTION_SPECS = ( 'PositionAngle = ROTATE SunOffset -',
+                                         ' 90 degrees ABOUT - ',
+                                         ' SunDirection' )
+ 
+   you will redefine the kernel pool variable 'DIRECTION_SPECS' five times.
+   At the end, it will contain just the single specification for the
+   direction 'PositionAngle'.
+ 
+   The complete list of direction descriptions is given later in this
+   User's Guide. Before examining this list, let's look at the definition
+   of orientations.
+ 
+ 
+Orientations
+ 
+   An orientation has four components: a name, a primary direction, a
+   secondary direction, and a base frame. These are specified as shown
+   here:
+ 
+         ORIENTATION_NAME += 'aOneWordNameForAnOrientation'
+         PRIMARY          += 'axis = directionName1'
+         SECONDARY        += 'axis = directionName2'
+         BASE_FRAME       += 'SPICEFrameName'
+ 
+   In the above 'axis' should be one of the following: +x, +y, +z, -x, -y,
+   -z. (The "+" may be omitted). The case of the letters in the axis
+   specification is insignificant; +X and +x mean the same thing. The
+   'directionNames' should be one of the directions you've defined using
+   the DIRECTION_SPECS keyword. The meaning of this is that the primary or
+   secondary axis is the +/- x, y, or z axis and that this axis should be
+   parallel to (or as close as possible to) the direction specified by the
+   direction name. The SPICEFrameName is the name of a frame in the SPICE
+   frame system that is either one of the SPICE built-in frames or one that
+   is defined in a frame kernel that has been ``furnished'' to prediCkt
+   through the geometry meta-kernel.
+ 
+   As an alternative to using a direction name you can define a primary or
+   secondary axis of an orientation by just giving a direction description
+   as shown below.
+ 
+      PRIMARY += '+X = POSITION OF SUN FROM PHOENIX LT+S'
+ 
+   If you only need to refer to such a direction once, this might be a
+   better way to specify the primary direction. On the other hand, if you
+   need this direction in more than one orientation, you'll save typing by
+   defining a direction and using the direction name whenever it's needed.
+ 
+   If you need to extend a specification of a PRIMARY or SECONDARY axis of
+   an orientation over two or more lines, use the same convention as was
+   used for DIRECTION_SPECS above.
+ 
+ 
+C-kernel Orientation Sequence
+ 
+   Once the set of orientations has been specified, you can define the
+   sequence of orientations to be achieved by your C-kernel. There are two
+   portions of the definition.
+ 
+       1.   The Id-code specification of the C-kernel
+ 
+       2.   The orientation history of the C-kernel
+ 
+   The Id-code is specified using the keyword CK-FRAMES
+ 
+         CK-FRAMES +=  idcode1
+ 
+   The right hand side is the integer that is the Id-code for the structure
+   whose attitude is to be modeled by the C-kernel. This assignment places
+   this CK Id-code into the list of structures that prediCkt should model
+   in the output C-kernel. In the case of the example spacecraft we've been
+   using so far (the Phoenix) this would be -999000.
+ 
+         CK-FRAMES += -999000
+ 
+   For each modeled structure you need to list the orientation to be
+   followed, when the structure is to achieve that orientation (given as an
+   ephemeris epoch) and when it is to no longer follow that orientation
+   (again given as an ephemeris epoch). This is done using the keywords
+   CK[idcode]ORIENTATION, CK[idcode]START, and CK[idcode]STOP where
+   [idcode] is the numeric string supplied to the CK-FRAMES keyword.
+ 
+   List each structure orientation and the associated start and stop times
+   as shown below.
+ 
+         CK<idcode1>ORIENTATION += 'OrientationName1'
+         CK<idcode1>START       += @startEphemerisEpoch1
+         CK<idcode1>STOP        += @stopEphemerisEpoch1
+ 
+         CK<idcode1>ORIENTATION += 'OrientationName2'
+         CK<idcode1>START       += @startEphemerisEpoch2
+         CK<idcode1>STOP        += @stopEphemerisEpoch2
+ 
+         CK<idcode1>ORIENTATION += 'OrientationName3'
+         CK<idcode1>START       += @startEphemerisEpoch3
+         CK<idcode1>STOP        += @stopEphemerisEpoch3
+ 
+         .
+         .
+         .
+ 
+         etc.
+ 
+   Note that the epoch should be supplied using the date-time format
+   supported by the SPICE kernel pool. For example:
+ 
+        CK-999000START += @2010-JUN-14-12:20:54.2829
+ 
+   See the SPICE document ``Kernel Required Reading'' for more details
+   regarding this format.
+ 
+ 
+Modeling Additional C-kernel Structures
+ 
+   You can specify more than one C-kernel structure in the orientation
+   specification file, provided that the same spacecraft clock is used to
+   convert ephemeris time to ticks and that the structure is tied to the
+   same spacecraft. To do so simply add the Id-code to the CK-FRAMES
+   keyword
+ 
+         CK-FRAMES += idcode2
+ 
+   and list the orientation sequence for that structure. Note that you need
+   to use the '+=' operator when adding other CK-FRAMES. Otherwise, the
+   first Id-code will be overwritten.
+ 
+         CK<idcode2>ORIENTATION += 'OrientationName'
+         CK<idcode2>START       += @startEphemerisEpoch
+         CK<idcode2>STOP        += @stopEphemerisEpoch
+ 
+         .
+         .
+         .
+ 
+         etc.
+ 
+ 
+Freezing an Orientation
+ 
+   Sometimes it is convenient to ``freeze'' the orientation of a C-kernel
+   structure to be that of an orientation at a particular epoch. You can do
+   this by adding an ``AT epoch'' clause to the CK[idcode]ORIENTATION
+   keyword.
+ 
+      CK<idcode>ORIENTATION += 'OrientationName AT epoch'
+      CK<idcode>START       += @startEphemerisEpoch
+      CK<idcode>STOP        += @stopEphemerisEpoch
+ 
+   where ``epoch'' is the epoch at which you want the orientation frozen.
+   When this form of orientation assignment is used, the orientation is
+   computed at the stated epoch and that orientation is used for the
+   orientation of the CK structure for the entire interval
+ 
+        From: startEphemerisEpoch
+        To  : stopEphemerisEpoch
+ 
+   Note that the ``AT'' epoch does not have to be related in any way to the
+   start and stop epoch of the CK orientation interval.
+ 
+ 
+A Word About ``AT'' Epochs
+ 
+   PrediCkt is designed to work even when a leapseconds kernel has not been
+   loaded. As a result, any unlabeled epochs specified in an ``AT [epoch]''
+   clause are interpreted as TDB epochs. However, if you load a leapseconds
+   kernel (through the -furnish file) you may label the epoch to be a UTC,
+   TDT or specific time zone epoch; simply include the UTC, TDT, or time
+   zone label as part of the epoch.
+ 
+   (Note that you still must specify all CK-START and CK-STOP epochs using
+   the kernel pool ``@[epoch]'' syntax which is always interpreted as a TDB
+   epoch.)
+ 
+ 
+Computing Orientations Indirectly
+ 
+   There are times when you don't want to specify a C-kernel directly. For
+   example if you have a camera mounted with a fixed orientation with
+   respect to the spacecraft bus, you may want to orient the spacecraft so
+   that the camera is aligned with a particular orientation. Specifically,
+   you may want the Z-axis of the camera to point towards a planet, while
+   the Y-axis points towards the north celestial pole. Since you can only
+   ``steer'' the spacecraft and not the camera, you want to create a
+   C-kernel for the spacecraft such that the desired orientation of the
+   camera is achieved. PrediCkt allows you to easily specify such an
+   orientation as shown below:
+ 
+      CK<idcode>ORIENTATION += 'SOLUTION TO <frame> = <orientationName>'
+ 
+   where [frame] is the name or Id-code associated with an instrument (or
+   other structure whose relationship to the C-kernel frame is known) and
+   [orientationName] is one of your defined orientations.
+ 
+   Note if you want prediCkt to ``solve'' for your C-kernel orientation,
+   you will need to supply the relationship between the instrument (or
+   other) frame and the C-kernel frame you are asking prediCkt to
+   construct. This relationship should be provided in a frame kernel and
+   the frame kernel specified in the ``furnish'' file supplied on the
+   command line at program invocation.
+ 
+   As with the direct specification of an C-kernel orientation you may
+   ``freeze'' the orientation at a particular epoch. Simply append the ``AT
+   <epoch>'' phrase to the above specification. (Use the ``dash'' character
+   '-' to continue the specification of the C-kernel orientation to more
+   lines.)
+ 
+      CK<idcode>ORIENTATION += ('SOLUTION TO -',
+                                ' <frame> = <orientationName> -',
+                                ' AT <epoch> ' )
+ 
+ 
+Gaps in the Orientation History
+ 
+   A normal way to describe the orientation history for a C-kernel
+   structure is to list the orientation and intervals in chronological
+   order. For example:
+ 
+      CK<idcode>ORIENTATION += 'orientation_1'
+      CK<idcode>START       += @<TDB_epoch_for_orientation_1_start>
+      CK<idcode>STOP        += @<TDB_epoch_for_orientation_1_stop>
+ 
+      CK<idcode>ORIENTATION += 'orientation_2'
+      CK<idcode>START       += @<TDB_epoch_for_orientation_2_start>
+      CK<idcode>STOP        += @<TDB_epoch_for_orientation_2_stop>
+ 
+      CK<idcode>ORIENTATION += 'orientation_3'
+      CK<idcode>START       += @<TDB_epoch_for_orientation_3_start>
+      CK<idcode>STOP        += @<TDB_epoch_for_orientation_3_stop>
+       .
+       .
+       .
+ 
+   where the stop epoch of each orientation specification precedes or is
+   the same as the start epoch of the next orientation specification.
+ 
+   If the stop time of one specification is before the start time of the
+   next specification, prediCkt will fill in the gap in time coverage with
+   the minimum slew segment that carries the orientation at the end of one
+   interval to the orientation at the beginning of the next. You can force
+   prediCkt to forgo the addition of a slew by inserting the word ``GOTO''
+   before the name of an orientation.
+ 
+      CK<idcode>ORIENTATION += 'orientation_1'
+      CK<idcode>START       += @<TDB_epoch_for_orientation_1_start>
+      CK<idcode>STOP        += @<TDB_epoch_for_orientation_1_stop>
+ 
+      CK<idcode>ORIENTATION += 'GOTO orientation_2'
+      CK<idcode>START       += @<TDB_epoch_for_orientation_2_start>
+      CK<idcode>STOP        += @<TDB_epoch_for_orientation_2_stop>
+ 
+      CK<idcode>ORIENTATION += 'GOTO orientation_3'
+      CK<idcode>START       += @<TDB_epoch_for_orientation_3_start>
+      CK<idcode>STOP        += @<TDB_epoch_for_orientation_3_stop>
+       .
+       .
+       .
+ 
+   When the GOTO keyword is used, prediCkt will just start a new segment
+   covering the new interval. The ``slew'' segment will not be created and
+   a gap will be left in the orientation coverage.
+ 
+ 
+Out of Order Intervals
+ 
+   Note that prediCkt fills in slews as a default behavior only for
+   orientation intervals that are in chronological order. Thus another
+   method for suppressing the insertion of slews is to provide the
+   orientation history for the C-kernel object in reverse chronological
+   order.
+ 
+   Unless the GOTO qualifier is used to suppress all slews, it is important
+   that you be aware of the ordering of orientation intervals. Otherwise,
+   prediCkt can create slew segments that hide previously created segments.
+ 
+ 
+Direction Descriptions
+--------------------------------------------------------
+ 
+   Directions are the foundation upon which all of the various orientations
+   are defined. Here are the ways you can define directions:
+ 
+ 
+Ephemeris Based Directions
+ 
+   Ephemeris based directions are directions associated with the position,
+   velocity or orbit normal of one object as seen from another. The
+   description should adhere to the following templates.
+ 
+         POSITION        To define a direction to lie in the position of
+                         one object as seen from another, use this
+                         description.
+ 
+                            POSITION OF <target> FROM <observer>
+                            CORRECTION <correction>
+ 
+                            where
+ 
+                            <target>      is the name or Id-code of
+                                          the target
+ 
+                            <observer>    is the name or Id-code of
+                                          the observer
+ 
+                            <correction>  is the light time
+                                          correction to use when
+                                          computing the position. The
+                                          value may be any of the
+                                          strings supported by the
+                                          correction flag used by the
+                                          SPICELIB (or CSPICE)
+                                          routine SPKEZR. The most
+                                          common are NONE and LT+S.
+ 
+ 
+ 
+         VELOCITY        To define a direction to lie in the velocity of
+                         one object as seen from another, use this
+                         description.
+ 
+                            VELOCITY OF <target> FROM <observer>
+                            CORRECTION <correction>
+ 
+                            where
+ 
+                            <target>      is the name or Id-code of
+                                          the target
+ 
+                            <observer>    is the name or Id-code of
+                                          the observer
+ 
+                            <correction>  is the light time
+                                          correction to use when
+                                          computing the velocity.
+                                          The value may be any of
+                                          the strings supported by the
+                                          correction flag used by the
+                                          SPKEZR. The most common are
+                                          NONE and LT+S.
+ 
+ 
+         ORBIT NORMAL    To define a direction to lie in the direction of
+                         the cross product of the position and velocity of
+                         one object as seen from another, use this
+                         description.
+ 
+                            ORBIT NORMAL OF <target> FROM <observer>
+                            CORRECTION <correction>
+ 
+                            where
+ 
+                            <target>      is the name or Id-code of
+                                          the target
+ 
+                            <observer>    is the name or Id-code of
+                                          the observer
+ 
+                            <correction>  is the light time
+                                          correction to use when
+                                          computing the position and
+                                          velocity. The value may
+                                          be any of the strings
+                                          supported by the
+                                          correction flag used by the
+                                          SPKEZR. The most common are
+                                          NONE and LT+S.
+ 
+ 
+ 
+Directions Fixed to a Frame
+ 
+   Sometimes you want a direction that is fixed to a particular frame such
+   as the celestial north direction of the J2000 frame or the pole
+   direction of a Mars fixed frame. You can specify such direction using
+   one of two templates.
+ 
+         XYZ             To define a position that lies along a vector
+                         fixed in a particular frame you simply need to
+                         list the frame and the components of the vector.
+ 
+                               FIXED <frame_name>
+                               XYZ <x> <y> <z>
+ 
+   Note that since directions are not sensitive to units of distance, units
+   are not specified in the above description. However, the units for [x],
+   [y], and [z] must be the same.
+ 
+         RA-DEC          To define a position using Right Ascension and
+                         Declination use the template
+ 
+                            FIXED <frame_name>
+                            RA  <right ascension> [units]
+                            DEC <declination> [units]
+ 
+   Since angles are sensitive to units (degrees, radians, etc.) you may
+   supply units when specifying RA and DEC. If units are not supplied, they
+   are assumed to be degrees. Note that the degrees/minutes/seconds and
+   hours/minutes/seconds forms of angles are not supported.
+ 
+ 
+Sub-observer Direction
+ 
+   You can specify that a direction is towards the sub-observer point on a
+   body (i.e. the point on the body whose surface normal passes through the
+   observer, typically a spacecraft) using the template
+ 
+        SUBOBSERVER ON <body> FROM <observer>
+        CORRECTION <correction>
+ 
+ 
+Surface Normals
+ 
+   You can specify a direction to lie along the surface normal at some
+   location on the surface of a body using one of the following templates.
+ 
+         Lat-Lon         You may specify the surface point using latitude
+                         and longitude:
+ 
+                            NORMAL TO <body>
+                            AT
+                            LATITUDE <geodetic latitude> [units]
+                            LONGITUDE <longitude> [units]
+ 
+                            or
+ 
+                            NORMAL TO <body>
+                            AT
+                            LATITUDE <geodetic latitude> [units]
+                            CARTOGRAPHIC LONGITUDE <longitude> [units]
+ 
+ 
+         XYZ             If you have the body-fixed rectangular coordinates
+                         of a point on the surface, you can use them to
+                         specify the surface normal. (Units on x,y, and z
+                         must be km.)
+ 
+                            NORMAL TO <body> AT X <x> Y <y> Z <z>
+ 
+ 
+Directions Along Curves of Constant Latitude or Longitude
+ 
+   If you have a point on the surface of an object, you may need the
+   directions that correspond to east, west, north or south. PrediCkt
+   allows you to specify these directions at a point on a surface, but it
+   requires that you specify them by describing the variation in latitude
+   or longitude as you move away from the given surface point, i.e. does
+   latitude/longitude increase or decrease as you move from the reference
+   point in the desired direction. This method of specifying the
+   east/west/north/south direction allows us to avoid the ambiguities that
+   arise when talking about east and west (or north and south) for objects
+   other than the earth. On earth east is the direction of increasing
+   longitude; west is the direction of decreasing longitude; north is the
+   direction of increasing latitude; south is the direction of decreasing
+   latitude. For other bodies, you need to understand the relationship
+   between the spin of the body, its surface latitude-longitude system, and
+   conventions for east, west, north and south for that object.
+ 
+   The surface point from which the directions are constructed may be
+   specified in several ways.
+ 
+         Lat-Lon         You can specify the surface point using latitude
+                         and longitude using one of the two templates
+                         below.
+ 
+                            <INCREASING|DECREASING> <coordinate>
+                            AT
+                            LATITUDE  <latitude>  [units]
+                            LONGITUDE <longitude> [units]
+ 
+                            or
+ 
+                            <INCREASING|DECREASING> <coordinate>
+                            AT
+                            LATITUDE  <latitude>  [units]
+                            CARTOGRAPHIC LONGITUDE <longitude> [units]
+ 
+                            where
+ 
+                            <coordinate> is one of the following:
+ 
+                                         LATITUDE
+                                         LONGITUDE
+                                         CARTOGRAPHIC LONGITUDE.
+ 
+         XYZ             If you have the x,y,z coordinates of the surface
+                         point you can specify the coordinate direction
+                         using the following template. The units of x, y,
+                         and z must be kilometers.
+ 
+                             <INCREASING|DECREASING> <coordinate>
+                             AT X <x> Y <y> Z <z>
+ 
+                            where
+ 
+                            <coordinate> is one of the following:
+                                         LATITUDE
+                                         LONGITUDE
+                                         CARTOGRAPHIC LONGITUDE.
+ 
+ 
+Directions in Terms of Other Directions
+ 
+   Once you've specified at least two directions, you can specify other
+   directions in terms of them. Here are the supported ``binary'' direction
+   specifications
+ 
+         ROTATE TOWARDS    You can create a new direction by rotating a
+                           previously specified direction either towards or
+                           away from another direction by a fixed angle.
+                           Here's the template:
+ 
+                              ROTATE <direction> <angle> [units]
+                              <TOWARDS|AWAY FROM> <another direction>
+ 
+         ROTATE FRACTION   Instead of rotating a direction by a fixed angle
+                           towards (or away) from another direction, you
+                           can rotate a direction some fraction (between 0
+                           and 1) towards another direction. Here's the
+                           template:
+ 
+                                  ROTATE <direction> <fraction>
+                                  OF THE WAY TOWARDS <another direction>
+ 
+                           For example, if you wanted the new direction to
+                           be along the bisector of two directions, D1 and
+                           D2 you would describe the bisector as:
+ 
+                                 ROTATE D1 0.5 OF THE WAY TOWARDS D2
+ 
+         ROTATE ABOUT      You can also create a new direction by rotating
+                           a previously defined direction a specified
+                           angular amount about another direction. This
+                           uses the second direction as an axis about which
+                           the first direction is rotated. Here's the
+                           template.
+ 
+                               ROTATE <direction> <angle> [units]
+                               ABOUT <axis direction>
+ 
+         CROSS PRODUCT     You can construct a direction as the direction
+                           that lies along the cross product of two other
+                           directions.
+ 
+                                CROSS PRODUCT <direction1> <direction2>
+ 
+                           This creates the direction that is parallel to
+                           the cross product
+ 
+                              direction1 x direction2
+ 
+ 
+Appendix: Document Revision History
+===========================================================================
+ 
+ 
+May 27, 2010
+ 
+   Minor edit to eliminate typo.
+ 
+ 
+March 2, 2008
+ 
+   Previous revision on 2002 SEP 05 by W. L. Taber, C. H. Acton, B. V.
+   Semenov.
+ 

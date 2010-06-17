@@ -456,6 +456,10 @@ static integer c__3 = 3;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.2.3, 18-MAY-2010 (BVS) */
+
+/*        Index line now states that this routine is deprecated. */
+
 /* -    SPICELIB Version 1.2.2, 17-MAR-2009 (EDW) */
 
 /*        Typo correction in Required_Reading, changed */
@@ -486,7 +490,7 @@ static integer c__3 = 3;
 /* -& */
 /* $ Index_Entries */
 
-/*     sub-observer point */
+/*     DEPRECATED sub-observer point */
 
 /* -& */
 

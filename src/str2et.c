@@ -149,7 +149,7 @@ static integer c__6 = 6;
 
 /*     STRING     is a string representing an epoch.  Virtually all */
 /*                common calendar representations are allowed. You may */
-/*                specify a time string a belonging to any of the */
+/*                specify a time string belonging to any of the */
 /*                systems TDB, TDT, UTC.  Moreover, you may specify a */
 /*                time string relative to a specific UTC based time */
 /*                zone. */
@@ -164,10 +164,6 @@ static integer c__6 = 6;
 /*                J2000 epoch that corresponds to the input STRING. */
 
 /* $ Parameters */
-
-/*     None. */
-
-/* $ Files */
 
 /*     None. */
 
@@ -190,6 +186,10 @@ static integer c__6 = 6;
 /*        that are outside of the normal range, the error */
 /*        SPICE(TIMEZONEERROR) will be signaled. */
 
+/* $ Files */
+
+/*     None. */
+
 /* $ Particulars */
 
 /*      This routine computes the ephemeris epoch corresponding to an */
@@ -204,10 +204,9 @@ static integer c__6 = 6;
 /*      have arisen in various computing contexts. However, we */
 /*      believe that this routine will correctly interpret most time */
 /*      formats used throughout the planetary science community. */
-/*      For example this routine supports ISO time formats, UNIX */
-/*      `date` output formats.  VMS time formats, MS-DOS formats, */
-/*      etc.  One obvious omission from the strings recognized by */
-/*      this routine are strings of the form */
+/*      For example this routine supports ISO time formats and UNIX */
+/*      `date` output formats. One obvious omission from the strings */
+/*      recognized by this routine are strings of the form */
 
 /*           93234.1829  or 1993234.1829 */
 
@@ -513,7 +512,7 @@ static integer c__6 = 6;
 /*             Month Day Year */
 /*             Year Day Month */
 
-/*             Where Month is the name of a month, not its numeric */
+/*             where Month is the name of a month, not its numeric */
 /*             value. */
 
 /*             When integer components are separated by slashes (/) */
@@ -680,17 +679,22 @@ static integer c__6 = 6;
 
 /*     None. */
 
+/* $ Literature_References */
+
+/*     None. */
+
 /* $ Author_and_Institution */
 
 /*     C.H. Acton         (JPL) */
 /*     N.J. Bachman       (JPL) */
 /*     W.L. Taber         (JPL) */
 
-/* $ Literature_References */
-
-/*     None. */
-
 /* $ Version */
+
+/* -    SPICELIB Version 1.3.1, 02-NOV-2009 (CHA) */
+
+/*        A few minor grammar errors were fixed in the header. */
+/*        The header sections were reordered. */
 
 /* -    SPICELIB Version 1.3.0, 31-AUG-2006 (NJB) (EDW) */
 
@@ -892,14 +896,14 @@ static integer c__6 = 6;
     adjust = FALSE_;
     if (zoned || s_cmp(calndr, gregrn, (ftnlen)16, (ftnlen)16) != 0) {
 	if (tvec[(i__1 = sc - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", 
-		i__1, "str2et_", (ftnlen)945)] >= 60. && tvec[(i__2 = sc - 1) 
+		i__1, "str2et_", (ftnlen)949)] >= 60. && tvec[(i__2 = sc - 1) 
 		< 8 && 0 <= i__2 ? i__2 : s_rnge("tvec", i__2, "str2et_", (
-		ftnlen)945)] < 61.) {
+		ftnlen)949)] < 61.) {
 	    adjust = TRUE_;
 	    tvec[(i__1 = sc - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", 
-		    i__1, "str2et_", (ftnlen)949)] = tvec[(i__2 = sc - 1) < 8 
+		    i__1, "str2et_", (ftnlen)953)] = tvec[(i__2 = sc - 1) < 8 
 		    && 0 <= i__2 ? i__2 : s_rnge("tvec", i__2, "str2et_", (
-		    ftnlen)949)] - 1.;
+		    ftnlen)953)] - 1.;
 	}
     }
     if (s_cmp(calndr, mixed, (ftnlen)16, (ftnlen)16) == 0) {
@@ -918,7 +922,7 @@ static integer c__6 = 6;
 /*        of the checks to see if we have a legitimate time vector. */
 
 	if (tvec[(i__1 = yr - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", 
-		i__1, "str2et_", (ftnlen)972)] < 1580.) {
+		i__1, "str2et_", (ftnlen)976)] < 1580.) {
 	    moved_(tvec, &c__6, tvecm);
 	    tvecm[0] += 4.;
 	    tcheck_(tvecm, type__, &mods, modify, &ok1, error, (ftnlen)16, (
@@ -970,8 +974,8 @@ static integer c__6 = 6;
 
     if (adjust) {
 	tvec[(i__1 = sc - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", i__1, 
-		"str2et_", (ftnlen)1033)] = tvec[(i__2 = sc - 1) < 8 && 0 <= 
-		i__2 ? i__2 : s_rnge("tvec", i__2, "str2et_", (ftnlen)1033)] 
+		"str2et_", (ftnlen)1037)] = tvec[(i__2 = sc - 1) < 8 && 0 <= 
+		i__2 ? i__2 : s_rnge("tvec", i__2, "str2et_", (ftnlen)1037)] 
 		+ 1.;
     }
 
@@ -981,7 +985,7 @@ static integer c__6 = 6;
     if (s_cmp(modify + 64, "TDT", (ftnlen)16, (ftnlen)3) == 0 || s_cmp(modify 
 	    + 64, "TDB", (ftnlen)16, (ftnlen)3) == 0) {
 	if (tvec[(i__1 = sc - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", 
-		i__1, "str2et_", (ftnlen)1043)] >= 60.) {
+		i__1, "str2et_", (ftnlen)1047)] >= 60.) {
 	    setmsg_("The seconds component of time must be less than 60 for "
 		    "any calendar representation of #. ", (ftnlen)89);
 	    errch_("#", modify + 64, (ftnlen)1, (ftnlen)16);
@@ -1005,9 +1009,9 @@ static integer c__6 = 6;
 
     if (s_cmp(modify, "B.C.", (ftnlen)16, (ftnlen)4) == 0) {
 	tvec[(i__1 = yr - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", i__1, 
-		"str2et_", (ftnlen)1074)] = 1. - tvec[(i__2 = yr - 1) < 8 && 
+		"str2et_", (ftnlen)1078)] = 1. - tvec[(i__2 = yr - 1) < 8 && 
 		0 <= i__2 ? i__2 : s_rnge("tvec", i__2, "str2et_", (ftnlen)
-		1074)];
+		1078)];
     }
 
 /*     If there is a A.M. or P.M. time string modifier, we need to adjust */
@@ -1015,19 +1019,19 @@ static integer c__6 = 6;
 
     if (s_cmp(modify + 48, "P.M.", (ftnlen)16, (ftnlen)4) == 0) {
 	if (tvec[(i__1 = hr - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", 
-		i__1, "str2et_", (ftnlen)1083)] < 12.) {
+		i__1, "str2et_", (ftnlen)1087)] < 12.) {
 	    tvec[(i__1 = hr - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", 
-		    i__1, "str2et_", (ftnlen)1084)] = tvec[(i__2 = hr - 1) < 
+		    i__1, "str2et_", (ftnlen)1088)] = tvec[(i__2 = hr - 1) < 
 		    8 && 0 <= i__2 ? i__2 : s_rnge("tvec", i__2, "str2et_", (
-		    ftnlen)1084)] + 12.;
+		    ftnlen)1088)] + 12.;
 	}
     } else if (s_cmp(modify + 48, "A.M.", (ftnlen)16, (ftnlen)4) == 0) {
 	if (tvec[(i__1 = hr - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", 
-		i__1, "str2et_", (ftnlen)1089)] >= 12.) {
+		i__1, "str2et_", (ftnlen)1093)] >= 12.) {
 	    tvec[(i__1 = hr - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", 
-		    i__1, "str2et_", (ftnlen)1090)] = tvec[(i__2 = hr - 1) < 
+		    i__1, "str2et_", (ftnlen)1094)] = tvec[(i__2 = hr - 1) < 
 		    8 && 0 <= i__2 ? i__2 : s_rnge("tvec", i__2, "str2et_", (
-		    ftnlen)1090)] - 12.;
+		    ftnlen)1094)] - 12.;
 	}
     }
 
@@ -1037,15 +1041,15 @@ static integer c__6 = 6;
 /*     string is in fact an abbreviated year. */
 
     year = i_dnnt(&tvec[(i__1 = yr - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge(
-	    "tvec", i__1, "str2et_", (ftnlen)1101)]);
+	    "tvec", i__1, "str2et_", (ftnlen)1105)]);
     if (yabbrv) {
 	texpyr_(&year);
 	tvec[(i__1 = yr - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", i__1, 
-		"str2et_", (ftnlen)1106)] = (doublereal) year;
+		"str2et_", (ftnlen)1110)] = (doublereal) year;
     } else if (year < 100 && s_cmp(modify, " ", (ftnlen)16, (ftnlen)1) == 0) {
 	texpyr_(&year);
 	tvec[(i__1 = yr - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", i__1, 
-		"str2et_", (ftnlen)1112)] = (doublereal) year;
+		"str2et_", (ftnlen)1116)] = (doublereal) year;
     }
 
 /*     We may need to convert to the Gregorian Calendar, now is */
@@ -1057,23 +1061,23 @@ static integer c__6 = 6;
 
 	if (s_cmp(type__, "YD", (ftnlen)16, (ftnlen)2) == 0) {
 	    dojul = tvec[(i__1 = yr - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge(
-		    "tvec", i__1, "str2et_", (ftnlen)1127)] < 1582. || tvec[(
+		    "tvec", i__1, "str2et_", (ftnlen)1131)] < 1582. || tvec[(
 		    i__2 = yr - 1) < 8 && 0 <= i__2 ? i__2 : s_rnge("tvec", 
-		    i__2, "str2et_", (ftnlen)1127)] == 1582. && tvec[(i__3 = 
+		    i__2, "str2et_", (ftnlen)1131)] == 1582. && tvec[(i__3 = 
 		    dy - 1) < 8 && 0 <= i__3 ? i__3 : s_rnge("tvec", i__3, 
-		    "str2et_", (ftnlen)1127)] < 279.;
+		    "str2et_", (ftnlen)1131)] < 279.;
 	} else {
 	    dojul = tvec[(i__1 = yr - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge(
-		    "tvec", i__1, "str2et_", (ftnlen)1133)] < 1582. || tvec[(
+		    "tvec", i__1, "str2et_", (ftnlen)1137)] < 1582. || tvec[(
 		    i__2 = yr - 1) < 8 && 0 <= i__2 ? i__2 : s_rnge("tvec", 
-		    i__2, "str2et_", (ftnlen)1133)] <= 1582. && tvec[(i__3 = 
+		    i__2, "str2et_", (ftnlen)1137)] <= 1582. && tvec[(i__3 = 
 		    mm - 1) < 8 && 0 <= i__3 ? i__3 : s_rnge("tvec", i__3, 
-		    "str2et_", (ftnlen)1133)] < 10. || tvec[(i__4 = yr - 1) < 
+		    "str2et_", (ftnlen)1137)] < 10. || tvec[(i__4 = yr - 1) < 
 		    8 && 0 <= i__4 ? i__4 : s_rnge("tvec", i__4, "str2et_", (
-		    ftnlen)1133)] <= 1582. && tvec[(i__5 = mm - 1) < 8 && 0 <=
+		    ftnlen)1137)] <= 1582. && tvec[(i__5 = mm - 1) < 8 && 0 <=
 		     i__5 ? i__5 : s_rnge("tvec", i__5, "str2et_", (ftnlen)
-		    1133)] <= 10. && tvec[(i__6 = dy - 1) < 8 && 0 <= i__6 ? 
-		    i__6 : s_rnge("tvec", i__6, "str2et_", (ftnlen)1133)] < 
+		    1137)] <= 10. && tvec[(i__6 = dy - 1) < 8 && 0 <= i__6 ? 
+		    i__6 : s_rnge("tvec", i__6, "str2et_", (ftnlen)1137)] < 
 		    6.;
 	}
     } else if (s_cmp(calndr, juln, (ftnlen)16, (ftnlen)16) == 0) {
@@ -1090,41 +1094,41 @@ static integer c__6 = 6;
     if (dojul) {
 	if (s_cmp(type__, "YD", (ftnlen)16, (ftnlen)2) == 0) {
 	    year = (integer) d_int(&tvec[(i__1 = yr - 1) < 8 && 0 <= i__1 ? 
-		    i__1 : s_rnge("tvec", i__1, "str2et_", (ftnlen)1161)]);
+		    i__1 : s_rnge("tvec", i__1, "str2et_", (ftnlen)1165)]);
 	    month = 1;
 	    day = (integer) d_int(&tvec[(i__1 = dy - 1) < 8 && 0 <= i__1 ? 
-		    i__1 : s_rnge("tvec", i__1, "str2et_", (ftnlen)1163)]);
+		    i__1 : s_rnge("tvec", i__1, "str2et_", (ftnlen)1167)]);
 	    frac = tvec[(i__1 = dy - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge(
-		    "tvec", i__1, "str2et_", (ftnlen)1164)] - (doublereal) 
+		    "tvec", i__1, "str2et_", (ftnlen)1168)] - (doublereal) 
 		    day;
 	    orgnyr = year;
 	    jul2gr_(&year, &month, &day, &doy);
 	    tvec[(i__1 = yr - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", 
-		    i__1, "str2et_", (ftnlen)1169)] = (doublereal) year;
+		    i__1, "str2et_", (ftnlen)1173)] = (doublereal) year;
 	    tvec[(i__1 = dy - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", 
-		    i__1, "str2et_", (ftnlen)1170)] = (doublereal) doy + frac;
+		    i__1, "str2et_", (ftnlen)1174)] = (doublereal) doy + frac;
 	} else {
 	    year = (integer) d_int(&tvec[(i__1 = yr - 1) < 8 && 0 <= i__1 ? 
-		    i__1 : s_rnge("tvec", i__1, "str2et_", (ftnlen)1174)]);
+		    i__1 : s_rnge("tvec", i__1, "str2et_", (ftnlen)1178)]);
 	    month = (integer) d_int(&tvec[(i__1 = mm - 1) < 8 && 0 <= i__1 ? 
-		    i__1 : s_rnge("tvec", i__1, "str2et_", (ftnlen)1175)]);
+		    i__1 : s_rnge("tvec", i__1, "str2et_", (ftnlen)1179)]);
 	    day = (integer) d_int(&tvec[(i__1 = dy - 1) < 8 && 0 <= i__1 ? 
-		    i__1 : s_rnge("tvec", i__1, "str2et_", (ftnlen)1176)]);
+		    i__1 : s_rnge("tvec", i__1, "str2et_", (ftnlen)1180)]);
 	    frac = tvec[(i__1 = dy - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge(
-		    "tvec", i__1, "str2et_", (ftnlen)1177)] - (doublereal) 
+		    "tvec", i__1, "str2et_", (ftnlen)1181)] - (doublereal) 
 		    day;
 	    orgnyr = year;
 	    jul2gr_(&year, &month, &day, &doy);
 	    tvec[(i__1 = yr - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", 
-		    i__1, "str2et_", (ftnlen)1182)] = (doublereal) year;
+		    i__1, "str2et_", (ftnlen)1186)] = (doublereal) year;
 	    tvec[(i__1 = mm - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", 
-		    i__1, "str2et_", (ftnlen)1183)] = (doublereal) month;
+		    i__1, "str2et_", (ftnlen)1187)] = (doublereal) month;
 	    tvec[(i__1 = dy - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", 
-		    i__1, "str2et_", (ftnlen)1184)] = (doublereal) day + frac;
+		    i__1, "str2et_", (ftnlen)1188)] = (doublereal) day + frac;
 	}
     } else {
 	orgnyr = (integer) d_int(&tvec[(i__1 = yr - 1) < 8 && 0 <= i__1 ? 
-		i__1 : s_rnge("tvec", i__1, "str2et_", (ftnlen)1190)]);
+		i__1 : s_rnge("tvec", i__1, "str2et_", (ftnlen)1194)]);
     }
 
 /*     The TDT and TDB calendars don't need to worry about time */
@@ -1153,20 +1157,20 @@ static integer c__6 = 6;
 /*        associated with the time zone. */
 
 	tvec[(i__1 = hr - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", i__1, 
-		"str2et_", (ftnlen)1226)] = tvec[(i__2 = hr - 1) < 8 && 0 <= 
-		i__2 ? i__2 : s_rnge("tvec", i__2, "str2et_", (ftnlen)1226)] 
+		"str2et_", (ftnlen)1230)] = tvec[(i__2 = hr - 1) < 8 && 0 <= 
+		i__2 ? i__2 : s_rnge("tvec", i__2, "str2et_", (ftnlen)1230)] 
 		- hoff;
 	tvec[(i__1 = mn - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", i__1, 
-		"str2et_", (ftnlen)1227)] = tvec[(i__2 = mn - 1) < 8 && 0 <= 
-		i__2 ? i__2 : s_rnge("tvec", i__2, "str2et_", (ftnlen)1227)] 
+		"str2et_", (ftnlen)1231)] = tvec[(i__2 = mn - 1) < 8 && 0 <= 
+		i__2 ? i__2 : s_rnge("tvec", i__2, "str2et_", (ftnlen)1231)] 
 		- moff;
 	secs = tvec[(i__1 = sc - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", 
-		i__1, "str2et_", (ftnlen)1228)];
+		i__1, "str2et_", (ftnlen)1232)];
 	tvec[(i__1 = sc - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", i__1, 
-		"str2et_", (ftnlen)1229)] = 0.;
+		"str2et_", (ftnlen)1233)] = 0.;
 	ttrans_(forml, forml, tvec, (ftnlen)16, (ftnlen)16);
 	tvec[(i__1 = sc - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("tvec", i__1, 
-		"str2et_", (ftnlen)1233)] = secs;
+		"str2et_", (ftnlen)1237)] = secs;
     }
 
 /*     If we decided to forgo the leapseconds check earlier */
@@ -1291,15 +1295,15 @@ static integer c__6 = 6;
 /*     of whatever calendar happens to be in use. */
 
     cyear = (integer) d_int(&tvec[(i__1 = yr - 1) < 8 && 0 <= i__1 ? i__1 : 
-	    s_rnge("tvec", i__1, "str2et_", (ftnlen)1383)]);
+	    s_rnge("tvec", i__1, "str2et_", (ftnlen)1387)]);
     i__1 = cyear - 1;
     for (gyear = cyear; gyear >= i__1; --gyear) {
 	for (i__ = 1; i__ <= 2; ++i__) {
 	    tvec[0] = (doublereal) gyear;
 	    tvec[1] = mon[(i__2 = i__ - 1) < 2 && 0 <= i__2 ? i__2 : s_rnge(
-		    "mon", i__2, "str2et_", (ftnlen)1390)];
+		    "mon", i__2, "str2et_", (ftnlen)1394)];
 	    tvec[2] = mdy[(i__2 = i__ - 1) < 2 && 0 <= i__2 ? i__2 : s_rnge(
-		    "mdy", i__2, "str2et_", (ftnlen)1391)];
+		    "mdy", i__2, "str2et_", (ftnlen)1395)];
 	    tvec[3] = hoff + 23.;
 	    tvec[4] = moff + 59.;
 	    tvec[5] = 0.;
@@ -1316,7 +1320,7 @@ static integer c__6 = 6;
 	    if (year == orgnyr) {
 		repmc_(error, "#", mname + (((i__2 = month - 1) < 12 && 0 <= 
 			i__2 ? i__2 : s_rnge("mname", i__2, "str2et_", (
-			ftnlen)1411)) << 4), error, (ftnlen)400, (ftnlen)1, (
+			ftnlen)1415)) << 4), error, (ftnlen)400, (ftnlen)1, (
 			ftnlen)16, (ftnlen)400);
 		repmi_(error, "#", &day, error, (ftnlen)400, (ftnlen)1, (
 			ftnlen)400);

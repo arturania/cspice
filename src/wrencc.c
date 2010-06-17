@@ -358,6 +358,46 @@ static integer c__1 = 1;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.23.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL. */
+
+/* -    SPICELIB Version 1.22.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-CC_C. */
+
+/* -    SPICELIB Version 1.21.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-INTEL-64BIT-CC_C. */
+
+/* -    SPICELIB Version 1.20.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-NATIVE_C. */
+
+/* -    SPICELIB Version 1.19.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-WINDOWS-64BIT-IFORT. */
+
+/* -    SPICELIB Version 1.18.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 1.17.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for PC-64BIT-MS_C. */
+
+/* -    SPICELIB Version 1.16.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-INTEL_C. */
+
+/* -    SPICELIB Version 1.15.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 1.14.0, 13-MAY-2010 (BVS) */
+
+/*        Updated for MAC-OSX-64BIT-GFORTRAN. */
+
 /* -    SPICELIB Version 1.13.0, 18-MAR-2009 (BVS) */
 
 /*        Updated for PC-LINUX-GFORTRAN. */
@@ -580,27 +620,27 @@ static integer c__1 = 1;
 		i__1 = encpos;
 		s_copy(encchr + i__1, hexdig + ((i__2 = hibits) < 16 && 0 <= 
 			i__2 ? i__2 : s_rnge("hexdig", i__2, "wrencc_", (
-			ftnlen)604)), encpos + 1 - i__1, (ftnlen)1);
+			ftnlen)644)), encpos + 1 - i__1, (ftnlen)1);
 		i__1 = encpos + 1;
 		s_copy(encchr + i__1, hexdig + ((i__2 = lobits) < 16 && 0 <= 
 			i__2 ? i__2 : s_rnge("hexdig", i__2, "wrencc_", (
-			ftnlen)605)), encpos + 2 - i__1, (ftnlen)1);
+			ftnlen)645)), encpos + 2 - i__1, (ftnlen)1);
 	    } else if (room == 1) {
 		i__1 = encpos;
 		s_copy(encchr + i__1, hexdig + ((i__2 = hibits) < 16 && 0 <= 
 			i__2 ? i__2 : s_rnge("hexdig", i__2, "wrencc_", (
-			ftnlen)609)), encpos + 1 - i__1, (ftnlen)1);
+			ftnlen)649)), encpos + 1 - i__1, (ftnlen)1);
 		*(unsigned char *)lftovr = *(unsigned char *)&hexdig[(i__1 = 
 			lobits) < 16 && 0 <= i__1 ? i__1 : s_rnge("hexdig", 
-			i__1, "wrencc_", (ftnlen)610)];
+			i__1, "wrencc_", (ftnlen)650)];
 		*(unsigned char *)&lftovr[1] = ' ';
 	    } else {
 		*(unsigned char *)lftovr = *(unsigned char *)&hexdig[(i__1 = 
 			hibits) < 16 && 0 <= i__1 ? i__1 : s_rnge("hexdig", 
-			i__1, "wrencc_", (ftnlen)615)];
+			i__1, "wrencc_", (ftnlen)655)];
 		*(unsigned char *)&lftovr[1] = *(unsigned char *)&hexdig[(
 			i__1 = lobits) < 16 && 0 <= i__1 ? i__1 : s_rnge(
-			"hexdig", i__1, "wrencc_", (ftnlen)616)];
+			"hexdig", i__1, "wrencc_", (ftnlen)656)];
 	    }
 
 /*           Increment the character buffer pointers, including the */

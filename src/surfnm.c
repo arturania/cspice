@@ -118,6 +118,15 @@ static integer c__2 = 2;
 
 /*      None. */
 
+/* $ Exceptions */
+
+/*     1) If any of the axes are non-positive, the error */
+/*        'SPICE(BADAXISLENGTH)' will be signalled. */
+
+/* $ Files */
+
+/*      None. */
+
 /* $ Particulars */
 
 /*      This routine computes the outward pointing unit normal vector to */
@@ -148,12 +157,7 @@ static integer c__2 = 2;
 /*      No checking for this is done. */
 
 
-/* $ Exceptions */
-
-/*     1) If any of the axes are non-positive, the error */
-/*        'SPICE(BADAXISLENGTH)' will be signalled. */
-
-/* $ Files */
+/* $ Literature_References */
 
 /*      None. */
 
@@ -162,11 +166,11 @@ static integer c__2 = 2;
 /*      N.J. Bachman    (JPL) */
 /*      W.L. Taber      (JPL) */
 
-/* $ Literature_References */
-
-/*      None. */
-
 /* $ Version */
+
+/* -    SPICELIB Version 1.3.1, 18-MAY-2010 (BVS) */
+
+/*        Removed "C$" marker from text in the header. */
 
 /* -    SPICELIB Version 1.3.0, 02-SEP-2005 (NJB) */
 
@@ -180,7 +184,7 @@ static integer c__2 = 2;
 
 /* -    SPICELIB Version 1.1.0, 21-JUL-1995 (WLT) */
 
-/*        A typo in the C$ Examples section was corrected */
+/*        A typo in the Examples section was corrected */
 
 /* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
 
@@ -245,7 +249,7 @@ static integer c__2 = 2;
     if (bad > 0) {
 /* Writing concatenation */
 	i__2[0] = 32, a__1[0] = mssg + (((i__1 = bad - 1) < 7 && 0 <= i__1 ? 
-		i__1 : s_rnge("mssg", i__1, "surfnm_", (ftnlen)243)) << 5);
+		i__1 : s_rnge("mssg", i__1, "surfnm_", (ftnlen)247)) << 5);
 	i__2[1] = 3, a__1[1] = " ? ";
 	s_cat(ch__1, a__1, i__2, &c__2, (ftnlen)35);
 	setmsg_(ch__1, (ftnlen)35);

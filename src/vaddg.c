@@ -20,7 +20,7 @@
 
 /* $ Abstract */
 
-/*      Add two vectors of arbitrary dimension. */
+/*     Add two vectors of arbitrary dimension. */
 
 /* $ Disclaimer */
 
@@ -53,89 +53,92 @@
 
 /* $ Keywords */
 
-/*      VECTOR */
+/*     VECTOR */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*       V1        I     First vector to be added. */
-/*       V2        I     Second vector to be added. */
-/*       NDIM      I     Dimension of V1, V2, and VOUT. */
-/*       VOUT      O     Sum vector, V1 + V2. */
-/*                       VOUT can overwrite either V1 or V2. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     V1         I   First vector to be added. */
+/*     V2         I   Second vector to be added. */
+/*     NDIM       I   Dimension of V1, V2, and VOUT. */
+/*     VOUT       O   Sum vector, V1 + V2. */
 
 /* $ Detailed_Input */
 
-/*      V1      This may be any double precision vector of arbitrary */
-/*              dimension. */
+/*     V1      This may be any double precision vector of arbitrary */
+/*             dimension. */
 
-/*      V2      Likewise. */
+/*     V2      Likewise. */
 
-/*      NDIM    is the dimension of V1, V2 and VOUT. */
+/*     NDIM    is the dimension of V1, V2 and VOUT. */
 
 /* $ Detailed_Output */
 
-/*      VOUT   This is vector sum of V1 and V2. VOUT may overwrite either */
-/*             V1 or V2. */
+/*     VOUT   This is vector sum of V1 and V2. */
 
 /* $ Parameters */
 
 /*     None. */
 
-/* $ Particulars */
-
-/*      This routine simply performs addition between components of V1 */
-/*      and V2.  No checking is performed to determine whether floating */
-/*      point overflow has occurred. */
-
-/* $ Examples */
-
-/*      The following table shows the output VOUT as a function of the */
-/*      the input V1 and V2 from the subroutine VADD. */
-
-/*      V1                  V2                  NDIM   VOUT */
-/*      ----------------------------------------------------------------- */
-/*      (1.0, 2.0, 3.0)     (4.0, 5.0, 6.0)     3      (5.0,  7.0,  9.0) */
-/*      (1D-7,1D23)         (1D24, 1D23)        2      (1D24, 2D23) */
-
-/* $ Restrictions */
-
-/*      The user is required to determine that the magnitude each */
-/*      component of the vectors is within the appropriate range so as */
-/*      not to cause floating point overflow. */
-
 /* $ Exceptions */
 
-/*      Error free. */
+/*     Error free. */
 
 /* $ Files */
 
-/*      None. */
+/*     None. */
 
-/* $ Author_and_Institution */
+/* $ Particulars */
 
-/*      W.M. Owen       (JPL) */
+/*     This routine simply performs addition between components of V1 */
+/*     and V2.  No checking is performed to determine whether floating */
+/*     point overflow has occurred. */
+
+/* $ Examples */
+
+/*     The following table shows the output VOUT as a function of the */
+/*     the input V1 and V2 from the subroutine VADD. */
+
+/*        V1                  V2                 NDIM   VOUT */
+/*        --------------------------------------------------------------- */
+/*        (1.0, 2.0, 3.0)     (4.0, 5.0, 6.0)    3      (5.0,  7.0,  9.0) */
+/*        (1D-7,1D23)         (1D24, 1D23)       2      (1D24, 2D23) */
+
+/* $ Restrictions */
+
+/*     The user is required to determine that the magnitude each */
+/*     component of the vectors is within the appropriate range so as */
+/*     not to cause floating point overflow. */
 
 /* $ Literature_References */
 
-/*      None. */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     W.M. Owen       (JPL) */
 
 /* $ Version */
 
-/* -     SPICELIB Version 1.0.2, 07-NOV-2003 (EDW) */
+/* -    SPICELIB Version 1.0.3, 23-APR-2010 (NJB) */
 
-/*         Corrected a mistake in the second example's value */
-/*         for VOUT, i.e. replaced (1D24, 2D23, 0.0) with */
-/*         (1D24, 2D23). */
+/*        Header correction: assertions that the output */
+/*        can overwrite the input have been removed. */
 
-/* -     SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+/* -    SPICELIB Version 1.0.2, 07-NOV-2003 (EDW) */
 
-/*         Comment section for permuted index source lines was added */
-/*         following the header. */
+/*        Corrected a mistake in the second example's value */
+/*        for VOUT, i.e. replaced (1D24, 2D23, 0.0) with */
+/*        (1D24, 2D23). */
 
-/* -     SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
+/* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
+
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) */
 
 /* -& */
 /* $ Index_Entries */
@@ -153,10 +156,10 @@
     i__1 = *ndim;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	vout[(i__2 = i__ - 1) < vout_dim1 && 0 <= i__2 ? i__2 : s_rnge("vout",
-		 i__2, "vaddg_", (ftnlen)141)] = v1[(i__3 = i__ - 1) < 
+		 i__2, "vaddg_", (ftnlen)144)] = v1[(i__3 = i__ - 1) < 
 		v1_dim1 && 0 <= i__3 ? i__3 : s_rnge("v1", i__3, "vaddg_", (
-		ftnlen)141)] + v2[(i__4 = i__ - 1) < v2_dim1 && 0 <= i__4 ? 
-		i__4 : s_rnge("v2", i__4, "vaddg_", (ftnlen)141)];
+		ftnlen)144)] + v2[(i__4 = i__ - 1) < v2_dim1 && 0 <= i__4 ? 
+		i__4 : s_rnge("v2", i__4, "vaddg_", (ftnlen)144)];
     }
     return 0;
 } /* vaddg_ */

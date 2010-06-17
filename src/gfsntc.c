@@ -152,6 +152,11 @@ static logical c_false = FALSE_;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+
+/*       Added NWRR parameter. */
+/*       Added NWUDS parameter. */
+
 /* -    SPICELIB Version 1.0.0, 21-FEB-2009 (NJB) (LSE) (EDW) */
 
 /* -& */
@@ -187,6 +192,14 @@ static logical c_false = FALSE_;
 
 /*     Callers of GFSEP should declare their workspace window */
 /*     count using NWSEP. */
+
+
+/*     Callers of GFRR should declare their workspace window */
+/*     count using NWRR. */
+
+
+/*     Callers of GFUDS should declare their workspace window */
+/*     count using NWUDS. */
 
 
 /*     ADDWIN is a parameter used to expand each interval of the search */
@@ -364,124 +377,13 @@ static logical c_false = FALSE_;
 
 /*     Note: the sum of these lengths, plus the length of the */
 /*     "percent complete" substring, should not be long enough */
-/*     to cause wrap-around on any platforms's terminal window. */
+/*     to cause wrap-around on any platform's terminal window. */
 
 
 /*     Total progress report message length upper bound: */
 
 
 /*     End of file zzgf.inc. */
-
-/* $ Abstract */
-
-/*     Include file zzabcorr.inc */
-
-/*     SPICE private file intended solely for the support of SPICE */
-/*     routines.  Users should not include this file directly due */
-/*     to the volatile nature of this file */
-
-/*     The parameters below define the structure of an aberration */
-/*     correction attribute block. */
-
-/* $ Disclaimer */
-
-/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
-/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
-/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
-/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
-/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
-/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
-/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
-/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
-/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
-/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
-
-/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
-/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
-/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
-/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
-/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
-/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
-
-/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
-/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
-/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
-/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
-
-/* $ Parameters */
-
-/*     An aberration correction attribute block is an array of logical */
-/*     flags indicating the attributes of the aberration correction */
-/*     specified by an aberration correction string.  The attributes */
-/*     are: */
-
-/*        - Is the correction "geometric"? */
-
-/*        - Is light time correction indicated? */
-
-/*        - Is stellar aberration correction indicated? */
-
-/*        - Is the light time correction of the "converged */
-/*          Newtonian" variety? */
-
-/*        - Is the correction for the transmission case? */
-
-/*        - Is the correction relativistic? */
-
-/*    The parameters defining the structure of the block are as */
-/*    follows: */
-
-/*       NABCOR    Number of aberration correction choices. */
-
-/*       ABATSZ    Number of elements in the aberration correction */
-/*                 block. */
-
-/*       GEOIDX    Index in block of geometric correction flag. */
-
-/*       LTIDX     Index of light time flag. */
-
-/*       STLIDX    Index of stellar aberration flag. */
-
-/*       CNVIDX    Index of converged Newtonian flag. */
-
-/*       XMTIDX    Index of transmission flag. */
-
-/*       RELIDX    Index of relativistic flag. */
-
-/*    The following parameter is not required to define the block */
-/*    structure, but it is convenient to include it here: */
-
-/*       CORLEN    The maximum string length required by any aberration */
-/*                 correction string */
-
-/* $ Author_and_Institution */
-
-/*     N.J. Bachman    (JPL) */
-
-/* $ Literature_References */
-
-/*     None. */
-
-/* $ Version */
-
-/* -    SPICELIB Version 1.0.0, 18-DEC-2004 (NJB) */
-
-/* -& */
-/*     Number of aberration correction choices: */
-
-
-/*     Aberration correction attribute block size */
-/*     (number of aberration correction attributes): */
-
-
-/*     Indices of attributes within an aberration correction */
-/*     attribute block: */
-
-
-/*     Maximum length of an aberration correction string: */
-
-
-/*     End of include file zzabcorr.inc */
 
 /* $ Brief_I/O */
 
@@ -730,6 +632,17 @@ static logical c_false = FALSE_;
 
 /*     STEP     the double precision time step size to use in the search. */
 
+/*              Selection of the time step for surface intercept geometry */
+/*              requires consideration of the mechanics of a surface */
+/*              intercept event. In most cases, two distinct searches */
+/*              will be needed, one to determine the windows when the */
+/*              boresight vector intercepts the surface and then the */
+/*              search based on the user defined constraints within those */
+/*              windows. The boresight of nadir pointing instrument may */
+/*              continually intercept a body, but an instrument scanning */
+/*              across a disc will have configurations when the */
+/*              boresight does not intercept the body. */
+
 /*              The step size must be smaller than the shortest interval */
 /*              within the confinement window over which the intercept */
 /*              exists and also smaller than the shortest interval over */
@@ -742,7 +655,7 @@ static logical c_false = FALSE_;
 
 /*              For LONGITUDE and RIGHT ASCENSION, the step size must */
 /*              be shorter than the shortest interval, within the */
-/*              confinement window, over which either the sin or cosin */
+/*              confinement window, over which either the sin or cosine */
 /*              of the coordinate is monotone increasing or decreasing. */
 
 /*              The choice of STEP affects the completeness but not */
@@ -769,26 +682,58 @@ static logical c_false = FALSE_;
 /*              CNFINE must be initialized by the caller using the */
 /*              SPICELIB routine SSIZED. */
 
-/*     MW       an integer value specifying the length of the workspace */
-/*              array WORK (see description below) used by this */
-/*              routine. MW should be at least as large as TWICE */
-/*              number of intervals within the search region on which */
-/*              the specified surface intercept vector function is */
-/*              monotone increasing or decreasing. It does no harm to */
-/*              pick a value of MW larger than the minimum required to */
-/*              execute the specified search, but if MW is too small, */
-/*              the search will fail. */
+/*     MW       is a parameter specifying the length of the SPICE */
+/*              windows in the workspace array WORK (see description */
+/*              below) used by this routine. */
 
-/*     NW       an integer value specifying the number of windows in the */
-/*              workspace array WORK. An effective general use value for */
-/*              his argument, NWMAX, defined in gf.inc. */
+/*              MW should be set to a number at least twice as large */
+/*              as the maximum number of intervals required by any */
+/*              workspace window. In many cases, it's not necessary to */
+/*              compute an accurate estimate of how many intervals are */
+/*              needed; rather, the user can pick a size considerably */
+/*              larger than what's really required. */
 
-/*     WORK     a double precision array used to store workspace windows. */
-/*              This array should be declared by the caller as shown: */
+/*              However, since excessively large arrays can prevent */
+/*              applications from compiling, linking, or running */
+/*              properly, sometimes MW must be set according to */
+/*              the actual workspace requirement. A rule of thumb */
+/*              for the number of intervals NINTVLS needed is */
 
-/*                    DOUBLE PRECISION     WORK ( LBCELL : MW, NW ) */
+/*                  NINTVLS  =  2*N  +  ( M / STEP ) */
 
-/*              where MW and NW integers value declared by the caller. */
+/*              where */
+
+/*                  N     is the number of intervals in the confinement */
+/*                        window */
+
+/*                  M     is the measure of the confinement window, in */
+/*                        units of seconds */
+
+/*                  STEP  is the search step size in seconds */
+
+/*              MW should then be set to */
+
+/*                  2 * NINTVLS */
+
+/*     NW       is a parameter specifying the number of SPICE windows */
+/*              in the workspace array WORK (see description below) */
+/*              used by this routine. NW should be set to the */
+/*              parameter NWMAX; this parameter is declared in the */
+/*              include file gf.inc. (The reason this dimension is */
+/*              an input argument is that this allows run-time */
+/*              error checking to be performed.) */
+
+/*     WORK     is an array used to store workspace windows. This */
+/*              array should be declared by the caller as shown: */
+
+/*                 INCLUDE 'gf.inc' */
+/*                    ... */
+
+/*                 DOUBLE PRECISION    WORK ( LBCELL : MW, NWMAX ) */
+
+/*              where MW is a constant declared by the caller and */
+/*              NWMAX is a constant defined in the SPICELIB INCLUDE */
+/*              file gf.inc. See the discussion of MW above. */
 
 /*              WORK need not be initialized by the caller. */
 
@@ -806,8 +751,7 @@ static logical c_false = FALSE_;
 /* $ Detailed_Output */
 
 /*     WORK     the input workspace array, modified by this */
-/*              routine. The caller should re-initialize this array */
-/*              before attempting to use it for any other purpose. */
+/*              routine. */
 
 /*     RESULT   the SPICE window of intervals, contained within the */
 /*              confinement window CNFINE, on which the specified */
@@ -1420,7 +1364,7 @@ static logical c_false = FALSE_;
 /*     C */
 /*     C     Load kernels. */
 /*     C */
-/*           CALL FURNSH ('/kernels/standard.tm') */
+/*           CALL FURNSH ('standard.tm') */
 /*           CALL FURNSH ('sem.tf') */
 
 /*     C */
@@ -1642,6 +1586,11 @@ static logical c_false = FALSE_;
 /*     E.D. Wright    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1, 16-FEB-2010 (NJB) (EDW) */
+
+/*        Edits to and corrections of argument descriptions and */
+/*        header. */
 
 /* -    SPICELIB Version 1.0.0, 17-FEB-2009 (NJB) (EDW) */
 

@@ -42,7 +42,9 @@ static integer c__9 = 9;
     extern /* Subroutine */ int chkin_(char *, ftnlen), ucase_(char *, char *,
 	     ftnlen, ftnlen), errch_(char *, char *, ftnlen, ftnlen);
     static logical usecn, uselt;
-    extern doublereal vnorm_(doublereal *), clight_(void);
+    extern doublereal vnorm_(doublereal *);
+    extern logical failed_(void);
+    extern doublereal clight_(void);
     extern integer isrchc_(char *, integer *, char *, ftnlen, ftnlen);
     extern /* Subroutine */ int stelab_(doublereal *, doublereal *, 
 	    doublereal *), sigerr_(char *, ftnlen), chkout_(char *, ftnlen), 
@@ -637,6 +639,11 @@ static integer c__9 = 9;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.2.0, 17-MAY-2010 (NJB) */
+
+/*        Bug fix: routine now returns immediately after */
+/*        state lookup failure. */
+
 /* -    SPICELIB Version 2.1.0, 31-AUG-2005 (NJB) */
 
 /*        Updated to remove non-standard use of duplicate arguments */
@@ -762,6 +769,10 @@ static integer c__9 = 9;
 /*     light time. */
 
     spkgps_(targ, et, ref, &c__0, ptarg, lt, ref_len);
+    if (failed_()) {
+	chkout_("SPKAPO", (ftnlen)6);
+	return 0;
+    }
     vsub_(ptarg, sobs, tpos);
     vequ_(tpos, ptarg);
     *lt = vnorm_(ptarg) / clight_();
@@ -781,6 +792,10 @@ static integer c__9 = 9;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	d__1 = *et + ltsign * *lt;
 	spkgps_(targ, &d__1, ref, &c__0, ptarg, lt, ref_len);
+	if (failed_()) {
+	    chkout_("SPKAPO", (ftnlen)6);
+	    return 0;
+	}
 	vsub_(ptarg, sobs, tpos);
 	vequ_(tpos, ptarg);
 	*lt = vnorm_(ptarg) / clight_();

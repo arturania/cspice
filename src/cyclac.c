@@ -104,6 +104,20 @@
 
 /*     None. */
 
+/* $ Exceptions */
+
+/*      1) If the value of DIR is not recognized, the error */
+/*         SPICE(INVALIDDIRECTION) is signalled. */
+
+/*      2) If NELT is less than 1, the output array is not modified. */
+
+/*      3) If NCYCLE is negative, the array is cycled NCYCLE times in */
+/*         the opposite direction of DIR. */
+
+/* $ Files */
+
+/*      None. */
+
 /* $ Particulars */
 
 /*      An array is cycled when its contents are shifted forward or */
@@ -152,17 +166,7 @@
 
 /*      will produce garbage. */
 
-/* $ Exceptions */
-
-/*      1) If the value of DIR is not recognized, the error */
-/*         SPICE(INVALIDDIRECTION) is signalled. */
-
-/*      2) If NELT is less than 1, the output array is not modified. */
-
-/*      3) If NCYCLE is negative, the array is cycled NCYCLE times in */
-/*         the opposite direction of DIR. */
-
-/* $ Files */
+/* $ Literature_References */
 
 /*      None. */
 
@@ -172,11 +176,11 @@
 /*      W.L. Taber      (JPL) */
 /*      I.M. Underwood  (JPL) */
 
-/* $ Literature_References */
-
-/*      None. */
-
 /* $ Version */
+
+/* -     SPICELIB Version 1.0.2, 18-MAY-2010 (BVS) */
+
+/*        Removed "C$" marker from text in the header. */
 
 /* -     SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
 
@@ -202,7 +206,7 @@
 /*         input array into the output array if the direction was not */
 /*         recognized.) */
 
-/*         The "C$ Exceptions" section was filled out in more detail. */
+/*         The "Exceptions" section was filled out in more detail. */
 
 /* -& */
 

@@ -100,7 +100,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> C-Kernel Required Reading
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2009 APR 15 by B. V. Semenov.
+   Last revised on 2010 JUN 03 by B. V. Semenov.
 <P>
  
 <BR><BR>
@@ -125,13 +125,16 @@
 <TT>1.</TT> [167] Double Precision Array Files Required Reading (<a href="../req/daf.html">daf.req</a>)
 <BR><BR></UL>
 <UL>
-<TT>2.</TT> [222] Spacecraft Clock Time Required Reading (<a href="../req/sclk.html">sclk.req</a>)
+<TT>2.</TT> [349] FRAMES Required Reading (<a href="../req/frames.html">frames.req</a>).
 <BR><BR></UL>
 <UL>
-<TT>3.</TT> [214] Rotations Required Reading (<a href="../req/rotation.html">rotation.req</a>)
+<TT>3.</TT> [222] Spacecraft Clock Time Required Reading (<a href="../req/sclk.html">sclk.req</a>)
 <BR><BR></UL>
 <UL>
-<TT>4.</TT> [211] SPC Required Reading: Comments in SPK and CK Files (<a href="../req/spc.html">spc.req</a>)
+<TT>4.</TT> [214] Rotations Required Reading (<a href="../req/rotation.html">rotation.req</a>)
+<BR><BR></UL>
+<UL>
+<TT>5.</TT> [211] SPC Required Reading: Comments in SPK and CK Files (<a href="../req/spc.html">spc.req</a>)
 <BR><BR></UL>
 <BR><BR>
 <A NAME="DAF Run-Time Binary File Format Translation"></A>
@@ -1321,8 +1324,47 @@ satisfy a particular request.<BR>
                              CK reader returns this instance
  
    Segment A          (0-----------------0--------0--0-----0)
+                                         ^
+                                         |
+                                   "Best" answer
  
 </PRE>
+   The next example illustrates an unfortunate side effect of using a
+   non-zero tolerance when reading multi-segment CKs with continuous data.
+   In all cases when the look-up interval formed using tolerance overlaps a
+   segment boundary and the request time falls within the coverage of the
+   lower priority segment, the data at the end of the higher priority
+   segment will be picked instead of the data from the lower priority
+   segment.
+<P>
+ 
+<PRE>
+                                           SCLKDP
+                                          /
+                                         |  TOL
+                                         | /
+                                         |/\
+   Your request                       [--+--]
+                                      .  .  .
+                                      .  .  .
+   Segment C                                (===============)
+                                            ^
+                                            |
+                              CK reader returns this instance
+ 
+   Segment A          (=====================)
+                                         ^
+                                         |
+                                   "Best" answer
+</PRE>
+   In general, because using a non-zero tolerance affects selection of the
+   segment from which the data is obtained, users are strongly discouraged
+   from using a non-zero tolerance when reading CKs with continuous data.
+   Using a non-zero tolerance should be reserved exclusively to reading CKs
+   with discrete data because in practice obtaining data from such CKs
+   using a zero tolerance is often not possible due to time round off.
+<P>
+ 
    The next few sections will go into greater detail about how <a href="../cspice/ckgp_c.html">ckgp_c</a> and
    <a href="../cspice/ckgpav_c.html">ckgpav_c</a> search through segments.
 <P>

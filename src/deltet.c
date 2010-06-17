@@ -192,21 +192,25 @@ static integer c__400 = 400;
 /*      The kernel pool containing leapseconds and relativistic terms */
 /*      MUST be loaded prior to calling this subroutine. Examples */
 /*      demonstrating how to load a kernel pool are included in the */
-/*      Required Reading file TIME.REQ and in the "C$ Examples" */
+/*      Required Reading file TIME.REQ and in the "Examples" */
 /*      section of this header. For more general information about */
 /*      kernel pools, please consult the Required Reading file */
 /*      KERNEL.REQ. */
+
+/* $ Literature_References */
+
+/*      Astronomical Almanac. */
 
 /* $ Author_and_Institution */
 
 /*      W.M. Owen       (JPL) */
 /*      I.M. Underwood  (JPL) */
 
-/* $ Literature_References */
-
-/*      Astronomical Almanac. */
-
 /* $ Version */
+
+/* -     SPICELIB Version 1.2.1, 18-MAY-2010 (BVS) */
+
+/*        Removed "C$" marker from text in the header. */
 
 /* -     SPICELIB Version 1.2.0, 24-AUG-1998 (WLT) */
 
@@ -320,9 +324,9 @@ static integer c__400 = 400;
 		" not be found in the kernel pool: #", (ftnlen)94);
 	for (i__ = 1; i__ <= 5; ++i__) {
 	    if (! found[(i__1 = i__ - 1) < 5 && 0 <= i__1 ? i__1 : s_rnge(
-		    "found", i__1, "deltet_", (ftnlen)333)]) {
+		    "found", i__1, "deltet_", (ftnlen)337)]) {
 		errch_("#", missed + ((i__1 = i__ - 1) < 5 && 0 <= i__1 ? 
-			i__1 : s_rnge("missed", i__1, "deltet_", (ftnlen)334))
+			i__1 : s_rnge("missed", i__1, "deltet_", (ftnlen)338))
 			 * 20, (ftnlen)1, (ftnlen)20);
 	    }
 	}
@@ -349,9 +353,9 @@ static integer c__400 = 400;
 	i__1 = nleap;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    if (*epoch >= dleap[(i__2 = (i__ << 1) - 1) < 400 && 0 <= i__2 ? 
-		    i__2 : s_rnge("dleap", i__2, "deltet_", (ftnlen)367)]) {
+		    i__2 : s_rnge("dleap", i__2, "deltet_", (ftnlen)371)]) {
 		leaps = dleap[(i__2 = (i__ << 1) - 2) < 400 && 0 <= i__2 ? 
-			i__2 : s_rnge("dleap", i__2, "deltet_", (ftnlen)368)];
+			i__2 : s_rnge("dleap", i__2, "deltet_", (ftnlen)372)];
 	    }
 	}
 
@@ -368,25 +372,25 @@ static integer c__400 = 400;
 	i__1 = nleap;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    if (*epoch > dleap[(i__2 = (i__ << 1) - 1) < 400 && 0 <= i__2 ? 
-		    i__2 : s_rnge("dleap", i__2, "deltet_", (ftnlen)385)]) {
+		    i__2 : s_rnge("dleap", i__2, "deltet_", (ftnlen)389)]) {
 		d__1 = dleap[(i__2 = (i__ << 1) - 1) < 400 && 0 <= i__2 ? 
-			i__2 : s_rnge("dleap", i__2, "deltet_", (ftnlen)387)] 
+			i__2 : s_rnge("dleap", i__2, "deltet_", (ftnlen)391)] 
 			+ dta + dleap[(i__3 = (i__ << 1) - 2) < 400 && 0 <= 
 			i__3 ? i__3 : s_rnge("dleap", i__3, "deltet_", (
-			ftnlen)387)];
+			ftnlen)391)];
 		aet = d_nint(&d__1);
 		ma = m[0] + m[1] * aet;
 		ea = ma + eb * sin(ma);
 		ettai = k * sin(ea);
 		et = dleap[(i__2 = (i__ << 1) - 1) < 400 && 0 <= i__2 ? i__2 :
-			 s_rnge("dleap", i__2, "deltet_", (ftnlen)393)] + dta 
+			 s_rnge("dleap", i__2, "deltet_", (ftnlen)397)] + dta 
 			+ dleap[(i__3 = (i__ << 1) - 2) < 400 && 0 <= i__3 ? 
-			i__3 : s_rnge("dleap", i__3, "deltet_", (ftnlen)393)] 
+			i__3 : s_rnge("dleap", i__3, "deltet_", (ftnlen)397)] 
 			+ ettai;
 		if (*epoch >= et) {
 		    leaps = dleap[(i__2 = (i__ << 1) - 2) < 400 && 0 <= i__2 ?
 			     i__2 : s_rnge("dleap", i__2, "deltet_", (ftnlen)
-			    396)];
+			    400)];
 		}
 	    }
 	}
