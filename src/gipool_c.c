@@ -61,44 +61,50 @@
    VARIABLE  I/O  DESCRIPTION
    --------  ---  --------------------------------------------------
    name       I   Name of the variable whose value is to be returned.
-   start      I   Which component to start retrieving for name
+   start      I   Which component to start retrieving for `name'
    room       I   The largest number of values to return.
-   n          O   Number of values returned for name.
-   ivals      O   Values associated with name.
+   n          O   Number of values returned for `name'.
+   ivals      O   Values associated with `name'.
    found      O   True if variable is in pool.
 
 -Detailed_Input
 
    name       is the name of the variable whose values are to be
               returned. If the variable is not in the pool with
-              numeric type, found will be SPICEFALSE.
+              numeric type, `found' will be SPICEFALSE.
 
-   start      is the index of the first component of name to return.
+   start      is the index of the first component of `name' to return.
               The index follows the C convention of being 0 based.
-              If start is less than 0, it will be treated as 0.  If
-              start is greater than the total number of components
-              available for name, no values will be returned (n will
-              be set to zero).  However, found will still be set to
-              SPICETRUE
+              If `start' is less than 0, it will be treated as 0.  If
+              `start' is greater than the total number of components
+              available for `name', no values will be returned (n will
+              be set to zero).  However, `found' will still be set to
+              SPICETRUE.
 
    room       is the maximum number of components that should be
               returned for this variable.  (Usually it is the amount
-              of room available in the array ivals). If room is
+              of room available in the array ivals). If `room' is
               less than 1 the error SPICE(BADARRAYSIZE) will be
               signaled.
 
 -Detailed_Output
 
-   n          is the number of values associated with name that
+   n          is the number of values associated with `name' that
               are returned.  It will always be less than or equal
-              to room.
+              to `room'.
 
-              If name is not in the pool with numeric type, no value
-              is given to n.
+              If `name' is not in the pool with numeric type, no value
+              is given to `n'.
 
-   ivals      is the array of values associated with name.
-              If name is not in the pool with numeric type, no
-              values are given to the elements of ivals.
+   ivals      is the array of values associated with `name'.
+              If `name' doesn't match an existing kernel variable
+              name, or if `name' matches the name of a non-numeric
+              kernel variable, `ivals' is not updated. 
+
+              Non-integral values associated with `name' in the kernel
+              pool are rounded to the nearest integer when they are
+              copied to `ivals'.
+              
 
    found      is SPICETRUE if the variable is in the pool and has
               numeric type, SPICEFALSE if it is not.
@@ -226,10 +232,16 @@
 
 -Author_and_Institution
 
-   W.L. Taber  (JPL)
-   E.D. Wright (JPL)
+   N.J. Bachman (JPL)
+   W.L. Taber   (JPL)
+   E.D. Wright  (JPL)
 
 -Version
+
+   -CSPICE Version 2.1.1 14-JUL-2014   (NJB)
+
+      Updated description of the output array `ivals'.
+      Made minor edits to header comments. Updated index entry.
 
    -CSPICE Version 2.1.0 22-JUN-1999   (EDW)
 
@@ -252,7 +264,8 @@
 
 -Index_Entries
 
-   RETURN the integer value of a pooled kernel variable
+   return the integer value of a pooled kernel variable
+   return values of an integer_variable from the kernel_pool
 
 -&
 */

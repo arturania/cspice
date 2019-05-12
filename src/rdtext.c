@@ -16,9 +16,11 @@ static integer c__1 = 1;
     /* Initialized data */
 
     static integer n = 0;
-    static char lstfil[128] = "                                             "
+    static char lstfil[255] = "                                             "
 	    "                                                                "
-	    "                   ";
+	    "                                                                "
+	    "                                                                "
+	    "                  ";
 
     /* System generated locals */
     integer i__1, i__2, i__3;
@@ -39,7 +41,7 @@ static integer c__1 = 1;
     integer unit, i__;
     extern /* Subroutine */ int chkin_(char *, ftnlen), errch_(char *, char *,
 	     ftnlen, ftnlen);
-    static integer index, units[20];
+    static integer index, units[96];
     extern integer isrchi_(integer *, integer *, integer *);
     integer number;
     extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
@@ -285,6 +287,26 @@ static integer c__1 = 1;
 /*     I.M. Underwood  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 6.25.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-INTEL. */
+
+/* -    SPICELIB Version 6.24.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 6.23.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-GFORTRAN. */
+
+/* -    SPICELIB Version 6.22.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 6.21.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GCC_C. */
 
 /* -    SPICELIB Version 6.20.0, 13-MAY-2010 (BVS) */
 
@@ -560,8 +582,8 @@ static integer c__1 = 1;
 
 /*     Are we reading the same file? */
 
-    same = s_cmp(lstfil, file, (ftnlen)128, file_len) == 0 && s_cmp(lstfil, 
-	    " ", (ftnlen)128, (ftnlen)1) != 0;
+    same = s_cmp(lstfil, file, (ftnlen)255, file_len) == 0 && s_cmp(lstfil, 
+	    " ", (ftnlen)255, (ftnlen)1) != 0;
     if (! same) {
 
 /*        We still might have the same file. For example these three */
@@ -615,7 +637,7 @@ static integer c__1 = 1;
 /*           need a free logical unit. But only if we don't */
 /*           have too many files open already. */
 
-	    if (n == 20) {
+	    if (n == 96) {
 		setmsg_("Too many files open already.", (ftnlen)28);
 		sigerr_("SPICE(TOOMANYFILESOPEN)", (ftnlen)23);
 		chkout_("RDTEXT", (ftnlen)6);
@@ -654,13 +676,13 @@ static integer c__1 = 1;
 /*               - The index of the file within the UNITS array. */
 
 	    ++n;
-	    units[(i__1 = n - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge("units", 
-		    i__1, "rdtext_", (ftnlen)639)] = unit;
+	    units[(i__1 = n - 1) < 96 && 0 <= i__1 ? i__1 : s_rnge("units", 
+		    i__1, "rdtext_", (ftnlen)659)] = unit;
 	    index = n;
 	}
-	s_copy(lstfil, file, (ftnlen)128, file_len);
-	lstunt = units[(i__1 = index - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge(
-		"units", i__1, "rdtext_", (ftnlen)645)];
+	s_copy(lstfil, file, (ftnlen)255, file_len);
+	lstunt = units[(i__1 = index - 1) < 96 && 0 <= i__1 ? i__1 : s_rnge(
+		"units", i__1, "rdtext_", (ftnlen)665)];
     }
 
 /*     This is the easy part. Read the next line from the file. */
@@ -689,16 +711,16 @@ L100001:
     *eof = iostat < 0;
     if (iostat != 0) {
 	cl__1.cerr = 0;
-	cl__1.cunit = units[(i__1 = index - 1) < 20 && 0 <= i__1 ? i__1 : 
-		s_rnge("units", i__1, "rdtext_", (ftnlen)669)];
+	cl__1.cunit = units[(i__1 = index - 1) < 96 && 0 <= i__1 ? i__1 : 
+		s_rnge("units", i__1, "rdtext_", (ftnlen)689)];
 	cl__1.csta = 0;
 	f_clos(&cl__1);
 	i__1 = n;
 	for (i__ = index + 1; i__ <= i__1; ++i__) {
-	    units[(i__2 = i__ - 2) < 20 && 0 <= i__2 ? i__2 : s_rnge("units", 
-		    i__2, "rdtext_", (ftnlen)672)] = units[(i__3 = i__ - 1) < 
-		    20 && 0 <= i__3 ? i__3 : s_rnge("units", i__3, "rdtext_", 
-		    (ftnlen)672)];
+	    units[(i__2 = i__ - 2) < 96 && 0 <= i__2 ? i__2 : s_rnge("units", 
+		    i__2, "rdtext_", (ftnlen)692)] = units[(i__3 = i__ - 1) < 
+		    96 && 0 <= i__3 ? i__3 : s_rnge("units", i__3, "rdtext_", 
+		    (ftnlen)692)];
 	}
 	--n;
 
@@ -708,7 +730,7 @@ L100001:
 
 /*        LSTFIL is no longer valid */
 
-	s_copy(lstfil, " ", (ftnlen)128, (ftnlen)1);
+	s_copy(lstfil, " ", (ftnlen)255, (ftnlen)1);
 
 /*        If this is just the end of the file, don't report an error. */
 /*        (All files have to end sometime.) */
@@ -949,13 +971,13 @@ L_cltext:
     index = isrchi_(&number, &n, units);
     if (index > 0) {
 	cl__1.cerr = 0;
-	cl__1.cunit = units[(i__1 = index - 1) < 20 && 0 <= i__1 ? i__1 : 
-		s_rnge("units", i__1, "rdtext_", (ftnlen)932)];
+	cl__1.cunit = units[(i__1 = index - 1) < 96 && 0 <= i__1 ? i__1 : 
+		s_rnge("units", i__1, "rdtext_", (ftnlen)952)];
 	cl__1.csta = 0;
 	f_clos(&cl__1);
-	if (units[(i__1 = index - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge("units"
-		, i__1, "rdtext_", (ftnlen)934)] == lstunt) {
-	    s_copy(lstfil, " ", (ftnlen)128, (ftnlen)1);
+	if (units[(i__1 = index - 1) < 96 && 0 <= i__1 ? i__1 : s_rnge("units"
+		, i__1, "rdtext_", (ftnlen)954)] == lstunt) {
+	    s_copy(lstfil, " ", (ftnlen)255, (ftnlen)1);
 	}
 
 /*        Remember all that salient information about the file? */
@@ -963,10 +985,10 @@ L_cltext:
 
 	i__1 = n;
 	for (i__ = index + 1; i__ <= i__1; ++i__) {
-	    units[(i__2 = i__ - 2) < 20 && 0 <= i__2 ? i__2 : s_rnge("units", 
-		    i__2, "rdtext_", (ftnlen)943)] = units[(i__3 = i__ - 1) < 
-		    20 && 0 <= i__3 ? i__3 : s_rnge("units", i__3, "rdtext_", 
-		    (ftnlen)943)];
+	    units[(i__2 = i__ - 2) < 96 && 0 <= i__2 ? i__2 : s_rnge("units", 
+		    i__2, "rdtext_", (ftnlen)963)] = units[(i__3 = i__ - 1) < 
+		    96 && 0 <= i__3 ? i__3 : s_rnge("units", i__3, "rdtext_", 
+		    (ftnlen)963)];
 	}
 	--n;
     }

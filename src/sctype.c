@@ -27,6 +27,8 @@ integer sctype_(integer *sc)
 
     /* Local variables */
     static integer type__;
+    extern /* Subroutine */ int zzcvpool_(char *, integer *, logical *, 
+	    ftnlen), zzctruin_(integer *);
     integer n;
     extern /* Subroutine */ int scli01_(char *, integer *, integer *, integer 
 	    *, integer *, ftnlen), chkin_(char *, ftnlen), repmi_(char *, 
@@ -34,10 +36,10 @@ integer sctype_(integer *sc)
     extern logical failed_(void);
     char kvname[60];
     logical update;
-    extern /* Subroutine */ int chkout_(char *, ftnlen), cvpool_(char *, 
-	    logical *, ftnlen), suffix_(char *, integer *, char *, ftnlen, 
-	    ftnlen);
+    extern /* Subroutine */ int chkout_(char *, ftnlen), suffix_(char *, 
+	    integer *, char *, ftnlen, ftnlen);
     extern logical return_(void);
+    static integer usrctr[2];
     extern /* Subroutine */ int swpool_(char *, integer *, char *, ftnlen, 
 	    ftnlen);
 
@@ -79,6 +81,59 @@ integer sctype_(integer *sc)
 /*     TIME */
 
 /* $ Declarations */
+/* $ Abstract */
+
+/*     This include file defines the dimension of the counter */
+/*     array used by various SPICE subsystems to uniquely identify */
+/*     changes in their states. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 29-JUL-2013 (BVS) */
+
+/* -& */
+
+/*     End of include file. */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
@@ -175,8 +230,13 @@ integer sctype_(integer *sc)
 
 /*     N.J. Bachman   (JPL) */
 /*     J.M. Lynch     (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.3.0, 09-SEP-2013 (BVS) */
+
+/*        Updated to keep track of the POOL counter and call ZZCVPOOL. */
 
 /* -    SPICELIB Version 1.2.0, 05-MAR-2009 (NJB) */
 
@@ -253,6 +313,10 @@ integer sctype_(integer *sc)
 /*        Keep track of the last spacecraft ID encountered. */
 
 	oldsc = *sc;
+
+/*        Initialize the local POOL counter to user value. */
+
+	zzctruin_(usrctr);
 	first = FALSE_;
     }
 
@@ -260,7 +324,7 @@ integer sctype_(integer *sc)
 /*     been updated, or if the spacecraft id code changes, look */
 /*     up the new value from the kernel pool. */
 
-    cvpool_("SCTYPE", &update, (ftnlen)6);
+    zzcvpool_("SCTYPE", usrctr, &update, (ftnlen)6);
     if (update || nodata) {
 
 /*        Find the clock type for the specified mission. */

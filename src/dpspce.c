@@ -9,9 +9,9 @@
 
 static doublereal c_b19 = .66666666666666663;
 static doublereal c_b20 = 3.5;
-static doublereal c_b21 = 0.;
-static doublereal c_b23 = 1.5;
-static doublereal c_b24 = 1.;
+static doublereal c_b22 = 1.5;
+static doublereal c_b23 = 1.;
+static doublereal c_b25 = 0.;
 
 /* $Procedure DPSPCE ( Propagate a two line element set for deep space ) */
 /* Subroutine */ int dpspce_(doublereal *time, doublereal *geophs, doublereal 
@@ -223,13 +223,13 @@ static doublereal c_b24 = 1.;
 
 /*     None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     Error free. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -320,15 +320,26 @@ static doublereal c_b24 = 1.;
 
 /*     None. */
 
+/* $ Literature_References */
+
+/*     Hoots, Felix R., Ronald L. Roehrich (31 December 1988). "Models */
+/*     for Propagation of NORAD Element Sets". United States Department */
+/*     of Defense Spacetrack Report (3). */
+
 /* $ Author_and_Institution */
 
 /*     E.D. Wright      (JPL) */
 
-/* $ Literature_References */
-
-/*     Spacetrack 3 report. */
-
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 23-JAN-2013 (EDW) */
+
+/*        Corrected initialization block error. The ZZDPINIT call */
+/*        causes a side-effect required for each DPSPCE call. */
+/*        The ZZDPINIT call now occurs outside the initialization */
+/*        block. Note from designer, side-effects are bad. */
+
+/*        Added proper citation for Hoots paper. */
 
 /* -    SPICELIB Version 1.2.2, 22-AUG-2006 (EDW) */
 
@@ -364,7 +375,7 @@ static doublereal c_b24 = 1.;
 /* -& */
 /* $ Index_Entries */
 
-/*     NORAD two line elements, deep space, Cheyenne Mountain */
+/*     NORAD two line elements deep space evaluator */
 
 /* -& */
 
@@ -422,17 +433,17 @@ static doublereal c_b24 = 1.;
 
 	for (i__ = 1; i__ <= 8; ++i__) {
 	    if (lstphs[(i__1 = i__ - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge(
-		    "lstphs", i__1, "dpspce_", (ftnlen)537)] != geophs[(i__2 =
+		    "lstphs", i__1, "dpspce_", (ftnlen)547)] != geophs[(i__2 =
 		     i__ - 1) < 8 && 0 <= i__2 ? i__2 : s_rnge("geophs", i__2,
-		     "dpspce_", (ftnlen)537)]) {
+		     "dpspce_", (ftnlen)547)]) {
 		doinit = TRUE_;
 	    }
 	}
 	for (i__ = 1; i__ <= 10; ++i__) {
 	    if (lstelm[(i__1 = i__ - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge(
-		    "lstelm", i__1, "dpspce_", (ftnlen)546)] != elems[(i__2 = 
+		    "lstelm", i__1, "dpspce_", (ftnlen)556)] != elems[(i__2 = 
 		    i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge("elems", i__2, 
-		    "dpspce_", (ftnlen)546)]) {
+		    "dpspce_", (ftnlen)556)]) {
 		doinit = TRUE_;
 	    }
 	}
@@ -459,9 +470,9 @@ static doublereal c_b24 = 1.;
 
 	for (i__ = 1; i__ <= 8; ++i__) {
 	    lstphs[(i__1 = i__ - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("lstphs",
-		     i__1, "dpspce_", (ftnlen)581)] = geophs[(i__2 = i__ - 1) 
+		     i__1, "dpspce_", (ftnlen)590)] = geophs[(i__2 = i__ - 1) 
 		    < 8 && 0 <= i__2 ? i__2 : s_rnge("geophs", i__2, "dpspce_"
-		    , (ftnlen)581)];
+		    , (ftnlen)590)];
 	}
 
 /*        Unpack the elements array. */
@@ -479,9 +490,9 @@ static doublereal c_b24 = 1.;
 
 	for (i__ = 1; i__ <= 10; ++i__) {
 	    lstelm[(i__1 = i__ - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("lstelm"
-		    , i__1, "dpspce_", (ftnlen)601)] = elems[(i__2 = i__ - 1) 
+		    , i__1, "dpspce_", (ftnlen)610)] = elems[(i__2 = i__ - 1) 
 		    < 10 && 0 <= i__2 ? i__2 : s_rnge("elems", i__2, "dpspce_"
-		    , (ftnlen)601)];
+		    , (ftnlen)610)];
 	}
 
 /*        Set common variables, the init flag and calculate the */
@@ -593,24 +604,8 @@ static doublereal c_b24 = 1.;
 	xlcof = a3ovk2 * .125 * sinio * (cosio * 5. + 3.) / (cosio + 1.);
 	aycof = a3ovk2 * .25 * sinio;
 	x7thm1 = theta2 * 7. - 1.;
-
-/*        Initialize for Deep Space */
-
-	zzdpinit_(&aodp, &xmdot, &omgdot, &xnodot, &xnodp, elems);
-
-/*        Initialize the periodic perturbations to the epoch. */
-/*        This is required because perturbations are zero at the */
-/*        epoch. */
-
-	omgadf = elems[6];
-	xnoddf = elems[4];
-	xmam = elems[7];
-	e = elems[5];
-	zzdpper_(&c_b21, &e, &xinc, &omgadf, &xnoddf, &xmam);
-
-/*        Initialization complete.  Rejoice! */
-
     }
+    zzdpinit_(&aodp, &xmdot, &omgdot, &xnodot, &xnodp, elems);
 
 /*     Get the time since the EPOCH in minutes. */
 
@@ -643,7 +638,7 @@ static doublereal c_b24 = 1.;
 
     zzdpper_(&tsince, &e, &xinc, &omgadf, &xnode, &xmam);
     xl = xmam + omgadf + xnode;
-    xn = xke / pow_dd(&a, &c_b23);
+    xn = xke / pow_dd(&a, &c_b22);
 
 /*      Long period periodics */
 
@@ -726,9 +721,6 @@ static doublereal c_b24 = 1.;
     } else {
 	uang = 0.;
     }
-
-/*     Boo! */
-
     sin2u = sinu * 2. * cosu;
     cos2u = cosu * 2. * cosu - 1.;
     temp1 = ck2 * (1. / pl);
@@ -761,8 +753,8 @@ static doublereal c_b24 = 1.;
 /*     conversion of a unit vector where PI/2 + XNODEK is the longitude */
 
     d__1 = pio2 + xnodek;
-    latrec_(&c_b24, &d__1, &xinck, m);
-    latrec_(&c_b24, &xnodek, &c_b21, n);
+    latrec_(&c_b23, &d__1, &xinck, m);
+    latrec_(&c_b23, &xnodek, &c_b25, n);
 
 /*     Sum the components to obtain U and V */
 
@@ -778,7 +770,7 @@ static doublereal c_b24 = 1.;
 
     scale = xkmper / ae;
     d__1 = rk * scale;
-    vlcom_(&d__1, u, &c_b21, v, state);
+    vlcom_(&d__1, u, &c_b25, v, state);
 
 /*     Now scale to KPS for the velocity component */
 

@@ -17,6 +17,10 @@ static doublereal c_b45 = 1e-14;
 	logical *found, ftnlen method_len, ftnlen target_len, ftnlen 
 	abcorr_len, ftnlen obsrvr_len, ftnlen dref_len)
 {
+    /* Initialized data */
+
+    static logical first = TRUE_;
+
     /* System generated locals */
     doublereal d__1, d__2;
 
@@ -26,14 +30,19 @@ static doublereal c_b45 = 1e-14;
 
     /* Local variables */
     extern /* Subroutine */ int vadd_(doublereal *, doublereal *, doublereal *
-	    );
+	    ), zzbods2c_(integer *, char *, integer *, logical *, char *, 
+	    integer *, logical *, ftnlen, ftnlen);
     integer nitr;
     extern doublereal vsep_(doublereal *, doublereal *);
     extern /* Subroutine */ int vsub_(doublereal *, doublereal *, doublereal *
 	    ), vequ_(doublereal *, doublereal *);
     integer type__;
     logical xmit;
-    doublereal rpos[3], tpos[3], j2dir[3], j2est[3], j2pos[3];
+    doublereal rpos[3], tpos[3], j2dir[3];
+    extern /* Subroutine */ int zznamfrm_(integer *, char *, integer *, char *
+	    , integer *, ftnlen, ftnlen);
+    doublereal j2est[3], j2pos[3];
+    extern /* Subroutine */ int zzctruin_(integer *);
     integer i__;
     doublereal s, radii[3], range;
     extern /* Subroutine */ int chkin_(char *, ftnlen), ucase_(char *, char *,
@@ -49,11 +58,13 @@ static doublereal c_b45 = 1e-14;
     logical uselt;
     extern logical eqstr_(char *, char *, ftnlen, ftnlen);
     extern doublereal vnorm_(doublereal *);
-    extern /* Subroutine */ int ljust_(char *, char *, ftnlen, ftnlen), 
-	    bods2c_(char *, integer *, logical *, ftnlen);
+    extern /* Subroutine */ int ljust_(char *, char *, ftnlen, ftnlen);
     doublereal r2jmat[9]	/* was [3][3] */, j2tmat[9]	/* was [3][3] 
 	    */;
+    static logical svfnd1, svfnd2;
+    static integer svctr1[2], svctr2[2];
     extern logical failed_(void);
+    static integer svctr3[2];
     integer refcde;
     doublereal lt, etdiff;
     integer frcode;
@@ -62,40 +73,42 @@ static doublereal c_b45 = 1e-14;
     integer obscde, nradii;
     extern /* Subroutine */ int cidfrm_(integer *, integer *, char *, logical 
 	    *, ftnlen);
-    char frname[80];
+    char frname[32];
     extern doublereal clight_(void);
     doublereal ltdiff, maxrad, reject;
     integer trgcde;
     char loccor[15];
     integer center;
-    extern /* Subroutine */ int namfrm_(char *, integer *, ftnlen), frinfo_(
-	    integer *, integer *, integer *, integer *, logical *);
+    extern /* Subroutine */ int frinfo_(integer *, integer *, integer *, 
+	    integer *, logical *), stelab_(doublereal *, doublereal *, 
+	    doublereal *);
     extern doublereal touchd_(doublereal *);
     doublereal ltcent;
-    extern /* Subroutine */ int stelab_(doublereal *, doublereal *, 
-	    doublereal *);
+    static integer svtcde;
     doublereal negpos[3], rayalt, trgdir[3];
     integer typeid;
     doublereal stldir[3];
-    extern /* Subroutine */ int setmsg_(char *, ftnlen);
+    static integer svobsc;
     doublereal prevet;
-    extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
-	    ftnlen), spkssb_(integer *, doublereal *, char *, doublereal *, 
-	    ftnlen), stlabx_(doublereal *, doublereal *, doublereal *);
-    doublereal stlerr[3], prevlt;
+    static char svtarg[36], svdref[32];
+    static integer svrefc;
+    extern /* Subroutine */ int setmsg_(char *, ftnlen);
+    doublereal stlerr[3];
     extern logical return_(void);
-    doublereal ssbost[6];
+    doublereal prevlt, ssbost[6], ssbtst[6], stltmp[3];
     logical usestl;
-    doublereal ssbtst[6], stltmp[3];
-    extern /* Subroutine */ int spkezp_(integer *, doublereal *, char *, char 
-	    *, integer *, doublereal *, doublereal *, ftnlen, ftnlen), 
-	    vminus_(doublereal *, doublereal *), pxform_(char *, char *, 
-	    doublereal *, doublereal *, ftnlen, ftnlen), bodvcd_(integer *, 
-	    char *, integer *, integer *, doublereal *, ftnlen), surfpt_(
-	    doublereal *, doublereal *, doublereal *, doublereal *, 
-	    doublereal *, doublereal *, logical *), npedln_(doublereal *, 
-	    doublereal *, doublereal *, doublereal *, doublereal *, 
-	    doublereal *, doublereal *);
+    static char svobsr[36];
+    extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
+	    ftnlen), spkezp_(integer *, doublereal *, char *, char *, integer 
+	    *, doublereal *, doublereal *, ftnlen, ftnlen), vminus_(
+	    doublereal *, doublereal *), pxform_(char *, char *, doublereal *,
+	     doublereal *, ftnlen, ftnlen), spkssb_(integer *, doublereal *, 
+	    char *, doublereal *, ftnlen), stlabx_(doublereal *, doublereal *,
+	     doublereal *), bodvcd_(integer *, char *, integer *, integer *, 
+	    doublereal *, ftnlen), surfpt_(doublereal *, doublereal *, 
+	    doublereal *, doublereal *, doublereal *, doublereal *, logical *)
+	    , npedln_(doublereal *, doublereal *, doublereal *, doublereal *, 
+	    doublereal *, doublereal *, doublereal *);
     logical fnd;
     extern /* Subroutine */ int mxv_(doublereal *, doublereal *, doublereal *)
 	    ;
@@ -203,6 +216,11 @@ static doublereal c_b45 = 1e-14;
 /*                 definition depends on parameters supplied via a */
 /*                 frame kernel. */
 
+/*     ALL         indicates any of the above classes. This parameter */
+/*                 is used in APIs that fetch information about frames */
+/*                 of a specified class. */
+
+
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
@@ -213,6 +231,10 @@ static doublereal c_b45 = 1e-14;
 /*     None. */
 
 /* $ Version */
+
+/* -    SPICELIB Version 4.0.0, 08-MAY-2012 (NJB) */
+
+/*       The parameter ALL was added to support frame fetch APIs. */
 
 /* -    SPICELIB Version 3.0.0, 28-MAY-2004 (NJB) */
 
@@ -226,6 +248,62 @@ static doublereal c_b45 = 1e-14;
 /* -    SPICELIB Version 1.0.0, 10-DEC-1995 (WLT) */
 
 /* -& */
+
+/*     End of INCLUDE file frmtyp.inc */
+
+/* $ Abstract */
+
+/*     This include file defines the dimension of the counter */
+/*     array used by various SPICE subsystems to uniquely identify */
+/*     changes in their states. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 29-JUL-2013 (BVS) */
+
+/* -& */
+
+/*     End of include file. */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
@@ -1074,8 +1152,19 @@ static doublereal c_b45 = 1e-14;
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman   (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.5.0, 31-MAR-2014 (BVS) */
+
+/*        Updated to save the input body names and ZZBODTRN state */
+/*        counters and to do name-ID conversions only if the counters */
+/*        have changed. */
+
+/*        Updated to save the input frame name and POOL state counter */
+/*        and to do frame name-ID conversion only if the counter has */
+/*        changed. */
 
 /* -    SPICELIB Version 1.4.1, 18-MAY-2010 (BVS) */
 
@@ -1159,7 +1248,28 @@ static doublereal c_b45 = 1e-14;
 /*     as non-intersecting. */
 
 
+/*     Saved body name length. */
+
+
+/*     Saved frame name length. */
+
+
 /*     Local variables */
+
+
+/*     Saved name/ID item declarations. */
+
+
+/*     Saved frame name/ID item declarations. */
+
+
+/*     Saved name/ID items. */
+
+
+/*     Saved frame name/ID items. */
+
+
+/*     Initial values. */
 
 
 /*     Standard SPICE error handling. */
@@ -1173,9 +1283,22 @@ static doublereal c_b45 = 1e-14;
 
     *found = FALSE_;
 
+/*     Initialization. */
+
+    if (first) {
+
+/*        Initialize counters. */
+
+	zzctruin_(svctr1);
+	zzctruin_(svctr2);
+	zzctruin_(svctr3);
+	first = FALSE_;
+    }
+
 /*     Obtain integer codes for the target and observer. */
 
-    bods2c_(target, &trgcde, &fnd, target_len);
+    zzbods2c_(svctr1, svtarg, &svtcde, &svfnd1, target, &trgcde, &fnd, (
+	    ftnlen)36, target_len);
     if (! fnd) {
 	setmsg_("The target, '#', is not a recognized name for an ephemeris "
 		"object. The cause of this problem may be that you need an up"
@@ -1185,7 +1308,8 @@ static doublereal c_b45 = 1e-14;
 	chkout_("SRFXPT", (ftnlen)6);
 	return 0;
     }
-    bods2c_(obsrvr, &obscde, &fnd, obsrvr_len);
+    zzbods2c_(svctr2, svobsr, &svobsc, &svfnd2, obsrvr, &obscde, &fnd, (
+	    ftnlen)36, obsrvr_len);
     if (! fnd) {
 	setmsg_("The observer, '#', is not a recognized name for an ephemeri"
 		"s object. The cause of this problem may be that you need an "
@@ -1255,7 +1379,7 @@ static doublereal c_b45 = 1e-14;
 /*     target body.  We'll want the state of the target relative to */
 /*     the observer in this body-fixed frame. */
 
-    cidfrm_(&trgcde, &frcode, frname, &fnd, (ftnlen)80);
+    cidfrm_(&trgcde, &frcode, frname, &fnd, (ftnlen)32);
     if (! fnd) {
 	setmsg_("No body-fixed frame is associated with target body #; a fra"
 		"me kernel must be loaded to make this association.  Consult "
@@ -1288,7 +1412,7 @@ static doublereal c_b45 = 1e-14;
 /*            that corrected vector in order to compute the intercept */
 /*            point. */
 
-    spkezp_(&trgcde, et, frname, loccor, &obscde, tpos, &lt, (ftnlen)80, (
+    spkezp_(&trgcde, et, frname, loccor, &obscde, tpos, &lt, (ftnlen)32, (
 	    ftnlen)15);
 
 /*     Negate the target's position to obtain the position of the */
@@ -1306,7 +1430,7 @@ static doublereal c_b45 = 1e-14;
 
 /*     Determine the attributes of the frame designated by DREF. */
 
-    namfrm_(dref, &refcde, dref_len);
+    zznamfrm_(svctr3, svdref, &svrefc, dref, &refcde, (ftnlen)32, dref_len);
     if (failed_()) {
 	chkout_("SRFXPT", (ftnlen)6);
 	return 0;
@@ -1392,7 +1516,7 @@ static doublereal c_b45 = 1e-14;
 /*     Map J2DIR (in the J2000 frame) to the target body-fixed */
 /*     frame. */
 
-    pxform_("J2000", frname, trgepc, j2tmat, (ftnlen)5, (ftnlen)80);
+    pxform_("J2000", frname, trgepc, j2tmat, (ftnlen)5, (ftnlen)32);
     if (failed_()) {
 	chkout_("SRFXPT", (ftnlen)6);
 	return 0;
@@ -1607,7 +1731,7 @@ static doublereal c_b45 = 1e-14;
 /*              frame at TRGEPC. */
 
 		vsub_(ssbost, ssbtst, j2pos);
-		pxform_("J2000", frname, trgepc, xform, (ftnlen)5, (ftnlen)80)
+		pxform_("J2000", frname, trgepc, xform, (ftnlen)5, (ftnlen)32)
 			;
 		if (failed_()) {
 		    chkout_("SRFXPT", (ftnlen)6);
@@ -1686,7 +1810,7 @@ static doublereal c_b45 = 1e-14;
 /*           frame at TRGEPC. */
 
 	    vsub_(ssbost, ssbtst, j2pos);
-	    pxform_("J2000", frname, trgepc, xform, (ftnlen)5, (ftnlen)80);
+	    pxform_("J2000", frname, trgepc, xform, (ftnlen)5, (ftnlen)32);
 	    if (failed_()) {
 		chkout_("SRFXPT", (ftnlen)6);
 		return 0;

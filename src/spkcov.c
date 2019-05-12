@@ -463,6 +463,10 @@ static integer c__6 = 6;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.2, 01-JUL-2014 (NJB) */
+
+/*        Added new index entries. */
+
 /* -    SPICELIB Version 1.0.1, 30-NOV-2007 (NJB) */
 
 /*        Corrected bug in first program in header Examples section: */
@@ -475,7 +479,10 @@ static integer c__6 = 6;
 /* -& */
 /* $ Index_Entries */
 
-/*     get coverage window for spk object */
+/*     get coverage window for spk_object */
+/*     get coverage start and stop time for spk_object */
+/*     get coverage start and stop time for ephemeris_object */
+/*     get coverage start and stop time for body */
 
 /* -& */
 

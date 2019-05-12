@@ -248,6 +248,13 @@ static doublereal c_b26 = 1.;
 
 /* $ Version */
 
+/* -    SPICELIB Version 3.0.0, 07-OCT-2011 (NJB) */
+
+/*        Relaxed ellipse semi-axes orthogonality test limit */
+/*        SEPLIM from 1.D-12 TO 1.D-9 radians. The angular */
+/*        separation of the axes of the input ellipse must not */
+/*        differ from pi/2 radians by more than this limit. */
+
 /* -    SPICELIB Version 2.0.0, 14-JAN-2008 (NJB) */
 
 /*        Bug fix: the routine's specification and behavior have been */
@@ -361,7 +368,7 @@ static doublereal c_b26 = 1.;
     el2cgv_(ellips, center, smajor, sminor);
     if (! vzero_(sminor)) {
 	sep = vsep_(smajor, sminor);
-	if ((d__1 = sep - halfpi_(), abs(d__1)) > 1e-12) {
+	if ((d__1 = sep - halfpi_(), abs(d__1)) > 1e-9) {
 	    setmsg_("Input SPICE ellipse has non-orthogonal semi-axes: (#,#,"
 		    "#) and (#,#,#). Angular separation of these vectors is #"
 		    " radians. Properly constructed SPICE ellipses always hav"

@@ -61,9 +61,8 @@ static integer c__6 = 6;
 
 /* $ Required_Reading */
 
-/*     CK.REQ */
-/*     DAF.REQ */
-/*     GS.REQ */
+/*     CK */
+/*     DAF */
 
 /* $ Keywords */
 
@@ -96,14 +95,14 @@ static integer c__6 = 6;
 
 /*     None. */
 
-/* $ Files */
-
-/*     See the argument HANDLE. */
-
 /* $ Exceptions */
 
 /*     1)  Errors reading or writing the file indicated by HANDLE will */
 /*         be diagnosed by routine in the call tree of this routine. */
+
+/* $ Files */
+
+/*     See the argument HANDLE. */
 
 /* $ Particulars */
 
@@ -255,6 +254,10 @@ static integer c__6 = 6;
 /*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1, 18-APR-2014 (BVS) */
+
+/*        Minor header edits. */
 
 /* -    SPICELIB Version 1.0.0, 05-MAY-1999 (YKZ) (BVS) */
 

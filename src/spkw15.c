@@ -131,13 +131,15 @@ static integer c__16 = 16;
 /*     EPOCH       is the epoch of the orbit elements at periapse */
 /*                 in ephemeris seconds past J2000. */
 
-/*     TP          is a unit vector parallel to the angular momentum */
-/*                 vector of the orbit at epoch expressed relative to */
-/*                 FRAME. */
+/*     TP          is a vector parallel to the angular momentum vector */
+/*                 of the orbit at epoch expressed relative to FRAME. A */
+/*                 unit vector parallel to TP will be stored in the */
+/*                 output segment. */
 
-/*     PA          is a unit vector parallel to the position vector */
-/*                 of the trajectory at periapsis of EPOCH expressed */
-/*                 relative to FRAME. */
+/*     PA          is a vector parallel to the position vector of the */
+/*                 trajectory at periapsis of EPOCH expressed relative */
+/*                 to FRAME. A unit vector parallel to PA will be */
+/*                 stored in the output segment. */
 
 /*     P           is the semi-latus rectum--- p in the equation: */
 
@@ -168,8 +170,10 @@ static integer c__16 = 16;
 /*                  Note that J2 effects are computed only if the orbit */
 /*                  is elliptic and does not intersect the central body. */
 
-/*     PV           is a unit vector parallel to the north pole vector */
-/*                  of the central body expressed relative to FRAME. */
+/*     PV           is a vector parallel to the north pole vector of the */
+/*                  central body expressed relative to FRAME. A unit */
+/*                  vector parallel to PV will be stored in the output */
+/*                  segment. */
 
 /*     GM           is the central body GM. */
 
@@ -191,16 +195,16 @@ static integer c__16 = 16;
 /* $ Exceptions */
 
 /*     1) If the eccentricity is less than zero, the error */
-/*        'SPICE(BADECCENTRICITY)' will be signalled. */
+/*        'SPICE(BADECCENTRICITY)' will be signaled. */
 
 /*     2) If the semi-latus rectum is 0, the error */
-/*        'SPICE(BADLATUSRECTUM)' is signalled. */
+/*        'SPICE(BADLATUSRECTUM)' is signaled. */
 
 /*     3) If the pole vector, trajectory pole vector or periapsis vector */
-/*        have zero length, the error 'SPICE(BADVECTOR)' is signalled. */
+/*        have zero length, the error 'SPICE(BADVECTOR)' is signaled. */
 
 /*     4) If the trajectory pole vector and the periapsis vector are */
-/*        not orthogonal, the error 'SPICE(BADINITSTATE)' is signalled. */
+/*        not orthogonal, the error 'SPICE(BADINITSTATE)' is signaled. */
 /*        The test for orthogonality is very crude.  The routine simply */
 /*        checks that the dot product of the unit vectors parallel */
 /*        to the trajectory pole and periapse vectors is less than */
@@ -208,16 +212,16 @@ static integer c__16 = 16;
 /*        enforce orthogonality to double precision capacity. */
 
 /*     5) If the mass of the central body is non-positive, the error */
-/*       'SPICE(NONPOSITIVEMASS)' is signalled. */
+/*       'SPICE(NONPOSITIVEMASS)' is signaled. */
 
 /*     6) If the radius of the central body is negative, the error */
-/*       'SPICE(BADRADIUS)' is signalled. */
+/*       'SPICE(BADRADIUS)' is signaled. */
 
 /*     7) If the segment identifier has more than 40 non-blank characters */
-/*        the error 'SPICE(SEGIDTOOLONG)' is signalled. */
+/*        the error 'SPICE(SEGIDTOOLONG)' is signaled. */
 
 /*     8) If the segment identifier contains non-printing characters */
-/*        the error 'SPICE(NONPRINTABLECHARS)' is signalled. */
+/*        the error 'SPICE(NONPRINTABLECHARS)' is signaled. */
 
 /*     9) If there are inconsistencies in the BODY, CENTER, FRAME or */
 /*        FIRST and LAST times, the problem will be diagnosed by */
@@ -253,7 +257,7 @@ static integer c__16 = 16;
 
 /*    (If your state is at an epoch other than periapse the */
 /*     fragment below will NOT produce a "correct" type 15 segment */
-/*     for modelling the motion of your object.) */
+/*     for modeling the motion of your object.) */
 
 /*     C */
 /*     C     First we get the osculating elements. */
@@ -297,9 +301,20 @@ static integer c__16 = 16;
 
 /* $ Author_and_Institution */
 
+/*     N.J. Bachman    (JPL) */
 /*     W.L. Taber      (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 29-MAY-2012 (NJB) */
+
+/*        Input vectors that nominally have unit length */
+/*        are mapped to local copies that actually do */
+/*        have unit length. The applicable inputs are TP, PA, */
+/*        and PV. The Detailed Input header section was updated */
+/*        to reflect the change. */
+
+/*        Some typos in error messages were corrected. */
 
 /* -    SPICELIB Version 1.0.0, 28-NOV-1994 (WLT) */
 
@@ -343,13 +358,18 @@ static integer c__16 = 16;
 
     record[0] = *epoch;
 
+/*     Convert TP and PA to unit vectors. */
+
+    vhat_(pa, mypa);
+    vhat_(tp, mytp);
+
 /*     The trajectory pole vector. */
 
-    vequ_(tp, &record[1]);
+    vequ_(mytp, &record[1]);
 
 /*     The periapsis vector. */
 
-    vequ_(pa, &record[4]);
+    vequ_(mypa, &record[4]);
 
 /*     Semi-latus rectum ( P in the P/(1 + ECC*COS(Nu)  ), */
 /*     and eccentricity. */
@@ -363,7 +383,7 @@ static integer c__16 = 16;
 
 /*     Central body pole vector. */
 
-    vequ_(pv, &record[10]);
+    vhat_(pv, &record[10]);
 
 /*     The central mass, J2 and radius of the central body. */
 
@@ -401,22 +421,22 @@ static integer c__16 = 16;
 	return 0;
     } else if (vzero_(tp)) {
 	setmsg_("The trajectory pole vector supplied to SPKW15 had length ze"
-		"ro. The most likely cause of this problem is an unititialize"
+		"ro. The most likely cause of this problem is an uninitialize"
 		"d vector.", (ftnlen)128);
 	sigerr_("SPICE(BADVECTOR)", (ftnlen)16);
 	chkout_("SPKW15", (ftnlen)6);
 	return 0;
     } else if (vzero_(pa)) {
 	setmsg_("The periapse vector supplied to SPKW15 had length zero. The"
-		" most likely cause of this problem is an unitialized vector.",
-		 (ftnlen)119);
+		" most likely cause of this problem is an uninitialized vecto"
+		"r.", (ftnlen)121);
 	sigerr_("SPICE(BADVECTOR)", (ftnlen)16);
 	chkout_("SPKW15", (ftnlen)6);
 	return 0;
     } else if (vzero_(pv)) {
 	setmsg_("The central pole vector supplied to SPKW15 had length zero."
-		" The most likely cause of this problem is an unitialized vec"
-		"tor. ", (ftnlen)124);
+		" The most likely cause of this problem is an uninitialized v"
+		"ector. ", (ftnlen)126);
 	sigerr_("SPICE(BADVECTOR)", (ftnlen)16);
 	chkout_("SPKW15", (ftnlen)6);
 	return 0;
@@ -428,11 +448,6 @@ static integer c__16 = 16;
 	chkout_("SPKW15", (ftnlen)6);
 	return 0;
     }
-
-/*     Convert TP and PA to unit vectors. */
-
-    vhat_(pa, mypa);
-    vhat_(tp, mytp);
 
 /*     One final check.  Make sure the pole and periapse vectors are */
 /*     orthogonal. (We will use a very crude check but this should */

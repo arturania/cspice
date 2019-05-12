@@ -65,8 +65,10 @@
 
 -Brief_I/O
  
- Variable  I/O  Description 
+   Variable  I/O  Description 
    --------  ---  -------------------------------------------------- 
+   MAXDEG     P   Maximum degree of Chebyshev expansions.
+   TOLSCL     P   Scale factor used to compute time bound tolerance.
    handle     I   Handle of SPK file open for writing. 
    body       I   NAIF code for ephemeris object. 
    center     I   NAIF code for the center of motion of the body. 
@@ -83,7 +85,7 @@
 -Detailed_Input
  
    handle         DAF handle of an SPK file to which a type 3 segment 
-                  is to be added.  The SPK file must be open for 
+                  is to be added. The SPK file must be open for 
                   writing. 
  
    body           NAIF integer code for an ephemeris object whose 
@@ -91,22 +93,22 @@
                   segment to be created. 
  
    center         NAIF integer code for the center of motion of the 
-                  object identified by body. 
+                  object identified by `body'. 
  
    frame          NAIF name for a reference frame relative to which 
-                  the state information for body is specified. 
+                  the state information for `body' is specified. 
  
    first, 
    last           Start and stop times of the time interval over 
-                  which the segment defines the state of body. 
+                  which the segment defines the state of `body'. 
  
-   segid          Segment identifier.  An SPK segment identifier may 
+   segid          Segment identifier. An SPK segment identifier may 
                   contain up to 40 characters. 
  
    intlen         Length of time, in seconds, covered by each set of 
                   Chebyshev polynomial coefficients (each logical 
                   record).  Each set of Chebyshev coefficents must 
-                  cover this fixed time interval, intlen. 
+                  cover this fixed time interval, `intlen'. 
  
    n              Number of sets of Chebyshev polynomial coefficients 
                   for coordinates and their derivatives (number of 
@@ -119,7 +121,7 @@
    cdata          Array containing all the sets of Chebyshev 
                   polynomial coefficients to be placed in the 
                   segment of the SPK file.  The coefficients are 
-                  stored in cdata in order as follows: 
+                  stored in `cdata' in order as follows: 
  
                      the (degree + 1) coefficients for the first 
                      coordinate of the first logical record 
@@ -142,6 +144,49 @@
  
                      and so on. 
  
+                  The logical data records are stored contiguously:
+
+                     +----------+
+                     | Record 1 |
+                     +----------+
+                     | Record 2 |
+                     +----------+
+                         ...
+                     +----------+
+                     | Record N |
+                     +----------+
+
+                  The contents of an individual record are:
+
+                     +--------------------------------------+
+                     | Coeff set for X position component   |
+                     +--------------------------------------+
+                     | Coeff set for Y position component   |
+                     +--------------------------------------+
+                     | Coeff set for Z position component   |
+                     +--------------------------------------+
+                     | Coeff set for X velocity component   |
+                     +--------------------------------------+
+                     | Coeff set for Y velocity component   |
+                     +--------------------------------------+
+                     | Coeff set for Z velocity component   |
+                     +--------------------------------------+
+
+                 Each coefficient set has the structure:
+
+                     +--------------------------------------+
+                     | Coefficient of T_0                   |
+                     +--------------------------------------+
+                     | Coefficient of T_1                   |
+                     +--------------------------------------+
+                                       ...
+                     +--------------------------------------+
+                     | Coefficient of T_POLYDG              |
+                     +--------------------------------------+
+
+                  Where T_n represents the Chebyshev polynomial
+                  of the first kind of degree n.
+                 
  
    btime          Begin time (seconds past J2000 TDB) of first set 
                   of Chebyshev polynomial coefficients (first 
@@ -153,37 +198,69 @@
  
 -Parameters
  
-   None. 
+   The parameters below are declared in the Fortran include file
+   spk03.inc, which is part of the Fortran SPICE Toolkit (aka
+   SPICELIB). The values of those parameters are used in CSPICE code
+   generated by running f2c on SPICELIB source code. They are not
+   directly referenced by code in this module.
+   
+      
+      MAXDEG         is the maximum allowed degree of the input
+                     Chebyshev expansions. 
+       
+                     The value of MAXDEG is 27.
  
+ 
+      TOLSCL         is a tolerance scale factor (also called a
+                     "relative tolerance") used for time coverage bound
+                     checking. TOLSCL is unitless. TOLSCL produces a
+                     tolerance value via the formula
+ 
+                        TOL = TOLSCL * max( abs(first), abs(last) )
+ 
+                     where `first' and `last' are the coverage time
+                     bounds of a type 3 segment, expressed as seconds
+                     past J2000 TDB.
+ 
+                     The resulting parameter TOL is used as a tolerance
+                     for comparing the input segment descriptor time
+                     bounds to the first and last epoch covered by the
+                     sequence of time intervals defined by the inputs
+                     to spkw03_c:
+ 
+                        btime
+                        intlen
+                        n
+
+                     The value of TOLSCL is 1.e-13. 
 -Exceptions
  
-   1) If the number of sets of coefficients is not positive 
-      SPICE(NUMCOEFFSNOTPOS) is signaled. 
+   1)  If the number of sets of coefficients is not positive 
+       SPICE(NUMCOEFFSNOTPOS) is signaled. 
  
-   2) If the interval length is not positive, SPICE(INTLENNOTPOS) 
-      is signaled. 
+   2)  If the interval length is not positive, SPICE(INTLENNOTPOS) 
+       is signaled. 
  
-   3) If the integer code for the reference frame is not recognized, 
-      SPICE(INVALIDREFFRAME) is signaled. 
+   3)  If the integer code for the reference frame is not recognized, 
+       SPICE(INVALIDREFFRAME) is signaled. 
  
-   4) If segment stop time is not greater then the begin time, 
+   4)  If segment stop time is not greater then the begin time, 
        SPICE(BADDESCRTIMES) is signaled. 
  
-   5) If the start time of the first record is not less than 
-      or equal to the descriptor begin time, SPICE(BADDESCRTIMES) 
-      is signaled. 
+   5)  If the input degree `polydg' is less than 0 or greater than
+       MAXDEG, the error will be diagnosed by a routine in the call
+       tree of this routine.
  
-   6) If the end time of the last record is not greater than 
-      or equal to the descriptor end time, SPICE(BADDESCRTIMES) is 
-      signaled. 
+   6)  If the last non-blank character of `segid' occurs past index 40,
+       or if `segid' contains any nonprintable characters, the error will
+       be diagnosed by a routine in the call tree of this routine.
  
-   7) The error SPICE(EMPTYSTRING) is signaled if either input
-      string does not contain at least one character, since the
-      input strings cannot be converted to a Fortran-style string
-      in this case.
-      
-   8) The error SPICE(NULLPOINTER) is signaled if either input string
-      pointer is null.
+   7)  The error SPICE(EMPTYSTRING) is signaled if either input string
+       does not contain at least one character, since the input strings
+       cannot be converted to a Fortran-style string in this case.
+ 
+   8)  The error SPICE(NULLPOINTER) is signaled if either input string
+       pointer is null.
 
 -Files
  
@@ -207,12 +284,12 @@
 -Examples
  
    Suppose that you have sets of Chebyshev polynomial coefficients 
-   in an array cdata pertaining to the position of the moon (NAIF ID 
+   in an array `cdata' pertaining to the position of the moon (NAIF ID 
    = 301), relative to the Earth-moon barycenter (NAIF ID = 3), in 
-   the J2000 reference frame, and want to put these into a type 2 
-   segment in an existing SPK file.  The following code could be used 
-   to add one new type 2 segment.  To add multiple segments, put the 
-   call to SPKW02 in a loop. 
+   the J2000 reference frame, and want to put these into a type 3 
+   segment in an existing SPK file. The following code could be used 
+   to add one new type 3 segment.  To add multiple segments, put the 
+   call to spkw03_c in a loop. 
  
       #include "SpiceUsr.h"
            .
@@ -256,6 +333,15 @@
    K.S. Zukor    (JPL) 
  
 -Version
+
+   -CSPICE Version 2.0.0, 09-JAN-2014 (NJB) 
+
+       Relaxed test on relationship between the time bounds of the
+       input record set (determined by `btime', `intlen', and `n') and
+       the descriptor bounds `first' and `last'. Now the descriptor
+       bounds may extend beyond the time bounds of the record set by a
+       ratio computed using the parameter TOLSCL (see Parameters above
+       for details). Added checks on input polynomial degree.
 
    -CSPICE Version 1.0.0, 08-MAR-2002 (EDW)
 

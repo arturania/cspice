@@ -10,9 +10,6 @@
 	integer *sigdig, char *out, ftnlen in_len, ftnlen marker_len, ftnlen 
 	out_len)
 {
-    /* System generated locals */
-    integer i__1, i__2;
-
     /* Builtin functions */
     integer s_cmp(char *, char *, ftnlen, ftnlen);
     /* Subroutine */ int s_copy(char *, char *, ftnlen, ftnlen);
@@ -22,8 +19,11 @@
     extern /* Subroutine */ int zzrepsub_(char *, integer *, integer *, char *
 	    , char *, ftnlen, ftnlen, ftnlen), dpstr_(doublereal *, integer *,
 	     char *, ftnlen);
-    extern integer lastnb_(char *, ftnlen), frstnb_(char *, ftnlen);
-    integer mrkpos;
+    integer mrknbf, subnbf;
+    extern integer lastnb_(char *, ftnlen);
+    integer mrknbl, subnbl;
+    extern integer frstnb_(char *, ftnlen);
+    integer mrkpsb, mrkpse;
     char substr[23];
 
 /* $ Abstract */
@@ -118,10 +118,6 @@
 /*                    23 characters are sufficient to hold any result */
 /*                    returned by DPSTR. (See $Restrictions.) */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     Error Free. */
@@ -132,6 +128,10 @@
 
 /*     2) If MARKER is blank, or if MARKER is not a substring of IN, */
 /*        no substitution is performed. (OUT and IN are identical.) */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -249,9 +249,16 @@
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman   (JPL) */
+/*     B.V. Semenov   (JPL) */
+/*     W.L. Taber     (JPL) */
 /*     I.M. Underwood (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.2.0, 23-SEP-2013 (BVS) */
+
+/*        Minor efficiency update: the routine now looks up the first */
+/*        and last non-blank characters only once. */
 
 /* -    SPICELIB Version 1.1.0, 15-AUG-2002 (WLT) */
 
@@ -289,24 +296,24 @@
 /*     (ignoring leading and trailing blanks). If MARKER is not */
 /*     a substring of IN, no substitution can be performed. */
 
-    i__1 = frstnb_(marker, marker_len) - 1;
-    mrkpos = i_indx(in, marker + i__1, in_len, lastnb_(marker, marker_len) - 
-	    i__1);
-    if (mrkpos == 0) {
+    mrknbf = frstnb_(marker, marker_len);
+    mrknbl = lastnb_(marker, marker_len);
+    mrkpsb = i_indx(in, marker + (mrknbf - 1), in_len, mrknbl - (mrknbf - 1));
+    if (mrkpsb == 0) {
 	s_copy(out, in, out_len, in_len);
 	return 0;
     }
+    mrkpse = mrkpsb + mrknbl - mrknbf;
 
 /*     Okay, MARKER is non-blank and has been found. Convert the */
 /*     number to text, and substitute the text for the marker. */
 
     dpstr_(value, sigdig, substr, (ftnlen)23);
-    if (lastnb_(substr, (ftnlen)23) != 0) {
-	i__1 = frstnb_(substr, (ftnlen)23) - 1;
-	i__2 = mrkpos + lastnb_(marker, marker_len) - frstnb_(marker, 
-		marker_len);
-	zzrepsub_(in, &mrkpos, &i__2, substr + i__1, out, in_len, lastnb_(
-		substr, (ftnlen)23) - i__1, out_len);
+    subnbf = frstnb_(substr, (ftnlen)23);
+    subnbl = lastnb_(substr, (ftnlen)23);
+    if (subnbf != 0 && subnbl != 0) {
+	zzrepsub_(in, &mrkpsb, &mrkpse, substr + (subnbf - 1), out, in_len, 
+		subnbl - (subnbf - 1), out_len);
     }
     return 0;
 } /* repmd_ */

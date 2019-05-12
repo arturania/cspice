@@ -104,25 +104,23 @@
                Case and blanks are not significant in the string 
                `ref'. 
  
-   abcorr      indicates the aberration corrections to be applied to 
-               the state of the target body to account for one-way 
-               light time. See the discussion in the Particulars 
-               section for recommendations on how to choose 
-               aberration corrections. 
+   abcorr      indicates the aberration corrections to be applied to
+               the state of the target body to account for one-way
+               light time and stellar aberration. See the discussion in
+               the Particulars section of spkezr_c for recommendations
+               on how to choose aberration corrections.
                  
-               If `abcorr' includes the stellar aberration correction 
-               symbol "+S", this flag is simply ignored. Aside from 
-               the possible presence of this symbol, `abcorr' may be 
-               any of the following: 
+               `abcorr' may be any of the following: 
  
                   "NONE"     Apply no correction. Return the  
                              geometric state of the target body  
                              relative to the observer.  
  
-               The following values of `abcorr' apply to the 
-               "reception" case in which photons depart from the 
-               target's location at the light-time corrected epoch 
-               et-lt and *arrive* at the observer's location at `et': 
+               The following values of `abcorr' apply to the
+               "reception" case in which photons depart from the
+               target's location at the light-time corrected epoch
+               et-lt and *arrive* at the observer's location at
+               `et':
  
                   "LT"       Correct for one-way light time (also 
                              called "planetary aberration") using a 
@@ -130,29 +128,44 @@
                              yields the state of the target at the 
                              moment it emitted photons arriving at 
                              the observer at `et'. 
-  
-                             The light time correction involves 
+ 
+                             The light time correction uses an
                              iterative solution of the light time 
                              equation (see Particulars for details). 
                              The solution invoked by the "LT" option 
                              uses one iteration. 
  
-                  "CN"       Converged Newtonian light time 
-                             correction. In solving the light time 
-                             equation, the "CN" correction iterates 
-                             until the solution converges (three 
-                             iterations on all supported platforms). 
- 
-                             The "CN" correction typically does not 
-                             substantially improve accuracy because 
-                             the errors made by ignoring 
-                             relativistic effects may be larger than 
-                             the improvement afforded by obtaining 
-                             convergence of the light time solution. 
-                             The "CN" correction computation also  
-                             requires a significantly greater number 
-                             of CPU cycles than does the  
-                             one-iteration light time correction. 
+                  "LT+S"     Correct for one-way light time and 
+                             stellar aberration using a Newtonian 
+                             formulation. This option modifies the 
+                             state obtained with the "LT" option to 
+                             account for the observer's velocity 
+                             relative to the solar system 
+                             barycenter. The result is the apparent 
+                             state of the target---the position and 
+                             velocity of the target as seen by the 
+                             observer. 
+                
+                  "CN"       Converged Newtonian light time
+                             correction. In solving the light time
+                             equation, the "CN" correction iterates
+                             until the solution converges (three
+                             iterations on all supported platforms).
+                             Whether the "CN+S" solution is
+                             substantially more accurate than the
+                             "LT" solution depends on the geometry
+                             of the participating objects and on the
+                             accuracy of the input data. In all
+                             cases this routine will execute more
+                             slowly when a converged solution is
+                             computed. See the Particulars section of
+                             spkezr_c for a discussion of precision of
+                             light time corrections.
+
+                  "CN+S"     Converged Newtonian light time
+                             correction and stellar aberration
+                             correction.
+                  
  
                The following values of `abcorr' apply to the 
                "transmission" case in which photons *depart* from 
@@ -167,8 +180,25 @@
                              receives photons emitted from the 
                              observer's location at `et'. 
  
-                  "XCN"      "Transmission" case:  converged  
+                  "XLT+S"    "Transmission" case:  correct for 
+                             one-way light time and stellar 
+                             aberration using a Newtonian 
+                             formulation  This option modifies the 
+                             state obtained with the "XLT" option to 
+                             account for the observer's velocity 
+                             relative to the solar system 
+                             barycenter. The position component of 
+                             the computed target state indicates the 
+                             direction that photons emitted from the 
+                             observer's location must be "aimed" to 
+                             hit the target. 
+ 
+                  "XCN"      "Transmission" case: converged  
                              Newtonian light time correction. 
+ 
+                  "XCN+S"    "Transmission" case: converged Newtonian
+                             light time correction and stellar
+                             aberration correction.
  
  
                Neither special nor general relativistic effects are 
@@ -177,7 +207,6 @@
  
                Case and blanks are not significant in the string 
                `abcorr'. 
- 
                                 
    stobs       is the geometric state of the observer relative 
                to the solar system barycenter at `et'. The 
@@ -549,6 +578,17 @@
  
 -Version
  
+   -CSPICE Version 3.0.1, 07-JUL-2014 (NJB)
+
+       Descriptions of aberration correction choices that include
+       stellar aberration were missing. These have been added.
+       Erroneous claim that stellar aberration specifiers (instances
+       of "+S") in `abcorr' are ignored was deleted.
+
+       Discussion of light time corrections was updated. Assertions
+       that converged light time corrections are unlikely to be
+       useful were removed.
+
    -CSPICE Version 1.0.0, 11-JAN-2008 (NJB)
 
 -Index_Entries

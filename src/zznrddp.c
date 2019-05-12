@@ -11,10 +11,6 @@
 	 doublereal *xinc, doublereal *xll, doublereal *xlldot, doublereal *
 	xn, doublereal *xnodes, doublereal *xnodot, doublereal *xnodp)
 {
-    /* Initialized data */
-
-    static logical dopert = TRUE_;
-
     /* System generated locals */
     doublereal d__1, d__2;
 
@@ -54,13 +50,14 @@
 	    zsinhl, zsinil;
     static integer isynfl;
     static doublereal gam, del[3], eoc;
-    extern doublereal j1950_(void), j2000_(void);
+    extern doublereal j2000_(void), j1950_(void);
     extern logical return_(void);
     static doublereal ds50, day, pgh, sgh, sel, bsq, shl, sil;
     extern doublereal spd_(void);
+    extern /* Subroutine */ int setmsg_(char *, ftnlen);
     static doublereal ses, sll, xli, shs, sis, xni, sls, xmo, xls, xnq;
-    extern /* Subroutine */ int setmsg_(char *, ftnlen), sigerr_(char *, 
-	    ftnlen), chkout_(char *, ftnlen);
+    extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
+	    ftnlen);
     static doublereal ssx[5], pgh0, sgh2, sgh3, sgh4, xgh2, xgh3, xgh4, pix1, 
 	    pix2, xno2;
 
@@ -110,38 +107,30 @@
 /*     VARIABLE  I/O  DESCRIPTION */
 /*     --------  ---  -------------------------------------------------- */
 /*     AO         I   Entry ZZDPINIT, Original semimajor axis */
-/*     XLLDOT     I   Entry ZZDPINIT, Time rate of change of XLL */
-/*     OMGDOT     I   Entry ZZDPINIT, Time rate of change of arg of */
-/*                      "   ZZDPSEC   perigee */
-/*     XNODOT     I   Entry ZZDPINIT, Time rate of change of mean motion */
-/*     XNODP      I   Entry ZZDPINIT, Original mean motion */
 /*     ELEMS      I   Entry ZZDPINIT, Array of orbit elements */
 /*                      "   ZZDPSEC */
-/*     XLL        I   Entry ZZDPSEC   Long-period periodic term */
-/*     OMGASM     I   Entry ZZDPSEC   Perturbed argument of perigee */
-/*                      "   ZZDPPER */
-/*     XNODES     I   Entry ZZDPSEC,  Perturbed argument of ascending */
-/*                      "   ZZDPPER   node */
 /*     EM         I   Entry ZZDPSEC,  Perturbed eccentricity of the orbit */
 /*                      "   ZZDPPER   at time T */
-/*     XINC       I   Entry ZZDPSEC,  Perturbed inclination of the orbit */
-/*                      "   ZZDPPER   plane at time T */
-/*     XN         I   Entry ZZDPSEC   Perturbed mean motion of the orbit */
-/*                                    at time T */
+/*     OMGASM     I   Entry ZZDPSEC   Perturbed argument of perigee */
+/*                      "   ZZDPPER */
+/*     OMGDOT     I   Entry ZZDPINIT, Time rate of change of arg of */
+/*                      "   ZZDPSEC   perigee */
 /*     T          I   Entry ZZDPSEC,  Time of state evaluation */
 /*                      "   ZZDPPER */
+/*     XINC       I   Entry ZZDPSEC,  Perturbed inclination of the orbit */
+/*                      "   ZZDPPER   plane at time T */
+/*     XLL        I   Entry ZZDPSEC   Long-period periodic term */
+/*     XLLDOT     I   Entry ZZDPINIT, Time rate of change of XLL */
+/*     XN         I   Entry ZZDPSEC   Perturbed mean motion of the orbit */
+/*                                    at time T */
+/*     XNODES     I   Entry ZZDPSEC,  Perturbed argument of ascending */
+/*                      "   ZZDPPER   node */
+/*     XNODOT     I   Entry ZZDPINIT, Time rate of change of mean motion */
+/*     XNODP      I   Entry ZZDPINIT, Original mean motion */
 
 /* $ Detailed_Input */
 
 /*     AO          the original semimajor axis of the orbit. */
-
-/*     XLLDOT      the time derivative of the XLL long-period term */
-
-/*     OMGDOT      the time derivative of the argument of perigee */
-
-/*     XNODOT      the time derivative of the mean motion */
-
-/*     XNODP       original mean motion of the orbit. */
 
 /*     ELEMS       is an array containing two-line element data */
 /*                 as prescribed below. The elements XNDD6O and BSTAR */
@@ -162,28 +151,36 @@
 /*                    ELEMS ( 10 ) = EPOCH of the elements in seconds */
 /*                                   past ephemeris epoch J2000. */
 
-/*     XN          is the perturbed mean motion from the 'mean' mean */
-/*                 motion at epoch at time T. */
-
-/*     T           is the total time from the epoch, in minutes, of the */
-/*                 element set at which to calculate the state. */
-
 /*     EM          is the perturbed eccentricity from the mean */
 /*                 eccentricity at epoch at time T. */
-
-/*     XLL         a long-period periodic term dependent on inclination, */
-/*                 eccentricity and argument of periapsis */
 
 /*     OMGASM      the value of the argument of perigee after the */
 /*                 perturbations at the time of interest are */
 /*                 added */
 
+/*     OMGDOT      the time derivative of the argument of perigee */
+
+/*     T           is the total time from the epoch, in minutes, of the */
+/*                 element set at which to calculate the state. */
+
+/*     XINC        is the perturbed inclination of the orbit plane from */
+/*                 the mean inclination at the epoch at time T */
+
+/*     XLL         a long-period periodic term dependent on inclination, */
+/*                 eccentricity and argument of periapsis */
+
+/*     XLLDOT      the time derivative of the XLL long-period term */
+
+/*     XN          is the perturbed mean motion from the 'mean' mean */
+/*                 motion at epoch at time T. */
+
 /*     XNODES      is the value of the argument of the ascending node */
 /*                 after the perturbations at the time of interest are */
 /*                 added. */
 
-/*     XINC        is the perturbed inclination of the orbit plane from */
-/*                 the mean inclination at the epoch at time T */
+/*     XNODOT      the time derivative of the mean motion */
+
+/*     XNODP       original mean motion of the orbit. */
 
 /* $ Detailed_Output */
 
@@ -193,13 +190,13 @@
 
 /*     None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     Error free. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -245,22 +242,47 @@
 
 /* $ Examples */
 
-/*     Never call this subroutine directly. EVER! */
+/*     Never call this subroutine directly. */
 
 /* $ Restrictions */
 
 /*     None. */
+
+/* $ Literature_References */
+
+/*     Hoots, Felix R., Ronald L. Roehrich (31 December 1988). "Models */
+/*     for Propagation of NORAD Element Sets". United States Department */
+/*     of Defense Spacetrack Report (3). */
+
+/*     Vallado, David A., Paul Crawford, Richard Hujsak, and */
+/*     Kelso, T. S., "Revisiting Spacetrack Report #3," AIAA/AAS */
+/*     Astrodynamics Specialist Conference, Keystone, CO, Aug 2006. */
 
 /* $ Author_and_Institution */
 
 /*     E.D. Wright      (JPL) */
 /*     W.L. Taber       (JPL) */
 
-/* $ Literature_References */
-
-/*     Spacetrack 3 report */
-
 /* $ Version */
+
+/* -    SPICELIB Version 2.1.0, 03-JUL-2016 (EDW) */
+
+/*        The "Revisiting Spacetrack Report #3" by Vallado et. al. */
+/*        indicates the negative inclination modification as a mistake. */
+/*        That code was removed. */
+
+/*        Eliminated bug in ZZDPINIT that allowed NaN contaimination */
+/*        for zero inclination orbits. */
+
+/* -    SPICELIB Version 2.0.0, 20-JAN-2012 (EDW) */
+
+/*        Eliminated use of the DOPERT boolean in ZZDPINIT. */
+/*        Refer to that entry point "Version" section for details. */
+
+/*        Added proper citation for Spacetrack 3 (Hoots) and */
+/*        Revisiting Spacetrak 3 (Vallado). */
+
+/*        Added proper Declarations section. */
 
 /* -    SPICELIB Version 1.5.1, 19-SEP-2006 (EDW) */
 
@@ -270,8 +292,8 @@
 /* -    SPICELIB Version 1.5.0, 20-JAN-1999 (EDW) (WLT) */
 
 /*        OMGDOT, named in an ENTRY point argument list */
-/*        was not passed via an argument list.  Solaris exhibited a */
-/*        bus error because of this situation.  All ENTRY point */
+/*        was not passed via an argument list. Solaris exhibited a */
+/*        bus error because of this situation. All ENTRY point */
 /*        arguments are passed only by argument lists and are declared */
 /*        in the umbrella subroutine's, ZZNRDDP, argument list. */
 
@@ -283,7 +305,7 @@
 /*        Alphabetized all variable declaration lists. */
 
 /*        All arguments passed through entry points listed as arguments */
-/*        of ZZNRDDP.  OMGDT renamed OMGDOT to be consistent with other */
+/*        of ZZNRDDP. OMGDT renamed OMGDOT to be consistent with other */
 /*        deep space two line element routines. */
 
 /* -    SPICELIB Version 1.0.0, 1-APR-1997 (EDW) */
@@ -306,6 +328,9 @@
 
 /*     Save everything just to be sure. */
 
+
+/*     Standard SPICE error handling. */
+
     /* Parameter adjustments */
     if (elems) {
 	}
@@ -316,9 +341,6 @@
 	case 2: goto L_zzdpsec;
 	case 3: goto L_zzdpper;
 	}
-
-
-/*     Standard SPICE error handling. */
 
     if (return_()) {
 	return 0;
@@ -430,13 +452,13 @@ L_zzdpinit:
 
 /*     None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     Error free. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -454,16 +476,40 @@ L_zzdpinit:
 /*     1)  This routine should only be called by DPSPCE when propagating */
 /*         two line element sets. */
 
+/* $ Literature_References */
+
+/*     Hoots, Felix R., Ronald L. Roehrich (31 December 1988). "Models */
+/*     for Propagation of NORAD Element Sets". United States Department */
+/*     of Defense Spacetrack Report (3). */
+
+/*     Vallado, David A., Paul Crawford, Richard Hujsak, and */
+/*     Kelso, T. S., "Revisiting Spacetrack Report #3," AIAA/AAS */
+/*     Astrodynamics Specialist Conference, Keystone, CO, Aug 2006. */
+
 /* $ Author_and_Institution */
 
 /*     E.D. Wright      (JPL) */
 /*     W.L. Taber       (JPL) */
 
-/* $ Literature_References */
-
-/*     Spacetrack 3 report */
-
 /* $ Version */
+
+/* -    SPICELIB Version 2.1.0, 27-JUN-2016 (EDW) */
+
+/*        Eliminated bug that allowed NaN contaimination for zero */
+/*        inclination orbits. New code avoids calculating 1/SINIQ for */
+/*        SINIQ = 0. */
+
+/* -    SPICELIB Version 2.0.0, 02-MAR-2011 (EDW) */
+
+/*        Eliminated use of the DOPERT boolean. This algorithm used */
+/*        that variable to zero-out the perturbations at epoch (T = 0). */
+/*        The original code implementation introduced a logic error */
+/*        such that the state of DOPERT was correct only for */
+/*        runs involving a single vehicle TLE. */
+
+/*        The "Revisiting Spacetrack Report #3" by Vallado et. al. */
+/*        indicates the perturbation zeroing is a mistake. That */
+/*        operation was removed. */
 
 /* -    SPICELIB Version 1.5.1, 19-SEP-2006 (EDW) */
 
@@ -534,7 +580,8 @@ L_zzdpinit:
 
     et = elems[9];
 
-/*     Convert the ET seconds past 2000 to the Julian date TDB. */
+/*     Convert the ET seconds past the J2000 epoch to the Julian */
+/*     date TDB. */
 
     jdtdb = j2000_() + et / spd_();
 
@@ -637,7 +684,7 @@ L_zzdpinit:
 
     for (i__ = 1; i__ <= 2; ++i__) {
 
-/*        Solar.  Anyone know what this means? */
+/*        Solar. */
 
 	a1 = zcosg * zcosh + zsing * zcosi * zsinh;
 	a3 = -zsing * zcosh + zcosg * zcosi * zsinh;
@@ -702,7 +749,16 @@ L_zzdpinit:
 	sl = -zn * s3 * (z1 + z3 - 14. - eqsq * 6.);
 	sgh = s4 * zn * (z31 + z33 - 6.);
 	sh = -zn * s2 * (z21 + z23);
-	if (xqncl < .052359877) {
+
+/*        Check for, and adust SH, at inclinations near 0 and 180 degs. */
+
+	if (xqncl < .052359877 || xqncl > pi_() - .052359877) {
+	    sh = 0.;
+	}
+
+/*        Secondary check, J.I.C. */
+
+	if (siniq == 0.) {
 	    sh = 0.;
 	}
 	ee2 = s1 * 2. * s6;
@@ -722,7 +778,15 @@ L_zzdpinit:
 /*           Do lunar terms after solar terms, but only once. */
 
 	    ssx[0] = sl;
-	    ssx[2] = sh / siniq;
+
+/*            Prevent evaluation of 1/SINIQ for SH = 0. */
+
+	    if (sh == 0.) {
+		ssx[2] = 0.;
+	    }
+	    if (sh != 0.) {
+		ssx[2] = sh / siniq;
+	    }
 	    ssx[1] = sgh - cosiq * ssx[2];
 	    ssx[3] = se;
 	    ssx[4] = si;
@@ -750,8 +814,21 @@ L_zzdpinit:
 	}
     }
     ssx[0] += sl;
-    ssx[1] = ssx[1] + sgh - cosiq / siniq * sh;
-    ssx[2] += sh / siniq;
+
+/*      Prevent evaluation of 1/SINIQ for SH = 0. */
+
+    if (sh == 0.) {
+	ssx[1] += sgh;
+    }
+    if (sh != 0.) {
+	ssx[1] = ssx[1] + sgh - cosiq / siniq * sh;
+    }
+    if (sh == 0.) {
+	ssx[2] = ssx[2];
+    }
+    if (sh != 0.) {
+	ssx[2] += sh / siniq;
+    }
     ssx[3] += se;
     ssx[4] += si;
 
@@ -833,9 +910,6 @@ L_zzdpinit:
 		    5337.524;
 	    g532 = eq * 4690.25 - 853.666 - eqsq * 8624.77 + eoc * 5341.4;
 	}
-
-/*        The tall man walks at night. */
-
 	sini2 = siniq * siniq;
 	f220 = (cosiq * 2. + 1. + cosq2) * .75;
 	f221 = sini2 * 1.5;
@@ -991,11 +1065,11 @@ L_zzdpsec:
 
 /*     None. */
 
-/* $ Files */
+/* $ Exceptions */
 
 /*     None. */
 
-/* $ Exceptions */
+/* $ Files */
 
 /*     None. */
 
@@ -1018,16 +1092,28 @@ L_zzdpsec:
 /*     1)  This routine should only be called by DPSPCE when propagating */
 /*         two line element sets. */
 
+/* $ Literature_References */
+
+/*     Hoots, Felix R., Ronald L. Roehrich (31 December 1988). "Models */
+/*     for Propagation of NORAD Element Sets". United States Department */
+/*     of Defense Spacetrack Report (3). */
+
+/*     Vallado, David A., Paul Crawford, Richard Hujsak, and */
+/*     Kelso, T. S., "Revisiting Spacetrack Report #3," AIAA/AAS */
+/*     Astrodynamics Specialist Conference, Keystone, CO, Aug 2006. */
+
 /* $ Author_and_Institution */
 
 /*     E.D. Wright      (JPL) */
 /*     W.L. Taber       (JPL) */
 
-/* $ Literature_References */
-
-/*     Spacetrack 3 report */
-
 /* $ Version */
+
+/* -    SPICELIB Version 1.6.0, 27-JUN-2016 (EDW) */
+
+/*        The "Revisiting Spacetrack Report #3" by Vallado et. al. */
+/*        indicates the negative inclination modification as a mistake. */
+/*        That code was removed. */
 
 /* -    SPICELIB Version 1.5.1, 19-SEP-2006 (EDW) */
 
@@ -1055,7 +1141,6 @@ L_zzdpsec:
 
 /* -    SPICELIB Version 1.0.0, MAY-2-1997 (EDW) */
 
-
 /* -& */
 /* $ Index_Entries */
 
@@ -1072,27 +1157,10 @@ L_zzdpsec:
     *em = eo + ssx[3] * *t;
     *xinc = xincl + ssx[4] * *t;
 
-/*     Check for a positive inclination and the state of the */
-/*     resonance flag. */
+/*     Check for the state of the resonance flag. */
 
-    if (*xinc >= 0.f) {
-
-/*        If the resonance flag is not set return. */
-
-	if (iresfl == 0) {
-	    return 0;
-	}
-    } else {
-
-/*        A negative inclination.  Fix that and reset XNODES and */
-/*        OMGASM then check the resonance flag. */
-
-	*xinc = -(*xinc);
-	*xnodes += pix1;
-	*omgasm -= pix1;
-	if (iresfl == 0) {
-	    return 0;
-	}
+    if (iresfl == 0) {
+	return 0;
     }
 
 /*     If we got down here then the resonance effects need to be */
@@ -1240,13 +1308,13 @@ L_zzdpper:
 
 /*     None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     Error free. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -1282,14 +1350,16 @@ L_zzdpper:
 /*         a call with the time epoch set to 0.  Failure to do so */
 /*         invalidates the perturbation calculation. */
 
+/* $ Literature_References */
+
+/*     Hoots, Felix R., Ronald L. Roehrich (31 December 1988). "Models */
+/*     for Propagation of NORAD Element Sets". United States Department */
+/*     of Defense Spacetrack Report (3). */
+
 /* $ Author_and_Institution */
 
 /*     E.D. Wright      (JPL) */
 /*     W.L. Taber       (JPL) */
-
-/* $ Literature_References */
-
-/*     Spacetrack 3 report */
 
 /* $ Version */
 
@@ -1361,46 +1431,22 @@ L_zzdpper:
     pe = ses + sel;
     pinc = sis + sil;
     pl = sls + sll;
-
-/*     I'm cold down here.  Brrrr. */
-
     pgh = sghs + sghl;
     ph = shs + shl;
 
-/*     Force the perturbations to be zero at the epoch by setting a */
-/*     set of variables to the values of the perturbations at the */
-/*     epoch ( T = 0 ).  On subsequent calls, these values will be */
-/*     subtracted from the perturbations. */
+/*     Subtract the epoch perturbations off the calculated values. */
 
-    if (dopert) {
-	pe0 = pe;
-	pinc0 = pinc;
-	pl0 = pl;
-	pgh0 = pgh;
-	ph0 = ph;
-	pe = 0.;
-	pinc = 0.;
-	pl = 0.;
-	pgh = 0.;
-	ph = 0.;
-	dopert = FALSE_;
-    } else {
-
-/*        Subtract the epoch perturbations off the values just */
-/*        calculated. */
-
-	pe -= pe0;
-	pinc -= pinc0;
-	pl -= pl0;
-	pgh -= pgh0;
-	ph -= ph0;
-    }
+    pe -= pe0;
+    pinc -= pinc0;
+    pl -= pl0;
+    pgh -= pgh0;
+    ph -= ph0;
     *xinc += pinc;
     *em += pe;
 
 /*     Sin and Cos of the perturbed inclination.  The original */
 /*     Spacetrack 3 report calculated the values before the */
-/*     perturbation.  Oops! */
+/*     perturbation. */
 
     sinis = sin(*xinc);
     cosis = cos(*xinc);
@@ -1448,8 +1494,8 @@ L_zzdpper:
 /*           XNODES should be the angular difference between the previous */
 /*           value of XNODES and that just calculated.  This is a */
 /*           correction to the standard SDP4 routine which did not */
-/*           calculate this term correctly if XNODES passes from less */
-/*           than 2Pi to greater than zero. */
+/*           calculate this term correctly if XNODES passes over the */
+/*           branch cut at 2*Pi. */
 
 	    if ((d__1 = *xnodes - oxnode, abs(d__1)) > pix1) {
 		if (*xnodes > oxnode) {

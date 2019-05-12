@@ -175,6 +175,18 @@
  
 -Version
 
+   -CSPICE Version 2.2.0, 10-MAR-2014 (BVS)
+
+       Updated for:
+       
+          PC-CYGWIN-64BIT-GCC_C
+          
+       environment. Added the corresponding tag:
+       
+          CSPICE_PC_CYGWIN_64BIT_GCC
+
+       tag to the #ifdefs set.
+        
    -CSPICE Version 2.1.0, 14-MAY-2010 (EDW)(BVS)
 
        Updated for:
@@ -220,6 +232,10 @@
 
   #ifdef CSPICE_ALPHA_DIGITAL_UNIX
   
+     return ( INT_MIN );
+
+  #elif defined( CSPICE_PC_CYGWIN_64BIT_GCC )
+        
      return ( INT_MIN );
 
   #elif defined( CSPICE_PC_LINUX_64BIT_GCC )

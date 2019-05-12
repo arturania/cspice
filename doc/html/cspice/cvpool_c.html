@@ -55,7 +55,7 @@
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 33%; text-align: center;">
             <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
@@ -66,7 +66,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
@@ -76,7 +76,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
@@ -97,9 +97,8 @@
 <h4><a name="Abstract">Abstract</a></h4>
 <PRE>
  
-   Determine whether or not any of the variables that are to be watched
-   and have a specified agent on their distribution list have been 
-   updated.
+   Indicate whether or not any watched kernel variables that have a
+   specified agent on their notification list have been updated.
  </PRE>
 <h4><a name="Required_Reading">Required_Reading</a></h4>
 <PRE>
@@ -120,7 +119,7 @@
    Variable  I/O  Description 
    --------  ---  -------------------------------------------------- 
    agent      I   Name of the agent to check for notices. 
-   update     O   SPICETRUE if variables for agent have been updated. 
+   update     O   SPICETRUE if variables for `agent' have been updated. 
  </PRE>
 <h4><a name="Detailed_Input">Detailed_Input</a></h4>
 <PRE>
@@ -135,9 +134,15 @@
 <PRE>
  
    update    is a logical flag that will be set to SPICETRUE if the
-             variables in the kernel pool that are required by agent
+             variables in the kernel pool that are associated with `agent'
              have been updated since the last call to <b>cvpool_c</b>.
- </PRE>
+ 
+             `update' will be set to SPICETRUE on the first call made for
+             the specified agent, whether or not the associated
+             variables have been updated since the agent was placed
+             on their notification list, as long as the agent is
+             associated with any watched variables.
+</PRE>
 <h4><a name="Parameters">Parameters</a></h4>
 <PRE>
  
@@ -261,10 +266,17 @@
  
    N.J. Bachman   (JPL)
    W.L. Taber     (JPL) 
+   E.D. Wright    (JPL)
  </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
-   -CSPICE Version 1.0.1, 14-AUG-2006   (EDW)
+   -CSPICE Version 1.0.2, 30-JUN-2014 (NJB)
+
+       Description of the output variable `update' now mentions that
+       the initial value of SPICETRUE will be returned after an agent
+       is associated with kernel variables.
+
+   -CSPICE Version 1.0.1, 14-AUG-2006 (EDW)
 
       Replace mention of <a href="ldpool_c.html">ldpool_c</a> with <a href="furnsh_c.html">furnsh_c</a>.
 
@@ -282,7 +294,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Jun  9 13:05:20 2010</pre>
+   <pre>Wed Apr  5 17:54:30 2017</pre>
 
 </body>
 </html>

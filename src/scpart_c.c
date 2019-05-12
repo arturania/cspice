@@ -72,13 +72,13 @@
    nparts     is the number of spacecraft clock time partitions 
               described in the kernel file for spacecraft SC. 
  
-   pstart     is an array containing nparts partition start times 
-              represented as encoded ticks.  The values contained 
-              in pstart are whole numbers. 
+   pstart     is an array containing nparts partition start times
+              represented as double precision, encoded SCLK ("ticks").
+              The values contained in pstart are whole numbers.
  
-   pstop      is an array containing nparts partition end times 
-              represented as encoded ticks. The values contained 
-              in pstop are whole numbers. 
+   pstop      is an array containing nparts partition end times
+              represented as double precision, encoded SCLK ("ticks").
+              The values contained in pstop are whole numbers.
  
 -Parameters
  
@@ -111,7 +111,7 @@
       "SCLK_PARTITION_START_nn" 
       "SCLK_PARTITION_END_nn"
  
-   The start and stop times returned are in encoded units of "ticks." 
+   The start and stop times returned are in units of "ticks." 
  
 -Examples
  
@@ -177,6 +177,10 @@
    R.E. Thurman   (JPL) 
  
 -Version
+
+   -CSPICE Version 1.1.1, 19-MAR-2014   (NJB)
+
+      Minor header comment updates were made.
 
    -CSPICE Version 1.1.0, 11-FEB-2008   (NJB)
 

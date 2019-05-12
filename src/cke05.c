@@ -24,13 +24,13 @@ static integer c__4 = 4;
     doublereal mags, qneg[4], rate;
     integer from;
     extern /* Subroutine */ int vequ_(doublereal *, doublereal *);
-    doublereal work[912]	/* was [456][2] */;
+    doublereal work[1360]	/* was [680][2] */;
     integer i__, j, n;
     doublereal q[4];
     extern /* Subroutine */ int chkin_(char *, ftnlen);
     doublereal vbuff[6];
-    extern /* Subroutine */ int vhatg_(doublereal *, integer *, doublereal *),
-	     moved_(doublereal *, integer *, doublereal *), errdp_(char *, 
+    extern /* Subroutine */ int moved_(doublereal *, integer *, doublereal *),
+	     vhatg_(doublereal *, integer *, doublereal *), errdp_(char *, 
 	    doublereal *, ftnlen), vsclg_(doublereal *, doublereal *, integer 
 	    *, doublereal *);
     doublereal state[8];
@@ -39,24 +39,23 @@ static integer c__4 = 4;
 	    doublereal *), qdq2av_(doublereal *, doublereal *, doublereal *);
     doublereal dq[4], ds[4];
     integer ub, to;
-    doublereal locrec[228], sclddq[4];
+    doublereal locrec[340], sclddq[4];
     extern /* Subroutine */ int lgrind_(integer *, doublereal *, doublereal *,
 	     doublereal *, doublereal *, doublereal *, doublereal *);
     doublereal sclkdp, radtrm[4];
     integer packsz;
-    extern /* Subroutine */ int sigerr_(char *, ftnlen);
+    extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
+	    ftnlen);
     extern doublereal lgrint_(integer *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *), vdistg_(doublereal *, doublereal *, 
 	    integer *);
-    integer prvder;
     extern /* Subroutine */ int setmsg_(char *, ftnlen), errint_(char *, 
-	    integer *, ftnlen), chkout_(char *, ftnlen), vminug_(doublereal *,
-	     integer *, doublereal *);
-    extern doublereal vnormg_(doublereal *, integer *);
-    extern /* Subroutine */ int xpsgip_(integer *, integer *, doublereal *), 
-	    vsclip_(doublereal *, doublereal *), hrmint_(integer *, 
+	    integer *, ftnlen), vminug_(doublereal *, integer *, doublereal *)
+	    , vsclip_(doublereal *, doublereal *), hrmint_(integer *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *);
+    extern doublereal vnormg_(doublereal *, integer *);
+    extern /* Subroutine */ int xpsgip_(integer *, integer *, doublereal *);
     extern logical return_(void);
     integer newptr;
     extern /* Subroutine */ int q2m_(doublereal *, doublereal *);
@@ -246,6 +245,12 @@ static integer c__4 = 4;
 
 /* $ Version */
 
+/* -    SPICELIB Version 3.0.0, 27-JAN-2014 (NJB) */
+
+/*        Updated to support CK type 6. Maximum degree for */
+/*        type 5 was updated to be consistent with the */
+/*        maximum degree for type 6. */
+
 /* -    SPICELIB Version 2.0.0, 19-AUG-2002 (NJB) */
 
 /*        Updated to support CK type 5. */
@@ -332,10 +337,45 @@ static integer c__4 = 4;
 /*                 CK5RSZ = ( CK5MXD + 1 ) * CK5MXP + CK5MET */
 
 
+/*     CK Type 6 parameters: */
+
+
+/*     CK6DTP   CK data type 6 ID; */
+
+/*     CK6MXD   maximum polynomial degree allowed in type 6 */
+/*              records. */
+
+/*     CK6MET   number of additional DPs, which are not polynomial */
+/*              coefficients, located at the beginning of a type 6 */
+/*              CK record that passed between routines CKR06 and CKE06; */
+
+/*     CK6MXP   maximum packet size for any subtype.  Subtype 2 */
+/*              has the greatest packet size, since these packets */
+/*              contain a quaternion, its derivative, an angular */
+/*              velocity vector, and its derivative.  See ck06.inc */
+/*              for a description of the subtypes. */
+
+/*     CK6RSZ   maximum size of type 6 CK record passed between CKR06 */
+/*              and CKE06; CK6RSZ is computed as follows: */
+
+/*                 CK6RSZ = CK6MET + ( CK6MXD + 1 ) * ( CK6PS3 + 1 ) */
+
+/*              where CK6PS3 is equal to the parameter CK06PS3 defined */
+/*              in ck06.inc. Note that the subtype having the largest */
+/*              packet size (subtype 2) does not give rise to the */
+/*              largest record size, because that type is Hermite and */
+/*              requires half the window size used by subtype 3 for a */
+/*              given polynomial degree. */
+
+
+/*     The parameter CK6PS3 must be in sync with C06PS3 defined in */
+/*     ck06.inc. */
+
+
 
 /*     Maximum record size that can be handled by CKPFS. This value */
 /*     must be set to the maximum of all CKxRSZ parameters (currently */
-/*     CK4RSZ.) */
+/*     CK5RSZ.) */
 
 /* $ Brief_I/O */
 
@@ -443,6 +483,16 @@ static integer c__4 = 4;
 
 /*     1)  If the input record contains an unrecognized subtype code, */
 /*         the error SPICE(NOTSUPPORTED) is signaled. */
+
+/*     2)  If the record subtype is one for which quaternion derivatives */
+/*         are stored (subtypes 0 and 2), and if the Ith quaternion in */
+/*         the input record is farther than its negative from the (I-1)st */
+/*         quaternion in the record, the error SPICE(BADQUATSIGN) is */
+/*         signaled. */
+
+/*         For subtypes 1 and 3, this condition is not considered an */
+/*         error: the closer to the preceding quaternion of the two */
+/*         quaternion representations is used for interpolation. */
 
 /* $ Files */
 
@@ -587,9 +637,7 @@ static integer c__4 = 4;
 /*         input record.  Since the mapping of rotations to quaternions */
 /*         is multiple-valued, this routine assumes that whichever sign */
 /*         minimizes the Euclidean distance between one quaternion and */
-/*         the next is the correct sign.  The same assumption is made */
-/*         for quaternion derivatives. */
-
+/*         the next is the correct sign. */
 
 /* $ Literature_References */
 
@@ -600,6 +648,21 @@ static integer c__4 = 4;
 /*     N.J. Bachman   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 3.1.0, 11-AUG-2015 (NJB) */
+
+/*        Bug fix: PRVPTR is now updated at the end of the quaternion */
+/*        sequence check for Hermite subtypes. */
+
+/* -    SPICELIB Version 3.0.0, 06-FEB-2014 (NJB) */
+
+/*        Bug fix and functional change: quaternion sign adjustment */
+/*        is no longer performed for the Hermite subtypes (0 and 2). */
+/*        If a sign adjustment is needed for quaternions belonging to */
+/*        a record of Hermite subtype, an error is signaled. Sign */
+/*        adjustment is still performed for the Lagrange subtypes. */
+
+/*        Corrected in-line comments concerning change of AV units. */
 
 /* -    SPICELIB Version 2.0.0, 20-NOV-2006 (NJB) */
 
@@ -672,13 +735,7 @@ static integer c__4 = 4;
 /*     Index of packet count in record: */
 
 
-/*     Index of SCLK rate in record: */
-
-
 /*     Index at which packets start; packet base: */
-
-
-/*     Maximum polynomial degree: */
 
 
 /*     Local variables */
@@ -722,16 +779,17 @@ static integer c__4 = 4;
     rate = record[3];
 
 /*     Adjust quaternion "signs" as necessary to minimize distance */
-/*     between successive quaternions. */
+/*     between successive quaternions. This adjustment is performed */
+/*     only for subtypes that don't store quaternion derivatives */
+/*     (these are the Lagrange subtypes). */
 
     if (subtyp == 1 || subtyp == 3) {
 
-/*        For these types, only the quaternions themselves need be */
+/*        For these subtypes, only the quaternions themselves need be */
 /*        adjusted. */
 
-/*        PRVPTR is the index of the "previous" quaternion---the */
-/*        one to which the successor and its negative will be */
-/*        compared. */
+/*        PRVPTR is the index of the "previous" quaternion---the one to */
+/*        which the successor and its negative will be compared. */
 
 	prvptr = 5;
 	i__1 = n;
@@ -754,15 +812,13 @@ static integer c__4 = 4;
 	}
     } else {
 
-/*        For the Hermite types, the quaternions may need to be */
-/*        adjusted; the derivatives are not adjusted. */
+/*        For the Hermite types, if the quaternions need to be adjusted, */
+/*        we have an error condition. */
 
-/*        PRVPTR is the index of the "previous" quaternion---the */
-/*        one to which the successor and its negative will be */
-/*        compared.  PRVDER points to the corresponding derivative. */
+/*        PRVPTR is the index of the "previous" quaternion---the one to */
+/*        which the successor and its negative will be compared. */
 
 	prvptr = 5;
-	prvder = 9;
 	i__1 = n;
 	for (i__ = 2; i__ <= i__1; ++i__) {
 
@@ -777,8 +833,28 @@ static integer c__4 = 4;
 
 	    if (vdistg_(&record[prvptr - 1], qneg, &c__4) < vdistg_(&record[
 		    prvptr - 1], &record[newptr - 1], &c__4)) {
-		moved_(qneg, &c__4, &record[newptr - 1]);
+		setmsg_("Quaternion sign error: quaternion at index # in the"
+			" input record is farther than its negative from the "
+			"preceding quaternion in the record. Quaternion is (#"
+			", #, #, #); predecessor is (#, #, #, #). This makes "
+			"the quaternion sequence unsuitable for Hermite inter"
+			"polation. The quaternions, and if applicable, their "
+			"derivatives, must be adjusted before they are passed"
+			" to this routine.", (ftnlen)380);
+		errint_("#", &i__, (ftnlen)1);
+		errdp_("#", &record[newptr - 1], (ftnlen)1);
+		errdp_("#", &record[newptr], (ftnlen)1);
+		errdp_("#", &record[newptr + 1], (ftnlen)1);
+		errdp_("#", &record[newptr + 2], (ftnlen)1);
+		errdp_("#", &record[prvptr - 1], (ftnlen)1);
+		errdp_("#", &record[prvptr], (ftnlen)1);
+		errdp_("#", &record[prvptr + 1], (ftnlen)1);
+		errdp_("#", &record[prvptr + 2], (ftnlen)1);
+		sigerr_("SPICE(BADQUATSIGN)", (ftnlen)18);
+		chkout_("CKE05", (ftnlen)5);
+		return 0;
 	    }
+	    prvptr = newptr;
 	}
     }
     if (subtyp == 1) {
@@ -806,9 +882,9 @@ static integer c__4 = 4;
 	    ystart = n * (i__ - 1) + 5;
 	    lgrind_(&n, &record[xstart - 1], &record[ystart - 1], work, &
 		    sclkdp, &state[(i__2 = i__ - 1) < 8 && 0 <= i__2 ? i__2 : 
-		    s_rnge("state", i__2, "cke05_", (ftnlen)626)], &state[(
+		    s_rnge("state", i__2, "cke05_", (ftnlen)657)], &state[(
 		    i__3 = i__ + 3) < 8 && 0 <= i__3 ? i__3 : s_rnge("state", 
-		    i__3, "cke05_", (ftnlen)626)]);
+		    i__3, "cke05_", (ftnlen)657)]);
 	}
 
 /*        The output quaternion is a unitized version of the */
@@ -853,7 +929,7 @@ static integer c__4 = 4;
 
 	    qdq2av_(q, dq, av);
 
-/*           Scale the rate from radians/tick to radians/second. */
+/*           Scale the AV from radians/tick to radians/second. */
 
 	    d__1 = 1. / rate;
 	    vsclip_(&d__1, av);
@@ -888,7 +964,7 @@ static integer c__4 = 4;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    ystart = n * (i__ - 1) + 5;
 	    state[(i__2 = i__ - 1) < 8 && 0 <= i__2 ? i__2 : s_rnge("state", 
-		    i__2, "cke05_", (ftnlen)727)] = lgrint_(&n, &record[
+		    i__2, "cke05_", (ftnlen)759)] = lgrint_(&n, &record[
 		    xstart - 1], &record[ystart - 1], locrec, &sclkdp);
 	}
 
@@ -929,11 +1005,11 @@ static integer c__4 = 4;
 
 		from = packsz * (j - 1) + 4 + i__;
 		to = (j << 1) - 1;
-		locrec[(i__2 = to - 1) < 228 && 0 <= i__2 ? i__2 : s_rnge(
-			"locrec", i__2, "cke05_", (ftnlen)779)] = record[from 
+		locrec[(i__2 = to - 1) < 340 && 0 <= i__2 ? i__2 : s_rnge(
+			"locrec", i__2, "cke05_", (ftnlen)811)] = record[from 
 			- 1];
-		locrec[(i__2 = to) < 228 && 0 <= i__2 ? i__2 : s_rnge("locrec"
-			, i__2, "cke05_", (ftnlen)780)] = record[from + 3] * 
+		locrec[(i__2 = to) < 340 && 0 <= i__2 ? i__2 : s_rnge("locrec"
+			, i__2, "cke05_", (ftnlen)812)] = record[from + 3] * 
 			rate;
 	    }
 
@@ -942,9 +1018,9 @@ static integer c__4 = 4;
 
 	    hrmint_(&n, &record[xstart - 1], locrec, &sclkdp, work, &state[(
 		    i__1 = i__ - 1) < 8 && 0 <= i__1 ? i__1 : s_rnge("state", 
-		    i__1, "cke05_", (ftnlen)788)], &state[(i__2 = i__ + 3) < 
+		    i__1, "cke05_", (ftnlen)820)], &state[(i__2 = i__ + 3) < 
 		    8 && 0 <= i__2 ? i__2 : s_rnge("state", i__2, "cke05_", (
-		    ftnlen)788)]);
+		    ftnlen)820)]);
 	}
 
 /*        The output quaternion is a unitized version of the */
@@ -990,7 +1066,7 @@ static integer c__4 = 4;
 
 		qdq2av_(q, dq, av);
 
-/*              Scale the rate from radians/tick to radians/second. */
+/*              Scale the AV from radians/tick to radians/second. */
 
 		d__1 = 1. / rate;
 		vsclip_(&d__1, av);
@@ -1015,11 +1091,11 @@ static integer c__4 = 4;
 
 			from = packsz * (j - 1) + 12 + i__;
 			to = (j << 1) - 1;
-			locrec[(i__2 = to - 1) < 228 && 0 <= i__2 ? i__2 : 
-				s_rnge("locrec", i__2, "cke05_", (ftnlen)876)]
+			locrec[(i__2 = to - 1) < 340 && 0 <= i__2 ? i__2 : 
+				s_rnge("locrec", i__2, "cke05_", (ftnlen)907)]
 				 = record[from - 1];
-			locrec[(i__2 = to) < 228 && 0 <= i__2 ? i__2 : s_rnge(
-				"locrec", i__2, "cke05_", (ftnlen)877)] = 
+			locrec[(i__2 = to) < 340 && 0 <= i__2 ? i__2 : s_rnge(
+				"locrec", i__2, "cke05_", (ftnlen)908)] = 
 				record[from + 2] * rate;
 		    }
 
@@ -1030,9 +1106,9 @@ static integer c__4 = 4;
 
 		    hrmint_(&n, &record[xstart - 1], locrec, &sclkdp, work, &
 			    vbuff[(i__1 = i__ - 1) < 6 && 0 <= i__1 ? i__1 : 
-			    s_rnge("vbuff", i__1, "cke05_", (ftnlen)887)], &
+			    s_rnge("vbuff", i__1, "cke05_", (ftnlen)918)], &
 			    vbuff[(i__2 = i__ + 2) < 6 && 0 <= i__2 ? i__2 : 
-			    s_rnge("vbuff", i__2, "cke05_", (ftnlen)887)]);
+			    s_rnge("vbuff", i__2, "cke05_", (ftnlen)918)]);
 		}
 
 /*              Fill in the angular velocity in the output angular */

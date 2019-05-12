@@ -7,11 +7,11 @@
 
 /* Table of constant values */
 
-static integer c__20 = 20;
+static integer c__200 = 200;
 static integer c__1 = 1;
 static integer c__2 = 2;
 static integer c__9 = 9;
-static doublereal c_b95 = -1.;
+static doublereal c_b101 = -1.;
 static integer c__3 = 3;
 static integer c__4 = 4;
 static integer c__14 = 14;
@@ -41,15 +41,15 @@ static integer c__14 = 14;
     static char spec[32], item[32*14];
     static integer idnt[1], axes[3];
     static logical full;
-    static integer pool[52]	/* was [2][26] */;
+    static integer pool[412]	/* was [2][206] */;
     extern doublereal vdot_(doublereal *, doublereal *);
     static char type__[1];
     static doublereal qtmp[4];
     extern /* Subroutine */ int eul2m_(doublereal *, doublereal *, doublereal 
 	    *, integer *, integer *, integer *, doublereal *);
     static integer i__, n, r__;
-    static doublereal buffd[180]	/* was [9][20] */;
-    static integer buffi[20]	/* was [1][20] */, oldid;
+    static doublereal buffd[1800]	/* was [9][200] */;
+    static integer buffi[200]	/* was [1][200] */, oldid;
     extern /* Subroutine */ int chkin_(char *, ftnlen);
     static char agent[32];
     extern /* Subroutine */ int ucase_(char *, char *, ftnlen, ftnlen), 
@@ -76,7 +76,7 @@ static integer c__14 = 14;
     static char altnat[32];
     extern /* Subroutine */ int lnkini_(integer *, integer *);
     extern integer lnknfn_(integer *);
-    static integer idents[20]	/* was [1][20] */;
+    static integer idents[200]	/* was [1][200] */;
     extern /* Subroutine */ int gcpool_(char *, integer *, integer *, integer 
 	    *, char *, logical *, ftnlen, ftnlen), gdpool_(char *, integer *, 
 	    integer *, integer *, doublereal *, logical *, ftnlen), sigerr_(
@@ -130,21 +130,21 @@ static integer c__14 = 14;
 
 /* $ Required_Reading */
 
-/*      FRAMES */
+/*     FRAMES */
 
 /* $ Keywords */
 
-/*       POINTING */
+/*     POINTING */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  ---------------------------------------------- */
-/*      ID         I   Class identification code for the instrument */
-/*      ROT        O   The rotation from ID to FRAME. */
-/*      FRAME      O   The integer code of some reference frame. */
-/*      FOUND      O   TRUE if the rotation could be determined. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  ---------------------------------------------- */
+/*     ID         I   Class identification code for the instrument */
+/*     ROT        O   The rotation from ID to FRAME. */
+/*     FRAME      O   The integer code of some reference frame. */
+/*     FOUND      O   TRUE if the rotation could be determined. */
 
 /* $ Detailed_Input */
 
@@ -199,11 +199,16 @@ static integer c__14 = 14;
 /*         SPICE(UNKNOWNFRAMESPEC) will be signaled. FOUND will be */
 /*         set to FALSE. */
 
+/*     6)  If the frame ID is equal to the relative frame ID (i.e. the */
+/*         frame is defined relative to itself), the error */
+/*         SPICE(BADFRAMESPEC2) will be signaled.  FOUND will be set to */
+/*         FALSE. */
+
 /* $ Files */
 
-/*      This routine makes use of the loaded text kernels to */
-/*      determine the rotation from a constant offset frame */
-/*      to its defining frame. */
+/*     This routine makes use of the loaded text kernels to */
+/*     determine the rotation from a constant offset frame */
+/*     to its defining frame. */
 
 /* $ Particulars */
 
@@ -279,9 +284,17 @@ static integer c__14 = 14;
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
+/*     B.V. Semenov    (JPL) */
 /*     W.L. Taber      (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.2.0, 08-JAN-2014 (BVS) */
+
+/*        Added an error check for frames defined relative to */
+/*        themselves. */
+
+/*        Increased BUFSIZ from 20 to 200. */
 
 /* -    SPICELIB Version 2.1.0, 23-APR-2009 (NJB) */
 
@@ -355,7 +368,7 @@ static integer c__14 = 14;
     if (first) {
 	first = FALSE_;
 	s_copy(versn, "1.0.0", (ftnlen)8, (ftnlen)5);
-	lnkini_(&c__20, pool);
+	lnkini_(&c__200, pool);
     }
 
 /*     Now do the standard SPICE error handling.  Sure this is */
@@ -374,7 +387,7 @@ static integer c__14 = 14;
 /*     Check the ID to make sure it is non-zero. */
 
     if (*id == 0) {
-	lnkini_(&c__20, pool);
+	lnkini_(&c__200, pool);
 	setmsg_("Frame identification codes are required to be non-zero.  Yo"
 		"u've specified a frame with ID value zero. ", (ftnlen)102);
 	sigerr_("SPICE(ZEROFRAMEID)", (ftnlen)18);
@@ -398,8 +411,8 @@ static integer c__14 = 14;
 /*        whose head node is AT. */
 
 	tail = lnktl_(&at, pool);
-	oldid = idents[(i__1 = tail - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge(
-		"idents", i__1, "tkfram_", (ftnlen)413)];
+	oldid = idents[(i__1 = tail - 1) < 200 && 0 <= i__1 ? i__1 : s_rnge(
+		"idents", i__1, "tkfram_", (ftnlen)426)];
 
 /*        Create the name of the agent associated with the old */
 /*        frame. */
@@ -443,7 +456,7 @@ static integer c__14 = 14;
     intstr_(id, idstr, (ftnlen)32);
     frmnam_(id, frname, (ftnlen)32);
     if (s_cmp(frname, " ", (ftnlen)32, (ftnlen)1) == 0) {
-	lnkini_(&c__20, pool);
+	lnkini_(&c__200, pool);
 	setmsg_("The Text Kernel (TK) frame with id-code # does not have a r"
 		"ecognized name. ", (ftnlen)75);
 	errint_("#", id, (ftnlen)1);
@@ -478,26 +491,26 @@ static integer c__14 = 14;
 /*        Just look up the rotation matrix and relative-to */
 /*        information from the local buffer. */
 
-	rot[0] = buffd[(i__1 = at * 9 - 9) < 180 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffd", i__1, "tkfram_", (ftnlen)506)];
-	rot[1] = buffd[(i__1 = at * 9 - 8) < 180 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffd", i__1, "tkfram_", (ftnlen)507)];
-	rot[2] = buffd[(i__1 = at * 9 - 7) < 180 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffd", i__1, "tkfram_", (ftnlen)508)];
-	rot[3] = buffd[(i__1 = at * 9 - 6) < 180 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffd", i__1, "tkfram_", (ftnlen)509)];
-	rot[4] = buffd[(i__1 = at * 9 - 5) < 180 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffd", i__1, "tkfram_", (ftnlen)510)];
-	rot[5] = buffd[(i__1 = at * 9 - 4) < 180 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffd", i__1, "tkfram_", (ftnlen)511)];
-	rot[6] = buffd[(i__1 = at * 9 - 3) < 180 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffd", i__1, "tkfram_", (ftnlen)512)];
-	rot[7] = buffd[(i__1 = at * 9 - 2) < 180 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffd", i__1, "tkfram_", (ftnlen)513)];
-	rot[8] = buffd[(i__1 = at * 9 - 1) < 180 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffd", i__1, "tkfram_", (ftnlen)514)];
-	*frame = buffi[(i__1 = at - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffi", i__1, "tkfram_", (ftnlen)516)];
+	rot[0] = buffd[(i__1 = at * 9 - 9) < 1800 && 0 <= i__1 ? i__1 : 
+		s_rnge("buffd", i__1, "tkfram_", (ftnlen)519)];
+	rot[1] = buffd[(i__1 = at * 9 - 8) < 1800 && 0 <= i__1 ? i__1 : 
+		s_rnge("buffd", i__1, "tkfram_", (ftnlen)520)];
+	rot[2] = buffd[(i__1 = at * 9 - 7) < 1800 && 0 <= i__1 ? i__1 : 
+		s_rnge("buffd", i__1, "tkfram_", (ftnlen)521)];
+	rot[3] = buffd[(i__1 = at * 9 - 6) < 1800 && 0 <= i__1 ? i__1 : 
+		s_rnge("buffd", i__1, "tkfram_", (ftnlen)522)];
+	rot[4] = buffd[(i__1 = at * 9 - 5) < 1800 && 0 <= i__1 ? i__1 : 
+		s_rnge("buffd", i__1, "tkfram_", (ftnlen)523)];
+	rot[5] = buffd[(i__1 = at * 9 - 4) < 1800 && 0 <= i__1 ? i__1 : 
+		s_rnge("buffd", i__1, "tkfram_", (ftnlen)524)];
+	rot[6] = buffd[(i__1 = at * 9 - 3) < 1800 && 0 <= i__1 ? i__1 : 
+		s_rnge("buffd", i__1, "tkfram_", (ftnlen)525)];
+	rot[7] = buffd[(i__1 = at * 9 - 2) < 1800 && 0 <= i__1 ? i__1 : 
+		s_rnge("buffd", i__1, "tkfram_", (ftnlen)526)];
+	rot[8] = buffd[(i__1 = at * 9 - 1) < 1800 && 0 <= i__1 ? i__1 : 
+		s_rnge("buffd", i__1, "tkfram_", (ftnlen)527)];
+	*frame = buffi[(i__1 = at - 1) < 200 && 0 <= i__1 ? i__1 : s_rnge(
+		"buffi", i__1, "tkfram_", (ftnlen)529)];
     } else {
 
 /*        Determine how the frame is specified and what it */
@@ -528,13 +541,13 @@ static integer c__14 = 14;
 
 	for (i__ = 1; i__ <= 2; ++i__) {
 	    dtpool_(alt + (((i__1 = i__ - 1) < 14 && 0 <= i__1 ? i__1 : 
-		    s_rnge("alt", i__1, "tkfram_", (ftnlen)537)) << 5), found,
+		    s_rnge("alt", i__1, "tkfram_", (ftnlen)550)) << 5), found,
 		     &n, type__, (ftnlen)32, (ftnlen)1);
 	    if (*found) {
 		s_copy(item + (((i__1 = i__ - 1) < 14 && 0 <= i__1 ? i__1 : 
-			s_rnge("item", i__1, "tkfram_", (ftnlen)540)) << 5), 
+			s_rnge("item", i__1, "tkfram_", (ftnlen)553)) << 5), 
 			alt + (((i__3 = i__ - 1) < 14 && 0 <= i__3 ? i__3 : 
-			s_rnge("alt", i__3, "tkfram_", (ftnlen)540)) << 5), (
+			s_rnge("alt", i__3, "tkfram_", (ftnlen)553)) << 5), (
 			ftnlen)32, (ftnlen)32);
 	    }
 	}
@@ -546,7 +559,7 @@ static integer c__14 = 14;
 		ftnlen)32, (ftnlen)1, (ftnlen)1) || badkpv_("TKFRAM", item + 
 		32, "=", &c__1, &c__1, "C", (ftnlen)6, (ftnlen)32, (ftnlen)1, 
 		(ftnlen)1)) {
-	    lnkini_(&c__20, pool);
+	    lnkini_(&c__200, pool);
 	    *frame = 0;
 	    ident_(rot);
 	    chkout_("TKFRAM", (ftnlen)6);
@@ -563,7 +576,7 @@ static integer c__14 = 14;
 
 	namfrm_(name__, frame, (ftnlen)32);
 	if (*frame == 0) {
-	    lnkini_(&c__20, pool);
+	    lnkini_(&c__200, pool);
 	    setmsg_("The frame to which frame # is relatively defined is not"
 		    " recognized. The kernel pool specification of the relati"
 		    "ve frame is '#'.  This is not a recognized frame. ", (
@@ -571,6 +584,22 @@ static integer c__14 = 14;
 	    errint_("#", id, (ftnlen)1);
 	    errch_("#", name__, (ftnlen)1, (ftnlen)32);
 	    sigerr_("SPICE(BADFRAMESPEC)", (ftnlen)19);
+	    chkout_("TKFRAM", (ftnlen)6);
+	    return 0;
+	}
+
+/*        Make sure that the RELATIVE frame ID is distinct from the */
+/*        frame ID. If they are the same, SPICE will go into an */
+/*        indefinite loop. */
+
+	if (*frame == *id) {
+	    lnkini_(&c__200, pool);
+	    setmsg_("Bad fixed offset frame specification: the frame '#' (fr"
+		    "ame ID #) is defined relative to itself. SPICE cannot wo"
+		    "rk with such frames. ", (ftnlen)132);
+	    errch_("#", name__, (ftnlen)1, (ftnlen)32);
+	    errint_("#", id, (ftnlen)1);
+	    sigerr_("SPICE(BADFRAMESPEC2)", (ftnlen)20);
 	    chkout_("TKFRAM", (ftnlen)6);
 	    return 0;
 	}
@@ -602,7 +631,7 @@ static integer c__14 = 14;
 	    }
 	    if (badkpv_("TKFRAM", item + 64, "=", &c__9, &c__1, "N", (ftnlen)
 		    6, (ftnlen)32, (ftnlen)1, (ftnlen)1)) {
-		lnkini_(&c__20, pool);
+		lnkini_(&c__200, pool);
 		*frame = 0;
 		ident_(rot);
 		chkout_("TKFRAM", (ftnlen)6);
@@ -624,10 +653,10 @@ static integer c__14 = 14;
 /*           the sense of the second and third columns if necessary. */
 
 	    if (vdot_(&rot[3], &matrix[3]) < 0.) {
-		vsclip_(&c_b95, &rot[3]);
+		vsclip_(&c_b101, &rot[3]);
 	    }
 	    if (vdot_(&rot[6], &matrix[6]) < 0.) {
-		vsclip_(&c_b95, &rot[6]);
+		vsclip_(&c_b101, &rot[6]);
 	    }
 	} else if (s_cmp(spec, "ANGLES", (ftnlen)32, (ftnlen)6) == 0) {
 
@@ -666,13 +695,13 @@ static integer c__14 = 14;
 
 	    for (i__ = 3; i__ <= 5; ++i__) {
 		dtpool_(alt + (((i__1 = i__ - 1) < 14 && 0 <= i__1 ? i__1 : 
-			s_rnge("alt", i__1, "tkfram_", (ftnlen)668)) << 5), 
+			s_rnge("alt", i__1, "tkfram_", (ftnlen)703)) << 5), 
 			found, &n, type__, (ftnlen)32, (ftnlen)1);
 		if (*found) {
 		    s_copy(item + (((i__1 = i__ - 1) < 14 && 0 <= i__1 ? i__1 
-			    : s_rnge("item", i__1, "tkfram_", (ftnlen)671)) <<
+			    : s_rnge("item", i__1, "tkfram_", (ftnlen)706)) <<
 			     5), alt + (((i__3 = i__ - 1) < 14 && 0 <= i__3 ? 
-			    i__3 : s_rnge("alt", i__3, "tkfram_", (ftnlen)671)
+			    i__3 : s_rnge("alt", i__3, "tkfram_", (ftnlen)706)
 			    ) << 5), (ftnlen)32, (ftnlen)32);
 		}
 	    }
@@ -680,7 +709,7 @@ static integer c__14 = 14;
 		    6, (ftnlen)32, (ftnlen)1, (ftnlen)1) || badkpv_("TKFRAM", 
 		    item + 96, "=", &c__3, &c__1, "N", (ftnlen)6, (ftnlen)32, 
 		    (ftnlen)1, (ftnlen)1)) {
-		lnkini_(&c__20, pool);
+		lnkini_(&c__200, pool);
 		*frame = 0;
 		ident_(rot);
 		chkout_("TKFRAM", (ftnlen)6);
@@ -696,13 +725,13 @@ static integer c__14 = 14;
 
 	    for (i__ = 1; i__ <= 3; ++i__) {
 		convrt_(&angles[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : 
-			s_rnge("angles", i__1, "tkfram_", (ftnlen)700)], 
+			s_rnge("angles", i__1, "tkfram_", (ftnlen)735)], 
 			units, "RADIANS", &tempd, (ftnlen)32, (ftnlen)7);
 		angles[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge(
-			"angles", i__1, "tkfram_", (ftnlen)701)] = tempd;
+			"angles", i__1, "tkfram_", (ftnlen)736)] = tempd;
 	    }
 	    if (failed_()) {
-		lnkini_(&c__20, pool);
+		lnkini_(&c__200, pool);
 		*frame = 0;
 		ident_(rot);
 		chkout_("TKFRAM", (ftnlen)6);
@@ -734,7 +763,7 @@ static integer c__14 = 14;
 	    }
 	    if (badkpv_("TKFRAM", item + 64, "=", &c__4, &c__1, "N", (ftnlen)
 		    6, (ftnlen)32, (ftnlen)1, (ftnlen)1)) {
-		lnkini_(&c__20, pool);
+		lnkini_(&c__200, pool);
 		*frame = 0;
 		ident_(rot);
 		chkout_("TKFRAM", (ftnlen)6);
@@ -753,7 +782,7 @@ static integer c__14 = 14;
 /*           so.  Also note that perhaps the user needs to upgrade */
 /*           the toolkit. */
 
-	    lnkini_(&c__20, pool);
+	    lnkini_(&c__200, pool);
 	    setmsg_("The frame specification \"# = '#'\" is not one of the r"
 		    "econized means of specifying a text-kernel constant offs"
 		    "et frame (as of version # of the routine TKFRAM). This m"
@@ -770,26 +799,26 @@ static integer c__14 = 14;
 
 /*        Buffer the identifier, relative frame and rotation matrix. */
 
-	buffd[(i__1 = at * 9 - 9) < 180 && 0 <= i__1 ? i__1 : s_rnge("buffd", 
-		i__1, "tkfram_", (ftnlen)784)] = rot[0];
-	buffd[(i__1 = at * 9 - 8) < 180 && 0 <= i__1 ? i__1 : s_rnge("buffd", 
-		i__1, "tkfram_", (ftnlen)785)] = rot[1];
-	buffd[(i__1 = at * 9 - 7) < 180 && 0 <= i__1 ? i__1 : s_rnge("buffd", 
-		i__1, "tkfram_", (ftnlen)786)] = rot[2];
-	buffd[(i__1 = at * 9 - 6) < 180 && 0 <= i__1 ? i__1 : s_rnge("buffd", 
-		i__1, "tkfram_", (ftnlen)787)] = rot[3];
-	buffd[(i__1 = at * 9 - 5) < 180 && 0 <= i__1 ? i__1 : s_rnge("buffd", 
-		i__1, "tkfram_", (ftnlen)788)] = rot[4];
-	buffd[(i__1 = at * 9 - 4) < 180 && 0 <= i__1 ? i__1 : s_rnge("buffd", 
-		i__1, "tkfram_", (ftnlen)789)] = rot[5];
-	buffd[(i__1 = at * 9 - 3) < 180 && 0 <= i__1 ? i__1 : s_rnge("buffd", 
-		i__1, "tkfram_", (ftnlen)790)] = rot[6];
-	buffd[(i__1 = at * 9 - 2) < 180 && 0 <= i__1 ? i__1 : s_rnge("buffd", 
-		i__1, "tkfram_", (ftnlen)791)] = rot[7];
-	buffd[(i__1 = at * 9 - 1) < 180 && 0 <= i__1 ? i__1 : s_rnge("buffd", 
-		i__1, "tkfram_", (ftnlen)792)] = rot[8];
-	buffi[(i__1 = at - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge("buffi", i__1,
-		 "tkfram_", (ftnlen)794)] = *frame;
+	buffd[(i__1 = at * 9 - 9) < 1800 && 0 <= i__1 ? i__1 : s_rnge("buffd",
+		 i__1, "tkfram_", (ftnlen)819)] = rot[0];
+	buffd[(i__1 = at * 9 - 8) < 1800 && 0 <= i__1 ? i__1 : s_rnge("buffd",
+		 i__1, "tkfram_", (ftnlen)820)] = rot[1];
+	buffd[(i__1 = at * 9 - 7) < 1800 && 0 <= i__1 ? i__1 : s_rnge("buffd",
+		 i__1, "tkfram_", (ftnlen)821)] = rot[2];
+	buffd[(i__1 = at * 9 - 6) < 1800 && 0 <= i__1 ? i__1 : s_rnge("buffd",
+		 i__1, "tkfram_", (ftnlen)822)] = rot[3];
+	buffd[(i__1 = at * 9 - 5) < 1800 && 0 <= i__1 ? i__1 : s_rnge("buffd",
+		 i__1, "tkfram_", (ftnlen)823)] = rot[4];
+	buffd[(i__1 = at * 9 - 4) < 1800 && 0 <= i__1 ? i__1 : s_rnge("buffd",
+		 i__1, "tkfram_", (ftnlen)824)] = rot[5];
+	buffd[(i__1 = at * 9 - 3) < 1800 && 0 <= i__1 ? i__1 : s_rnge("buffd",
+		 i__1, "tkfram_", (ftnlen)825)] = rot[6];
+	buffd[(i__1 = at * 9 - 2) < 1800 && 0 <= i__1 ? i__1 : s_rnge("buffd",
+		 i__1, "tkfram_", (ftnlen)826)] = rot[7];
+	buffd[(i__1 = at * 9 - 1) < 1800 && 0 <= i__1 ? i__1 : s_rnge("buffd",
+		 i__1, "tkfram_", (ftnlen)827)] = rot[8];
+	buffi[(i__1 = at - 1) < 200 && 0 <= i__1 ? i__1 : s_rnge("buffi", 
+		i__1, "tkfram_", (ftnlen)829)] = *frame;
 
 /*        If these were not previously buffered, we need to set */
 /*        a watch on the various items that might be used to define */
@@ -862,7 +891,7 @@ static integer c__14 = 14;
 	}
     }
     if (failed_()) {
-	lnkini_(&c__20, pool);
+	lnkini_(&c__200, pool);
 	chkout_("TKFRAM", (ftnlen)6);
 	return 0;
     }

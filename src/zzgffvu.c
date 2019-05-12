@@ -12,9 +12,10 @@ static integer c__3 = 3;
 static integer c__20000 = 20000;
 static integer c__9 = 9;
 static integer c__4 = 4;
+static integer c__0 = 0;
 static integer c__10000 = 10000;
-static doublereal c_b98 = 1.;
-static doublereal c_b128 = 2.;
+static doublereal c_b100 = 1.;
+static doublereal c_b130 = 2.;
 
 /* $Procedure ZZGFFVU ( GF, instrument FOV utilities ) */
 /* Subroutine */ int zzgffvu_0_(int n__, char *inst, char *tshape, doublereal 
@@ -91,13 +92,13 @@ static doublereal c_b128 = 2.;
     extern doublereal halfpi_(void);
     extern /* Subroutine */ int stelab_(doublereal *, doublereal *, 
 	    doublereal *);
-    doublereal fovrad[3], fvlimb[9];
+    doublereal fovrad[3];
     static char svinam[36];
     extern logical return_(void);
     static char svifrm[32], svishp[9], svtfrm[32], svtnam[36], svtshp[9], 
 	    svcorr[5];
-    doublereal ctrext, ettarg, insmat[9]	/* was [3][3] */, obspos[3], 
-	    semipt[6]	/* was [3][2] */;
+    doublereal ctrext, ettarg, fvlimb[9], insmat[9]	/* was [3][3] */, 
+	    obspos[3], semipt[6]	/* was [3][2] */;
     static doublereal svarad, svbnds[30000]	/* was [3][10000] */, svedct[
 	    3], svfaxi[3], svfovm[9]	/* was [3][3] */, svfpol[20000]	/* 
 	    was [2][10000] */, svfsmx[9]	/* was [3][3] */, svfvct[3], 
@@ -110,22 +111,22 @@ static doublereal c_b128 = 2.;
     static logical svuray, svustl, svxmit, svxtrg;
     extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
 	    ftnlen), setmsg_(char *, ftnlen), namfrm_(char *, integer *, 
-	    ftnlen), frinfo_(integer *, integer *, integer *, integer *, 
-	    logical *);
+	    ftnlen);
     doublereal dir[3];
-    extern /* Subroutine */ int errint_(char *, integer *, ftnlen), getfov_(
-	    integer *, integer *, char *, char *, doublereal *, integer *, 
-	    doublereal *, ftnlen, ftnlen), inrypl_(doublereal *, doublereal *,
-	     doublereal *, integer *, doublereal *), spkezp_(integer *, 
-	    doublereal *, char *, char *, integer *, doublereal *, doublereal 
-	    *, ftnlen, ftnlen), pxform_(char *, char *, doublereal *, 
-	    doublereal *, ftnlen, ftnlen), vminus_(doublereal *, doublereal *)
-	    ;
+    extern /* Subroutine */ int frinfo_(integer *, integer *, integer *, 
+	    integer *, logical *), errint_(char *, integer *, ftnlen), 
+	    cmprss_(char *, integer *, char *, char *, ftnlen, ftnlen, ftnlen)
+	    , getfov_(integer *, integer *, char *, char *, doublereal *, 
+	    integer *, doublereal *, ftnlen, ftnlen), inrypl_(doublereal *, 
+	    doublereal *, doublereal *, integer *, doublereal *), spkezp_(
+	    integer *, doublereal *, char *, char *, integer *, doublereal *, 
+	    doublereal *, ftnlen, ftnlen);
     extern doublereal dpr_(void);
     doublereal sep;
-    extern /* Subroutine */ int spkssb_(integer *, doublereal *, char *, 
-	    doublereal *, ftnlen), stlabx_(doublereal *, doublereal *, 
-	    doublereal *);
+    extern /* Subroutine */ int pxform_(char *, char *, doublereal *, 
+	    doublereal *, ftnlen, ftnlen), vminus_(doublereal *, doublereal *)
+	    , spkssb_(integer *, doublereal *, char *, doublereal *, ftnlen), 
+	    stlabx_(doublereal *, doublereal *, doublereal *);
     doublereal pos[3];
     extern /* Subroutine */ int mxm_(doublereal *, doublereal *, doublereal *)
 	    , mxv_(doublereal *, doublereal *, doublereal *);
@@ -448,7 +449,21 @@ static doublereal c_b128 = 2.;
 
 /* $ Version */
 
-/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+/* -    SPICELIB Version 2.0.0  29-NOV-2016 (NJB) */
+
+/*        Upgraded to support surfaces represented by DSKs. */
+
+/*        Bug fix: removed declaration of NVRMAX parameter. */
+
+/* -    SPICELIB Version 1.3.0, 01-OCT-2011 (NJB) */
+
+/*       Added NWILUM parameter. */
+
+/* -    SPICELIB Version 1.2.0, 14-SEP-2010 (EDW) */
+
+/*       Added NWPA parameter. */
+
+/* -    SPICELIB Version 1.1.0, 08-SEP-2009 (EDW) */
 
 /*       Added NWRR parameter. */
 /*       Added NWUDS parameter. */
@@ -498,6 +513,14 @@ static doublereal c_b128 = 2.;
 /*     count using NWUDS. */
 
 
+/*     Callers of GFPA should declare their workspace window */
+/*     count using NWPA. */
+
+
+/*     Callers of GFILUM should declare their workspace window */
+/*     count using NWILUM. */
+
+
 /*     ADDWIN is a parameter used to expand each interval of the search */
 /*     (confinement) window by a small amount at both ends in order to */
 /*     accommodate searches using equality constraints. The loaded */
@@ -505,9 +528,6 @@ static doublereal c_b128 = 2.;
 
 
 /*     FRMNLN is a string length for frame names. */
-
-
-/*     NVRMAX is the maximum number of vertices if FOV type is "POLYGON" */
 
 
 /*     FOVTLN -- maximum length for FOV string. */
@@ -675,6 +695,19 @@ static doublereal c_b128 = 2.;
 /*     E.D. Wright    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.0, 04-JUN-2013 (EDW) */
+
+/*        Edit to ZZGFFVIN: */
+
+/*        ABCORR now stripped of all spaces before saving. */
+/*        Specifically, the call */
+
+/*        CALL LJUST ( ABCORR, SVCORR ) */
+
+/*        replaced with */
+
+/*        CALL CMPRSS ( ' ', 0, ABCORR, SVCORR ) */
 
 /* -    SPICELIB Version 1.0.0, 05-MAR-2009 (NJB) (LSE) (WLT) (EDW) */
 
@@ -1105,6 +1138,17 @@ L_zzgffvin:
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.1.0, 04-JUN-2013 (EDW) */
+
+/*        ABCORR now stripped of all spaces before saving. */
+/*        Specifically, the call */
+
+/*        CALL LJUST ( ABCORR, SVCORR ) */
+
+/*        replaced with */
+
+/*        CALL CMPRSS ( ' ', 0, ABCORR, SVCORR ) */
+
 /* -    SPICELIB Version 1.0.0, 05-MAR-2009 (NJB) (LSE) (WLT) (EDW) */
 
 /* -& */
@@ -1336,10 +1380,10 @@ L_zzgffvin:
 	}
     }
 
-/*     Save a left-justified, upper case version of the aberration */
-/*     correction specifier. */
+/*     Remove all spaces from ABCORR then convert to uppercase. Save */
+/*     this version of the aberration correction specifier. */
 
-    ljust_(abcorr, svcorr, abcorr_len, (ftnlen)5);
+    cmprss_(" ", &c__0, abcorr, svcorr, (ftnlen)1, abcorr_len, (ftnlen)5);
     ucase_(svcorr, svcorr, (ftnlen)5, (ftnlen)5);
 
 /*     Process the target body's radii, if applicable. */
@@ -1476,7 +1520,7 @@ L_zzgffvin:
 /* Computing MAX */
 	d__1 = svarad, d__2 = vsep_(&svbnds[(i__2 = i__ * 3 - 3) < 30000 && 0 
 		<= i__2 ? i__2 : s_rnge("svbnds", i__2, "zzgffvu_", (ftnlen)
-		1243)], svfaxi);
+		1267)], svfaxi);
 	svarad = max(d__1,d__2);
     }
 
@@ -1510,7 +1554,7 @@ L_zzgffvin:
 /*     the observer. The plane is normal to the FOV axis, at distance 1 */
 /*     unit from the observer. */
 
-    nvc2pl_(svfaxi, &c_b98, svplan);
+    nvc2pl_(svfaxi, &c_b100, svplan);
 
 /*     Find the point on the plane closest to the origin. This is */
 /*     the center of the FOV. */
@@ -1542,10 +1586,10 @@ L_zzgffvin:
 
 	for (i__ = 1; i__ <= 2; ++i__) {
 	    inrypl_(svorig, &svbnds[(i__1 = i__ * 3 - 3) < 30000 && 0 <= i__1 
-		    ? i__1 : s_rnge("svbnds", i__1, "zzgffvu_", (ftnlen)1315)]
+		    ? i__1 : s_rnge("svbnds", i__1, "zzgffvu_", (ftnlen)1339)]
 		    , svplan, &nxpts, &semipt[(i__2 = i__ * 3 - 3) < 6 && 0 <=
 		     i__2 ? i__2 : s_rnge("semipt", i__2, "zzgffvu_", (ftnlen)
-		    1315)]);
+		    1339)]);
 	    if (nxpts != 1) {
 		setmsg_("Error creating FOV semi-axis vectors, NXPTS = #. Th"
 			"is may indicate an error in the IK parameters for #.",
@@ -1560,15 +1604,15 @@ L_zzgffvin:
 /*           Compute and find the length of each semi-axis vector. */
 
 	    vsub_(&semipt[(i__1 = i__ * 3 - 3) < 6 && 0 <= i__1 ? i__1 : 
-		    s_rnge("semipt", i__1, "zzgffvu_", (ftnlen)1335)], svfvct,
+		    s_rnge("semipt", i__1, "zzgffvu_", (ftnlen)1359)], svfvct,
 		     &svsemi[(i__2 = i__ * 3 - 3) < 6 && 0 <= i__2 ? i__2 : 
-		    s_rnge("svsemi", i__2, "zzgffvu_", (ftnlen)1335)]);
+		    s_rnge("svsemi", i__2, "zzgffvu_", (ftnlen)1359)]);
 	    svxmag[(i__1 = i__ - 1) < 2 && 0 <= i__1 ? i__1 : s_rnge("svxmag",
-		     i__1, "zzgffvu_", (ftnlen)1337)] = vnorm_(&svsemi[(i__2 =
+		     i__1, "zzgffvu_", (ftnlen)1361)] = vnorm_(&svsemi[(i__2 =
 		     i__ * 3 - 3) < 6 && 0 <= i__2 ? i__2 : s_rnge("svsemi", 
-		    i__2, "zzgffvu_", (ftnlen)1337)]);
+		    i__2, "zzgffvu_", (ftnlen)1361)]);
 	    if (svxmag[(i__1 = i__ - 1) < 2 && 0 <= i__1 ? i__1 : s_rnge(
-		    "svxmag", i__1, "zzgffvu_", (ftnlen)1339)] == 0.) {
+		    "svxmag", i__1, "zzgffvu_", (ftnlen)1363)] == 0.) {
 		setmsg_("FOV semi-axis #* for @ has zero length.", (ftnlen)39)
 			;
 		errint_("*", &i__, (ftnlen)1);
@@ -1622,7 +1666,7 @@ L_zzgffvin:
 /*        in the direction from SVFVCT toward SEMIPT(*,1) will have this */
 /*        length. */
 
-	fovrad[2] = svxmag[0] * sqrt(pow_dd(svxmag, &c_b128) + 1.);
+	fovrad[2] = svxmag[0] * sqrt(pow_dd(svxmag, &c_b130) + 1.);
 	fovrad[0] = fovrad[2];
 
 /*        Compute the corresponding columns of the FOV semi-axis matrix. */
@@ -1681,17 +1725,17 @@ L_zzgffvin:
 	frame_(z__, x, y);
 	for (i__ = 1; i__ <= 3; ++i__) {
 	    svfovm[(i__1 = i__ * 3 - 3) < 9 && 0 <= i__1 ? i__1 : s_rnge(
-		    "svfovm", i__1, "zzgffvu_", (ftnlen)1466)] = x[(i__2 = 
+		    "svfovm", i__1, "zzgffvu_", (ftnlen)1490)] = x[(i__2 = 
 		    i__ - 1) < 3 && 0 <= i__2 ? i__2 : s_rnge("x", i__2, 
-		    "zzgffvu_", (ftnlen)1466)];
+		    "zzgffvu_", (ftnlen)1490)];
 	    svfovm[(i__1 = i__ * 3 - 2) < 9 && 0 <= i__1 ? i__1 : s_rnge(
-		    "svfovm", i__1, "zzgffvu_", (ftnlen)1467)] = y[(i__2 = 
+		    "svfovm", i__1, "zzgffvu_", (ftnlen)1491)] = y[(i__2 = 
 		    i__ - 1) < 3 && 0 <= i__2 ? i__2 : s_rnge("y", i__2, 
-		    "zzgffvu_", (ftnlen)1467)];
+		    "zzgffvu_", (ftnlen)1491)];
 	    svfovm[(i__1 = i__ * 3 - 1) < 9 && 0 <= i__1 ? i__1 : s_rnge(
-		    "svfovm", i__1, "zzgffvu_", (ftnlen)1468)] = z__[(i__2 = 
+		    "svfovm", i__1, "zzgffvu_", (ftnlen)1492)] = z__[(i__2 = 
 		    i__ - 1) < 3 && 0 <= i__2 ? i__2 : s_rnge("z", i__2, 
-		    "zzgffvu_", (ftnlen)1468)];
+		    "zzgffvu_", (ftnlen)1492)];
 	}
 
 /*        Compute the intersections of the FOV boundary vectors with the */
@@ -1703,7 +1747,7 @@ L_zzgffvin:
 	i__1 = svnvrt;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    inrypl_(svorig, &svbnds[(i__2 = i__ * 3 - 3) < 30000 && 0 <= i__2 
-		    ? i__2 : s_rnge("svbnds", i__2, "zzgffvu_", (ftnlen)1480)]
+		    ? i__2 : s_rnge("svbnds", i__2, "zzgffvu_", (ftnlen)1504)]
 		    , svplan, &nxpts, xpt);
 	    if (nxpts != 1) {
 		setmsg_("Error finding FOV plane intercept of FOV boundary v"
@@ -1719,10 +1763,10 @@ L_zzgffvin:
 	    vsub_(xpt, svfvct, vtemp);
 	    mxv_(svfovm, vtemp, vtemp2);
 	    svfpol[(i__2 = (i__ << 1) - 2) < 20000 && 0 <= i__2 ? i__2 : 
-		    s_rnge("svfpol", i__2, "zzgffvu_", (ftnlen)1501)] = 
+		    s_rnge("svfpol", i__2, "zzgffvu_", (ftnlen)1525)] = 
 		    vtemp2[0];
 	    svfpol[(i__2 = (i__ << 1) - 1) < 20000 && 0 <= i__2 ? i__2 : 
-		    s_rnge("svfpol", i__2, "zzgffvu_", (ftnlen)1502)] = 
+		    s_rnge("svfpol", i__2, "zzgffvu_", (ftnlen)1526)] = 
 		    vtemp2[1];
 	}
     }
@@ -1934,9 +1978,9 @@ L_zzgffvst:
 	    vequ_(vtemp, m1);
 	    for (i__ = 1; i__ <= 3; ++i__) {
 		mxv_(insmat, &m1[(i__1 = i__ * 3 - 3) < 9 && 0 <= i__1 ? i__1 
-			: s_rnge("m1", i__1, "zzgffvu_", (ftnlen)1733)], &m2[(
+			: s_rnge("m1", i__1, "zzgffvu_", (ftnlen)1757)], &m2[(
 			i__2 = i__ * 3 - 3) < 9 && 0 <= i__2 ? i__2 : s_rnge(
-			"m2", i__2, "zzgffvu_", (ftnlen)1733)]);
+			"m2", i__2, "zzgffvu_", (ftnlen)1757)]);
 	    }
 	    cgv2el_(m2, &m2[3], &m2[6], fvlimb);
 
@@ -1969,11 +2013,11 @@ L_zzgffvst:
 
 	    for (i__ = 1; i__ <= 3; ++i__) {
 		vscl_(&svtrad[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : 
-			s_rnge("svtrad", i__1, "zzgffvu_", (ftnlen)1771)], &
+			s_rnge("svtrad", i__1, "zzgffvu_", (ftnlen)1795)], &
 			insmat[(i__2 = i__ * 3 - 3) < 9 && 0 <= i__2 ? i__2 : 
-			s_rnge("insmat", i__2, "zzgffvu_", (ftnlen)1771)], &
+			s_rnge("insmat", i__2, "zzgffvu_", (ftnlen)1795)], &
 			trgsmx[(i__3 = i__ * 3 - 3) < 9 && 0 <= i__3 ? i__3 : 
-			s_rnge("trgsmx", i__3, "zzgffvu_", (ftnlen)1771)]);
+			s_rnge("trgsmx", i__3, "zzgffvu_", (ftnlen)1795)]);
 	    }
 	    ocstat = zzocced_(svorig, svedct, svfsmx, trgctr, trgsmx);
 
@@ -2170,16 +2214,16 @@ L_zzgffvst:
 		    for (i__ = 1; i__ <= 2; ++i__) {
 			coord[(i__1 = i__ - 1) < 2 && 0 <= i__1 ? i__1 : 
 				s_rnge("coord", i__1, "zzgffvu_", (ftnlen)
-				2000)] = vdot_(fovpt, &svsemi[(i__2 = i__ * 3 
+				2024)] = vdot_(fovpt, &svsemi[(i__2 = i__ * 3 
 				- 3) < 6 && 0 <= i__2 ? i__2 : s_rnge("svsemi"
-				, i__2, "zzgffvu_", (ftnlen)2000)]) / svxmag[(
+				, i__2, "zzgffvu_", (ftnlen)2024)]) / svxmag[(
 				i__3 = i__ - 1) < 2 && 0 <= i__3 ? i__3 : 
 				s_rnge("svxmag", i__3, "zzgffvu_", (ftnlen)
-				2000)];
+				2024)];
 		    }
 		    d__1 = coord[0] / svxmag[0];
 		    d__2 = coord[1] / svxmag[1];
-		    l = pow_dd(&d__1, &c_b128) + pow_dd(&d__2, &c_b128);
+		    l = pow_dd(&d__1, &c_b130) + pow_dd(&d__2, &c_b130);
 
 /*                 The target is visible if FOVPT is inside the FOV */
 /*                 ellipse; this condition is indicated by L <= 1. */

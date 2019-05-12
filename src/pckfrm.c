@@ -10,7 +10,7 @@
 static integer c__2 = 2;
 static integer c__6 = 6;
 
-/* $Procedure      PCKFRM ( PCK reference frame class ID set ) */
+/* $Procedure PCKFRM ( PCK, get reference frame class ID set ) */
 /* Subroutine */ int pckfrm_(char *pck, integer *ids, ftnlen pck_len)
 {
     /* Builtin functions */
@@ -307,6 +307,10 @@ static integer c__6 = 6;
 /*     N.J. Bachman   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1, 03-JAN-2014 (EDW) */
+
+/*        Minor edits to Procedure; clean trailing whitespace. */
 
 /* -    SPICELIB Version 1.0.0, 01-DEC-2007 (NJB) */
 

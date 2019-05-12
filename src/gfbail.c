@@ -5,7 +5,7 @@
 
 #include "f2c.h"
 
-/* $Procedure   GFBAIL ( Bailout ) */
+/* $Procedure GFBAIL ( GF, default bailout function ) */
 logical gfbail_(void)
 {
     /* System generated locals */
@@ -51,6 +51,9 @@ logical gfbail_(void)
 /*     UTILITY */
 
 /* $ Declarations */
+
+/*     None. */
+
 /* $ Brief_I/O */
 
 /*     This function always returns the value .FALSE. */
@@ -200,6 +203,10 @@ logical gfbail_(void)
 /*     E.D. Wright    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1  23-JUN-2010 (EDW) */
+
+/*        Minor edit to Declarations for correct header format. */
 
 /* -    SPICELIB Version 1.0.0  05-MAR-2009 (NJB) (LSE) (EDW) */
 

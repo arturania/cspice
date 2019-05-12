@@ -7,12 +7,12 @@
 
 /* Table of constant values */
 
-static integer c__713 = 713;
+static integer c__773 = 773;
 static integer c__1 = 1;
 
 /* $Procedure ZZBODTRN ( Private --- Body name and code translation ) */
 /* Subroutine */ int zzbodtrn_0_(int n__, char *name__, integer *code, 
-	logical *found, ftnlen name_len)
+	logical *found, integer *usrctr, logical *update, ftnlen name_len)
 {
     /* Initialized data */
 
@@ -20,6 +20,7 @@ static integer c__1 = 1;
     static logical first = TRUE_;
     static logical extker = FALSE_;
     static logical nodata = TRUE_;
+    static integer nwatch = 2;
     static char wnames[32*2] = "NAIF_BODY_NAME                  " "NAIF_BODY"
 	    "_CODE                  ";
 
@@ -32,40 +33,42 @@ static integer c__1 = 1;
     integer s_cmp(char *, char *, ftnlen, ftnlen);
 
     /* Local variables */
-    extern /* Subroutine */ int zzbodget_(integer *, char *, char *, integer *
-	    , integer *, ftnlen, ftnlen), zzbodini_(char *, char *, integer *,
-	     integer *, integer *, integer *, integer *, ftnlen, ftnlen), 
-	    zzbodker_(char *, char *, integer *, integer *, integer *, 
-	    integer *, integer *, logical *, ftnlen, ftnlen);
+    extern /* Subroutine */ int zzhscchk_(integer *, integer *, char *, char *
+	    , integer *, ftnlen, ftnlen), zzbodget_(integer *, char *, char *,
+	     integer *, integer *, ftnlen, ftnlen), zzbodini_(char *, char *, 
+	    integer *, integer *, integer *, integer *, integer *, char *, 
+	    integer *, integer *, integer *, integer *, integer *, ftnlen, 
+	    ftnlen, ftnlen), zzbodker_(char *, char *, integer *, integer *, 
+	    logical *, integer *, integer *, char *, integer *, integer *, 
+	    integer *, integer *, integer *, ftnlen, ftnlen, ftnlen), 
+	    zzhsichk_(integer *, integer *, integer *, integer *, integer *), 
+	    zzctrchk_(integer *, integer *, logical *), zzctrinc_(integer *), 
+	    zzctrsin_(integer *), zzcvpool_(char *, integer *, logical *, 
+	    ftnlen), zzctruin_(integer *);
     static integer i__, j;
-    extern /* Subroutine */ int chkin_(char *, ftnlen), ucase_(char *, char *,
-	     ftnlen, ftnlen), errch_(char *, char *, ftnlen, ftnlen);
+    extern /* Subroutine */ int chkin_(char *, ftnlen), errch_(char *, char *,
+	     ftnlen, ftnlen);
     static integer index;
-    extern /* Subroutine */ int ljust_(char *, char *, ftnlen, ftnlen);
     extern logical failed_(void);
-    static integer defcod[713], defocd[713];
-    static char defnam[36*713];
-    extern integer bschoc_(char *, integer *, char *, integer *, ftnlen, 
-	    ftnlen), bschoi_(integer *, integer *, integer *, integer *);
-    static integer kercod[2000], kerocd[2000], codidx;
-    static char defnor[36*713], kernam[36*2000];
-    static integer defonr[713];
-    static logical update;
-    static integer defsiz, nwatch, defosz;
-    static char tmpnam[36];
+    static integer defcod[773];
+    static char defnam[36*773];
+    static integer didids[773], dididx[773], kercod[14983], kidids[14983], 
+	    codidx, didpol[779], kididx[14983];
+    static char defnor[36*773], kernam[36*14983];
+    static integer dnmidx[773], defsiz, didlst[773], kidpol[14989], dnmpol[
+	    779], knmidx[14983], kidlst[14983];
+    static char dnmnms[36*773], tmpnam[36];
+    static logical lupdte;
+    static char kernor[36*14983];
+    static integer dnmlst[773], knmpol[14989];
+    static char knmnms[36*14983];
+    static integer subctr[2], kersiz, knmlst[14983], pulctr[2];
     extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
-	    ftnlen);
-    static char kernor[36*2000];
-    static integer keronr[2000];
-    extern /* Subroutine */ int cvpool_(char *, logical *, ftnlen), setmsg_(
-	    char *, ftnlen), errint_(char *, integer *, ftnlen);
-    static integer kersiz;
-    extern /* Subroutine */ int cmprss_(char *, integer *, char *, char *, 
-	    ftnlen, ftnlen, ftnlen);
-    static integer kerosz;
+	    ftnlen), ljucrs_(integer *, char *, char *, ftnlen, ftnlen), 
+	    setmsg_(char *, ftnlen);
     extern logical return_(void);
-    extern /* Subroutine */ int swpool_(char *, integer *, char *, ftnlen, 
-	    ftnlen);
+    extern /* Subroutine */ int errint_(char *, integer *, ftnlen), swpool_(
+	    char *, integer *, char *, ftnlen, ftnlen);
 
 /* $ Abstract */
 
@@ -141,22 +144,53 @@ static integer c__1 = 1;
 /*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
 /*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
 
+/* $ Parameters */
+
+/*     MAXL        is the maximum length of a body name. */
+
+/*     MAXP        is the maximum number of additional names that may */
+/*                 be added via the ZZBODDEF interface. */
+
+/*     NPERM       is the count of the mapping assignments built into */
+/*                 SPICE. */
+
+/*     MAXE        is the size of the lists and hashes storing combined */
+/*                 built-in and ZZBODDEF-defined name/ID mappings. To */
+/*                 ensure efficient hashing this size is the set to the */
+/*                 first prime number greater than ( MAXP + NPERM ). */
+
+/*     NROOM       is the size of the lists and hashes storing the */
+/*                 POOL-defined name/ID mappings. To ensure efficient */
+/*                 hashing and to provide the ability to store nearly as */
+/*                 many names as can fit in the POOL, this size is */
+/*                 set to the first prime number less than MAXLIN */
+/*                 defined in the POOL umbrella routine. */
+
 /* $ Required_Reading */
 
 /*     naif_ids.req */
 
 /* $ Keywords */
 
-/*     Body mappings. */
+/*     BODY */
+/*     CONVERSION */
 
 /* $ Author_and_Institution */
 
-/*     E.D. Wright (JPL) */
+/*     B.V. Semenov (JPL) */
+/*     E.D. Wright  (JPL) */
 
 /* $ Version */
 
-/*     SPICELIB 1.0.0 Thu May 20 07:57:58 2010 (EDW) */
+/* -    SPICELIB Version 2.0.0, 04-APR-2017 (BVS)(EDW) */
 
+/*        Increased NROOM to 14983. Added a comment note explaining */
+/*        NROOM and MAXE */
+
+/* -    SPICELIB Version 1.0.0, 20-MAY-2010 (EDW) */
+
+/*        N0064 version with MAXP = 150, NPERM = 563, */
+/*        MAXE = MAXP + NPERM, and NROOM = 2000. */
 
 /*     A script generates this file. Do not edit by hand. */
 /*     Edit the creation script to modify the contents of */
@@ -166,7 +200,77 @@ static integer c__1 = 1;
 /*     Maximum size of a NAME string */
 
 
+/*     Maximum number of additional names that may be added via the */
+/*     ZZBODDEF interface. */
+
+
 /*     Count of default SPICE mapping assignments. */
+
+
+/*     Size of the lists and hashes storing the built-in and */
+/*     ZZBODDEF-defined name/ID mappings. To ensure efficient hashing */
+/*     this size is the set to the first prime number greater than */
+/*     ( MAXP + NPERM ). */
+
+
+/*     Size of the lists and hashes storing the POOL-defined name/ID */
+/*     mappings. To ensure efficient hashing and to provide the ability */
+/*     to store nearly as many names as can fit in the POOL, this size */
+/*     is set to the first prime number less than MAXLIN defined in */
+/*     the POOL umbrella routine. */
+
+/* $ Abstract */
+
+/*     This include file defines the dimension of the counter */
+/*     array used by various SPICE subsystems to uniquely identify */
+/*     changes in their states. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 29-JUL-2013 (BVS) */
+
+/* -& */
+
+/*     End of include file. */
 
 /* $ Brief_I/O */
 
@@ -175,8 +279,14 @@ static integer c__1 = 1;
 /*     NAME      I/O  ZZBODN2C, ZZBODDEF, ZZBODC2N */
 /*     CODE      I/O  ZZBODC2N, ZZBODDEF, ZZBODN2C */
 /*     FOUND      O   ZZBODN2C and ZZBODC2N */
+/*     USRCTR    I/O  ZZBCTRCK */
+/*     UPDATE     O   ZZBCTRCK */
 /*     MAXL       P   (All) */
 /*     MAXP       P   ZZBODDEF */
+/*     NPERM      P   (All) */
+/*     MAXE       P   (All) */
+/*     NROOM      P   (All) */
+/*     CTRSIZ     P   (All) */
 
 /* $ Detailed_Input */
 
@@ -188,12 +298,32 @@ static integer c__1 = 1;
 
 /* $ Parameters */
 
-/*     MAXL       is the maximum length of a body name.  Defined in */
-/*                the include file 'zzbodtrn.inc'. */
+/*     These parameters are defined in zzbodtrn.inc: */
 
-/*     MAXP       is the maximum number of additional names that may */
-/*                be added via the ZZBODDEF interface.  Defined in */
-/*                the include file 'zzbodtrn.inc'. */
+/*     MAXL        is the maximum length of a body name. */
+
+/*     MAXP        is the maximum number of additional names that may */
+/*                 be added via the ZZBODDEF interface. */
+
+/*     NPERM       is the count of the mapping assignments built into */
+/*                 SPICE. */
+
+/*     MAXE        is the size of the lists and hashes storing combined */
+/*                 built-in and ZZBODDEF-defined name/ID mappings. To */
+/*                 ensure efficient hashing this size is the set to the */
+/*                 first prime number greater than ( MAXP + NPERM ). */
+
+/*     NROOM       is the size of the lists and hashes storing the */
+/*                 POOL-defined name/ID mappings. To ensure efficient */
+/*                 hashing and to provide the ability to store nearly as */
+/*                 many names as can fit in the POOL, this size is */
+/*                 set to the first prime number less than MAXLIN */
+/*                 defined in the POOL umbrella routine. */
+
+/*     This parameter is defined in zzctr.inc: */
+
+/*     CTRSIZ     is the dimension of the counter array used by various */
+/*                SPICE subsystems to identify changes in their states. */
 
 /* $ Exceptions */
 
@@ -222,6 +352,9 @@ static integer c__1 = 1;
 
 /*        ZZBODRST      Reset the mappings provided via the ZZBODDEF */
 /*                      interface. */
+
+/*        ZZBCTRCK      Check and, if needed, update the caller's copy */
+/*                      of the ZZBODTRN state counter. */
 
 /*     ZZBODN2C and ZZBODC2N perform translations between body names */
 /*     and their corresponding integer codes used in SPK and PCK files */
@@ -448,6 +581,24 @@ static integer c__1 = 1;
 /*     K.S. Zukor     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 5.0.0, 16-SEP-2013 (BVS) */
+
+/*        Changed to use name- and ID-based hashes instead of the order */
+/*        arrays (see inline comments next to hash declarations for */
+/*        descriptions of the hashes). */
+
+/*        Changed to keep track of the POOL's and ZZBODTRN internal */
+/*        states using state counters. */
+
+/*        Changed to call ZZCVPOOL to bypass watcher look-ups if the */
+/*        POOL counter did not change. */
+
+/*        Added ZZBCTRCK routine to allow a caller to check the ZZBODTRN */
+/*        state counter against the caller's saved counter. */
+
+/*        Changed umbrella calling sequence to include USRCTR and UPDATE */
+/*        arguments. */
 
 /* -    SPICELIB Version 4.3.0, 05-MAR-2009 (NJB) */
 
@@ -741,7 +892,66 @@ static integer c__1 = 1;
 /*     Local Parameters */
 
 
-/*     Local Variables */
+/*     Length of watched POOL keywords. */
+
+
+/*     Lower bound of the built-in/BODDEF and kernel-defined hash */
+/*     collision list arrays. */
+
+
+/*     Local variables. */
+
+
+/*     DEFNAM, DEFNOR, and DEFCOD are the name, normalized name, and ID */
+/*     code lists storing built-in/BODDEF name-code mappings. DEFSIZ is */
+/*     the current size of the lists */
+
+
+/*     Name-based hash for built-in/BODDEF bodies. DNMLST, DNMPOL, and */
+/*     DNMNMS provide the index in DNMIDX which stores the index of the */
+/*     body name, normalized name, and ID in the arrays DEFNAM, DEFNOR, */
+/*     DEFCOD. */
+
+
+/*     ID-based hash for built-in/BODDEF bodies. DIDLST, DIDPOL, and */
+/*     DIDIDS provide the index in DIDIDX which stores the index of the */
+/*     body name, normalized name, and ID in the arrays DEFNAM, DEFNOR, */
+/*     DEFCOD. */
+
+
+/*     KERNAM, KERNOR, and KERCOD are the name, normalized name, and ID */
+/*     code lists storing kernel POOL name-code mappings. KERSIZ is the */
+/*     current size of the lists */
+
+
+/*     Name-based hash for kernel POOL bodies. KNMLST, KNMPOL, and */
+/*     KNMNMS provide the index in KNMIDX which stores the index of the */
+/*     body name, normalized name, and ID in the arrays KERNAM, KERNOR, */
+/*     KERCOD. */
+
+
+/*     ID-based hash for kernel POOL bodies. KIDLST, KIDPOL, and KIDIDS */
+/*     provide the index in KIDIDX which stores the index of the body */
+/*     name, normalized name, and ID in the arrays KERNAM, KERNOR, */
+/*     KERCOD. */
+
+
+/*     ZZBODTRN state counter and POOL state counter. */
+
+
+/*     Flag indicating whether the built-in list was altered by BODDEF */
+/*     calls. */
+
+
+/*     Flag indicating whether valid kernel POOL defined mappings */
+/*     are present in the KERNAM, KERNOR, and KERCOD lists. */
+
+
+/*     Flag indicating whether valid kernel POOL defined mappings */
+/*     were successfully fetched from the POOL. */
+
+
+/*     Other variables. */
 
 
 /*     Save all variables. */
@@ -749,12 +959,18 @@ static integer c__1 = 1;
 
 /*     Data statements. */
 
+    /* Parameter adjustments */
+    if (usrctr) {
+	}
+
+    /* Function Body */
     switch(n__) {
 	case 1: goto L_zzbodn2c;
 	case 2: goto L_zzbodc2n;
 	case 3: goto L_zzboddef;
 	case 4: goto L_zzbodkik;
 	case 5: goto L_zzbodrst;
+	case 6: goto L_zzbctrck;
 	}
 
 
@@ -915,6 +1131,16 @@ L_zzbodn2c:
 
 /* $ Version */
 
+/* -    SPICELIB Version 5.0.0, 16-SEP-2013 (BVS) */
+
+/*        Changed to use name-based hashes instead of the order arrays. */
+
+/*        Changed to keep track of the POOL's and ZZBODTRN internal */
+/*        states using state counters. */
+
+/*        Changed to call ZZCVPOOL to bypass watcher look-ups if the */
+/*        POOL counter did not change. */
+
 /* -    SPICELIB Version 4.1.0, 05-MAR-2009 (NJB) */
 
 /*        Bug fix: this routine now keeps track of whether its */
@@ -1003,61 +1229,72 @@ L_zzbodn2c:
 
     *found = FALSE_;
 
-/*     On the first pass through the umbrella's entry point, */
-/*     initialize the ZZBODDEF arrays and set the kernel pool */
-/*     watchers. */
+/*     On the first pass through this entry point, initialize the */
+/*     built-in arrays, set the kernel pool watchers, and state */
+/*     counters. */
 
     if (first) {
 
-/*        Populate the initial values of the DEFNAM, DEFNOR, */
-/*        and DEFCOD arrays from the built-in code list. */
+/*        Initialize counters. Set ZZBODTRN state counter, for */
+/*        which this umbrella is the owner, to subsystem values. Set */
+/*        POOL counter, for which this umbrella is the user, to user */
+/*        values. */
 
-	zzbodget_(&c__713, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
+	zzctrsin_(subctr);
+	zzctruin_(pulctr);
+
+/*        Populate the initial values of the DEFNAM, DEFNOR, and DEFCOD */
+/*        arrays from the built-in code-name list. */
+
+	zzbodget_(&c__773, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
 		ftnlen)36);
-
-/*        ZZBODGET may signal an error if the toolkit is improperly */
-/*        configured.  Check FAILED() and return if this occurs. */
-
 	if (failed_()) {
 	    chkout_("ZZBODN2C", (ftnlen)8);
 	    return 0;
 	}
 
-/*        Produce the initial order ZZBODDEF order vectors. */
+/*        Populate the initial built-in code-name hashes. */
 
-	zzbodini_(defnam, defnor, defcod, &defsiz, defonr, defocd, &defosz, (
+	zzbodini_(defnam, defnor, defcod, &defsiz, &c__773, dnmlst, dnmpol, 
+		dnmnms, dnmidx, didlst, didpol, didids, dididx, (ftnlen)36, (
 		ftnlen)36, (ftnlen)36);
+	if (failed_()) {
+	    chkout_("ZZBODN2C", (ftnlen)8);
+	    return 0;
+	}
 
 /*        Set up the watchers for the kernel pool name-code mapping */
 /*        variables. */
 
-	nwatch = 2;
 	swpool_("ZZBODTRN", &nwatch, wnames, (ftnlen)8, (ftnlen)32);
-
-/*        SWPOOL may signal an error if any difficulties arise in */
-/*        setting the watcher.  Check FAILED() and return if this */
-/*        occurs. */
-
 	if (failed_()) {
 	    chkout_("ZZBODN2C", (ftnlen)8);
 	    return 0;
 	}
 
-/*        Set FIRST to .FALSE., so this initialization block is */
-/*        not repeated. */
+/*        Set FIRST to .FALSE. to not repeat initialization again. */
 
 	first = FALSE_;
     }
 
-/*     Check for updates to the kernel pool variables.  Note: */
-/*     the first call to CVPOOL after initialization always returns */
-/*     .TRUE. for UPDATE.  This ensures that any initial */
-/*     assignments are properly processed. */
+/*     Check for updates to the kernel pool variables. Note: the first */
+/*     call to ZZCVPOOL after initialization always returns .TRUE. for */
+/*     LUPDTE.  This ensures that any initial assignments are properly */
+/*     processed. */
 
-    cvpool_("ZZBODTRN", &update, (ftnlen)8);
-    if (update || nodata) {
-	zzbodker_(kernam, kernor, kercod, &kersiz, keronr, kerocd, &kerosz, &
-		extker, (ftnlen)36, (ftnlen)36);
+    zzcvpool_("ZZBODTRN", pulctr, &lupdte, (ftnlen)8);
+    if (lupdte || nodata) {
+
+/*        Conservatively increment the ZZBODTRN state counter */
+/*        in expectation of successful update. */
+
+	zzctrinc_(subctr);
+
+/*        Update kernel pool mapping lists and hashes. */
+
+	zzbodker_(kernam, kernor, kercod, &kersiz, &extker, knmlst, knmpol, 
+		knmnms, knmidx, kidlst, kidpol, kidids, kididx, (ftnlen)36, (
+		ftnlen)36, (ftnlen)36);
 	if (failed_()) {
 	    nodata = TRUE_;
 	    chkout_("ZZBODN2C", (ftnlen)8);
@@ -1066,42 +1303,40 @@ L_zzbodn2c:
 	nodata = FALSE_;
     }
 
-/*     Compute the canonical member of the equivalence class */
-/*     for the input argument NAME.  This will enable a quick */
-/*     search through KERNOR and DEFNOR to locate the desired */
-/*     code. */
+/*     Normalize the input argument NAME. We will look this normalized */
+/*     name up in the built-in and kernel pool names hashes. */
 
-    ljust_(name__, tmpnam, name_len, (ftnlen)36);
-    ucase_(tmpnam, tmpnam, (ftnlen)36, (ftnlen)36);
-    cmprss_(" ", &c__1, tmpnam, tmpnam, (ftnlen)1, (ftnlen)36, (ftnlen)36);
+    ljucrs_(&c__1, name__, tmpnam, name_len, (ftnlen)36);
 
 /*     If necessary, first examine the contents of the kernel pool */
 /*     name-code mapping list. */
 
     if (extker) {
-	i__ = bschoc_(tmpnam, &kersiz, kernor, keronr, (ftnlen)36, (ftnlen)36)
-		;
 
-/*        If we obtained a match, copy the relevant code to the */
-/*        output argument and return. */
+/*        Check if this name is in the kernel pool names hash. */
 
+	zzhscchk_(knmlst, knmpol, knmnms, tmpnam, &i__, (ftnlen)36, (ftnlen)
+		36);
 	if (i__ != 0) {
-	    *code = kercod[(i__1 = i__ - 1) < 2000 && 0 <= i__1 ? i__1 : 
-		    s_rnge("kercod", i__1, "zzbodtrn_", (ftnlen)1043)];
+	    *code = kercod[(i__2 = knmidx[(i__1 = i__ - 1) < 14983 && 0 <= 
+		    i__1 ? i__1 : s_rnge("knmidx", i__1, "zzbodtrn_", (ftnlen)
+		    1196)] - 1) < 14983 && 0 <= i__2 ? i__2 : s_rnge("kercod",
+		     i__2, "zzbodtrn_", (ftnlen)1196)];
 	    *found = TRUE_;
 	    chkout_("ZZBODN2C", (ftnlen)8);
 	    return 0;
 	}
     }
 
-/*     If we reach here, either the kernel pool mapping list was */
-/*     blank or there was no mapping that matched.  Check the */
-/*     ZZBODDEF mappings for a match. */
+/*     If we reach here, we did not find this name in the kernel pool */
+/*     names hash. Check the built-in names hash. */
 
-    i__ = bschoc_(tmpnam, &defsiz, defnor, defonr, (ftnlen)36, (ftnlen)36);
+    zzhscchk_(dnmlst, dnmpol, dnmnms, tmpnam, &i__, (ftnlen)36, (ftnlen)36);
     if (i__ != 0) {
-	*code = defcod[(i__1 = i__ - 1) < 713 && 0 <= i__1 ? i__1 : s_rnge(
-		"defcod", i__1, "zzbodtrn_", (ftnlen)1059)];
+	*code = defcod[(i__2 = dnmidx[(i__1 = i__ - 1) < 773 && 0 <= i__1 ? 
+		i__1 : s_rnge("dnmidx", i__1, "zzbodtrn_", (ftnlen)1212)] - 1)
+		 < 773 && 0 <= i__2 ? i__2 : s_rnge("defcod", i__2, "zzbodtr"
+		"n_", (ftnlen)1212)];
 	*found = TRUE_;
     }
     chkout_("ZZBODN2C", (ftnlen)8);
@@ -1243,6 +1478,17 @@ L_zzbodc2n:
 
 /* $ Version */
 
+/* -    SPICELIB Version 5.0.0, 16-SEP-2013 (BVS) */
+
+/*        Changed to use name and ID-based hashes instead of the order */
+/*        arrays. */
+
+/*        Changed to keep track of the POOL's and ZZBODTRN internal */
+/*        state using state counters. */
+
+/*        Changed to call ZZCVPOOL to bypass watcher look-ups if the */
+/*        POOL counter did not change. */
+
 /* -    SPICELIB Version 4.1.0, 05-MAR-2009 (NJB) */
 
 /*        Bug fix: this routine now keeps track of whether its */
@@ -1339,61 +1585,72 @@ L_zzbodc2n:
 
     *found = FALSE_;
 
-/*     On the first pass through the umbrella's entry point, */
-/*     initialize the ZZBODDEF arrays and set the kernel pool */
-/*     watchers. */
+/*     On the first pass through this entry point, initialize the */
+/*     built-in arrays, set the kernel pool watchers, and state */
+/*     counters. */
 
     if (first) {
 
-/*        Populate the initial values of the DEFNAM, DEFNOR, */
-/*        and DEFCOD arrays from the built-in code list. */
+/*        Initialize counters. Set ZZBODTRN state counter, for */
+/*        which this umbrella is the owner, to subsystem values. Set */
+/*        POOL counter, for which this umbrella is the user, to user */
+/*        values. */
 
-	zzbodget_(&c__713, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
+	zzctrsin_(subctr);
+	zzctruin_(pulctr);
+
+/*        Populate the initial values of the DEFNAM, DEFNOR, and DEFCOD */
+/*        arrays from the built-in code list. */
+
+	zzbodget_(&c__773, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
 		ftnlen)36);
-
-/*        ZZBODGET may signal an error if the toolkit is improperly */
-/*        configured.  Check FAILED() and return if this occurs. */
-
 	if (failed_()) {
 	    chkout_("ZZBODC2N", (ftnlen)8);
 	    return 0;
 	}
 
-/*        Produce the initial order ZZBODDEF order vectors. */
+/*        Populate the initial built-in code-name hashes. */
 
-	zzbodini_(defnam, defnor, defcod, &defsiz, defonr, defocd, &defosz, (
+	zzbodini_(defnam, defnor, defcod, &defsiz, &c__773, dnmlst, dnmpol, 
+		dnmnms, dnmidx, didlst, didpol, didids, dididx, (ftnlen)36, (
 		ftnlen)36, (ftnlen)36);
+	if (failed_()) {
+	    chkout_("ZZBODC2N", (ftnlen)8);
+	    return 0;
+	}
 
 /*        Set up the watchers for the kernel pool name-code mapping */
 /*        variables. */
 
-	nwatch = 2;
 	swpool_("ZZBODTRN", &nwatch, wnames, (ftnlen)8, (ftnlen)32);
-
-/*        SWPOOL may signal an error if any difficulties arise in */
-/*        setting the watcher.  Check FAILED() and return if this */
-/*        occurs. */
-
 	if (failed_()) {
 	    chkout_("ZZBODC2N", (ftnlen)8);
 	    return 0;
 	}
 
-/*        Set FIRST to .FALSE., so this initialization block is */
-/*        not repeated. */
+/*        Set FIRST to .FALSE. to not repeat initialization again. */
 
 	first = FALSE_;
     }
 
-/*     Check for updates to the kernel pool variables.  Note: */
-/*     the first call to CVPOOL after initialization always returns */
-/*     .TRUE. for UPDATE.  This ensures that any initial */
-/*     assignments are properly processed. */
+/*     Check for updates to the kernel pool variables. Note: the first */
+/*     call to ZZCVPOOL after initialization always returns .TRUE. for */
+/*     LUPDTE. This ensures that any initial assignments are properly */
+/*     processed. */
 
-    cvpool_("ZZBODTRN", &update, (ftnlen)8);
-    if (update || nodata) {
-	zzbodker_(kernam, kernor, kercod, &kersiz, keronr, kerocd, &kerosz, &
-		extker, (ftnlen)36, (ftnlen)36);
+    zzcvpool_("ZZBODTRN", pulctr, &lupdte, (ftnlen)8);
+    if (lupdte || nodata) {
+
+/*        Conservatively increment the ZZBODTRN state counter */
+/*        in expectation of successful update. */
+
+	zzctrinc_(subctr);
+
+/*        Update kernel pool mapping lists and hashes. */
+
+	zzbodker_(kernam, kernor, kercod, &kersiz, &extker, knmlst, knmpol, 
+		knmnms, knmidx, kidlst, kidpol, kidids, kididx, (ftnlen)36, (
+		ftnlen)36, (ftnlen)36);
 	if (failed_()) {
 	    nodata = TRUE_;
 	    chkout_("ZZBODC2N", (ftnlen)8);
@@ -1407,32 +1664,28 @@ L_zzbodc2n:
 
     if (extker) {
 
-/*        Search the list of codes, KERCOD, using the */
-/*        modified order vector KEROCD. */
+/*        Check if this code is in the kernel pool codes hash. */
 
-	i__ = bschoi_(code, &kerosz, kercod, kerocd);
-
-/*        If we obtained a match, copy the original name to the */
-/*        output argument and return. */
-
+	zzhsichk_(kidlst, kidpol, kidids, code, &i__);
 	if (i__ != 0) {
-	    s_copy(name__, kernam + ((i__1 = i__ - 1) < 2000 && 0 <= i__1 ? 
-		    i__1 : s_rnge("kernam", i__1, "zzbodtrn_", (ftnlen)1401)) 
-		    * 36, name_len, (ftnlen)36);
+	    s_copy(name__, kernam + ((i__2 = kididx[(i__1 = i__ - 1) < 14983 
+		    && 0 <= i__1 ? i__1 : s_rnge("kididx", i__1, "zzbodtrn_", 
+		    (ftnlen)1574)] - 1) < 14983 && 0 <= i__2 ? i__2 : s_rnge(
+		    "kernam", i__2, "zzbodtrn_", (ftnlen)1574)) * 36, 
+		    name_len, (ftnlen)36);
 	    *found = TRUE_;
 	    chkout_("ZZBODC2N", (ftnlen)8);
 	    return 0;
 	}
     }
 
-/*     If we reach here, either the kernel pool mapping list was */
-/*     blank or there was no mapping that matched.  Check the */
-/*     ZZBODDEF mappings for a match. */
+/*     If we reach here, we did not find this code in the kernel pool */
+/*     codes hash. Check the built-in codes hash. */
 
-    i__ = bschoi_(code, &defosz, defcod, defocd);
+    zzhsichk_(didlst, didpol, didids, code, &i__);
 
-/*     If we find a match, verify that it is not masked by */
-/*     a kernel pool entry before returning. */
+/*     If we find a match, verify that it is not masked by a kernel pool */
+/*     entry before returning. */
 
     if (i__ != 0) {
 	if (extker) {
@@ -1440,30 +1693,29 @@ L_zzbodc2n:
 /*           Only bother performing this check if there are actually */
 /*           mappings present in the kernel pool lists. */
 
-	    ljust_(defnam + ((i__1 = i__ - 1) < 713 && 0 <= i__1 ? i__1 : 
-		    s_rnge("defnam", i__1, "zzbodtrn_", (ftnlen)1428)) * 36, 
-		    tmpnam, (ftnlen)36, (ftnlen)36);
-	    ucase_(tmpnam, tmpnam, (ftnlen)36, (ftnlen)36);
-	    cmprss_(" ", &c__1, tmpnam, tmpnam, (ftnlen)1, (ftnlen)36, (
-		    ftnlen)36);
-	    j = bschoc_(tmpnam, &kersiz, kernor, keronr, (ftnlen)36, (ftnlen)
-		    36);
+	    zzhscchk_(knmlst, knmpol, knmnms, defnor + ((i__2 = dididx[(i__1 =
+		     i__ - 1) < 773 && 0 <= i__1 ? i__1 : s_rnge("dididx", 
+		    i__1, "zzbodtrn_", (ftnlen)1600)] - 1) < 773 && 0 <= i__2 
+		    ? i__2 : s_rnge("defnor", i__2, "zzbodtrn_", (ftnlen)1600)
+		    ) * 36, &j, (ftnlen)36, (ftnlen)36);
 	    if (j != 0) {
 
-/*              If a match has occurred, then set FOUND to .FALSE., */
-/*              as the contents of the kernel pool have higher */
-/*              precedence than any entries in the ZZBODDEF mapping */
-/*              list. */
+/*              This name is defined in the kernel pool mappings. Set */
+/*              FOUND to .FALSE., as the contents of the kernel pool */
+/*              have higher precedence than any entries in the built-in */
+/*              mapping list. */
 
 		*found = FALSE_;
 	    } else {
 
-/*              No match for DEFNAM(I) in the kernel pool mapping list. */
+/*              No match for this name in the kernel pool mapping list. */
 /*              Return the name. */
 
-		s_copy(name__, defnam + ((i__1 = i__ - 1) < 713 && 0 <= i__1 ?
-			 i__1 : s_rnge("defnam", i__1, "zzbodtrn_", (ftnlen)
-			1450)) * 36, name_len, (ftnlen)36);
+		s_copy(name__, defnam + ((i__2 = dididx[(i__1 = i__ - 1) < 
+			773 && 0 <= i__1 ? i__1 : s_rnge("dididx", i__1, 
+			"zzbodtrn_", (ftnlen)1619)] - 1) < 773 && 0 <= i__2 ? 
+			i__2 : s_rnge("defnam", i__2, "zzbodtrn_", (ftnlen)
+			1619)) * 36, name_len, (ftnlen)36);
 		*found = TRUE_;
 	    }
 	} else {
@@ -1471,9 +1723,11 @@ L_zzbodc2n:
 /*           No kernel pool mappings were defined, simply return */
 /*           return the name. */
 
-	    s_copy(name__, defnam + ((i__1 = i__ - 1) < 713 && 0 <= i__1 ? 
-		    i__1 : s_rnge("defnam", i__1, "zzbodtrn_", (ftnlen)1461)) 
-		    * 36, name_len, (ftnlen)36);
+	    s_copy(name__, defnam + ((i__2 = dididx[(i__1 = i__ - 1) < 773 && 
+		    0 <= i__1 ? i__1 : s_rnge("dididx", i__1, "zzbodtrn_", (
+		    ftnlen)1630)] - 1) < 773 && 0 <= i__2 ? i__2 : s_rnge(
+		    "defnam", i__2, "zzbodtrn_", (ftnlen)1630)) * 36, 
+		    name_len, (ftnlen)36);
 	    *found = TRUE_;
 	}
     }
@@ -1585,12 +1839,12 @@ L_zzboddef:
 
 /* $ Parameters */
 
-/*     MAXL        is the maximum length of a body name.  Defined in */
-/*                 the include file 'zzbodtrn.inc'. */
+/*     The following relevant parameters are defined in zzbodtrn.inc: */
+
+/*     MAXL        is the maximum length of a body name. */
 
 /*     MAXP        is the maximum number of additional names that may */
-/*                 be added via the ZZBODDEF interface.  Defined in */
-/*                 the include file 'zzbodtrn.inc'. */
+/*                 be added via the ZZBODDEF interface. */
 
 /* $ Exceptions */
 
@@ -1645,7 +1899,7 @@ L_zzboddef:
 /*     translate the name EUROPA, which code should be returned?  That */
 /*     of the asteroid or 502? */
 
-/*     ZZBODDEF prevents this ambiguity by signalling an error */
+/*     ZZBODDEF prevents this ambiguity by signaling an error */
 /*     if the specified name has already been defined with a */
 /*     different code.  In the case of EUROPA, you may want to use the */
 /*     name ASTEROID EUROPA.  The set of default definitions are listed */
@@ -1673,6 +1927,17 @@ L_zzboddef:
 /*     E.D. Wright    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 5.0.0, 16-SEP-2013 (BVS) */
+
+/*        Changed to use name and ID-based hashes instead of the order */
+/*        arrays. */
+
+/*        Changed to keep track of the POOL's and ZZBODTRN internal */
+/*        state using state counters. */
+
+/*        Changed to call ZZCVPOOL to bypass watcher look-ups if the */
+/*        POOL counter did not change. */
 
 /* -    SPICELIB Version 4.0.1, 17-APR-2003 (EDW) */
 
@@ -1757,54 +2022,56 @@ L_zzboddef:
 	chkin_("ZZBODDEF", (ftnlen)8);
     }
 
-/*     On the first pass through the umbrella's entry point, */
-/*     initialize the ZZBODDEF arrays and set the kernel pool */
-/*     watchers. */
+/*     On the first pass through this entry point, initialize the */
+/*     built-in arrays, set the kernel pool watchers, and state */
+/*     counters. */
 
     if (first) {
 
-/*        Populate the initial values of the DEFNAM, DEFNOR, */
-/*        and DEFCOD arrays from the built-in code list. */
+/*        Initialize counters. Set ZZBODTRN state counter, for */
+/*        which this umbrella is the owner, to subsystem values. Set */
+/*        POOL counter, for which this umbrella is the user, to user */
+/*        values. */
 
-	zzbodget_(&c__713, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
+	zzctrsin_(subctr);
+	zzctruin_(pulctr);
+
+/*        Populate the initial values of the DEFNAM, DEFNOR, and DEFCOD */
+/*        arrays from the built-in code list. */
+
+	zzbodget_(&c__773, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
 		ftnlen)36);
-
-/*        ZZBODGET may signal an error if the toolkit is improperly */
-/*        configured.  Check FAILED() and return if this occurs. */
-
 	if (failed_()) {
 	    chkout_("ZZBODDEF", (ftnlen)8);
 	    return 0;
 	}
 
-/*        Produce the initial order ZZBODDEF order vectors. */
+/*        Populate the initial built-in code-name hashes. */
 
-	zzbodini_(defnam, defnor, defcod, &defsiz, defonr, defocd, &defosz, (
+	zzbodini_(defnam, defnor, defcod, &defsiz, &c__773, dnmlst, dnmpol, 
+		dnmnms, dnmidx, didlst, didpol, didids, dididx, (ftnlen)36, (
 		ftnlen)36, (ftnlen)36);
+	if (failed_()) {
+	    chkout_("ZZBODDEF", (ftnlen)8);
+	    return 0;
+	}
 
 /*        Set up the watchers for the kernel pool name-code mapping */
 /*        variables. */
 
-	nwatch = 2;
 	swpool_("ZZBODTRN", &nwatch, wnames, (ftnlen)8, (ftnlen)32);
-
-/*        SWPOOL may signal an error if any difficulties arise in */
-/*        setting the watcher.  Check FAILED() and return if this */
-/*        occurs. */
-
 	if (failed_()) {
 	    chkout_("ZZBODDEF", (ftnlen)8);
 	    return 0;
 	}
 
-/*        Set FIRST to .FALSE., so this initialization block is */
-/*        not repeated. */
+/*        Set FIRST to .FALSE. to not repeat initialization again. */
 
 	first = FALSE_;
     }
 
-/*     Begin by verifying that the user is not attempting to assign */
-/*     a blank string a code. */
+/*     Begin by verifying that the user is not attempting to assign a */
+/*     blank string a code. */
 
     if (s_cmp(name__, " ", name_len, (ftnlen)1) == 0) {
 	setmsg_("An attempt to assign the code, #, to a blank string was mad"
@@ -1816,28 +2083,32 @@ L_zzboddef:
 	return 0;
     }
 
-/*     Compute the normalization of NAME.  This will allow simple */
-/*     searches through the existing mapping list. */
+/*     Conservatively increment the ZZBODTRN state counter in */
+/*     expectation of successful addition. */
 
-    ljust_(name__, tmpnam, name_len, (ftnlen)36);
-    ucase_(tmpnam, tmpnam, (ftnlen)36, (ftnlen)36);
-    cmprss_(" ", &c__1, tmpnam, tmpnam, (ftnlen)1, (ftnlen)36, (ftnlen)36);
+    zzctrinc_(subctr);
 
-/*     Determine if we are going to replace an entry currently */
-/*     present in the DEF* lists. */
+/*     Get normalized form of the input NAME. */
 
-    index = bschoc_(tmpnam, &defsiz, defnor, defonr, (ftnlen)36, (ftnlen)36);
-    if (index != 0) {
+    ljucrs_(&c__1, name__, tmpnam, name_len, (ftnlen)36);
+
+/*     Determine if we are going to replace an entry currently present */
+/*     in the DEF* lists. */
+
+    zzhscchk_(dnmlst, dnmpol, dnmnms, tmpnam, &i__, (ftnlen)36, (ftnlen)36);
+    if (i__ != 0) {
+	index = dnmidx[(i__1 = i__ - 1) < 773 && 0 <= i__1 ? i__1 : s_rnge(
+		"dnmidx", i__1, "zzbodtrn_", (ftnlen)2026)];
 
 /*        We are going to replace an existing entry.  There are */
 /*        two possible ways in which a replace operation can */
 /*        happen: */
 
 /*           1) The caller is attempting to replace the highest */
-/*              precedent name-code mapping for a particular */
-/*              ID code.  When this happens, we need only change */
-/*              the entry in DEFNAM at position INDEX.  The user */
-/*              is simply changing the name. */
+/*              precedent name-code mapping for a particular ID code. */
+/*              When this happens, we need only change the entry in */
+/*              DEFNAM at position INDEX. The user is simply changing */
+/*              the name that maps to the same normalized name. */
 
 /*           2) The caller is attempting to change the code */
 /*              associated with a name, bump a lower precedence */
@@ -1846,53 +2117,57 @@ L_zzboddef:
 
 /*        See if we should handle 1) first. */
 
-	codidx = bschoi_(code, &defosz, defcod, defocd);
+	zzhsichk_(didlst, didpol, didids, code, &i__);
+	if (i__ != 0) {
+	    codidx = dididx[(i__1 = i__ - 1) < 773 && 0 <= i__1 ? i__1 : 
+		    s_rnge("dididx", i__1, "zzbodtrn_", (ftnlen)2049)];
+	} else {
+	    codidx = 0;
+	}
 
-/*        If CODIDX matches INDEX, then we simply have to replace */
-/*        the entry in DEFNAM and return. */
+/*        If CODIDX matches INDEX, then we simply have to replace the */
+/*        entry in DEFNAM and return. */
 
 	if (codidx == index) {
 
-/*           We altered the built-in body list.  Set BODCHG to */
-/*           .TRUE. */
+/*           We altered the built-in body list. Set BODCHG to .TRUE. */
 
 	    bodchg = TRUE_;
-	    s_copy(defnam + ((i__1 = index - 1) < 713 && 0 <= i__1 ? i__1 : 
-		    s_rnge("defnam", i__1, "zzbodtrn_", (ftnlen)1872)) * 36, 
+	    s_copy(defnam + ((i__1 = index - 1) < 773 && 0 <= i__1 ? i__1 : 
+		    s_rnge("defnam", i__1, "zzbodtrn_", (ftnlen)2065)) * 36, 
 		    name__, (ftnlen)36, name_len);
 	    chkout_("ZZBODDEF", (ftnlen)8);
 	    return 0;
 	}
 
-/*        At this point we have to replace all of the values */
-/*        for the mapping defined at the INDEX position in */
-/*        DEFNAM, DEFNOR, and DEFCOD.  This will require */
-/*        recomputing the order vectors.  First compress */
-/*        out the existing entry. */
+/*        At this point we have to replace all of the values for the */
+/*        mapping defined at the INDEX position in DEFNAM, DEFNOR, and */
+/*        DEFCOD. This will require recomputing the hashes. First */
+/*        compress out the existing entry. */
 
 	i__1 = defsiz;
 	for (i__ = index + 1; i__ <= i__1; ++i__) {
-	    s_copy(defnam + ((i__2 = i__ - 2) < 713 && 0 <= i__2 ? i__2 : 
-		    s_rnge("defnam", i__2, "zzbodtrn_", (ftnlen)1888)) * 36, 
-		    defnam + ((i__3 = i__ - 1) < 713 && 0 <= i__3 ? i__3 : 
-		    s_rnge("defnam", i__3, "zzbodtrn_", (ftnlen)1888)) * 36, (
+	    s_copy(defnam + ((i__2 = i__ - 2) < 773 && 0 <= i__2 ? i__2 : 
+		    s_rnge("defnam", i__2, "zzbodtrn_", (ftnlen)2080)) * 36, 
+		    defnam + ((i__3 = i__ - 1) < 773 && 0 <= i__3 ? i__3 : 
+		    s_rnge("defnam", i__3, "zzbodtrn_", (ftnlen)2080)) * 36, (
 		    ftnlen)36, (ftnlen)36);
-	    s_copy(defnor + ((i__2 = i__ - 2) < 713 && 0 <= i__2 ? i__2 : 
-		    s_rnge("defnor", i__2, "zzbodtrn_", (ftnlen)1889)) * 36, 
-		    defnor + ((i__3 = i__ - 1) < 713 && 0 <= i__3 ? i__3 : 
-		    s_rnge("defnor", i__3, "zzbodtrn_", (ftnlen)1889)) * 36, (
+	    s_copy(defnor + ((i__2 = i__ - 2) < 773 && 0 <= i__2 ? i__2 : 
+		    s_rnge("defnor", i__2, "zzbodtrn_", (ftnlen)2081)) * 36, 
+		    defnor + ((i__3 = i__ - 1) < 773 && 0 <= i__3 ? i__3 : 
+		    s_rnge("defnor", i__3, "zzbodtrn_", (ftnlen)2081)) * 36, (
 		    ftnlen)36, (ftnlen)36);
-	    defcod[(i__2 = i__ - 2) < 713 && 0 <= i__2 ? i__2 : s_rnge("defc"
-		    "od", i__2, "zzbodtrn_", (ftnlen)1890)] = defcod[(i__3 = 
-		    i__ - 1) < 713 && 0 <= i__3 ? i__3 : s_rnge("defcod", 
-		    i__3, "zzbodtrn_", (ftnlen)1890)];
+	    defcod[(i__2 = i__ - 2) < 773 && 0 <= i__2 ? i__2 : s_rnge("defc"
+		    "od", i__2, "zzbodtrn_", (ftnlen)2082)] = defcod[(i__3 = 
+		    i__ - 1) < 773 && 0 <= i__3 ? i__3 : s_rnge("defcod", 
+		    i__3, "zzbodtrn_", (ftnlen)2082)];
 	}
     } else {
 
 /*        We need to add this entry to the list.  See if there */
 /*        is room; signal an error and return if there is not. */
 
-	if (defsiz >= 713) {
+	if (defsiz >= 773) {
 	    setmsg_("There is no room available for adding '#'  to the list "
 		    "of name/code pairs. The number of names that can be supp"
 		    "orted is #.  This number has been reached. ", (ftnlen)154)
@@ -1904,8 +2179,8 @@ L_zzboddef:
 	    return 0;
 	}
 
-/*        If we reach here, then there is room in the list. */
-/*        Increase it's size counter. */
+/*        If we reach here, then there is room in the list. Increase */
+/*        it's size counter. */
 
 	++defsiz;
     }
@@ -1918,18 +2193,19 @@ L_zzboddef:
 /*     Now, we need to add the new entry on to the end of the */
 /*     DEFNAM, DEFNOR, and DEFCOD lists. */
 
-    s_copy(defnam + ((i__1 = defsiz - 1) < 713 && 0 <= i__1 ? i__1 : s_rnge(
-	    "defnam", i__1, "zzbodtrn_", (ftnlen)1933)) * 36, name__, (ftnlen)
+    s_copy(defnam + ((i__1 = defsiz - 1) < 773 && 0 <= i__1 ? i__1 : s_rnge(
+	    "defnam", i__1, "zzbodtrn_", (ftnlen)2125)) * 36, name__, (ftnlen)
 	    36, name_len);
-    s_copy(defnor + ((i__1 = defsiz - 1) < 713 && 0 <= i__1 ? i__1 : s_rnge(
-	    "defnor", i__1, "zzbodtrn_", (ftnlen)1934)) * 36, tmpnam, (ftnlen)
+    s_copy(defnor + ((i__1 = defsiz - 1) < 773 && 0 <= i__1 ? i__1 : s_rnge(
+	    "defnor", i__1, "zzbodtrn_", (ftnlen)2126)) * 36, tmpnam, (ftnlen)
 	    36, (ftnlen)36);
-    defcod[(i__1 = defsiz - 1) < 713 && 0 <= i__1 ? i__1 : s_rnge("defcod", 
-	    i__1, "zzbodtrn_", (ftnlen)1935)] = *code;
+    defcod[(i__1 = defsiz - 1) < 773 && 0 <= i__1 ? i__1 : s_rnge("defcod", 
+	    i__1, "zzbodtrn_", (ftnlen)2127)] = *code;
 
-/*     Compute the new order vectors. */
+/*     Reset the built-in/BODDEF hashes. */
 
-    zzbodini_(defnam, defnor, defcod, &defsiz, defonr, defocd, &defosz, (
+    zzbodini_(defnam, defnor, defcod, &defsiz, &c__773, dnmlst, dnmpol, 
+	    dnmnms, dnmidx, didlst, didpol, didids, dididx, (ftnlen)36, (
 	    ftnlen)36, (ftnlen)36);
     chkout_("ZZBODDEF", (ftnlen)8);
     return 0;
@@ -1939,7 +2215,7 @@ L_zzbodkik:
 /* $ Abstract */
 
 /*     SPICE Private routine intended solely for the support of SPICE */
-/*     routines.  Users should not call this routine directly due */
+/*     routines. Users should not call this routine directly due */
 /*     to the volatile nature of this routine. */
 
 /*     This routine executes the kernel pool read instructions */
@@ -2033,10 +2309,22 @@ L_zzbodkik:
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman   (JPL) */
+/*     B.V. Semenov   (JPL) */
 /*     F.S. Turner    (JPL) */
 /*     E.D. Wright    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 5.0.0, 16-SEP-2013 (BVS) */
+
+/*        Changed to use name and ID-based hashes instead of the order */
+/*        arrays. */
+
+/*        Changed to keep track of the POOL's and ZZBODTRN internal */
+/*        state using state counters. */
+
+/*        Changed to call ZZCVPOOL to bypass watcher look-ups if the */
+/*        POOL counter did not change. */
 
 /* -    SPICELIB Version 4.1.0, 05-MAR-2009 (NJB) */
 
@@ -2066,61 +2354,72 @@ L_zzbodkik:
 	chkin_("ZZBODKIK", (ftnlen)8);
     }
 
-/*     On the first pass through the umbrella's entry point, */
-/*     initialize the ZZBODDEF arrays and set the kernel pool */
-/*     watchers. */
+/*     On the first pass through this entry point, initialize the */
+/*     built-in arrays, set the kernel pool watchers, and state */
+/*     counters. */
 
     if (first) {
 
-/*        Populate the initial values of the DEFNAM, DEFNOR, */
-/*        and DEFCOD arrays from the built-in code list. */
+/*        Initialize counters. Set ZZBODTRN state counter, for */
+/*        which this umbrella is the owner, to subsystem values. Set */
+/*        POOL counter, for which this umbrella is the user, to user */
+/*        values. */
 
-	zzbodget_(&c__713, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
+	zzctrsin_(subctr);
+	zzctruin_(pulctr);
+
+/*        Populate the initial values of the DEFNAM, DEFNOR, and DEFCOD */
+/*        arrays from the built-in code list. */
+
+	zzbodget_(&c__773, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
 		ftnlen)36);
-
-/*        ZZBODGET may signal an error if the toolkit is improperly */
-/*        configured.  Check FAILED() and return if this occurs. */
-
 	if (failed_()) {
 	    chkout_("ZZBODKIK", (ftnlen)8);
 	    return 0;
 	}
 
-/*        Produce the initial order ZZBODDEF order vectors. */
+/*        Populate the initial built-in/BODDEF hashes. */
 
-	zzbodini_(defnam, defnor, defcod, &defsiz, defonr, defocd, &defosz, (
+	zzbodini_(defnam, defnor, defcod, &defsiz, &c__773, dnmlst, dnmpol, 
+		dnmnms, dnmidx, didlst, didpol, didids, dididx, (ftnlen)36, (
 		ftnlen)36, (ftnlen)36);
+	if (failed_()) {
+	    chkout_("ZZBODKIK", (ftnlen)8);
+	    return 0;
+	}
 
 /*        Set up the watchers for the kernel pool name-code mapping */
 /*        variables. */
 
-	nwatch = 2;
 	swpool_("ZZBODTRN", &nwatch, wnames, (ftnlen)8, (ftnlen)32);
-
-/*        SWPOOL may signal an error if any difficulties arise in */
-/*        setting the watcher.  Check FAILED() and return if this */
-/*        occurs. */
-
 	if (failed_()) {
 	    chkout_("ZZBODKIK", (ftnlen)8);
 	    return 0;
 	}
 
-/*        Set FIRST to .FALSE., so this initialization block is */
-/*        not repeated. */
+/*        Set FIRST to .FALSE. to not repeat initialization again. */
 
 	first = FALSE_;
     }
 
-/*     Check for updates to the kernel pool variables. Note: */
-/*     the first call to CVPOOL after initialization always */
-/*     returns .TRUE. for UPDATE.  This ensures that any */
-/*     initial assignments are properly processed. */
+/*     Check for updates to the kernel pool variables. Note: the first */
+/*     call to ZZCVPOOL after initialization always returns .TRUE. for */
+/*     LUPDTE. This ensures that any initial assignments are properly */
+/*     processed. */
 
-    cvpool_("ZZBODTRN", &update, (ftnlen)8);
-    if (update || nodata) {
-	zzbodker_(kernam, kernor, kercod, &kersiz, keronr, kerocd, &kerosz, &
-		extker, (ftnlen)36, (ftnlen)36);
+    zzcvpool_("ZZBODTRN", pulctr, &lupdte, (ftnlen)8);
+    if (lupdte || nodata) {
+
+/*        Conservatively increment the ZZBODTRN state counter */
+/*        in expectation of successful update. */
+
+	zzctrinc_(subctr);
+
+/*        Update kernel pool mapping lists and hashes. */
+
+	zzbodker_(kernam, kernor, kercod, &kersiz, &extker, knmlst, knmpol, 
+		knmnms, knmidx, kidlst, kidpol, kidids, kididx, (ftnlen)36, (
+		ftnlen)36, (ftnlen)36);
 	if (failed_()) {
 	    nodata = TRUE_;
 	    chkout_("ZZBODKIK", (ftnlen)8);
@@ -2224,9 +2523,18 @@ L_zzbodrst:
 
 /* $ Author_and_Institution */
 
+/*     B.V. Semenov    (JPL) */
 /*     F.S. Turner     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 5.0.0, 16-SEP-2013 (BVS) */
+
+/*        Changed to use name and ID-based hashes instead of the order */
+/*        arrays. */
+
+/*        Changed to keep track of the POOL's and ZZBODTRN internal */
+/*        state using state counters. */
 
 /* -    SPICELIB Version 4.0.0, 26-AUG-2002 (FST) */
 
@@ -2241,48 +2549,50 @@ L_zzbodrst:
 	chkin_("ZZBODRST", (ftnlen)8);
     }
 
-/*     On the first pass through the umbrella's entry point, */
-/*     initialize the ZZBODDEF arrays and set the kernel pool */
-/*     watchers. */
+/*     On the first pass through this entry point, initialize the */
+/*     built-in arrays, set the kernel pool watchers, and state */
+/*     counters. */
 
     if (first) {
 
-/*        Populate the initial values of the DEFNAM, DEFNOR, */
-/*        and DEFCOD arrays from the built-in code list. */
+/*        Initialize counters. Set ZZBODTRN state counter, for */
+/*        which this umbrella is the owner, to subsystem values. Set */
+/*        POOL counter, for which this umbrella is the user, to user */
+/*        values. */
 
-	zzbodget_(&c__713, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
+	zzctrsin_(subctr);
+	zzctruin_(pulctr);
+
+/*        Populate the initial values of the DEFNAM, DEFNOR, and DEFCOD */
+/*        arrays from the built-in code list. */
+
+	zzbodget_(&c__773, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
 		ftnlen)36);
-
-/*        ZZBODGET may signal an error if the toolkit is improperly */
-/*        configured.  Check FAILED() and return if this occurs. */
-
 	if (failed_()) {
 	    chkout_("ZZBODRST", (ftnlen)8);
 	    return 0;
 	}
 
-/*        Produce the initial order ZZBODDEF order vectors. */
+/*        Populate the initial built-in code-name hashes. */
 
-	zzbodini_(defnam, defnor, defcod, &defsiz, defonr, defocd, &defosz, (
+	zzbodini_(defnam, defnor, defcod, &defsiz, &c__773, dnmlst, dnmpol, 
+		dnmnms, dnmidx, didlst, didpol, didids, dididx, (ftnlen)36, (
 		ftnlen)36, (ftnlen)36);
+	if (failed_()) {
+	    chkout_("ZZBODRST", (ftnlen)8);
+	    return 0;
+	}
 
 /*        Set up the watchers for the kernel pool name-code mapping */
 /*        variables. */
 
-	nwatch = 2;
 	swpool_("ZZBODTRN", &nwatch, wnames, (ftnlen)8, (ftnlen)32);
-
-/*        SWPOOL may signal an error if any difficulties arise in */
-/*        setting the watcher.  Check FAILED() and return if this */
-/*        occurs. */
-
 	if (failed_()) {
 	    chkout_("ZZBODRST", (ftnlen)8);
 	    return 0;
 	}
 
-/*        Set FIRST to .FALSE., so this initialization block is */
-/*        not repeated. */
+/*        Set FIRST to .FALSE. to not repeat initialization again. */
 
 	first = FALSE_;
     }
@@ -2292,53 +2602,297 @@ L_zzbodrst:
     if (bodchg) {
 	bodchg = FALSE_;
 
-/*        Fetch the initial body name-code mapping list.  Note: */
-/*        we need not check FAILED() here, because if an error */
-/*        had occurred due to the improper specification of MAXE */
-/*        it would have been signaled already to the user. */
+/*        Conservatively increment the ZZBODTRN state counter */
+/*        in expectation of successful update. */
 
-	zzbodget_(&c__713, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
+	zzctrinc_(subctr);
+
+/*        Fetch the initial body name-code mapping list. Note: we need */
+/*        not check FAILED() here, because if an error had occurred due */
+/*        to the improper specification of MAXE it would have been */
+/*        signaled already to the user. */
+
+	zzbodget_(&c__773, defnam, defnor, defcod, &defsiz, (ftnlen)36, (
 		ftnlen)36);
 
-/*        Prepare the order vectors. */
+/*        Reset the built-in/BODDEF hashes. */
 
-	zzbodini_(defnam, defnor, defcod, &defsiz, defonr, defocd, &defosz, (
+	zzbodini_(defnam, defnor, defcod, &defsiz, &c__773, dnmlst, dnmpol, 
+		dnmnms, dnmidx, didlst, didpol, didids, dididx, (ftnlen)36, (
 		ftnlen)36, (ftnlen)36);
     }
     chkout_("ZZBODRST", (ftnlen)8);
     return 0;
+/* $Procedure ZZBCTRCK ( Private -- check/update user's ZZBODTRN counter ) */
+
+L_zzbctrck:
+/* $ Abstract */
+
+/*     SPICE Private routine intended solely for the support of SPICE */
+/*     routines.  Users should not call this routine directly due */
+/*     to the volatile nature of this routine. */
+
+/*     Check and update the ZZBODTRN state counter tracked by a caller */
+/*     (user) routine. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Required_Reading */
+
+/*     None. */
+
+/* $ Keywords */
+
+/*     BODY */
+/*     PRIVATE */
+
+/* $ Declarations */
+
+/*     INTEGER               USRCTR    ( CTRSIZ ) */
+/*     LOGICAL               UPDATE */
+
+/* $ Brief_I/O */
+
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     USRCTR    I/O  ZZBODTRN state counter tracked by the caller */
+/*     UPDATE     O   Flag indicating if input counter was updated */
+
+/*     CTRSIZ     P   Dimension of the counter array */
+
+/* $ Detailed_Input */
+
+/*     USRCTR      is the value of the ZZBODTRN state counter tracked by */
+/*                 (saved in) the caller (user) routine. */
+
+/* $ Detailed_Output */
+
+/*     USRCTR      is the current ZZBODTRN state counter. */
+
+/*     UPDATE      is the logical flag indicating whether the input */
+/*                 ZZBODTRN state counter was different from the current */
+/*                 ZZBODTRN state counter and, therefore, had to be */
+/*                 updated (UPDATE = .TRUE.) or if it was the same */
+/*                 (UPDATE = .FALSE.). */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. This parameter is */
+/*                 defined in the private include file 'zzctr.inc'. */
+
+/* $ Exceptions */
+
+/*     1) Routines in the call tree of this routine may signal errors. */
+
+/* $ Files */
+
+/*     None. */
+
+/* $ Particulars */
+
+/*     This routine is not part of the SPICELIB API. This routine may be */
+/*     removed in a later version of the SPICE Toolkit, or its interface */
+/*     may change. */
+
+/*     SPICE-based application code should not call this routine. */
+
+/*     This routine allows other routines to be aware of ZZBODTRN state */
+/*     change due to addition or deletion body name-code mappings via */
+/*     ZZBODTRN calls and/or kernel POOL NAIF_BODY_NAME/NAIF_BODY_CODE */
+/*     variables. Such awareness is needed to be able to locally save */
+/*     some ZZBODTRN-based data (e.g. a particular body name/ID mapping) */
+/*     and only update these locally saved values if the ZZBODTRN state */
+/*     has changed. */
+
+/*     To make use of the ZZBODTRN state counter to achieve this goal the */
+/*     caller routines save the ZZBODTRN state counter returned by the */
+/*     first call to this routine and then check that saved value */
+/*     against the current ZZBODTRN state counter and update it by */
+/*     subsequent calls this routine. */
+
+/*     This routine checks if the watched POOL name-ID mapping keywords */
+/*     changed and if so updates the internally buffered POOL-based */
+/*     name-ID mappings. */
+
+/* $ Examples */
+
+/*     The routines that need to be aware of and act on the ZZBODTRN */
+/*     state change initialize a local ZZBODTRN counter array using */
+/*     ZZCTRUIN, save it, and check it against the current ZZBODTRN */
+/*     state counter and update it, if needed, using this entry point, */
+/*     as follows: */
+
+/*        C */
+/*        C     Include zzctr.inc to access CTRSIZ. */
+/*        C */
+/*              INCLUDE              'zzctr.inc' */
+/*              ... */
+
+/*        C */
+/*        C     In local variable declarations declare and save */
+/*        C     the local ZZBODTRN state counter. Also declare the */
+/*        C     update flag. */
+/*        C */
+/*              INTEGER               USRCTR ( CTRSIZ ) */
+/*              LOGICAL               UPDATE */
+/*              ... */
+/*              SAVE                  USRCTR */
+/*              ... */
+
+/*        C */
+/*        C     In all places where initialization is done */
+/*        C     initialize the local ZZBODTRN state counter using */
+/*        C     ZZCTRUIN to ensure an update on the first check. */
+/*        C */
+/*              IF ( FIRST ) THEN */
+/*                 ... */
+/*                 CALL ZZCTRUIN( USRCTR ) */
+/*                 FIRST = .FALSE. */
+/*              END IF */
+/*              ... */
+
+/*        C */
+/*        C     In all places where there is a need to check for */
+/*        C     the ZZBODTRN state change call this entry to */
+/*        C     check and update the local POOL state counter. */
+/*        C */
+/*              CALL ZZBCTRCK ( USRCTR, UPDATE ) */
+
+/*              IF ( UPDATE ) THEN */
+
+/*        C */
+/*        C        It the ZZBODTRN state changed, do what needs to */
+/*        C        be done to deal with saved values based */
+/*        C        on ZZBODTRN data. */
+/*        C */
+/*                 ... */
+
+/*              END IF */
+
+/* $ Restrictions */
+
+/*     1) This is a private routine. See $Particulars above. */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Version */
+
+/* -    SPICELIB Version 5.0.0, 16-SEP-2013 (BVS) */
+
+/* -& */
+
+/*     Standard SPICE error handling. */
+
+    if (return_()) {
+	return 0;
+    }
+
+/*     Check for updates to the kernel pool variables. */
+
+    zzcvpool_("ZZBODTRN", pulctr, &lupdte, (ftnlen)8);
+    if (lupdte || nodata) {
+
+/*        Check in because ZZBODKER can fail. */
+
+	chkin_("ZZBCTRCK", (ftnlen)8);
+
+/*        Conservatively increment the ZZBODTRN state counter in */
+/*        expectation of successful update. */
+
+	zzctrinc_(subctr);
+
+/*        Update kernel pool mapping lists and hashes. */
+
+	zzbodker_(kernam, kernor, kercod, &kersiz, &extker, knmlst, knmpol, 
+		knmnms, knmidx, kidlst, kidpol, kidids, kididx, (ftnlen)36, (
+		ftnlen)36, (ftnlen)36);
+	if (failed_()) {
+	    nodata = TRUE_;
+	    chkout_("ZZBCTRCK", (ftnlen)8);
+	    return 0;
+	}
+	nodata = FALSE_;
+	chkout_("ZZBCTRCK", (ftnlen)8);
+    }
+
+/*     Check the input counter against the ZZBODTRN counter. */
+
+    zzctrchk_(subctr, usrctr, update);
+    return 0;
 } /* zzbodtrn_ */
 
 /* Subroutine */ int zzbodtrn_(char *name__, integer *code, logical *found, 
-	ftnlen name_len)
+	integer *usrctr, logical *update, ftnlen name_len)
 {
-    return zzbodtrn_0_(0, name__, code, found, name_len);
+    return zzbodtrn_0_(0, name__, code, found, usrctr, update, name_len);
     }
 
 /* Subroutine */ int zzbodn2c_(char *name__, integer *code, logical *found, 
 	ftnlen name_len)
 {
-    return zzbodtrn_0_(1, name__, code, found, name_len);
+    return zzbodtrn_0_(1, name__, code, found, (integer *)0, (logical *)0, 
+	    name_len);
     }
 
 /* Subroutine */ int zzbodc2n_(integer *code, char *name__, logical *found, 
 	ftnlen name_len)
 {
-    return zzbodtrn_0_(2, name__, code, found, name_len);
+    return zzbodtrn_0_(2, name__, code, found, (integer *)0, (logical *)0, 
+	    name_len);
     }
 
 /* Subroutine */ int zzboddef_(char *name__, integer *code, ftnlen name_len)
 {
-    return zzbodtrn_0_(3, name__, code, (logical *)0, name_len);
+    return zzbodtrn_0_(3, name__, code, (logical *)0, (integer *)0, (logical *
+	    )0, name_len);
     }
 
 /* Subroutine */ int zzbodkik_(void)
 {
-    return zzbodtrn_0_(4, (char *)0, (integer *)0, (logical *)0, (ftnint)0);
+    return zzbodtrn_0_(4, (char *)0, (integer *)0, (logical *)0, (integer *)0,
+	     (logical *)0, (ftnint)0);
     }
 
 /* Subroutine */ int zzbodrst_(void)
 {
-    return zzbodtrn_0_(5, (char *)0, (integer *)0, (logical *)0, (ftnint)0);
+    return zzbodtrn_0_(5, (char *)0, (integer *)0, (logical *)0, (integer *)0,
+	     (logical *)0, (ftnint)0);
+    }
+
+/* Subroutine */ int zzbctrck_(integer *usrctr, logical *update)
+{
+    return zzbodtrn_0_(6, (char *)0, (integer *)0, (logical *)0, usrctr, 
+	    update, (ftnint)0);
     }
 

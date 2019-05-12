@@ -55,7 +55,7 @@
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 33%; text-align: center;">
             <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
@@ -66,7 +66,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
@@ -76,7 +76,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
@@ -102,7 +102,7 @@
                    void                  * tabs,
                    void                  * cols,
                    SpiceBoolean          * error,
-                   SpiceChar             * errmsg                     ) 
+                   SpiceChar             * errmsg  ) 
 </PRE>
 <h4><a name="Abstract">Abstract</a></h4>
 <PRE>
@@ -129,6 +129,8 @@
    --------  ---  -------------------------------------------------- 
    query      I   EK query. 
    msglen     I   Available space in the output error message string.
+   tablen     I   Length of strings in `tabs' output array.
+   collen     I   Length of strings in `cols' output array.
    n          O   Number of items in SELECT clause of query. 
    xbegs      O   Begin positions of expressions in SELECT clause. 
    xends      O   End positions of expressions in SELECT clause. 
@@ -277,6 +279,16 @@
  
                   The contents of tabs[i] are defined if and only if 
                   the returned value of xclass[i] is SPICE_EK_EXP_COL. 
+
+                  The caller should declare `tabs' as an array of strings
+                  of length
+
+                     SPICE_EK_TSTRLN
+
+                  for example
+
+                     SpiceChar     tabs[SPICE_EK_MAXQSEL][SPICE_EK_TSTRLN];
+                      
  
  
    cols           is an array containing the columns of the SELECT 
@@ -284,6 +296,15 @@
                   only if the returned value of xclass[i] is 
                   SPICE_EK_EXP_COL. 
  
+                  The caller should declare `cols' as an array of strings
+                  of length
+
+                     SPICE_EK_CSTRLN
+
+                  for example
+
+                     SpiceChar     tabs[SPICE_EK_MAXQSEL][SPICE_EK_CSTRLN];
+
  
    error          is a logical flag indicating whether the input 
                   query parsed correctly.  The other outputs of this 
@@ -601,6 +622,12 @@
  </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
+   -CSPICE Version 2.1.2, 22-MAR-2016   (NJB)
+
+      Updated brief I/O to describe inputs `tablen' and `collen'.
+      Also added to Detailed_Output descriptions of declarations 
+      of the outputs `tabs' and 'cols'.
+
    -CSPICE Version 2.1.1, 14-AUG-2006   (EDW)
 
       Replace mention of <a href="ldpool_c.html">ldpool_c</a> with <a href="furnsh_c.html">furnsh_c</a>.
@@ -633,7 +660,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Jun  9 13:05:22 2010</pre>
+   <pre>Wed Apr  5 17:54:34 2017</pre>
 
 </body>
 </html>

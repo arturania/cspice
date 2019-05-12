@@ -55,7 +55,7 @@
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 33%; text-align: center;">
             <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
@@ -66,7 +66,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
@@ -76,7 +76,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
@@ -136,13 +136,13 @@
    nparts     is the number of spacecraft clock time partitions 
               described in the kernel file for spacecraft SC. 
  
-   pstart     is an array containing nparts partition start times 
-              represented as encoded ticks.  The values contained 
-              in pstart are whole numbers. 
+   pstart     is an array containing nparts partition start times
+              represented as double precision, encoded SCLK (&quot;ticks&quot;).
+              The values contained in pstart are whole numbers.
  
-   pstop      is an array containing nparts partition end times 
-              represented as encoded ticks. The values contained 
-              in pstop are whole numbers. 
+   pstop      is an array containing nparts partition end times
+              represented as double precision, encoded SCLK (&quot;ticks&quot;).
+              The values contained in pstop are whole numbers.
  </PRE>
 <h4><a name="Parameters">Parameters</a></h4>
 <PRE>
@@ -179,7 +179,7 @@
       &quot;SCLK_PARTITION_START_nn&quot; 
       &quot;SCLK_PARTITION_END_nn&quot;
  
-   The start and stop times returned are in encoded units of &quot;ticks.&quot; 
+   The start and stop times returned are in units of &quot;ticks.&quot; 
  </PRE>
 <h4><a name="Examples">Examples</a></h4>
 <PRE>
@@ -250,6 +250,10 @@
  </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
+   -CSPICE Version 1.1.1, 19-MAR-2014   (NJB)
+
+      Minor header comment updates were made.
+
    -CSPICE Version 1.1.0, 11-FEB-2008   (NJB)
 
       Definition of constant macro MXPART was deleted.
@@ -276,7 +280,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Jun  9 13:05:29 2010</pre>
+   <pre>Wed Apr  5 17:54:42 2017</pre>
 
 </body>
 </html>

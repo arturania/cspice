@@ -64,7 +64,7 @@
 /*              MSG indicates the type of error that has occurred. */
 
 /*              The exact format that MSG must follow is */
-/*              described in the required reading file, ERROR.REQ. */
+/*              described in the required reading file, error.req. */
 
 /* $ Detailed_Output */
 
@@ -126,6 +126,10 @@
 /*      N.J. Bachman    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.2, 18-APR-2014 (BVS) */
+
+/*        Minor header edits. */
 
 /* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
 

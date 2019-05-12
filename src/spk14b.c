@@ -70,9 +70,6 @@ static integer c__3 = 3;
 
 /* $ Declarations */
 
-/*     Include the mnemonics for the generic segments routines. */
-
-
 /* $ Abstract */
 
 /*     Parameter declarations for the generic segments subroutines. */
@@ -515,6 +512,23 @@ static integer c__3 = 3;
 /*     This subroutine makes use of parameters defined in the file */
 /*     'sgparam.inc'. */
 
+/* $ Exceptions */
+
+/*     1) If the degree of the Chebyshev Polynomial to be used for this */
+/*        segment is negative, the error SPICE(INVALIDARGUMENT) will */
+/*        be signaled. */
+
+/*     2) Errors in the structure or content of the inputs other than the */
+/*        degree of the Chebyshev Polynomial are diagnosed by routines */
+/*        called by this one. */
+
+/*     3) File access errors are diagnosed by routines in the call tree */
+/*        of this routine. */
+
+/* $ Files */
+
+/*      See HANDLE in the $ Detailed_Input section. */
+
 /* $ Particulars */
 
 /*     This routine begins writing a type 14 SPK segment to the open SPK */
@@ -725,32 +739,20 @@ static integer c__3 = 3;
 /*     segment must be ended before another segment may be started in */
 /*     the file. */
 
-/* $ Exceptions */
-
-/*     1) If the degree of the Chebyshev Polynomial to be used for this */
-/*        segment is negative, the error SPICE(INVALIDARGUMENT) will */
-/*        be signalled. */
-
-/*     2) Errors in the structure or content of the inputs other than the */
-/*        degree of the Chebyshev Polynomial are diagnosed by routines */
-/*        called by this one. */
-
-/*     3) File access errors are diagnosed by routines in the call tree */
-/*        of this routine. */
-
-/* $ Files */
-
-/*      See HANDLE in the $ Detailed_Input section. */
-
-/* $ Author_and_Institution */
-
-/*      K.R. Gehringer      (JPL) */
-
 /* $ Literature_References */
 
 /*      None. */
 
+/* $ Author_and_Institution */
+
+/*      K.R. Gehringer      (JPL) */
+/*      B.V. Semenov        (JPL) */
+
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.2, 10-FEB-2014 (BVS) */
+
+/*        Removed comments from the Declarations section. */
 
 /* -    SPICELIB Version 1.0.1, 30-OCT-2006 (BVS) */
 
@@ -766,7 +768,7 @@ static integer c__3 = 3;
 
 /* -& */
 
-/*     Spicelib functions */
+/*     SPICELIB functions */
 
 
 /*     Local Parameters */

@@ -227,6 +227,10 @@
  
 -Version
 
+   -CSPICE Version 1.3.3,  17-JAN-2014 (NJB)
+
+      Updated Index_Entries section.
+ 
    -CSPICE Version 1.3.2,  10-FEB-2010 (EDW)
 
       Added mention of the restriction on kernel pool variable 
@@ -256,7 +260,7 @@
 
 -Index_Entries
  
-   Set the value of a character kernel pool variable 
+   Set the value of a character_variable in the kernel_pool 
  
 -&
 */

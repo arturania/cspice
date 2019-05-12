@@ -91,10 +91,6 @@
 
 /*      None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     Error free. */
@@ -105,6 +101,10 @@
 
 /*     3) If the total size of the summary is greater than 125 double */
 /*        precision words, some components may not be stored. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -131,14 +131,20 @@
 
 /* $ Literature_References */
 
-/*     NAIF Document 167.0, "Double Precision Array Files (DAF) */
-/*     Specification and User's Guide" */
+/*     None. */
 
 /* $ Author_and_Institution */
 
 /*     I.M. Underwood  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.3, 10-OCT-2012 (EDW) */
+
+/*        Removed the obsolete Reference citation to "NAIF */
+/*        Document 167.0." */
+
+/*        Corrected ordering of header section. */
 
 /* -    SPICELIB Version 1.0.2, 10-MAR-1992 (WLT) */
 
@@ -266,10 +272,6 @@ L_dafus:
 
 /*      None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     Error free. */
@@ -281,6 +283,10 @@ L_dafus:
 
 /*     3) If the total size of the summary is greater than 125 double */
 /*        precision words, some components may not be returned. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -299,7 +305,113 @@ L_dafus:
 
 /* $ Examples */
 
-/*     Maybe later. */
+/*     Use a simple routine to output the double precision and integer */
+/*     values stored in an SPK's segments descriptors. This function */
+/*     opens a DAF for read, performs a forwards search for the DAF */
+/*     arrays, prints segments description for each array found, then */
+/*     closes the DAF. */
+
+/*           PROGRAM DAF_T */
+
+/*           INTEGER             HANDLE */
+
+/*     C */
+/*     C     Define the summary parameters appropriate */
+/*     C     for an SPK file. */
+/*     C */
+/*           INTEGER             ND */
+/*           PARAMETER         ( ND = 2 ) */
+
+/*           INTEGER             NI */
+/*           PARAMETER         ( NI = 6 ) */
+
+/*           INTEGER             IC( NI ) */
+
+/*           DOUBLE PRECISION    DC( ND ) */
+
+/*           CHARACTER*(32)      KERNEL */
+
+/*           LOGICAL             FOUND */
+
+
+/*     C */
+/*     C     Open a DAF for read. Return a HANDLE referring to the file. */
+/*     C */
+/*           KERNEL = 'de421.bsp' */
+/*           CALL DAFOPR ( KERNEL, HANDLE ) */
+
+/*     C */
+/*     C     Begin a forward search on the file. */
+/*     C */
+/*           CALL DAFBFS ( HANDLE ) */
+
+/*     C */
+/*     C     Search until a DAF array is found. */
+/*     C */
+/*           CALL DAFFNA ( FOUND ) */
+
+/*     C */
+/*     C     Loop while the search finds subsequent DAF arrays. */
+/*     C */
+/*           DO WHILE ( FOUND ) */
+
+/*              CALL DAFGS ( SUM ) */
+/*              CALL DAFUS ( SUM, ND, NI, DC, IC ) */
+
+/*              WRITE(*,*)                'Doubles: ', DC(1:ND) */
+/*              WRITE(*, FMT='(A,6I9)' ) 'Integers: ', IC(1:NI) */
+
+/*     C */
+/*     C        Check for another segment. */
+/*     C */
+/*              CALL DAFFNA ( FOUND ) */
+
+/*           END DO */
+
+/*     C */
+/*     C     Safely close the DAF. */
+/*     C */
+/*           CALL DAFCLS ( HANDLE ) */
+
+/*           END */
+
+/*     The program outputs: */
+
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         1        0        1        2      641   310404 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         2        0        1        2   310405   423048 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         3        0        1        2   423049   567372 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         4        0        1        2   567373   628976 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         5        0        1        2   628977   674740 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         6        0        1        2   674741   715224 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         7        0        1        2   715225   750428 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         8        0        1        2   750429   785632 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         9        0        1        2   785633   820836 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:        10        0        1        2   820837   944040 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:       301        3        1        2   944041  1521324 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:       399        3        1        2  1521325  2098608 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:       199        1        1        2  2098609  2098620 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:       299        2        1        2  2098621  2098632 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:       499        4        1        2  2098633  2098644 */
+
+/*      Note, the final entries in the integer array contains the segment */
+/*      start/end indexes. The output indicates the search proceeded */
+/*      from the start of the file (low value index) towards the end */
+/*      (high value index). */
 
 /* $ Restrictions */
 
@@ -307,14 +419,22 @@ L_dafus:
 
 /* $ Literature_References */
 
-/*     NAIF Document 167.0, "Double Precision Array Files (DAF) */
-/*     Specification and User's Guide" */
+/*     None. */
 
 /* $ Author_and_Institution */
 
 /*     I.M. Underwood  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.3, 10-OCT-2012 (EDW) */
+
+/*        Added a functional code example to the Examples section. */
+
+/*        Removed the obsolete Reference citation to "NAIF */
+/*        Document 167.0." */
+
+/*        Corrected ordering of header section. */
 
 /* -    SPICELIB Version 1.0.2, 10-MAR-1992 (WLT) */
 

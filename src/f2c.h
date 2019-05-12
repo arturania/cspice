@@ -109,6 +109,25 @@
    
 -Version
 
+   -CSPICE Version 4.2.0, 09-APR-2014 (EDW) (BVS)
+
+      Added include for SpiceZrnm.h to eliminate symbol conflict
+      encountered from Icy and JNISpice under OS X 10.7.
+      
+      Minor text format correction to eliminate error signal from
+      OS X cpp. The edit removes leading whitespace from the
+      final "#endif".
+
+      Updated for:
+       
+         PC-CYGWIN-64BIT-GCC_C
+          
+      environment. Added the corresponding tag:
+       
+         CSPICE_PC_CYGWIN_64BIT_GCC
+
+      tag to the #ifdefs set.
+        
    -CSPICE Version 4.1.0, 14-MAY-2010 (EDW)(BVS)
 
        Updated for:
@@ -154,12 +173,21 @@
 */
 
 
-   /*
-   Optionally include name-mangling macros for f2c external symbols.
-   */
-   #ifdef MIX_C_AND_FORTRAN
-      #include "f2cMang.h"
-   #endif
+/*
+Include those rename assignments for routines whose symbols will
+collide with other libraries.
+*/
+#ifndef   HAVE_SPICERENAME_H
+#include "SpiceZrnm.h"
+#endif
+
+
+/*
+Optionally include name-mangling macros for f2c external symbols.
+*/
+#ifdef MIX_C_AND_FORTRAN
+#include "f2cMang.h"
+#endif
 
 
    /*
@@ -173,6 +201,7 @@
       || defined(CSPICE_SUN_SOLARIS_64BIT_NATIVE   ) \
       || defined(CSPICE_MAC_OSX_INTEL_64BIT_GCC    ) \
       || defined(CSPICE_SUN_SOLARIS_INTEL_64BIT_CC ) \
+      || defined(CSPICE_PC_CYGWIN_64BIT_GCC        ) \
       || defined(CSPICE_PC_LINUX_64BIT_GCC         )   )
    
 
@@ -650,5 +679,5 @@ typedef doublereal E_f; /* real function with -R not specified */
 #endif
 
 
-   #endif
+#endif
 

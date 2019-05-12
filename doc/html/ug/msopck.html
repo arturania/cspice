@@ -79,7 +79,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> MSOPCK User's Guide
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2008 FEB 07 by B. V. Semenov.
+   Last revised on 2017 FEB 09 by B. V. Semenov.
 <P>
  
 <BR><BR>
@@ -360,6 +360,7 @@ ftp://naif.jpl.nasa.gov/pub/naif/misc/Quaternion_White_Paper
    OFFSET_ROTATION_UNITS  = 'DEGREES' or 'RADIANS'
    DOWN_SAMPLE_TOLERANCE  = angle, in radian
    INCLUDE_INTERVAL_TABLE = 'YES' or 'NO'
+   CHECK_TIME_ORDER       = 'YES' or 'NO'
    PRODUCER_ID            = 'string identifying producer'
 </PRE>
    each of which falls into one or more of the following categories
@@ -512,6 +513,17 @@ the angular velocity X, Y, and Z components to be used to filter out
 input points with bad angular velocities. The values of this keyword
 must be specified in radians per second. This keyword is optional; if
 it is not present no filtering is performed.<BR>
+</DL>
+<DL><DT>
+<B>
+ CHECK_TIME_ORDER
+</B><BR><BR>
+<DD>
+ specifies whether the program should check if the input data records
+are time-ordered and report an error if not. The check is done if this
+keyword is set to 'YES'. The check is not done if this keyword is set
+to 'NO'. This keyword is optional; if it is not present no checking is
+performed.<BR>
 </DL>
 <DL><DT>
 <B>
@@ -818,6 +830,7 @@ additional details about downsampling of the input data.<BR>
    OFFSET_ROTATION_UNITS   optional
    DOWN_SAMPLE_TOLERANCE   optional
    INCLUDE_INTERVAL_TABLE  optional
+   CHECK_TIME_ORDER        optional
 </PRE>
 <BR><BR>
 <A NAME="Additional Kernels"></A>
@@ -918,10 +931,21 @@ be used for it.
 <P>
  
    The lines in the input file must be ordered by time; lines with
-   identical time tags are not allowed. If the input file contains Type 2
-   data with two time tags (begin time and end time), the end time must be
-   equal to or greater than the begin time of that record and it must be
-   less than or equal to the begin time of the next record.
+   identical time tags are not allowed. The program can be directed to
+   check for time order and no duplicates conditions and stop if these
+   conditions are not met by setting the CHECK_TIME_ORDER keyword to 'YES'.
+   If this keyword is not present or set to 'NO' the program does not check
+   time order and duplicates as it reads the input file and sorts each
+   buffered chunk of 100,000 records before writing it to the output CK
+   file as separate segment. The duplicate times are still detected and
+   cause the program to stop with an error when the low level CK writers
+   routines called by the program attempt to write segments to the file.
+<P>
+ 
+   If the input file contains Type 2 data with two time tags (begin time
+   and end time), the end time must be equal to or greater than the begin
+   time of that record and it must be less than or equal to the begin time
+   of the next record.
 <P>
  
    The items provided on each input line must be separated by one or more

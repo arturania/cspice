@@ -78,7 +78,7 @@ static logical c_false = FALSE_;
 /*              MSG indicates the type of error that has occurred. */
 
 /*              The exact format that MSG must follow is */
-/*              described in the required reading file, ERROR.REQ. */
+/*              described in the required reading file, error.req. */
 /*              Only the first 25 characters of MSG will be stored; */
 /*              additional characters will be truncated. */
 
@@ -217,28 +217,32 @@ static logical c_false = FALSE_;
 
 /* $ Version */
 
-/* -     SPICELIB Version 2.1.0, 26-JUL-1996 (KRG) */
+/* -    SPICELIB Version 2.1.1, 18-APR-2014 (BVS) */
 
-/*         The STOP statement in this subroutine has been replaced */
-/*         with a call to the subroutine BYEBYE which passes a failure */
-/*         status to the operating system or command shell/environment */
-/*         on all platforms which support this capability. */
+/*        Minor header edits. */
 
-/* -     SPICELIB Version 2.0.0, 22-APR-1996 (KRG) */
+/* -    SPICELIB Version 2.1.0, 26-JUL-1996 (KRG) */
 
-/*         This subroutine has been modified in an attempt to improve */
-/*         the general performance of the SPICELIB error handling */
-/*         mechanism. The specific modification has been to change the */
-/*         type of the error action from a short character string to an */
-/*         integer. This change is backwardly incompatible because the */
-/*         type has changed. */
+/*        The STOP statement in this subroutine has been replaced */
+/*        with a call to the subroutine BYEBYE which passes a failure */
+/*        status to the operating system or command shell/environment */
+/*        on all platforms which support this capability. */
 
-/* -     SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+/* -    SPICELIB Version 2.0.0, 22-APR-1996 (KRG) */
 
-/*         Comment section for permuted index source lines was added */
-/*         following the header. */
+/*        This subroutine has been modified in an attempt to improve */
+/*        the general performance of the SPICELIB error handling */
+/*        mechanism. The specific modification has been to change the */
+/*        type of the error action from a short character string to an */
+/*        integer. This change is backwardly incompatible because the */
+/*        type has changed. */
 
-/* -     SPICELIB Version 1.0.0, 31-JAN-1990 (NJB) */
+/* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
+
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (NJB) */
 
 /* -& */
 /* $ Index_Entries */

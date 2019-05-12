@@ -9,7 +9,7 @@
 
 static integer c__3 = 3;
 static integer c__255 = 255;
-static integer c__1300 = 1300;
+static integer c__5300 = 5300;
 static integer c__1 = 1;
 
 /* $Procedure KEEPER ( Keeps track of SPICE kernels ) */
@@ -24,7 +24,7 @@ static integer c__1 = 1;
     static integer loaded = 0;
 
     /* System generated locals */
-    integer i__1, i__2, i__3, i__4, i__5, i__6, i__7;
+    integer i__1, i__2, i__3, i__4, i__5, i__6, i__7, i__8;
 
     /* Builtin functions */
     /* Subroutine */ int s_copy(char *, char *, ftnlen, ftnlen);
@@ -33,40 +33,45 @@ static integer c__1 = 1;
 
     /* Local variables */
     logical dock, doek;
+    integer fidx, lidx;
     char norc[1];
-    integer hits, size, b, d__, e, i__, j, k, n;
+    integer hits, size;
+    extern /* Subroutine */ int zzdsklsf_(char *, integer *, ftnlen);
+    integer b;
+    extern /* Subroutine */ int zzdskusf_(integer *);
+    integer d__, e, i__, j, k, n;
     logical didck, didek;
     integer r__;
     extern /* Subroutine */ int eklef_(char *, integer *, ftnlen), chkin_(
 	    char *, ftnlen), ekuef_(integer *);
     logical dopck;
     extern /* Subroutine */ int cklpf_(char *, integer *, ftnlen);
-    static char files[255*1300];
+    static char files[255*5300];
+    logical dodsk;
     extern /* Subroutine */ int errch_(char *, char *, ftnlen, ftnlen), 
 	    repmc_(char *, char *, char *, char *, ftnlen, ftnlen, ftnlen, 
 	    ftnlen), ckupf_(integer *);
-    static integer srces[1300];
+    static integer srces[5300];
     logical dospk, paths, gotit;
     static char known[32*3];
     extern integer rtrim_(char *, ftnlen);
     extern logical eqstr_(char *, char *, ftnlen, ftnlen);
-    integer n1, n2, n3, start;
-    static char types[8*1300];
+    integer n1, n2, n3, nmult, start;
+    static char types[8*5300];
     char fil2ld[255];
     extern logical failed_(void);
-    logical ok, didpck;
+    logical ok, didpck, diddsk;
     extern /* Subroutine */ int remlac_(integer *, integer *, char *, integer 
 	    *, ftnlen);
-    static integer handls[1300];
+    static integer handls[5300];
     logical dometa;
     extern integer isrchc_(char *, integer *, char *, ftnlen, ftnlen);
     char nofile[500];
     integer dollar, fnmlen, myhand;
-    logical didspk, update;
+    logical didspk, single, update;
     extern /* Subroutine */ int gcpool_(char *, integer *, integer *, integer 
 	    *, char *, logical *, ftnlen, ftnlen), fndnwd_(char *, integer *, 
-	    integer *, integer *, ftnlen), pckuof_(integer *), clpool_(void), 
-	    remlai_(integer *, integer *, integer *, integer *);
+	    integer *, integer *, ftnlen), pckuof_(integer *), clpool_(void);
     extern logical samsub_(char *, integer *, integer *, char *, integer *, 
 	    integer *, ftnlen, ftnlen);
     integer filnum;
@@ -83,12 +88,15 @@ static integer c__1 = 1;
 	    char *, integer *, ftnlen), swpool_(char *, integer *, char *, 
 	    ftnlen, ftnlen), dtpool_(char *, logical *, integer *, char *, 
 	    ftnlen, ftnlen), stpool_(char *, integer *, char *, char *, 
-	    integer *, logical *, ftnlen, ftnlen, ftnlen), repsub_(char *, 
-	    integer *, integer *, char *, char *, ftnlen, ftnlen, ftnlen), 
-	    repmot_(char *, char *, integer *, char *, char *, ftnlen, ftnlen,
-	     ftnlen, ftnlen), dvpool_(char *, ftnlen);
+	    integer *, logical *, ftnlen, ftnlen, ftnlen), sepool_(char *, 
+	    integer *, char *, char *, integer *, integer *, logical *, 
+	    ftnlen, ftnlen, ftnlen), repsub_(char *, integer *, integer *, 
+	    char *, char *, ftnlen, ftnlen, ftnlen), repmot_(char *, char *, 
+	    integer *, char *, char *, ftnlen, ftnlen, ftnlen, ftnlen), 
+	    dvpool_(char *, ftnlen);
     char thstyp[8];
-    extern /* Subroutine */ int spkuef_(integer *), ldpool_(char *, ftnlen), 
+    extern /* Subroutine */ int spkuef_(integer *), remlai_(integer *, 
+	    integer *, integer *, integer *), ldpool_(char *, ftnlen), 
 	    spklef_(char *, integer *, ftnlen), pcklof_(char *, integer *, 
 	    ftnlen);
     logical add, fnd;
@@ -167,7 +175,8 @@ static integer c__1 = 1;
 
 
 /*     MAXFIL    is the number of entries that can be stored in KEEPER's */
-/*               kernel database.  Each time a kernel is loaded via */
+/*               kernel database. In this version of the toolkit MAXFIL */
+/*               is set to 5300. Each time a kernel is loaded via */
 /*               FURNSH, a database entry is created for that kernel. */
 /*               If a meta-kernel is loaded, a database entry is created */
 /*               for the meta-kernel itself and for all files referenced */
@@ -189,15 +198,13 @@ static integer c__1 = 1;
 /*               that may be loaded. */
 
 /*               The total number of DAF-based files (this set includes */
-/*               SPKs, CKs, and binary PCKs) that may be loaded at any */
-/*               time may not exceed 1000.  This limit applies whether */
+/*               SPKs, CKs, and binary PCKs) and DAS-based files (this */
+/*               set includes EKs and DSKs) that may be loaded at any */
+/*               time may not exceed 5000.  This limit applies whether */
 /*               the files are loaded via FURNSH or lower-level loaders */
 /*               such as SPKLEF or DAFOPR.  File access performance */
 /*               normally will degrade as the number of loaded kernels */
 /*               increases. */
-
-/*               The total number of DAS-based files that may be loaded */
-/*               at any time is currently limited to 20 files. */
 
 /* $ Exceptions */
 
@@ -316,8 +323,42 @@ static integer c__1 = 1;
 /*     C.H. Acton      (JPL) */
 /*     N.J. Bachman    (JPL) */
 /*     W.L. Taber      (JPL) */
+/*     B.V. Semenov    (JPL) */
+/*     E.D. Wright     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 5.0.0, 01-FEB-2017 (NJB) (BVS) */
+
+/*        Updated to support use of DSKs. */
+
+/*        Bug fix: now unloads binary kernels via low-level */
+/*        unload routines only when those kernels have just */
+/*        one entry in the KEEPER database. */
+
+/*        Updated description of MAXFIL in the header. */
+
+/*        Updated the Author_and_Institution section. */
+
+/* -    SPICELIB Version 4.1.0, 01-JUL-2014 (NJB) (BVS) */
+
+/*        Updated the discussion of kernel variable watches in entry */
+/*        points KCLEAR and UNLOAD. Added to the FURNSH header mention */
+/*        of the effects of failure during text kernel or meta-kernel */
+/*        loading. */
+
+/*     Last update was 12-APR-2012 (BVS) */
+
+/*        Increased FTSIZE (from 1000 to 5000). */
+
+/*        Changed to use SEPOOL instead of STPOOL to reduce loading time */
+/*        for large meta-kernels due to n^2 delay in STPOOL. */
+
+/* -    SPICELIB Version 4.0.2, 13-APR-2011 (EDW) */
+
+/*        Trivial edit to KCLEAR Restrictions, replaced P*POOL with */
+/*        PXPOOL. The "*" character causes the HTML documentation */
+/*        script to create a link for the "POOL" substring. */
 
 /* -    SPICELIB Version 4.0.1, 10-FEB-2010 (EDW) */
 
@@ -569,7 +610,8 @@ L_furnsh:
 /*               accommodated by this routine. */
 
 /*     MAXFIL    is the number of entries that can be stored in KEEPER's */
-/*               kernel database.  Each time a kernel is loaded via */
+/*               kernel database. In this version of the toolkit MAXFIL */
+/*               is set to 5300. Each time a kernel is loaded via */
 /*               FURNSH, a database entry is created for that kernel. */
 /*               If a meta-kernel is loaded, a database entry is created */
 /*               for the meta-kernel itself and for all files referenced */
@@ -591,15 +633,13 @@ L_furnsh:
 /*               that may be loaded. */
 
 /*               The total number of DAF-based files (this set includes */
-/*               SPKs, CKs, and binary PCKs) that may be loaded at any */
-/*               time may not exceed 1000.  This limit applies whether */
+/*               SPKs, CKs, and binary PCKs) and DAS-based files (this */
+/*               set includes EKs and DSKs) that may be loaded at any */
+/*               time may not exceed 5000.  This limit applies whether */
 /*               the files are loaded via FURNSH or lower-level loaders */
 /*               such as SPKLEF or DAFOPR.  File access performance */
 /*               normally will degrade as the number of loaded kernels */
 /*               increases. */
-
-/*               The total number of DAS-based files that may be loaded */
-/*               at any time is currently limited to 20 files. */
 
 /* $ Exceptions */
 
@@ -615,33 +655,38 @@ L_furnsh:
 /*        files loaded prior to encountering the missing file will */
 /*        remain loaded. */
 
-/*     3) If a PATH_SYMBOLS assignment is specified without a */
+/*     3) If an attempt to load a text kernel fails while the kernel is */
+/*        being parsed, any kernel variable assignments made before */
+/*        the failure occurred will be retained in the kernel pool. */
+
+/*     4) If a PATH_SYMBOLS assignment is specified without a */
 /*        corresponding PATH_VALUES assignment, the error */
 /*        SPICE(NOPATHVALUE) will be signaled. */
 
-/*     4) If a meta-text kernel is supplied to FURNSH that contains */
+/*     5) If a meta-text kernel is supplied to FURNSH that contains */
 /*        instructions specifying that another meta-text kernel be */
 /*        loaded, the error SPICE(RECURSIVELOADING) will be signaled. */
 
-/*     5) If the input file name has non-blank length exceeding FILSIZ */
+/*     6) If the input file name has non-blank length exceeding FILSIZ */
 /*        characters, the error SPICE(FILENAMETOOLONG) is signaled. */
 
-/*     6) If the input file is a meta-kernel and some file in the */
+/*     7) If the input file is a meta-kernel and some file in the */
 /*        KERNELS_TO_LOAD assignment has name length exceeding FILSIZ */
 /*        characters, the error SPICE(FILENAMETOOLONG) is signaled. */
 
-/*     7) If the input file is a meta-kernel and some value in the */
+/*     8) If the input file is a meta-kernel and some value in the */
 /*        PATH_VALUES assignment has length exceeding FILSIZ */
 /*        characters, the error SPICE(PATHTOOLONG) is signaled. */
 
-/*     8) If the input file is a meta-kernel and some file in the */
+/*     9) If the input file is a meta-kernel and some file in the */
 /*        KERNELS_TO_LOAD assignment has, after symbol substitution, */
 /*        combined name and path length exceeding FILSIZ characters, the */
 /*        error SPICE(FILENAMETOOLONG) is signaled. */
 
-/*     9) The error 'SPICE(BADVARNAME)' signals from a routine in the */
+/*    10) The error 'SPICE(BADVARNAME)' signals from a routine in the */
 /*        call tree of FURNSH if a kernel pool variable name length */
 /*        exceeds MAXLEN characters (defined in pool.f). */
+
 
 /* $ Files */
 
@@ -814,7 +859,13 @@ L_furnsh:
 
 /* $ Restrictions */
 
-/*     None. */
+/*     1) A meta-kernel cannot reference another meta-kernel. */
+
+/*     2) Failure during an attempt to load a text kernel or a */
+/*        meta-kernel can result in a subset of the intended kernel */
+/*        variables being set or a subset of the intended files */
+/*        being loaded. FURNSH does not "clean up" so as to undo the */
+/*        effects of a failed load operation. */
 
 /* $ Literature_References */
 
@@ -824,9 +875,28 @@ L_furnsh:
 
 /*     C.H. Acton      (JPL) */
 /*     N.J. Bachman    (JPL) */
+/*     B.V. Semenov    (JPL) */
 /*     W.L. Taber      (JPL) */
+/*     E.D. Wright     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 5.0.0, 01-FEB-2017 (NJB) (BVS) */
+
+/*        Updated to support use of DSKs. */
+
+/*        Updated description of MAXFIL in the header. */
+
+/*        Updated the Author_and_Institution section. */
+
+/* -    SPICELIB Version 4.1.0, 01-JUL-2014 (NJB) (BVS) */
+
+/*        Updated discussion of partially completed kernel loading. */
+
+/*     Last update was 12-APR-2012 (BVS) */
+
+/*        Changed to use SEPOOL instead of STPOOL to reduce loading time */
+/*        for large meta-kernels due to n^2 delay in STPOOL. */
 
 /* -    SPICELIB Version 4.0.1, 10-FEB-2010 (EDW) */
 
@@ -913,13 +983,13 @@ L_furnsh:
 
 /*     Make sure we have room to load at least one more file. */
 
-    if (loaded == 1300) {
+    if (loaded == 5300) {
 	setmsg_("There is no room left in KEEPER to load another SPICE kerne"
 		"l.  The current limit on the number of files that can be loa"
 		"ded is #.  If you really need more than this many files, you"
 		" should increase the parameter MAXFIL in the subroutine KEEP"
 		"ER. ", (ftnlen)243);
-	errint_("#", &c__1300, (ftnlen)1);
+	errint_("#", &c__5300, (ftnlen)1);
 	sigerr_("SPICE(NOMOREROOM)", (ftnlen)17);
 	chkout_("FURNSH", (ftnlen)6);
 	return 0;
@@ -943,16 +1013,16 @@ L_furnsh:
     }
     ++loaded;
     cursrc = loaded;
-    s_copy(files + ((i__1 = loaded - 1) < 1300 && 0 <= i__1 ? i__1 : s_rnge(
-	    "files", i__1, "keeper_", (ftnlen)1001)) * 255, file, (ftnlen)255,
+    s_copy(files + ((i__1 = loaded - 1) < 5300 && 0 <= i__1 ? i__1 : s_rnge(
+	    "files", i__1, "keeper_", (ftnlen)1069)) * 255, file, (ftnlen)255,
 	     file_len);
-    s_copy(types + (((i__1 = loaded - 1) < 1300 && 0 <= i__1 ? i__1 : s_rnge(
-	    "types", i__1, "keeper_", (ftnlen)1002)) << 3), thstyp, (ftnlen)8,
+    s_copy(types + (((i__1 = loaded - 1) < 5300 && 0 <= i__1 ? i__1 : s_rnge(
+	    "types", i__1, "keeper_", (ftnlen)1070)) << 3), thstyp, (ftnlen)8,
 	     (ftnlen)8);
-    handls[(i__1 = loaded - 1) < 1300 && 0 <= i__1 ? i__1 : s_rnge("handls", 
-	    i__1, "keeper_", (ftnlen)1003)] = myhand;
-    srces[(i__1 = loaded - 1) < 1300 && 0 <= i__1 ? i__1 : s_rnge("srces", 
-	    i__1, "keeper_", (ftnlen)1004)] = 0;
+    handls[(i__1 = loaded - 1) < 5300 && 0 <= i__1 ? i__1 : s_rnge("handls", 
+	    i__1, "keeper_", (ftnlen)1071)] = myhand;
+    srces[(i__1 = loaded - 1) < 5300 && 0 <= i__1 ? i__1 : s_rnge("srces", 
+	    i__1, "keeper_", (ftnlen)1072)] = 0;
     cvpool_("FURNSH", &update, (ftnlen)6);
     if (! update) {
 
@@ -1017,15 +1087,16 @@ L_furnsh:
 /*     This kernel appears to be a legitimate meta-text kernel. Mark */
 /*     it as such and then process its contents. */
 
-    s_copy(types + (((i__1 = loaded - 1) < 1300 && 0 <= i__1 ? i__1 : s_rnge(
-	    "types", i__1, "keeper_", (ftnlen)1087)) << 3), "META", (ftnlen)8,
+    s_copy(types + (((i__1 = loaded - 1) < 5300 && 0 <= i__1 ? i__1 : s_rnge(
+	    "types", i__1, "keeper_", (ftnlen)1155)) << 3), "META", (ftnlen)8,
 	     (ftnlen)4);
 
 /*     Now load all kernels specified in the KERNELS_TO_LOAD variable. */
 
     filnum = 1;
-    stpool_("KERNELS_TO_LOAD", &filnum, "+", fil2ld, &fnmlen, &ok, (ftnlen)15,
-	     (ftnlen)1, (ftnlen)255);
+    fidx = 1;
+    sepool_("KERNELS_TO_LOAD", &fidx, "+", fil2ld, &fnmlen, &lidx, &ok, (
+	    ftnlen)15, (ftnlen)1, (ftnlen)255);
     while(ok && ! failed_()) {
 
 /*        Reject excessively long file names. */
@@ -1045,11 +1116,11 @@ L_furnsh:
 
 /*        Make sure we have room to load at least one more file. */
 
-	if (loaded == 1300) {
+	if (loaded == 5300) {
 	    setmsg_("There is no room left in KEEPER to load another SPICE k"
 		    "ernel. The current limit on the number of files that can"
 		    " be loaded is #.", (ftnlen)127);
-	    errint_("#", &c__1300, (ftnlen)1);
+	    errint_("#", &c__5300, (ftnlen)1);
 	    sigerr_("SPICE(NOMOREROOM)", (ftnlen)17);
 	    chkout_("FURNSH", (ftnlen)6);
 	    return 0;
@@ -1164,7 +1235,7 @@ L_furnsh:
 		for (i__ = 1; i__ <= 3; ++i__) {
 		    dvpool_(known + (((i__1 = i__ - 1) < 3 && 0 <= i__1 ? 
 			    i__1 : s_rnge("known", i__1, "keeper_", (ftnlen)
-			    1252)) << 5), (ftnlen)32);
+			    1322)) << 5), (ftnlen)32);
 		}
 
 /*              Take care of any watcher activation caused by the */
@@ -1190,21 +1261,22 @@ L_furnsh:
 /*        files. */
 
 	++loaded;
-	s_copy(files + ((i__1 = loaded - 1) < 1300 && 0 <= i__1 ? i__1 : 
-		s_rnge("files", i__1, "keeper_", (ftnlen)1284)) * 255, fil2ld,
+	s_copy(files + ((i__1 = loaded - 1) < 5300 && 0 <= i__1 ? i__1 : 
+		s_rnge("files", i__1, "keeper_", (ftnlen)1354)) * 255, fil2ld,
 		 (ftnlen)255, (ftnlen)255);
-	s_copy(types + (((i__1 = loaded - 1) < 1300 && 0 <= i__1 ? i__1 : 
-		s_rnge("types", i__1, "keeper_", (ftnlen)1285)) << 3), thstyp,
+	s_copy(types + (((i__1 = loaded - 1) < 5300 && 0 <= i__1 ? i__1 : 
+		s_rnge("types", i__1, "keeper_", (ftnlen)1355)) << 3), thstyp,
 		 (ftnlen)8, (ftnlen)8);
-	handls[(i__1 = loaded - 1) < 1300 && 0 <= i__1 ? i__1 : s_rnge("hand"
-		"ls", i__1, "keeper_", (ftnlen)1286)] = myhand;
-	srces[(i__1 = loaded - 1) < 1300 && 0 <= i__1 ? i__1 : s_rnge("srces",
-		 i__1, "keeper_", (ftnlen)1287)] = cursrc;
+	handls[(i__1 = loaded - 1) < 5300 && 0 <= i__1 ? i__1 : s_rnge("hand"
+		"ls", i__1, "keeper_", (ftnlen)1356)] = myhand;
+	srces[(i__1 = loaded - 1) < 5300 && 0 <= i__1 ? i__1 : s_rnge("srces",
+		 i__1, "keeper_", (ftnlen)1357)] = cursrc;
 
 /*        Get the name of the next file to load. */
 
 	++filnum;
-	stpool_("KERNELS_TO_LOAD", &filnum, "+", fil2ld, &fnmlen, &ok, (
+	fidx = lidx + 1;
+	sepool_("KERNELS_TO_LOAD", &fidx, "+", fil2ld, &fnmlen, &lidx, &ok, (
 		ftnlen)15, (ftnlen)1, (ftnlen)255);
     }
 
@@ -1212,7 +1284,7 @@ L_furnsh:
 
     for (i__ = 1; i__ <= 3; ++i__) {
 	dvpool_(known + (((i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge(
-		"known", i__1, "keeper_", (ftnlen)1303)) << 5), (ftnlen)32);
+		"known", i__1, "keeper_", (ftnlen)1374)) << 5), (ftnlen)32);
     }
     cvpool_("FURNSH", &update, (ftnlen)6);
     chkout_("FURNSH", (ftnlen)6);
@@ -1281,6 +1353,7 @@ L_ktotal:
 /*                   CK   --- all CK files are counted in the total. */
 /*                   PCK  --- all binary PCK files are counted in the */
 /*                            total. */
+/*                   DSK  --- all DSK files are counted in the total. */
 /*                   EK   --- all EK files are counted in the total. */
 /*                   TEXT --- all text kernels that are not meta-text */
 /*                            kernels are included in the total. */
@@ -1368,9 +1441,16 @@ L_ktotal:
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
+/*     B.V. Semenov    (JPL) */
 /*     W.L. Taber      (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 5.0.0, 01-FEB-2017 (NJB) (BVS) */
+
+/*        Updated to support use of DSKs. */
+
+/*        Updated the Author_and_Institution section. */
 
 /* -    SPICELIB Version 1.1.0, 02-APR-2009 (NJB) */
 
@@ -1395,6 +1475,7 @@ L_ktotal:
 
     dospk = FALSE_;
     dock = FALSE_;
+    dodsk = FALSE_;
     dotext = FALSE_;
     dometa = FALSE_;
     doek = FALSE_;
@@ -1409,6 +1490,8 @@ L_ktotal:
 	} else {
 	    dock = dock || eqstr_(kind + (b - 1), "CK", e - (b - 1), (ftnlen)
 		    2);
+	    dodsk = dodsk || eqstr_(kind + (b - 1), "DSK", e - (b - 1), (
+		    ftnlen)3);
 	    doek = doek || eqstr_(kind + (b - 1), "EK", e - (b - 1), (ftnlen)
 		    2);
 	    dometa = dometa || eqstr_(kind + (b - 1), "META", e - (b - 1), (
@@ -1426,22 +1509,25 @@ L_ktotal:
     *count = 0;
     i__1 = loaded;
     for (i__ = 1; i__ <= i__1; ++i__) {
-	add = s_cmp(types + (((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 : 
-		s_rnge("types", i__2, "keeper_", (ftnlen)1529)) << 3), "CK", (
+	add = s_cmp(types + (((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : 
+		s_rnge("types", i__2, "keeper_", (ftnlen)1610)) << 3), "CK", (
 		ftnlen)8, (ftnlen)2) == 0 && dock || s_cmp(types + (((i__3 = 
-		i__ - 1) < 1300 && 0 <= i__3 ? i__3 : s_rnge("types", i__3, 
-		"keeper_", (ftnlen)1529)) << 3), "EK", (ftnlen)8, (ftnlen)2) 
-		== 0 && doek || s_cmp(types + (((i__4 = i__ - 1) < 1300 && 0 
+		i__ - 1) < 5300 && 0 <= i__3 ? i__3 : s_rnge("types", i__3, 
+		"keeper_", (ftnlen)1610)) << 3), "DSK", (ftnlen)8, (ftnlen)3) 
+		== 0 && dodsk || s_cmp(types + (((i__4 = i__ - 1) < 5300 && 0 
 		<= i__4 ? i__4 : s_rnge("types", i__4, "keeper_", (ftnlen)
-		1529)) << 3), "META", (ftnlen)8, (ftnlen)4) == 0 && dometa || 
-		s_cmp(types + (((i__5 = i__ - 1) < 1300 && 0 <= i__5 ? i__5 : 
-		s_rnge("types", i__5, "keeper_", (ftnlen)1529)) << 3), "PCK", 
-		(ftnlen)8, (ftnlen)3) == 0 && dopck || s_cmp(types + (((i__6 =
-		 i__ - 1) < 1300 && 0 <= i__6 ? i__6 : s_rnge("types", i__6, 
-		"keeper_", (ftnlen)1529)) << 3), "SPK", (ftnlen)8, (ftnlen)3) 
-		== 0 && dospk || s_cmp(types + (((i__7 = i__ - 1) < 1300 && 0 
-		<= i__7 ? i__7 : s_rnge("types", i__7, "keeper_", (ftnlen)
-		1529)) << 3), "TEXT", (ftnlen)8, (ftnlen)4) == 0 && dotext;
+		1610)) << 3), "EK", (ftnlen)8, (ftnlen)2) == 0 && doek || 
+		s_cmp(types + (((i__5 = i__ - 1) < 5300 && 0 <= i__5 ? i__5 : 
+		s_rnge("types", i__5, "keeper_", (ftnlen)1610)) << 3), "META",
+		 (ftnlen)8, (ftnlen)4) == 0 && dometa || s_cmp(types + (((
+		i__6 = i__ - 1) < 5300 && 0 <= i__6 ? i__6 : s_rnge("types", 
+		i__6, "keeper_", (ftnlen)1610)) << 3), "PCK", (ftnlen)8, (
+		ftnlen)3) == 0 && dopck || s_cmp(types + (((i__7 = i__ - 1) < 
+		5300 && 0 <= i__7 ? i__7 : s_rnge("types", i__7, "keeper_", (
+		ftnlen)1610)) << 3), "SPK", (ftnlen)8, (ftnlen)3) == 0 && 
+		dospk || s_cmp(types + (((i__8 = i__ - 1) < 5300 && 0 <= i__8 
+		? i__8 : s_rnge("types", i__8, "keeper_", (ftnlen)1610)) << 3)
+		, "TEXT", (ftnlen)8, (ftnlen)4) == 0 && dotext;
 	if (add) {
 	    ++(*count);
 	}
@@ -1526,6 +1612,7 @@ L_kdata:
 
 /*                   SPK  --- All SPK files are counted in the total. */
 /*                   CK   --- All CK files are counted in the total. */
+/*                   DSK  --- All DSK files are counted in the total. */
 /*                   PCK  --- All binary PCK files are counted in the */
 /*                            total. */
 /*                   EK   --- All EK files are counted in the total. */
@@ -1623,9 +1710,17 @@ L_kdata:
 
 /* $ Author_and_Institution */
 
+/*     N.J. Bachman    (JPL) */
+/*     B.V. Semenov    (JPL) */
 /*     W.L. Taber      (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 5.0.0, 01-FEB-2017 (NJB) (BVS) */
+
+/*        Updated to support use of DSKs. */
+
+/*        Updated the Author_and_Institution section. */
 
 /* -    SPICELIB Version 1.1.0, 02-APR-2009 (NJB) */
 
@@ -1657,6 +1752,7 @@ L_kdata:
 
     dospk = FALSE_;
     dock = FALSE_;
+    dodsk = FALSE_;
     dotext = FALSE_;
     dometa = FALSE_;
     doek = FALSE_;
@@ -1670,26 +1766,28 @@ L_kdata:
 /*           variables right now. */
 
 	    *found = TRUE_;
-	    s_copy(file, files + ((i__1 = *which - 1) < 1300 && 0 <= i__1 ? 
-		    i__1 : s_rnge("files", i__1, "keeper_", (ftnlen)1774)) * 
+	    s_copy(file, files + ((i__1 = *which - 1) < 5300 && 0 <= i__1 ? 
+		    i__1 : s_rnge("files", i__1, "keeper_", (ftnlen)1866)) * 
 		    255, file_len, (ftnlen)255);
-	    s_copy(filtyp, types + (((i__1 = *which - 1) < 1300 && 0 <= i__1 ?
-		     i__1 : s_rnge("types", i__1, "keeper_", (ftnlen)1775)) <<
+	    s_copy(filtyp, types + (((i__1 = *which - 1) < 5300 && 0 <= i__1 ?
+		     i__1 : s_rnge("types", i__1, "keeper_", (ftnlen)1867)) <<
 		     3), filtyp_len, (ftnlen)8);
-	    *handle = handls[(i__1 = *which - 1) < 1300 && 0 <= i__1 ? i__1 : 
-		    s_rnge("handls", i__1, "keeper_", (ftnlen)1776)];
-	    if (srces[(i__1 = *which - 1) < 1300 && 0 <= i__1 ? i__1 : s_rnge(
-		    "srces", i__1, "keeper_", (ftnlen)1778)] != 0) {
+	    *handle = handls[(i__1 = *which - 1) < 5300 && 0 <= i__1 ? i__1 : 
+		    s_rnge("handls", i__1, "keeper_", (ftnlen)1868)];
+	    if (srces[(i__1 = *which - 1) < 5300 && 0 <= i__1 ? i__1 : s_rnge(
+		    "srces", i__1, "keeper_", (ftnlen)1870)] != 0) {
 		s_copy(source, files + ((i__2 = srces[(i__1 = *which - 1) < 
-			1300 && 0 <= i__1 ? i__1 : s_rnge("srces", i__1, 
-			"keeper_", (ftnlen)1779)] - 1) < 1300 && 0 <= i__2 ? 
-			i__2 : s_rnge("files", i__2, "keeper_", (ftnlen)1779))
+			5300 && 0 <= i__1 ? i__1 : s_rnge("srces", i__1, 
+			"keeper_", (ftnlen)1871)] - 1) < 5300 && 0 <= i__2 ? 
+			i__2 : s_rnge("files", i__2, "keeper_", (ftnlen)1871))
 			 * 255, source_len, (ftnlen)255);
 	    }
 	    return 0;
 	} else {
 	    dock = dock || eqstr_(kind + (b - 1), "CK", e - (b - 1), (ftnlen)
 		    2);
+	    dodsk = dodsk || eqstr_(kind + (b - 1), "DSK", e - (b - 1), (
+		    ftnlen)3);
 	    doek = doek || eqstr_(kind + (b - 1), "EK", e - (b - 1), (ftnlen)
 		    2);
 	    dometa = dometa || eqstr_(kind + (b - 1), "META", e - (b - 1), (
@@ -1711,22 +1809,25 @@ L_kdata:
     hits = 0;
     i__1 = loaded;
     for (i__ = 1; i__ <= i__1; ++i__) {
-	add = s_cmp(types + (((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 : 
-		s_rnge("types", i__2, "keeper_", (ftnlen)1805)) << 3), "CK", (
+	add = s_cmp(types + (((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : 
+		s_rnge("types", i__2, "keeper_", (ftnlen)1898)) << 3), "CK", (
 		ftnlen)8, (ftnlen)2) == 0 && dock || s_cmp(types + (((i__3 = 
-		i__ - 1) < 1300 && 0 <= i__3 ? i__3 : s_rnge("types", i__3, 
-		"keeper_", (ftnlen)1805)) << 3), "EK", (ftnlen)8, (ftnlen)2) 
-		== 0 && doek || s_cmp(types + (((i__4 = i__ - 1) < 1300 && 0 
+		i__ - 1) < 5300 && 0 <= i__3 ? i__3 : s_rnge("types", i__3, 
+		"keeper_", (ftnlen)1898)) << 3), "DSK", (ftnlen)8, (ftnlen)3) 
+		== 0 && dodsk || s_cmp(types + (((i__4 = i__ - 1) < 5300 && 0 
 		<= i__4 ? i__4 : s_rnge("types", i__4, "keeper_", (ftnlen)
-		1805)) << 3), "META", (ftnlen)8, (ftnlen)4) == 0 && dometa || 
-		s_cmp(types + (((i__5 = i__ - 1) < 1300 && 0 <= i__5 ? i__5 : 
-		s_rnge("types", i__5, "keeper_", (ftnlen)1805)) << 3), "PCK", 
-		(ftnlen)8, (ftnlen)3) == 0 && dopck || s_cmp(types + (((i__6 =
-		 i__ - 1) < 1300 && 0 <= i__6 ? i__6 : s_rnge("types", i__6, 
-		"keeper_", (ftnlen)1805)) << 3), "SPK", (ftnlen)8, (ftnlen)3) 
-		== 0 && dospk || s_cmp(types + (((i__7 = i__ - 1) < 1300 && 0 
-		<= i__7 ? i__7 : s_rnge("types", i__7, "keeper_", (ftnlen)
-		1805)) << 3), "TEXT", (ftnlen)8, (ftnlen)4) == 0 && dotext;
+		1898)) << 3), "EK", (ftnlen)8, (ftnlen)2) == 0 && doek || 
+		s_cmp(types + (((i__5 = i__ - 1) < 5300 && 0 <= i__5 ? i__5 : 
+		s_rnge("types", i__5, "keeper_", (ftnlen)1898)) << 3), "META",
+		 (ftnlen)8, (ftnlen)4) == 0 && dometa || s_cmp(types + (((
+		i__6 = i__ - 1) < 5300 && 0 <= i__6 ? i__6 : s_rnge("types", 
+		i__6, "keeper_", (ftnlen)1898)) << 3), "PCK", (ftnlen)8, (
+		ftnlen)3) == 0 && dopck || s_cmp(types + (((i__7 = i__ - 1) < 
+		5300 && 0 <= i__7 ? i__7 : s_rnge("types", i__7, "keeper_", (
+		ftnlen)1898)) << 3), "SPK", (ftnlen)8, (ftnlen)3) == 0 && 
+		dospk || s_cmp(types + (((i__8 = i__ - 1) < 5300 && 0 <= i__8 
+		? i__8 : s_rnge("types", i__8, "keeper_", (ftnlen)1898)) << 3)
+		, "TEXT", (ftnlen)8, (ftnlen)4) == 0 && dotext;
 	if (add) {
 	    ++hits;
 
@@ -1735,22 +1836,22 @@ L_kdata:
 
 	    if (hits == *which) {
 		*found = TRUE_;
-		s_copy(file, files + ((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? 
-			i__2 : s_rnge("files", i__2, "keeper_", (ftnlen)1822))
+		s_copy(file, files + ((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? 
+			i__2 : s_rnge("files", i__2, "keeper_", (ftnlen)1916))
 			 * 255, file_len, (ftnlen)255);
-		s_copy(filtyp, types + (((i__2 = i__ - 1) < 1300 && 0 <= i__2 
+		s_copy(filtyp, types + (((i__2 = i__ - 1) < 5300 && 0 <= i__2 
 			? i__2 : s_rnge("types", i__2, "keeper_", (ftnlen)
-			1823)) << 3), filtyp_len, (ftnlen)8);
-		*handle = handls[(i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 :
-			 s_rnge("handls", i__2, "keeper_", (ftnlen)1824)];
-		if (srces[(i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 : 
-			s_rnge("srces", i__2, "keeper_", (ftnlen)1826)] != 0) 
+			1917)) << 3), filtyp_len, (ftnlen)8);
+		*handle = handls[(i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 :
+			 s_rnge("handls", i__2, "keeper_", (ftnlen)1918)];
+		if (srces[(i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : 
+			s_rnge("srces", i__2, "keeper_", (ftnlen)1920)] != 0) 
 			{
 		    s_copy(source, files + ((i__3 = srces[(i__2 = i__ - 1) < 
-			    1300 && 0 <= i__2 ? i__2 : s_rnge("srces", i__2, 
-			    "keeper_", (ftnlen)1827)] - 1) < 1300 && 0 <= 
+			    5300 && 0 <= i__2 ? i__2 : s_rnge("srces", i__2, 
+			    "keeper_", (ftnlen)1921)] - 1) < 5300 && 0 <= 
 			    i__3 ? i__3 : s_rnge("files", i__3, "keeper_", (
-			    ftnlen)1827)) * 255, source_len, (ftnlen)255);
+			    ftnlen)1921)) * 255, source_len, (ftnlen)255);
 		}
 		return 0;
 	    }
@@ -1931,9 +2032,17 @@ L_kinfo:
 
 /* $ Author_and_Institution */
 
+/*     N.J. Bachman    (JPL) */
+/*     B.V. Semenov    (JPL) */
 /*     W.L. Taber      (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 5.0.0, 01-FEB-2017 (NJB) (BVS) */
+
+/*        Updated to support use of DSKs. */
+
+/*        Updated the Author_and_Institution section. */
 
 /* -    SPICELIB Version 1.0.0, 01-JUL-1999 (WLT) */
 
@@ -1951,17 +2060,17 @@ L_kinfo:
     i__ = isrchc_(file, &loaded, files, file_len, (ftnlen)255);
     if (i__ > 0) {
 	*found = TRUE_;
-	s_copy(filtyp, types + (((i__1 = i__ - 1) < 1300 && 0 <= i__1 ? i__1 :
-		 s_rnge("types", i__1, "keeper_", (ftnlen)2041)) << 3), 
+	s_copy(filtyp, types + (((i__1 = i__ - 1) < 5300 && 0 <= i__1 ? i__1 :
+		 s_rnge("types", i__1, "keeper_", (ftnlen)2143)) << 3), 
 		filtyp_len, (ftnlen)8);
-	*handle = handls[(i__1 = i__ - 1) < 1300 && 0 <= i__1 ? i__1 : s_rnge(
-		"handls", i__1, "keeper_", (ftnlen)2042)];
-	if (srces[(i__1 = i__ - 1) < 1300 && 0 <= i__1 ? i__1 : s_rnge("srces"
-		, i__1, "keeper_", (ftnlen)2044)] != 0) {
-	    s_copy(source, files + ((i__2 = srces[(i__1 = i__ - 1) < 1300 && 
+	*handle = handls[(i__1 = i__ - 1) < 5300 && 0 <= i__1 ? i__1 : s_rnge(
+		"handls", i__1, "keeper_", (ftnlen)2144)];
+	if (srces[(i__1 = i__ - 1) < 5300 && 0 <= i__1 ? i__1 : s_rnge("srces"
+		, i__1, "keeper_", (ftnlen)2146)] != 0) {
+	    s_copy(source, files + ((i__2 = srces[(i__1 = i__ - 1) < 5300 && 
 		    0 <= i__1 ? i__1 : s_rnge("srces", i__1, "keeper_", (
-		    ftnlen)2045)] - 1) < 1300 && 0 <= i__2 ? i__2 : s_rnge(
-		    "files", i__2, "keeper_", (ftnlen)2045)) * 255, 
+		    ftnlen)2147)] - 1) < 5300 && 0 <= i__2 ? i__2 : s_rnge(
+		    "files", i__2, "keeper_", (ftnlen)2147)) * 255, 
 		    source_len, (ftnlen)255);
 	}
     }
@@ -1971,8 +2080,9 @@ L_kinfo:
 L_kclear:
 /* $ Abstract */
 
-/*     Clear the KEEPER system:  unload all kernels, clear the kernel */
-/*     pool, and re-initialize the system. */
+/*     Clear the KEEPER subsystem: unload all kernels, clear the kernel */
+/*     pool, and re-initialize the subsystem. Existing watches on kernel */
+/*     variables are retained. */
 
 /* $ Disclaimer */
 
@@ -2049,7 +2159,10 @@ L_kclear:
 /*     kernel management subsystems (SPKBSR, CKBSR, etc.), clears the */
 /*     kernel pool, clears KEEPER's internal file database, and re-sets */
 /*     the watch status for the kernel variables used to load kernels */
-/*     via meta-kernels. */
+/*     via meta-kernels. As a side effect of clearing the kernel pool, */
+/*     all watched variables are marked as updated. Note that clearing */
+/*     the kernel pool does not delete watches (aka "watchers"). Watches */
+/*     can be deleted by calling the POOL entry point DWPOOL. */
 
 /*     This capability, though implemented in Fortran, is particularly */
 /*     relevant to SPICE implementations such as Icy, for which the */
@@ -2075,7 +2188,7 @@ L_kclear:
 /* $ Restrictions */
 
 /*     Calling this routine will wipe out any kernel pool data */
-/*     inserted via the P*POOL API routines. */
+/*     inserted via the PXPOOL API routines. */
 
 /* $ Literature_References */
 
@@ -2084,11 +2197,28 @@ L_kclear:
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
+/*     B.V. Semenov    (JPL) */
+/*     E.D. Wright     (JPL) */
 
 /* $ Version */
 
-/* -    SPICELIB Version 1.0.0, 15-NOV-2006 (NJB) */
+/* -    SPICELIB Version 5.0.0, 01-FEB-2017 (NJB) (BVS) */
 
+/*        Updated to support use of DSKs. */
+
+/*        Updated the Author_and_Institution section. */
+
+/* -    SPICELIB Version 1.0.1, 01-JUL-2014 (NJB) (EDW) */
+
+/*        Updated the discussion of kernel variable watchers. */
+
+/*     Last update was 13-APR-2011 (EDW) */
+
+/*        Trivial edit to Restrictions, replaced P*POOL with */
+/*        PXPOOL. The "*" character causes the HTML documentation */
+/*        script to create a link for the "POOL" substring. */
+
+/* -    SPICELIB Version 1.0.0, 15-NOV-2006 (NJB) */
 
 /* -& */
 /* $ Index_Entries */
@@ -2110,26 +2240,31 @@ L_kclear:
 
     i__1 = loaded;
     for (i__ = 1; i__ <= i__1; ++i__) {
-	if (s_cmp(types + (((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 : 
-		s_rnge("types", i__2, "keeper_", (ftnlen)2204)) << 3), "SPK", 
+	if (s_cmp(types + (((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : 
+		s_rnge("types", i__2, "keeper_", (ftnlen)2327)) << 3), "SPK", 
 		(ftnlen)8, (ftnlen)3) == 0) {
-	    spkuef_(&handls[(i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 : 
-		    s_rnge("handls", i__2, "keeper_", (ftnlen)2206)]);
-	} else if (s_cmp(types + (((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? 
-		i__2 : s_rnge("types", i__2, "keeper_", (ftnlen)2208)) << 3), 
+	    spkuef_(&handls[(i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : 
+		    s_rnge("handls", i__2, "keeper_", (ftnlen)2329)]);
+	} else if (s_cmp(types + (((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? 
+		i__2 : s_rnge("types", i__2, "keeper_", (ftnlen)2331)) << 3), 
 		"CK", (ftnlen)8, (ftnlen)2) == 0) {
-	    ckupf_(&handls[(i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 : 
-		    s_rnge("handls", i__2, "keeper_", (ftnlen)2210)]);
-	} else if (s_cmp(types + (((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? 
-		i__2 : s_rnge("types", i__2, "keeper_", (ftnlen)2212)) << 3), 
+	    ckupf_(&handls[(i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : 
+		    s_rnge("handls", i__2, "keeper_", (ftnlen)2333)]);
+	} else if (s_cmp(types + (((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? 
+		i__2 : s_rnge("types", i__2, "keeper_", (ftnlen)2335)) << 3), 
 		"PCK", (ftnlen)8, (ftnlen)3) == 0) {
-	    pckuof_(&handls[(i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 : 
-		    s_rnge("handls", i__2, "keeper_", (ftnlen)2214)]);
-	} else if (s_cmp(types + (((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? 
-		i__2 : s_rnge("types", i__2, "keeper_", (ftnlen)2216)) << 3), 
+	    pckuof_(&handls[(i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : 
+		    s_rnge("handls", i__2, "keeper_", (ftnlen)2337)]);
+	} else if (s_cmp(types + (((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? 
+		i__2 : s_rnge("types", i__2, "keeper_", (ftnlen)2339)) << 3), 
 		"EK", (ftnlen)8, (ftnlen)2) == 0) {
-	    ekuef_(&handls[(i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 : 
-		    s_rnge("handls", i__2, "keeper_", (ftnlen)2218)]);
+	    ekuef_(&handls[(i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : 
+		    s_rnge("handls", i__2, "keeper_", (ftnlen)2341)]);
+	} else if (s_cmp(types + (((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? 
+		i__2 : s_rnge("types", i__2, "keeper_", (ftnlen)2343)) << 3), 
+		"DSK", (ftnlen)8, (ftnlen)3) == 0) {
+	    zzdskusf_(&handls[(i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : 
+		    s_rnge("handls", i__2, "keeper_", (ftnlen)2345)]);
 	}
     }
     clpool_();
@@ -2140,15 +2275,15 @@ L_kclear:
 
     i__1 = loaded;
     for (i__ = 1; i__ <= i__1; ++i__) {
-	s_copy(files + ((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 : s_rnge(
-		"files", i__2, "keeper_", (ftnlen)2233)) * 255, " ", (ftnlen)
+	s_copy(files + ((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : s_rnge(
+		"files", i__2, "keeper_", (ftnlen)2360)) * 255, " ", (ftnlen)
 		255, (ftnlen)1);
-	handls[(i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 : s_rnge("handls", 
-		i__2, "keeper_", (ftnlen)2234)] = 0;
-	srces[(i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 : s_rnge("srces", 
-		i__2, "keeper_", (ftnlen)2235)] = 0;
-	s_copy(types + (((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 : s_rnge(
-		"types", i__2, "keeper_", (ftnlen)2236)) << 3), " ", (ftnlen)
+	handls[(i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : s_rnge("handls", 
+		i__2, "keeper_", (ftnlen)2361)] = 0;
+	srces[(i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : s_rnge("srces", 
+		i__2, "keeper_", (ftnlen)2362)] = 0;
+	s_copy(types + (((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : s_rnge(
+		"types", i__2, "keeper_", (ftnlen)2363)) << 3), " ", (ftnlen)
 		8, (ftnlen)1);
     }
 
@@ -2384,9 +2519,10 @@ L_unload:
 /*      and unload meta-kernels to compare results between the two */
 /*      different sets of data. */
 
-/*     Unloading Text or Meta-text Kernels. */
+/*     Unloading Text Kernels or Meta-Kernels */
+/*     -------------------------------------- */
 
-/*     Part of the action of unloading text (or meta-text kernels) is */
+/*     Part of the action of unloading text (or meta-kernels) is */
 /*     the clearing of the kernel pool and re-loading any kernels that */
 /*     were not in the specified set of kernels to unload.  Since */
 /*     loading of text kernels is not a very fast process, unloading */
@@ -2397,8 +2533,13 @@ L_unload:
 /*     the kernel pool.  For this reason, if you plan to use this */
 /*     feature in your program, together with one of the routines */
 /*     specified above, you will need to take special precautions to */
-/*     make sure kernel pool variables required by your program, do not */
+/*     make sure kernel pool variables required by your program do not */
 /*     inadvertently disappear. */
+
+/*     As a side effect of unloading a text kernel, all watched kernel */
+/*     variables are marked as updated. Note that unloading a text */
+/*     kernel does not delete watchers. Watchers can be deleted by */
+/*     calling the POOL entry point DWPOOL. */
 
 /* $ Examples */
 
@@ -2435,9 +2576,25 @@ L_unload:
 
 /* $ Author_and_Institution */
 
+/*     N.J. Bachman    (JPL) */
+/*     B.V. Semenov    (JPL) */
 /*     W.L. Taber      (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 5.0.0, 01-FEB-2017 (NJB) (BVS) */
+
+/*        Updated to support use of DSKs. */
+
+/*        Bug fix: now unloads binary kernels via low-level */
+/*        unload routines only when those kernels have just */
+/*        one entry in the KEEPER database. */
+
+/*        Updated the Author_and_Institution section. */
+
+/* -    SPICELIB Version 3.0.1, 01-JUL-2014 (NJB) */
+
+/*        Updated discussion of kernel variable watchers. */
 
 /* -    SPICELIB Version 3.0.0 15-NOV-2006 (NJB) */
 
@@ -2470,6 +2627,7 @@ L_unload:
     didpck = FALSE_;
     didck = FALSE_;
     didek = FALSE_;
+    diddsk = FALSE_;
     didtxt = FALSE_;
 
 /*     First locate the file we need to unload, we search backward */
@@ -2479,8 +2637,8 @@ L_unload:
     gotit = FALSE_;
     i__ = loaded;
     while(! gotit && i__ > 0) {
-	if (s_cmp(files + ((i__1 = i__ - 1) < 1300 && 0 <= i__1 ? i__1 : 
-		s_rnge("files", i__1, "keeper_", (ftnlen)2587)) * 255, file, (
+	if (s_cmp(files + ((i__1 = i__ - 1) < 5300 && 0 <= i__1 ? i__1 : 
+		s_rnge("files", i__1, "keeper_", (ftnlen)2738)) * 255, file, (
 		ftnlen)255, file_len) == 0) {
 	    gotit = TRUE_;
 	} else {
@@ -2498,37 +2656,102 @@ L_unload:
 /*     We need to know what type of file we've got so that we */
 /*     can take the correct "unload" action. */
 
-    if (s_cmp(types + (((i__1 = i__ - 1) < 1300 && 0 <= i__1 ? i__1 : s_rnge(
-	    "types", i__1, "keeper_", (ftnlen)2607)) << 3), "SPK", (ftnlen)8, 
+/*     If the kernel to be unloaded is binary, found out how */
+/*     many instances of it are present in the database. */
+
+/*     We take advantage of the fact that all binary kernels */
+/*     use the handle manager subsystem: handles are unique */
+/*     across all file types. We don't need to rely on file */
+/*     names. */
+
+    if (s_cmp(types + (((i__1 = i__ - 1) < 5300 && 0 <= i__1 ? i__1 : s_rnge(
+	    "types", i__1, "keeper_", (ftnlen)2766)) << 3), "SPK", (ftnlen)8, 
+	    (ftnlen)3) == 0 || s_cmp(types + (((i__2 = i__ - 1) < 5300 && 0 <=
+	     i__2 ? i__2 : s_rnge("types", i__2, "keeper_", (ftnlen)2766)) << 
+	    3), "CK", (ftnlen)8, (ftnlen)2) == 0 || s_cmp(types + (((i__3 = 
+	    i__ - 1) < 5300 && 0 <= i__3 ? i__3 : s_rnge("types", i__3, "kee"
+	    "per_", (ftnlen)2766)) << 3), "DSK", (ftnlen)8, (ftnlen)3) == 0 || 
+	    s_cmp(types + (((i__4 = i__ - 1) < 5300 && 0 <= i__4 ? i__4 : 
+	    s_rnge("types", i__4, "keeper_", (ftnlen)2766)) << 3), "EK", (
+	    ftnlen)8, (ftnlen)2) == 0 || s_cmp(types + (((i__5 = i__ - 1) < 
+	    5300 && 0 <= i__5 ? i__5 : s_rnge("types", i__5, "keeper_", (
+	    ftnlen)2766)) << 3), "PCK", (ftnlen)8, (ftnlen)3) == 0) {
+
+/*        Count the occurrences of the file in the database. */
+/*        Stop if we reach two occurrences. */
+
+	nmult = 0;
+	j = 1;
+	while(j <= loaded && nmult < 2) {
+	    if (handls[(i__1 = j - 1) < 5300 && 0 <= i__1 ? i__1 : s_rnge(
+		    "handls", i__1, "keeper_", (ftnlen)2780)] == handls[(i__2 
+		    = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : s_rnge("handls", 
+		    i__2, "keeper_", (ftnlen)2780)]) {
+
+/*              To be safe, make sure we're not looking at */
+/*              a text kernel with a random, matching handle */
+/*              value. */
+
+		if (s_cmp(types + (((i__1 = j - 1) < 5300 && 0 <= i__1 ? i__1 
+			: s_rnge("types", i__1, "keeper_", (ftnlen)2786)) << 
+			3), "TEXT", (ftnlen)8, (ftnlen)4) != 0 && s_cmp(types 
+			+ (((i__2 = j - 1) < 5300 && 0 <= i__2 ? i__2 : 
+			s_rnge("types", i__2, "keeper_", (ftnlen)2786)) << 3),
+			 "META", (ftnlen)8, (ftnlen)4) != 0) {
+		    ++nmult;
+		}
+	    }
+	    ++j;
+	}
+	single = nmult == 1;
+    }
+    if (s_cmp(types + (((i__1 = i__ - 1) < 5300 && 0 <= i__1 ? i__1 : s_rnge(
+	    "types", i__1, "keeper_", (ftnlen)2804)) << 3), "SPK", (ftnlen)8, 
 	    (ftnlen)3) == 0) {
-	spkuef_(&handls[(i__1 = i__ - 1) < 1300 && 0 <= i__1 ? i__1 : s_rnge(
-		"handls", i__1, "keeper_", (ftnlen)2608)]);
+	if (single) {
+	    spkuef_(&handls[(i__1 = i__ - 1) < 5300 && 0 <= i__1 ? i__1 : 
+		    s_rnge("handls", i__1, "keeper_", (ftnlen)2807)]);
+	}
 	didspk = TRUE_;
-    } else if (s_cmp(types + (((i__1 = i__ - 1) < 1300 && 0 <= i__1 ? i__1 : 
-	    s_rnge("types", i__1, "keeper_", (ftnlen)2610)) << 3), "CK", (
+    } else if (s_cmp(types + (((i__1 = i__ - 1) < 5300 && 0 <= i__1 ? i__1 : 
+	    s_rnge("types", i__1, "keeper_", (ftnlen)2812)) << 3), "CK", (
 	    ftnlen)8, (ftnlen)2) == 0) {
-	ckupf_(&handls[(i__1 = i__ - 1) < 1300 && 0 <= i__1 ? i__1 : s_rnge(
-		"handls", i__1, "keeper_", (ftnlen)2611)]);
+	if (single) {
+	    ckupf_(&handls[(i__1 = i__ - 1) < 5300 && 0 <= i__1 ? i__1 : 
+		    s_rnge("handls", i__1, "keeper_", (ftnlen)2815)]);
+	}
 	didck = TRUE_;
-    } else if (s_cmp(types + (((i__1 = i__ - 1) < 1300 && 0 <= i__1 ? i__1 : 
-	    s_rnge("types", i__1, "keeper_", (ftnlen)2613)) << 3), "PCK", (
+    } else if (s_cmp(types + (((i__1 = i__ - 1) < 5300 && 0 <= i__1 ? i__1 : 
+	    s_rnge("types", i__1, "keeper_", (ftnlen)2820)) << 3), "DSK", (
 	    ftnlen)8, (ftnlen)3) == 0) {
-	pckuof_(&handls[(i__1 = i__ - 1) < 1300 && 0 <= i__1 ? i__1 : s_rnge(
-		"handls", i__1, "keeper_", (ftnlen)2614)]);
+	if (single) {
+	    zzdskusf_(&handls[(i__1 = i__ - 1) < 5300 && 0 <= i__1 ? i__1 : 
+		    s_rnge("handls", i__1, "keeper_", (ftnlen)2823)]);
+	}
+	diddsk = TRUE_;
+    } else if (s_cmp(types + (((i__1 = i__ - 1) < 5300 && 0 <= i__1 ? i__1 : 
+	    s_rnge("types", i__1, "keeper_", (ftnlen)2828)) << 3), "PCK", (
+	    ftnlen)8, (ftnlen)3) == 0) {
+	if (single) {
+	    pckuof_(&handls[(i__1 = i__ - 1) < 5300 && 0 <= i__1 ? i__1 : 
+		    s_rnge("handls", i__1, "keeper_", (ftnlen)2831)]);
+	}
 	didpck = TRUE_;
-    } else if (s_cmp(types + (((i__1 = i__ - 1) < 1300 && 0 <= i__1 ? i__1 : 
-	    s_rnge("types", i__1, "keeper_", (ftnlen)2616)) << 3), "EK", (
+    } else if (s_cmp(types + (((i__1 = i__ - 1) < 5300 && 0 <= i__1 ? i__1 : 
+	    s_rnge("types", i__1, "keeper_", (ftnlen)2836)) << 3), "EK", (
 	    ftnlen)8, (ftnlen)2) == 0) {
-	ekuef_(&handls[(i__1 = i__ - 1) < 1300 && 0 <= i__1 ? i__1 : s_rnge(
-		"handls", i__1, "keeper_", (ftnlen)2617)]);
+	if (single) {
+	    ekuef_(&handls[(i__1 = i__ - 1) < 5300 && 0 <= i__1 ? i__1 : 
+		    s_rnge("handls", i__1, "keeper_", (ftnlen)2839)]);
+	}
 	didek = TRUE_;
-    } else if (s_cmp(types + (((i__1 = i__ - 1) < 1300 && 0 <= i__1 ? i__1 : 
-	    s_rnge("types", i__1, "keeper_", (ftnlen)2619)) << 3), "TEXT", (
+    } else if (s_cmp(types + (((i__1 = i__ - 1) < 5300 && 0 <= i__1 ? i__1 : 
+	    s_rnge("types", i__1, "keeper_", (ftnlen)2844)) << 3), "TEXT", (
 	    ftnlen)8, (ftnlen)4) == 0) {
 	clpool_();
 	didtxt = TRUE_;
-    } else if (s_cmp(types + (((i__1 = i__ - 1) < 1300 && 0 <= i__1 ? i__1 : 
-	    s_rnge("types", i__1, "keeper_", (ftnlen)2622)) << 3), "META", (
+    } else if (s_cmp(types + (((i__1 = i__ - 1) < 5300 && 0 <= i__1 ? i__1 : 
+	    s_rnge("types", i__1, "keeper_", (ftnlen)2849)) << 3), "META", (
 	    ftnlen)8, (ftnlen)4) == 0) {
 
 /*        This is a special case, we need to undo the effect of loading */
@@ -2539,41 +2762,111 @@ L_unload:
 	src = i__;
 	i__1 = src + 1;
 	for (j = loaded; j >= i__1; --j) {
-	    if (srces[(i__2 = j - 1) < 1300 && 0 <= i__2 ? i__2 : s_rnge(
-		    "srces", i__2, "keeper_", (ftnlen)2634)] == src) {
+	    if (srces[(i__2 = j - 1) < 5300 && 0 <= i__2 ? i__2 : s_rnge(
+		    "srces", i__2, "keeper_", (ftnlen)2861)] == src) {
 
 /*              This file was loaded by the meta-kernel of interest. */
 /*              We only need to unload the binary kernels as we */
 /*              will get rid of all text kernels by clearing the */
 /*              kernel pool. */
 
-		if (s_cmp(types + (((i__2 = j - 1) < 1300 && 0 <= i__2 ? i__2 
-			: s_rnge("types", i__2, "keeper_", (ftnlen)2641)) << 
+/*              See whether the file we're about to process is */
+/*              binary, and if so, count the number of times */
+/*              it appears in the database. We have to repeat */
+/*              this test on each loop pass, since the count */
+/*              may have changed since the last pass. */
+
+		if (s_cmp(types + (((i__2 = j - 1) < 5300 && 0 <= i__2 ? i__2 
+			: s_rnge("types", i__2, "keeper_", (ftnlen)2874)) << 
+			3), "SPK", (ftnlen)8, (ftnlen)3) == 0 || s_cmp(types 
+			+ (((i__3 = j - 1) < 5300 && 0 <= i__3 ? i__3 : 
+			s_rnge("types", i__3, "keeper_", (ftnlen)2874)) << 3),
+			 "CK", (ftnlen)8, (ftnlen)2) == 0 || s_cmp(types + (((
+			i__4 = j - 1) < 5300 && 0 <= i__4 ? i__4 : s_rnge(
+			"types", i__4, "keeper_", (ftnlen)2874)) << 3), "DSK",
+			 (ftnlen)8, (ftnlen)3) == 0 || s_cmp(types + (((i__5 =
+			 j - 1) < 5300 && 0 <= i__5 ? i__5 : s_rnge("types", 
+			i__5, "keeper_", (ftnlen)2874)) << 3), "EK", (ftnlen)
+			8, (ftnlen)2) == 0 || s_cmp(types + (((i__6 = j - 1) <
+			 5300 && 0 <= i__6 ? i__6 : s_rnge("types", i__6, 
+			"keeper_", (ftnlen)2874)) << 3), "PCK", (ftnlen)8, (
+			ftnlen)3) == 0) {
+
+/*                 Count the occurrences of the file in the database. */
+/*                 Stop if we reach two occurrences. */
+
+		    nmult = 0;
+		    k = 1;
+		    while(k <= loaded && nmult < 2) {
+			if (handls[(i__2 = k - 1) < 5300 && 0 <= i__2 ? i__2 :
+				 s_rnge("handls", i__2, "keeper_", (ftnlen)
+				2889)] == handls[(i__3 = j - 1) < 5300 && 0 <=
+				 i__3 ? i__3 : s_rnge("handls", i__3, "keepe"
+				"r_", (ftnlen)2889)]) {
+
+/*                       To be safe, make sure we're not looking at a */
+/*                       text kernel with a random, matching handle */
+/*                       value. */
+
+			    if (s_cmp(types + (((i__2 = k - 1) < 5300 && 0 <= 
+				    i__2 ? i__2 : s_rnge("types", i__2, "kee"
+				    "per_", (ftnlen)2895)) << 3), "TEXT", (
+				    ftnlen)8, (ftnlen)4) != 0 && s_cmp(types 
+				    + (((i__3 = k - 1) < 5300 && 0 <= i__3 ? 
+				    i__3 : s_rnge("types", i__3, "keeper_", (
+				    ftnlen)2895)) << 3), "META", (ftnlen)8, (
+				    ftnlen)4) != 0) {
+				++nmult;
+			    }
+			}
+			++k;
+		    }
+		    single = nmult == 1;
+		}
+		if (s_cmp(types + (((i__2 = j - 1) < 5300 && 0 <= i__2 ? i__2 
+			: s_rnge("types", i__2, "keeper_", (ftnlen)2913)) << 
 			3), "SPK", (ftnlen)8, (ftnlen)3) == 0) {
-		    spkuef_(&handls[(i__2 = j - 1) < 1300 && 0 <= i__2 ? i__2 
-			    : s_rnge("handls", i__2, "keeper_", (ftnlen)2642)]
-			    );
+		    if (single) {
+			spkuef_(&handls[(i__2 = j - 1) < 5300 && 0 <= i__2 ? 
+				i__2 : s_rnge("handls", i__2, "keeper_", (
+				ftnlen)2916)]);
+		    }
 		    didspk = TRUE_;
-		} else if (s_cmp(types + (((i__2 = j - 1) < 1300 && 0 <= i__2 
+		} else if (s_cmp(types + (((i__2 = j - 1) < 5300 && 0 <= i__2 
 			? i__2 : s_rnge("types", i__2, "keeper_", (ftnlen)
-			2644)) << 3), "CK", (ftnlen)8, (ftnlen)2) == 0) {
-		    ckupf_(&handls[(i__2 = j - 1) < 1300 && 0 <= i__2 ? i__2 :
-			     s_rnge("handls", i__2, "keeper_", (ftnlen)2645)])
-			    ;
+			2921)) << 3), "CK", (ftnlen)8, (ftnlen)2) == 0) {
+		    if (single) {
+			ckupf_(&handls[(i__2 = j - 1) < 5300 && 0 <= i__2 ? 
+				i__2 : s_rnge("handls", i__2, "keeper_", (
+				ftnlen)2924)]);
+		    }
 		    didck = TRUE_;
-		} else if (s_cmp(types + (((i__2 = j - 1) < 1300 && 0 <= i__2 
+		} else if (s_cmp(types + (((i__2 = j - 1) < 5300 && 0 <= i__2 
 			? i__2 : s_rnge("types", i__2, "keeper_", (ftnlen)
-			2647)) << 3), "PCK", (ftnlen)8, (ftnlen)3) == 0) {
-		    pckuof_(&handls[(i__2 = j - 1) < 1300 && 0 <= i__2 ? i__2 
-			    : s_rnge("handls", i__2, "keeper_", (ftnlen)2648)]
-			    );
+			2929)) << 3), "DSK", (ftnlen)8, (ftnlen)3) == 0) {
+		    if (single) {
+			zzdskusf_(&handls[(i__2 = j - 1) < 5300 && 0 <= i__2 ?
+				 i__2 : s_rnge("handls", i__2, "keeper_", (
+				ftnlen)2932)]);
+		    }
+		    diddsk = TRUE_;
+		} else if (s_cmp(types + (((i__2 = j - 1) < 5300 && 0 <= i__2 
+			? i__2 : s_rnge("types", i__2, "keeper_", (ftnlen)
+			2937)) << 3), "PCK", (ftnlen)8, (ftnlen)3) == 0) {
+		    if (single) {
+			pckuof_(&handls[(i__2 = j - 1) < 5300 && 0 <= i__2 ? 
+				i__2 : s_rnge("handls", i__2, "keeper_", (
+				ftnlen)2940)]);
+		    }
 		    didpck = TRUE_;
-		} else if (s_cmp(types + (((i__2 = j - 1) < 1300 && 0 <= i__2 
+		} else if (s_cmp(types + (((i__2 = j - 1) < 5300 && 0 <= i__2 
 			? i__2 : s_rnge("types", i__2, "keeper_", (ftnlen)
-			2650)) << 3), "EK", (ftnlen)8, (ftnlen)2) == 0) {
-		    ekuef_(&handls[(i__2 = j - 1) < 1300 && 0 <= i__2 ? i__2 :
-			     s_rnge("handls", i__2, "keeper_", (ftnlen)2651)])
-			    ;
+			2945)) << 3), "EK", (ftnlen)8, (ftnlen)2) == 0) {
+		    if (single) {
+			ekuef_(&handls[(i__2 = j - 1) < 5300 && 0 <= i__2 ? 
+				i__2 : s_rnge("handls", i__2, "keeper_", (
+				ftnlen)2948)]);
+		    }
 		    didek = TRUE_;
 		}
 		n1 = loaded;
@@ -2595,18 +2888,18 @@ L_unload:
 
 		i__2 = loaded;
 		for (k = j; k <= i__2; ++k) {
-		    if (srces[(i__3 = k - 1) < 1300 && 0 <= i__3 ? i__3 : 
-			    s_rnge("srces", i__3, "keeper_", (ftnlen)2675)] > 
+		    if (srces[(i__3 = k - 1) < 5300 && 0 <= i__3 ? i__3 : 
+			    s_rnge("srces", i__3, "keeper_", (ftnlen)2975)] > 
 			    j) {
 
 /*                    This pointer is affected by the deletion of */
 /*                    the Jth database entry. */
 
-			srces[(i__3 = k - 1) < 1300 && 0 <= i__3 ? i__3 : 
-				s_rnge("srces", i__3, "keeper_", (ftnlen)2680)
-				] = srces[(i__4 = k - 1) < 1300 && 0 <= i__4 ?
+			srces[(i__3 = k - 1) < 5300 && 0 <= i__3 ? i__3 : 
+				s_rnge("srces", i__3, "keeper_", (ftnlen)2980)
+				] = srces[(i__4 = k - 1) < 5300 && 0 <= i__4 ?
 				 i__4 : s_rnge("srces", i__4, "keeper_", (
-				ftnlen)2680)] - 1;
+				ftnlen)2980)] - 1;
 		    }
 		}
 	    }
@@ -2632,16 +2925,16 @@ L_unload:
 
     i__1 = loaded;
     for (j = i__; j <= i__1; ++j) {
-	if (srces[(i__2 = j - 1) < 1300 && 0 <= i__2 ? i__2 : s_rnge("srces", 
-		i__2, "keeper_", (ftnlen)2712)] > i__) {
+	if (srces[(i__2 = j - 1) < 5300 && 0 <= i__2 ? i__2 : s_rnge("srces", 
+		i__2, "keeper_", (ftnlen)3012)] > i__) {
 
 /*           This pointer is affected by the deletion of the Ith */
 /*           database entry. */
 
-	    srces[(i__2 = j - 1) < 1300 && 0 <= i__2 ? i__2 : s_rnge("srces", 
-		    i__2, "keeper_", (ftnlen)2717)] = srces[(i__3 = j - 1) < 
-		    1300 && 0 <= i__3 ? i__3 : s_rnge("srces", i__3, "keeper_"
-		    , (ftnlen)2717)] - 1;
+	    srces[(i__2 = j - 1) < 5300 && 0 <= i__2 ? i__2 : s_rnge("srces", 
+		    i__2, "keeper_", (ftnlen)3017)] = srces[(i__3 = j - 1) < 
+		    5300 && 0 <= i__3 ? i__3 : s_rnge("srces", i__3, "keeper_"
+		    , (ftnlen)3017)] - 1;
 	}
     }
 
@@ -2651,17 +2944,17 @@ L_unload:
     if (didtxt) {
 	i__1 = loaded;
 	for (i__ = 1; i__ <= i__1; ++i__) {
-	    if (s_cmp(types + (((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 : 
-		    s_rnge("types", i__2, "keeper_", (ftnlen)2731)) << 3), 
+	    if (s_cmp(types + (((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : 
+		    s_rnge("types", i__2, "keeper_", (ftnlen)3031)) << 3), 
 		    "TEXT", (ftnlen)8, (ftnlen)4) == 0 || s_cmp(types + (((
-		    i__3 = i__ - 1) < 1300 && 0 <= i__3 ? i__3 : s_rnge("typ"
-		    "es", i__3, "keeper_", (ftnlen)2731)) << 3), "META", (
+		    i__3 = i__ - 1) < 5300 && 0 <= i__3 ? i__3 : s_rnge("typ"
+		    "es", i__3, "keeper_", (ftnlen)3031)) << 3), "META", (
 		    ftnlen)8, (ftnlen)4) == 0) {
-		ldpool_(files + ((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 :
-			 s_rnge("files", i__2, "keeper_", (ftnlen)2734)) * 
+		ldpool_(files + ((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 :
+			 s_rnge("files", i__2, "keeper_", (ftnlen)3034)) * 
 			255, (ftnlen)255);
-		if (s_cmp(types + (((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? 
-			i__2 : s_rnge("types", i__2, "keeper_", (ftnlen)2736))
+		if (s_cmp(types + (((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? 
+			i__2 : s_rnge("types", i__2, "keeper_", (ftnlen)3036))
 			 << 3), "META", (ftnlen)8, (ftnlen)4) == 0) {
 
 /*                 Clean up any debris that may have been left lying */
@@ -2670,7 +2963,7 @@ L_unload:
 		    for (j = 1; j <= 3; ++j) {
 			dvpool_(known + (((i__2 = j - 1) < 3 && 0 <= i__2 ? 
 				i__2 : s_rnge("known", i__2, "keeper_", (
-				ftnlen)2742)) << 5), (ftnlen)32);
+				ftnlen)3042)) << 5), (ftnlen)32);
 		    }
 		    cvpool_("FURNSH", &update, (ftnlen)6);
 		}
@@ -2684,13 +2977,13 @@ L_unload:
     if (didspk) {
 	i__1 = loaded;
 	for (i__ = 1; i__ <= i__1; ++i__) {
-	    if (s_cmp(types + (((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 : 
-		    s_rnge("types", i__2, "keeper_", (ftnlen)2762)) << 3), 
+	    if (s_cmp(types + (((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : 
+		    s_rnge("types", i__2, "keeper_", (ftnlen)3062)) << 3), 
 		    "SPK", (ftnlen)8, (ftnlen)3) == 0) {
-		spklef_(files + ((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 :
-			 s_rnge("files", i__2, "keeper_", (ftnlen)2763)) * 
-			255, &handls[(i__3 = i__ - 1) < 1300 && 0 <= i__3 ? 
-			i__3 : s_rnge("handls", i__3, "keeper_", (ftnlen)2763)
+		spklef_(files + ((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 :
+			 s_rnge("files", i__2, "keeper_", (ftnlen)3063)) * 
+			255, &handls[(i__3 = i__ - 1) < 5300 && 0 <= i__3 ? 
+			i__3 : s_rnge("handls", i__3, "keeper_", (ftnlen)3063)
 			], (ftnlen)255);
 	    }
 	}
@@ -2703,14 +2996,33 @@ L_unload:
     if (didck) {
 	i__1 = loaded;
 	for (i__ = 1; i__ <= i__1; ++i__) {
-	    if (s_cmp(types + (((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 : 
-		    s_rnge("types", i__2, "keeper_", (ftnlen)2776)) << 3), 
+	    if (s_cmp(types + (((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : 
+		    s_rnge("types", i__2, "keeper_", (ftnlen)3076)) << 3), 
 		    "CK", (ftnlen)8, (ftnlen)2) == 0) {
-		cklpf_(files + ((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 : 
-			s_rnge("files", i__2, "keeper_", (ftnlen)2777)) * 255,
-			 &handls[(i__3 = i__ - 1) < 1300 && 0 <= i__3 ? i__3 :
-			 s_rnge("handls", i__3, "keeper_", (ftnlen)2777)], (
+		cklpf_(files + ((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : 
+			s_rnge("files", i__2, "keeper_", (ftnlen)3077)) * 255,
+			 &handls[(i__3 = i__ - 1) < 5300 && 0 <= i__3 ? i__3 :
+			 s_rnge("handls", i__3, "keeper_", (ftnlen)3077)], (
 			ftnlen)255);
+	    }
+	}
+    }
+
+/*     If any DSK files were unloaded, we need to reload the remaining */
+/*     ones to make sure that we have the correct priorities for the */
+/*     remaining DSKs. */
+
+    if (diddsk) {
+	i__1 = loaded;
+	for (i__ = 1; i__ <= i__1; ++i__) {
+	    if (s_cmp(types + (((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : 
+		    s_rnge("types", i__2, "keeper_", (ftnlen)3091)) << 3), 
+		    "DSK", (ftnlen)8, (ftnlen)3) == 0) {
+		zzdsklsf_(files + ((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? 
+			i__2 : s_rnge("files", i__2, "keeper_", (ftnlen)3092))
+			 * 255, &handls[(i__3 = i__ - 1) < 5300 && 0 <= i__3 ?
+			 i__3 : s_rnge("handls", i__3, "keeper_", (ftnlen)
+			3092)], (ftnlen)255);
 	    }
 	}
     }
@@ -2722,13 +3034,13 @@ L_unload:
     if (didpck) {
 	i__1 = loaded;
 	for (i__ = 1; i__ <= i__1; ++i__) {
-	    if (s_cmp(types + (((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 : 
-		    s_rnge("types", i__2, "keeper_", (ftnlen)2791)) << 3), 
+	    if (s_cmp(types + (((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : 
+		    s_rnge("types", i__2, "keeper_", (ftnlen)3106)) << 3), 
 		    "PCK", (ftnlen)8, (ftnlen)3) == 0) {
-		pcklof_(files + ((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 :
-			 s_rnge("files", i__2, "keeper_", (ftnlen)2792)) * 
-			255, &handls[(i__3 = i__ - 1) < 1300 && 0 <= i__3 ? 
-			i__3 : s_rnge("handls", i__3, "keeper_", (ftnlen)2792)
+		pcklof_(files + ((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 :
+			 s_rnge("files", i__2, "keeper_", (ftnlen)3107)) * 
+			255, &handls[(i__3 = i__ - 1) < 5300 && 0 <= i__3 ? 
+			i__3 : s_rnge("handls", i__3, "keeper_", (ftnlen)3107)
 			], (ftnlen)255);
 	    }
 	}
@@ -2741,13 +3053,13 @@ L_unload:
     if (didek) {
 	i__1 = loaded;
 	for (i__ = 1; i__ <= i__1; ++i__) {
-	    if (s_cmp(types + (((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 : 
-		    s_rnge("types", i__2, "keeper_", (ftnlen)2805)) << 3), 
+	    if (s_cmp(types + (((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : 
+		    s_rnge("types", i__2, "keeper_", (ftnlen)3120)) << 3), 
 		    "EK", (ftnlen)8, (ftnlen)2) == 0) {
-		eklef_(files + ((i__2 = i__ - 1) < 1300 && 0 <= i__2 ? i__2 : 
-			s_rnge("files", i__2, "keeper_", (ftnlen)2806)) * 255,
-			 &handls[(i__3 = i__ - 1) < 1300 && 0 <= i__3 ? i__3 :
-			 s_rnge("handls", i__3, "keeper_", (ftnlen)2806)], (
+		eklef_(files + ((i__2 = i__ - 1) < 5300 && 0 <= i__2 ? i__2 : 
+			s_rnge("files", i__2, "keeper_", (ftnlen)3121)) * 255,
+			 &handls[(i__3 = i__ - 1) < 5300 && 0 <= i__3 ? i__3 :
+			 s_rnge("handls", i__3, "keeper_", (ftnlen)3121)], (
 			ftnlen)255);
 	    }
 	}

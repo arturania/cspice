@@ -295,7 +295,7 @@ static integer c__1 = 1;
 /*     5) If the window size implied by DEGREE is odd, the error */
 /*        SPICE(INVALIDDEGREE) is signaled. */
 
-/*     6) If the number of packets N is not at least 1, */
+/*     6) If the number of packets N is not at least 2, */
 /*        the error SPICE(TOOFEWSTATES) will be signaled. */
 
 /*     7) If FIRST is greater than or equal to LAST then the error */
@@ -361,6 +361,10 @@ static integer c__1 = 1;
 /*     N.J. Bachman   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.0, 21-DEC-2012 (NJB) */
+
+/*        Increased the minimum packet count from 1 to 2. */
 
 /* -    SPICELIB Version 1.0.1, 29-APR-2003 (NJB) */
 
@@ -489,9 +493,9 @@ static integer c__1 = 1;
 /*     Make sure that the number of packets is sufficient to define a */
 /*     polynomial whose degree is DEGREE. */
 
-    if (*n < 1) {
-	setmsg_("At least 1 packet is required for SPK type 18.  Number of p"
-		"ackets supplied:  #", (ftnlen)78);
+    if (*n < 2) {
+	setmsg_("At least 2 packets are required for SPK type 18.  Number of"
+		" packets supplied:  #", (ftnlen)80);
 	errint_("#", n, (ftnlen)1);
 	sigerr_("SPICE(TOOFEWSTATES)", (ftnlen)19);
 	chkout_("SPKW18", (ftnlen)6);

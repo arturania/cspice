@@ -193,6 +193,11 @@ static integer c__2 = 2;
 /*                 definition depends on parameters supplied via a */
 /*                 frame kernel. */
 
+/*     ALL         indicates any of the above classes. This parameter */
+/*                 is used in APIs that fetch information about frames */
+/*                 of a specified class. */
+
+
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
@@ -203,6 +208,10 @@ static integer c__2 = 2;
 /*     None. */
 
 /* $ Version */
+
+/* -    SPICELIB Version 4.0.0, 08-MAY-2012 (NJB) */
+
+/*       The parameter ALL was added to support frame fetch APIs. */
 
 /* -    SPICELIB Version 3.0.0, 28-MAY-2004 (NJB) */
 
@@ -216,6 +225,9 @@ static integer c__2 = 2;
 /* -    SPICELIB Version 1.0.0, 10-DEC-1995 (WLT) */
 
 /* -& */
+
+/*     End of INCLUDE file frmtyp.inc */
+
 /* $ Brief_I/O */
 
 /*     VARIABLE  I/O  DESCRIPTION */
@@ -240,8 +252,8 @@ static integer c__2 = 2;
 
 /*     XFORM       is a 6 x 6 state transformation matrix that can */
 /*                 be used to transform states relative to the frame */
-/*                 correspsonding to frame FRAME2 to states relative */
-/*                 to the frame FRAME2.  More explicitely, if STATE */
+/*                 corresponding to frame FRAME2 to states relative */
+/*                 to the frame FRAME2.  More explicitly, if STATE */
 /*                 is the state of some object relative to the reference */
 /*                 frame of FRAME1 then STATE2 is the state of the */
 /*                 same object relative to FRAME2 where STATE2 is */
@@ -257,10 +269,10 @@ static integer c__2 = 2;
 /* $ Exceptions */
 
 /*     1) If either of the reference frames is unrecognized, the error */
-/*        SPICE(UNKNOWNFRAME) will be signalled. */
+/*        SPICE(UNKNOWNFRAME) will be signaled. */
 
-/*     2) If the auxillary information needed to compute a non-inertial */
-/*        frame is not available an error will be diagnosed and signalled */
+/*     2) If the auxiliary information needed to compute a non-inertial */
+/*        frame is not available an error will be diagnosed and signaled */
 /*        by a routine in the call tree of this routine. */
 
 /* $ Files */
@@ -316,11 +328,11 @@ static integer c__2 = 2;
 
 
 /*        dR */
-/*        --  P    +    R (W x P ) */
+/*        --  P    +    R*(W x P ) */
 /*        dt */
 
 /*           dR  t */
-/*     =  (  -- R  R P   +  W  x P  )            ( 1 ) */
+/*     =  (  -- R  R P   +  R*(W x P)  )            ( 1 ) */
 /*           dt */
 
 
@@ -374,7 +386,7 @@ static integer c__2 = 2;
 /*         dt */
 
 /*        Recall that if A has components A1, A2, A3 then the matrix */
-/*        cooresponding to the cross product linear mapping is: */
+/*        corresponding to the cross product linear mapping is: */
 
 /*            -               - */
 /*           |   0  -A3    A2  | */
@@ -405,6 +417,11 @@ static integer c__2 = 2;
 /*     W.L. Taber      (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.1, 16-JAN-2014 (NJB) */
+
+/*        Corrected equation 1 in header comments. Corrected */
+/*        numerous spelling errors in comments. */
 
 /* -    SPICELIB Version 2.0.0, 14-DEC-2008 (NJB) */
 
@@ -452,7 +469,7 @@ static integer c__2 = 2;
 
 
 /*     TRANS contains the transformations from FRAME1 to FRAME2 */
-/*     TRANS(1...6,1...6,I) has the transfromation from FRAME(I) */
+/*     TRANS(1...6,1...6,I) has the transformation from FRAME(I) */
 /*     to FRAME(I+1).  We make extra room in TRANS because we */
 /*     plan to add transformations beyond the obvious chain from */
 /*     FRAME1 to a root node. */
@@ -484,13 +501,13 @@ static integer c__2 = 2;
     if (*frame1 == *frame2) {
 	for (i__ = 1; i__ <= 6; ++i__) {
 	    xform[(i__1 = i__ + i__ * 6 - 7) < 36 && 0 <= i__1 ? i__1 : 
-		    s_rnge("xform", i__1, "frmchg_", (ftnlen)371)] = 1.;
+		    s_rnge("xform", i__1, "frmchg_", (ftnlen)376)] = 1.;
 	    i__1 = i__ - 1;
 	    for (j = 1; j <= i__1; ++j) {
 		xform[(i__2 = i__ + j * 6 - 7) < 36 && 0 <= i__2 ? i__2 : 
-			s_rnge("xform", i__2, "frmchg_", (ftnlen)374)] = 0.;
+			s_rnge("xform", i__2, "frmchg_", (ftnlen)379)] = 0.;
 		xform[(i__2 = j + i__ * 6 - 7) < 36 && 0 <= i__2 ? i__2 : 
-			s_rnge("xform", i__2, "frmchg_", (ftnlen)375)] = 0.;
+			s_rnge("xform", i__2, "frmchg_", (ftnlen)380)] = 0.;
 	    }
 	}
 	chkout_("FRMCHG", (ftnlen)6);
@@ -520,26 +537,26 @@ static integer c__2 = 2;
     }
     node = 1;
     frame[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("frame", i__1, 
-	    "frmchg_", (ftnlen)418)] = *frame1;
+	    "frmchg_", (ftnlen)423)] = *frame1;
     found = TRUE_;
 
 /*     Follow the chain of transformations until we run into */
 /*     one that transforms to J2000 (frame id = 1) or we hit FRAME2. */
 
     while(frame[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("frame", 
-	    i__1, "frmchg_", (ftnlen)424)] != 1 && node < 10 && frame[(i__2 = 
+	    i__1, "frmchg_", (ftnlen)429)] != 1 && node < 10 && frame[(i__2 = 
 	    node - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge("frame", i__2, "frmc"
-	    "hg_", (ftnlen)424)] != *frame2 && found) {
+	    "hg_", (ftnlen)429)] != *frame2 && found) {
 
 /*        Find out what transformation is available for this */
 /*        frame. */
 
 	frmget_(&frame[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge(
-		"frame", i__1, "frmchg_", (ftnlen)432)], et, &trans[(i__2 = (
+		"frame", i__1, "frmchg_", (ftnlen)437)], et, &trans[(i__2 = (
 		node * 6 + 1) * 6 - 42) < 504 && 0 <= i__2 ? i__2 : s_rnge(
-		"trans", i__2, "frmchg_", (ftnlen)432)], &frame[(i__3 = node) 
+		"trans", i__2, "frmchg_", (ftnlen)437)], &frame[(i__3 = node) 
 		< 10 && 0 <= i__3 ? i__3 : s_rnge("frame", i__3, "frmchg_", (
-		ftnlen)432)], &found);
+		ftnlen)437)], &found);
 	if (found) {
 
 /*           We found a transformation matrix.  TRANS(1,1,NODE) */
@@ -551,9 +568,9 @@ static integer c__2 = 2;
 	}
     }
     done = frame[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("frame", 
-	    i__1, "frmchg_", (ftnlen)448)] == 1 || frame[(i__2 = node - 1) < 
+	    i__1, "frmchg_", (ftnlen)453)] == 1 || frame[(i__2 = node - 1) < 
 	    10 && 0 <= i__2 ? i__2 : s_rnge("frame", i__2, "frmchg_", (ftnlen)
-	    448)] == *frame2 || ! found;
+	    453)] == *frame2 || ! found;
     while(! done) {
 
 /*        The only way to get to this point is to have run out of */
@@ -564,9 +581,9 @@ static integer c__2 = 2;
 /*        root classes or we run into FRAME2. */
 
 	frmget_(&frame[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge(
-		"frame", i__1, "frmchg_", (ftnlen)462)], et, &trans[(i__2 = (
+		"frame", i__1, "frmchg_", (ftnlen)467)], et, &trans[(i__2 = (
 		node * 6 + 1) * 6 - 42) < 504 && 0 <= i__2 ? i__2 : s_rnge(
-		"trans", i__2, "frmchg_", (ftnlen)462)], &relto, &found);
+		"trans", i__2, "frmchg_", (ftnlen)467)], &relto, &found);
 	if (found) {
 
 /*           Recall that TRANS(1,1,NODE-1) contains the transformation */
@@ -576,17 +593,17 @@ static integer c__2 = 2;
 /*           transformation from FRAME(NODE) to RELTO. */
 
 	    frame[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("frame",
-		     i__1, "frmchg_", (ftnlen)473)] = relto;
+		     i__1, "frmchg_", (ftnlen)478)] = relto;
 	    zzmsxf_(&trans[(i__1 = ((node - 1) * 6 + 1) * 6 - 42) < 504 && 0 
 		    <= i__1 ? i__1 : s_rnge("trans", i__1, "frmchg_", (ftnlen)
-		    474)], &c__2, tempxf);
+		    479)], &c__2, tempxf);
 	    for (i__ = 1; i__ <= 6; ++i__) {
 		for (j = 1; j <= 6; ++j) {
 		    trans[(i__1 = i__ + (j + (node - 1) * 6) * 6 - 43) < 504 
 			    && 0 <= i__1 ? i__1 : s_rnge("trans", i__1, "frm"
-			    "chg_", (ftnlen)478)] = tempxf[(i__2 = i__ + j * 6 
+			    "chg_", (ftnlen)483)] = tempxf[(i__2 = i__ + j * 6 
 			    - 7) < 36 && 0 <= i__2 ? i__2 : s_rnge("tempxf", 
-			    i__2, "frmchg_", (ftnlen)478)];
+			    i__2, "frmchg_", (ftnlen)483)];
 		}
 	    }
 	}
@@ -596,9 +613,9 @@ static integer c__2 = 2;
 /*        another transformation. */
 
 	done = frame[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge(
-		"frame", i__1, "frmchg_", (ftnlen)488)] == 1 || frame[(i__2 = 
+		"frame", i__1, "frmchg_", (ftnlen)493)] == 1 || frame[(i__2 = 
 		node - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge("frame", i__2, 
-		"frmchg_", (ftnlen)488)] == *frame2 || ! found;
+		"frmchg_", (ftnlen)493)] == *frame2 || ! found;
     }
 
 /*     Right now we have the following situation.  We have in hand */
@@ -632,7 +649,7 @@ static integer c__2 = 2;
 /*     We now have to do essentially the same thing for FRAME2. */
 
     if (frame[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("frame", 
-	    i__1, "frmchg_", (ftnlen)526)] == *frame2) {
+	    i__1, "frmchg_", (ftnlen)531)] == *frame2) {
 
 /*        We can handle this one immediately with the private routine */
 /*        ZZMSXF which multiplies a series of state transformation */
@@ -667,7 +684,7 @@ static integer c__2 = 2;
 		for (j = 4; j <= 6; ++j) {
 		    trans2[(i__1 = i__ + (j + k * 6) * 6 - 43) < 72 && 0 <= 
 			    i__1 ? i__1 : s_rnge("trans2", i__1, "frmchg_", (
-			    ftnlen)563)] = 0.;
+			    ftnlen)568)] = 0.;
 		}
 	    }
 	}
@@ -695,7 +712,7 @@ static integer c__2 = 2;
 
 	    frmget_(&this__, et, &trans2[(i__1 = (put * 6 + 1) * 6 - 42) < 72 
 		    && 0 <= i__1 ? i__1 : s_rnge("trans2", i__1, "frmchg_", (
-		    ftnlen)592)], &relto, &found);
+		    ftnlen)597)], &relto, &found);
 	    if (found) {
 		this__ = relto;
 		get = put;
@@ -721,58 +738,58 @@ static integer c__2 = 2;
 		    for (j = 1; j <= 3; ++j) {
 			trans2[(i__1 = i__ + (j + put * 6) * 6 - 43) < 72 && 
 				0 <= i__1 ? i__1 : s_rnge("trans2", i__1, 
-				"frmchg_", (ftnlen)621)] = tempxf[(i__2 = i__ 
+				"frmchg_", (ftnlen)626)] = tempxf[(i__2 = i__ 
 				- 1) < 36 && 0 <= i__2 ? i__2 : s_rnge("temp"
-				"xf", i__2, "frmchg_", (ftnlen)621)] * trans2[(
+				"xf", i__2, "frmchg_", (ftnlen)626)] * trans2[(
 				i__3 = (j + get * 6) * 6 - 42) < 72 && 0 <= 
 				i__3 ? i__3 : s_rnge("trans2", i__3, "frmchg_"
-				, (ftnlen)621)] + tempxf[(i__4 = i__ + 5) < 
+				, (ftnlen)626)] + tempxf[(i__4 = i__ + 5) < 
 				36 && 0 <= i__4 ? i__4 : s_rnge("tempxf", 
-				i__4, "frmchg_", (ftnlen)621)] * trans2[(i__5 
+				i__4, "frmchg_", (ftnlen)626)] * trans2[(i__5 
 				= (j + get * 6) * 6 - 41) < 72 && 0 <= i__5 ? 
 				i__5 : s_rnge("trans2", i__5, "frmchg_", (
-				ftnlen)621)] + tempxf[(i__6 = i__ + 11) < 36 
+				ftnlen)626)] + tempxf[(i__6 = i__ + 11) < 36 
 				&& 0 <= i__6 ? i__6 : s_rnge("tempxf", i__6, 
-				"frmchg_", (ftnlen)621)] * trans2[(i__7 = (j 
+				"frmchg_", (ftnlen)626)] * trans2[(i__7 = (j 
 				+ get * 6) * 6 - 40) < 72 && 0 <= i__7 ? i__7 
 				: s_rnge("trans2", i__7, "frmchg_", (ftnlen)
-				621)];
+				626)];
 		    }
 		}
 		for (i__ = 4; i__ <= 6; ++i__) {
 		    for (j = 1; j <= 3; ++j) {
 			trans2[(i__1 = i__ + (j + put * 6) * 6 - 43) < 72 && 
 				0 <= i__1 ? i__1 : s_rnge("trans2", i__1, 
-				"frmchg_", (ftnlen)630)] = tempxf[(i__2 = i__ 
+				"frmchg_", (ftnlen)635)] = tempxf[(i__2 = i__ 
 				- 1) < 36 && 0 <= i__2 ? i__2 : s_rnge("temp"
-				"xf", i__2, "frmchg_", (ftnlen)630)] * trans2[(
+				"xf", i__2, "frmchg_", (ftnlen)635)] * trans2[(
 				i__3 = (j + get * 6) * 6 - 42) < 72 && 0 <= 
 				i__3 ? i__3 : s_rnge("trans2", i__3, "frmchg_"
-				, (ftnlen)630)] + tempxf[(i__4 = i__ + 5) < 
+				, (ftnlen)635)] + tempxf[(i__4 = i__ + 5) < 
 				36 && 0 <= i__4 ? i__4 : s_rnge("tempxf", 
-				i__4, "frmchg_", (ftnlen)630)] * trans2[(i__5 
+				i__4, "frmchg_", (ftnlen)635)] * trans2[(i__5 
 				= (j + get * 6) * 6 - 41) < 72 && 0 <= i__5 ? 
 				i__5 : s_rnge("trans2", i__5, "frmchg_", (
-				ftnlen)630)] + tempxf[(i__6 = i__ + 11) < 36 
+				ftnlen)635)] + tempxf[(i__6 = i__ + 11) < 36 
 				&& 0 <= i__6 ? i__6 : s_rnge("tempxf", i__6, 
-				"frmchg_", (ftnlen)630)] * trans2[(i__7 = (j 
+				"frmchg_", (ftnlen)635)] * trans2[(i__7 = (j 
 				+ get * 6) * 6 - 40) < 72 && 0 <= i__7 ? i__7 
 				: s_rnge("trans2", i__7, "frmchg_", (ftnlen)
-				630)] + tempxf[(i__8 = i__ + 17) < 36 && 0 <= 
+				635)] + tempxf[(i__8 = i__ + 17) < 36 && 0 <= 
 				i__8 ? i__8 : s_rnge("tempxf", i__8, "frmchg_"
-				, (ftnlen)630)] * trans2[(i__9 = (j + get * 6)
+				, (ftnlen)635)] * trans2[(i__9 = (j + get * 6)
 				 * 6 - 39) < 72 && 0 <= i__9 ? i__9 : s_rnge(
-				"trans2", i__9, "frmchg_", (ftnlen)630)] + 
+				"trans2", i__9, "frmchg_", (ftnlen)635)] + 
 				tempxf[(i__10 = i__ + 23) < 36 && 0 <= i__10 ?
 				 i__10 : s_rnge("tempxf", i__10, "frmchg_", (
-				ftnlen)630)] * trans2[(i__11 = (j + get * 6) *
+				ftnlen)635)] * trans2[(i__11 = (j + get * 6) *
 				 6 - 38) < 72 && 0 <= i__11 ? i__11 : s_rnge(
-				"trans2", i__11, "frmchg_", (ftnlen)630)] + 
+				"trans2", i__11, "frmchg_", (ftnlen)635)] + 
 				tempxf[(i__12 = i__ + 29) < 36 && 0 <= i__12 ?
 				 i__12 : s_rnge("tempxf", i__12, "frmchg_", (
-				ftnlen)630)] * trans2[(i__13 = (j + get * 6) *
+				ftnlen)635)] * trans2[(i__13 = (j + get * 6) *
 				 6 - 37) < 72 && 0 <= i__13 ? i__13 : s_rnge(
-				"trans2", i__13, "frmchg_", (ftnlen)630)];
+				"trans2", i__13, "frmchg_", (ftnlen)635)];
 		    }
 		}
 
@@ -788,10 +805,10 @@ static integer c__2 = 2;
 			l = j - 3;
 			trans2[(i__1 = i__ + (j + put * 6) * 6 - 43) < 72 && 
 				0 <= i__1 ? i__1 : s_rnge("trans2", i__1, 
-				"frmchg_", (ftnlen)649)] = trans2[(i__2 = k + 
+				"frmchg_", (ftnlen)654)] = trans2[(i__2 = k + 
 				(l + put * 6) * 6 - 43) < 72 && 0 <= i__2 ? 
 				i__2 : s_rnge("trans2", i__2, "frmchg_", (
-				ftnlen)649)];
+				ftnlen)654)];
 		    }
 		}
 
@@ -824,7 +841,7 @@ static integer c__2 = 2;
 
     if (! gotone) {
 	zznofcon_(et, frame1, &frame[(i__1 = node - 1) < 10 && 0 <= i__1 ? 
-		i__1 : s_rnge("frame", i__1, "frmchg_", (ftnlen)692)], frame2,
+		i__1 : s_rnge("frame", i__1, "frmchg_", (ftnlen)697)], frame2,
 		 &this__, errmsg, (ftnlen)1840);
 	if (failed_()) {
 
@@ -865,9 +882,9 @@ static integer c__2 = 2;
 /*     result from FRAME1 to FRAME2. */
 
     invstm_(&trans2[(i__1 = (get * 6 + 1) * 6 - 42) < 72 && 0 <= i__1 ? i__1 :
-	     s_rnge("trans2", i__1, "frmchg_", (ftnlen)735)], &trans[(i__2 = (
+	     s_rnge("trans2", i__1, "frmchg_", (ftnlen)740)], &trans[(i__2 = (
 	    cmnode * 6 + 1) * 6 - 42) < 504 && 0 <= i__2 ? i__2 : s_rnge(
-	    "trans", i__2, "frmchg_", (ftnlen)735)]);
+	    "trans", i__2, "frmchg_", (ftnlen)740)]);
     zzmsxf_(trans, &cmnode, xform);
     chkout_("FRMCHG", (ftnlen)6);
     return 0;

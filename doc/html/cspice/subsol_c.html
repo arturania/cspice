@@ -55,7 +55,7 @@
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 33%; text-align: center;">
             <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
@@ -66,7 +66,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
@@ -76,7 +76,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
@@ -209,25 +209,31 @@
                              the sun state is corrected for stellar 
                              aberration as seen from the target.  
  
-                  &quot;CN&quot;       Converged Newtonian light time 
-                             corrections.  This is the same as LT 
-                             corrections but with further iterations 
-                             to a converged Newtonian light time 
-                             solution.  Given that relativistic 
-                             effects may be as large as the higher 
-                             accuracy achieved by this computation, 
-                             this is correction is seldom worth the 
-                             additional computations required unless 
-                             the user incorporates additional 
-                             relativistic corrections.  Light 
-                             time corrections are applied as in the 
-                             &quot;LT&quot; case. 
+                  &quot;CN&quot;       Converged Newtonian light time
+                             correction. In solving the light time
+                             equation, the &quot;CN&quot; correction iterates
+                             until the solution converges (three
+                             iterations on all supported platforms).
+                             Whether the &quot;CN+S&quot; solution is
+                             substantially more accurate than the
+                             &quot;LT&quot; solution depends on the geometry
+                             of the participating objects and on the
+                             accuracy of the input data. In all
+                             cases this routine will execute more
+                             slowly when a converged solution is
+                             computed. See the Particulars section
+                             below for a discussion of precision of
+                             light time corrections.
+ 
+                             Light time corrections are applied as in
+                             the &quot;LT&quot; case.
                      
-                  &quot;CN+S&quot;     Converged Newtonian light time 
-                             corrections and stellar aberration. 
-                             Light time and stellar aberration  
-                             corrections are applied as in the 
-                             &quot;LT+S&quot; case. 
+                  &quot;CN+S&quot;     Converged Newtonian light time correction
+                             and stellar aberration correction.
+ 
+                             Light time and stellar aberration
+                             corrections are applied as in the &quot;LT+S&quot;
+                             case.
  
  
    obsrvr      is the name of the observing body.  This is typically 
@@ -491,6 +497,12 @@
 <h4><a name="Version">Version</a></h4>
 <PRE>
  
+   -CSPICE Version 1.0.5, 10-JUL-2014 (NJB)
+
+       Discussion of light time corrections was updated. Assertions
+       that converged light time corrections are unlikely to be
+       useful were removed.
+
    -CSPICE Version 1.0.4, 19-MAY-2010 (BVS)
 
         Index line now states that this routine is deprecated.
@@ -524,7 +536,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Jun  9 13:05:31 2010</pre>
+   <pre>Wed Apr  5 17:54:45 2017</pre>
 
 </body>
 </html>

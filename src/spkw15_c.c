@@ -93,7 +93,6 @@
  
             All units are radians, km, seconds. 
  
-
  
    handle      is the file handle of an SPK file that has been 
                opened for writing. 
@@ -116,13 +115,15 @@
    epoch       is the epoch of the orbit elements at periapse 
                in ephemeris seconds past J2000. 
  
-   tp          is a unit vector parallel to the angular momentum 
-               vector of the orbit at epoch expressed relative to 
-               frame. 
+   tp          is a vector parallel to the angular momentum vector of
+               the orbit at epoch expressed relative to `frame'. A unit
+               vector parallel to `tp' will be stored in the output
+               segment.
  
-   pa          is a unit vector parallel to the position vector 
-               of the trajectory at periapsis of epoch expressed 
-               relative to frame. 
+   pa          is a vector parallel to the position vector of the
+               trajectory at periapsis of epoch expressed relative to
+               `frame'. A unit vector parallel to `pa' will be stored
+               in the output segment.
  
    p           is the semi-latus rectum---p in the equation: 
  
@@ -153,8 +154,9 @@
                 Note that J2 effects are computed only if the orbit 
                 is elliptic and does not intersect the central body. 
  
-   pv           is a unit vector parallel to the north pole vector 
-                of the central body expressed relative to frame. 
+   pv           is a vector parallel to the north pole vector of the
+                central body expressed relative to `frame'. A unit vector
+                parallel to `pv' will be stored in the output segment.
  
    gm           is the central body gm. 
  
@@ -220,10 +222,10 @@
  
 -Particulars
  
-   This routine writes an SPK type 15 data segment to the open SPK 
-   file according to the format described in the type 15 section of 
-   the SPK Required Reading. The SPK file must have been opened with 
-   write access. 
+   This routine writes an SPK type 15 data segment to the open SPK file
+   according to the format described in the type 15 section of the SPK
+   Required Reading. The SPK file must have been opened with write
+   access.
  
    This routine is provided to provide direct support for the MASL 
    precessing orbit formulation. 
@@ -243,7 +245,7 @@
  
    (If your state is at an epoch other than periapse the 
    fragment below will NOT produce a "correct" type 15 segment 
-   for modelling the motion of your object.) 
+   for modeling the motion of your object.) 
  
       #include "SpiceUsr.h"
           .
@@ -295,11 +297,21 @@
  
 -Author_and_Institution
  
+   N.J. Bachman    (JPL)
    W.L. Taber      (JPL) 
  
 -Version
  
-   -CSPICE Version 1.0.0, 21-JUN-1999
+   -CSPICE Version 1.0.1, 29-MAY-2012 (NJB)
+
+      Header was updated to relect changes in handling 
+      of inputs `tp', `pa', and `pv' by the f2c'd routine
+      spkw15_. That routine now writes unit length
+      versions of these vectors to the output segment.
+
+      A header comment typo was corrected.
+
+   -CSPICE Version 1.0.0, 21-JUN-1999 (WLT)
 
 -Index_Entries
  

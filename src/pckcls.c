@@ -5,7 +5,7 @@
 
 #include "f2c.h"
 
-/* $Procedure PCKCLS ( PCK, Close file ) */
+/* $Procedure PCKCLS ( PCK, close file ) */
 /* Subroutine */ int pckcls_(integer *handle)
 {
     /* Builtin functions */
@@ -113,15 +113,21 @@
 
 /*     None. */
 
-/* $ Author_and_Institution */
-
-/*      K.R. Gehringer    (JPL) */
-
 /* $ Literature_References */
 
 /*      None. */
 
+/* $ Author_and_Institution */
+
+/*      K.R. Gehringer    (JPL) */
+
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.1, 03-JAN-2014 (EDW) */
+
+/*        Minor edits to Procedure; clean trailing whitespace. */
+/*        Corrected order of header sections to conform to NAIF */
+/*        standard. */
 
 /* -    SPICELIB Version 1.1.0, 27-NOV-2001 (FST) */
 

@@ -55,7 +55,7 @@
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 33%; text-align: center;">
             <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
@@ -66,7 +66,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
@@ -76,7 +76,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
@@ -436,7 +436,7 @@
                 ./
                 printf ( &quot;%s\n&quot;, &quot;========================================&quot; );
 
-                printf ( &quot;Coverage for object %ld\n&quot;, obj );
+                printf ( &quot;Coverage for object %d\n&quot;, (int)obj );
 
                 /.
                 Convert the coverage interval start and stop times to TDB
@@ -459,9 +459,9 @@
                               timstr                                    );
 
                    printf ( &quot;\n&quot;
-                            &quot;Interval:  %ld\n&quot;
+                            &quot;Interval:  %d\n&quot;
                             &quot;Start:     %s\n&quot;,
-                            j,
+                            (int)j,
                             timstr            );
 
                    <a href="timout_c.html">timout_c</a> ( e, 
@@ -567,7 +567,7 @@
              /.
              Display a simple banner.
              ./
-             printf ( &quot;\nCoverage for object %ld\n&quot;, idcode );
+             printf ( &quot;\nCoverage for object %d\n&quot;, (int)idcode );
 
              /.
              Convert the coverage interval start and stop times to TDB
@@ -590,9 +590,9 @@
                            timstr                                  );
 
                 printf ( &quot;\n&quot;
-                         &quot;Interval:  %ld\n&quot;
+                         &quot;Interval:  %d\n&quot;
                          &quot;Start:     %s\n&quot;,
-                         i,
+                         (int)i,
                          timstr            );
 
                 <a href="timout_c.html">timout_c</a> ( e, 
@@ -625,7 +625,15 @@
  </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
+   -CSPICE Version 1.0.3, 12-JUL-2016 (EDW)
+
+      Edit to example program to use &quot;%d&quot; with explicit casts
+      to int for printing SpiceInts with printf.
  
+   -CSPICE Version 1.0.2, 01-JUL-2014 (NJB)
+
+       Updated index entries.
+
    -CSPICE Version 1.0.1, 30-NOV-2007 (NJB)
 
        Corrected bug in first example program in header:
@@ -639,8 +647,11 @@
 <h4><a name="Index_Entries">Index_Entries</a></h4>
 <PRE>
  
-   get coverage window for ck object 
- </PRE>
+   get coverage window for ck_object
+   get coverage start and stop time for ck_object
+   get coverage start and stop time for ck frame
+   get coverage start and stop time for ck instrument 
+</PRE>
 <h4>Link to routine ckcov_c source file <a href='../../../src/cspice/ckcov_c.c'>ckcov_c.c</a> </h4>
 
       </td>
@@ -648,7 +659,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Jun  9 13:05:19 2010</pre>
+   <pre>Wed Apr  5 17:54:29 2017</pre>
 
 </body>
 </html>

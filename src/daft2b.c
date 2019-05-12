@@ -74,9 +74,12 @@ static integer c__5 = 5;
 
 /* $ Abstract */
 
+/*     Deprecated. The routine DAFTB supersedes this routine. */
+/*     NAIF supports this routine only to provide backward */
+/*     compatibility. */
+
 /*     Reconstruct a binary DAF from a text file opened by */
-/*     the calling program. (Obsolete, maintained for backward */
-/*     compatibility only.) */
+/*     the calling program. */
 
 /* $ Disclaimer */
 
@@ -147,10 +150,6 @@ static integer c__5 = 5;
 /*                 from the text file. No single group of elements should */
 /*                 contains more than BSIZE elements. */
 
-/* $ Files */
-
-/*     See arguments TEXT, BINARY. */
-
 /* $ Exceptions */
 
 /*     1) If for some reason the text file cannot be read, */
@@ -167,6 +166,10 @@ static integer c__5 = 5;
 
 /*     5) If the buffer size is not sufficient, the error */
 /*        SPICE(DAFOVERFLOW) is signalled. */
+
+/* $ Files */
+
+/*     See arguments TEXT, BINARY. */
 
 /* $ Particulars */
 
@@ -263,71 +266,12 @@ static integer c__5 = 5;
 
 /* $ Version */
 
-/* -    SPICELIB Version 3.0.0, 04-OCT-1993 (KRG) */
+/* -    SPICELIB Version 3.0.1, 26-JUL-2012 (EDW) */
 
-/*        Removed the error SPICE(DAFNOIDWORD) as it was no longer */
-/*        relevant. */
+/*        Edited Abstract section to use "Deprecated" keyword */
+/*        and state replacement routine. */
 
-/*        Added the error SPICE(NOTADAFFILE) if this routine is called */
-/*        with a file that does not contain an ID word identifying the */
-/*        file as a DAF file. */
-
-/*        There were no checks of the IOSTAT variable after attempting to */
-/*        read from the text file, a single test of the IOSTAT variable */
-/*        was made at the end of the routine. This was not adequate to */
-/*        detect errors when writing to the text file. So after all of */
-/*        these read statements, an IF ... END IF block was added to */
-/*        signal an error if IOSTAT .NE. 0. */
-
-/*        Added a statement to the $ Particulars section to the effect */
-/*        that this routine has been made obsolete by the introduction of */
-/*        the routine DAFTB, and that we strongly recommend the use of */
-/*        the new routine. This routine must, however, be used when */
-/*        converting older text files to binary, as the old and new */
-/*        formats are not compatible. */
-
-/*        Modified the $ Abstract section to reflect the fact that this */
-/*        routine is obsolete and maintained for purposes of backward */
-/*        compatibility only. */
-
-/* -    SPICELIB Version 2.0.2, 10-MAR-1992 (WLT) */
-
-/*        Comment section for permuted index source lines was added */
-/*        following the header. */
-
-/* -    SPICELIB Version 2.0.1,  6-AUG-1990 (HAN) */
-
-/*        Header documentation was corrected. This routine will */
-/*        convert a file containing either ID word, 'NAIF/DAF' or */
-/*        'NAIF/NIP'. (Previous versions of SPICELIB software used */
-/*        the ID word 'NAIF/NIP'.) */
-
-/* -    SPICELIB Version 2.0.0,  2-AUG-1990 (JEM) */
-
-/*        The previous version of this routine always failed and */
-/*        signalled the error SPICE(DAFNOIDWORD) because of a faulty */
-/*        logical expression in an error-checking IF statement. */
-/*        The error SPICE(DAFNOIDWORD) should be signalled if the */
-/*        next non-blank line in the text file does not begin with the */
-/*        word 'NAIF/DAF' AND does not begin with the word 'NAIF/NIP'. */
-/*        Previously the logic was incorrect causing the error to be */
-/*        signalled every time no matter what the word was. The */
-/*        correction consisted of replacing '.OR.' with '.AND.' */
-/*        in the logical expression. */
-
-/* -    SPICELIB Version 1.0.1, 22-MAR-1990 (HAN) */
-
-/*        Literature references added to the header. */
-
-/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (IMU) */
-
-/* -& */
-/* $ Index_Entries */
-
-/*     text daf to binary */
-
-/* -& */
-/* $ Revisions */
+/*        Eliminated unneeded Revisions section. */
 
 /* -    SPICELIB Version 3.0.0, 04-OCT-1993 (KRG) */
 
@@ -415,6 +359,11 @@ static integer c__5 = 5;
 /*        Literature references added to the header. */
 
 /* -    SPICELIB Version 1.0.0, 31-JAN-1990 (IMU) */
+
+/* -& */
+/* $ Index_Entries */
+
+/*     text daf to binary */
 
 /* -& */
 
@@ -576,7 +525,7 @@ L100004:
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    iostat = do_lio(&c__5, &c__1, (char *)&dc[(i__2 = i__ - 1) < 125 
 		    && 0 <= i__2 ? i__2 : s_rnge("dc", i__2, "daft2b_", (
-		    ftnlen)517)], (ftnlen)sizeof(doublereal));
+		    ftnlen)465)], (ftnlen)sizeof(doublereal));
 	    if (iostat != 0) {
 		goto L100005;
 	    }
@@ -602,7 +551,7 @@ L100005:
 	for (i__ = 1; i__ <= i__2; ++i__) {
 	    iostat = do_lio(&c__3, &c__1, (char *)&ic[(i__1 = i__ - 1) < 250 
 		    && 0 <= i__1 ? i__1 : s_rnge("ic", i__1, "daft2b_", (
-		    ftnlen)532)], (ftnlen)sizeof(integer));
+		    ftnlen)480)], (ftnlen)sizeof(integer));
 	    if (iostat != 0) {
 		goto L100006;
 	    }
@@ -665,7 +614,7 @@ L100007:
 		for (i__ = 1; i__ <= i__1; ++i__) {
 		    iostat = do_lio(&c__5, &c__1, (char *)&buffer[(i__2 = i__ 
 			    - 1) < 1024 && 0 <= i__2 ? i__2 : s_rnge("buffer",
-			     i__2, "daft2b_", (ftnlen)585)], (ftnlen)sizeof(
+			     i__2, "daft2b_", (ftnlen)533)], (ftnlen)sizeof(
 			    doublereal));
 		    if (iostat != 0) {
 			goto L100008;

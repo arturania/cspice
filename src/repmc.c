@@ -10,7 +10,7 @@
 	ftnlen in_len, ftnlen marker_len, ftnlen value_len, ftnlen out_len)
 {
     /* System generated locals */
-    integer i__1, i__2;
+    integer i__1;
 
     /* Builtin functions */
     integer s_cmp(char *, char *, ftnlen, ftnlen);
@@ -20,8 +20,11 @@
     /* Local variables */
     extern /* Subroutine */ int zzrepsub_(char *, integer *, integer *, char *
 	    , char *, ftnlen, ftnlen, ftnlen);
-    extern integer lastnb_(char *, ftnlen), frstnb_(char *, ftnlen);
-    integer mrkpos;
+    integer mrknbf;
+    extern integer lastnb_(char *, ftnlen);
+    integer mrknbl;
+    extern integer frstnb_(char *, ftnlen);
+    integer mrkpsb, mrkpse;
 
 /* $ Abstract */
 
@@ -108,10 +111,6 @@
 
 /*     None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     Error Free. */
@@ -125,6 +124,10 @@
 
 /*     3) If VALUE is blank, a single blank is substituted for the */
 /*        first occurrence of MARKER. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -225,9 +228,16 @@
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman   (JPL) */
+/*     B.V. Semenov   (JPL) */
+/*     W.L. Taber     (JPL) */
 /*     I.M. Underwood (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.2.0, 21-SEP-2013 (BVS) */
+
+/*        Minor efficiency update: the routine now looks up the first */
+/*        and last non-blank characters only once. */
 
 /* -    SPICELIB Version 1.1.0, 15-AUG-2002 (WLT) */
 
@@ -264,27 +274,24 @@
 /*     (ignoring leading and trailing blanks). If MARKER is not */
 /*     a substring of IN, no substitution can be performed. */
 
-    i__1 = frstnb_(marker, marker_len) - 1;
-    mrkpos = i_indx(in, marker + i__1, in_len, lastnb_(marker, marker_len) - 
-	    i__1);
-    if (mrkpos == 0) {
+    mrknbf = frstnb_(marker, marker_len);
+    mrknbl = lastnb_(marker, marker_len);
+    mrkpsb = i_indx(in, marker + (mrknbf - 1), in_len, mrknbl - (mrknbf - 1));
+    if (mrkpsb == 0) {
 	s_copy(out, in, out_len, in_len);
 	return 0;
     }
+    mrkpse = mrkpsb + mrknbl - mrknbf;
 
 /*     Okay, MARKER is non-blank and has been found. If VALUE is */
 /*     blank, substitute a single blank. (This removes the marker.) */
 /*     Otherwise substitute the non-blank portion. */
 
     if (s_cmp(value, " ", value_len, (ftnlen)1) == 0) {
-	i__1 = mrkpos + lastnb_(marker, marker_len) - frstnb_(marker, 
-		marker_len);
-	zzrepsub_(in, &mrkpos, &i__1, " ", out, in_len, (ftnlen)1, out_len);
+	zzrepsub_(in, &mrkpsb, &mrkpse, " ", out, in_len, (ftnlen)1, out_len);
     } else {
 	i__1 = frstnb_(value, value_len) - 1;
-	i__2 = mrkpos + lastnb_(marker, marker_len) - frstnb_(marker, 
-		marker_len);
-	zzrepsub_(in, &mrkpos, &i__2, value + i__1, out, in_len, lastnb_(
+	zzrepsub_(in, &mrkpsb, &mrkpse, value + i__1, out, in_len, lastnb_(
 		value, value_len) - i__1, out_len);
     }
     return 0;

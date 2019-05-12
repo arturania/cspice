@@ -55,7 +55,7 @@
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 33%; text-align: center;">
             <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
@@ -66,7 +66,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
@@ -76,7 +76,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
@@ -1227,7 +1227,7 @@
          Check the number of intervals in confining window.
          ./
          count = <a href="wncard_c.html">wncard_c</a>( &amp;cnfine );
-         printf( &quot;Found %ld intervals in cnfine\n&quot;, count );
+         printf( &quot;Found %d intervals in cnfine\n&quot;, (int)count );
 
       
          /.
@@ -1307,7 +1307,7 @@
          else
             {
             count = <a href="wncard_c.html">wncard_c</a>( &amp;result);
-            printf( &quot;Found %ld intervals in result\n&quot;, count );
+            printf( &quot;Found %d intervals in result\n&quot;, (int)count );
 
             /.
             List the beginning and ending points in each interval.
@@ -1319,7 +1319,7 @@
                <a href="timout_c.html">timout_c</a> ( beg, TIMFMT, LNSIZE, begstr );
                <a href="timout_c.html">timout_c</a> ( end, TIMFMT, LNSIZE, endstr );
 
-               printf( &quot;Interval %ld\n&quot;, i );
+               printf( &quot;Interval %d\n&quot;, (int)i );
                printf( &quot;Beginning TDB %s\n&quot;, begstr );
                printf( &quot;Ending TDB    %s\n&quot;, endstr );
                }
@@ -1389,6 +1389,11 @@
  </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
+   -CSPICE Version 1.0.2, 12-JUL-2016 (EDW)
+
+      Edit to example program to use &quot;%d&quot; with explicit casts
+      to int for printing SpiceInts with printf.
+
    -CSPICE Version 1.0.1, 24-APR-2010 (EDW)
 
       Minor edit to code comments eliminating typo.
@@ -1407,7 +1412,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Jun  9 13:05:24 2010</pre>
+   <pre>Wed Apr  5 17:54:35 2017</pre>
 
 </body>
 </html>

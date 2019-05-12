@@ -9,17 +9,15 @@
 
 static integer c__0 = 0;
 
-/* $Procedure      ZZGFDIU ( GF, distance utilities ) */
+/* $Procedure ZZGFDIU ( Private --- GF, distance utilities ) */
 /* Subroutine */ int zzgfdiu_0_(int n__, char *target, char *abcorr, char *
-	obsrvr, doublereal *refval, doublereal *et, logical *decres, logical *
-	lssthn, doublereal *dist, ftnlen target_len, ftnlen abcorr_len, 
-	ftnlen obsrvr_len)
+	obsrvr, U_fp udfunc, doublereal *et, logical *decres, doublereal *
+	dist, ftnlen target_len, ftnlen abcorr_len, ftnlen obsrvr_len)
 {
     extern doublereal vdot_(doublereal *, doublereal *);
-    extern /* Subroutine */ int zzvalcor_(char *, logical *, ftnlen);
-    doublereal r__;
-    extern /* Subroutine */ int chkin_(char *, ftnlen), ucase_(char *, char *,
-	     ftnlen, ftnlen), errch_(char *, char *, ftnlen, ftnlen);
+    extern /* Subroutine */ int zzvalcor_(char *, logical *, ftnlen), chkin_(
+	    char *, ftnlen), ucase_(char *, char *, ftnlen, ftnlen), errch_(
+	    char *, char *, ftnlen, ftnlen);
     logical found;
     doublereal state[6];
     static integer svobs;
@@ -34,7 +32,6 @@ static integer c__0 = 0;
     static integer svtarg;
     extern /* Subroutine */ int cmprss_(char *, integer *, char *, char *, 
 	    ftnlen, ftnlen, ftnlen);
-    static doublereal svrefv;
     extern logical return_(void);
     static char svcorr[5];
     extern /* Subroutine */ int zzgfdiq_(integer *, doublereal *, char *, 
@@ -207,11 +204,10 @@ static integer c__0 = 0;
 /*     TARGID     I   ZZGFDIIN */
 /*     ABCORR     I   ZZGFDIIN */
 /*     OBSID      I   ZZGFDIIN */
-/*     REFVAL     I   ZZGFDIIN, ZZGFDIUR */
-/*     ET         I   ZZGFDILT, ZZGFDIGQ */
+/*     ET         I   ZZGFDIDC, ZZGFDIGQ */
 /*     REF        I   ZZGFDIIN */
+/*     UDFUNC     I   ZZGFDIDC */
 /*     DECRES     O   ZZGFDIDC */
-/*     LSSTHN     O   ZZGFDILT */
 /*     DIST       O   ZZGFDIGQ */
 
 /* $ Detailed_Input */
@@ -264,13 +260,8 @@ static integer c__0 = 0;
 /*                   distance computation to be performed. Initializes */
 /*                   the distance search. */
 
-/*        ZZGFDIUR   Updates the reference value REFVAL. */
-
 /*        ZZGFDIDC   Determines whether or not distance is decreasing */
 /*                   at a specified epoch. */
-
-/*        ZZGFDILT   Determines whether or not distance is less than */
-/*                   REFVAL at a specified epoch. */
 
 /*        ZZGFDIGQ   Returns the distance between the observer and target */
 /*                   at a specified epoch. */
@@ -301,6 +292,18 @@ static integer c__0 = 0;
 
 /* $ Version */
 
+/* -    SPICELIB version 2.0.0 18-FEB-2011 (EDW) */
+
+/*        Code edits to implement use of ZZGFRELX. */
+/*        These edits include removal of unneeded routines: */
+
+/*           ZZGFDIUR */
+/*           ZZGFDILT */
+
+/*        and corresponding unused variables. */
+
+/*        Update to header entries. */
+
 /* -    SPICELIB Version 1.0.0 05-MAR-2009 (NJB) (LSE) (WLT) (IMU) (EDW) */
 
 /* -& */
@@ -326,17 +329,15 @@ static integer c__0 = 0;
 
     switch(n__) {
 	case 1: goto L_zzgfdiin;
-	case 2: goto L_zzgfdiur;
-	case 3: goto L_zzgfdidc;
-	case 4: goto L_zzgfdigq;
-	case 5: goto L_zzgfdilt;
+	case 2: goto L_zzgfdidc;
+	case 3: goto L_zzgfdigq;
 	}
 
     chkin_("ZZGFDIU", (ftnlen)7);
     sigerr_("SPICE(BOGUSENTRY)", (ftnlen)17);
     chkout_("ZZGFDIU", (ftnlen)7);
     return 0;
-/* $Procedure  ZZGFDIIN ( GF, distance utility initialization ) */
+/* $Procedure  ZZGFDIIN ( Private --- GF, distance initialization ) */
 
 L_zzgfdiin:
 /* $ Abstract */
@@ -387,7 +388,6 @@ L_zzgfdiin:
 /*      CHARACTER*(*)         TARGET */
 /*      CHARACTER*(*)         ABCORR */
 /*      CHARACTER*(*)         OBSRVR */
-/*      DOUBLE PRECISION      REFVAL */
 
 /* $ Brief_I/O */
 
@@ -396,7 +396,6 @@ L_zzgfdiin:
 /*     TARGET     I   Target body name. */
 /*     ABCORR     I   Aberration correction specifier. */
 /*     OBSRVR     I   Observer name. */
-/*     REFVAL     I   Reference value. */
 
 /* $ Detailed_Input */
 
@@ -431,15 +430,6 @@ L_zzgfdiin:
 
 /*                Case and leading or trailing blanks are not */
 /*                significant in the string OBSRVR. */
-
-
-/*     REFVAL     is the reference value to be used in searches */
-/*                involving equality or inequality conditions. REFVAL is */
-/*                stored by this routine and used by the entry point */
-/*                ZZGFDILT. */
-
-/*                REFVAL has units of km. */
-
 
 /* $ Detailed_Output */
 
@@ -493,6 +483,11 @@ L_zzgfdiin:
 /*     E.D. Wright    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB version 2.0.0 18-FEB-2011 (EDW) */
+
+/*        REFVAL removed from routine argument list due to use */
+/*        of ZZGFRELX to calculate the events. */
 
 /* -    SPICELIB Version 1.0.0 05-MAR-2009 (NJB) (LSE) (WLT) (IMU) (EDW) */
 
@@ -556,138 +551,9 @@ L_zzgfdiin:
 	chkout_("ZZGFDIIN", (ftnlen)8);
 	return 0;
     }
-
-/*     Save the reference value. */
-
-    svrefv = *refval;
     chkout_("ZZGFDIIN", (ftnlen)8);
     return 0;
-/* $Procedure  ZZGFDIUR ( GF, update distance reference value ) */
-
-L_zzgfdiur:
-/* $ Abstract */
-
-/*     Update the reference value for distance equality or */
-/*     inequality searches. */
-
-/* $ Disclaimer */
-
-/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
-/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
-/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
-/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
-/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
-/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
-/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
-/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
-/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
-/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
-
-/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
-/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
-/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
-/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
-/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
-/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
-
-/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
-/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
-/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
-/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
-
-/* $ Required_Reading */
-
-/*     GF */
-/*     NAIF_IDS */
-/*     SPK */
-/*     TIME */
-
-/* $ Keywords */
-
-/*     DISTANCE */
-/*     EPHEMERIS */
-/*     GEOMETRY */
-/*     SEARCH */
-
-/* $ Declarations */
-
-/*      DOUBLE PRECISION      REFVAL */
-
-/* $ Brief_I/O */
-
-/*     VARIABLE  I/O  DESCRIPTION */
-/*     --------  ---  -------------------------------------------------- */
-/*     REFVAL     I   Value distances will be compared to. */
-
-/* $ Detailed_Input */
-
-/*     REFVAL     is a reference value used to define equality or */
-/*                inequality relationships. For example, searches for */
-/*                equality find time periods when the observer-target */
-/*                distance is equal to REFVAL. */
-
-/*                Units are km. */
-
-/* $ Detailed_Output */
-
-/*     None. */
-
-/* $ Parameters */
-
-/*     None. */
-
-/* $ Exceptions */
-
-/*     None. */
-
-/* $ Files */
-
-/*     See the header of the umbrella routine ZZGFDIU. */
-
-/* $ Particulars */
-
-/*     REFVAL is currently used by GFREL to establish reference */
-/*     values for absolute extrema searches using non-zero */
-/*     adjustment values. Since the reference value for such a */
-/*     search is not known until the absolute extrema have */
-/*     been found, the reference value cannot be set by a */
-/*     call to the initialization entry point ZZGFDIIN. Instead, */
-/*     GFREFL sets the value via a call to this entry point. */
-
-/* $ Examples */
-
-/*     See GFREL. */
-
-/* $ Restrictions */
-
-/*     This is a SPICELIB private routine; it should not be called by */
-/*     user applications. */
-
-/* $ Literature_References */
-
-/*     None. */
-
-/* $ Author_and_Institution */
-
-/*     N.J. Bachman   (JPL) */
-/*     L.S. Elson     (JPL) */
-/*     W.L. Taber     (JPL) */
-/*     I.M. Underwood (JPL) */
-/*     E.D. Wright    (JPL) */
-
-/* $ Version */
-
-/* -    SPICELIB Version 1.0.0 05-MAR-2009 (NJB) (LSE) (WLT) (IMU) (EDW) */
-
-/* -& */
-/* $ Index_Entries */
-
-/*     update distance reference value for gf search */
-
-/* -& */
-    svrefv = *refval;
-    return 0;
-/* $Procedure ZZGFDIDC ( GF, is distance decreasing? ) */
+/* $Procedure ZZGFDIDC ( Private --- GF, is distance decreasing? ) */
 
 L_zzgfdidc:
 /* $ Abstract */
@@ -763,7 +629,6 @@ L_zzgfdidc:
 /*                DECRES is .TRUE. if and only if the observer-target */
 /*                distance is decreasing at ET. */
 
-
 /* $ Parameters */
 
 /*     None. */
@@ -781,9 +646,22 @@ L_zzgfdidc:
 
 /* $ Particulars */
 
-/*     This routine is used by GFREL to determine the time intervals, */
-/*     within the confinement window, on which the observer-target */
-/*     distance is monotone increasing or monotone decreasing. */
+/*     A function f(x) is strictly decreasing at x0 if and only if there */
+/*     exists some delta > 0 such that for all dx satisfying */
+
+/*        0  <  dx  < delta */
+
+/*     we have */
+
+/*        f(x0)       <  f(x0 + dx) */
+
+/*     and */
+
+/*        f(x0 - dx)  <  f(x) */
+
+/*     Note that a strictly decreasing function need not be */
+/*     differentiable in a neighborhood of x0; it can have jump */
+/*     discontinuities in any neighborhood of x0 and even at x0. */
 
 /* $ Examples */
 
@@ -807,6 +685,11 @@ L_zzgfdidc:
 /*     E.D. Wright    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB version 2.0.0 18-FEB-2011 (EDW) */
+
+/*        Added UDFUNC to argument list for use of ZZGFRELX when */
+/*        calculating the events. */
 
 /* -    SPICELIB Version 1.0.0 05-MAR-2009 (NJB) (LSE) (WLT) (IMU) (EDW) */
 
@@ -837,7 +720,7 @@ L_zzgfdidc:
     *decres = vdot_(state, &state[3]) < 0.;
     chkout_("ZZGFDIDC", (ftnlen)8);
     return 0;
-/* $Procedure ZZGFDIGQ ( GF, get observer-target distance ) */
+/* $Procedure ZZGFDIGQ ( Private --- GF, get observer-target distance ) */
 
 L_zzgfdigq:
 /* $ Abstract */
@@ -972,196 +855,32 @@ L_zzgfdigq:
     zzgfdiq_(&svtarg, et, svcorr, &svobs, dist, (ftnlen)5);
     chkout_("ZZGFDIGQ", (ftnlen)8);
     return 0;
-/* $Procedure ZZGFDILT  ( GF, is distance less than reference value? ) */
-
-L_zzgfdilt:
-/* $ Abstract */
-
-/*     Indicate whether the distance between the target and observer at */
-/*     a specified epoch is less than the current reference value. */
-
-/* $ Disclaimer */
-
-/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
-/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
-/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
-/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
-/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
-/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
-/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
-/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
-/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
-/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
-
-/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
-/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
-/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
-/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
-/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
-/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
-
-/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
-/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
-/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
-/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
-
-/* $ Required_Reading */
-
-/*     GF */
-/*     NAIF_IDS */
-/*     SPK */
-/*     TIME */
-
-/* $ Keywords */
-
-/*     DISTANCE */
-/*     EPHEMERIS */
-/*     GEOMETRY */
-/*     SEARCH */
-
-/* $ Declarations */
-
-/*      DOUBLE PRECISION      ET */
-/*      LOGICAL               LSSTHN */
-
-/* $ Brief_I/O */
-
-/*     VARIABLE  I/O  DESCRIPTION */
-/*     --------  ---  -------------------------------------------------- */
-/*     ET         I   Ephemeris seconds past J2000 TDB. */
-/*     LSSTHN     O   Flag indicating whether distance is less than */
-/*                    the reference value. */
-
-/* $ Detailed_Input */
-
-/*     ET         is the time, expressed as seconds past J2000 TDB, at */
-/*                which to determine whether the distance between the */
-/*                observer and target bodies is less than the reference */
-/*                value. */
-
-/* $ Detailed_Output */
-
-/*     LSSTHN     is a logical flag that indicates whether the */
-/*                observer-target distance is less than */
-/*                the current reference value at ET. The */
-/*                observer, target, and aberration correction used to */
-/*                compute the distance are defined by the latest call to */
-/*                the initialization entry point ZZGFDIIN. The */
-/*                reference value is the latest one stored as */
-/*                a result of a call to ZZGFDIIN or ZZGFDIUR. */
-
-/*                DECRES is .TRUE. if and only if the observer-target */
-/*                distance is less than the reference value at ET. */
-
-/* $ Parameters */
-
-/*     None. */
-
-/* $ Exceptions */
-
-/*     1) If the position of the target relative to the observer */
-/*        at ET can not be found due to an SPK lookup failure, */
-/*        the error will be diagnosed by routines in the call */
-/*        tree of this routine. */
-
-/* $ Files */
-
-/*     See the header of the umbrella routine ZZGFDIU. */
-
-/* $ Particulars */
-
-/*     This routine supports binary state searches for times when the */
-/*     observer-target distance satisfies an equality or inequality */
-/*     relationship with the current reference value. */
-
-/* $ Examples */
-
-/*     See GFREL. */
-
-/* $ Restrictions */
-
-/*     This is a SPICELIB private routine; it should not be called by */
-/*     user applications. */
-
-/* $ Literature_References */
-
-/*     None. */
-
-/* $ Author_and_Institution */
-
-/*     N.J. Bachman   (JPL) */
-/*     L.S. Elson     (JPL) */
-/*     W.L. Taber     (JPL) */
-/*     I.M. Underwood (JPL) */
-/*     E.D. Wright    (JPL) */
-
-/* $ Version */
-
-/* -    SPICELIB Version 1.0.0 05-MAR-2009 (NJB) (LSE) (WLT) (IMU) (EDW) */
-
-/* -& */
-/* $ Index_Entries */
-
-/*     distance less than some value */
-
-/* -& */
-    if (return_()) {
-	return 0;
-    }
-    chkin_("ZZGFDIGQ", (ftnlen)8);
-    zzgfdiq_(&svtarg, et, svcorr, &svobs, &r__, (ftnlen)5);
-
-/*     The returned logical flag indicates whether the observer-target */
-/*     distance at ET is less than the saved reference value. */
-
-    *lssthn = r__ < svrefv;
-    chkout_("ZZGFDIGQ", (ftnlen)8);
-    return 0;
 } /* zzgfdiu_ */
 
-/* Subroutine */ int zzgfdiu_(char *target, char *abcorr, char *obsrvr, 
-	doublereal *refval, doublereal *et, logical *decres, logical *lssthn, 
-	doublereal *dist, ftnlen target_len, ftnlen abcorr_len, ftnlen 
-	obsrvr_len)
+/* Subroutine */ int zzgfdiu_(char *target, char *abcorr, char *obsrvr, U_fp 
+	udfunc, doublereal *et, logical *decres, doublereal *dist, ftnlen 
+	target_len, ftnlen abcorr_len, ftnlen obsrvr_len)
 {
-    return zzgfdiu_0_(0, target, abcorr, obsrvr, refval, et, decres, lssthn, 
-	    dist, target_len, abcorr_len, obsrvr_len);
+    return zzgfdiu_0_(0, target, abcorr, obsrvr, udfunc, et, decres, dist, 
+	    target_len, abcorr_len, obsrvr_len);
     }
 
 /* Subroutine */ int zzgfdiin_(char *target, char *abcorr, char *obsrvr, 
-	doublereal *refval, ftnlen target_len, ftnlen abcorr_len, ftnlen 
-	obsrvr_len)
+	ftnlen target_len, ftnlen abcorr_len, ftnlen obsrvr_len)
 {
-    return zzgfdiu_0_(1, target, abcorr, obsrvr, refval, (doublereal *)0, (
-	    logical *)0, (logical *)0, (doublereal *)0, target_len, 
-	    abcorr_len, obsrvr_len);
+    return zzgfdiu_0_(1, target, abcorr, obsrvr, (U_fp)0, (doublereal *)0, (
+	    logical *)0, (doublereal *)0, target_len, abcorr_len, obsrvr_len);
     }
 
-/* Subroutine */ int zzgfdiur_(doublereal *refval)
+/* Subroutine */ int zzgfdidc_(U_fp udfunc, doublereal *et, logical *decres)
 {
-    return zzgfdiu_0_(2, (char *)0, (char *)0, (char *)0, refval, (doublereal 
-	    *)0, (logical *)0, (logical *)0, (doublereal *)0, (ftnint)0, (
-	    ftnint)0, (ftnint)0);
-    }
-
-/* Subroutine */ int zzgfdidc_(doublereal *et, logical *decres)
-{
-    return zzgfdiu_0_(3, (char *)0, (char *)0, (char *)0, (doublereal *)0, et,
-	     decres, (logical *)0, (doublereal *)0, (ftnint)0, (ftnint)0, (
-	    ftnint)0);
+    return zzgfdiu_0_(2, (char *)0, (char *)0, (char *)0, udfunc, et, decres, 
+	    (doublereal *)0, (ftnint)0, (ftnint)0, (ftnint)0);
     }
 
 /* Subroutine */ int zzgfdigq_(doublereal *et, doublereal *dist)
 {
-    return zzgfdiu_0_(4, (char *)0, (char *)0, (char *)0, (doublereal *)0, et,
-	     (logical *)0, (logical *)0, dist, (ftnint)0, (ftnint)0, (ftnint)
-	    0);
-    }
-
-/* Subroutine */ int zzgfdilt_(doublereal *et, logical *lssthn)
-{
-    return zzgfdiu_0_(5, (char *)0, (char *)0, (char *)0, (doublereal *)0, et,
-	     (logical *)0, lssthn, (doublereal *)0, (ftnint)0, (ftnint)0, (
-	    ftnint)0);
+    return zzgfdiu_0_(3, (char *)0, (char *)0, (char *)0, (U_fp)0, et, (
+	    logical *)0, dist, (ftnint)0, (ftnint)0, (ftnint)0);
     }
 

@@ -369,7 +369,7 @@
                 ./
                 printf ( "%s\n", "========================================" );
 
-                printf ( "Coverage for object %ld\n", obj );
+                printf ( "Coverage for object %d\n", (int)obj );
 
                 /.
                 Convert the coverage interval start and stop times to TDB
@@ -392,9 +392,9 @@
                               timstr                                    );
 
                    printf ( "\n"
-                            "Interval:  %ld\n"
+                            "Interval:  %d\n"
                             "Start:     %s\n",
-                            j,
+                            (int)j,
                             timstr            );
 
                    timout_c ( e, 
@@ -500,7 +500,7 @@
              /.
              Display a simple banner.
              ./
-             printf ( "\nCoverage for object %ld\n", idcode );
+             printf ( "\nCoverage for object %d\n", (int)idcode );
 
              /.
              Convert the coverage interval start and stop times to TDB
@@ -523,9 +523,9 @@
                            timstr                                  );
 
                 printf ( "\n"
-                         "Interval:  %ld\n"
+                         "Interval:  %d\n"
                          "Start:     %s\n",
-                         i,
+                         (int)i,
                          timstr            );
 
                 timout_c ( e, 
@@ -555,7 +555,16 @@
    N.J. Bachman   (JPL) 
  
 -Version
+
+   -CSPICE Version 1.0.3, 12-JUL-2016 (EDW)
+
+      Edit to example program to use "%d" with explicit casts
+      to int for printing SpiceInts with printf.
  
+   -CSPICE Version 1.0.2, 01-JUL-2014 (NJB)
+
+       Updated index entries.
+
    -CSPICE Version 1.0.1, 30-NOV-2007 (NJB)
 
        Corrected bug in first example program in header:
@@ -568,8 +577,11 @@
 
 -Index_Entries
  
-   get coverage window for ck object 
- 
+   get coverage window for ck_object
+   get coverage start and stop time for ck_object
+   get coverage start and stop time for ck frame
+   get coverage start and stop time for ck instrument 
+
 -&
 */
 

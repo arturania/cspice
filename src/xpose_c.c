@@ -53,7 +53,7 @@
    VARIABLE  I/O  DESCRIPTION
    --------  ---  --------------------------------------------------
     m1        I   3x3 matrix to be transposed.
-    mout      I   Transpose of m1.  mout can overwrite m1.
+    mout      O   Transpose of m1.  mout can overwrite m1.
  
 -Detailed_Input
 
@@ -114,6 +114,10 @@
    W.M. Owen          (JPL)
 
 -Version
+
+   -CSPICE Version 1.2.3, 08-JAN-2014 (BVS)
+
+      Corrected a minor typo in the header.
 
    -CSPICE Version 1.2.2, 16-JAN-2008   (EDW)
 

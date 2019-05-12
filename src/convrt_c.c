@@ -81,8 +81,12 @@
                                       "SECONDANGLE" 
 
               Metric Distances:       "METERS" 
+                                      "M"
+                                      "KILOMETERS"
                                       "KM" 
+                                      "CENTIMETERS"
                                       "CM" 
+                                      "MILLIMETERS"
                                       "MM" 
 
               English Distances:      "FEET" 
@@ -132,6 +136,10 @@
    2) If the units being converted between are incompatible, the 
       error SPICE(INCOMPATIBLEUNITS) is signaled. 
  
+-Files
+ 
+   None. 
+ 
 -Particulars
  
    This routine converts a measurement x given in units specified by 
@@ -173,9 +181,12 @@
    a best estimate is provided as of the date of the current version 
    of this routine.  Those estimated quantities are: 
 
-      1 AU    --- the astronomical unit  is taken from the JPL 
-                  ephemeris DE125.  It is believed to be accurate to 
-                  about 40 meters. 
+      1 AU    --- the astronomical unit. The value was taken from 
+                  the JPL ephemeris DE125. This value is an
+                  approximation and should not be used for
+                  high-accuracy work. It agrees with the value used in
+                  the JPL planetary ephemeris DE430 (149597870.700 km)
+                  at the 100m level.
 
       The tropical year is the time from equinox to equinox.  This 
       varies slightly with time. 
@@ -183,7 +194,7 @@
       1 PARSEC --- is dependent upon the value of the astronomical 
                    unit. 
  
--Files
+-Literature_References
  
    None. 
  
@@ -197,12 +208,14 @@
    I.M. Underwood  (JPL) 
    
  
--Literature_References
- 
-   None. 
- 
 -Version
  
+   -CSPICE Version 2.0.0 13-MAY-2016 (NJB)
+
+       Updated to support expanded names of metric distance
+       units, as well as to support the abbreviation "M" 
+       indicating meters.
+
    -CSPICE Version 1.0.0, 17-MAY-1999 (NJB)(CAC)(HAN)(WMO)(WLT)(IMU)
 
 -Index_Entries

@@ -114,22 +114,53 @@ static integer c__1 = 1;
 /*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
 /*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
 
+/* $ Parameters */
+
+/*     MAXL        is the maximum length of a body name. */
+
+/*     MAXP        is the maximum number of additional names that may */
+/*                 be added via the ZZBODDEF interface. */
+
+/*     NPERM       is the count of the mapping assignments built into */
+/*                 SPICE. */
+
+/*     MAXE        is the size of the lists and hashes storing combined */
+/*                 built-in and ZZBODDEF-defined name/ID mappings. To */
+/*                 ensure efficient hashing this size is the set to the */
+/*                 first prime number greater than ( MAXP + NPERM ). */
+
+/*     NROOM       is the size of the lists and hashes storing the */
+/*                 POOL-defined name/ID mappings. To ensure efficient */
+/*                 hashing and to provide the ability to store nearly as */
+/*                 many names as can fit in the POOL, this size is */
+/*                 set to the first prime number less than MAXLIN */
+/*                 defined in the POOL umbrella routine. */
+
 /* $ Required_Reading */
 
 /*     naif_ids.req */
 
 /* $ Keywords */
 
-/*     Body mappings. */
+/*     BODY */
+/*     CONVERSION */
 
 /* $ Author_and_Institution */
 
-/*     E.D. Wright (JPL) */
+/*     B.V. Semenov (JPL) */
+/*     E.D. Wright  (JPL) */
 
 /* $ Version */
 
-/*     SPICELIB 1.0.0 Thu May 20 07:57:58 2010 (EDW) */
+/* -    SPICELIB Version 2.0.0, 04-APR-2017 (BVS)(EDW) */
 
+/*        Increased NROOM to 14983. Added a comment note explaining */
+/*        NROOM and MAXE */
+
+/* -    SPICELIB Version 1.0.0, 20-MAY-2010 (EDW) */
+
+/*        N0064 version with MAXP = 150, NPERM = 563, */
+/*        MAXE = MAXP + NPERM, and NROOM = 2000. */
 
 /*     A script generates this file. Do not edit by hand. */
 /*     Edit the creation script to modify the contents of */
@@ -139,7 +170,24 @@ static integer c__1 = 1;
 /*     Maximum size of a NAME string */
 
 
+/*     Maximum number of additional names that may be added via the */
+/*     ZZBODDEF interface. */
+
+
 /*     Count of default SPICE mapping assignments. */
+
+
+/*     Size of the lists and hashes storing the built-in and */
+/*     ZZBODDEF-defined name/ID mappings. To ensure efficient hashing */
+/*     this size is the set to the first prime number greater than */
+/*     ( MAXP + NPERM ). */
+
+
+/*     Size of the lists and hashes storing the POOL-defined name/ID */
+/*     mappings. To ensure efficient hashing and to provide the ability */
+/*     to store nearly as many names as can fit in the POOL, this size */
+/*     is set to the first prime number less than MAXLIN defined in */
+/*     the POOL umbrella routine. */
 
 /* $ Abstract */
 

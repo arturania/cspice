@@ -192,10 +192,10 @@ static integer c__400 = 400;
 /*      The kernel pool containing leapseconds and relativistic terms */
 /*      MUST be loaded prior to calling this subroutine. Examples */
 /*      demonstrating how to load a kernel pool are included in the */
-/*      Required Reading file TIME.REQ and in the "Examples" */
+/*      Required Reading file time.req and in the "Examples" */
 /*      section of this header. For more general information about */
 /*      kernel pools, please consult the Required Reading file */
-/*      KERNEL.REQ. */
+/*      kernel.req. */
 
 /* $ Literature_References */
 
@@ -208,28 +208,32 @@ static integer c__400 = 400;
 
 /* $ Version */
 
-/* -     SPICELIB Version 1.2.1, 18-MAY-2010 (BVS) */
+/* -    SPICELIB Version 1.2.2, 18-APR-2014 (BVS) */
+
+/*        Minor header edits. */
+
+/* -    SPICELIB Version 1.2.1, 18-MAY-2010 (BVS) */
 
 /*        Removed "C$" marker from text in the header. */
 
-/* -     SPICELIB Version 1.2.0, 24-AUG-1998 (WLT) */
+/* -    SPICELIB Version 1.2.0, 24-AUG-1998 (WLT) */
 
-/*         The previous upgrade introduced an error in the fetch */
-/*         of the variable DELTET/M from the kernel pool.  This */
-/*         error was corrected. */
+/*        The previous upgrade introduced an error in the fetch */
+/*        of the variable DELTET/M from the kernel pool.  This */
+/*        error was corrected. */
 
-/* -     SPICELIB Version 1.1.0, 20-APR-1998 (NJB) */
+/* -    SPICELIB Version 1.1.0, 20-APR-1998 (NJB) */
 
-/*         Calls to RTPOOL were replaced with calls to GDPOOL, which */
-/*         does more robust error checking.  Check for buffer overflow */
-/*         was added.  Local declarations were re-organized. */
+/*        Calls to RTPOOL were replaced with calls to GDPOOL, which */
+/*        does more robust error checking.  Check for buffer overflow */
+/*        was added.  Local declarations were re-organized. */
 
-/* -     SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+/* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
 
-/*         Comment section for permuted index source lines was added */
-/*         following the header. */
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
 
-/* -     SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) (IMU) */
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (WMO) (IMU) */
 
 /* -& */
 /* $ Index_Entries */
@@ -324,9 +328,9 @@ static integer c__400 = 400;
 		" not be found in the kernel pool: #", (ftnlen)94);
 	for (i__ = 1; i__ <= 5; ++i__) {
 	    if (! found[(i__1 = i__ - 1) < 5 && 0 <= i__1 ? i__1 : s_rnge(
-		    "found", i__1, "deltet_", (ftnlen)337)]) {
+		    "found", i__1, "deltet_", (ftnlen)341)]) {
 		errch_("#", missed + ((i__1 = i__ - 1) < 5 && 0 <= i__1 ? 
-			i__1 : s_rnge("missed", i__1, "deltet_", (ftnlen)338))
+			i__1 : s_rnge("missed", i__1, "deltet_", (ftnlen)342))
 			 * 20, (ftnlen)1, (ftnlen)20);
 	    }
 	}
@@ -353,9 +357,9 @@ static integer c__400 = 400;
 	i__1 = nleap;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    if (*epoch >= dleap[(i__2 = (i__ << 1) - 1) < 400 && 0 <= i__2 ? 
-		    i__2 : s_rnge("dleap", i__2, "deltet_", (ftnlen)371)]) {
+		    i__2 : s_rnge("dleap", i__2, "deltet_", (ftnlen)375)]) {
 		leaps = dleap[(i__2 = (i__ << 1) - 2) < 400 && 0 <= i__2 ? 
-			i__2 : s_rnge("dleap", i__2, "deltet_", (ftnlen)372)];
+			i__2 : s_rnge("dleap", i__2, "deltet_", (ftnlen)376)];
 	    }
 	}
 
@@ -372,25 +376,25 @@ static integer c__400 = 400;
 	i__1 = nleap;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    if (*epoch > dleap[(i__2 = (i__ << 1) - 1) < 400 && 0 <= i__2 ? 
-		    i__2 : s_rnge("dleap", i__2, "deltet_", (ftnlen)389)]) {
+		    i__2 : s_rnge("dleap", i__2, "deltet_", (ftnlen)393)]) {
 		d__1 = dleap[(i__2 = (i__ << 1) - 1) < 400 && 0 <= i__2 ? 
-			i__2 : s_rnge("dleap", i__2, "deltet_", (ftnlen)391)] 
+			i__2 : s_rnge("dleap", i__2, "deltet_", (ftnlen)395)] 
 			+ dta + dleap[(i__3 = (i__ << 1) - 2) < 400 && 0 <= 
 			i__3 ? i__3 : s_rnge("dleap", i__3, "deltet_", (
-			ftnlen)391)];
+			ftnlen)395)];
 		aet = d_nint(&d__1);
 		ma = m[0] + m[1] * aet;
 		ea = ma + eb * sin(ma);
 		ettai = k * sin(ea);
 		et = dleap[(i__2 = (i__ << 1) - 1) < 400 && 0 <= i__2 ? i__2 :
-			 s_rnge("dleap", i__2, "deltet_", (ftnlen)397)] + dta 
+			 s_rnge("dleap", i__2, "deltet_", (ftnlen)401)] + dta 
 			+ dleap[(i__3 = (i__ << 1) - 2) < 400 && 0 <= i__3 ? 
-			i__3 : s_rnge("dleap", i__3, "deltet_", (ftnlen)397)] 
+			i__3 : s_rnge("dleap", i__3, "deltet_", (ftnlen)401)] 
 			+ ettai;
 		if (*epoch >= et) {
 		    leaps = dleap[(i__2 = (i__ << 1) - 2) < 400 && 0 <= i__2 ?
 			     i__2 : s_rnge("dleap", i__2, "deltet_", (ftnlen)
-			    400)];
+			    404)];
 		}
 	    }
 	}

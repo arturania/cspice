@@ -5,19 +5,36 @@
 
 #include "f2c.h"
 
+/* Table of constant values */
+
+static integer c__1 = 1;
+static integer c__4 = 4;
+
 /* $Procedure ZZHOLDD ( Private --- hold a scalar DP ) */
-/* Subroutine */ int zzholdd_(char *op, doublereal *value, ftnlen op_len)
+/* Subroutine */ int zzholdd_(integer *op, integer *id, logical *ok, 
+	doublereal *value)
 {
     /* Initialized data */
 
-    static logical first = TRUE_;
+    static logical init = TRUE_;
 
-    extern /* Subroutine */ int chkin_(char *, ftnlen), errch_(char *, char *,
-	     ftnlen, ftnlen);
-    extern logical eqstr_(char *, char *, ftnlen, ftnlen);
+    /* System generated locals */
+    integer i__1;
+
+    /* Builtin functions */
+    integer s_rnge(char *, integer, char *, integer);
+
+    /* Local variables */
+    integer i__;
+    extern /* Subroutine */ int chkin_(char *, ftnlen);
+    static logical first[4];
+    extern integer brckti_(integer *, integer *, integer *);
     extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
-	    ftnlen), setmsg_(char *, ftnlen);
-    static doublereal s_value__;
+	    ftnlen);
+    static doublereal svalue[4];
+    extern /* Subroutine */ int setmsg_(char *, ftnlen), errint_(char *, 
+	    integer *, ftnlen);
+    extern logical return_(void);
 
 /* $ Abstract */
 
@@ -25,8 +42,8 @@
 /*     routines. Users should not call this routine directly due to the */
 /*     volatile nature of this routine. */
 
-/*     Persistently store a double precision value or retrieve a */
-/*     stored double precision value. */
+/*     Persistently store double precision values or retrieve stored */
+/*     double precision values. That's it, not really rocket science. */
 
 /* $ Disclaimer */
 
@@ -59,37 +76,191 @@
 
 /* $ Keywords */
 
-/*     STORE_VALUE */
+/*     STORE DP VALUE */
 
 /* $ Declarations */
+/* $ Abstract */
+
+/*     SPICE private routine intended solely for the support of SPICE */
+/*     routines. Users should not call this routine directly due to the */
+/*     volatile nature of this routine. */
+
+/*     This file contains parameter declarations for the ZZHOLDD */
+/*     routine. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Required_Reading */
+
+/*     None. */
+
+/* $ Keywords */
+
+/*     None. */
+
+/* $ Declarations */
+
+/*     None. */
+
+/* $ Brief_I/O */
+
+/*     None. */
+
+/* $ Detailed_Input */
+
+/*     None. */
+
+/* $ Detailed_Output */
+
+/*     None. */
+
+/* $ Parameters */
+
+/*     GEN       general value, primarily for testing. */
+
+/*     GF_REF    user defined GF reference value. */
+
+/*     GF_TOL    user defined GF convergence tolerance. */
+
+/*     GF_DT     user defined GF step for numeric differentiation. */
+
+/* $ Exceptions */
+
+/*     None. */
+
+/* $ Files */
+
+/*     None. */
+
+/* $ Particulars */
+
+/*     None. */
+
+/* $ Examples */
+
+/*     None. */
+
+/* $ Restrictions */
+
+/*     None. */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     E.D. Wright    (JPL) */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0  03-DEC-2013 (EDW) */
+
+/* -& */
+
+/*     OP codes. The values exist in the integer domain */
+/*     [ -ZZNOP, -1], */
+
+
+/*     Current number of OP codes. */
+
+
+/*     ID codes. The values exist in the integer domain */
+/*     [ 1, NID], */
+
+
+/*     General use, primarily testing. */
+
+
+/*     The user defined GF reference value. */
+
+
+/*     The user defined GF convergence tolerance. */
+
+
+/*     The user defined GF step for numeric differentiation. */
+
+
+/*     Current number of ID codes, dimension of array */
+/*     in ZZHOLDD. Bad things can happen if this parameter */
+/*     does not have the proper value. */
+
+
+/*     End of file zzholdd.inc. */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
 /*     --------  ---  -------------------------------------------------- */
-/*     OP         I   String name of operation to execute */
-/*     VALUE     I-O  Double precision value returned or to store */
+/*     OP         I   Key for operation to execute. */
+/*     ID         I   The ID for the item to apply OP. */
+/*     OK         O   Boolean indicating success of get operation. */
+/*     VALUE     I-O  Double precision value returned or to store. */
 
 /* $ Detailed_Input */
 
-/*     OP          The scalar string name of the operation to execute. */
+/*     OP          The scalar integer key for the operation to execute. */
 /*                 Proper values of OP: */
 
-/*                    'PUT'   store a double precision value for later */
-/*                            use */
+/*                    ZZPUT     store a double precision value for */
+/*                              later use (put). */
 
-/*                    'GET'   retrieve a stored double precision value */
+/*                    ZZGET     retrieve a stored double precision */
+/*                              value (get). */
 
-/*                    'RESET' reset function to require a PUT prior */
-/*                            to a subsequent GET. */
+/*                    ZZRESET   reset function to require a ZZPUT prior */
+/*                              to a subsequent ZZGET (clear). */
 
-/*     VALUE       The scalar double precision value to store; */
-/*                 corresponding to a 'PUT' OP. */
+/*     ID          The scalar integer ID for the item to get/put etc. */
+/*                 Proper values of ID: */
+
+/*                    GEN       general value, primarily for testing. */
+
+/*                    GF_REF    user defined GF reference value. */
+
+/*                    GF_TOL    user defined GF convergence tolerance. */
+
+/*                    GF_DT     user defined GF step for numeric */
+/*                              differentiation. */
+
+/*     VALUE       The scalar double precision value to store (put). */
+
+/*     The include file "zzholdd.inc" lists all accepted values for */
+/*     ID and OP. */
 
 /* $ Detailed_Output */
 
-/*     VALUE       The scalar double precision value returned; */
-/*                 corresponding to a 'GET' OP. The value is that stored */
-/*                 by the previous 'PUT' operation. */
+/*     OK          The logical flag indicating if a get operation */
+/*                 returned a valid value for ID. OK returns false if a */
+/*                 get operation occurs before a put. */
+
+/*                 This argument has no meaning except when performing */
+/*                 a get operation. */
+
+/*     VALUE       The scalar double precision value retrieved (get). */
 
 /* $ Parameters */
 
@@ -97,21 +268,30 @@
 
 /* $ Exceptions */
 
-/*     1)  The error SPICE(ZZHOLDNOPUT) signals if a 'GET' operation */
-/*         precedes any 'PUT' operation. */
+/*     1)  The error SPICE(UNKNOWNID) signals if the value of ID is */
+/*         not one of those coded in zzholdd.inc. */
 
 /*     2)  The error SPICE(UNKNOWNOP) signals if the value of OP is */
-/*         neither 'GET', 'PUT', or 'RESET'. */
+/*         not one of those coded in zzholdd.inc. */
 
 /* $ Files */
 
-/*    None. */
+/*    zzholdd.inc */
 
 /* $ Particulars */
 
-/*     This routine simply stores a double precision value for */
-/*     later retrieval. The value stored persists in memory until */
-/*     overwritten by a subsequent 'PUT' operation. */
+/*     This routine simply stores double precision values for later */
+/*     retrieval. */
+
+/*     A get operation may succeed or fail based on whether */
+/*     a put operation preceded the put. */
+
+/*        A ZZHOLDD get operation for an ID called before a put operation */
+/*        for that ID returns with OK as false, VALUE as 0. */
+
+/*        A ZZHOLDD get operation for an ID called after a put operation */
+/*        for that ID returns with OK as true, VALUE as the value */
+/*        assigned by the put. */
 
 /* $ Examples */
 
@@ -123,59 +303,88 @@
 /*     Store values using ZZHOLDD then attempt to retrieve the values. */
 
 /*           PROGRAM ZZHOLDD_T */
-
 /*           IMPLICIT NONE */
 
-/*           DOUBLE PRECISION      VAL */
+/*           INCLUDE 'zzholdd.inc' */
+
+/*           DOUBLE PRECISION     VALUE */
+/*           DOUBLE PRECISION     X */
+/*           DOUBLE PRECISION     Y */
+/*           DOUBLE PRECISION     Z */
+/*           LOGICAL              OK */
+
+/*           X = -11.D0 */
+/*           Y =  22.D0 */
+/*           Z = -33.D0 */
 
 /*     C */
-/*     C     Set a default value for VAL. */
+/*     C     Perform a put then get. */
 /*     C */
-/*           VAL = 0.D0 */
+/*           VALUE = 0.D0 */
+/*           OK    = .FALSE. */
+/*           CALL ZZHOLDD ( ZZPUT, GEN, OK, X) */
+/*           CALL ZZHOLDD ( ZZGET, GEN, OK, VALUE ) */
+
+/*           IF (OK) THEN */
+/*              WRITE(*,*) 'Check 1 ', VALUE */
+/*           ELSE */
+/*              WRITE(*,*) 'Error 1 ' */
+/*           END IF */
 
 /*     C */
-/*     C     Store 941.0 in ZZHOLDD. */
+/*     C     Reset then get without put. */
 /*     C */
-/*           CALL ZZHOLDD ( 'PUT', 941.D0 ) */
+/*           VALUE = 0.D0 */
+/*           OK    = .FALSE. */
+
+/*           CALL ZZHOLDD ( ZZRESET,   GEN, OK, VALUE ) */
+/*           CALL ZZHOLDD ( ZZGET,     GEN, OK, VALUE ) */
+
+/*           IF (OK) THEN */
+/*              WRITE(*,*) 'Error 2 ' */
+/*           ELSE */
+/*              WRITE(*,*) 'Check 2 ', VALUE */
+/*           END IF */
 
 /*     C */
-/*     C     Retrieve 941.0 to VAL. */
+/*     C     Now put. */
 /*     C */
-/*           CALL ZZHOLDD ( 'GET', VAL ) */
+/*           CALL ZZHOLDD ( ZZPUT, GEN, OK, Y) */
+/*           CALL ZZHOLDD ( ZZGET, GEN, OK, VALUE ) */
+
+/*           IF (OK) THEN */
+/*              WRITE(*,*) 'Check 3 ', VALUE */
+/*           ELSE */
+/*              WRITE(*,*) 'Error 3 ' */
+/*           END IF */
+
 
 /*     C */
-/*     C     Output VAL. It should have value 941.0. */
+/*     C     Now another put with a different value. */
 /*     C */
-/*           WRITE (*,*) VAL */
+/*           CALL ZZHOLDD ( ZZPUT, GEN, OK, Z) */
+/*           CALL ZZHOLDD ( ZZGET, GEN, OK, VALUE ) */
 
-
-/*     C */
-/*     C     Another 'PUT' 'GET' cycle. */
-/*     C */
-/*           CALL ZZHOLDD ( 'PUT', 830.D0 ) */
-
-/*     C */
-/*     C     Output VAL. It should have value 830.0. */
-/*     C */
-/*           CALL ZZHOLDD ( 'GET', VAL ) */
-
-/*           WRITE (*,*) VAL */
-
+/*           IF (OK) THEN */
+/*              WRITE(*,*) 'Check 4 ', VALUE */
+/*           ELSE */
+/*              WRITE(*,*) 'Error 4 ' */
+/*           END IF */
 
 /*           END */
 
-/*   The program outputs (OS X Intel run): */
+/*   The program outputs: */
 
-/*       941. */
-/*       830. */
+/*      Check 1   -11.000000000000000 */
+/*      Check 2    0.0000000000000000 */
+/*      Check 3    22.000000000000000 */
+/*      Check 4   -33.000000000000000 */
 
 /*    As expected. */
 
 /* $ Restrictions */
 
-/*     Code logic enforces the requirement at least one 'PUT' operation */
-/*     occurs before a 'GET'. You can't 'GET' until at least one 'PUT'. */
-/*     'RESET' returns the routine to the state requiring a 'PUT'. */
+/*    None. */
 
 /* $ Literature_References */
 
@@ -187,6 +396,12 @@
 
 /* $ Version */
 
+/* -   SPICELIB Version 1.1.0  03-DEC-2013 (EDW) */
+
+/*       Added ID and OK arguments to routine, generalizing use. */
+
+/*       Added RETURN() check. */
+
 /* -   SPICELIB Version 1.0.0  16-FEB-2010 (EDW) */
 
 /* -& */
@@ -196,43 +411,97 @@
 /*    retrieve a stored double precision value */
 
 /* -& */
-    if (eqstr_(op, "GET", op_len, (ftnlen)3)) {
 
-/*        Retrieve a stored double precision value. Signal */
-/*        an error if a "GET" call occurs prior to a "PUT." */
+/*     SPICELIB functions */
 
-	if (first) {
-	    chkin_("ZZHOLDD", (ftnlen)7);
-	    setmsg_("ZZHOLDD GET called without PUT initialization. Either t"
-		    "he first GET call of program run or first GET call after"
-		    " RESET.", (ftnlen)118);
-	    sigerr_("SPICE(ZZHOLDNOPUT) ", (ftnlen)19);
-	    chkout_("ZZHOLDD", (ftnlen)7);
-	    return 0;
+
+/*     Local variables. */
+
+
+/*     Standard SPICE error handling. */
+
+    if (return_()) {
+	return 0;
+    }
+
+/*     Confirm a proper ID value. */
+
+    if (brckti_(id, &c__1, &c__4) != *id) {
+	*value = 0.;
+	*ok = FALSE_;
+	chkin_("ZZHOLDD", (ftnlen)7);
+	setmsg_("ID value unknown. ID value #1 not an element of [1, #2]. Co"
+		"nfirmthe ID value exists in the zzholdd.inc parameter file.", 
+		(ftnlen)118);
+	errint_("#1", id, (ftnlen)2);
+	errint_("#2", &c__4, (ftnlen)2);
+	sigerr_("SPICE(UNKNOWNID)", (ftnlen)16);
+	chkout_("ZZHOLDD", (ftnlen)7);
+	return 0;
+    }
+
+/*     Initialize the FIRST array; perform once per program run. */
+
+    if (init) {
+	for (i__ = 1; i__ <= 4; ++i__) {
+	    first[(i__1 = i__ - 1) < 4 && 0 <= i__1 ? i__1 : s_rnge("first", 
+		    i__1, "zzholdd_", (ftnlen)318)] = TRUE_;
 	}
-	*value = s_value__;
-    } else if (eqstr_(op, "PUT", op_len, (ftnlen)3)) {
+	init = FALSE_;
+    }
+
+/*     Perform the operation as described by OP. */
+
+    if (*op == -1) {
+
+/*        Attempt to retrieve a stored double precision value for ID. */
+
+/*          - Return the value stored by a put operation and OK */
+/*            as true. */
+
+/*          - If no previous set to this ID, return value as zero and */
+/*            OK as false. */
+
+	if (first[(i__1 = *id - 1) < 4 && 0 <= i__1 ? i__1 : s_rnge("first", 
+		i__1, "zzholdd_", (ftnlen)341)]) {
+	    *value = 0.;
+	    *ok = FALSE_;
+	} else {
+
+/*           Return the stored value. */
+
+	    *value = svalue[(i__1 = *id - 1) < 4 && 0 <= i__1 ? i__1 : s_rnge(
+		    "svalue", i__1, "zzholdd_", (ftnlen)351)];
+	    *ok = TRUE_;
+	}
+    } else if (*op == -2) {
 
 /*        Store a value for later use. Set FIRST to false */
-/*        so subsequent "GET" calls will work. */
+/*        so subsequent get calls will work. */
 
-	if (first) {
-	    first = FALSE_;
+	if (first[(i__1 = *id - 1) < 4 && 0 <= i__1 ? i__1 : s_rnge("first", 
+		i__1, "zzholdd_", (ftnlen)363)]) {
+	    first[(i__1 = *id - 1) < 4 && 0 <= i__1 ? i__1 : s_rnge("first", 
+		    i__1, "zzholdd_", (ftnlen)365)] = FALSE_;
 	}
-	s_value__ = *value;
-    } else if (eqstr_(op, "RESET", op_len, (ftnlen)5)) {
+	svalue[(i__1 = *id - 1) < 4 && 0 <= i__1 ? i__1 : s_rnge("svalue", 
+		i__1, "zzholdd_", (ftnlen)369)] = *value;
+    } else if (*op == -3) {
 
-/*        Reset FIRST forcing a PUT before an further GET. */
+/*        Reset FIRST( ID ) forcing a put before a get. */
 
-	first = TRUE_;
+	first[(i__1 = *id - 1) < 4 && 0 <= i__1 ? i__1 : s_rnge("first", i__1,
+		 "zzholdd_", (ftnlen)376)] = TRUE_;
     } else {
 
-/*        'OP' not "PUT," "RESET" or "GET." Signal an error. */
+/*        Unknown value for 'OP'. Signal an error. */
 
+	*value = 0.;
+	*ok = FALSE_;
 	chkin_("ZZHOLDD", (ftnlen)7);
-	setmsg_("Unknown operation '#'. Routine supports only GET, PUT and R"
-		"ESET.", (ftnlen)64);
-	errch_("#", op, (ftnlen)1, op_len);
+	setmsg_("Unknown operation. Confirm the OP value # exists in the zzh"
+		"oldd.inc parameter file.", (ftnlen)83);
+	errint_("#", op, (ftnlen)1);
 	sigerr_("SPICE(UNKNOWNOP)", (ftnlen)16);
 	chkout_("ZZHOLDD", (ftnlen)7);
 	return 0;

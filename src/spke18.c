@@ -18,12 +18,12 @@
     /* Local variables */
     integer from;
     extern /* Subroutine */ int vequ_(doublereal *, doublereal *);
-    doublereal work[516]	/* was [258][2] */;
+    doublereal work[792]	/* was [396][2] */;
     integer i__, j, n;
     extern /* Subroutine */ int chkin_(char *, ftnlen);
     doublereal vbuff[6];
     integer to;
-    doublereal locrec[129];
+    doublereal locrec[198];
     integer packsz;
     extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
 	    ftnlen);
@@ -201,6 +201,12 @@
 /*     None. */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 05-OCT-2012 (NJB) */
+
+/*        Updated to support increase of maximum degree to 27 for types */
+/*        2, 3, 8, 9, 12, 13, 18, and 19. See SPKPVN for a list */
+/*        of record size requirements as a function of data type. */
 
 /* -    SPICELIB Version 1.0.0, 16-AUG-2002 (NJB) */
 
@@ -434,10 +440,10 @@
 
 		from = packsz * (j - 1) + 2 + i__;
 		to = (j << 1) - 1;
-		locrec[(i__2 = to - 1) < 129 && 0 <= i__2 ? i__2 : s_rnge(
+		locrec[(i__2 = to - 1) < 198 && 0 <= i__2 ? i__2 : s_rnge(
 			"locrec", i__2, "spke18_", (ftnlen)335)] = record[
 			from - 1];
-		locrec[(i__2 = to) < 129 && 0 <= i__2 ? i__2 : s_rnge("locrec"
+		locrec[(i__2 = to) < 198 && 0 <= i__2 ? i__2 : s_rnge("locrec"
 			, i__2, "spke18_", (ftnlen)336)] = record[from + 2];
 	    }
 
@@ -463,10 +469,10 @@
 
 		from = packsz * (j - 1) + 2 + packsz / 2 + i__;
 		to = (j << 1) - 1;
-		locrec[(i__2 = to - 1) < 129 && 0 <= i__2 ? i__2 : s_rnge(
+		locrec[(i__2 = to - 1) < 198 && 0 <= i__2 ? i__2 : s_rnge(
 			"locrec", i__2, "spke18_", (ftnlen)368)] = record[
 			from - 1];
-		locrec[(i__2 = to) < 129 && 0 <= i__2 ? i__2 : s_rnge("locrec"
+		locrec[(i__2 = to) < 198 && 0 <= i__2 ? i__2 : s_rnge("locrec"
 			, i__2, "spke18_", (ftnlen)369)] = record[from + 2];
 	    }
 

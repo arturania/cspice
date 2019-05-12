@@ -5,7 +5,7 @@
 
 #include "f2c.h"
 
-/* $Procedure      ZZTPATS (Private---Time Patterns) */
+/* $Procedure ZZTPATS (Private, Time --- Time Patterns) */
 logical zztpats_(integer *room, integer *nknown, char *known, char *meanng, 
 	ftnlen known_len, ftnlen meanng_len)
 {
@@ -106,15 +106,15 @@ logical zztpats_(integer *room, integer *nknown, char *known, char *meanng,
 /*     COUNT      is the number of patterns/meanings that are */
 /*                returned by this routine. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     Error Free. */
 
 /*     1) If ROOM is less than count, the function returns FALSE. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -130,22 +130,36 @@ logical zztpats_(integer *room, integer *nknown, char *known, char *meanng,
 
 /*     None. */
 
-/* $ Author_and_Institution */
-
-/*     W.L. Taber      (JPL) */
-
 /* $ Literature_References */
 
 /*     None. */
 
+/* $ Author_and_Institution */
+
+/*     W.L. Taber      (JPL) */
+
 /* $ Version */
+
+/* -    SPICELIB Version 3.1.0, 11-DEC-2013 (EDW) */
+
+/*        Corrected typo which showed MEANNG(203) assigned */
+/*        the value 'm*D*YH*M' rather than the correct assignment */
+/*        to MYMNNG( 203 ). The assignment error often prevented */
+/*        the Time subsystem from parsing time strings with */
+/*        the format 'i-i-Yi:i'. */
+
+/*        Corrected header section ordering to meet SPICE requirements. */
 
 /* -    SPICELIB Version 3.0.0, 16-AUG-2002 (WLT) */
 
 /*        The interface of the routine was changed from */
+
 /*           ZZTPATS( ROOM, KNOWN, MEANNG ) */
+
 /*        to */
+
 /*           ZZTPATS( ROOM, NKNOWN, KNOWN, MEANNG ) */
+
 /*        and made error free. */
 
 /* -    SPICELIB Version 2.0.0, 16-APR-1997 (WLT) */
@@ -155,7 +169,6 @@ logical zztpats_(integer *room, integer *nknown, char *known, char *meanng,
 /*        begin at KNOWN(186) below. */
 
 /* -    SPICELIB Version 1.0.0, 02-APR-1996 (WLT) */
-
 
 /* -& */
     s_copy(myknwn, "Y-i-it", (ftnlen)32, (ftnlen)6);
@@ -563,7 +576,7 @@ logical zztpats_(integer *room, integer *nknown, char *known, char *meanng,
     s_copy(myknwn + 6432, "i-i-Yi:i:i", (ftnlen)32, (ftnlen)10);
     s_copy(mymnng + 6432, "m*D*YH*M*S", (ftnlen)32, (ftnlen)10);
     s_copy(myknwn + 6464, "i-i-Yi:i", (ftnlen)32, (ftnlen)8);
-    s_copy(meanng + meanng_len * 202, "m*D*YH*M", meanng_len, (ftnlen)8);
+    s_copy(mymnng + 6464, "m*D*YH*M", (ftnlen)32, (ftnlen)8);
 
 /*     Copy as many patterns and meanings as the input arrays allow. */
 
@@ -572,10 +585,10 @@ logical zztpats_(integer *room, integer *nknown, char *known, char *meanng,
     for (i__ = 1; i__ <= i__1; ++i__) {
 	s_copy(known + (i__ - 1) * known_len, myknwn + (((i__2 = i__ - 1) < 
 		203 && 0 <= i__2 ? i__2 : s_rnge("myknwn", i__2, "zztpats_", (
-		ftnlen)948)) << 5), known_len, (ftnlen)32);
+		ftnlen)984)) << 5), known_len, (ftnlen)32);
 	s_copy(meanng + (i__ - 1) * meanng_len, mymnng + (((i__2 = i__ - 1) < 
 		203 && 0 <= i__2 ? i__2 : s_rnge("mymnng", i__2, "zztpats_", (
-		ftnlen)949)) << 5), meanng_len, (ftnlen)32);
+		ftnlen)985)) << 5), meanng_len, (ftnlen)32);
     }
 
 /*     Make sure everything is in the proper order. */

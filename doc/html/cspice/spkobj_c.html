@@ -55,7 +55,7 @@
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 33%; text-align: center;">
             <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
@@ -66,7 +66,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
@@ -76,7 +76,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
@@ -209,7 +209,8 @@
           #include &quot;SpiceUsr.h&quot;
 
           int main()
-          {
+             {
+
              /.
              Local parameters
              ./
@@ -251,7 +252,7 @@
              <a href="prompt_c.html">prompt_c</a> ( &quot;Name of SPK file           &gt; &quot;, FILSIZ, spk    );
 
              /.
-             Find the set of objects in the SPK file. 
+             Find the set of objects in the SPK file.
              ./
              <b>spkobj_c</b> ( spk, &amp;ids );
 
@@ -261,12 +262,12 @@
              each item in the set, and display the coverage.
              ./
              for ( i = 0;  i &lt; <a href="card_c.html">card_c</a>( &amp;ids );  i++  )
-             {
+                {
                 /.
-                Find the coverage window for the current object. 
+                Find the coverage window for the current object.
                 Empty the coverage window each time so we don't
                 include data for the previous object.
-                ./
+                ./                
                 obj  =  SPICE_CELL_ELEM_I( &amp;ids, i );
 
                 <a href="scard_c.html">scard_c</a>  ( 0,        &amp;cover );
@@ -282,14 +283,14 @@
                 ./
                 printf ( &quot;%s\n&quot;, &quot;========================================&quot; );
 
-                printf ( &quot;Coverage for object %ld\n&quot;, obj );
+                printf ( &quot;Coverage for object %d\n&quot;, (int)obj );
 
                 /.
                 Convert the coverage interval start and stop times to TDB
                 calendar strings.
                 ./
                 for ( j = 0;  j &lt; niv;  j++  )
-                {
+                   {
                    /.
                    Get the endpoints of the jth interval.
                    ./
@@ -299,28 +300,29 @@
                    Convert the endpoints to TDB calendar
                    format time strings and display them.
                    ./
-                   <a href="timout_c.html">timout_c</a> ( b, 
-                              &quot;YYYY MON DD HR:MN:SC.### (TDB) ::TDB&quot;,  
+                   <a href="timout_c.html">timout_c</a> ( b,
+                              &quot;YYYY MON DD HR:MN:SC.### (TDB) ::TDB&quot;,
                               TIMLEN,
                               timstr                                  );
 
                    printf ( &quot;\n&quot;
-                            &quot;Interval:  %ld\n&quot;
+                            &quot;Interval:  %d\n&quot;
                             &quot;Start:     %s\n&quot;,
                             j,
                             timstr            );
 
-                   <a href="timout_c.html">timout_c</a> ( e, 
-                              &quot;YYYY MON DD HR:MN:SC.### (TDB) ::TDB&quot;,  
+                   <a href="timout_c.html">timout_c</a> ( e,
+                              &quot;YYYY MON DD HR:MN:SC.### (TDB) ::TDB&quot;,
                               TIMLEN,
                               timstr                                  );
                    printf ( &quot;Stop:      %s\n&quot;, timstr );
 
+                   }
+
                 }
+             return ( 0 );
 
              }
-             return ( 0 );
-          } 
 </PRE>
 <h4><a name="Restrictions">Restrictions</a></h4>
 <PRE>
@@ -340,7 +342,15 @@
  </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
+   -CSPICE Version 1.0.3, 14-JUN-2016 (EDW)
+
+       Edit to example program to use &quot;%d&quot; with explicit casts
+       to int for printing SpiceInts with printf.
  
+   -CSPICE Version 1.0.2, 01-JUL-2014 (NJB)
+
+       Updated index entries.
+
    -CSPICE Version 1.0.1, 30-NOV-2007 (NJB)
 
        Corrected bug in first example program in header:
@@ -354,8 +364,9 @@
 <h4><a name="Index_Entries">Index_Entries</a></h4>
 <PRE>
  
-   find id codes in spk file
- </PRE>
+   find id codes of ephemeris objects in spk file
+   find id codes of bodies in spk file 
+</PRE>
 <h4>Link to routine spkobj_c source file <a href='../../../src/cspice/spkobj_c.c'>spkobj_c.c</a> </h4>
 
       </td>
@@ -363,7 +374,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Jun  9 13:05:30 2010</pre>
+   <pre>Wed Apr  5 17:54:43 2017</pre>
 
 </body>
 </html>

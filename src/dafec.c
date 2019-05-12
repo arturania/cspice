@@ -9,7 +9,7 @@
 
 static logical c_false = FALSE_;
 static integer c__1 = 1;
-static integer c__1000 = 1000;
+static integer c__5000 = 5000;
 
 /* $Procedure DAFEC ( DAF extract comments ) */
 /* Subroutine */ int dafec_(integer *handle, integer *bufsiz, integer *n, 
@@ -45,20 +45,20 @@ static integer c__1000 = 1000;
     integer ni;
     extern /* Subroutine */ int dafsih_(integer *, char *, ftnlen);
     char ifname[60];
-    static integer filhan[1000];
+    static integer filhan[5000];
     static char crecrd[1000];
     extern /* Subroutine */ int dafrfr_(integer *, integer *, integer *, char 
 	    *, integer *, integer *, integer *, ftnlen);
-    static integer filchr[1000];
+    static integer filchr[5000];
     integer daflun, nchars;
-    static integer filcnt[1000];
+    static integer filcnt[5000];
     static char eocmrk[1];
     extern integer isrchi_(integer *, integer *, integer *);
     integer linlen;
     static integer nfiles;
     integer eocpos;
     static char eolmrk[1];
-    static integer lsthan, lstrec[1000];
+    static integer lsthan, lstrec[5000];
     extern /* Subroutine */ int chkout_(char *, ftnlen);
     integer numcom;
     extern /* Subroutine */ int sigerr_(char *, ftnlen);
@@ -69,7 +69,7 @@ static integer c__1000 = 1000;
 	    integer *, ftnlen);
     integer curpos;
     extern logical return_(void);
-    static integer lstpos[1000];
+    static integer lstpos[5000];
     logical eol;
 
     /* Fortran I/O blocks */
@@ -354,8 +354,15 @@ static integer c__1000 = 1000;
 /* $ Author_and_Institution */
 
 /*     K.R. Gehringer (JPL) */
+/*     F.S. Turner    (JPL) */
+/*     N.J. Bachman   (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.0 12-APR-2012 (BVS) */
+
+/*        Increased FTSIZE (from 1000 to 5000). */
 
 /* -    SPICELIB Version 1.0.0 08-NOV-2006 (NJB) (KRG) (FST) */
 
@@ -365,11 +372,6 @@ static integer c__1000 = 1000;
 /* $ Index_Entries */
 
 /*      extract comments from a DAF */
-
-/* -& */
-/* $ Revisions */
-
-
 
 /* -& */
 
@@ -428,17 +430,17 @@ static integer c__1000 = 1000;
 	lsthan = 0;
 	*(unsigned char *)eocmrk = '\4';
 	*(unsigned char *)eolmrk = '\0';
-	for (i__ = 1; i__ <= 1000; ++i__) {
-	    filchr[(i__1 = i__ - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("fil"
-		    "chr", i__1, "dafec_", (ftnlen)445)] = 0;
-	    filcnt[(i__1 = i__ - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("fil"
-		    "cnt", i__1, "dafec_", (ftnlen)446)] = 0;
-	    filhan[(i__1 = i__ - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("fil"
-		    "han", i__1, "dafec_", (ftnlen)447)] = 0;
-	    lstpos[(i__1 = i__ - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("lst"
-		    "pos", i__1, "dafec_", (ftnlen)448)] = 0;
-	    lstrec[(i__1 = i__ - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("lst"
-		    "rec", i__1, "dafec_", (ftnlen)449)] = 0;
+	for (i__ = 1; i__ <= 5000; ++i__) {
+	    filchr[(i__1 = i__ - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("fil"
+		    "chr", i__1, "dafec_", (ftnlen)446)] = 0;
+	    filcnt[(i__1 = i__ - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("fil"
+		    "cnt", i__1, "dafec_", (ftnlen)447)] = 0;
+	    filhan[(i__1 = i__ - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("fil"
+		    "han", i__1, "dafec_", (ftnlen)448)] = 0;
+	    lstpos[(i__1 = i__ - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("lst"
+		    "pos", i__1, "dafec_", (ftnlen)449)] = 0;
+	    lstrec[(i__1 = i__ - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("lst"
+		    "rec", i__1, "dafec_", (ftnlen)450)] = 0;
 	}
     }
 
@@ -492,14 +494,14 @@ static integer c__1000 = 1000;
 /*        Set the record number and the starting position accordingly, */
 /*        i.e., where we left off when we last read from that file. */
 
-	recno = lstrec[(i__1 = index - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge(
-		"lstrec", i__1, "dafec_", (ftnlen)515)];
-	curpos = lstpos[(i__1 = index - 1) < 1000 && 0 <= i__1 ? i__1 : 
-		s_rnge("lstpos", i__1, "dafec_", (ftnlen)516)];
-	nchars = filchr[(i__1 = index - 1) < 1000 && 0 <= i__1 ? i__1 : 
-		s_rnge("filchr", i__1, "dafec_", (ftnlen)517)];
-	ncomc = filcnt[(i__1 = index - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge(
-		"filcnt", i__1, "dafec_", (ftnlen)518)];
+	recno = lstrec[(i__1 = index - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge(
+		"lstrec", i__1, "dafec_", (ftnlen)516)];
+	curpos = lstpos[(i__1 = index - 1) < 5000 && 0 <= i__1 ? i__1 : 
+		s_rnge("lstpos", i__1, "dafec_", (ftnlen)517)];
+	nchars = filchr[(i__1 = index - 1) < 5000 && 0 <= i__1 ? i__1 : 
+		s_rnge("filchr", i__1, "dafec_", (ftnlen)518)];
+	ncomc = filcnt[(i__1 = index - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge(
+		"filcnt", i__1, "dafec_", (ftnlen)519)];
     } else {
 
 /*        We have not yet read any comments from this file, so start at */
@@ -760,26 +762,26 @@ L100003:
 	    if (index > 0) {
 		i__1 = nfiles - 1;
 		for (k = index; k <= i__1; ++k) {
-		    filchr[(i__2 = k - 1) < 1000 && 0 <= i__2 ? i__2 : s_rnge(
-			    "filchr", i__2, "dafec_", (ftnlen)810)] = filchr[(
-			    i__3 = k) < 1000 && 0 <= i__3 ? i__3 : s_rnge(
-			    "filchr", i__3, "dafec_", (ftnlen)810)];
-		    filcnt[(i__2 = k - 1) < 1000 && 0 <= i__2 ? i__2 : s_rnge(
-			    "filcnt", i__2, "dafec_", (ftnlen)811)] = filcnt[(
-			    i__3 = k) < 1000 && 0 <= i__3 ? i__3 : s_rnge(
-			    "filcnt", i__3, "dafec_", (ftnlen)811)];
-		    filhan[(i__2 = k - 1) < 1000 && 0 <= i__2 ? i__2 : s_rnge(
-			    "filhan", i__2, "dafec_", (ftnlen)812)] = filhan[(
-			    i__3 = k) < 1000 && 0 <= i__3 ? i__3 : s_rnge(
-			    "filhan", i__3, "dafec_", (ftnlen)812)];
-		    lstrec[(i__2 = k - 1) < 1000 && 0 <= i__2 ? i__2 : s_rnge(
-			    "lstrec", i__2, "dafec_", (ftnlen)813)] = lstrec[(
-			    i__3 = k) < 1000 && 0 <= i__3 ? i__3 : s_rnge(
-			    "lstrec", i__3, "dafec_", (ftnlen)813)];
-		    lstpos[(i__2 = k - 1) < 1000 && 0 <= i__2 ? i__2 : s_rnge(
-			    "lstpos", i__2, "dafec_", (ftnlen)814)] = lstpos[(
-			    i__3 = k) < 1000 && 0 <= i__3 ? i__3 : s_rnge(
-			    "lstpos", i__3, "dafec_", (ftnlen)814)];
+		    filchr[(i__2 = k - 1) < 5000 && 0 <= i__2 ? i__2 : s_rnge(
+			    "filchr", i__2, "dafec_", (ftnlen)811)] = filchr[(
+			    i__3 = k) < 5000 && 0 <= i__3 ? i__3 : s_rnge(
+			    "filchr", i__3, "dafec_", (ftnlen)811)];
+		    filcnt[(i__2 = k - 1) < 5000 && 0 <= i__2 ? i__2 : s_rnge(
+			    "filcnt", i__2, "dafec_", (ftnlen)812)] = filcnt[(
+			    i__3 = k) < 5000 && 0 <= i__3 ? i__3 : s_rnge(
+			    "filcnt", i__3, "dafec_", (ftnlen)812)];
+		    filhan[(i__2 = k - 1) < 5000 && 0 <= i__2 ? i__2 : s_rnge(
+			    "filhan", i__2, "dafec_", (ftnlen)813)] = filhan[(
+			    i__3 = k) < 5000 && 0 <= i__3 ? i__3 : s_rnge(
+			    "filhan", i__3, "dafec_", (ftnlen)813)];
+		    lstrec[(i__2 = k - 1) < 5000 && 0 <= i__2 ? i__2 : s_rnge(
+			    "lstrec", i__2, "dafec_", (ftnlen)814)] = lstrec[(
+			    i__3 = k) < 5000 && 0 <= i__3 ? i__3 : s_rnge(
+			    "lstrec", i__3, "dafec_", (ftnlen)814)];
+		    lstpos[(i__2 = k - 1) < 5000 && 0 <= i__2 ? i__2 : s_rnge(
+			    "lstpos", i__2, "dafec_", (ftnlen)815)] = lstpos[(
+			    i__3 = k) < 5000 && 0 <= i__3 ? i__3 : s_rnge(
+			    "lstpos", i__3, "dafec_", (ftnlen)815)];
 		}
 		--nfiles;
 	    }
@@ -806,37 +808,37 @@ L100003:
 /*           has been read, so add it to the file table and save all of */
 /*           its information if there is room in the file table. */
 
-	    if (nfiles >= 1000) {
+	    if (nfiles >= 5000) {
 		setmsg_("The file table is full with # files, and another fi"
 			"le could not be added.", (ftnlen)73);
-		errint_("#", &c__1000, (ftnlen)1);
+		errint_("#", &c__5000, (ftnlen)1);
 		sigerr_("SPICE(FILETABLEFULL)", (ftnlen)20);
 		chkout_("DAFEC", (ftnlen)5);
 		return 0;
 	    }
 	    ++nfiles;
-	    filchr[(i__1 = nfiles - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge(
-		    "filchr", i__1, "dafec_", (ftnlen)858)] = nchars;
-	    filcnt[(i__1 = nfiles - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge(
-		    "filcnt", i__1, "dafec_", (ftnlen)859)] = ncomc;
-	    filhan[(i__1 = nfiles - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge(
-		    "filhan", i__1, "dafec_", (ftnlen)860)] = *handle;
-	    lstrec[(i__1 = nfiles - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge(
-		    "lstrec", i__1, "dafec_", (ftnlen)861)] = recno;
-	    lstpos[(i__1 = nfiles - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge(
-		    "lstpos", i__1, "dafec_", (ftnlen)862)] = curpos;
+	    filchr[(i__1 = nfiles - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge(
+		    "filchr", i__1, "dafec_", (ftnlen)859)] = nchars;
+	    filcnt[(i__1 = nfiles - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge(
+		    "filcnt", i__1, "dafec_", (ftnlen)860)] = ncomc;
+	    filhan[(i__1 = nfiles - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge(
+		    "filhan", i__1, "dafec_", (ftnlen)861)] = *handle;
+	    lstrec[(i__1 = nfiles - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge(
+		    "lstrec", i__1, "dafec_", (ftnlen)862)] = recno;
+	    lstpos[(i__1 = nfiles - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge(
+		    "lstpos", i__1, "dafec_", (ftnlen)863)] = curpos;
 	    lsthan = *handle;
 	} else {
 
 /*           The comment area of this file is already in the file table, */
 /*           so just update its information. */
 
-	    filchr[(i__1 = index - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge(
-		    "filchr", i__1, "dafec_", (ftnlen)870)] = nchars;
-	    lstrec[(i__1 = index - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge(
-		    "lstrec", i__1, "dafec_", (ftnlen)871)] = recno;
-	    lstpos[(i__1 = index - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge(
-		    "lstpos", i__1, "dafec_", (ftnlen)872)] = curpos;
+	    filchr[(i__1 = index - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge(
+		    "filchr", i__1, "dafec_", (ftnlen)871)] = nchars;
+	    lstrec[(i__1 = index - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge(
+		    "lstrec", i__1, "dafec_", (ftnlen)872)] = recno;
+	    lstpos[(i__1 = index - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge(
+		    "lstpos", i__1, "dafec_", (ftnlen)873)] = curpos;
 	    lsthan = *handle;
 	}
     }

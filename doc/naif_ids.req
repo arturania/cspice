@@ -6,7 +6,7 @@ NAIF Integer ID codes
 Revisions
 --------------------------------------------------------
  
-   Last revised on 2010 MAY 20 by E. D. Wright.
+   Last revised on 2017 APR 04 by E. D. Wright.
  
    This version of the document supersedes all previous versions.
  
@@ -14,16 +14,24 @@ Revisions
 Abstract
 --------------------------------------------------------
  
-   The NAIF IDS required reading lists all default ID-name mappings for the
-   SPICE toolkits and a description of functionality of the corresponding
-   software.
+   The NAIF IDS Required Reading lists all default body ID-name mappings
+   for the SPICE toolkits and a description of functionality of the
+   corresponding software.
  
  
 Introduction
 --------------------------------------------------------
  
-   SPICE system kernel files and subroutines refer to ephemeris objects,
-   reference frames, and instruments by integer codes.
+   SPICE system kernels and routines refer to ephemeris objects, reference
+   frames, and instruments by integer codes, usually referred as the ID.
+ 
+   The reference frame ID-name mappings routines constitute a subsystem
+   separate from the body ID-name mapping routines. Please refer to the
+   Frames Required Reading document (frames.req) for specific information.
+ 
+   Likewise, the surface ID-name mappings routines constitute a subsystem
+   separate from the body ID-name mapping routines. Please refer to the DSK
+   Required Reading document (dsk.req) for specific information.
  
    An ephemeris object is any object that may have ephemeris or trajectory
    data such as a planet, natural satellite, tracking station, spacecraft,
@@ -364,19 +372,29 @@ Barycenters
  
          NAIF ID     NAME
          ________    ____________________
+         0           'SOLAR_SYSTEM_BARYCENTER'
          0           'SSB'
          0           'SOLAR SYSTEM BARYCENTER'
+         1           'MERCURY_BARYCENTER'
          1           'MERCURY BARYCENTER'
+         2           'VENUS_BARYCENTER'
          2           'VENUS BARYCENTER'
+         3           'EARTH_BARYCENTER'
          3           'EMB'
          3           'EARTH MOON BARYCENTER'
          3           'EARTH-MOON BARYCENTER'
          3           'EARTH BARYCENTER'
+         4           'MARS_BARYCENTER'
          4           'MARS BARYCENTER'
+         5           'JUPITER_BARYCENTER'
          5           'JUPITER BARYCENTER'
+         6           'SATURN_BARYCENTER'
          6           'SATURN BARYCENTER'
+         7           'URANUS_BARYCENTER'
          7           'URANUS BARYCENTER'
+         8           'NEPTUNE_BARYCENTER'
          8           'NEPTUNE BARYCENTER'
+         9           'PLUTO_BARYCENTER'
          9           'PLUTO BARYCENTER'
          10          'SUN'
  
@@ -474,6 +492,7 @@ Planets and Satellites
          548         'CYLLENE'
          549         'KORE'
          550         'HERSE'
+         553         'DIA'
          699         'SATURN'
          601         'MIMAS'                 SI
          602         'ENCELADUS'             SII
@@ -518,7 +537,7 @@ Planets and Satellites
          641         'FENRIR'
          642         'FORNJOT'
          643         'HATI'
-         644         'HYROKKIN'
+         644         'HYRROKKIN'
          645         'KARI'
          646         'LOGE'
          647         'SKOLL'
@@ -572,9 +591,12 @@ Planets and Satellites
          812         'LAOMEDEIA'
          813         'NESO'
          999         'PLUTO'
-         901         'CHARON'                PI
+         901         'CHARON'
          902         'NIX'
          903         'HYDRA'
+         904         'KERBEROS'
+         905         'STYX'
+ 
  
  
 Spacecraft
@@ -590,6 +612,8 @@ Spacecraft
          NAIF ID     NAME
          ________    ____________________
          -1          'GEOTAIL'
+         -3          'MOM'
+         -3          'MARS ORBITER MISSION'
          -5          'AKATSUKI'
          -5          'VCO'
          -5          'PLC'
@@ -602,6 +626,7 @@ Spacecraft
          -12         'VENUS ORBITER'
          -12         'P12'
          -12         'PIONEER 12'
+         -12         'LADEE'
          -13         'POLAR'
          -18         'MGN'
          -18         'MAGELLAN'
@@ -617,6 +642,8 @@ Spacecraft
          -25         'LUNAR PROSPECTOR'
          -27         'VK1'
          -27         'VIKING 1 ORBITER'
+         -28         'JUPITER ICY MOONS EXPLORER'
+         -28         'JUICE'
          -29         'STARDUST'
          -29         'SDU'
          -29         'NEXT'
@@ -640,24 +667,36 @@ Spacecraft
          -47         'GENESIS'
          -48         'HUBBLE SPACE TELESCOPE'
          -48         'HST'
+         -49         'LUCY'
          -53         'MARS PATHFINDER'
          -53         'MPF'
          -53         'MARS ODYSSEY'
          -53         'MARS SURVEYOR 01 ORBITER'
+         -54         'ARM'
+         -54         'ASTEROID RETRIEVAL MISSION'
          -55         'ULYSSES'
          -58         'VSOP'
          -58         'HALCA'
          -59         'RADIOASTRON'
          -61         'JUNO'
+         -62         'EMM'
+         -62         'EMIRATES MARS MISSION'
+         -64         'ORX'
+         -64         'OSIRIS-REX'
+         -65         'MCOA'
+         -65         'MARCO-A'
          -66         'VEGA 1'
+         -66         'MCOB'
+         -66         'MARCO-B'
          -67         'VEGA 2'
-         -68         'MMO'
          -68         'MERCURY MAGNETOSPHERIC ORBITER'
-         -69         'MPO'
-         -69         'MERCURY PLANETARY ORBITER'
+         -68         'MMO'
+         -68         'BEPICOLOMBO MMO'
+         -69         'PSYC'
          -70         'DEEP IMPACT IMPACTOR SPACECRAFT'
          -74         'MRO'
          -74         'MARS RECON ORBITER'
+         -76         'CURIOSITY'
          -76         'MSL'
          -76         'MARS SCIENCE LABORATORY'
          -77         'GLL'
@@ -683,6 +722,8 @@ Spacecraft
          -94         'MGS'
          -94         'MARS GLOBAL SURVEYOR'
          -95         'MGS SIMULATION'
+         -96         'SPP'
+         -96         'SOLAR PROBE PLUS'
          -97         'TOPEX/POSEIDON'
          -98         'NEW HORIZONS'
          -107        'TROPICAL RAINFALL MEASURING MISSION'
@@ -690,7 +731,12 @@ Spacecraft
          -112        'ICE'
          -116        'MARS POLAR LANDER'
          -116        'MPL'
-         -121        'BEPICOLOMBO'
+         -117        'EDL DEMONSTRATOR MODULE'
+         -117        'EDM'
+         -117        'EXOMARS 2016 EDM'
+         -121        'MERCURY PLANETARY ORBITER'
+         -121        'MPO'
+         -121        'BEPICOLOMBO MPO'
          -127        'MARS CLIMATE ORBITER'
          -127        'MCO'
          -130        'MUSES-C'
@@ -704,30 +750,43 @@ Spacecraft
          -140        'DEEP IMPACT FLYBY SPACECRAFT'
          -142        'TERRA'
          -142        'EOS-AM1'
+         -143        'TRACE GAS ORBITER'
+         -143        'TGO'
+         -143        'EXOMARS 2016 TGO'
+         -144        'SOLO'
+         -144        'SOLAR ORBITER'
          -146        'LUNAR-A'
          -150        'CASSINI PROBE'
          -150        'HUYGENS PROBE'
          -150        'CASP'
          -151        'AXAF'
          -151        'CHANDRA'
+         -152        'CH2'
+         -152        'CHANDRAYAAN-2'
          -154        'AQUA'
-         -159        'EUROPA ORBITER'
+         -159        'EURC'
+         -159        'EUROPA CLIPPER'
          -164        'YOHKOH'
          -164        'SOLAR-A'
          -165        'MAP'
          -166        'IMAGE'
+         -170        'JWST'
+         -170        'JAMES WEBB SPACE TELESCOPE'
          -177        'GRAIL-A'
          -178        'PLANET-B'
          -178        'NOZOMI'
          -181        'GRAIL-B'
          -183        'CLUSTER 1'
          -185        'CLUSTER 2'
-         -187        'SOLAR PROBE'
          -188        'MUSES-B'
+         -189        'NSYT'
+         -189        'INSIGHT'
          -190        'SIM'
          -194        'CLUSTER 3'
          -196        'CLUSTER 4'
          -198        'INTEGRAL'
+         -198        'NASA-ISRO SAR MISSION'
+         -198        'NISAR'
          -200        'CONTOUR'
          -202        'MAVEN'
          -203        'DAWN'
@@ -753,12 +812,12 @@ Spacecraft
          -253        'MER-1'
          -254        'SPIRIT'
          -254        'MER-2'
+         -301        'HELIOS 1'
+         -302        'HELIOS 2'
          -362        'RADIATION BELT STORM PROBE A'
          -362        'RBSP_A'
          -363        'RADIATION BELT STORM PROBE B'
          -363        'RBSP_B'
-         -486        'HERSCHEL'
-         -489        'PLANCK'
          -500        'RSAT'
          -500        'SELENE Relay Satellite'
          -500        'SELENE Rstar'
@@ -772,18 +831,18 @@ Spacecraft
          -550        'M96'
          -550        'MARS 96'
          -550        'MARS96'
+         -750        'SPRINT-A'
  
  
 Earth Orbiting Spacecraft.
  
    If an Earth orbiting spacecraft lacks a DSN identification code, the
-   NAIF ID is derived from the tracking ID assigned to it by the US Space
-   Command via:
+   NAIF ID is derived from the tracking ID assigned to it by NORAD via:
  
-         NAIF ID = -100000 - US Space Command code
+         NAIF ID = -100000 - NORAD ID code
  
-   For example US Space Command assigned the code 15427 to the NOAA 9
-   spacecraft. This code corresponds to the NAIF ID -115427.
+   For example, NORAD assigned the code 15427 to the NOAA 9 spacecraft.
+   This code corresponds to the NAIF ID -115427.
  
  
 Comet Shoemaker Levy 9
@@ -835,18 +894,22 @@ Comet Shoemaker Levy 9
  
 Comets
  
-   ID codes for periodic comets begin at 1000001 and continue in sequence
-   indefinitely. (The current numbering scheme assumes that no need for
-   more than one million comet ID codes.) The current list of periodic
-   comets and their ID codes are given below. As new periodic comets are
-   discovered, this list will be expanded. The ID codes for a new comet
-   will be formed by adding one to the last comet ID in the current SPICE
-   list. As you can see the first portion of the list is in alphabetical
-   order. However, this pattern breaks down at ID code 1000112. This
-   reflects the fact that new periodic comets were discovered after
-   identification of the first 111. If you don't find the comet you are
-   interested in the first 111 comets listed look at the last 28 to see if
-   you can find the comet of interest.
+   ID codes for periodic comets begin at 1000001 and indefinitely continue
+   in sequence. (The current numbering scheme assumes no need for more than
+   one million comet ID codes.) For several years NAIF maintained a list of
+   comets and NAIF ID codes in this document, and also coded in Toolkit
+   software. But as the rate of discovery picked up pace at the same time
+   that new Toolkit releases slowed down, this list has grown out of date.
+   We decided to leave the last version of the list in this document, and
+   note that one can find the NAIF ID code for any named periodic comet,
+   and vice-versa, by using a webpage managed by JPL's Solar System
+   Dynamics Group:
+ 
+      http://ssd.jpl.nasa.gov/sbdb.cgi
+ 
+   Note that the partial listing shown below has an alphabetic ordering
+   through ID 1000111, after which new ID codes were assigned in the order
+   of discovery.
  
    Finally, note that Comet Shoemaker Levy 9 is included in this list (ID
    code 1000130) though it is no longer a comet, periodic or otherwise. It
@@ -989,19 +1052,25 @@ Comets
          1000130     'SHOEMAKER-LEVY 9'
          1000131     'HYAKUTAKE'
          1000132     'HALE-BOPP'
+         1003228     'C/2013 A1'
+         1003228     'SIDING SPRING'
  
  
 Asteroids
  
-   ID codes for numbered asteroids listed in the JPL Asteroid and Comet
-   Catalog [166.0] are determined via the algorithm:
+   ID codes for numbered asteroids listed in the JPL Solar System Dynamics
+   Group catalog are determined via using the algorithm:
  
          NAIF ID code = 2000000 + JPL Asteroid number
  
    For example, asteroid Yeomans (2956) has NAIF ID number 2002956. The
-   complete list of asteroids is far too numerous (over 4000 identified
-   asteroids) to include in this document. However, we include the NAIF ID
-   codes for the most commonly requested asteroids:
+   complete list of asteroids is far too numerous to include in this
+   document. However, below we include the NAIF ID codes for a few of the
+   most commonly requested asteroids. One may look up the NAIF ID code for
+   any named asteroid, or vice-versa, by using a webpage managed by JPL's
+   Solar System Dynamics Group:
+ 
+      http://ssd.jpl.nasa.gov/sbdb.cgi
  
          NAIF ID     NAME
          ________    ____________________
@@ -1009,10 +1078,13 @@ Asteroids
          2431010     'IDA'
          2431011     'DACTYL'
          2000001     'CERES'
+         2000002     'PALLAS'
          2000004     'VESTA'
+         2000016     'PSYCHE'
          2000021     'LUTETIA'
          2000216     'KLEOPATRA'
          2000433     'EROS'
+         2000511     'DAVIDA'
          2000253     'MATHILDE'
          2002867     'STEINS'
          2009969     '1992KD'
@@ -1020,15 +1092,12 @@ Asteroids
          2004015     'WILSON-HARRINGTON'
          2004179     'TOUTATIS'
          2025143     'ITOKAWA'
+         2101955     'BENNU'
  
    There are three exceptions to the rule---asteroids Gaspra, Ida and Ida's
    satellite Dactyl, visited by the Galileo spacecraft. The ID codes for
    these asteroids were determined using an older numbering convention now
    abandoned by the SPICE system.
- 
-   The orbit of Dactyl has not been completely determined at the time of
-   this writing. However, in anticipation of this determination, Dactyl has
-   been assigned the NAIF ID code 2431011.
  
    Note that if more than 431010 asteroids are ever identified and
    cataloged there will arise a conflict between the new numbering system

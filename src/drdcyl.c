@@ -5,7 +5,7 @@
 
 #include "f2c.h"
 
-/* $Procedure      DRDCYL (Derivative of rectangular w.r.t. cylindrical) */
+/* $Procedure DRDCYL (Derivative of rectangular w.r.t. cylindrical) */
 /* Subroutine */ int drdcyl_(doublereal *r__, doublereal *long__, doublereal *
 	z__, doublereal *jacobi)
 {
@@ -67,8 +67,8 @@
 /*     R          Distance of the point of interest from Z axis. */
 
 /*     LONG       Cylindrical angle (in radians) of the point of */
-/*                interest from XZ plane.  The angle increases in the */
-/*                counterclockwise sense about the +Z axis. */
+/*                interest from the XZ plane.  The angle increases in */
+/*                the counterclockwise sense about the +Z axis. */
 
 /*     Z          Height of the point above XY plane. */
 
@@ -180,6 +180,11 @@
 /*     I.M. Underwood (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1, 12-NOV-2013 (EDW) */
+
+/*        Trivial edit to header, deleted trailing whitespace */
+/*        on lines. */
 
 /* -    SPICELIB Version 1.0.0, 19-JUL-2001 (WLT) (IMU) */
 

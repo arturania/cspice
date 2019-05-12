@@ -92,11 +92,12 @@ static integer c__4 = 4;
 
 /*     BEGIN, */
 /*     END         are the initial and final epochs (ephemeris time) */
-/*                 of the subset. */
+/*                 of the subset to be extracted. */
 
 /* $ Detailed_Output */
 
-/*     None. */
+/*     None. This routine writes data to the SPK file currently */
+/*     open for write access. */
 
 /* $ Parameters */
 
@@ -104,7 +105,13 @@ static integer c__4 = 4;
 
 /* $ Exceptions */
 
-/*     None. */
+/*     1)  Any errors that occur while reading data from the source SPK */
+/*         file will be diagnosed by routines in the call tree of this */
+/*         routine. */
+
+/*     2)  Any errors that occur while writing data to the output SPK */
+/*         file will be diagnosed by routines in the call tree of this */
+/*         routine. */
 
 /* $ Files */
 
@@ -133,6 +140,10 @@ static integer c__4 = 4;
 /*     R.E. Thurman    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.1, 30-DEC-2013 (NJB) */
+
+/*        Enhanced header documentation. */
 
 /* -    SPICELIB Version 1.1.0, 07-SEP-2001 (EDW) */
 

@@ -2,7 +2,7 @@
 Rotation
 ===========================================================================
  
-   Last revised on 2010 MAY 27 by E. D. Wright.
+   Last revised on 2017 MAR 09 by N. J. Bachman.
  
  
 Abstract
@@ -1278,7 +1278,7 @@ Rotation of vectors in the plane
       cos(theta) v  +  sin(theta) v'
  
    This is the result we're looking for: ``If you rotate a vector v by
-   theta radians, you end up with cos(theta) v plus sin(theta) v,'' where
+   theta radians, you end up with cos(theta) v plus sin(theta) v','' where
    v' is v, rotated by pi/2.
  
    Scaling v does not affect this result.
@@ -2741,6 +2741,11 @@ Euler angle recovery: a-b-c case
  
 Appendix A: Document Revision History
 ===========================================================================
+ 
+ 
+March 9, 2017
+ 
+   Minor edits to eliminate typos.
  
  
 May 27, 2010

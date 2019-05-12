@@ -262,7 +262,7 @@ static integer c__1 = 1;
 
 /* $ Parameters */
 
-/*     LBCELL     is the SPICELIB cell lower bound. */
+/*     LBCELL    is the SPICELIB cell lower bound. */
 
 /*     MXBEGM, */
 /*     MXENDM    are, respectively, the maximum lengths of the progress */
@@ -458,8 +458,18 @@ static integer c__1 = 1;
 /*     L.S. Elson     (JPL) */
 /*     W.L. Taber     (JPL) */
 /*     I.M. Underwood (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1 10-FEB-2014 (BVS) */
+
+/*        Added declarations of IVBEG and IVEND to the Declarations */
+/*        section of the GFREPU header. */
+
+/*        Corrected declaration of WINDOW in the Declarations */
+/*        section and added descriptions of LBCELL to the GFREPI */
+/*        header. */
 
 /* -    SPICELIB Version 1.0.0 06-MAR-2009 (NJB) (LSE) (WLT) (IMU) */
 
@@ -537,7 +547,7 @@ L_gfrepi:
 
 /* $ Declarations */
 
-/*     CHARACTER*(*)         WINDOW */
+/*     DOUBLE PRECISION      WINDOW ( LBCELL : * ) */
 /*     CHARACTER*(*)         BEGMSS */
 /*     CHARACTER*(*)         ENDMSS */
 
@@ -545,6 +555,7 @@ L_gfrepi:
 
 /*     VARIABLE  I/O  DESCRIPTION */
 /*     --------  ---  -------------------------------------------------- */
+/*     LBCELL     P   The SPICELIB cell lower bound. */
 /*     MXBEGM     P   Maximum progress report message prefix length. */
 /*     MXENDM     P   Maximum progress report message suffix length. */
 /*     WINDOW     I   A window over which a job is to be performed. */
@@ -563,13 +574,13 @@ L_gfrepi:
 
 /*                 BEGMSS(1:LASTNB(BEGMSS)) // ' xx.xx% ' // ENDMSS */
 
-/*              BEGMSS must have length not greater han MXBEGM */
+/*              BEGMSS must have length not greater than MXBEGM */
 /*              characters. All characters of BEGMSS must be printable. */
 
 /*     ENDMSS   is the last portion of the output message reported by */
 /*              the routine GFRPWK. */
 
-/*              ENDMSS must have length not greater han MXBENM */
+/*              ENDMSS must have length not greater than MXBENM */
 /*              characters. All characters of ENDMSS must be printable. */
 
 /* $ Detailed_Output */
@@ -577,6 +588,8 @@ L_gfrepi:
 /*     None. */
 
 /* $ Parameters */
+
+/*     LBCELL     is the SPICELIB cell lower bound. */
 
 /*     MXBEGM, */
 /*     MXENDM    are, respectively, the maximum lengths of the progress */
@@ -621,8 +634,15 @@ L_gfrepi:
 /*     L.S. Elson     (JPL) */
 /*     W.L. Taber     (JPL) */
 /*     I.M. Underwood (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1 10-FEB-2014 (BVS) */
+
+/*        Corrected declaration of WINDOW in the Declarations */
+/*        section. Added description of LBCELL to the Declarations, */
+/*        Brief_I/O, and Parameters sections. */
 
 /* -    SPICELIB Version 1.0.0 21-FEB-2009 (NJB) (LSE) (WLT) (IMU) */
 
@@ -761,6 +781,8 @@ L_gfrepu:
 
 /* $ Declarations */
 
+/*     DOUBLE PRECISION      IVBEG */
+/*     DOUBLE PRECISION      IVEND */
 /*     DOUBLE PRECISION      TIME */
 
 /* $ Brief_I/O */
@@ -862,8 +884,14 @@ L_gfrepu:
 /*     L.S. Elson     (JPL) */
 /*     W.L. Taber     (JPL) */
 /*     I.M. Underwood (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1 10-FEB-2014 (BVS) */
+
+/*        Added declarations of IVBEG and IVEND to the Declarations */
+/*        section. */
 
 /* -    SPICELIB Version 1.0.0 21-FEB-2009 (NJB) (LSE) (WLT) (IMU) */
 

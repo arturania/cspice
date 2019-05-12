@@ -17,7 +17,11 @@ static integer c__3 = 3;
     /* Initialized data */
 
     static doublereal origin[3] = { 0.,0.,0. };
+    static logical first = TRUE_;
 
+    extern /* Subroutine */ int zzbods2c_(integer *, char *, integer *, 
+	    logical *, char *, integer *, logical *, ftnlen, ftnlen), 
+	    zzctruin_(integer *);
     doublereal radii[3];
     extern /* Subroutine */ int chkin_(char *, ftnlen), errch_(char *, char *,
 	     ftnlen, ftnlen), ltime_(doublereal *, integer *, char *, integer 
@@ -25,7 +29,8 @@ static integer c__3 = 3;
     logical found;
     extern logical eqstr_(char *, char *, ftnlen, ftnlen);
     doublereal sunlt;
-    extern /* Subroutine */ int bods2c_(char *, integer *, logical *, ftnlen);
+    static logical svfnd1, svfnd2;
+    static integer svctr1[2], svctr2[2];
     integer obscde;
     doublereal lt;
     extern /* Subroutine */ int bodvcd_(integer *, char *, integer *, integer 
@@ -37,10 +42,15 @@ static integer c__3 = 3;
     char frname[80];
     integer trgcde;
     doublereal ettarg;
+    static integer svtcde;
     extern /* Subroutine */ int nearpt_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *), sigerr_(
-	    char *, ftnlen), chkout_(char *, ftnlen), setmsg_(char *, ftnlen);
+	    char *, ftnlen), chkout_(char *, ftnlen);
+    static integer svobsc;
+    extern /* Subroutine */ int setmsg_(char *, ftnlen);
+    static char svtarg[36];
     extern logical return_(void);
+    static char svobsr[36];
     extern /* Subroutine */ int spkpos_(char *, doublereal *, char *, char *, 
 	    char *, doublereal *, doublereal *, ftnlen, ftnlen, ftnlen, 
 	    ftnlen), surfpt_(doublereal *, doublereal *, doublereal *, 
@@ -95,6 +105,59 @@ static integer c__3 = 3;
 /*     GEOMETRY */
 
 /* $ Declarations */
+/* $ Abstract */
+
+/*     This include file defines the dimension of the counter */
+/*     array used by various SPICE subsystems to uniquely identify */
+/*     changes in their states. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 29-JUL-2013 (BVS) */
+
+/* -& */
+
+/*     End of include file. */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
@@ -180,24 +243,28 @@ static integer c__3 = 3;
 /*                               aberration as seen from the target. */
 
 /*                    'CN'       Converged Newtonian light time */
-/*                               corrections.  This is the same as LT */
-/*                               corrections but with further iterations */
-/*                               to a converged Newtonian light time */
-/*                               solution.  Given that relativistic */
-/*                               effects may be as large as the higher */
-/*                               accuracy achieved by this computation, */
-/*                               this is correction is seldom worth the */
-/*                               additional computations required unless */
-/*                               the user incorporates additional */
-/*                               relativistic corrections.  Light */
-/*                               time corrections are applied as in the */
-/*                               'LT' case. */
+/*                               correction. In solving the light time */
+/*                               equation, the 'CN' correction iterates */
+/*                               until the solution converges (three */
+/*                               iterations on all supported platforms). */
+/*                               Whether the 'CN+S' solution is */
+/*                               substantially more accurate than the */
+/*                               'LT' solution depends on the geometry */
+/*                               of the participating objects and on the */
+/*                               accuracy of the input data. In all */
+/*                               cases this routine will execute more */
+/*                               slowly when a converged solution is */
+/*                               computed. See the Particulars section */
+/*                               of SPKEZR for a discussion of precision */
+/*                               of light time corrections. Light time */
+/*                               corrections are applied as in the 'LT' */
+/*                               case. */
 
 /*                    'CN+S'     Converged Newtonian light time */
-/*                               corrections and stellar aberration. */
-/*                               Light time and stellar aberration */
-/*                               corrections are applied as in the */
-/*                               'LT+S' case. */
+/*                               corrections and stellar aberration */
+/*                               correction. Light time and stellar */
+/*                               aberration corrections are applied as */
+/*                               in the 'LT+S' case. */
 
 
 /*     OBSRVR      is the name of the observing body, typically a */
@@ -426,8 +493,21 @@ static integer c__3 = 3;
 
 /*     N.J. Bachman   (JPL) */
 /*     J.E. McLean    (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.3.0, 04-JUL-2014 (NJB)(BVS) */
+
+/*        Discussion of light time corrections was updated. Assertions */
+/*        that converged light time corrections are unlikely to be */
+/*        useful were removed. */
+
+/*     Last update was 19-SEP-2013 (BVS) */
+
+/*        Updated to save the input body names and ZZBODTRN state */
+/*        counters and to do name-ID conversions only if the counters */
+/*        have changed. */
 
 /* -    SPICELIB Version 1.2.3, 18-MAY-2010 (BVS) */
 
@@ -485,13 +565,25 @@ static integer c__3 = 3;
 /*     Local parameters */
 
 
+/*     Saved body name length. */
+
+
 /*     Local variables */
+
+
+/*     Saved name/ID item declarations. */
 
 
 /*     Saved variables */
 
 
+/*     Saved name/ID items. */
+
+
 /*     Initial values */
+
+
+/*     Initial values. */
 
 
 /*     Standard SPICE error handling. */
@@ -502,9 +594,21 @@ static integer c__3 = 3;
 	chkin_("SUBSOL", (ftnlen)6);
     }
 
+/*     Initialization. */
+
+    if (first) {
+
+/*        Initialize counters. */
+
+	zzctruin_(svctr1);
+	zzctruin_(svctr2);
+	first = FALSE_;
+    }
+
 /*     Obtain integer codes for the target and observer. */
 
-    bods2c_(target, &trgcde, &found, target_len);
+    zzbods2c_(svctr1, svtarg, &svtcde, &svfnd1, target, &trgcde, &found, (
+	    ftnlen)36, target_len);
     if (! found) {
 	setmsg_("The target, '#', is not a recognized name for an ephemeris "
 		"object. The cause of this problem may be that you need an up"
@@ -514,7 +618,8 @@ static integer c__3 = 3;
 	chkout_("SUBSOL", (ftnlen)6);
 	return 0;
     }
-    bods2c_(obsrvr, &obscde, &found, obsrvr_len);
+    zzbods2c_(svctr2, svobsr, &svobsc, &svfnd2, obsrvr, &obscde, &found, (
+	    ftnlen)36, obsrvr_len);
     if (! found) {
 	setmsg_("The observer, '#', is not a recognized name for an ephemeri"
 		"s object. The cause of this problem may be that you need an "

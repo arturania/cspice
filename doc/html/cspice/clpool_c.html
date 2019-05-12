@@ -55,7 +55,7 @@
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 33%; text-align: center;">
             <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
@@ -66,7 +66,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
@@ -76,7 +76,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
@@ -96,8 +96,9 @@
 <h4><a name="Abstract">Abstract</a></h4>
 <PRE>
  
-   Remove all variables from the kernel pool. 
- </PRE>
+   Remove all variables from the kernel pool. Watches
+   on kernel variables are retained.
+</PRE>
 <h4><a name="Required_Reading">Required_Reading</a></h4>
 <PRE>
  
@@ -154,6 +155,10 @@
    Any agent associated with that variable will have a notice 
    posted for it indicating that its watched variable has been 
    updated. 
+
+   Application programs can delete watches by calling the function
+   dwpool_, which is located in the source file pool.c. 
+   See the documentation of dwpool_ for details.
  </PRE>
 <h4><a name="Examples">Examples</a></h4>
 <PRE>
@@ -217,8 +222,12 @@
  </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
- 
- 
+  
+   -CSPICE Version 1.0.1, 01-JUL-2014 (NJB)
+
+      Updated comments regarding behavior of the watcher
+      subsystem.
+
    -CSPICE Version 1.0.0, 18-JUN-1999 (IMU) (WLT) (NJB)
 </PRE>
 <h4><a name="Index_Entries">Index_Entries</a></h4>
@@ -233,7 +242,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Jun  9 13:05:20 2010</pre>
+   <pre>Wed Apr  5 17:54:30 2017</pre>
 
 </body>
 </html>

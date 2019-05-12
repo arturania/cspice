@@ -13,16 +13,28 @@ static integer c__6 = 6;
 /* Subroutine */ int spke08_(doublereal *et, doublereal *record, doublereal *
 	state)
 {
+    /* Initialized data */
+
+    static doublereal work[198] = { 0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+	    0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+	    0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+	    0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+	    0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+	    0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+	    0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+	    0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+	    0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+	    0.,0.,0.,0.,0.,0.,0.,0. };
+
     /* System generated locals */
-    integer i__1;
+    integer i__1, i__2;
 
     /* Builtin functions */
     integer i_dnnt(doublereal *), s_rnge(char *, integer, char *, integer);
 
     /* Local variables */
     integer i__, n;
-    extern /* Subroutine */ int moved_(doublereal *, integer *, doublereal *);
-    doublereal locrec[129];
+    static doublereal locrec[198];
     extern doublereal lgresp_(integer *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *);
     extern /* Subroutine */ int xposeg_(doublereal *, integer *, integer *, 
@@ -127,6 +139,12 @@ static integer c__6 = 6;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.0.0, 05-OCT-2012 (NJB) */
+
+/*        Updated to support increase of maximum degree to 27 for types */
+/*        2, 3, 8, 9, 12, 13, 18, and 19. See SPKPVN for a list */
+/*        of record size requirements as a function of data type. */
+
 /* -    SPICELIB Version 1.0.0, 16-AUG-2002 (NJB) */
 
 /* -& */
@@ -138,7 +156,7 @@ static integer c__6 = 6;
 /*     Variable  I/O  Description */
 /*     --------  ---  -------------------------------------------------- */
 /*     ET         I   Target epoch. */
-/*     RECORD    I-O  Data record. */
+/*     RECORD     I   Data record. */
 /*     STATE      O   State (position and velocity). */
 
 /* $ Detailed_Input */
@@ -174,10 +192,6 @@ static integer c__6 = 6;
 
 /* $ Detailed_Output */
 
-/*     RECORD      is the input record, modified by use as a work area. */
-/*                 On output, RECORD no longer contains useful */
-/*                 information. */
-
 /*     STATE       is the state. In order, the elements are */
 
 /*                    X, Y, Z, X', Y', and Z' */
@@ -191,7 +205,7 @@ static integer c__6 = 6;
 /* $ Exceptions */
 
 /*     1)  The caller of this routine must ensure that the input record */
-/*         is appropriate for the supplied ET value.  Otherwise, */
+/*         is appropriate for the supplied ET value. Otherwise, */
 /*         arithmetic overflow may result. */
 
 /* $ Files */
@@ -257,6 +271,11 @@ static integer c__6 = 6;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.0.0, 10-DEC-2013 (NJB) */
+
+/*        RECORD is now strictly an input; it is not overwritten by this */
+/*        routine. Formerly RECORD was used as a workspace array. */
+
 /* -    SPICELIB Version 1.1.0, 25-AUG-2005 (NJB) */
 
 /*        Updated to remove non-standard use of duplicate arguments */
@@ -299,6 +318,18 @@ static integer c__6 = 6;
 /*     Local variables */
 
 
+/*     Saved values */
+
+/*     Save arrays to prevent stack overflow problems on some */
+/*     platforms. */
+
+
+/*     Initial values */
+
+
+/*     Initialize the workspace array to suppress compiler warnings. */
+
+
 /*     Use discovery check-in. */
 
     if (return_()) {
@@ -311,16 +342,15 @@ static integer c__6 = 6;
 
     n = i_dnnt(record);
     xposeg_(&record[3], &c__6, &n, locrec);
-    i__1 = n * 6;
-    moved_(locrec, &i__1, &record[3]);
 
 /*     We interpolate each state component in turn. */
 
     for (i__ = 1; i__ <= 6; ++i__) {
-	ystart = n * (i__ - 1) + 4;
+	ystart = (i__ - 1) * n + 1;
 	state[(i__1 = i__ - 1) < 6 && 0 <= i__1 ? i__1 : s_rnge("state", i__1,
-		 "spke08_", (ftnlen)274)] = lgresp_(&n, &record[1], &record[2]
-		, &record[ystart - 1], locrec, et);
+		 "spke08_", (ftnlen)291)] = lgresp_(&n, &record[1], &record[2]
+		, &locrec[(i__2 = ystart - 1) < 198 && 0 <= i__2 ? i__2 : 
+		s_rnge("locrec", i__2, "spke08_", (ftnlen)291)], work, et);
     }
     return 0;
 } /* spke08_ */

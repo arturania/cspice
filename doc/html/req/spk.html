@@ -42,7 +42,9 @@
          <A HREF="#Terminology">Terminology</A>
       <A HREF="#The SPK Family of Functions">The SPK Family of Functions</A>
          <A HREF="#Computing States">Computing States</A>
+         <A HREF="#Computing States using Constant-Velocity or Constant-Position Objects">Computing States using Constant-Velocity or Constant-Position Objects</A>
          <A HREF="#The Computation of Light Time">The Computation of Light Time</A>
+         <A HREF="#Precision of Light Time Computations">Precision of Light Time Computations</A>
          <A HREF="#Light Time Corrected Non-Inertial States">Light Time Corrected Non-Inertial States</A>
          <A HREF="#An example">An example</A>
          <A HREF="#Integer ID Codes Used in SPK">Integer ID Codes Used in SPK</A>
@@ -65,16 +67,19 @@
          <A HREF="#Type 1: Modified Difference Arrays">Type 1: Modified Difference Arrays</A>
          <A HREF="#Type 2: Chebyshev (position only)">Type 2: Chebyshev (position only)</A>
          <A HREF="#Type 3: Chebyshev (position and velocity)">Type 3: Chebyshev (position and velocity)</A>
-         <A HREF="#Type 5: Discrete states (two body propagation).">Type 5: Discrete states (two body propagation).</A>
+         <A HREF="#Type 5: Discrete states (two body propagation)">Type 5: Discrete states (two body propagation)</A>
          <A HREF="#Type 8: Lagrange Interpolation --- Equal Time Steps">Type 8: Lagrange Interpolation --- Equal Time Steps</A>
          <A HREF="#Type 9: Lagrange Interpolation --- Unequal Time Steps">Type 9: Lagrange Interpolation --- Unequal Time Steps</A>
          <A HREF="#Type 10: Space Command Two-Line Elements">Type 10: Space Command Two-Line Elements</A>
          <A HREF="#Type 12: Hermite Interpolation --- Equal Time Steps">Type 12: Hermite Interpolation --- Equal Time Steps</A>
          <A HREF="#Type 13: Hermite Interpolation --- Unequal Time Steps">Type 13: Hermite Interpolation --- Unequal Time Steps</A>
          <A HREF="#Type 14: Chebyshev Polynomials --- Unequal Time Steps">Type 14: Chebyshev Polynomials --- Unequal Time Steps</A>
-         <A HREF="#Type 15: Precessing Conic Propagation.">Type 15: Precessing Conic Propagation.</A>
-         <A HREF="#Type 17: Equinoctial Elements.">Type 17: Equinoctial Elements.</A>
+         <A HREF="#Type 15: Precessing Conic Propagation">Type 15: Precessing Conic Propagation</A>
+         <A HREF="#Type 17: Equinoctial Elements">Type 17: Equinoctial Elements</A>
          <A HREF="#Type 18: ESOC/DDID Hermite/Lagrange Interpolation">Type 18: ESOC/DDID Hermite/Lagrange Interpolation</A>
+         <A HREF="#Type 19: ESOC/DDID Piecewise Interpolation">Type 19: ESOC/DDID Piecewise Interpolation</A>
+         <A HREF="#Type 20: Chebyshev (velocity only)">Type 20: Chebyshev (velocity only)</A>
+         <A HREF="#Type 21: Extended Modified Difference Arrays">Type 21: Extended Modified Difference Arrays</A>
    <A HREF="#Appendix A --- Summary of SP-kernel Functions">Appendix A --- Summary of SP-kernel Functions</A>
       <A HREF="#Summary of Mnemonics">Summary of Mnemonics</A>
       <A HREF="#Summary of Calling Sequences">Summary of Calling Sequences</A>
@@ -91,6 +96,8 @@
          <A HREF="#References0">References</A>
          <A HREF="#Contacts">Contacts</A>
    <A HREF="#Appendix C---Revision History">Appendix C---Revision History</A>
+         <A HREF="#March 29, 2017">March 29, 2017</A>
+         <A HREF="#July 14, 2014">July 14, 2014</A>
          <A HREF="#April 15, 2009">April 15, 2009</A>
          <A HREF="#February 28, 2008">February 28, 2008</A>
          <A HREF="#November 17, 2005">November 17, 2005</A>
@@ -110,7 +117,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> SPK Required Reading
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2010 MAR 23 by N. J. Bachman.
+   Last revised on 2017 MAR 29 by N. J. Bachman.
 <P>
  
 <BR><BR>
@@ -218,8 +225,8 @@ collection of papers and memos; assembled by I. Underwood; 11 Dec 1989
    the platform on which the Toolkit was compiled. If a non-native EOL
    terminator is detected in the first 132 characters of a text kernel, the
    execution is stopped and an error message is displayed. This feature
-   does not work with files that are smaller that 132 bytes or have the
-   first line longer that 132 characters.
+   does not work with files that are smaller than 132 bytes or have the
+   first line longer than 132 characters.
 <P>
  
 <BR><BR>
@@ -329,13 +336,13 @@ collection of papers and memos; assembled by I. Underwood; 11 Dec 1989
 <P>
  
 <PRE>
-   spksfs_c ( &lt;target&gt;, &lt;et&gt;, &amp;handle, descr, ident, &amp;found )
+   <a href="../cspice/spksfs_c.html">spksfs_c</a> ( &lt;target&gt;, &lt;et&gt;, &amp;handle, descr, ident, &amp;found )
 </PRE>
    Computing states from segment descriptors
 <P>
  
 <PRE>
-   spkpvn_c ( &lt;handle&gt;, &lt;descr&gt;, &lt;et&gt;, ref, state, &amp;center )
+   <a href="../cspice/spkpvn_c.html">spkpvn_c</a> ( &lt;handle&gt;, &lt;descr&gt;, &lt;et&gt;, ref, state, &amp;center )
 </PRE>
    Correcting for stellar aberration
 <P>
@@ -363,7 +370,7 @@ collection of papers and memos; assembled by I. Underwood; 11 Dec 1989
 <P>
  
 <PRE>
-   frmchg_c ( &lt;from_idcode&gt;, &lt;to_idcode&gt;, &lt;et&gt;, mat6x6 )
+   <a href="../cspice/sxform_c.html">sxform_c</a> ( &lt;from_name&gt;,   &lt;to_name&gt;,   &lt;et&gt;, mat6x6 )
 </PRE>
    Classifying frames (see Frames Required Reading, <a href="../req/frames.html">frames.req</a>)
 <P>
@@ -784,7 +791,7 @@ another body relative to a user specified reference frame.
 <BR><BR></UL>
 <UL>
 <TT>2.</TT> Determine the apparent, true, or geometric state of a body with respect to
-an observer with having a user-supplied state.
+an observer having a user-supplied state.
 <BR><BR></UL>
 <UL>
 <TT>3.</TT> Determine the geometric state of a body with respect to the solar system
@@ -839,13 +846,13 @@ particular body.
 <P>
  
 <PRE>
-   et = ( 2447751.8293d0 - j2000() ) * <a href="../cspice/spd_c.html">spd_c</a>();
+   et = ( 2447751.8293 - <a href="../cspice/j2000_c.html">j2000_c</a>() ) * <a href="../cspice/spd_c.html">spd_c</a>();
  
    <a href="../cspice/spkezr_c.html">spkezr_c</a> ( "triton",    et,    "j2000", &lt;aberr&gt;,
               "voyager-2", state, &amp;lt              ); { Easier state }
 </PRE>
-   where the function J2000 returns the epoch of the J2000 frame (Julian
-   Ephemeris Date 2451545.0) and the function SPD returns the number of
+   where the function <a href="../cspice/j2000_c.html">j2000_c</a> returns the epoch of the J2000 frame (Julian
+   Ephemeris Date 2451545.0) and the function <a href="../cspice/spd_c.html">spd_c</a> returns the number of
    seconds per Julian day (86400.0).
 <P>
  
@@ -886,47 +893,98 @@ particular body.
 <P>
  
 <BR><BR>
+<A NAME="Computing States using Constant-Velocity or Constant-Position Objects"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Computing States using Constant-Velocity or Constant-Position Objects
+</H3><P><BR><BR>
+   Objects such as tracking stations, rover or spacecraft components, or
+   fixed surface points can be treated by the SPK subsystem as ephemeris
+   objects just as easily as bodies such as planets and natural satellites.
+   For example, using an SPK file for the geocentric location of a tracking
+   station enables <a href="../cspice/spkezr_c.html">spkezr_c</a> to compute states of targets relative to the
+   tracking station, providing all needed kernel data have been loaded.
+<P>
+ 
+   However, it is not always convenient to create an SPK file to provide
+   data for an ephemeris object, particularly when that object's location
+   is known only at run time.
+<P>
+ 
+   For an object that has constant velocity, relative to a specified center
+   of motion, in a specified reference frame, CSPICE offers a set of
+   functions to compute states relative to other ephemeris objects, where
+   the other objects have ephemeris data provided by SPK files:
+<P>
+ 
+<PRE>
+   <a href="../cspice/spkcpo_c.html">spkcpo_c</a>  {SPK, constant position observer state}
+   <a href="../cspice/spkcpt_c.html">spkcpt_c</a>  {SPK, constant position target state}
+   <a href="../cspice/spkcvo_c.html">spkcvo_c</a>  {SPK, constant velocity observer state}
+   <a href="../cspice/spkcvt_c.html">spkcvt_c</a>  {SPK, constant velocity target state}
+</PRE>
+   The ``constant position'' routines have simplified interfaces; these
+   handle the special case where the constant velocity is zero.
+<P>
+ 
+   Each of the above functions requires that sufficient SPK data be
+   available to compute the state of the center of motion, relative to the
+   other ephemeris object, of the constant-velocity or constant-position
+   object.
+<P>
+ 
+   States computed by SPK functions for constant-velocity or
+   constant-position objects optionally can be corrected for light time and
+   stellar aberration, just as is done by <a href="../cspice/spkezr_c.html">spkezr_c</a>.
+<P>
+ 
+   A limitation of representing objects using constant velocities or
+   positions, instead of creating SPK files to provide the ephemerides of
+   those objects, is that high-level CSPICE geometry routines such as
+   <a href="../cspice/sincpt_c.html">sincpt_c</a> or <a href="../cspice/subpt_c.html">subpt_c</a> cannot work with such objects---these functions
+   require SPK data for all ephemeris objects participating in the
+   computations they perform.
+<P>
+ 
+<BR><BR>
 <A NAME="The Computation of Light Time"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> The Computation of Light Time
 </H3><P><BR><BR>
-   The light time corrected states returned by the SPK system are simply
-   the 6-vector difference
+   The light time corrected position component of a state vector returned
+   by the SPK system is the 3-vector difference
 <P>
  
 <PRE>
-   TARGET_SSB ( ET - LT )   - OBSERVER_SSB ( ET )
+   TARGET_SSB ( ET + S*LT )  - OBSERVER_SSB ( ET )
 </PRE>
    where TARGET_SSB and OBSERVER_SSB give the position of the target and
-   observer relative to the solar system barycenter. LT is the unique
-   number that satisfies:
+   observer relative to the solar system barycenter, and where S is -1 for
+   reception corrections (where light travels from the target to the
+   observer) and 1 for transmission corrections (where light travels from
+   the observer to the target).
+<P>
+ 
+   LT is the unique number that satisfies:
 <P>
  
 <PRE>
-         | TARGET_SSB ( ET - LT )   - OBSERVER_SSB ( ET ) |
-   LT =  --------------------------------------------------
-                        Speed of Light
+         | TARGET_SSB ( ET + S*LT )  -  OBSERVER_SSB ( ET ) |
+   LT =  ----------------------------------------------------
+                           Speed of Light
 </PRE>
-   Where
+   where
 <P>
  
 <PRE>
-   | STATE |
+   | position |
 </PRE>
-   refers to the length of the position component of a state vector.
+   indicates the length of a position vector.
 <P>
  
-<UL>
-<TT>&#32;&#32;</TT> (Note that the velocity portion of the state returned is simply the
-difference in the velocity components of
-<BR><BR></UL>
-<PRE>
-            TARGET_SSB ( ET - LT ) and OBSERVER_SSB ( ET )
-</PRE>
-<UL>
-<TT>&#32;&#32;</TT> This is NOT the derivative of the light time corrected position because
-this does not take into account the time derivative of LT.)
-<BR><BR></UL>
+   The velocity portion of the returned state is the derivative with
+   respect to the observation time ET of the light time corrected position.
+<P>
+ 
    Mathematically, LT can be computed to arbitrary precision via the
    following algorithm:
 <P>
@@ -941,7 +999,7 @@ this does not take into account the time derivative of LT.)
                               Speed of Light
  
  
-   (for i = 1, 2, 3 ... )
+      for i = 1, ...
 </PRE>
    It can be shown that the sequence LT_0, LT_1, LT_2, ... converges to LT
    geometrically. Moreover, it can be shown that the difference between
@@ -949,41 +1007,88 @@ this does not take into account the time derivative of LT.)
 <P>
  
 <PRE>
-                              i+1
-   | LT - LT_i | &lt; LT * ( V/C )
+                                 i
+   | LT - LT_i | &lt; LT_i * ( V/C )  / ( 1 - V/C )
+ 
+      for i = 1, ...
 </PRE>
-   where V is the speed of the target body with respect to the solar system
-   barycenter and C is the speed of light. Let's examine the error we make
-   if we use LT_1 as an approximation for LT.
+   where V is the maximum speed of the target body with respect to the
+   solar system barycenter and C is the speed of light.
+<P>
+ 
+<BR><BR>
+<A NAME="Precision of Light Time Computations"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Precision of Light Time Computations
+</H3><P><BR><BR>
+   Let's examine the error we make if we use LT_2 as an approximation for
+   LT. This is an analysis of precision; we'll ignore errors in the data
+   and those in the input times.
 <P>
  
    For nearly all objects in the solar system V is less than 60 km/sec. The
-   value of C is 300000 km/sec. Thus the one iteration solution for LT has
-   a potential relative error of not more than 4*10D-8. This is a potential
-   light time error of approximately 2*10D-5 seconds per astronomical unit
-   of distance separating the observer and target. Thus as long as the
-   observer and target are separated by less than 50 Astronomical Units the
-   error in the light time returned using option 'LT' is less than 1
-   millisecond.
+   value of C is approximately 300000 km/sec. Thus V/C is 2.0E-4, and the
+   one iteration solution for LT (in which the target-SSB vector is
+   corrected once) has a potential relative error of not more than 4.0E-8.
+   This is a potential light time error of approximately 2.0E-5 seconds per
+   astronomical unit of distance separating the observer and target. Thus
+   as long as the observer and target are separated by less than 50
+   Astronomical Units, the error in the light time returned using option
+   `LT' is less than 1 millisecond.
 <P>
  
-   For this reason, we use LT_1 to approximate LT when you request a light
-   time corrected state by setting the aberration correction argument in
-   <a href="../cspice/spkezr_c.html">spkezr_c</a> to `LT' or `LT+S'.
+   For this reason, CSPICE uses LT_2 to approximate LT when you request a
+   light time corrected state by setting the aberration correction argument
+   in <a href="../cspice/spkezr_c.html">spkezr_c</a> to any of `LT', `XLT', `LT+S', `XLT+S'.
 <P>
  
-   You can make <a href="../cspice/spkezr_c.html">spkezr_c</a> perform a better approximation to LT by requesting
-   that it compute a ``converged Newtonian'' value for LT. To do this set
-   the aberration correction to `CN' or `CN+S'. <a href="../cspice/spkezr_c.html">spkezr_c</a> will then return
-   LT_3 as the approximation for light time. The maximum error in LT_3 is
-   less than a nanosecond for any observer/target pair in the solar system.
+   The maximum error in the light time corrected target-SSB position vector
+   is larger by a factor of C/V than V times the maximum relative light
+   time error. This is because the (i-1)st light time estimate is used to
+   compute the ith estimate of target-SSB position vector. Given the
+   assumptions above, the maximum position error for the `LT'-style
+   correction is bounded by
+<P>
+ 
+<PRE>
+   60 km/s * (1/(2.0E-4)) * 2*1.0E-5 s / AU
+</PRE>
+   or 6 km per astronomical unit of distance separating the observer and
+   target.
+<P>
+ 
+   In practice, the difference between positions obtained using
+   one-iteration and converged light time is usually much smaller than the
+   value computed above and can be insignificant. For example, for the
+   spacecraft Mars Reconnaissance Orbiter and Mars Express, the position
+   error for the one-iteration light time correction, applied to the
+   spacecraft-to-Mars center vector, is approximately 2 cm.
+<P>
+ 
+   You can make <a href="../cspice/spkezr_c.html">spkezr_c</a> (and other applicable SPK functions) compute a
+   better approximation to LT and compute more accurate light-time
+   corrected states by commanding that it compute a ``converged Newtonian''
+   value for LT. To do this set the light time portion of the aberration
+   correction specification to `CN' (the possible such aberration
+   correction specifications are`CN', `XCN', `CN+S', or `XCN+S'). <a href="../cspice/spkezr_c.html">spkezr_c</a>
+   will then return a converged value, usually equal to LT_4, as the
+   approximation for light time; the returned state will be converged as
+   well. Then the maximum error in LT_4 is less than
+<P>
+ 
+<PRE>
+   1.0E-3 * (V/C)**2 seconds
+</PRE>
+   which is less than 4e-11 seconds for any observer/target pair in the
+   solar system that satisfies the assumptions above. The corresponding
+   position error bound is 1.2 cm at a separation of 50 AU.
 <P>
  
    However, you should note that this is a purely Newtonian approximation
    to the light time. To model the actual light time between target and
    observer one must take into account effects due to General relativity.
    These may be as high as a few hundredths of a millisecond for some
-   objects.
+   geometric cases.
 <P>
  
    The functions in the SPK family do not attempt to perform either general
@@ -1050,6 +1155,12 @@ oriented at ET - LT_F.
 = 'LT+S'), both LT_F and LT_T are again computed. The state of the target
 at ET - LT_T is corrected for stellar aberration and represented in the
 reference frame as it was oriented at ET - LT_F.
+<BR><BR></UL>
+<UL>
+<TT>4.</TT> Light-time corrected velocities are computed taking into account the rate
+of change of light time both between observer and target and between
+observer and the center of the non-inertial frame. The rate of change of
+the target frame's orientation is accounted for as well.
 <BR><BR></UL>
    In the actual implementation of <a href="../cspice/spkezr_c.html">spkezr_c</a> a few short cuts are taken.
    When light time requested states relative to an inertial frame are
@@ -1201,7 +1312,7 @@ reference frame as it was oriented at ET - LT_F.
    required reading file, <a href="../req/naif_ids.html">naif_ids.req</a>.
 <P>
  
-   <a href="../cspice/spkez_c.html">spkez_c</a> is useful in those situations when you ID codes for objects
+   <a href="../cspice/spkez_c.html">spkez_c</a> is useful in those situations when you have ID codes for objects
    stored as integers. There is also a modest efficiency gain when using
    integer ID codes instead of character strings to specify targets and
    observers.
@@ -1238,7 +1349,7 @@ reference frame as it was oriented at ET - LT_F.
 <PRE>
    for ( i = 0;  i &lt; N;  i++ )
    {
-      <a href="../cspice/furnsh_c.html">furnsh_c</a> ( ephem[I] );        { Load kernel file }
+      <a href="../cspice/furnsh_c.html">furnsh_c</a> ( ephem[i] );        { Load kernel file }
    }
 </PRE>
    In general, a state returned by <a href="../cspice/spkezr_c.html">spkezr_c</a> is built from several more
@@ -1304,7 +1415,7 @@ reference frame as it was oriented at ET - LT_F.
 <H3> Unloading Files
 </H3><P><BR><BR>
    The number of SPK files that may be loaded at any one time is limited
-   but very large -- up to 1000 total for all loaded SPK, CK, and binary
+   but very large -- up to 5000 total for all loaded SPK, CK, and binary
    PCK files combined. Although unlikely, in some cases your application
    program may need to unload some SPK files to make room for others or to
    remove a particular SPK from the set of loaded data. An SPK file may be
@@ -1373,7 +1484,7 @@ reference frame as it was oriented at ET - LT_F.
    On the other hand, the orientation of non-inertial frames with respect
    to other frames are almost always the result of observation. They are
    improved and extended as further observations are made. For some of
-   these frames (such as spacecraft fixed frames) vary large data sets are
+   these frames (such as spacecraft fixed frames) very large data sets are
    needed to express the orientation of the frame with respect to other
    frames. Frame transformations that are a function of time and require
    megabytes of data are not suitable for encapsulation in C or FORTRAN
@@ -1385,7 +1496,7 @@ reference frame as it was oriented at ET - LT_F.
    kernel is loaded depends upon the type of the kernel.
 <P>
  
-   There are currently four classes of reference frames that are supported
+   There are currently five classes of reference frames that are supported
    by the SPICE system. We give a brief overview of these frames here. For
    a more thorough discussion of the various types of frames see the
    recommended reading file ``<a href="../req/frames.html">frames.req</a>.''
@@ -1421,7 +1532,7 @@ binary PCK file
             <a href="../cspice/unload_c.html">unload_c</a> ( &lt;file&gt; );
 </PRE>
 <UL>
-<TT>&#32;&#32;</TT> text based PCK files are loaded via the function <a href="../cspice/furnsh_c.html">furnsh_c</a>.
+<TT>&#32;&#32;</TT> Text based PCK files are loaded via the function <a href="../cspice/furnsh_c.html">furnsh_c</a>.
 <BR><BR></UL>
 <PRE>
             <a href="../cspice/furnsh_c.html">furnsh_c</a> ( &lt;file&gt; )
@@ -1474,6 +1585,21 @@ frames and instrument frames. TK frames are loaded via the function
 <BR><BR></UL>
 <PRE>
             <a href="../cspice/furnsh_c.html">furnsh_c</a> ( &lt;TK_frame_file&gt; );
+</PRE>
+   Dynamic Frames
+<P>
+ 
+<UL>
+<TT>&#32;&#32;</TT> Dynamic frames, like TK frames, are defined via a SPICE text kernel. A
+dynamic frame has time-varying rotation relative to its base frame. A
+dynamic frame can be defined by two time-varying vectors, by a set of
+precession, nutation, and obliquity models, or by a set of Euler angles.
+Typical examples are the geocentric solar ecliptic frame or the Earth true
+equator and true equinox of date frame. Dynamic frames are loaded via the
+function <a href="../cspice/furnsh_c.html">furnsh_c</a>.
+<BR><BR></UL>
+<PRE>
+            <a href="../cspice/furnsh_c.html">furnsh_c</a> ( &lt;Dynamic_frame_file&gt; );
 </PRE>
    In addition to the files mentioned above, it may be necessary to load a
    ``frame definition'' file along with the one of the SPICE kernels listed
@@ -1644,17 +1770,17 @@ the segment, given in ephemeris seconds past Julian year 2000.
 <P>
  
    Because this step is isolated within a single low-level reader,
-   spkpvn_c, new data types can be added to the SPK format without
+   <a href="../cspice/spkpvn_c.html">spkpvn_c</a>, new data types can be added to the SPK format without
    affecting application programs that use the higher level readers.
-   spkpvn_c is designed so that the changes required to implement a new
+   <a href="../cspice/spkpvn_c.html">spkpvn_c</a> is designed so that the changes required to implement a new
    data type are minimal.
 <P>
  
    There are no real limits on the possible representations that can be
    used for ephemeris data. Users with access to data suitable for creating
    an ephemeris may choose to invent their own representations, adapting
-   spkpvn_c accordingly. (We recommend that you consult with NAIF prior to
-   implementing an new data type.)
+   <a href="../cspice/spkpvn_c.html">spkpvn_c</a> accordingly. (We recommend that you consult with NAIF prior to
+   implementing a new data type.)
 <P>
  
    The data types currently supported by CSPICE software are listed under
@@ -1668,18 +1794,18 @@ the segment, given in ephemeris seconds past Julian year 2000.
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
    At the lowest level, it is possible to compute states without combining
    them at all. Given the handle and descriptor for a particular segment,
-   function spkpvn_c returns a state from that segment directly.
+   function <a href="../cspice/spkpvn_c.html">spkpvn_c</a> returns a state from that segment directly.
 <P>
  
 <PRE>
-   spkpvn_c ( &lt;handle&gt;,
+   <a href="../cspice/spkpvn_c.html">spkpvn_c</a> ( &lt;handle&gt;,
               &lt;descr&gt;,
               &lt;et&gt;,
               ref,
               state,
               center   );  { Position, velocity, native frame }
 </PRE>
-   spkpvn_c is the most basic SPK reader. It returns states relative to the
+   <a href="../cspice/spkpvn_c.html">spkpvn_c</a> is the most basic SPK reader. It returns states relative to the
    frame in which they are stored in the SPK file. It does not rotate or
    combine them: it returns a state relative to the center whose integer
    code is stored in the descriptor for the segment. This state is relative
@@ -1691,46 +1817,32 @@ the segment, given in ephemeris seconds past Julian year 2000.
    particular file and segment from which each state is to be computed.
 <P>
  
-   Note that to use the state returned by spkpvn_c in any frame other than
+   Note that to use the state returned by <a href="../cspice/spkpvn_c.html">spkpvn_c</a> in any frame other than
    the ``native frame'' of the segment, you must convert the state to the
-   frame of interest. A second low level function spkpv_c can be used to
-   perform the state transformations for you. The calling sequence for
-   spkpv_c is identical to that for spkpvn_c. However, in the case of
-   spkpv_c the reference frame is an input instead of an output argument.
-<P>
- 
-<PRE>
-   spkpv_c ( &lt;handle&gt;,
-             &lt;descr&gt;,
-             &lt;et&gt;,
-             &lt;ref&gt;,
-             state,
-             center   );  { Position, velocity }
-</PRE>
-   Thus using spkpv_c instead of spkpvn_c allows you to avoid the details
-   of converting states to the frame of interest.
+   frame of interest.
 <P>
  
    If files have been loaded by previous calls to <a href="../cspice/furnsh_c.html">furnsh_c</a>, it is possible
    to use the same segments that would normally be used by <a href="../cspice/spkezr_c.html">spkezr_c</a>,
-   <a href="../cspice/spkez_c.html">spkez_c</a>, spkssb_c, and <a href="../cspice/spkgeo_c.html">spkgeo_c</a>. Function spksfs_c selects, from the
+   <a href="../cspice/spkez_c.html">spkez_c</a>, spkssb_c, and <a href="../cspice/spkgeo_c.html">spkgeo_c</a>. Function <a href="../cspice/spksfs_c.html">spksfs_c</a> selects, from the
    database of loaded files, the file handle and segment descriptor for the
    segment best suited to the request. If two segments from different files
-   are suitable, spksfs_c selects the one from the file that was loaded
-   later. If two segments from the same file are suitable, spksfs_c selects
+   are suitable, <a href="../cspice/spksfs_c.html">spksfs_c</a> selects the one from the file that was loaded
+   later. If two segments from the same file are suitable, <a href="../cspice/spksfs_c.html">spksfs_c</a> selects
    the one that is stored later in the file. The call
 <P>
  
 <PRE>
-   spksfs_c ( &lt;801&gt;,
+   <a href="../cspice/spksfs_c.html">spksfs_c</a> ( &lt;801&gt;,
               &lt;et&gt;,
+              idlen,
               &amp;handle,
               descr,
               segnam,
               &amp;found );     { Select file and segment }
 </PRE>
    returns the handle, descriptor, and segment name for the latest segment
-   containing data for Triton at the specified epoch. spksfs_c maintains a
+   containing data for Triton at the specified epoch. <a href="../cspice/spksfs_c.html">spksfs_c</a> maintains a
    buffer of segment descriptors and segment names, so it doesn't waste
    time searching the database for bodies it already knows about.
 <P>
@@ -1809,7 +1921,7 @@ the segment, given in ephemeris seconds past Julian year 2000.
  
       /*
       Load constants into the kernel pool. Two files are
-      needed. The first ("time.ker") contains the dates
+      needed. The first ("leapseconds.ker") contains the dates
       of leap seconds and values for constants needed to
       compute the difference between UTC and ET at any
       epoch. The second ("pck.ker") contains IAU values
@@ -1819,14 +1931,14 @@ the segment, given in ephemeris seconds past Julian year 2000.
       solar system. (These files, or their equivalents,
       are normally distributed along with CSPICE.)
       */
-      <a href="../cspice/furnsh_c.html">furnsh_c</a> ( "time.ker"  );
+      <a href="../cspice/furnsh_c.html">furnsh_c</a> ( "leapseconds.ker"  );
       <a href="../cspice/furnsh_c.html">furnsh_c</a> ( "pck.ker"   );
  
       /*
       Several ephemeris files are used. Most contain data for
-      a single planetary system ("jupiter.ker", "saturn.ker",
-      and so on). Some contain data for spacecraft ("vgr1.ker",
-      "mgn.ker").
+      a single planetary system ("jupiter.bsp", "saturn.bsp",
+      and so on). Some contain data for spacecraft ("vgr1.bsp",
+      "mgn.bsp").
       */
       <a href="../cspice/furnsh_c.html">furnsh_c</a> ( "mercury.bsp" );
       <a href="../cspice/furnsh_c.html">furnsh_c</a> ( "venus.bsp"   );
@@ -1969,15 +2081,15 @@ the segment, given in ephemeris seconds past Julian year 2000.
  
       /*
       Load constants into the kernel pool. Two files are
-      needed. The first ("time.ker") contains the dates
+      needed. The first ("leapseconds.ker") contains the dates
       of leap seconds and values for constants needed to
       compute the difference between UTC and ET at any
-      epoch. The second ("radii.ker") contains values
+      epoch. The second ("radii.tpc") contains values
       for the tri-axial ellipsoids used to model the major
       major bodies of the solar system.
       */
-      <a href="../cspice/furnsh_c.html">furnsh_c</a> ( "time.ker"  );
-      <a href="../cspice/furnsh_c.html">furnsh_c</a> ( "radii.ker" );
+      <a href="../cspice/furnsh_c.html">furnsh_c</a> ( "leapseconds.ker"  );
+      <a href="../cspice/furnsh_c.html">furnsh_c</a> ( "radii.tpc" );
  
       /*
       Several ephemeris files are needed. Most contain data for
@@ -2246,6 +2358,35 @@ empirical values.
 SPK system of spacecraft ephemerides used by the European Space Agency
 (ESA) on the Mars Express, Rosetta, SMART-1, and Venus express missions.
 <BR><BR></UL>
+<UL>
+<TT>19.</TT> ESOC/DDID Piecewise Interpolation
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> SPK type 19 is an enhanced version of SPK type 18. Type 19 enables creation
+of SPK files representing the same ephemerides that can be represented
+using type 18, but containing far fewer segments. Data from multiple type
+18 segments can be stored in a single type 19 segment.
+<BR><BR></UL>
+<UL>
+<TT>20.</TT> Chebyshev (velocity only)
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> SPK data type 20 contains Chebyshev polynomial coefficients for the
+velocity of a body, relative to its center of motion, as a function of
+time. The position of the body is obtained by integrating the velocity
+using a specified integration constant. This data type is provided to
+accurately represent ``EPM'' ephemerides developed by the Institute of
+Applied Astronomy (IAA), Russian Academy of Sciences (RAS).
+<BR><BR></UL>
+<UL>
+<TT>21.</TT> Extended Modified Difference Arrays
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> SPK data type 21 contains extended Modified Difference Arrays (MDA), also
+called ``difference lines.'' These data structures use the same
+mathematical trajectory representation as SPK data type 1, but type 21
+allows use of larger, higher-degree MDAs.
+<BR><BR></UL>
    Because SPK files are Double Precision Array Files (DAFs), each segment
    is stored as an array. Each array corresponding to a particular data
    type has a particular internal structure. These structures (for the
@@ -2499,9 +2640,9 @@ past J2000.
 <P>
  
 <BR><BR>
-<A NAME="Type 5: Discrete states (two body propagation)."></A>
+<A NAME="Type 5: Discrete states (two body propagation)"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Type 5: Discrete states (two body propagation).
+<H3> Type 5: Discrete states (two body propagation)
 </H3><P><BR><BR>
    The fifth standard SPK data type contains discrete state vectors. A
    state is obtained from a Type 5 segment for any epoch that is within the
@@ -3470,9 +3611,9 @@ information about the generic segment.
 <P>
  
 <BR><BR>
-<A NAME="Type 15: Precessing Conic Propagation."></A>
+<A NAME="Type 15: Precessing Conic Propagation"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Type 15: Precessing Conic Propagation.
+<H3> Type 15: Precessing Conic Propagation
 </H3><P><BR><BR>
    The SPK data Type 15 represents a continuous ephemeris using a compact
    analytic model. The object is modeled as orbiting a central body under
@@ -3537,9 +3678,9 @@ information about the generic segment.
 <P>
  
 <BR><BR>
-<A NAME="Type 17: Equinoctial Elements."></A>
+<A NAME="Type 17: Equinoctial Elements"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Type 17: Equinoctial Elements.
+<H3> Type 17: Equinoctial Elements
 </H3><P><BR><BR>
    The SPK data Type 17 represents a continuous ephemeris using a compact
    analytic model. The object is following an elliptic orbit with
@@ -3553,11 +3694,11 @@ information about the generic segment.
  
 <PRE>
              +----------------------------------+
-           1 | Epoch of Periapsis               |
+          1  | Epoch of Periapsis               |
              +----------------------------------+
-           2 | Semi-Major Axis                  |
+          2  | Semi-Major Axis                  |
              +----------------------------------+
-           3 | H term of equinoctial elements   |
+          3  | H term of equinoctial elements   |
              +----------------------------------+
           4  | K term of equinoctial elements   |
              +----------------------------------+
@@ -3609,7 +3750,7 @@ information about the generic segment.
 <P>
  
 <UL>
-<TT>1.</TT> Subtype 0:
+<TT>1.</TT> Subtype 0
 <BR><BR></UL>
 <UL>
 <TT>&#32;&#32;</TT> Separate sliding-window Hermite interpolation of position and velocity. The
@@ -3625,7 +3766,7 @@ independent. The same interpolation degree is used for each position and
 velocity component.
 <BR><BR></UL>
 <UL>
-<TT>2.</TT> Subtype 1:
+<TT>2.</TT> Subtype 1
 <BR><BR></UL>
 <UL>
 <TT>&#32;&#32;</TT> Separate sliding-window Lagrange interpolation of position and velocity.
@@ -3753,6 +3894,660 @@ for each position and velocity component.
 <P>
  
 <BR><BR>
+<A NAME="Type 19: ESOC/DDID Piecewise Interpolation"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Type 19: ESOC/DDID Piecewise Interpolation
+</H3><P><BR><BR>
+   As with SPK type 18, SPK type 19 has been provided to support accurate
+   duplication by the SPK system of spacecraft ephemerides used by the
+   European Space Agency (ESA) on the Mars Express, Rosetta, SMART-1 and
+   Venus Express missions.
+<P>
+ 
+   SPK type 19 is an enhanced version of SPK type 18. Type 19 enables
+   creation of SPK files representing the same ephemerides that can be
+   represented using type 18, but containing far fewer segments. Data from
+   multiple type 18 segments can be stored in a single type 19 segment, as
+   long as those segments satisfy certain restrictions:
+<P>
+ 
+<UL>
+<TT>--</TT> The segments are for the same body, center, and reference frame.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> The segments' coverage intervals, when arranged in increasing time order,
+overlap only at their endpoints, and have no intervening gaps.
+<BR><BR></UL>
+   Within a type 19 segment, each set of data corresponding to a type 18
+   segment is called a ``mini-segment.'' A type 19 segment contains one or
+   more mini-segments.
+<P>
+ 
+   Each mini-segment contains a time ordered, strictly increasing sequence
+   of epochs (no two epochs of the same mini-segment may coincide) and an
+   associated sequence of ephemeris data sets called ``packets.'' The
+   composition of a packet depends on the subtype of the mini-segment to
+   which the packet belongs; subtypes are discussed in more detail below.
+<P>
+ 
+   The time coverage of a mini-segment is called an ``interpolation
+   interval.'' The endpoints (boundaries) of each interpolation interval
+   must be contained in the time interval bounded by the first and last
+   members of the epoch sequence of the corresponding mini-segment. If the
+   Ith mini-segment's epoch sequence is
+<P>
+ 
+<PRE>
+   E_I1, ..., E_IM
+</PRE>
+   and the mini-segment's interpolation interval bounds are
+<P>
+ 
+<PRE>
+   IV_IB, IV_IE
+</PRE>
+   then it is required that
+<P>
+ 
+<PRE>
+   E_I1 &lt; IV_IB &lt; IV_IE &lt; E_IM
+        -              -
+</PRE>
+   Mini-segments are allowed to contain ``padding'' epochs and packets
+   beyond both ends of their interpolation intervals. Padding epochs on the
+   left of an interpolation interval are less than the interval start time;
+   padding epochs on the right exceed the interval stop time. Padding
+   enables control of interpolation behavior at and near interpolation
+   interval boundaries. Padding does not contribute to a type 19 segment's
+   time coverage. The use of padding is discussed in greater detail below.
+<P>
+ 
+   The interpolation intervals of a type 19 segment have no intervening
+   gaps and overlap only at single points. The end time of each
+   interpolation interval is the start time of the next. The start time of
+   a type 19 segment is greater than or equal to the start time of the
+   first interval, and the segment's end time is less than or equal to the
+   stop time of the last interval.
+<P>
+ 
+   Interpolation intervals must have strictly positive length.
+<P>
+ 
+   When type 19 data are interpolated to produce a state vector for a given
+   request time, only data from a single mini-segment whose interpolation
+   interval contains the request time are used.
+<P>
+ 
+   When a request time coincides with the boundary between two
+   interpolation intervals, there is a choice as to which interval will
+   provide ephemeris data. The creator of a type 19 segment can control
+   this behavior via a parameter passed to the type 19 segment writer
+   spkw19_c. For a given type 19 segment, depending on the value of this
+   parameter, either the earlier interval is always selected, or the later
+   interval is always selected.
+<P>
+ 
+   Because of the possibility of evolution of the mathematical
+   representations of ephemerides used by ESA, SPK type 19 is designed to
+   accommodate multiple representations of state data, thereby avoiding a
+   proliferation of SPK data types. SPK type 19 refers to each supported
+   mathematical representation of ephemeris data as a ``subtype.''
+<P>
+ 
+   Currently SPK type 19 supports three subtypes:
+<P>
+ 
+<UL>
+<TT>1.</TT> Subtype 0
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> Separate sliding-window Hermite interpolation of position and velocity. The
+ephemeris is represented by a series of 12-element ``packets'' and
+associated time tags. The time tags may be unequally spaced. Each packet
+contains three Cartesian position components, three velocity components
+meant to be used for Hermite interpolation of the position, three velocity
+components (not necessarily equal to the previous three), and three
+acceleration components meant to be used with the second set of velocity
+components for Hermite interpolation of the velocity. The position and
+velocity resulting from this interpolation method are in principle
+independent. The same interpolation degree is used for each position and
+velocity component.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> The interpolation degree of a subtype 0 mini-segment must be equivalent to
+3 mod 4, that is, it must be in the set
+<BR><BR></UL>
+<PRE>
+            { 3, 7, 11, ..., MAXDEG }
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> where MAXDEG is the maximum supported degree.
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> Subtype 1
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> Separate sliding-window Lagrange interpolation of position and velocity.
+The ephemeris is represented by a series of 6-element ``packets'' and
+associated time tags. The time tags may be unequally spaced. Each packet
+contains three Cartesian position components and three velocity components.
+The position components and velocity components are interpolated
+separately. The position and velocity resulting from this interpolation
+method are in principle independent. The same interpolation degree is used
+for each position and velocity component.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> The interpolation degree of a subtype 1 mini-segment must be odd and must
+be in the range 1:MAXDEG, where MAXDEG is the maximum supported degree.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> Subtype 2
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> Sliding-window Hermite interpolation of position and velocity. The
+ephemeris is represented by a series of 6-element ``packets'' and
+associated time tags. The time tags may be unequally spaced. Each packet
+contains three Cartesian position components and three velocity components.
+The position components and velocity components are interpolated together.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> The interpolation degree of a subtype 2 mini-segment must be equivalent to
+3 mod 4, that is, it must be in the set
+<BR><BR></UL>
+<PRE>
+            { 3, 7, 11, ..., MAXDEG }
+</PRE>
+<UL>
+<TT>&#32;&#32;</TT> where MAXDEG is the maximum supported degree.
+<BR><BR></UL>
+   The sliding-window interpolation technique used by this data type works
+   as follows: for any request epoch, the data type's state evaluation code
+   computes a component of position or velocity by interpolating a set of
+   values of that component defined on a set of consecutive time tags---a
+   "window"---centered as closely as possible to the request epoch. The
+   nominal window size is dictated by the degree and type (Hermite vs.
+   Lagrange) of the interpolating polynomials. Normally the window of time
+   tags has even size, and the window is selected so that the request time
+   is located between the two central time tags in the window. When the
+   request time is too close to an endpoint of the mini-segment's epoch
+   sequence to permit construction of a window of nominal size, the window
+   is truncated at that endpoint.
+<P>
+ 
+   Although type 19 interpolation intervals support padding, padding is not
+   required. Below we'll discuss the role of padding, but the reader should
+   keep in mind that the size of the pads at either end of an interpolation
+   interval could be zero.
+<P>
+ 
+   In SPK type 19, interpolation interval padding boundaries (the start
+   time of the padding preceding the interval's coverage and the stop time
+   of the padding following the coverage) affect interpolation in the same
+   way that segment boundaries affect type 18 interpolation. When the
+   request time is near a padding boundary, the window is truncated if
+   necessary on the side closest to the boundary. If an interpolation
+   interval, including padding, contains too few packets to form a window
+   of nominal size, as many packets as are needed and available are used to
+   construct the window. In this case the window size may be odd. In any
+   case the window never includes more than WNDSIZ/2 time tags on either
+   side of the request time, where WNDSIZ is the nominal window size.
+<P>
+ 
+   The mini-segments of a type 19 segment need not use the same subtypes
+   and interpolation degrees.
+<P>
+ 
+   The states in a type 19 segment are geometric: they do not take into
+   account aberration corrections. The position and velocity components of
+   each packet represent the position (x, y, z, in kilometers and
+   kilometers per second) of the body to which the ephemeris applies,
+   relative to the center specified by the segment's descriptor. The epochs
+   corresponding to the states are barycentric dynamical times (TDB),
+   expressed as seconds past J2000.
+<P>
+ 
+   Type 19 SPK segments have the structure shown below:
+<P>
+ 
+<PRE>
+   +--------------------------------+
+   | Interval 1 mini-segment        |
+   +--------------------------------+
+                   .
+                   .
+                   .
+   +--------------------------------+
+   | Interval N mini-segment        |
+   +--------------------------------+
+   | Interval 1 start time          |
+   +--------------------------------+
+                   .
+                   .
+                   .
+   +--------------------------------+
+   | Interval N start time          |
+   +--------------------------------+
+   | Interval N stop time           |
+   +--------------------------------+
+   | Interval start 100             | (First interval directory)
+   +--------------------------------+
+                   .
+                   .
+                   .
+   +--------------------------------+
+   | Interval start (N/100)*100     | (Last interval directory)
+   +--------------------------------+
+   | Mini-segment 1 start pointer   |
+   +--------------------------------+
+                   .
+                   .
+                   .
+   +--------------------------------+
+   | Mini-segment N start pointer   |
+   +--------------------------------+
+   | Mini-segment N stop pointer    |
+   +--------------------------------+
+   | Boundary choice flag           |
+   +--------------------------------+
+   | Number of intervals            |
+   +--------------------------------+
+</PRE>
+   Below we first describe the overall segment structure, then we cover the
+   mini-segment structure.
+<P>
+ 
+   The array of interval boundaries contains the start time of each
+   interval, plus the stop time of the final interval.
+<P>
+ 
+   The list of interpolation interval boundary times has its own directory,
+   which has the same structure as the time tag directories of type 18
+   segments. Let the interval count be N. As with time tag directories, the
+   start time directory contains boundary times whose indices are multiples
+   of 100, except that if N+1 is a multiple of 100, the last boundary time
+   is not included.
+<P>
+ 
+   The array of mini-segment pointers contains a pointer to the start of
+   each mini-segment, plus a final ``stop'' pointer for the final
+   mini-segment. The stop pointer points to the location immediately
+   following the last address of the final mini-segment.
+<P>
+ 
+   The mini-segment pointers are 1-based indices relative to the start
+   address of the segment. For example, a pointer value of 1 indicates the
+   first address of the segment.
+<P>
+ 
+   Following the mini-segment pointers is the interval selection flag. When
+   this flag has the value 1.D0, the later interpolation interval is used
+   when a request time falls on the common boundary between two
+   interpolation intervals. If the selection flag is 0, the earlier
+   interval is used.
+<P>
+ 
+   Each mini-segment has the structure of a type 18 SPK segment. The
+   structure is shown below:
+<P>
+ 
+<PRE>
+   +-----------------------+
+   | Packet 1              |
+   +-----------------------+
+               .
+               .
+               .
+   +-----------------------+
+   | Packet M              |
+   +-----------------------+
+   | Epoch 1               |
+   +-----------------------+
+               .
+               .
+               .
+   +-----------------------+
+   | Epoch M               |
+   +-----------------------+
+   | Epoch 100             | (First time tag directory)
+   +-----------------------+
+               .
+               .
+               .
+   +-----------------------+
+   | Epoch ((M-1)/100)*100 | (Last time tag directory)
+   +-----------------------+
+   | Subtype code          |
+   +-----------------------+
+   | Window size           |
+   +-----------------------+
+   | Number of packets     |
+   +-----------------------+
+ 
+</PRE>
+   In the mini-segment diagram, each box representing a packet corresponds
+   to either twelve or six double precision numbers; the other boxes
+   represent individual double precision numbers. The number of packets
+   normally should be greater than or equal to the window size, which is
+   related to the polynomial degree as shown:
+<P>
+ 
+<PRE>
+   Subtype 0:     DEGREE  =  2 * WINDOW_SIZE  -  1
+   Subtype 1:     DEGREE  =      WINDOW_SIZE  -  1
+   Subtype 2:     DEGREE  =  2 * WINDOW_SIZE  -  1
+</PRE>
+   The mini-segment's set of time tags is augmented by a series of
+   directory entries; these entries allow the type 19 reader to search for
+   packets more efficiently. The directory entries contain time tags whose
+   indices are multiples of 100. The set of indices of time tags stored in
+   the directories ranges from 100 to
+<P>
+ 
+<PRE>
+   (  (M-1) / 100  ) * 100
+</PRE>
+   where M is the total number of time tags. Note that if M is
+<P>
+ 
+<PRE>
+   Q * 100
+</PRE>
+   then only
+<P>
+ 
+<PRE>
+   Q - 1
+</PRE>
+   directory entries are stored, and in particular, if there are only 100
+   states in the segment, there are no directories.
+<P>
+ 
+   Following the time tag directory are three parameters associated with
+   the mini-segment: the subtype, the interpolation window size, and the
+   packet count.
+<P>
+ 
+   To facilitate the creation of type 19 segments, a segment writing
+   routine called spkw19_c has been provided. This routine takes as input
+   arguments the handle of an SPK file that is open for writing, the
+   information needed to construct the segment descriptor, and the data to
+   be stored in the segment. The header of the subroutine provides a
+   complete description of the input arguments and an example of its usage.
+<P>
+ 
+<BR><BR>
+<A NAME="Type 20: Chebyshev (velocity only)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Type 20: Chebyshev (velocity only)
+</H3><P><BR><BR>
+   SPK data type 20 contains Chebyshev polynomial coefficients for the
+   velocity of a body, relative to its center of motion, as a function of
+   time. The position of the body is obtained by integrating the velocity
+   using a specified integration constant.
+<P>
+ 
+   This data type is provided to accurately represent ``EPM'' ephemerides
+   developed by the Institute of Applied Astronomy (IAA), Russian Academy
+   of Sciences (RAS).
+<P>
+ 
+   Each type 20 segment contains an arbitrary number of logical records.
+   Each record contains a set of Chebyshev coefficients valid throughout an
+   interval of fixed length. Each record also contains a position vector
+   applicable at the midpoint of its coverage interval.
+<P>
+ 
+   The records within a segment are ordered by increasing initial epoch.
+   All records contain the same number of coefficients. A segment of this
+   type is structured as
+<P>
+ 
+<PRE>
+   +---------------+
+   | Record 1      |
+   +---------------+
+   | Record 2      |
+   +---------------+
+     .
+     .
+     .
+   +---------------+
+   | Record N      |
+   +---------------+
+   | DSCALE        |
+   +---------------+
+   | TSCALE        |
+   +---------------+
+   | INITJD        |
+   +---------------+
+   | INITFR        |
+   +---------------+
+   | INTLEN        |
+   +---------------+
+   | RSIZE         |
+   +---------------+
+   | N             |
+   +---------------+
+</PRE>
+   A set of seven parameters at the end of the segment provides the
+   information needed to determine the location of the record corresponding
+   to a particular epoch and to determine the units associated with the
+   data:
+<P>
+ 
+<UL>
+<TT>1.</TT> DSCALE is the distance scale used for both position and velocity; DSCALE
+has units of km. For example, if the distance units are AU, then DSCALE is
+the value of the AU in km.
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> TSCALE is the time scale used for velocity; TSCALE has units of TDB
+seconds. For example, if the time units of the velocity data are TDB Julian
+days, then TSCALE is 86400.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> INITJD is the integer part of the TDB Julian date of the initial epoch of
+the first record. INITJD has units of Julian days. INITJD may be less than,
+equal to, or greater than the initial epoch.
+<BR><BR></UL>
+<UL>
+<TT>4.</TT> INITFR is the fractional part of the TDB Julian date of the initial epoch
+of the first record. INITFR has units of Julian days. INITFR has magnitude
+strictly less than 1 day. The sum INITJD + INITFR equals the TDB Julian
+date of the initial epoch of the first record.
+<BR><BR></UL>
+<UL>
+<TT>5.</TT> INTLEN is the length of the interval covered by each record, in TDB Julian
+days.
+<BR><BR></UL>
+<UL>
+<TT>6.</TT> RSIZE is the total size of (number of array elements in) each record. The
+same number of coefficients is always used for each component, and all
+records are the same size. RSIZE is 3 + 3*(DEGP+1), where DEGP is the
+common degree of the Chebyshev expansions for each velocity component.
+<BR><BR></UL>
+<UL>
+<TT>7.</TT> N is the number of records contained in the segment.
+<BR><BR></UL>
+   Each record is structured as follows:
+<P>
+ 
+<PRE>
+   +------------------+
+   | X  data          |
+   +------------------+
+   | Y  data          |
+   +------------------+
+   | Z  data          |
+   +------------------+
+</PRE>
+   where each data section for coordinate I contains
+<P>
+ 
+<PRE>
+   +-------------------------------------------------+
+   | Chebyshev coefficients for velocity component I |
+   +-------------------------------------------------+
+   | Position component I at interval midpoint       |
+   +-------------------------------------------------+
+</PRE>
+   The velocity coefficients have units of DSCALE km/TSCALE seconds:
+   multiplying a Chebyshev expansion's value by DSCALE/TSCALE converts
+   velocity to units of km/s.
+<P>
+ 
+   The position at a record's midpoint epoch is given in units of DSCALE
+   km: multiplying the position by DSCALE converts the position to units of
+   km.
+<P>
+ 
+   Type 20 data are used to compute states as follows: for a given time T
+   seconds past J2000 TDB, let MID and RADIUS be the midpoint and radius,
+   expressed as seconds past J2000 TDB, of the record coverage interval
+   that contains T: the coverage interval is the time span
+<P>
+ 
+<PRE>
+   MID - RADIUS : MID + RADIUS
+</PRE>
+   The velocity at T of the body relative to its center of motion is given
+   by the value of the corresponding record's Chebyshev expansions at S,
+   where
+<P>
+ 
+<PRE>
+   S = (T - MID) / RADIUS
+</PRE>
+   The position of the body relative to its center of motion at T is given
+   by
+<P>
+ 
+<PRE>
+                                         S
+   (Position at MID) +  RADIUS*( Integral ( Velocity ) )
+                                         0
+</PRE>
+   The function spke20_ contains the algorithm used to construct a state
+   from a particular logical record.
+<P>
+ 
+   To facilitate the creation of Type 20 segments, a segment writing
+   function called <a href="../cspice/spkw20_c.html">spkw20_c</a> has been provided. This function takes as input
+   arguments the handle of an SPK file that is open for writing, the
+   information needed to construct the segment descriptor, and the data to
+   be stored in the segment. The header of the function provides a complete
+   description of the input arguments and an example of its usage.
+<P>
+ 
+<BR><BR>
+<A NAME="Type 21: Extended Modified Difference Arrays"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Type 21: Extended Modified Difference Arrays
+</H3><P><BR><BR>
+   SPK data type 21 contains extended Modified Difference Arrays (MDA),
+   also called ``difference lines.'' These data structures use the same
+   mathematical trajectory representation as SPK data type 1, but type 21
+   allows use of larger, higher-degree MDAs.
+<P>
+ 
+   This data type is normally used for spacecraft whose ephemerides are
+   produced by JPL's principal trajectory integrator---DPTRAJ. Difference
+   lines are extracted from spacecraft trajectory files (``P-files'' and
+   ``PV-files'') created by DPTRAJ.
+<P>
+ 
+   Each segment containing Modified Difference Arrays contains an arbitrary
+   number of logical records. Each record contains difference line
+   coefficients applicable over a time interval containing a reference
+   epoch, along with the state at that epoch. The time intervals of
+   adjacent records overlap at their common endpoints.
+<P>
+ 
+   The contents of the records themselves are described in [163]. The
+   function spke21_ contains the algorithm used to construct a state from a
+   particular record and epoch.
+<P>
+ 
+   The records within a segment are ordered by increasing final epoch. The
+   final epochs associated with the records must be distinct.
+<P>
+ 
+   A segment of this type is structured as follows:
+<P>
+ 
+<PRE>
+   +-----------------------------------------+
+   | Record 1 (difference line coefficients) |
+   +-----------------------------------------+
+   | Record 2 (difference line coefficients) |
+   +-----------------------------------------+
+     .
+     .
+     .
+   +-----------------------------------------+
+   | Record N (difference line coefficients) |
+   +-----------------------------------------+
+   | Epoch 1                      |
+   +------------------------------+
+   | Epoch 2                      |
+   +------------------------------+
+     .
+     .
+     .
+   +------------------------------+
+   | Epoch N                      |
+   +------------------------------+
+   | Epoch 100                    |   (First directory epoch)
+   +------------------------------+
+   | Epoch 200                    |   (Second directory epoch)
+   +------------------------------+
+     .
+     .
+     .
+   +------------------------------+
+   | Epoch (N/100)*100            |   (Final directory epoch)
+   +------------------------------+
+   | Difference line size         |
+   +------------------------------+
+   | N                            |
+   +------------------------------+
+</PRE>
+   The number of records in a segment, N, can be arbitrarily large.
+<P>
+ 
+   Records 1 through N contain the difference line coefficients and other
+   constants needed to compute state data. Each one of these records
+   contains DLSIZE double precision numbers, where DLSIZE is in the range
+<P>
+ 
+<PRE>
+   71 : (4*MAXTRM) + 1
+</PRE>
+   inclusive. MAXTRM is declared in the SPICELIB include file spk21.inc.
+<P>
+ 
+   A list of the final epochs of the records is stored immediately after
+   the last record.
+<P>
+ 
+   Following the list of epochs is a second list, the ``directory,''
+   containing every 100th epoch from the previous list. If there are N
+   epochs, there will be N/100 directory epochs. If there are fewer than
+   100 epochs, then the segment will not contain any directory epochs.
+   Directory epochs are used to speed up access to desired records.
+<P>
+ 
+   The penultimate element of the segment is the difference line size. The
+   final element in the segment is the number of records contained in the
+   segment, N.
+<P>
+ 
+   The index of the record providing ephemeris data for a user-specified
+   epoch is the index of the first epoch in the segment's epoch list not
+   less than the specified epoch.
+<P>
+ 
+<BR><BR>
 <A NAME="Appendix A --- Summary of SP-kernel Functions"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Appendix A --- Summary of SP-kernel Functions
@@ -3780,91 +4575,105 @@ for each position and velocity component.
 <PRE>
    Implemented CSPICE wrappers:
  
-   <a href="../cspice/furnsh_c.html">furnsh_c</a>           ( Load kernel file                     )
-   <a href="../cspice/spk14a_c.html">spk14a_c</a>           ( S/P-kernel, add to a Type 14 segment )
-   <a href="../cspice/spk14b_c.html">spk14b_c</a>           ( S/P-kernel, begin  a Type 14 segment )
-   <a href="../cspice/spk14e_c.html">spk14e_c</a>           ( S/P-kernel, end    a Type 14 segment )
-   <a href="../cspice/spkacs_c.html">spkacs_c</a>           ( S/P Kernel, aberration corrected state )
-   <a href="../cspice/spkapo_c.html">spkapo_c</a>           ( S/P-Kernel, "apparent" position only )
-   <a href="../cspice/spkaps_c.html">spkaps_c</a>           ( S/P-kernel, apparent state           )
-   <a href="../cspice/spkcls_c.html">spkcls_c</a>           ( S/P-kernel, close after write        )
-   <a href="../cspice/spkcov_c.html">spkcov_c</a>           ( S/P-kernel, coverage for a body      )
-   <a href="../cspice/spkez_c.html">spkez_c</a>            ( S/P-kernel, Easy state               )
-   <a href="../cspice/spkezp_c.html">spkezp_c</a>           ( S/P Kernel, easy position            )
-   <a href="../cspice/spkezr_c.html">spkezr_c</a>           ( S/P-kernel, Easier state             )
-   <a href="../cspice/spkgeo_c.html">spkgeo_c</a>           ( S/P-kernel, Geometric state          )
-   <a href="../cspice/spkgps_c.html">spkgps_c</a>           ( S/P Kernel, geometric position       )
-   <a href="../cspice/spklef_c.html">spklef_c</a>           ( S/P-kernel, Load ephemeris file      )
-   <a href="../cspice/spkltc_c.html">spkltc_c</a>           ( S/P Kernel, light time corrected state )
-   <a href="../cspice/spkobj_c.html">spkobj_c</a>           ( S/P Kernel, bodies in a file         )
-   <a href="../cspice/spkopa_c.html">spkopa_c</a>           ( S/P-kernel, open for addition        )
-   <a href="../cspice/spkopn_c.html">spkopn_c</a>           ( S/P-kernel, open new file            )
-   <a href="../cspice/spkpds_c.html">spkpds_c</a>           ( S/P-kernel, pack descriptor          )
-   <a href="../cspice/spkpos_c.html">spkpos_c</a>           ( S/P Kernel, position                 )
-   <a href="../cspice/spkssb_c.html">spkssb_c</a>           ( S/P-kernel, Solar system barycenter  )
-   <a href="../cspice/spksub_c.html">spksub_c</a>           ( S/P-kernel, Subset a segment         )
-   <a href="../cspice/spkuds_c.html">spkuds_c</a>           ( S/P-kernel, unpack descriptor        )
-   <a href="../cspice/spkuef_c.html">spkuef_c</a>           ( S/P-kernel, Unload ephemeris file    )
-   <a href="../cspice/spkw02_c.html">spkw02_c</a>           ( S/P-kernel, Write segment, Type 02   )
-   <a href="../cspice/spkw03_c.html">spkw03_c</a>           ( S/P-kernel, Write segment, Type 03   )
-   <a href="../cspice/spkw05_c.html">spkw05_c</a>           ( S/P-kernel, Write segment, Type 05   )
-   <a href="../cspice/spkw08_c.html">spkw08_c</a>           ( S/P-kernel, Write segment, Type 08   )
-   <a href="../cspice/spkw09_c.html">spkw09_c</a>           ( S/P-kernel, Write segment, Type 09   )
-   <a href="../cspice/spkw10_c.html">spkw10_c</a>           ( S/P-kernel, Write segment, Type 10   )
-   <a href="../cspice/spkw12_c.html">spkw12_c</a>           ( S/P-kernel, Write segment, Type 12   )
-   <a href="../cspice/spkw13_c.html">spkw13_c</a>           ( S/P-kernel, Write segment, Type 13   )
-   <a href="../cspice/spkw15_c.html">spkw15_c</a>           ( S/P-kernel, Write segment, Type 15   )
-   <a href="../cspice/spkw17_c.html">spkw17_c</a>           ( S/P-kernel, Write segment, Type 17   )
-   <a href="../cspice/spkw18_c.html">spkw18_c</a>           ( S/P-kernel, Write segment, Type 18   )
+   <a href="../cspice/furnsh_c.html">furnsh_c</a>   ( Load kernel file                     )
+   <a href="../cspice/spk14a_c.html">spk14a_c</a>   ( S/P-kernel, add to a Type 14 segment )
+   <a href="../cspice/spk14b_c.html">spk14b_c</a>   ( S/P-kernel, begin  a Type 14 segment )
+   <a href="../cspice/spk14e_c.html">spk14e_c</a>   ( S/P-kernel, end    a Type 14 segment )
+   <a href="../cspice/spkacs_c.html">spkacs_c</a>   ( S/P Kernel, aberration corrected state )
+   <a href="../cspice/spkapo_c.html">spkapo_c</a>   ( S/P-Kernel, "apparent" position only )
+   <a href="../cspice/spkaps_c.html">spkaps_c</a>   ( S/P-kernel, apparent state           )
+   <a href="../cspice/spkcls_c.html">spkcls_c</a>   ( S/P-kernel, close after write        )
+   <a href="../cspice/spkcov_c.html">spkcov_c</a>   ( S/P-kernel, coverage for a body      )
+   <a href="../cspice/spkcpo_c.html">spkcpo_c</a>   ( SPK, constant position observer state )
+   <a href="../cspice/spkcpt_c.html">spkcpt_c</a>   ( SPK, constant position target state  )
+   <a href="../cspice/spkcvo_c.html">spkcvo_c</a>   ( SPK, constant velocity observer state )
+   <a href="../cspice/spkcvt_c.html">spkcvt_c</a>   ( SPK, constant velocity target state  )
+   <a href="../cspice/spkez_c.html">spkez_c</a>    ( S/P-kernel, Easy state               )
+   <a href="../cspice/spkezp_c.html">spkezp_c</a>   ( S/P Kernel, easy position            )
+   <a href="../cspice/spkezr_c.html">spkezr_c</a>   ( S/P-kernel, Easier state             )
+   <a href="../cspice/spkgeo_c.html">spkgeo_c</a>   ( S/P-kernel, Geometric state          )
+   <a href="../cspice/spkgps_c.html">spkgps_c</a>   ( S/P Kernel, geometric position       )
+   <a href="../cspice/spklef_c.html">spklef_c</a>   ( S/P-kernel, Load ephemeris file      )
+   <a href="../cspice/spkltc_c.html">spkltc_c</a>   ( S/P Kernel, light time corrected state )
+   <a href="../cspice/spkobj_c.html">spkobj_c</a>   ( S/P Kernel, bodies in a file         )
+   <a href="../cspice/spkopa_c.html">spkopa_c</a>   ( S/P-kernel, open for addition        )
+   <a href="../cspice/spkopn_c.html">spkopn_c</a>   ( S/P-kernel, open new file            )
+   <a href="../cspice/spkpds_c.html">spkpds_c</a>   ( S/P-kernel, pack descriptor          )
+   <a href="../cspice/spkpos_c.html">spkpos_c</a>   ( S/P Kernel, position                 )
+   <a href="../cspice/spkpvn_c.html">spkpvn_c</a>   ( S/P Kernel, position and velocity in native frame )
+   <a href="../cspice/spksfs_c.html">spksfs_c</a>   ( S/P Kernel, Select file and segment  )
+   <a href="../cspice/spkssb_c.html">spkssb_c</a>   ( S/P-kernel, Solar system barycenter  )
+   <a href="../cspice/spksub_c.html">spksub_c</a>   ( S/P-kernel, Subset a segment         )
+   <a href="../cspice/spkuds_c.html">spkuds_c</a>   ( S/P-kernel, unpack descriptor        )
+   <a href="../cspice/spkuef_c.html">spkuef_c</a>   ( S/P-kernel, Unload ephemeris file    )
+   <a href="../cspice/spkw02_c.html">spkw02_c</a>   ( S/P-kernel, Write segment, Type 02   )
+   <a href="../cspice/spkw03_c.html">spkw03_c</a>   ( S/P-kernel, Write segment, Type 03   )
+   <a href="../cspice/spkw05_c.html">spkw05_c</a>   ( S/P-kernel, Write segment, Type 05   )
+   <a href="../cspice/spkw08_c.html">spkw08_c</a>   ( S/P-kernel, Write segment, Type 08   )
+   <a href="../cspice/spkw09_c.html">spkw09_c</a>   ( S/P-kernel, Write segment, Type 09   )
+   <a href="../cspice/spkw10_c.html">spkw10_c</a>   ( S/P-kernel, Write segment, Type 10   )
+   <a href="../cspice/spkw12_c.html">spkw12_c</a>   ( S/P-kernel, Write segment, Type 12   )
+   <a href="../cspice/spkw13_c.html">spkw13_c</a>   ( S/P-kernel, Write segment, Type 13   )
+   <a href="../cspice/spkw15_c.html">spkw15_c</a>   ( S/P-kernel, Write segment, Type 15   )
+   <a href="../cspice/spkw17_c.html">spkw17_c</a>   ( S/P-kernel, Write segment, Type 17   )
+   <a href="../cspice/spkw18_c.html">spkw18_c</a>   ( S/P-kernel, Write segment, Type 18   )
+   <a href="../cspice/spkw20_c.html">spkw20_c</a>   ( S/P-kernel, Write segment, Type 20   )
    <a href="../cspice/unload_c.html">unload_c</a>           ( Unload kernel file                   )
  
    Unimplemented CSPICE wrappers:
  
-   spkpv_c            ( S/P-kernel, Position, velocity       )
-   spkpvn_c           ( S/P-kernel, Position, velocity---native)
-   spksfs_c           ( S/P-kernel, file and segment         )
+   spkpv_c    ( S/P-kernel, Position, velocity       )
  
    Low-level routines converted via f2c:
  
-   spke01_            ( S/P-kernel, Evaluate record, Type 01 )
-   spke02_            ( S/P-kernel, Evaluate record, Type 02 )
-   spke03_            ( S/P-kernel, Evaluate record, Type 03 )
-   spke05_            ( S/P-kernel, Evaluate record, Type 05 )
-   spke08_            ( S/P-kernel, Evaluate record, Type 08 )
-   spke09_            ( S/P-kernel, Evaluate record, Type 09 )
-   spke10_            ( S/P-kernel, Evaluate record, Type 10 )
-   spke12_            ( S/P-kernel, Evaluate record, Type 12 )
-   spke13_            ( S/P-kernel, Evaluate record, Type 13 )
-   spke14_            ( S/P-kernel, Evaluate record, Type 14 )
-   spke15_            ( S/P-kernel, Evaluate record, Type 15 )
-   spke17_            ( S/P-kernel, Evaluate record, Type 17 )
-   spke18_            ( S/P-kernel, Evaluate record, Type 18 )
-   spkr01_            ( S/P-kernel, Read record, Type 01     )
-   spkr02_            ( S/P-kernel, Read record, Type 02     )
-   spkr03_            ( S/P-kernel, Read record, Type 03     )
-   spkr05_            ( S/P-kernel, Read record, Type 05     )
-   spkr08_            ( S/P-kernel, Read record, Type 08     )
-   spkr09_            ( S/P-kernel, Read record, Type 09     )
-   spkr10_            ( S/P-kernel, Read record, Type 10     )
-   spkr12_            ( S/P-kernel, Read record, Type 12     )
-   spkr13_            ( S/P-kernel, Read record, Type 13     )
-   spkr14_            ( S/P-kernel, Read record, Type 14     )
-   spkr15_            ( S/P-kernel, Read record, Type 15     )
-   spkr17_            ( S/P-kernel, Read record, Type 17     )
-   spkr18_            ( S/P-kernel, Read record, Type 18     )
-   spks01_            ( S/P-kernel, Subset data, Type 01     )
-   spks02_            ( S/P-kernel, Subset data, Type 02     )
-   spks03_            ( S/P-kernel, Subset data, Type 03     )
-   spks05_            ( S/P-kernel, Subset data, Type 05     )
-   spks08_            ( S/P-kernel, Subset data, Type 08     )
-   spks09_            ( S/P-kernel, Subset data, Type 09     )
-   spks10_            ( S/P-kernel, Subset data, Type 10     )
-   spks12_            ( S/P-kernel, Subset data, Type 12     )
-   spks13_            ( S/P-kernel, Subset data, Type 13     )
-   spks14_            ( S/P-kernel, Subset data, Type 14     )
-   spks15_            ( S/P-kernel, Subset data, Type 15     )
-   spks17_            ( S/P-kernel, Subset data, Type 17     )
-   spks18_            ( S/P-kernel, Subset data, Type 18     )
+   spke01_    ( S/P-kernel, Evaluate record, Type 01 )
+   spke02_    ( S/P-kernel, Evaluate record, Type 02 )
+   spke03_    ( S/P-kernel, Evaluate record, Type 03 )
+   spke05_    ( S/P-kernel, Evaluate record, Type 05 )
+   spke08_    ( S/P-kernel, Evaluate record, Type 08 )
+   spke09_    ( S/P-kernel, Evaluate record, Type 09 )
+   spke10_    ( S/P-kernel, Evaluate record, Type 10 )
+   spke12_    ( S/P-kernel, Evaluate record, Type 12 )
+   spke13_    ( S/P-kernel, Evaluate record, Type 13 )
+   spke14_    ( S/P-kernel, Evaluate record, Type 14 )
+   spke15_    ( S/P-kernel, Evaluate record, Type 15 )
+   spke17_    ( S/P-kernel, Evaluate record, Type 17 )
+   spke18_    ( S/P-kernel, Evaluate record, Type 18 )
+   spke19_    ( S/P-kernel, Evaluate record, Type 19 )
+   spke20_    ( S/P-kernel, Evaluate record, Type 20 )
+   spke21_    ( S/P-kernel, Evaluate record, Type 21 )
+   spkr01_    ( S/P-kernel, Read record, Type 01     )
+   spkr02_    ( S/P-kernel, Read record, Type 02     )
+   spkr03_    ( S/P-kernel, Read record, Type 03     )
+   spkr05_    ( S/P-kernel, Read record, Type 05     )
+   spkr08_    ( S/P-kernel, Read record, Type 08     )
+   spkr09_    ( S/P-kernel, Read record, Type 09     )
+   spkr10_    ( S/P-kernel, Read record, Type 10     )
+   spkr12_    ( S/P-kernel, Read record, Type 12     )
+   spkr13_    ( S/P-kernel, Read record, Type 13     )
+   spkr14_    ( S/P-kernel, Read record, Type 14     )
+   spkr15_    ( S/P-kernel, Read record, Type 15     )
+   spkr17_    ( S/P-kernel, Read record, Type 17     )
+   spkr18_    ( S/P-kernel, Read record, Type 18     )
+   spkr19_    ( S/P-kernel, Read record, Type 19     )
+   spkr20_    ( S/P-kernel, Read record, Type 20     )
+   spkr21_    ( S/P-kernel, Read record, Type 21     )
+   spks01_    ( S/P-kernel, Subset data, Type 01     )
+   spks02_    ( S/P-kernel, Subset data, Type 02     )
+   spks03_    ( S/P-kernel, Subset data, Type 03     )
+   spks05_    ( S/P-kernel, Subset data, Type 05     )
+   spks08_    ( S/P-kernel, Subset data, Type 08     )
+   spks09_    ( S/P-kernel, Subset data, Type 09     )
+   spks10_    ( S/P-kernel, Subset data, Type 10     )
+   spks12_    ( S/P-kernel, Subset data, Type 12     )
+   spks13_    ( S/P-kernel, Subset data, Type 13     )
+   spks14_    ( S/P-kernel, Subset data, Type 14     )
+   spks15_    ( S/P-kernel, Subset data, Type 15     )
+   spks17_    ( S/P-kernel, Subset data, Type 17     )
+   spks18_    ( S/P-kernel, Subset data, Type 18     )
+   spks19_    ( S/P-kernel, Subset data, Type 19     )
+   spks20_    ( S/P-kernel, Subset data, Type 20     )
+   spks21_    ( S/P-kernel, Subset data, Type 21     )
 </PRE>
 <BR><BR>
 <A NAME="Summary of Calling Sequences"></A>
@@ -3905,22 +4714,46 @@ for each position and velocity component.
    <a href="../cspice/spkez_c.html">spkez_c</a>  ( target, et, ref,        aberr, obs,   state, &amp;lt )
    <a href="../cspice/spkezp_c.html">spkezp_c</a> ( target, et, ref,        aberr, obs,   postn, &amp;lt )
    <a href="../cspice/spkapo_c.html">spkapo_c</a> ( target, et, ref, stobs, aberr,        postn, &amp;lt )
+   <a href="../cspice/spkpvn_c.html">spkpvn_c</a> ( handle, descr, et, &amp;ref, state, &amp;center )
    <a href="../cspice/spkssb_c.html">spkssb_c</a> ( target, et, ref,                      state      )
    <a href="../cspice/spkgeo_c.html">spkgeo_c</a> ( target, et, ref,               obs,   state, &amp;lt )
    <a href="../cspice/spkgps_c.html">spkgps_c</a> ( target, et, ref,               obs,   postn, &amp;lt )
+</PRE>
+   Low-level routines for computing states and positions:
+<P>
  
-   Unimplemented:
+<PRE>
+   <a href="../cspice/spkacs_c.html">spkacs_c</a> ( targ,  et,     ref,   abcorr,
+              obs,   starg,  lt,    dlt     )
  
-   spkpvn_c ( handle, descr, et, &amp;ref, state, &amp;center )
-   spkpv_c  ( handle, descr, et, ref,  state, &amp;center )
+   <a href="../cspice/spkaps_c.html">spkaps_c</a> ( targ,  et,     ref,   abcorr,
+              stobs, accobs, starg, lt,     dlt )
+ 
+   <a href="../cspice/spkltc_c.html">spkltc_c</a> ( targ,  et,     ref,   abcorr,
+              stobs, starg,  lt,    dlt     )
+</PRE>
+   Computing states using constant-velocity or constant-position objects:
+<P>
+ 
+<PRE>
+   <a href="../cspice/spkcpo_c.html">spkcpo_c</a> ( target, et,     outref, refloc, abcorr,
+              obspos, obsctr, obsref, state,  lt     )
+ 
+   <a href="../cspice/spkcpt_c.html">spkcpt_c</a> ( trgpos, trgctr, trgref, et,     outref,
+              refloc, abcorr, obsrvr, state,  lt     )
+ 
+   <a href="../cspice/spkcvo_c.html">spkcvo_c</a> ( target, et,     outref, refloc, abcorr,
+              obssta, obsepc, obsctr, obsref, state,  lt )
+ 
+   <a href="../cspice/spkcvt_c.html">spkcvt_c</a> ( trgsta, trgepc, trgctr, trgref, et,     outref,
+              refloc, abcorr, obsrvr, state,  &amp;lt            )
+ 
 </PRE>
    Selecting files, segments:
 <P>
  
 <PRE>
-   Unimplemented:
- 
-   spksfs_c ( target, et, &amp;handle, descr, ident, &amp;found )
+   <a href="../cspice/spksfs_c.html">spksfs_c</a> ( target, et, idlen, &amp;handle, descr, ident, &amp;found )
 </PRE>
    Reading, evaluating records:
 <P>
@@ -3964,8 +4797,18 @@ for each position and velocity component.
  
    spkr18_ ( handle, descr, et, record        )
    spke18_ (                et, record, state )
+ 
+   spkr19_ ( handle, descr, et, record        )
+   spke19_ (                et, record, state )
+ 
+   spkr20_ ( handle, descr, et, record        )
+   spke20_ (                et, record, state )
+ 
+   spkr21_ ( handle, descr, et, record        )
+   spke21_ (                et, record, state )
+ 
 </PRE>
-   Writing segments to files.
+   Writing segments to files:
 <P>
  
 <PRE>
@@ -4013,6 +4856,10 @@ for each position and velocity component.
  
    <a href="../cspice/spkw18_c.html">spkw18_c</a> ( handle, subtyp, body,   center, frame,  first, last,
               segid,  degree, n,      packts, epochs              )
+ 
+   <a href="../cspice/spkw20_c.html">spkw20_c</a> ( handle, body,   center, frame,  first,  last,
+              segid,  intlen, n,      polydg, cdata,  dscale,
+              tscale, initjd, initfr                         )
 </PRE>
    Examining segment descriptors:
 <P>
@@ -4039,6 +4886,9 @@ for each position and velocity component.
    spks15_ ( handle, baddr, eaddr, begin, end )
    spks17_ ( handle, baddr, eaddr, begin, end )
    spks18_ ( handle, baddr, eaddr, begin, end )
+   spks19_ ( handle, baddr, eaddr, begin, end )
+   spks20_ ( handle, baddr, eaddr, begin, end )
+   spks21_ ( handle, baddr, eaddr, begin, end )
  
    <a href="../cspice/spksub_c.html">spksub_c</a> ( handle, descr, ident, begin, end, newh )
 </PRE>
@@ -4215,6 +5065,38 @@ for each position and velocity component.
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Appendix C---Revision History
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="March 29, 2017"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> March 29, 2017
+</H3><P><BR><BR>
+   Updated to describe subtype 2 of data type 19. Miscellaneous typos were
+   corrected.
+<P>
+ 
+<BR><BR>
+<A NAME="July 14, 2014"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> July 14, 2014
+</H3><P><BR><BR>
+   Updated to describe data types 19, 20, and 21. Updated to describe
+   constant position and constant velocity state computation routines.
+<P>
+ 
+   The light time computation section was updated.
+<P>
+ 
+   The discussion of frame classes was updated to include a description of
+   dynamic frames.
+<P>
+ 
+   C wrappers for SPKSFS and SPKPVN are now mentioned. Added mention of
+   SXFORM and STLABX.
+<P>
+ 
+   Removed discussion of C wrapper for SPKPV.
+<P>
+ 
 <BR><BR>
 <A NAME="April 15, 2009"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
@@ -4412,11 +5294,7 @@ encapsulate C code generated by running f2c on Fortran source code.
  
 <PRE>
    frmchg_c
-   <a href="../cspice/frmnam_c.html">frmnam_c</a>
-   <a href="../cspice/namfrm_c.html">namfrm_c</a>
    spkpv_c
-   spkpvn_c
-   spksfs_c
  
    Portions of the DAF family of functions
    The SPC family of functions

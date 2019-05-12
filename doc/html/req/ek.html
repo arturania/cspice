@@ -97,6 +97,7 @@
       <A HREF="#Summary of mnemonics">Summary of mnemonics</A>
       <A HREF="#Summary of Calling Sequences">Summary of Calling Sequences</A>
       <A HREF="#Revisions">Revisions</A>
+         <A HREF="#March 23, 2016 NJB (JPL)">March 23, 2016 NJB (JPL)</A>
          <A HREF="#February 24, 2010 EDW (JPL)">February 24, 2010 EDW (JPL)</A>
          <A HREF="#April 1, 2009">April 1, 2009</A>
          <A HREF="#Feb. 06, 2002">Feb. 06, 2002</A>
@@ -111,7 +112,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> E-Kernel Required Reading
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2010 APR 07 by E. D. Wright.
+   Last revised on 2016 MAR 23 by N. J. Bachman.
 <P>
  
 <BR><BR>
@@ -2036,8 +2037,8 @@ column entry is non-null.<BR>
 <P>
  
 <PRE>
-   n = <a href="../cspice/ekssum_c.html">ekssum_c</a> ( &lt;handle&gt;, &lt;segno&gt;, &amp;segsum );       {Summarize
-                                                       segment}
+   <a href="../cspice/ekssum_c.html">ekssum_c</a> ( &lt;handle&gt;, &lt;segno&gt;, &amp;segsum );       {Summarize
+                                                   segment}
 </PRE>
    With the arguments:
 <P>
@@ -2681,13 +2682,6 @@ number obtained from <a href="../cspice/ekbseg_c.html">ekbseg_c</a>.<BR>
 </DL>
 <DL><DT>
 <B>
- `cvals_len'
-</B><BR><BR>
-<DD>
- is the string length of the elements of `cvals'.<BR>
-</DL>
-<DL><DT>
-<B>
  `cvals'
 </B><BR><BR>
 <DD>
@@ -2983,6 +2977,22 @@ corresponding element of `entszs' should be set to zero.<BR>
 column entry is null. For columns that don't allow null values, the
 contents of this array are ignored. In all cases, `nlflgs' must have
 dimension at least equal to the number of rows in the segment.<BR>
+</DL>
+<DL><DT>
+<B>
+ `rcptrs'
+</B><BR><BR>
+<DD>
+ This is an integer work space array the caller must not modify.
+`rcptrs' is an output argument of <a href="../cspice/ekifld_c.html">ekifld_c</a>. `rcptrs' must have
+dimension at least equal to the number of rows in the segment.<BR>
+</DL>
+<DL><DT>
+<B>
+ `wkindx'
+</B><BR><BR>
+<DD>
+ is an integer workspace array used to build an index for the column.<BR>
 </DL>
    To add a double precision column to a segment, call <a href="../cspice/ekacld_c.html">ekacld_c</a>:
 <P>
@@ -3344,6 +3354,14 @@ must be a segment number obtained from <a href="../cspice/ekbseg_c.html">ekbseg_
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Revisions
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<BR><BR>
+<A NAME="March 23, 2016 NJB (JPL)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> March 23, 2016 NJB (JPL)
+</H3><P><BR><BR>
+   Corrected documentation of some calling sequences.
+<P>
+ 
 <BR><BR>
 <A NAME="February 24, 2010 EDW (JPL)"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>

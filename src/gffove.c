@@ -156,7 +156,21 @@ static doublereal c_b16 = 1.;
 
 /* $ Version */
 
-/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+/* -    SPICELIB Version 2.0.0  29-NOV-2016 (NJB) */
+
+/*        Upgraded to support surfaces represented by DSKs. */
+
+/*        Bug fix: removed declaration of NVRMAX parameter. */
+
+/* -    SPICELIB Version 1.3.0, 01-OCT-2011 (NJB) */
+
+/*       Added NWILUM parameter. */
+
+/* -    SPICELIB Version 1.2.0, 14-SEP-2010 (EDW) */
+
+/*       Added NWPA parameter. */
+
+/* -    SPICELIB Version 1.1.0, 08-SEP-2009 (EDW) */
 
 /*       Added NWRR parameter. */
 /*       Added NWUDS parameter. */
@@ -206,6 +220,14 @@ static doublereal c_b16 = 1.;
 /*     count using NWUDS. */
 
 
+/*     Callers of GFPA should declare their workspace window */
+/*     count using NWPA. */
+
+
+/*     Callers of GFILUM should declare their workspace window */
+/*     count using NWILUM. */
+
+
 /*     ADDWIN is a parameter used to expand each interval of the search */
 /*     (confinement) window by a small amount at both ends in order to */
 /*     accommodate searches using equality constraints. The loaded */
@@ -213,9 +235,6 @@ static doublereal c_b16 = 1.;
 
 
 /*     FRMNLN is a string length for frame names. */
-
-
-/*     NVRMAX is the maximum number of vertices if FOV type is "POLYGON" */
 
 
 /*     FOVTLN -- maximum length for FOV string. */
@@ -1401,7 +1420,7 @@ static doublereal c_b16 = 1.;
 
 /*     C */
 /*     C     Create a unit direction vector pointing from */
-/*     c     observer to star. We'll assume the direction */
+/*     C     observer to star. We'll assume the direction */
 /*     C     is constant during the confinement window, and */
 /*     C     we'll use et0 as the epoch at which to compute the */
 /*     C     direction from the spacecraft to the star. */
@@ -1571,6 +1590,11 @@ static doublereal c_b16 = 1.;
 /*     E.D. Wright   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1 17-JAN-2017 (NJB) (JDR) */
+
+/*        Fixed typo in second example program: initial letter */
+/*        "C" indicating a comment line was in lower case. */
 
 /* -    SPICELIB Version 1.0.0 15-APR-2009 (NJB) (LSE) (EDW) */
 

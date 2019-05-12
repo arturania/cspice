@@ -2,7 +2,7 @@
 MKSPK User's Guide
 ===========================================================================
  
-   Last revised on 2010 JUN 03 by B. V. Semenov.
+   Last revised on 2016 MAR 01 by B. V. Semenov.
  
  
 Abstract
@@ -54,13 +54,26 @@ Usage
                  [-h|-help]
                  [-t|-template] [<input data type> <output spk type>]
  
-   If a setup file name isn't provided on the command line, the program
-   will prompt for it. It will not prompt for the input or output file
-   names -- these must be provided on the command line or in the setup
-   file. If input and output file names are provided on the command line,
-   any file names assigned using setup keywords are ignored.
+   Command lines options can be provided in any order. Option keys must be
+   strictly lowercase.
+ 
+ 
+Setup, Input, and Output File Options
+ 
+   If a setup file name isn't provided on the command line using the -setup
+   key, the program will prompt for it. It will not prompt for the input or
+   output file names -- these must be provided on the command line using
+   the -input and -output keys or using the setup file keywords. If input
+   and output file names are provided on the command line, any file names
+   assigned using setup file keywords are ignored.
  
    The input file must already exist.
+ 
+   The output must not exist unless the -append key or the corresponding
+   setup file keyword tells the program to run in the append mode.
+ 
+ 
+Append Option
  
    If the -append key or the corresponding setup file keyword is not
    specified, the output file must not exist prior to running the program.
@@ -71,7 +84,8 @@ Usage
  
    If the -append key or the corresponding setup file keyword is provided
    but the SPK file specified after the -output key doesn't exist, then a
-   new SPK file with the name specified after -output key will be created.
+   new SPK file with the name specified after the -output key will be
+   created.
  
    Caution: if the program fails for any reason, it, in most cases, deletes
    the output file, even if it was appending data to an existing SPK file.
@@ -82,6 +96,51 @@ Usage
    Also, the program cannot append data to an existing SPK file if its
    format is not native to the platform on which the program is running.
    Refer to the CONVERT User's Guide (convert.ug) for details.
+ 
+ 
+Information Options
+ 
+   If one of the information keys -- -u, -usage, -h, or -help -- is
+   specified the program displays requested information, ignores all file
+   options, and exits.
+ 
+   If -u or -usage is specified, the program displays the usage
+   information.
+ 
+   If -h or -help is specified, the program displays a brief summary of its
+   functionality.
+ 
+ 
+Setup File Template Options
+ 
+   If -t or -template is specified by itself or followed by an input data
+   type/output SPK type combination, the program displays either the
+   complete setup file template or a type-specific setup file template,
+   ignores all file options, and exits.
+ 
+   If -t or -template is specified by itself, the program displays the
+   complete setup file template including all required, optional, and
+   conditional setup file keywords. Since the total number of recognized
+   setup keywords is rather large and some of the keywords are specific for
+   just one input data type or output SPK type, using this complete
+   template as the starting point in creating a setup for the case at hand
+   may be cumbersome and inefficient.
+ 
+   To display a more concise, type-specific template, the input data type
+   -- ``states'', ``elements'', ``eq_elements'', or ``tl_elements'' -- and
+   the output SPK type -- 5, 8, 9, 10, 12, 13, 15, or 17 -- can be
+   specified following the -t or -template key. Such templates will include
+   only keywords applicable for the specified type combination.
+ 
+   For example, to display a template with keywords applicable to creating
+   a type 13 SPK file from a table of states, use this option:
+ 
+         > mkspk -t states 13
+ 
+   To display a template with keywords applicable to creating a type 10 SPK
+   file from a table of two-line elements, use this option:
+ 
+         > mkspk -t tl_elements 10
  
  
 Execution of MKSPK
@@ -157,12 +216,17 @@ Required Assignments
          OUTPUT_SPK_TYPE   = 5 or 8 or 9 or 10 or 12 or 13 or 15 or 17
  
          OBJECT_ID         = Numeric code assigned to the object, or
-                             NORAD s/c code ('TL_ELEMENTS'/SPK 10 only)
+                             TLE s/c code ('TL_ELEMENTS'/SPK 10 only)
            or
          OBJECT_NAME       = 'NAIF supported object name'
+           or
+         TLE_INPUT_OBJ_ID  = code of the object to look for in the
+                             input TLE file
+         TLE_SPK_OBJ_ID    = NAIF ID to use in the output TLE-based
+                             SPK file
  
          CENTER_ID         = Numeric code assigned to the body which
-                             is the center of the motion for the object
+                             is the center of motion for the object
            or
          CENTER_NAME       = 'NAIF supported body name'
  
@@ -198,8 +262,15 @@ Conditional Assignments
                              reading input file
          LINES_PER_RECORD  = number of lines in one input record
          TIME_WRAPPER      = '# time wrapper'
+ 
          START_TIME        = 'start time'
+       or
+         TLE_START_PAD     = 'duration units'
+ 
          STOP_TIME         = 'stop time'
+       or
+         TLE_STOP_PAD      = 'duration units'
+ 
          PRECESSION_TYPE   = 'NO PRECESSION' or
                              'APSIDE PRECESSION ONLY' or
                              'NODE PRECESSION ONLY' or
@@ -233,44 +304,80 @@ Detailed Description of Setup File Keywords
          OUTPUT_SPK_TYPE     type of output SPK file. Only one of eight
                              allowed values may be used as shown above.
  
-         OBJECT_ID           object identifier.
+         OBJECT_ID           numeric ID code of the object.
  
                              For all input data type/output SPK type
                              combinations except 'TL_ELEMENTS'/SPK 10
                              (called 'TL_ELEMENTS'/SPK 10 case elsewhere in
-                             the text) this is ideally a NAIF reserved code
-                             of the object (which for spacecraft or other
-                             vehicles must be a negative number); if this
-                             keyword is absent the OBJECT_NAME keyword must
-                             be used.
+                             the text) this is the NAIF ID code of the
+                             object (which for spacecraft or other vehicles
+                             must be a negative number). If NAIF has not
+                             assigned an ID code (based on DSN assignments)
+                             the user may select a temporary ID, avoiding
+                             the range of -0 through -512. (It might be
+                             useful to contact NAIF for assignment of a
+                             temporary code.) If this keyword is absent the
+                             OBJECT_NAME keyword must be used.
  
-                             If NAIF has not assigned an ID code (based on
-                             DSN/GSFC assignments) the user may select a
-                             temporary ID, avoiding the range of -0 through
-                             -512. (It might be useful to contact NAIF for
-                             assignment of a temporary code.)
+                             For the 'TL_ELEMENTS'/SPK 10 case this is the
+                             TLE spacecraft code. Because the NAIF ID for a
+                             spacecraft must be a negative number while the
+                             TLE ID is a positive number, the spacecraft ID
+                             that will appear in the output SPK file is
+                             constructed from the TLE ID using the
+                             following rule:
  
-                             For 'TL_ELEMENTS'/SPK 10 case this is the
-                             NORAD spacecraft code. Because the NAIF ID for
-                             a spacecraft must be a negative number while
-                             the NORAD ID is a positive number, the
-                             spacecraft ID that will appear in the output
-                             SPK file is constructed from the NORAD ID
-                             using the following rule:
+                                    NAIF_ID = -100000 - TLE_ID
  
-                                    NAIF_ID = -100000 - NORAD_ID
+                             Alternatively, the TLE_INPUT_OBJ_ID and
+                             TLE_SPK_OBJ_ID keywords can be used to
+                             explicitly specify the input TLE spacecraft
+                             code and the output SPK NAIF ID. Specifying
+                             the OBJECT_ID keyword and the TLE_INPUT_OBJ_ID
+                             and TLE_SPK_OBJ_ID keywords at the same time
+                             is not allowed.
  
          OBJECT_NAME         name of the object. This is one of the NAIF
-                             supported names for the object. This keyword
-                             is required if the OBJECT_ID keyword is
-                             absent. If both keywords are present, the
+                             supported names for the object.
+ 
+                             For all input data type/output SPK type
+                             combinations except 'TL_ELEMENTS'/SPK 10 this
+                             keyword is required if the OBJECT_ID keyword
+                             is absent. If both keywords are present, the
                              MKSPK program uses the OBJECT_ID and ignores
                              this assignment.
  
-         CENTER_ID           center identifier. This is the NAIF reserved
-                             code of the center of motion for the object.
-                             If this keyword is absent, the CENTER_NAME
-                             keyword must be used. For the
+                             For the 'TL_ELEMENTS'/SPK 10 case using this
+                             keyword is also supported but impractical
+                             because in general SPICE does not assign names
+                             to TLE objects. Instead of using this keyword,
+                             the TLE_INPUT_OBJ_ID and TLE_SPK_OBJ_ID
+                             keywords can be used to explicitly specify the
+                             input TLE spacecraft code and the output SPK
+                             NAIF ID. Specifying the OBJECT_NAME keyword
+                             and the TLE_INPUT_OBJ_ID and TLE_SPK_OBJ_ID
+                             keywords at the same time is not allowed.
+ 
+         TLE_INPUT_OBJ_ID    TLE spacecraft code. This is the numeric code
+                             of the object, data for which should be
+                             extracted from the input TLE file. This
+                             keyword must be specified together with the
+                             TLE_SPK_OBJ_ID keyword. Specifying it and the
+                             OBJECT_ID and/or OBJECT_NAME keywords at the
+                             same time is not allowed.
+ 
+         TLE_SPK_OBJ_ID      NAIF ID for the TLE object. This is the NAIF
+                             ID to be used in the output TLE-based SPK file
+                             for the TLE object of interest. This keyword
+                             must be specified together with the
+                             TLE_INPUT_OBJ_ID keyword. Specifying it and
+                             the OBJECT_ID and/or OBJECT_NAME keywords at
+                             the same time is not allowed.
+ 
+         CENTER_ID           NAIF ID of the center. This is the NAIF
+                             reserved code of the center of motion for the
+                             object. If this keyword is absent, the
+                             CENTER_NAME keyword must be used. For the
                              'TL_ELEMENTS'/SPK 10 case this keyword must
                              have the value 399 (NAIF ID for Earth mass
                              center.)
@@ -383,9 +490,10 @@ Detailed Description of Setup File Keywords
                              -- white space (' ') or comma (',').
  
          IGNORE_FIRST_LINE   number of lines to be ignored at the beginning
-                             of the input file. If this keyword is absent,
-                             the program starts data processing from the
-                             first line of the input file.
+                             of the input file. If this keyword is absent
+                             or is set to an integer number less than or
+                             equal to 0, the program starts data processing
+                             from the first line of the input file.
  
          LINES_PER_RECORD    number of lines in each input record. This
                              keyword must be present if EPOCH_STR_LENGTH is
@@ -430,22 +538,94 @@ Detailed Description of Setup File Keywords
                              is always required for output SPK Types 15 and
                              17. If this value is absent for other output
                              types, the MKSPK program calculates it using
-                             input data. This keyword does not apply when
-                             making 'TL_ELEMENTS'/SPK 10 SPK files. For
-                             these files the output SPK coverage start time
-                             is automatically set to be 12 hours before the
-                             time of the first input two-line elements set.
+                             input data.
+ 
+                             This keyword also applies when making
+                             'TL_ELEMENTS'/SPK 10 SPK files. For such cases
+                             it is not allowed to specify this keyword
+                             together with the TLE_START_PAD keyword. If
+                             neither START_TIME nor TLE_START_PAD is
+                             specified the output TLE-based SPK coverage
+                             start time is automatically set to be 12 hours
+                             before the time of the first input two-line
+                             elements set.
+ 
+         TLE_START_PAD       TLE-based SPK coverage start pad. This keyword
+                             specifies the pad to be applied to the time of
+                             the first input two-line elements set to
+                             expand the coverage of the output TLE-based
+                             SPK file. The value of this keyword must be a
+                             string specifying positive or zero duration
+                             and units, for example '6 hours', '3 days'.
+                             The following units are supported and can be
+                             specified in lower, upper, or mixed case:
+                             ``seconds'', ``minutes'', ``hours'', and
+                             ``days''. Positive durations expand the
+                             coverage of the output SPK file -- the SPK
+                             coverage start time will be earlier as
+                             compared to the time of the first input
+                             two-line elements set -- while zero durations
+                             set the start of the coverage of the output
+                             SPK file to be exactly the time of the first
+                             input two-line elements set.
+ 
+                             This keyword applies only when making
+                             'TL_ELEMENTS'/SPK 10 SPK files and is ignored
+                             in all other cases. It is not allowed to
+                             specify this keyword together with the
+                             START_TIME keyword. If neither START_TIME nor
+                             TLE_START_PAD is specified the output
+                             TLE-based SPK coverage start time is
+                             automatically set to be 12 hours before the
+                             time of the first input two-line elements set,
+                             equivalent to TLE_START_PAD = '12 hours'.
  
          STOP_TIME           stop time. This keyword defines the last valid
                              epoch of the output SPK file. This value is
                              always required for output SPK Types 15 and
                              17. If this value is absent for other output
                              types, the MKSPK program calculates it using
-                             input data. This keyword does not apply when
-                             making 'TL_ELEMENTS'/SPK 10 SPK files. For
-                             these files the output SPK coverage stop time
-                             is automatically set to be 12 hours after the
-                             time of the last input two-line elements set.
+                             input data.
+ 
+                             This keyword also applies when making
+                             'TL_ELEMENTS'/SPK 10 SPK files. For such cases
+                             it is not allowed to specify this keyword
+                             together with the TLE_STOP_PAD keyword. If
+                             neither STOP_TIME nor TLE_STOP_PAD is
+                             specified the output TLE-based SPK coverage
+                             stop time is automatically set to be 12 hours
+                             after the time of the last input two-line
+                             elements set.
+ 
+         TLE_STOP_PAD        TLE-based SPK coverage stop pad. This keyword
+                             specifies the time pad to be applied to the
+                             time of the last input two-line elements set
+                             to expand the coverage of the output TLE-based
+                             SPK file. The value of this keyword must be a
+                             string specifying positive or zero duration
+                             and units, for example '6 hours', '3 days'.
+                             The following units are supported and can be
+                             specified in the lower, upper, or mixed case:
+                             ``seconds'', ``minutes'', ``hours'', and
+                             ``days''. Positive durations expand the
+                             coverage of the output SPK file -- the SPK
+                             coverage stop time will be later as compared
+                             to the time of the last input two-line
+                             elements set -- while zero durations set the
+                             start of the coverage of the output SPK file
+                             to be exactly the time of the last input
+                             two-line elements set.
+ 
+                             This keyword applies only when making
+                             'TL_ELEMENTS'/SPK 10 SPK files and is ignored
+                             in all other cases. It is not allowed to
+                             specify this keyword together with the
+                             STOP_TIME keyword. If neither STOP_TIME not
+                             TLE_STOP_PAD is specified the output TLE-based
+                             SPK coverage stop time is automatically set to
+                             be 12 hours after the time of the last input
+                             two-line elements set, equivalent to
+                             TLE_STOP_PAD = '12 hours'.
  
          PRECESSION_TYPE     J2 processing flag for output type 15. Only
                              one of four values may be specified using this
@@ -741,11 +921,14 @@ Input Type STATES
  
    in addition to the state vector.
  
+   Any other allowed parameters in the DATA_ORDER value for the input type
+   STATES are treated by the program program as SKIP.
+ 
  
 Input Type ELEMENTS
  
    An input file of the ELEMENTS type must contain records consisting of
-   EPOCH, E, INC, PER, NOD and one of A, RPI, T, P, as well as one of MEAN,
+   EPOCH, E, INC, PER, NOD and one of A, RP, T, P, as well as one of MEAN,
    EXAN, TRAN, EPOCHP, TAU.
  
    If you use the ELEMENTS input type to produce an SPK of Type 17, you
@@ -753,7 +936,10 @@ Input Type ELEMENTS
  
          DPER/DT, DMPN/DT, DNOD/DT
  
-   in addition to the state vector.
+   in addition to the base elements.
+ 
+   Any other allowed parameters in the DATA_ORDER value for the input type
+   ELEMENTS are treated by the program program as SKIP.
  
  
 Input Type EQ_ELEMENTS
@@ -761,6 +947,9 @@ Input Type EQ_ELEMENTS
    An input file of the EQ_ELEMENTS type must contain EPOCH and nine
    equinoctial elements EQ_A, EQ_H, EQ_K, EQ_ML, EQ_P, EQ_Q, DPER/DT,
    DMPN/DT, DNOD/DT.
+ 
+   Any other allowed parameters in the DATA_ORDER value for the input type
+   EQ_ELEMENTS are treated by the program program as SKIP.
  
  
 Input Type TL_ELEMENTS
@@ -784,7 +973,7 @@ Relation Between Number of Input Records and Output Types
    POLYNOM_DEGREE must be less than the number of the data records.
  
    An SPK of Type 10 requires one or more input records of time ordered
-   TL_ELEMENTS for the spacecraft with the NORAD ID specified in the
+   TL_ELEMENTS for the spacecraft with the TLE ID specified in the
    OBJECT_ID setup file keyword.
  
    An SPK of Types 12, 13 requires input records of time ordered STATES or
@@ -1210,7 +1399,7 @@ Input Data Type STATES / Output SPK Type 05
    The Type 05 SPK represents a continuous ephemeris using a discrete set
    of unevenly spaced states and a two body propagation method.
  
-   The PCK file 'gravity.tpc' containing GM of the central body (Jupiter)
+   The PCK file 'Gravity.tpc' containing GM of the central body (Jupiter)
    is specified using the PCK_FILE keyword. Alternatively, Jupiter's GM can
    be specified using the CENTER_GM keyword. The GM value will be stored in
    the output SPK file together with the states. The IGNORE_FIRST_LINE
@@ -1236,7 +1425,7 @@ Input Data Type STATES / Output SPK Type 05
       LINES_PER_RECORD  = 2
       IGNORE_FIRST_LINE = 3
       LEAPSECONDS_FILE  = 'naif0007.tls'
-      PCK_FILE          = 'gravity.tpc'
+      PCK_FILE          = 'Gravity.tpc'
       SEGMENT_ID        = 'SPK_STATES_05'
       \begintext
  
@@ -1476,8 +1665,8 @@ Input Data Type STATES / Output SPK Type 15
    J2 term in harmonic expansion of the central body gravitational
    potential.
  
-   The PCK file 'gravity.tpc' containing GM and J2 of the central body
-   (Jupiter) is specified using the PCK_FILE keyword. Alternatively,
+   The PCK file, e.g. 'Gravity.tpc', containing GM and J2 of the central
+   body (Jupiter) is specified using the PCK_FILE keyword. Alternatively,
    Jupiter's GM and J2 can be specified using the CENTER_GM and CENTER_J2
    keywords. The CENTER_POLE_RA and CENTER_POLE_DEC keywords contain
    Jupiter's pole RA and DEC with respect to the reference frame specified
@@ -1512,7 +1701,7 @@ Input Data Type STATES / Output SPK Type 15
       LINES_PER_RECORD  = 2
       IGNORE_FIRST_LINE = 3
       LEAPSECONDS_FILE  = 'naif0007.tls'
-      PCK_FILE          = ('pck00005.tpc' 'gravity.tpc' )
+      PCK_FILE          = ('pck00005.tpc' 'Gravity.tpc' )
       PRECESSION_TYPE   = 'NO PRECESSION'
       CENTER_POLE_RA    = 268.001
       CENTER_POLE_DEC   = 64.504
@@ -1540,26 +1729,26 @@ Input Data Type STATES / Output SPK Type 17
  
    The SPK data Type 17 represents a continuous ephemeris using a compact
    analytic model. The object is following an elliptic orbit with
-   precessing line of nodes and argument of periapse relative to the
+   precessing line of nodes and argument of periapsis relative to the
    equatorial frame of some central body. The orbit is modeled via
    equinoctial elements.
  
-   The PCK file 'gravity.tpc' containing GM of the central body (Jupiter)
-   is specified using the PCK_FILE keyword. Alternatively, Jupiter's GM can
-   be specified using the CENTER_GM keyword. The GM value is required to
-   convert states from the input file to a set of equinoctial elements
-   stored in the output SPK file. The CENTER_POLE_RA and CENTER_POLE_DEC
-   keywords contain Jupiter's pole RA and DEC with respect to the reference
-   frame specified in the REF_FRAME_NAME keyword -- in this case B1950. If
-   these keywords wouldn't be present in the setup file the program would
-   compute these values from data present in the PCK file 'pck00005.tpc'
-   provided using the PCK_FILE keyword. The START_TIME and STOP_TIME
-   keywords specifying file coverage interval are required for the output
-   SPK Type 17. The IGNORE_FIRST_LINE keyword is used to the header (three
-   lines) of the input file and the LINES_PER_RECORD keyword is used to
-   specify that each record of the input file occupies three lines, which
-   the program must know because the input data delimiter ' ' is one that
-   can be used in a SPICE time string.
+   The PCK file, e.g. 'Gravity.tpc', containing GM of the central body
+   (Jupiter) is specified using the PCK_FILE keyword. Alternatively,
+   Jupiter's GM can be specified using the CENTER_GM keyword. The GM value
+   is required to convert states from the input file to a set of
+   equinoctial elements stored in the output SPK file. The CENTER_POLE_RA
+   and CENTER_POLE_DEC keywords contain Jupiter's pole RA and DEC with
+   respect to the reference frame specified in the REF_FRAME_NAME keyword
+   -- in this case B1950. If these keywords wouldn't be present in the
+   setup file the program would compute these values from data present in
+   the PCK file 'pck00005.tpc' provided using the PCK_FILE keyword. The
+   START_TIME and STOP_TIME keywords specifying file coverage interval are
+   required for the output SPK Type 17. The IGNORE_FIRST_LINE keyword is
+   used to the header (three lines) of the input file and the
+   LINES_PER_RECORD keyword is used to specify that each record of the
+   input file occupies three lines, which the program must know because the
+   input data delimiter ' ' is one that can be used in a SPICE time string.
  
    Setup file (In this example the value of DATA_ORDER is line-wrapped due
    to document formatting restrictions; it must be contained on a single
@@ -1583,7 +1772,7 @@ Input Data Type STATES / Output SPK Type 17
       LINES_PER_RECORD  = 3
       IGNORE_FIRST_LINE = 3
       LEAPSECONDS_FILE  = 'naif0007.tls'
-      PCK_FILE          = ('pck00005.tpc' 'gravity.tpc')
+      PCK_FILE          = ('pck00005.tpc' 'Gravity.tpc')
       CENTER_POLE_RA    = 268.001
       CENTER_POLE_DEC   = 64.504
       SEGMENT_ID        = 'SPK_STATES_17'
@@ -1604,7 +1793,7 @@ Input Data Type STATES / Output SPK Type 17
  
 Input Data Type ELEMENTS / Output SPK Type 05
  
-   The PCK file 'gravity.tpc' containing GM of the central body (Jupiter)
+   The PCK file 'Gravity.tpc' containing GM of the central body (Jupiter)
    is specified using the PCK_FILE keyword. Alternatively, Jupiter's GM can
    be specified using the CENTER_GM keyword. The GM is needed to convert
    elements to states and it is also contained in the output SPK file. The
@@ -1631,7 +1820,7 @@ Input Data Type ELEMENTS / Output SPK Type 05
       LINES_PER_RECORD  = 2
       IGNORE_FIRST_LINE = 3
       LEAPSECONDS_FILE  = 'naif0007.tls'
-      PCK_FILE          = 'gravity.tpc'
+      PCK_FILE          = 'Gravity.tpc'
       SEGMENT_ID        = 'SPK_ELEMENTS_05'
       \begintext
  
@@ -1651,7 +1840,7 @@ Input Data Type ELEMENTS / Output SPK Type 05
  
 Input Data Type ELEMENTS / Output SPK Type 08
  
-   The PCK file 'gravity.tpc' containing GM of the central body (Jupiter)
+   The PCK file 'Gravity.tpc' containing GM of the central body (Jupiter)
    is specified using the PCK_FILE keyword. Alternatively, Jupiter's GM can
    be specified using the CENTER_GM keyword. The GM is needed to convert
    elements to states. The POLYNOM_DEGREE keyword is used to specify the
@@ -1681,7 +1870,7 @@ Input Data Type ELEMENTS / Output SPK Type 08
       IGNORE_FIRST_LINE = 3
       LEAPSECONDS_FILE  = 'naif0007.tls'
       POLYNOM_DEGREE    = 8
-      PCK_FILE          = 'gravity.tpc'
+      PCK_FILE          = 'Gravity.tpc'
       SEGMENT_ID        = 'SPK_ELEMENTS_08'
       \begintext
  
@@ -1701,7 +1890,7 @@ Input Data Type ELEMENTS / Output SPK Type 08
  
 Input Data Type ELEMENTS / Output SPK Type 09
  
-   The PCK file 'gravity.tpc' containing GM of the central body (Jupiter)
+   The PCK file 'Gravity.tpc' containing GM of the central body (Jupiter)
    is specified using the PCK_FILE keyword. Alternatively, Jupiter's GM can
    be specified using the CENTER_GM keyword. The GM is needed to convert
    elements to states. The POLYNOM_DEGREE keyword is used to specify the
@@ -1731,7 +1920,7 @@ Input Data Type ELEMENTS / Output SPK Type 09
       IGNORE_FIRST_LINE = 3
       LEAPSECONDS_FILE  = 'naif0007.tls'
       POLYNOM_DEGREE    = 8
-      PCK_FILE          = 'gravity.tpc'
+      PCK_FILE          = 'Gravity.tpc'
       SEGMENT_ID        = 'SPK_ELEMENTS_09'
       \begintext
  
@@ -1751,7 +1940,7 @@ Input Data Type ELEMENTS / Output SPK Type 09
  
 Input Data Type ELEMENTS / Output SPK Type 12
  
-   The PCK file 'gravity.tpc' containing GM of the central body (Jupiter)
+   The PCK file 'Gravity.tpc' containing GM of the central body (Jupiter)
    is specified using the PCK_FILE keyword. Alternatively, Jupiter's GM can
    be specified using the CENTER_GM keyword. The GM is needed to convert
    elements to states. The POLYNOM_DEGREE keyword is used to specify the
@@ -1781,7 +1970,7 @@ Input Data Type ELEMENTS / Output SPK Type 12
       IGNORE_FIRST_LINE = 3
       LEAPSECONDS_FILE  = 'naif0007.tls'
       POLYNOM_DEGREE    = 7
-      PCK_FILE          = 'gravity.tpc'
+      PCK_FILE          = 'Gravity.tpc'
       SEGMENT_ID        = 'SPK_ELEMENTS_12'
       \begintext
  
@@ -1801,7 +1990,7 @@ Input Data Type ELEMENTS / Output SPK Type 12
  
 Input Data Type ELEMENTS / Output SPK Type 13
  
-   The PCK file 'gravity.tpc' containing GM of the central body (Jupiter)
+   The PCK file 'Gravity.tpc' containing GM of the central body (Jupiter)
    is specified using the PCK_FILE keyword. Alternatively, Jupiter's GM can
    be specified using the CENTER_GM keyword. The GM is needed to convert
    elements to states. The POLYNOM_DEGREE keyword is used to specify the
@@ -1831,7 +2020,7 @@ Input Data Type ELEMENTS / Output SPK Type 13
       IGNORE_FIRST_LINE = 3
       LEAPSECONDS_FILE  = 'naif0007.tls'
       POLYNOM_DEGREE    = 7
-      PCK_FILE          = 'gravity.tpc'
+      PCK_FILE          = 'Gravity.tpc'
       SEGMENT_ID        = 'SPK_ELEMENTS_13'
       \begintext
  
@@ -1851,7 +2040,7 @@ Input Data Type ELEMENTS / Output SPK Type 13
  
 Input Data Type ELEMENTS / Output SPK Type 15
  
-   The PCK file 'gravity.tpc' containing GM and J2 of the central body
+   The PCK file 'Gravity.tpc' containing GM and J2 of the central body
    (Jupiter) is specified using the PCK_FILE keyword. Alternatively,
    Jupiter's GM and J2 can be specified using the CENTER_GM and CENTER_J2
    keywords. The CENTER_POLE_RA and CENTER_POLE_DEC keywords contain
@@ -1887,7 +2076,7 @@ Input Data Type ELEMENTS / Output SPK Type 15
       LINES_PER_RECORD  = 2
       IGNORE_FIRST_LINE = 3
       LEAPSECONDS_FILE  = 'naif0007.tls'
-      PCK_FILE          = ('pck00005.tpc' 'gravity.tpc' )
+      PCK_FILE          = ('pck00005.tpc' 'Gravity.tpc' )
       PRECESSION_TYPE   = 'NO PRECESSION'
       CENTER_POLE_RA    = 268.001
       CENTER_POLE_DEC   = 64.504
@@ -1913,7 +2102,7 @@ Input Data Type ELEMENTS / Output SPK Type 15
  
 Input Data Type ELEMENTS / Output SPK Type 17
  
-   The PCK file 'gravity.tpc' containing GM of the central body (Jupiter)
+   The PCK file 'Gravity.tpc' containing GM of the central body (Jupiter)
    is specified using the PCK_FILE keyword. Alternatively, Jupiter's GM can
    be specified using the CENTER_GM keyword. The GM value is required to
    convert elements from the input file to a set of equinoctial elements
@@ -1952,7 +2141,7 @@ Input Data Type ELEMENTS / Output SPK Type 17
       LINES_PER_RECORD  = 3
       IGNORE_FIRST_LINE = 3
       LEAPSECONDS_FILE  = 'naif0007.tls'
-      PCK_FILE          = ('pck00005.tpc' 'gravity.tpc' )
+      PCK_FILE          = ('pck00005.tpc' 'Gravity.tpc' )
       CENTER_POLE_RA    = 268.001
       CENTER_POLE_DEC   = 64.504
       SEGMENT_ID        = 'SPK_ELEMENTS_17'
@@ -2032,44 +2221,69 @@ Input Data Type EQ_ELEMENTS / Output SPK Type 17
  
 Input Data Type TL_ELEMENTS / Output SPK Type 10
  
-   The OBJECT_ID keyword contains NORAD spacecraft ID for the Mir Space
-   Station; this ID is used to locate data in the input two-line elements
-   file. The CENTER_ID and REF_FRAME_NAME contain required values of 399
-   and 'J2000' correspondingly. The PCK_FILE keyword contains the name of
-   an Earth geophysical constants PCK file; a copy of such file is usually
-   provided with the SPICE toolkit under the ``/data'' directory. Note that
-   no keywords describing input data format are present in the setup file.
-   These keywords are not needed for 'TL_ELEMENTS'/SPK 10 program runs
-   because two-line elements files have fixed format and are processed by
-   the program as a special case. Also note that the output SPK coverage
-   start and stop times are automatically set to be 12 hours before the
-   time of the first input two-line elements set and 12 hours after the
-   time of the last input two-line elements set correspondingly.
+   The TLE_INPUT_OBJ_ID keyword contains the TLE spacecraft ID for the
+   Hubble Space Telescope (HST); this ID is used to locate data in the
+   input two-line elements file. The TLE_SPK_OBJ_ID keyword contains the
+   NAIF ID for HST; this ID is used in the output SPK file. The CENTER_ID
+   and REF_FRAME_NAME contain required values of 399 and 'J2000'
+   correspondingly. The PCK_FILE keyword contains the name of an Earth
+   geophysical constants PCK file; a copy of such file is usually provided
+   with the SPICE toolkit under the ``/data'' directory. The TLE_START_PAD
+   and TLE_STOP_PAD keywords specify that the output SPK coverage should
+   start two days before the time of the first input TLE set and should
+   extend two days past the time of the last TLE set. Note that no keywords
+   describing input data format are present in the setup file. These
+   keywords are not needed for 'TL_ELEMENTS'/SPK 10 program runs because
+   two-line elements files have fixed format and are processed by the
+   program as a special case.
  
    Setup file:
  
       \begindata
       INPUT_DATA_TYPE   = 'TL_ELEMENTS'
       OUTPUT_SPK_TYPE   = 10
-      OBJECT_ID         = 16609
+      TLE_INPUT_OBJ_ID  = 20580
+      TLE_SPK_OBJ_ID    = -48
       CENTER_ID         = 399
       REF_FRAME_NAME    = 'J2000'
-      LEAPSECONDS_FILE  = 'naif0007.tls'
-      INPUT_DATA_FILE   = 'mir.tle'
-      OUTPUT_SPK_FILE   = 'mir.bsp'
+      TLE_START_PAD     = '2 days'
+      TLE_STOP_PAD      = '2 days'
+      LEAPSECONDS_FILE  = 'naif0010.tls'
+      INPUT_DATA_FILE   = 'hst.tle'
+      OUTPUT_SPK_FILE   = 'hst.bsp'
       PCK_FILE          = 'geophysical.ker'
-      SEGMENT_ID        = 'SPACE STATION MIR'
+      SEGMENT_ID        = 'HST TLE-based Trajectory'
       PRODUCER_ID       = 'Boris Semenov, NAIF/JPL'
       \begintext
  
    Input data file (the first two characters on each line of the sample
-   two-line elements record -- '1 ' for the line '16609U 86017A 97 ...' and
-   '2 ' for the line '16609 51.6542 51...' -- were taken out to fit the
-   sample record into the page):
+   two-line elements record -- '1 ' for the lines '20580U ...' and '2 ' for
+   the line '20580 ...' -- were taken out to fit the sample records into
+   the page width):
  
-      Mir
-      16609U 86017A   97175.09681976  .00000769  00000-0  15893-4 0  3939
-      16609  51.6542  51.1598 0005239 178.2438 181.8517 15.59510867648105
+      HST
+      20580U 90037B   11314.94749233  .00003090  00000-0  21896-3 0  8850
+      20580 028.4690 137.5655 0003283 242.5328 117.5009 15.01775268981733
+      20580U 90037B   11315.94434408  .00003238  00000-0  23007-3 0  8867
+      20580 028.4688 131.0487 0003214 253.7100 106.3240 15.01782439981885
+      20580U 90037B   11317.87157937  .00003609  00000-0  25771-3 0  8873
+      20580 028.4683 118.4462 0003166 275.3438 084.7068 15.01797410982177
+      20580U 90037B   11320.79562259  .00003707  00000-0  26491-3 0  8885
+      20580 028.4689 099.3382 0003154 305.4602 054.5787 15.01818525982619
+      20580U 90037B   11321.79244620  .00003773  00000-0  26982-3 0  8894
+      20580 028.4692 092.8211 0003105 314.0907 045.9515 15.01826226982768
+      20580U 90037B   11322.78926485  .00003833  00000-0  27427-3 0  8904
+      20580 028.4692 086.3040 0003046 325.5674 034.4772 15.01833969982915
+      20580U 90037B   11324.71643569  .00003868  00000-0  27677-3 0  8914
+      20580 028.4696 073.7054 0003038 348.1091 011.9461 15.01848383983203
+      20580U 90037B   11326.31132196  .00003790  00000-0  27084-3 0  8928
+      20580 028.4700 063.2810 0003036 006.5468 353.5081 15.01859302983446
+      20580U 90037B   11328.63717918  .00003484  00000-0  24790-3 0  8938
+      20580 028.4709 048.0757 0003427 034.0326 326.0183 15.01873175983799
+      20580U 90037B   11330.29849794  .00003476  00000-0  24722-3 0  8948
+      20580 028.4707 037.2200 0003253 052.9678 307.1201 15.01883931984047
+      20580U 90037B   11331.29528001  .00003398  00000-0  24132-3 0  8953
+      20580 028.4706 030.7027 0003373 062.5805 297.5054 15.01889630984199
  
  
 Skipping Input Data Record Tokens
@@ -2099,7 +2313,7 @@ Skipping Input Data Record Tokens
       LINES_PER_RECORD  = 2
       IGNORE_FIRST_LINE = 1
       LEAPSECONDS_FILE  = 'naif0007.tls'
-      PCK_FILE          = ('pck00005.tpc' 'gravity.tpc')
+      PCK_FILE          = ('pck00005.tpc' 'Gravity.tpc')
       SEGMENT_ID        = 'TEST'
       \begintext
  
@@ -2146,7 +2360,7 @@ Two Epochs in the Input Data Records
       EPOCH_STR_LENGTH  = 30
       IGNORE_FIRST_LINE = 1
       LEAPSECONDS_FILE  = 'naif0007.tls'
-      PCK_FILE          = ('pck00005.tpc' 'gravity.tpc')
+      PCK_FILE          = ('pck00005.tpc' 'Gravity.tpc')
       SEGMENT_ID        = 'TEST'
       \begintext
  

@@ -114,42 +114,107 @@
  
 -Examples
  
- 
-   The following code fragment demonstrates how to determine the 
-   properties of a stored kernel variable. 
- 
-      #include <stdio.h>
-      #include "SpiceUsr.h"
-            .
-            .
-            .
-      dtpool_c ( varnam, &found, &n, &type );
- 
-      if ( found ) 
-      {
-         printf ( "\n"
-                  "Properties of variable %s:\n"
-                  "\n"
-                  "   Size: %d\n",
-                  varnam,
-                  n                           );
-         
-         if ( type == 'C' )
-         {
-            printf ( "   Type:  Character\n" );
-         }
-         else
-         {
-            printf ( "   Type:  Numeric\n" );
-         }
-      }
+   1) The following program demonstrates how to determine the 
+      properties of a stored kernel variable. The program reads
+      the name of a text kernel from the command line and loads
+      the kernel. The program then prompts for the name of a 
+      kernel variable. If the variable is present in the kernel
+      pool, the dimension and type of the variable are displayed.
+
+      The output shown below was obtained using the Cassini 
+      frame kernel
+
+         cas_v40.tf
+
+      which is available in the PDS Cassini archive.
+
+          
+   Example code begins here. 
       
-      else
-      { 
-         printf ( "%s is not present in the kernel pool.\n", varnam );
-      } 
- 
- 
+
+         #include <stdio.h>
+         #include "SpiceUsr.h"
+
+         int main( int argc,  char **argv )
+         {
+            /.
+            Local constants
+            ./
+            #define KVNMLN          33
+
+            /.
+            Local variables
+            ./
+            SpiceBoolean            found;
+
+            SpiceChar             * fname;
+            SpiceChar               type   [ 1 ];
+            SpiceChar               varnam [ KVNMLN ];
+            SpiceInt                n;
+
+            /.
+            Load the kernel specified on the command line.
+            ./
+            fname = argv[1];
+
+            furnsh_c ( fname );
+
+            while ( SPICETRUE )
+            {
+               prompt_c ( "Enter name of kernel variable > ",
+                          KVNMLN, varnam                      );
+
+               dtpool_c ( varnam, &found, &n, type );
+
+               if ( found )
+               {
+                  printf ( "\n"
+                           "Properties of variable %s:\n"
+                           "\n"
+                           "   Size:   %d\n",
+                           varnam,
+                           n                           );
+
+                  if ( type[0] == 'C' )
+                  {
+                     printf ( "   Type:   Character\n" );
+                  }
+                  else
+                  {
+                     printf ( "   Type:   Numeric\n" );
+                  }
+               }
+
+               else
+               {
+                  printf ( "%s is not present in the kernel pool.\n", varnam );
+               }
+               printf ( "\n" );
+            }
+            return(0);
+         }
+
+
+   When this program was executed on a PC/Linux/gcc platform, the 
+   output was:
+
+        Enter name of kernel variable > FRAME_-82104_NAME
+
+        Properties of variable FRAME_-82104_NAME:
+
+           Size:   1
+           Type:   Character
+
+        Enter name of kernel variable > TKFRAME_-82104_ANGLES
+
+        Properties of variable TKFRAME_-82104_ANGLES:
+
+           Size:   3
+           Type:   Numeric
+
+
+
+
 -Restrictions
  
    None. 
@@ -160,16 +225,22 @@
  
 -Author_and_Institution
  
-   W.L. Taber  (JPL) 
+   N.J. Bachman (JPL)
+   W.L. Taber   (JPL) 
  
 -Version
  
+   -CSPICE Version 1.2.0, 04-JUN-2014 (NJB)  
+
+      Header example code fragment was replaced with
+      a complete program.
+
    -CSPICE Version 1.1.0, 17-OCT-1999 (NJB)  
    
       Local type logical variable now used for found flag used in
       interface of dtpool_.
             
-   -CSPICE Version 1.0.0, 10-MAR-1999 (NJB)
+   -CSPICE Version 1.0.0, 10-MAR-1999 (NJB) (WLT)
 
 -Index_Entries
  

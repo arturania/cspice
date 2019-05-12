@@ -31,33 +31,6 @@
       <A HREF="#Introduction">Introduction</A>
       <A HREF="#Planned enhancements">Planned enhancements</A>
       <A HREF="#Terminology">Terminology</A>
-   <A HREF="#GF API Routines">GF API Routines</A>
-      <A HREF="#High-level GF search routines">High-level GF search routines</A>
-      <A HREF="#Mid-level GF search routines">Mid-level GF search routines</A>
-         <A HREF="#Rationale for calling mid-level GF search routines">Rationale for calling mid-level GF search routines</A>
-         <A HREF="#Supporting utility routines">Supporting utility routines</A>
-         <A HREF="#Overriding default functionality">Overriding default functionality</A>
-   <A HREF="#GF Computational Recipes">GF Computational Recipes</A>
-      <A HREF="#Required SPICE kernels">Required SPICE kernels</A>
-      <A HREF="#A note about CK data availability">A note about CK data availability</A>
-      <A HREF="#Geometric constraint searches">Geometric constraint searches</A>
-         <A HREF="#Periapse/Apoapse">Periapse/Apoapse</A>
-         <A HREF="#View periods">View periods</A>
-         <A HREF="#Sub-observer point">Sub-observer point</A>
-         <A HREF="#Instrument boresight intercept">Instrument boresight intercept</A>
-         <A HREF="#Planet in instrument field of view">Planet in instrument field of view</A>
-         <A HREF="#Star in instrument field of view">Star in instrument field of view</A>
-         <A HREF="#Spacecraft occultation or transit">Spacecraft occultation or transit</A>
-         <A HREF="#Natural satellite occultation or transit">Natural satellite occultation or transit</A>
-         <A HREF="#Spacecraft eclipse">Spacecraft eclipse</A>
-         <A HREF="#Surface point eclipse">Surface point eclipse</A>
-         <A HREF="#Equator crossing">Equator crossing</A>
-         <A HREF="#Meridian crossing">Meridian crossing</A>
-         <A HREF="#Elongation">Elongation</A>
-         <A HREF="#Body-centered phase angle without aberration corrections">Body-centered phase angle without aberration corrections</A>
-         <A HREF="#Orbital longitude of a satellite">Orbital longitude of a satellite</A>
-         <A HREF="#Approximate times of Cassini Saturn ring occultations">Approximate times of Cassini Saturn ring occultations</A>
-         <A HREF="#Angular offset between instrument boresight and velocity">Angular offset between instrument boresight and velocity</A>
    <A HREF="#GF Concepts">GF Concepts</A>
       <A HREF="#Time windows">Time windows</A>
          <A HREF="#Window manipulation and arithmetic">Window manipulation and arithmetic</A>
@@ -75,6 +48,32 @@
          <A HREF="#Workspace window counts">Workspace window counts</A>
          <A HREF="#Workspace window interval counts">Workspace window interval counts</A>
          <A HREF="#Estimating the workspace interval count requirement">Estimating the workspace interval count requirement</A>
+   <A HREF="#GF API Routines">GF API Routines</A>
+      <A HREF="#High-level GF search routines">High-level GF search routines</A>
+      <A HREF="#Mid-level GF search routines">Mid-level GF search routines</A>
+         <A HREF="#Rationale for calling mid-level GF search routines">Rationale for calling mid-level GF search routines</A>
+         <A HREF="#Supporting utility routines">Supporting utility routines</A>
+         <A HREF="#Overriding default behavior">Overriding default behavior</A>
+   <A HREF="#GF Computational Recipes">GF Computational Recipes</A>
+      <A HREF="#Required SPICE kernels">Required SPICE kernels</A>
+      <A HREF="#A note about CK data availability">A note about CK data availability</A>
+      <A HREF="#Geometric constraint searches">Geometric constraint searches</A>
+         <A HREF="#Periapse/Apoapse">Periapse/Apoapse</A>
+         <A HREF="#View periods">View periods</A>
+         <A HREF="#Sub-observer point">Sub-observer point</A>
+         <A HREF="#Instrument boresight intercept">Instrument boresight intercept</A>
+         <A HREF="#Planet in instrument field of view">Planet in instrument field of view</A>
+         <A HREF="#Star in instrument field of view">Star in instrument field of view</A>
+         <A HREF="#Spacecraft occultation or transit">Spacecraft occultation or transit</A>
+         <A HREF="#Natural satellite occultation or transit">Natural satellite occultation or transit</A>
+         <A HREF="#Spacecraft eclipse">Spacecraft eclipse</A>
+         <A HREF="#Surface point eclipse">Surface point eclipse</A>
+         <A HREF="#Equator crossing">Equator crossing</A>
+         <A HREF="#Meridian crossing">Meridian crossing</A>
+         <A HREF="#Elongation">Elongation</A>
+         <A HREF="#Orbital longitude of a satellite">Orbital longitude of a satellite</A>
+         <A HREF="#Approximate times of Cassini Saturn ring occultations">Approximate times of Cassini Saturn ring occultations</A>
+         <A HREF="#Angular offset between instrument boresight and velocity">Angular offset between instrument boresight and velocity</A>
    <A HREF="#Common GF Problems">Common GF Problems</A>
       <A HREF="#A challenge">A challenge</A>
       <A HREF="#Wrong SPICE kernels">Wrong SPICE kernels</A>
@@ -105,9 +104,11 @@
          <A HREF="#Aberration corrections1">Aberration corrections</A>
          <A HREF="#SPICE kernels1">SPICE kernels</A>
          <A HREF="#Source code1">Source code</A>
+         <A HREF="#Results1">Results</A>
    <A HREF="#Appendix A --- Summary of GF Functions">Appendix A --- Summary of GF Functions</A>
       <A HREF="#Summary of Mnemonics">Summary of Mnemonics</A>
-   <A HREF="#Appendix B---Revision History">Appendix B---Revision History</A>
+   <A HREF="#Appendix B --- Revision History">Appendix B --- Revision History</A>
+         <A HREF="#2012 OCT 01 by E. D. Wright.">2012 OCT 01 by E. D. Wright.</A>
          <A HREF="#2010 MAY 13 by E. D. Wright.">2010 MAY 13 by E. D. Wright.</A>
          <A HREF="#2009 APR 15 by N. J. Bachman.">2009 APR 15 by N. J. Bachman.</A>
 
@@ -120,7 +121,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Geometry Finder Required Reading
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2010 MAY 13 by E. D. Wright.
+   Last revised on 2012 OCT 01 by E. D. Wright.
 <P>
  
 <BR><BR>
@@ -213,7 +214,7 @@ meta-kernels, and program output
    Within the time interval January 1 2009 to January 1 2010,
    find the time periods when the light time corrected
    distance between the centers of the Earth and
-   Moon is less than 400000 kilometers.
+   Moon is less than 40000 kilometers.
 </PRE>
    The GF subsystem works with a small set of geometric quantities:
 <P>
@@ -235,6 +236,9 @@ meta-kernels, and program output
 target within an instrument FOV)
 <BR><BR></UL>
 <UL>
+<TT>--</TT> Illumination angles
+<BR><BR></UL>
+<UL>
 <TT>--</TT> Observer-target distance
 <BR><BR></UL>
 <UL>
@@ -244,7 +248,12 @@ target within an instrument FOV)
 <TT>--</TT> Occultation states
 <BR><BR></UL>
 <UL>
-<TT>--</TT> User-defined geometric quantities
+<TT>--</TT> Phase angle between observer and target centers with respect to an
+illumination source
+<BR><BR></UL>
+<UL>
+<TT>--</TT> User-defined geometric quantities, either scalar functions of boolean
+functions
 <BR><BR></UL>
    At the highest level of the SPICE GF subsystem interface, there is a
    search subroutine for each geometric quantity. The Fortran and C SPICE
@@ -292,10 +301,7 @@ target within an instrument FOV)
 <TT>--</TT> Eclipse events
 <BR><BR></UL>
 <UL>
-<TT>--</TT> Illumination angles
-<BR><BR></UL>
-<UL>
-<TT>--</TT> Support for user-defined boolean quantity functions
+<TT>--</TT> Latitude-longitude boxes
 <BR><BR></UL>
 <BR><BR>
 <A NAME="Terminology"></A>
@@ -460,7 +466,7 @@ window (see below) representing this time window.<BR>
  Disjoint
 </B><BR><BR>
 <DD>
- Non-intersecting.<BR>
+ Non-intersecting. No common elements.<BR>
 </DL>
 <DL><DT>
 <B>
@@ -871,1054 +877,6 @@ arranged in increasing order. Also a SPICE window (see above). Windows
 frequently represent time but may be used for other purposes, for
 example to represent sets of angular intervals on the unit circle.<BR>
 </DL>
-<BR><BR>
-<A NAME="GF API Routines"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H1> GF API Routines
-</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-<BR><BR>
-<A NAME="High-level GF search routines"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H2> High-level GF search routines
-</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-   The high-level GF search routines constitute the principal application
-   programming interface to the GF subsystem.
-<P>
- 
-   The routines described here are supported in all language versions of
-   the SPICE Toolkit.
-<P>
- 
-   All of the routines listed below have extensive header documentation.
-   Each header describes all input and output arguments and includes one or
-   more example programs accompanied by example meta-kernels and
-   corresponding program outputs.
-<P>
- 
-   Additional, more extensive code examples are presented at the end of
-   this document.
-<P>
- 
-   The ``GF Computational Recipes'' chapter below provides hints on how to
-   solve various geometric search problems using these routines.
-<P>
- 
-   The high-level GF search routines are:
-<P>
- 
-<DL><DT>
-<B>
- <a href="../cspice/gfdist_c.html">gfdist_c</a>
-</B><BR><BR>
-<DD>
- Distance search: find time windows when a given observer-target
-distance constraint is met.<BR>
-</DL>
-<DL><DT>
-<B>
- <a href="../cspice/gfoclt_c.html">gfoclt_c</a>
-</B><BR><BR>
-<DD>
- Occultation or transit search: find time windows when a given type of
-occultation or transit is in progress.<BR>
-</DL>
-<DL><DT>
-<B>
- <a href="../cspice/gfposc_c.html">gfposc_c</a>
-</B><BR><BR>
-<DD>
- Observer-target position vector coordinate search: find time windows
-when a given constraint on a specified coordinate (e.g. Cartesian X, Y,
-Z or planetocentric radius, longitude, or latitude) of an
-observer-target position vector is met.<BR>
-</DL>
-<DL><DT>
-<B>
- <a href="../cspice/gfrfov_c.html">gfrfov_c</a>
-</B><BR><BR>
-<DD>
- Ray in instrument field of view search: find time windows when a given
-ray emanating from an observer is contained in a specified instrument's
-field of view.<BR>
-</DL>
-<DL><DT>
-<B>
- <a href="../cspice/gfrr_c.html">gfrr_c</a>
-</B><BR><BR>
-<DD>
- Rang rate: find time windows when a given constraint on the range rate
-of an observer to target position vector is met.<BR>
-</DL>
-<DL><DT>
-<B>
- <a href="../cspice/gfsep_c.html">gfsep_c</a>
-</B><BR><BR>
-<DD>
- Angular separation search: find time windows when a given constraint on
-the angular separation of two targets as seen by a specified observer
-is met.<BR>
-</DL>
-<DL><DT>
-<B>
- <a href="../cspice/gfsntc_c.html">gfsntc_c</a>
-</B><BR><BR>
-<DD>
- Ray-surface intercept coordinate search: find time windows when a
-specified constraint on a coordinate of the surface intercept of a
-specified ray on a target body is met.<BR>
-</DL>
-<DL><DT>
-<B>
- <a href="../cspice/gfsubc_c.html">gfsubc_c</a>
-</B><BR><BR>
-<DD>
- Sub-observer point coordinate search: find time windows when a
-specified constraint on a coordinate of the sub-observer point on a
-specified target body is met.<BR>
-</DL>
-<DL><DT>
-<B>
- <a href="../cspice/gftfov_c.html">gftfov_c</a>
-</B><BR><BR>
-<DD>
- Target body in instrument field of view search: find time windows when
-a given target body appears in a specified instrument's field of view.<BR>
-</DL>
-<DL><DT>
-<B>
- <a href="../cspice/gfuds_c.html">gfuds_c</a>
-</B><BR><BR>
-<DD>
- User-defined scalar quantity function: find time windows when a given
-constraint on a user-defined scalar value function is met.<BR>
-</DL>
-<BR><BR>
-<A NAME="Mid-level GF search routines"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H2> Mid-level GF search routines
-</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-   The routines discussed here are provided only in the Fortran and C SPICE
-   Toolkits. (Practical means of implementing these routines in IDL and
-   MATLAB have not been found.)
-<P>
- 
-   The mid-level GF search routines are:
-<P>
- 
-<DL><DT>
-<B>
- <a href="../cspice/gfevnt_c.html">gfevnt_c</a>
-</B><BR><BR>
-<DD>
- Scalar quantity search: find times when specified constraints on any
-scalar quantity, such as distance or angular separation, are met.<BR>
-</DL>
-<DL><DT>
-<B>
- <a href="../cspice/gffove_c.html">gffove_c</a>
-</B><BR><BR>
-<DD>
- FOV search: find times when a specified target appears in a specified
-instrument FOV. This routine provides the functionality of both
-<a href="../cspice/gftfov_c.html">gftfov_c</a> and <a href="../cspice/gfrfov_c.html">gfrfov_c</a>.<BR>
-</DL>
-<DL><DT>
-<B>
- <a href="../cspice/gfocce_c.html">gfocce_c</a>
-</B><BR><BR>
-<DD>
- Occultation or transit search: find times when a specified target body
-occults or is in transit across another, as seen by a specified
-observer.<BR>
-</DL>
-   These routines provide all of the functionality of the high-level search
-   routines, plus several additional features:
-<P>
- 
-<DL><DT>
-<B>
- Progress reporting
-</B><BR><BR>
-<DD>
- Applications can control whether a ``percent complete'' progress report
-is displayed during a GF search. By default, the report is displayed
-via console I/O. Applications can override the default display by
-passing custom progress reporting routines as input arguments to
-mid-level GF search routines.<BR>
-</DL>
-<DL><DT>
-<B>
- Interrupt handling
-</B><BR><BR>
-<DD>
- Applications can control whether mid-level GF search routines test for
-issuance of an interrupt command and abort if such a command is
-detected. Applications can override the default interrupt handling
-behavior by passing a custom interrupt detection routine as an input
-argument to mid-level GF search routines.<BR>
-</DL>
-<DL><DT>
-<B>
- Set search step function
-</B><BR><BR>
-<DD>
- Applications can override the default search step behavior by passing a
-custom step size routine as an input argument to mid-level GF search
-routines.<BR>
-</DL>
-<DL><DT>
-<B>
- Set refinement function
-</B><BR><BR>
-<DD>
- Applications can override the default root refinement algorithm (binary
-search) by passing a custom root refinement routine as an input
-argument to mid-level GF search routines.<BR>
-</DL>
-<DL><DT>
-<B>
- Set convergence tolerance
-</B><BR><BR>
-<DD>
- Convergence tolerance is an input argument to mid-level GF search
-routines.<BR>
-</DL>
-<BR><BR>
-<A NAME="Rationale for calling mid-level GF search routines"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Rationale for calling mid-level GF search routines
-</H3><P><BR><BR>
-   The mid-level GF search routines are more complex than their high-level
-   counterparts (considerably so in the case of <a href="../cspice/gfevnt_c.html">gfevnt_c</a>). The main reason
-   to use the mid-level routines is to take advantage of their progress
-   reporting and interrupt handling capabilities.
-<P>
- 
-   GF searches can take a long time to complete, particularly when the
-   confinement window is large and the step size is small. It may not be
-   obvious to a user whether a running search is making progress at a
-   reasonable rate. The default GF progress report, which when enabled
-   updates approximately once per second, helps to answer this question.
-<P>
- 
-   If progress reporting is used in a GUI application, reports produced by
-   the default mechanism are probably undesirable. In this case,
-   application programs can pass custom progress reporting routines to the
-   mid-level GF search routines.
-<P>
- 
-   When an interactive SPICE-based application runs a GF search, the user
-   may want to abort the search without terminating the program, possibly
-   because terminating the program would result in substantial loss of
-   work. The GF interrupt handling capability allows an application program
-   to quickly abort GF searches and have the GF system return control to
-   the application.
-<P>
- 
-<BR><BR>
-<A NAME="Supporting utility routines"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Supporting utility routines
-</H3><P><BR><BR>
-   When the default GF progress reporting, interrupt handling, and
-   root-finding functionality is desired, a calling application can call
-   existing GF utility routines and, where applicable, pass them as actual
-   input arguments to the mid-level search routines. These utilities are:
-<P>
- 
-<DL><DT>
-<B>
- <a href="../cspice/gfsstp_c.html">gfsstp_c</a>
-</B><BR><BR>
-<DD>
- Set search step. This routine sets the step size that will be returned
-by <a href="../cspice/gfstep_c.html">gfstep_c</a>.<BR>
-</DL>
-<DL><DT>
-<B>
- <a href="../cspice/gfstep_c.html">gfstep_c</a>
-</B><BR><BR>
-<DD>
- Get search step. This routine returns step size that was last set by
-<a href="../cspice/gfsstp_c.html">gfsstp_c</a>.<BR>
-</DL>
-<DL><DT>
-<B>
- <a href="../cspice/gfrefn_c.html">gfrefn_c</a>
-</B><BR><BR>
-<DD>
- Refine root bracketing interval. This routine returns the midpoint of
-the input times; this behavior supports root finding by bisection.<BR>
-</DL>
-<DL><DT>
-<B>
- <a href="../cspice/gfrepi_c.html">gfrepi_c</a>
-</B><BR><BR>
-<DD>
- Initialize progress report.<BR>
-</DL>
-<DL><DT>
-<B>
- <a href="../cspice/gfrepu_c.html">gfrepu_c</a>
-</B><BR><BR>
-<DD>
- Update progress report.<BR>
-</DL>
-<DL><DT>
-<B>
- <a href="../cspice/gfrepf_c.html">gfrepf_c</a>
-</B><BR><BR>
-<DD>
- Finalize progress report.<BR>
-</DL>
-<DL><DT>
-<B>
- <a href="../cspice/gfbail_c.html">gfbail_c</a>
-</B><BR><BR>
-<DD>
- Detect interrupt. This function returns a logical value indicating
-whether an interrupt has been detected.<BR>
-</DL>
-<DL><DT>
-<B>
- <a href="../cspice/gfinth_c.html">gfinth_c</a>
-</B><BR><BR>
-<DD>
- Interrupt hander. This handler should be established via a call to the
-ANSI C function `signal'.<BR>
-</DL>
-<DL><DT>
-<B>
- <a href="../cspice/gfclrh_c.html">gfclrh_c</a>
-</B><BR><BR>
-<DD>
- Clear <a href="../cspice/gfbail_c.html">gfbail_c</a> status. This function should be called after a mid-level
-GF search routine returns, if interrupt handling is enabled.<BR>
-</DL>
-   In CSPICE, the default interrupt handling behavior, when enabled, is to
-   return control to the calling application if the SIGINT signal is
-   detected. See the code examples in the headers of the mid-level GF
-   search routines for details.
-<P>
- 
-<BR><BR>
-<A NAME="Overriding default functionality"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Overriding default functionality
-</H3><P><BR><BR>
-   To override the default progress reporting capability provided by the
-   mid-level GF search routines, an application must pass in custom
-   routines in place of <a href="../cspice/gfrepi_c.html">gfrepi_c</a>, grrepu_c, and <a href="../cspice/gfrepf_c.html">gfrepf_c</a>. Each of the
-   custom routines must have an argument list that exactly matches that of
-   the default routine it overrides; see the headers of the default
-   routines for details. Note that the application must override all of the
-   progress reporting routines in a given call, if it overrides any one of
-   them.
-<P>
- 
-   To override the default interrupt handling capability, an application
-   must pass in a custom routine in place of <a href="../cspice/gfbail_c.html">gfbail_c</a>. The custom routine
-   must have an argument list that exactly matches that of <a href="../cspice/gfbail_c.html">gfbail_c</a>.
-<P>
- 
-   The need to override the step size and refinement functions is expected
-   to be quite unusual; it should be attempted only by programmers having a
-   detailed knowledge of the GF search algorithms and the code that
-   implements them.
-<P>
- 
-   In some cases, GF searches can be sped up by increasing the convergence
-   tolerance. The default tolerance value is given by the parameter
-   SPICE_GF_CNVTOL which is defined in the header file
-<P>
- 
-<PRE>
-   SpiceGF.h
-</PRE>
-   The cost of increasing the convergence tolerance is decreased accuracy
-   of search results.
-<P>
- 
-<BR><BR>
-<A NAME="GF Computational Recipes"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H1> GF Computational Recipes
-</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Below we provide terse descriptions of computational approaches for
-   solving common geometric search problems.
-<P>
- 
-   The ``recipes'' below are very abbreviated; they're intended to be
-   helpful to experienced SPICE users. New users are encouraged to first
-   familiarize themselves with the example programs in the GF API headers
-   and in this document.
-<P>
- 
-   Users should consult the headers of the pertinent SPICE routines for
-   details on the use of those routines.
-<P>
- 
-   Note that for valid comparison of GF results against those obtained by
-   alternate means, inputs such as kernel data, aberration corrections,
-   reference frames, coordinate systems, confinement windows, and time
-   systems used to represent time windows must be compatible.
-<P>
- 
-<BR><BR>
-<A NAME="Required SPICE kernels"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H2> Required SPICE kernels
-</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-   With a few exceptions, the recipes below don't discuss the SPICE kernels
-   required to carry out the described computations. Some general
-   requirements are summarized here:
-<P>
- 
-<UL>
-<TT>--</TT> SPK files containing ephemeris data for targets and observers are almost
-always required; the only exception is the star visibility case where the
-star's location is modeled as a direction rather than as a position vector.
-<BR><BR></UL>
-<UL>
-<TT>&#32;&#32;</TT> When aberration corrections are used, sufficient ephemeris data must be
-available to propagate states of the observer and targets to the solar
-system barycenter. The states of the targets must be calculable at light
-time corrected epochs, so the required coverage will extend beyond the
-confinement window.
-<BR><BR></UL>
-<UL>
-<TT>&#32;&#32;</TT> When stellar aberration corrections are used, coverage for the observer
-must be available on a window whose intervals are expanded by one second
-(in both directions) relative to the confinement window.
-<BR><BR></UL>
-<UL>
-<TT>--</TT> Computations involving target body-fixed, body-centered reference frames
-require PCK files providing orientation data for those reference frames.
-Such computations often require PCK files containing size and shape data
-for the target body as well. In many cases one PCK file can provide both
-the necessary orientation and size/shape data.
-<BR><BR></UL>
-<UL>
-<TT>&#32;&#32;</TT> When required body-fixed, body-centered reference frame specifications are
-not built into the CSPICE system, those specifications must be provided by
-FK files.
-<BR><BR></UL>
-<UL>
-<TT>--</TT> Computations involving topocentric reference frames centered at surface
-points on extended objects require both SPK and FK files providing state
-data for the surface point and topocentric frame orientation, respectively.
-Usually these computations also require a PCK file providing orientation of
-the extended object.
-<BR><BR></UL>
-<UL>
-<TT>--</TT> Computations involving instrument pointing and FOV specifications normally
-require all of the following: CK files, SCLK kernels, LSK files, FK files,
-and IK files.
-<BR><BR></UL>
-<BR><BR>
-<A NAME="A note about CK data availability"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H2> A note about CK data availability
-</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-   CK files, particularly those containing reconstructed attitude data,
-   often have coverage gaps. A SPICE-based application program can obtain
-   the time window over which CK data are available by calling the CSPICE
-   routine <a href="../cspice/ckcov_c.html">ckcov_c</a>.
-<P>
- 
-   When the caller of <a href="../cspice/ckcov_c.html">ckcov_c</a> requests that interval endpoints in the CK
-   coverage time window be expressed as TDB seconds, <a href="../cspice/ckcov_c.html">ckcov_c</a> must convert
-   these endpoints from encoded SCLK (ticks) to TDB. Due to round-off
-   errors, and in some cases, to discontinuities in the TDB-to-ticks
-   mapping, the TDB values obtained via this call may not be translatable
-   to tick values within the actual coverage window of the CK file.
-<P>
- 
-   For safety, applications obtaining TDB coverage windows via <a href="../cspice/ckcov_c.html">ckcov_c</a>
-   should call the CSPICE window routine <a href="../cspice/wncond_c.html">wncond_c</a> to contract those windows
-   by a duration large enough to ensure that the entire, contracted
-   coverage window is usable.
-<P>
- 
-   For an SCLK kernel that provides a continuous TDB-to-ticks mapping, a
-   contraction duration (having units of TDB seconds) equivalent to one
-   tick normally should suffice, as long as the nominal tick duration is at
-   least one microsecond.
-<P>
- 
-   For SCLK kernels having discontinuities, the required contraction
-   duration can be determined by analyzing the possible mapping errors
-   caused by those discontinuities; alternatively, it can be determined by
-   trial and error. If a search is performed and required CK data are
-   unavailable, SPICE routines will signal an error.
-<P>
- 
-<BR><BR>
-<A NAME="Geometric constraint searches"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H2> Geometric constraint searches
-</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-<BR><BR>
-<A NAME="Periapse/Apoapse"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Periapse/Apoapse
-</H3><P><BR><BR>
-   To find the unique closest approach of an observer to a target over a
-   specified time window, call <a href="../cspice/gfdist_c.html">gfdist_c</a>, specifying the
-<P>
- 
-<PRE>
-   "ABSMIN"
-</PRE>
-   (absolute minimum) relational operator. To find all of the ``close
-   approaches'' of an observer to a target over a specified time window,
-   use the
-<P>
- 
-<PRE>
-   "LOCMIN"
-</PRE>
-   (local minimum) relational operator.
-<P>
- 
-   For apoapse events, use the absolute or local maximum operators instead:
-<P>
- 
-<PRE>
-   "ABSMAX"
-   "LOCMAX"
-</PRE>
-   See the example program MEDLEY below for details.
-<P>
- 
-<BR><BR>
-<A NAME="View periods"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> View periods
-</H3><P><BR><BR>
-   View periods may be defined as time intervals, within a confinement
-   window, during which a target body has elevation greater than a
-   specified limit with respect to the local horizontal plane at a given
-   point on the surface of an extended body.
-<P>
- 
-   Compute view periods using <a href="../cspice/gfposc_c.html">gfposc_c</a>. See the example program MEDLEY
-   below for details.
-<P>
- 
-   In the <a href="../cspice/gfposc_c.html">gfposc_c</a> call, aberration corrections should be set to be
-   compatible with the direction of radiation travel: either ``reception''
-   or ``transmission'' corrections can be selected. Normally both light
-   time and stellar aberration corrections should be used; the aberration
-   correction input string should be either of
-<P>
- 
-<PRE>
-   "LT+S"
-   "XLT+S"
-</PRE>
-   To find the time window when the target is ``visible'' for both
-   reception and transmission, run the search twice, using both aberration
-   correction choices. The result window from the first search can be used
-   as the confinement window for the second.
-<P>
- 
-   SPICE doesn't have the capability of modeling atmospheric effects, so
-   for observers on bodies having atmospheres, view periods found using the
-   GF subsystem will be subject to errors due to this deficiency.
-<P>
- 
-   ``Usable'' view periods may be a subset of those found by GF searches,
-   since there may be pointing limitations on the antenna or instrument
-   viewing the target.
-<P>
- 
-<BR><BR>
-<A NAME="Sub-observer point"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Sub-observer point
-</H3><P><BR><BR>
-   Use <a href="../cspice/gfsubc_c.html">gfsubc_c</a> to find times when the sub-observer point on an extended
-   target satisfies the constraints
-<P>
- 
-<PRE>
-   min_lon &lt; sub-observer longitude &lt; max_lon
-   min_lat &lt; sub-observer latitude  &lt; max_lat
-</PRE>
-   Four searches are required: one for each constraint.
-<P>
- 
-   The searches can be cascaded: the result window for one search can be
-   used as the confinement window for the next.
-<P>
- 
-   If the longitude interval of interest includes 180 degrees, then
-<P>
- 
-<PRE>
-         min_lon &gt; max_lon
-</PRE>
-   and the corresponding longitude constraints have the form
-<P>
- 
-<PRE>
-         min_lon &lt; sub-observer longitude
-   OR    max_lon &gt; sub-observer longitude
-</PRE>
-   In this case the solution window for the longitude constraints is the
-   union of the solution windows for the two constraints shown above; use
-   <a href="../cspice/wnunid_c.html">wnunid_c</a> to compute this union. The union can then be used as the
-   confinement window for a latitude search.
-<P>
- 
-   The case of a right ascension interval containing 0 degrees is handled
-   analogously.
-<P>
- 
-   The order of the searches can be important: often constraints on one of
-   the coordinates produce a smaller result window than constraints on the
-   other. For example, for a polar orbiter, latitude constraints may be
-   satisfied over a small fraction of the search window, so searching for
-   times when the latitude constraints are met would yield a small window
-   over which the longitude searches would be conducted. For an equatorial
-   orbiter, the situation would be reversed.
-<P>
- 
-<BR><BR>
-<A NAME="Instrument boresight intercept"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Instrument boresight intercept
-</H3><P><BR><BR>
-   Use <a href="../cspice/gfsntc_c.html">gfsntc_c</a> to find times when the intercept on an extended target body
-   of a ray emanating from an observing instrument's location and aligned
-   with the instrument's boresight satisfies the constraints
-<P>
- 
-<PRE>
-   min_lon &lt; intercept longitude &lt; max_lon
-   min_lat &lt; intercept latitude  &lt; max_lat
-</PRE>
-   Four searches are required: one for each constraint.
-<P>
- 
-   See the discussion of alternate longitude constraints and of search
-   order above in the section titled ``Sub-observer point.''
-<P>
- 
-   Note that pointing stability can be an issue for boresight intercept
-   searches: the pointing must be stable enough so that the GF system can
-   compute the time window, within the confinement window, during which the
-   ray-surface intercept exists. High-frequency pointing excursions can
-   cause this ``existence window'' computation to produce invalid results,
-   which in turn will cause the requested coordinate constraint searches to
-   either fail before completion or to complete but produce invalid
-   results.
-<P>
- 
-   <a href="../cspice/gfsntc_c.html">gfsntc_c</a> should not be used for near-tangent ray direction cases.
-   <a href="../cspice/gfsntc_c.html">gfsntc_c</a> contracts the existence window described above by a fraction of
-   a second to avoid geometric singularities; this affords more robust
-   search behavior for normal cases but prevents <a href="../cspice/gfsntc_c.html">gfsntc_c</a> from producing
-   accurate results for near-tangent ray pointing.
-<P>
- 
-<BR><BR>
-<A NAME="Planet in instrument field of view"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Planet in instrument field of view
-</H3><P><BR><BR>
-   Use <a href="../cspice/gftfov_c.html">gftfov_c</a> to find times when an ephemeris object is in the FOV of an
-   instrument, provided this FOV can be modeled as one of the shapes
-   supported by the SPICE routine <a href="../cspice/getfov_c.html">getfov_c</a>. The target shape can be treated
-   as an ellipsoid or a point.
-<P>
- 
-   <a href="../cspice/gftfov_c.html">gftfov_c</a> may not be suitable for FOV searches involving push-broom
-   cameras. For an alternate approach, see the example program ROVER below
-   for a demonstration of a search involving the MRO HIRISE camera.
-<P>
- 
-<BR><BR>
-<A NAME="Star in instrument field of view"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Star in instrument field of view
-</H3><P><BR><BR>
-   Use <a href="../cspice/gfrfov_c.html">gfrfov_c</a> to find times when a target modeled as a ray (that is, the
-   direction to the target is available, the distance to the target is not)
-   is in the FOV of an instrument, provided this FOV can be modeled as one
-   of the shapes supported by the SPICE routine <a href="../cspice/getfov_c.html">getfov_c</a>.
-<P>
- 
-<BR><BR>
-<A NAME="Spacecraft occultation or transit"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Spacecraft occultation or transit
-</H3><P><BR><BR>
-   Use <a href="../cspice/gfoclt_c.html">gfoclt_c</a> to search for spacecraft occultations or transits. If the
-   spacecraft is the target, the spacecraft shape can be modeled as a
-   point. The blocking body must be modeled as an ellipsoid.
-<P>
- 
-   <a href="../cspice/gfoclt_c.html">gfoclt_c</a> assumes straight-line light paths for occultation searches.
-   This assumption may not be suitable for high-accuracy work.
-<P>
- 
-<BR><BR>
-<A NAME="Natural satellite occultation or transit"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Natural satellite occultation or transit
-</H3><P><BR><BR>
-   Use <a href="../cspice/gfoclt_c.html">gfoclt_c</a> to search for natural satellite occultations or transits.
-   Both satellite and planet should be modeled as ellipsoids.
-<P>
- 
-<BR><BR>
-<A NAME="Spacecraft eclipse"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Spacecraft eclipse
-</H3><P><BR><BR>
-   Defining a spacecraft eclipse as the presence of the spacecraft in the
-   shadow created by the Sun and a blocking body, one can observe that
-   eclipses are equivalent to occultations, where the spacecraft is the
-   observer, the Sun is the ``back'' body, and the blocking body is the
-   ``front'' body.
-<P>
- 
-   Use <a href="../cspice/gfoclt_c.html">gfoclt_c</a> to search for spacecraft eclipses.
-<P>
- 
-   Both the Sun and the blocking body should be modeled as ellipsoids.
-<P>
- 
-   Set the occultation type to
-<P>
- 
-<PRE>
-   "ANY"
-</PRE>
-   to search for times when the spacecraft is in penumbral or umbral
-   eclipse; set the occultation type to
-<P>
- 
-<PRE>
-   "FULL"
-</PRE>
-   to search for times when the spacecraft is in umbral eclipse.
-<P>
- 
-   <a href="../cspice/gfoclt_c.html">gfoclt_c</a> assumes straight-line light paths for occultation searches.
-   This assumption may not be suitable for high-accuracy work.
-<P>
- 
-<BR><BR>
-<A NAME="Surface point eclipse"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Surface point eclipse
-</H3><P><BR><BR>
-   Searches for eclipses of a surface point on an extended object can be
-   conducted using <a href="../cspice/gfoclt_c.html">gfoclt_c</a>, as long as the position of the surface point
-   is given by an SPK file. Use the SPICE utility PINPOINT to create an SPK
-   file for the surface point if necessary; then proceed as described in
-   the above ``Spacecraft eclipse'' discussion.
-<P>
- 
-<BR><BR>
-<A NAME="Equator crossing"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Equator crossing
-</H3><P><BR><BR>
-   Use <a href="../cspice/gfposc_c.html">gfposc_c</a> to find times when one body crosses the equatorial plane of
-   another.
-<P>
- 
-   The reference frame should be the body-fixed, body-centered frame
-   associated with the body whose equatorial plane is of interest.
-<P>
- 
-   The coordinate system and coordinate can be set, respectively, to
-<P>
- 
-<PRE>
-   "RECTANGULAR"
-   "Z"
-</PRE>
-   Other choices such as
-<P>
- 
-<PRE>
-   "LATITUDINAL"
-   "LATITUDE"
-</PRE>
-   will yield the same results, up to round-off errors.
-<P>
- 
-   Note that for a given pair of bodies, when aberration corrections are
-   used, the choice of observer and target affects the result, since
-   aberration corrections are not anti-symmetric functions of target and
-   observer.
-<P>
- 
-   See the Fundamental Concepts SPICE tutorial and the header of <a href="../cspice/spkezr_c.html">spkezr_c</a>
-   for further information on aberration corrections.
-<P>
- 
-<BR><BR>
-<A NAME="Meridian crossing"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Meridian crossing
-</H3><P><BR><BR>
-   Use <a href="../cspice/gfposc_c.html">gfposc_c</a> to find times when one body crosses a given meridian of the
-   body-fixed, body-centered reference frame of another.
-<P>
- 
-   Care must be taken to identify the appropriate coordinate system: is
-   longitude positive East or positive West?
-<P>
- 
-   For the positive East longitude case, the coordinate system and
-   coordinate can be set to
-<P>
- 
-<PRE>
-   "LATITUDINAL"
-   "LONGITUDE"
-</PRE>
-   respectively.
-<P>
- 
-   For the positive West longitude case, planetographic longitude can be
-   used, but in some cases, additional set-up is required.
-<P>
- 
-   If the central body is not the Earth, Moon, Sun, or a body with
-   retrograde spin, the selections
-<P>
- 
-<PRE>
-   "PLANETOGRAPHIC"
-   "LONGITUDE"
-</PRE>
-   can be used as is.
-<P>
- 
-   The Earth, Moon, Sun, and bodies with retrograde spin are special cases,
-   because for these objects planetographic longitude is positive East by
-   default. However, this default can be overridden via kernel pool
-   assignments: an application can force planetographic longitude for a
-   given body to increase in the desired sense. See the header of <a href="../cspice/recpgr_c.html">recpgr_c</a>
-   for details. If these assignments are made, then the above choices of
-   coordinate system and coordinate will work for these special cases as
-   well.
-<P>
- 
-   See the notes on aberration corrections in the section titled ``Equator
-   crossing'' above.
-<P>
- 
-<BR><BR>
-<A NAME="Elongation"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Elongation
-</H3><P><BR><BR>
-   Use <a href="../cspice/gfsep_c.html">gfsep_c</a> to find times when target body elongation constraints are
-   met, given a target body and observer. The Sun is the second target.
-<P>
- 
-<BR><BR>
-<A NAME="Body-centered phase angle without aberration corrections"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Body-centered phase angle without aberration corrections
-</H3><P><BR><BR>
-   The body-centered phase angle can be approximated as the angular
-   separation of observer and Sun, as seen from the body of interest, if
-   aberration corrections are ignored.
-<P>
- 
-   Use <a href="../cspice/gfsep_c.html">gfsep_c</a> to find times when approximate phase angle constraints are
-   met.
-<P>
- 
-   Refer to the header of <a href="../cspice/gfsep_c.html">gfsep_c</a> for a description of the input arguments
-   discussed below.
-<P>
- 
-   For this search, the observing body is treated in the <a href="../cspice/gfsep_c.html">gfsep_c</a> call as
-   one of the target bodies: that is, the name of the observer should be
-   used as either of the input arguments `targ1' or `targ2'. The Sun is the
-   other target body.
-<P>
- 
-   The observer and the Sun both should be modeled as points.
-<P>
- 
-   The target body should be treated as the observer: the name of the
-   target body should be passed in as the value of the argument `obsrvr'.
-<P>
- 
-<BR><BR>
-<A NAME="Orbital longitude of a satellite"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Orbital longitude of a satellite
-</H3><P><BR><BR>
-   This recipe requires the user to create two dynamic reference frame
-   specifications in a frame kernel. See the ``Dynamic Frames'' tutorial
-   and the Frames Required Reading, <a href="../req/frames.html">frames.req</a>, for detailed discussions of
-   this topic.
-<P>
- 
-   The participants in this geometric relationship are an observer, a
-   central body, and a satellite orbiting the central body. For this
-   geometric case, ``orbital longitude'' is measured in the orbital plane
-   of the satellite, in the positive sense about the satellite's angular
-   velocity vector, with the zero longitude direction aligned with the
-   orthogonal projection of the observer-central body vector onto the
-   satellite's orbital plane. This definition is applicable, for example,
-   when the Earth is the observer, Mars is the central body, and Phobos is
-   the satellite.
-<P>
- 
-   There is a different definition of orbital longitude for the case where
-   the target is a planet, asteroid, or comet and the Earth is the
-   observer: for this case, the Sun-Earth vector points in direction of
-   zero longitude. We won't address this case, but it can be handled by a
-   simple modification of the ORBITAL_LONG_FRAME we describe below.
-<P>
- 
-   The first step is to specify a two-vector dynamic frame ORBIT_FRAME
-   whose primary axis is aligned with the central body-satellite position
-   vector; this is the frame's +X axis. Associate the secondary axis with
-   the central body-satellite velocity vector; this is the frame's +Y axis.
-   The +Z axis of ORBIT_FRAME is then aligned with the instantaneous
-   angular velocity of the satellite's orbit.
-<P>
- 
-   Next, specify a two-vector dynamic frame ORBITAL_LONG_FRAME whose
-   primary axis is aligned with the +Z axis of ORBIT_FRAME; this is the +Z
-   axis of ORBITAL_LONG_FRAME. Associate the secondary axis of
-   ORBITAL_LONG_FRAME with the observer-central body position vector; this
-   is the +X axis of ORBITAL_LONG_FRAME.
-<P>
- 
-   Finally, call <a href="../cspice/gfposc_c.html">gfposc_c</a> to search for times when the satellite's orbital
-   longitude satisfies constraints of interest. For these searches, the
-   observer is the central body, the target is the satellite, the reference
-   frame is ORBITAL_LONG_FRAME, and the coordinate system and coordinate
-   are, respectively, set to
-<P>
- 
-<PRE>
-   "LATITUDINAL"
-   "LATITUDE"
-</PRE>
-   Aberration corrections should not be used for this application.
-<P>
- 
-<BR><BR>
-<A NAME="Approximate times of Cassini Saturn ring occultations"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Approximate times of Cassini Saturn ring occultations
-</H3><P><BR><BR>
-   An approximation of Saturn ring occultation ingress and egress times for
-   the Cassini orbiter, as viewed by a given Deep Space Network (DSN)
-   station, can be found using <a href="../cspice/gfoclt_c.html">gfoclt_c</a>.
-<P>
- 
-   For the purpose of this search, the ring boundaries can be approximated
-   using two extremely flat spheroids, both of which are aligned, as is
-   Saturn, with the IAU_SATURN reference frame. The large and small
-   spheroids have equatorial radii equal to, respectively, the radii of the
-   outer and inner ring boundaries. The polar radii can be set to 1 cm.
-<P>
- 
-   Two searches using <a href="../cspice/gfoclt_c.html">gfoclt_c</a> are required: the first search finds the
-   time window when the orbiter is occulted by the larger spheroid. The
-   result window from that search can be used as the confinement window for
-   the second search, which finds the time window when the orbiter is
-   occulted by the inner spheroid.
-<P>
- 
-   Subtracting the result window of the second search from that of the
-   first yields a window representing the time period of the ring
-   occultations.
-<P>
- 
-   To avoid having to create new SPICE kernels representing the
-   trajectories, orientations, sizes, shapes, names, and ID codes of the
-   spheroids, one simply creates them by temporarily changing the radii of
-   Saturn.
-<P>
- 
-   The radii of the spheroids can be set before each <a href="../cspice/gfoclt_c.html">gfoclt_c</a> call by
-   either:
-<P>
- 
-<UL>
-<TT>--</TT> Loading a text kernel assigning the desired radii to the kernel variable
-BODY699_RADII
-<BR><BR></UL>
-<UL>
-<TT>--</TT> Calling <a href="../cspice/pdpool_c.html">pdpool_c</a> to assign the desired radii to the kernel variable
-BODY699_RADII
-<BR><BR></UL>
-   Normally the application should restore Saturn's original radii after
-   the second search has been completed.
-<P>
- 
-   For each of the searches, the DSN station is the observer, Saturn (with
-   modified radii) is the ``front'' target body, and the Cassini orbiter is
-   the ``back'' target body. The aberration correction should be set to
-<P>
- 
-<PRE>
-   "CN"
-</PRE>
-   The method described here will not work for edge-on or nearly edge-on
-   viewing geometry: the ray-spheroid intercept computation fails to model
-   the real occultation geometry in the first case and is too unstable to
-   provide accurate results in the second.
-<P>
- 
-   The assumption of straight-line radiation paths may also be unsuitable
-   for very high-accuracy work.
-<P>
- 
-<BR><BR>
-<A NAME="Angular offset between instrument boresight and velocity"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Angular offset between instrument boresight and velocity
-</H3><P><BR><BR>
-   Although the GF subsystem doesn't directly support searches involving
-   coordinates of velocity vectors, one can use <a href="../cspice/gfposc_c.html">gfposc_c</a> to find times when
-   the angular separation of a spacecraft-mounted instrument's boresight
-   vector and the instrument's (inertially referenced) velocity satisfies
-   specified constraints.
-<P>
- 
-   The first step is to create an SPK file for an artificial object whose
-   position relative to the spacecraft's center of mass is parallel to the
-   instrument's boresight direction. The SPICE utility PINPOINT can be used
-   to create such an SPK file.
-<P>
- 
-   Next, create a specification for a dynamic reference frame whose +Z axis
-   is aligned with the spacecraft velocity vector. The view frame example
-   in the Dynamic Frames tutorial demonstrates this.
-<P>
- 
-   The colatitude of the vector from the spacecraft to the artificial
-   object, expressed in the view frame, is the desired angular separation.
-   An application program can call <a href="../cspice/gfposc_c.html">gfposc_c</a> with the coordinate system and
-   coordinate, respectively, set to
-<P>
- 
-<PRE>
-   "SPHERICAL"
-   "COLATITUDE"
-</PRE>
-   to conduct the search.
-<P>
- 
 <BR><BR>
 <A NAME="GF Concepts"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
@@ -2390,16 +1348,22 @@ value.'<BR>
 <H3> Search convergence
 </H3><P><BR><BR>
    Once a root has been bracketed, a refinement process is used to narrow
-   down the time interval within which the root must lie. This refinement
-   process terminates when the location of the root has been determined to
-   within an error margin called the "convergence tolerance."
+   down the time interval, [t1, t2] with t2 &gt;= t1, within which the root
+   must lie. This refinement process terminates when the location of the
+   root has been determined to within an error margin called then
+   "convergence tolerance."
 <P>
  
-   The high-level GF search routines use a fixed tolerance (see the headers
-   of these routines for details). The default value is "tight" so that the
-   tolerance doesn't become the limiting factor in the accuracy of
-   solutions. In general the accuracy of input data will be the limiting
-   factor.
+   The high-level GF search routines use a fixed tolerance in units of
+   seconds SPICE_GF_CNVTOL which is defined in the header file
+<P>
+ 
+<PRE>
+   SpiceGF.h
+</PRE>
+   The default value is "tight" so that the tolerance doesn't become the
+   limiting factor in the accuracy of solutions. In general the accuracy of
+   input data will be the limiting factor.
 <P>
  
    To use a different tolerance value, mid-level GF search routines
@@ -2410,6 +1374,23 @@ value.'<BR>
    will be omitted. However, in most cases, the step size is likely to have
    a much greater effect on processing time than would the convergence
    tolerance.
+<P>
+ 
+   Please remember the condition satisfying convergence
+<P>
+ 
+<PRE>
+   || t2 - t1 || =&lt; SPICE_GF_CNVTOL
+</PRE>
+   does not imply (ignoring incompatibility of units)
+<P>
+ 
+<PRE>
+   || f(t2) - f(t1) || =&lt; SPICE_GF_CNVTOL
+</PRE>
+   for scalar function ``f(t).'' The GF subsystem measures convergence
+   using time (units of TDB seconds) not using the scalar quantity (units
+   of kilometers or radians or whatever).
 <P>
  
 <BR><BR>
@@ -2568,6 +1549,1063 @@ one local extremum will be found in the interval.
 </PRE>
    In many cases the actual number of intervals needed is much smaller than
    this estimate.
+<P>
+ 
+<BR><BR>
+<A NAME="GF API Routines"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> GF API Routines
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="High-level GF search routines"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> High-level GF search routines
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   The high-level GF search routines constitute the principal application
+   programming interface to the GF subsystem.
+<P>
+ 
+   The routines described here are supported in all language versions of
+   the SPICE Toolkit.
+<P>
+ 
+   All of the routines listed below have extensive header documentation.
+   Each header describes all input and output arguments and includes one or
+   more example programs accompanied by example meta-kernels and
+   corresponding program outputs.
+<P>
+ 
+   Additional, more extensive code examples are presented at the end of
+   this document.
+<P>
+ 
+   The ``GF Computational Recipes'' chapter below provides hints on how to
+   solve various geometric search problems using these routines.
+<P>
+ 
+   The high-level GF search routines are:
+<P>
+ 
+<DL><DT>
+<B>
+ <a href="../cspice/gfdist_c.html">gfdist_c</a>
+</B><BR><BR>
+<DD>
+ Distance search: find time windows when a given observer-target
+distance constraint is met.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfilum_c.html">gfilum_c</a>
+</B><BR><BR>
+<DD>
+ Illumination angles: find time window over which a constraint on the
+observed phase, solar incidence, or emission angle at a specified
+target body surface point is met.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfoclt_c.html">gfoclt_c</a>
+</B><BR><BR>
+<DD>
+ Occultation or transit search: find time windows when a given type of
+occultation or transit is in progress.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfpa_c.html">gfpa_c</a>
+</B><BR><BR>
+<DD>
+ Phase angle: find time windows when a observer-target-illuminator phase
+angle constraint is met.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfposc_c.html">gfposc_c</a>
+</B><BR><BR>
+<DD>
+ Observer-target position vector coordinate search: find time windows
+when a given constraint on a specified coordinate (e.g. Cartesian X, Y,
+Z or planetocentric radius, longitude, or latitude) of an
+observer-target position vector is met.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfrfov_c.html">gfrfov_c</a>
+</B><BR><BR>
+<DD>
+ Ray in instrument field of view search: find time windows when a given
+ray emanating from an observer is contained in a specified instrument's
+field of view.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfrr_c.html">gfrr_c</a>
+</B><BR><BR>
+<DD>
+ Range rate: find time windows when a given constraint on the range rate
+of an observer to target position vector is met.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfsep_c.html">gfsep_c</a>
+</B><BR><BR>
+<DD>
+ Angular separation search: find time windows when a given constraint on
+the angular separation of two targets as seen by a specified observer
+is met.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfsntc_c.html">gfsntc_c</a>
+</B><BR><BR>
+<DD>
+ Ray-surface intercept coordinate search: find time windows when a
+specified constraint on a coordinate of the surface intercept of a
+specified ray on a target body is met.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfstol_c.html">gfstol_c</a>
+</B><BR><BR>
+<DD>
+ Set the GF subsystem convergence tolerance. The high level GF routines
+use the default tolerance for the search. The user may change the
+convergence tolerance from the default value by calling <a href="../cspice/gfstol_c.html">gfstol_c</a>. All
+subsequent searches using the high level routines will use the updated
+tolerance value.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfsubc_c.html">gfsubc_c</a>
+</B><BR><BR>
+<DD>
+ Sub-observer point coordinate search: find time windows when a
+specified constraint on a coordinate of the sub-observer point on a
+specified target body is met.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gftfov_c.html">gftfov_c</a>
+</B><BR><BR>
+<DD>
+ Target body in instrument field of view search: find time windows when
+a given target body appears in a specified instrument's field of view.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfudb_c.html">gfudb_c</a>
+</B><BR><BR>
+<DD>
+ User-defined boolean quantity function: find time windows when a given
+user-defined boolean value function equals true.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfuds_c.html">gfuds_c</a>
+</B><BR><BR>
+<DD>
+ User-defined scalar quantity function: find time windows when a given
+constraint on a user-defined scalar value function is met.<BR>
+</DL>
+<BR><BR>
+<A NAME="Mid-level GF search routines"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Mid-level GF search routines
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   The routines discussed here are provided only in the Fortran and C SPICE
+   Toolkits. (Practical means of implementing these routines in IDL and
+   MATLAB have not been found.)
+<P>
+ 
+   The mid-level GF search routines are:
+<P>
+ 
+<DL><DT>
+<B>
+ <a href="../cspice/gfevnt_c.html">gfevnt_c</a>
+</B><BR><BR>
+<DD>
+ Scalar quantity search: find times when specified constraints on any
+scalar quantity, such as distance or angular separation, are met.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gffove_c.html">gffove_c</a>
+</B><BR><BR>
+<DD>
+ FOV search: find times when a specified target appears in a specified
+instrument FOV. This routine provides the functionality of both
+<a href="../cspice/gftfov_c.html">gftfov_c</a> and <a href="../cspice/gfrfov_c.html">gfrfov_c</a>.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfocce_c.html">gfocce_c</a>
+</B><BR><BR>
+<DD>
+ Occultation or transit search: find times when a specified target body
+occults or is in transit across another, as seen by a specified
+observer.<BR>
+</DL>
+   These routines provide all of the functionality of the high-level search
+   routines, plus several additional features:
+<P>
+ 
+<DL><DT>
+<B>
+ Progress reporting
+</B><BR><BR>
+<DD>
+ Applications can control whether a ``percent complete'' progress report
+is displayed during a GF search. By default, the report is displayed
+via console I/O. Applications can override the default display by
+passing custom progress reporting routines as input arguments to
+mid-level GF search routines.<BR>
+</DL>
+<DL><DT>
+<B>
+ Interrupt handling
+</B><BR><BR>
+<DD>
+ Applications can control whether mid-level GF search routines test for
+issuance of an interrupt command and abort if such a command is
+detected. Applications can override the default interrupt handling
+behavior by passing a custom interrupt detection routine as an input
+argument to mid-level GF search routines.<BR>
+</DL>
+<DL><DT>
+<B>
+ Set search step function
+</B><BR><BR>
+<DD>
+ Applications can override the default search step behavior by passing a
+custom step size routine as an input argument to mid-level GF search
+routines.<BR>
+</DL>
+<DL><DT>
+<B>
+ Set refinement function
+</B><BR><BR>
+<DD>
+ Applications can override the default root refinement algorithm (binary
+search) by passing a custom root refinement routine as an input
+argument to mid-level GF search routines.<BR>
+</DL>
+<DL><DT>
+<B>
+ Set convergence tolerance
+</B><BR><BR>
+<DD>
+ Convergence tolerance is an input argument to mid-level GF search
+routines.<BR>
+</DL>
+<BR><BR>
+<A NAME="Rationale for calling mid-level GF search routines"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Rationale for calling mid-level GF search routines
+</H3><P><BR><BR>
+   The mid-level GF search routines are more complex than their high-level
+   counterparts (considerably so in the case of <a href="../cspice/gfevnt_c.html">gfevnt_c</a>). The main reason
+   to use the mid-level routines is to take advantage of their progress
+   reporting and interrupt handling capabilities.
+<P>
+ 
+   GF searches can take a long time to complete, particularly when the
+   confinement window is large and the step size is small. It may not be
+   obvious to a user whether a running search is making progress at a
+   reasonable rate. The default GF progress report, which when enabled
+   updates approximately once per second, helps to answer this question.
+<P>
+ 
+   If progress reporting is used in a GUI application, reports produced by
+   the default mechanism are probably undesirable. In this case,
+   application programs can pass custom progress reporting routines to the
+   mid-level GF search routines.
+<P>
+ 
+   When an interactive SPICE-based application runs a GF search, the user
+   may want to abort the search without terminating the program, possibly
+   because terminating the program would result in substantial loss of
+   work. The GF interrupt handling capability allows an application program
+   to quickly abort GF searches and have the GF system return control to
+   the application.
+<P>
+ 
+<BR><BR>
+<A NAME="Supporting utility routines"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Supporting utility routines
+</H3><P><BR><BR>
+   When the default GF progress reporting, interrupt handling, and
+   root-finding functionality is desired, a calling application can call
+   existing GF utility routines and, where applicable, pass them as actual
+   input arguments to the mid-level search routines. These utilities are:
+<P>
+ 
+<DL><DT>
+<B>
+ <a href="../cspice/gfsstp_c.html">gfsstp_c</a>
+</B><BR><BR>
+<DD>
+ Set search step. This routine sets the step size that will be returned
+by <a href="../cspice/gfstep_c.html">gfstep_c</a>.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfstep_c.html">gfstep_c</a>
+</B><BR><BR>
+<DD>
+ Get search step. This routine returns step size that was last set by
+<a href="../cspice/gfsstp_c.html">gfsstp_c</a>.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfrefn_c.html">gfrefn_c</a>
+</B><BR><BR>
+<DD>
+ Refine root bracketing interval. This routine returns the midpoint of
+the input times; this behavior supports root finding by bisection.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfrepi_c.html">gfrepi_c</a>
+</B><BR><BR>
+<DD>
+ Initialize progress report.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfrepu_c.html">gfrepu_c</a>
+</B><BR><BR>
+<DD>
+ Update progress report.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfrepf_c.html">gfrepf_c</a>
+</B><BR><BR>
+<DD>
+ Finalize progress report.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfbail_c.html">gfbail_c</a>
+</B><BR><BR>
+<DD>
+ Detect interrupt. This function returns a logical value indicating
+whether an interrupt has been detected.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfinth_c.html">gfinth_c</a>
+</B><BR><BR>
+<DD>
+ Interrupt handler. This handler should be established via a call to the
+ANSI C function `signal'.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/gfclrh_c.html">gfclrh_c</a>
+</B><BR><BR>
+<DD>
+ Clear <a href="../cspice/gfbail_c.html">gfbail_c</a> status. This function should be called after a mid-level
+GF search routine returns, if interrupt handling is enabled.<BR>
+</DL>
+   In CSPICE, the default interrupt handling behavior, when enabled, is to
+   return control to the calling application if the SIGINT signal is
+   detected. See the code examples in the headers of the mid-level GF
+   search routines for details.
+<P>
+ 
+<BR><BR>
+<A NAME="Overriding default behavior"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Overriding default behavior
+</H3><P><BR><BR>
+   Progress Reporting
+<P>
+ 
+   To override the default progress reporting capability provided by the
+   mid-level GF search routines, an application must pass in custom
+   routines in place of <a href="../cspice/gfrepi_c.html">gfrepi_c</a>, grrepu_c, and <a href="../cspice/gfrepf_c.html">gfrepf_c</a>. Each of the
+   custom routines must have an argument list that exactly matches that of
+   the default routine it overrides; see the headers of the default
+   routines for details. Note that the application must override all of the
+   progress reporting routines in a given call, if it overrides any one of
+   them.
+<P>
+ 
+   To override the default interrupt handling capability, an application
+   must pass in a custom routine in place of <a href="../cspice/gfbail_c.html">gfbail_c</a>. The custom routine
+   must have an argument list that exactly matches that of <a href="../cspice/gfbail_c.html">gfbail_c</a>.
+<P>
+ 
+   Step Size and Refinement Functions
+<P>
+ 
+   The need to override the step size and refinement functions is expected
+   to be quite unusual; it should be attempted only by programmers having a
+   detailed knowledge of the GF search algorithms and the code that
+   implements them.
+<P>
+ 
+<BR><BR>
+<A NAME="GF Computational Recipes"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> GF Computational Recipes
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+   Below we provide terse descriptions of computational approaches for
+   solving common geometric search problems.
+<P>
+ 
+   The ``recipes'' below are very abbreviated; they're intended to be
+   helpful to experienced SPICE users. New users are encouraged to first
+   familiarize themselves with the example programs in the GF API headers
+   and in this document.
+<P>
+ 
+   Users should consult the headers of the pertinent SPICE routines for
+   details on the use of those routines.
+<P>
+ 
+   Note that for valid comparison of GF results against those obtained by
+   alternate means, inputs such as kernel data, aberration corrections,
+   reference frames, coordinate systems, confinement windows, and time
+   systems used to represent time windows must be compatible.
+<P>
+ 
+<BR><BR>
+<A NAME="Required SPICE kernels"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Required SPICE kernels
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   With a few exceptions, the recipes below don't discuss the SPICE kernels
+   required to carry out the described computations. Some general
+   requirements are summarized here:
+<P>
+ 
+<UL>
+<TT>--</TT> SPK files containing ephemeris data for targets and observers are almost
+always required; the only exception is the star visibility case where the
+star's location is modeled as a direction rather than as a position vector.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> When aberration corrections are used, sufficient ephemeris data must be
+available to propagate states of the observer and targets to the solar
+system barycenter. The states of the targets must be calculable at light
+time corrected epochs, so the required coverage will extend beyond the
+confinement window.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> When stellar aberration corrections are used, coverage for the observer
+must be available on a window whose intervals are expanded by one second
+(in both directions) relative to the confinement window.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Computations involving target body-fixed, body-centered reference frames
+require PCK files providing orientation data for those reference frames.
+Such computations often require PCK files containing size and shape data
+for the target body as well. In many cases one PCK file can provide both
+the necessary orientation and size/shape data.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> When required body-fixed, body-centered reference frame specifications are
+not built into the CSPICE system, those specifications must be provided by
+FK files.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Computations involving topocentric reference frames centered at surface
+points on extended objects require both SPK and FK files providing state
+data for the surface point and topocentric frame orientation, respectively.
+Usually these computations also require a PCK file providing orientation of
+the extended object.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Computations involving instrument pointing and FOV specifications normally
+require all of the following: CK files, SCLK kernels, LSK files, FK files,
+and IK files.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="A note about CK data availability"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> A note about CK data availability
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   CK files, particularly those containing reconstructed attitude data,
+   often have coverage gaps. A SPICE-based application program can obtain
+   the time window over which CK data are available by calling the CSPICE
+   routine <a href="../cspice/ckcov_c.html">ckcov_c</a>.
+<P>
+ 
+   When the caller of <a href="../cspice/ckcov_c.html">ckcov_c</a> requests that interval endpoints in the CK
+   coverage time window be expressed as TDB seconds, <a href="../cspice/ckcov_c.html">ckcov_c</a> must convert
+   these endpoints from encoded SCLK (ticks) to TDB. Due to round-off
+   errors, and in some cases, to discontinuities in the TDB-to-ticks
+   mapping, the TDB values obtained via this call may not be translatable
+   to tick values within the actual coverage window of the CK file.
+<P>
+ 
+   For safety, applications obtaining TDB coverage windows via <a href="../cspice/ckcov_c.html">ckcov_c</a>
+   should call the CSPICE window routine <a href="../cspice/wncond_c.html">wncond_c</a> to contract those windows
+   by a duration large enough to ensure that the entire, contracted
+   coverage window is usable.
+<P>
+ 
+   For an SCLK kernel that provides a continuous TDB-to-ticks mapping, a
+   contraction duration (having units of TDB seconds) equivalent to one
+   tick normally should suffice, as long as the nominal tick duration is at
+   least one microsecond.
+<P>
+ 
+   For SCLK kernels having discontinuities, the required contraction
+   duration can be determined by analyzing the possible mapping errors
+   caused by those discontinuities; alternatively, it can be determined by
+   trial and error. If a search is performed and required CK data are
+   unavailable, SPICE routines will signal an error.
+<P>
+ 
+<BR><BR>
+<A NAME="Geometric constraint searches"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Geometric constraint searches
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<BR><BR>
+<A NAME="Periapse/Apoapse"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Periapse/Apoapse
+</H3><P><BR><BR>
+   To find the unique closest approach of an observer to a target over a
+   specified time window, call <a href="../cspice/gfdist_c.html">gfdist_c</a>, specifying the
+<P>
+ 
+<PRE>
+   "ABSMIN"
+</PRE>
+   (absolute minimum) relational operator. To find all of the ``close
+   approaches'' of an observer to a target over a specified time window,
+   use the
+<P>
+ 
+<PRE>
+   "LOCMIN"
+</PRE>
+   (local minimum) relational operator.
+<P>
+ 
+   For apoapse events, use the absolute or local maximum operators instead:
+<P>
+ 
+<PRE>
+   "ABSMAX"
+   "LOCMAX"
+</PRE>
+   See the example program MEDLEY below for details.
+<P>
+ 
+<BR><BR>
+<A NAME="View periods"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> View periods
+</H3><P><BR><BR>
+   View periods may be defined as time intervals, within a confinement
+   window, during which a target body has elevation greater than a
+   specified limit with respect to the local horizontal plane at a given
+   point on the surface of an extended body.
+<P>
+ 
+   Compute view periods using <a href="../cspice/gfposc_c.html">gfposc_c</a>. See the example program MEDLEY
+   below for details.
+<P>
+ 
+   In the <a href="../cspice/gfposc_c.html">gfposc_c</a> call, aberration corrections should be set to be
+   compatible with the direction of radiation travel: either ``reception''
+   or ``transmission'' corrections can be selected. Normally both light
+   time and stellar aberration corrections should be used; the aberration
+   correction input string should be either of
+<P>
+ 
+<PRE>
+   "LT+S"
+   "XLT+S"
+</PRE>
+   To find the time window when the target is ``visible'' for both
+   reception and transmission, run the search twice, using both aberration
+   correction choices. The result window from the first search can be used
+   as the confinement window for the second.
+<P>
+ 
+   SPICE doesn't have the capability of modeling atmospheric effects, so
+   for observers on bodies having atmospheres, view periods found using the
+   GF subsystem will be subject to errors due to this deficiency.
+<P>
+ 
+   ``Usable'' view periods may be a subset of those found by GF searches,
+   since there may be pointing limitations on the antenna or instrument
+   viewing the target.
+<P>
+ 
+<BR><BR>
+<A NAME="Sub-observer point"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Sub-observer point
+</H3><P><BR><BR>
+   Use <a href="../cspice/gfsubc_c.html">gfsubc_c</a> to find times when the sub-observer point on an extended
+   target satisfies the constraints
+<P>
+ 
+<PRE>
+   min_lon &lt; sub-observer longitude &lt; max_lon
+   min_lat &lt; sub-observer latitude  &lt; max_lat
+</PRE>
+   Four searches are required: one for each constraint.
+<P>
+ 
+   The searches can be cascaded: the result window for one search can be
+   used as the confinement window for the next.
+<P>
+ 
+   If the longitude interval of interest includes 180 degrees, then
+<P>
+ 
+<PRE>
+         min_lon &gt; max_lon
+</PRE>
+   and the corresponding longitude constraints have the form
+<P>
+ 
+<PRE>
+         min_lon &lt; sub-observer longitude
+   OR    max_lon &gt; sub-observer longitude
+</PRE>
+   In this case the solution window for the longitude constraints is the
+   union of the solution windows for the two constraints shown above; use
+   <a href="../cspice/wnunid_c.html">wnunid_c</a> to compute this union. The union can then be used as the
+   confinement window for a latitude search.
+<P>
+ 
+   The case of a right ascension interval containing 0 degrees is handled
+   analogously.
+<P>
+ 
+   The order of the searches can be important: often constraints on one of
+   the coordinates produce a smaller result window than constraints on the
+   other. For example, for a polar orbiter, latitude constraints may be
+   satisfied over a small fraction of the search window, so searching for
+   times when the latitude constraints are met would yield a small window
+   over which the longitude searches would be conducted. For an equatorial
+   orbiter, the situation would be reversed.
+<P>
+ 
+<BR><BR>
+<A NAME="Instrument boresight intercept"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Instrument boresight intercept
+</H3><P><BR><BR>
+   Use <a href="../cspice/gfsntc_c.html">gfsntc_c</a> to find times when the intercept on an extended target body
+   of a ray emanating from an observing instrument's location and aligned
+   with the instrument's boresight satisfies the constraints
+<P>
+ 
+<PRE>
+   min_lon &lt; intercept longitude &lt; max_lon
+   min_lat &lt; intercept latitude  &lt; max_lat
+</PRE>
+   Four searches are required: one for each constraint.
+<P>
+ 
+   See the discussion of alternate longitude constraints and of search
+   order above in the section titled ``Sub-observer point.''
+<P>
+ 
+   Note that pointing stability can be an issue for boresight intercept
+   searches: the pointing must be stable enough so that the GF system can
+   compute the time window, within the confinement window, during which the
+   ray-surface intercept exists. High-frequency pointing excursions can
+   cause this ``existence window'' computation to produce invalid results,
+   which in turn will cause the requested coordinate constraint searches to
+   either fail before completion or to complete but produce invalid
+   results.
+<P>
+ 
+   <a href="../cspice/gfsntc_c.html">gfsntc_c</a> should not be used for near-tangent ray direction cases.
+   <a href="../cspice/gfsntc_c.html">gfsntc_c</a> contracts the existence window described above by a fraction of
+   a second to avoid geometric singularities; this affords more robust
+   search behavior for normal cases but prevents <a href="../cspice/gfsntc_c.html">gfsntc_c</a> from producing
+   accurate results for near-tangent ray pointing.
+<P>
+ 
+<BR><BR>
+<A NAME="Planet in instrument field of view"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Planet in instrument field of view
+</H3><P><BR><BR>
+   Use <a href="../cspice/gftfov_c.html">gftfov_c</a> to find times when an ephemeris object is in the FOV of an
+   instrument, provided this FOV can be modeled as one of the shapes
+   supported by the SPICE routine <a href="../cspice/getfov_c.html">getfov_c</a>. The target shape can be treated
+   as an ellipsoid or a point.
+<P>
+ 
+   <a href="../cspice/gftfov_c.html">gftfov_c</a> may not be suitable for FOV searches involving push-broom
+   cameras. For an alternate approach, see the example program ROVER below
+   for a demonstration of a search involving the MRO HIRISE camera.
+<P>
+ 
+<BR><BR>
+<A NAME="Star in instrument field of view"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Star in instrument field of view
+</H3><P><BR><BR>
+   Use <a href="../cspice/gfrfov_c.html">gfrfov_c</a> to find times when a target modeled as a ray (that is, the
+   direction to the target is available, the distance to the target is not)
+   is in the FOV of an instrument, provided this FOV can be modeled as one
+   of the shapes supported by the SPICE routine <a href="../cspice/getfov_c.html">getfov_c</a>.
+<P>
+ 
+<BR><BR>
+<A NAME="Spacecraft occultation or transit"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Spacecraft occultation or transit
+</H3><P><BR><BR>
+   Use <a href="../cspice/gfoclt_c.html">gfoclt_c</a> to search for spacecraft occultations or transits. If the
+   spacecraft is the target, the spacecraft shape can be modeled as a
+   point. The blocking body must be modeled as an ellipsoid.
+<P>
+ 
+   <a href="../cspice/gfoclt_c.html">gfoclt_c</a> assumes straight-line light paths for occultation searches.
+   This assumption may not be suitable for high-accuracy work.
+<P>
+ 
+<BR><BR>
+<A NAME="Natural satellite occultation or transit"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Natural satellite occultation or transit
+</H3><P><BR><BR>
+   Use <a href="../cspice/gfoclt_c.html">gfoclt_c</a> to search for natural satellite occultations or transits.
+   Both satellite and planet should be modeled as ellipsoids.
+<P>
+ 
+<BR><BR>
+<A NAME="Spacecraft eclipse"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Spacecraft eclipse
+</H3><P><BR><BR>
+   Defining a spacecraft eclipse as the presence of the spacecraft in the
+   shadow created by the Sun and a blocking body, one can observe that
+   eclipses are equivalent to occultations, where the spacecraft is the
+   observer, the Sun is the ``back'' body, and the blocking body is the
+   ``front'' body.
+<P>
+ 
+   Use <a href="../cspice/gfoclt_c.html">gfoclt_c</a> to search for spacecraft eclipses.
+<P>
+ 
+   Both the Sun and the blocking body should be modeled as ellipsoids.
+<P>
+ 
+   Set the occultation type to
+<P>
+ 
+<PRE>
+   "ANY"
+</PRE>
+   to search for times when the spacecraft is in penumbral or umbral
+   eclipse; set the occultation type to
+<P>
+ 
+<PRE>
+   "FULL"
+</PRE>
+   to search for times when the spacecraft is in umbral eclipse.
+<P>
+ 
+   <a href="../cspice/gfoclt_c.html">gfoclt_c</a> assumes straight-line light paths for occultation searches.
+   This assumption may not be suitable for high-accuracy work.
+<P>
+ 
+<BR><BR>
+<A NAME="Surface point eclipse"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Surface point eclipse
+</H3><P><BR><BR>
+   Searches for eclipses of a surface point on an extended object can be
+   conducted using <a href="../cspice/gfoclt_c.html">gfoclt_c</a>, as long as the position of the surface point
+   is given by an SPK file. Use the SPICE utility PINPOINT to create an SPK
+   file for the surface point if necessary; then proceed as described in
+   the above ``Spacecraft eclipse'' discussion.
+<P>
+ 
+<BR><BR>
+<A NAME="Equator crossing"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Equator crossing
+</H3><P><BR><BR>
+   Use <a href="../cspice/gfposc_c.html">gfposc_c</a> to find times when one body crosses the equatorial plane of
+   another.
+<P>
+ 
+   The reference frame should be the body-fixed, body-centered frame
+   associated with the body whose equatorial plane is of interest.
+<P>
+ 
+   The coordinate system and coordinate can be set, respectively, to
+<P>
+ 
+<PRE>
+   "RECTANGULAR"
+   "Z"
+</PRE>
+   Use the relational description "Z = 0" for the search.
+<P>
+ 
+   Other choices such as
+<P>
+ 
+<PRE>
+   "LATITUDINAL"
+   "LATITUDE"
+</PRE>
+   will yield the same results, up to round-off errors.
+<P>
+ 
+   Use the relational description "LATITUDE = 0" for the search.
+<P>
+ 
+   Note that for a given pair of bodies, when aberration corrections are
+   used, the choice of observer and target affects the result, since
+   aberration corrections are not anti-symmetric functions of target and
+   observer.
+<P>
+ 
+   See the Fundamental Concepts SPICE tutorial and the header of <a href="../cspice/spkezr_c.html">spkezr_c</a>
+   for further information on aberration corrections.
+<P>
+ 
+<BR><BR>
+<A NAME="Meridian crossing"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Meridian crossing
+</H3><P><BR><BR>
+   Use <a href="../cspice/gfposc_c.html">gfposc_c</a> to find times when one body crosses a given meridian of the
+   body-fixed, body-centered reference frame of another.
+<P>
+ 
+   Care must be taken to identify the appropriate coordinate system: is
+   longitude positive East or positive West?
+<P>
+ 
+   For the positive East longitude case, the coordinate system and
+   coordinate can be set to
+<P>
+ 
+<PRE>
+   "LATITUDINAL"
+   "LONGITUDE"
+</PRE>
+   respectively.
+<P>
+ 
+   For the positive West longitude case, planetographic longitude can be
+   used, but in some cases, additional set-up is required.
+<P>
+ 
+   If the central body is not the Earth, Moon, Sun, or a body with
+   retrograde spin, the selections
+<P>
+ 
+<PRE>
+   "PLANETOGRAPHIC"
+   "LONGITUDE"
+</PRE>
+   can be used as is.
+<P>
+ 
+   Use the relational description "LONGITUDE = value" for the search, where
+   value is the angular value for the meridian, expressed in radians.
+<P>
+ 
+   The Earth, Moon, Sun, and bodies with retrograde spin are special cases,
+   because for these objects planetographic longitude is positive East by
+   default. However, this default can be overridden via kernel pool
+   assignments: an application can force planetographic longitude for a
+   given body to increase in the desired sense. See the header of <a href="../cspice/recpgr_c.html">recpgr_c</a>
+   for details. If these assignments are made, then the above choices of
+   coordinate system and coordinate will work for these special cases as
+   well.
+<P>
+ 
+   See the notes on aberration corrections in the section titled ``Equator
+   crossing'' above.
+<P>
+ 
+<BR><BR>
+<A NAME="Elongation"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Elongation
+</H3><P><BR><BR>
+   Use <a href="../cspice/gfsep_c.html">gfsep_c</a> to find times when target body elongation constraints are
+   met, given a target body and observer. The Sun is the second target.
+<P>
+ 
+<BR><BR>
+<A NAME="Orbital longitude of a satellite"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Orbital longitude of a satellite
+</H3><P><BR><BR>
+   This recipe requires the user to create two dynamic reference frame
+   specifications in a frame kernel. See the ``Dynamic Frames'' tutorial
+   and the Frames Required Reading, <a href="../req/frames.html">frames.req</a>, for detailed discussions of
+   this topic.
+<P>
+ 
+   The participants in this geometric relationship are an observer, a
+   central body, and a satellite orbiting the central body. For this
+   geometric case, ``orbital longitude'' is measured in the orbital plane
+   of the satellite, in the positive sense about the satellite's angular
+   velocity vector, with the zero longitude direction aligned with the
+   orthogonal projection of the observer-central body vector onto the
+   satellite's orbital plane. This definition is applicable, for example,
+   when the Earth is the observer, Mars is the central body, and Phobos is
+   the satellite.
+<P>
+ 
+   There is a different definition of orbital longitude for the case where
+   the target is a planet, asteroid, or comet and the Earth is the
+   observer: for this case, the Sun-Earth vector points in direction of
+   zero longitude. We won't address this case, but it can be handled by a
+   simple modification of the ORBITAL_LONG_FRAME we describe below.
+<P>
+ 
+   The first step is to specify a two-vector dynamic frame ORBIT_FRAME
+   whose primary axis is aligned with the central body-satellite position
+   vector; this is the frame's +X axis. Associate the secondary axis with
+   the central body-satellite velocity vector; this is the frame's +Y axis.
+   The +Z axis of ORBIT_FRAME is then aligned with the instantaneous
+   angular velocity of the satellite's orbit.
+<P>
+ 
+   Next, specify a two-vector dynamic frame ORBITAL_LONG_FRAME whose
+   primary axis is aligned with the +Z axis of ORBIT_FRAME; this is the +Z
+   axis of ORBITAL_LONG_FRAME. Associate the secondary axis of
+   ORBITAL_LONG_FRAME with the observer-central body position vector; this
+   is the +X axis of ORBITAL_LONG_FRAME.
+<P>
+ 
+   Finally, call <a href="../cspice/gfposc_c.html">gfposc_c</a> to search for times when the satellite's orbital
+   longitude satisfies constraints of interest. For these searches, the
+   observer is the central body, the target is the satellite, the reference
+   frame is ORBITAL_LONG_FRAME, and the coordinate system and coordinate
+   are, respectively, set to:
+<P>
+ 
+<PRE>
+   "LATITUDINAL"
+   "LONGITUDE"
+</PRE>
+   Aberration corrections should not be used for this application.
+<P>
+ 
+<BR><BR>
+<A NAME="Approximate times of Cassini Saturn ring occultations"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Approximate times of Cassini Saturn ring occultations
+</H3><P><BR><BR>
+   An approximation of Saturn ring occultation ingress and egress times for
+   the Cassini orbiter, as viewed by a given Deep Space Network (DSN)
+   station, can be found using <a href="../cspice/gfoclt_c.html">gfoclt_c</a>.
+<P>
+ 
+   For the purpose of this search, the ring boundaries can be approximated
+   using two extremely flat spheroids, both of which are aligned, as is
+   Saturn, with the IAU_SATURN reference frame. The large and small
+   spheroids have equatorial radii equal to, respectively, the radii of the
+   outer and inner ring boundaries. The polar radii can be set to 1 cm.
+<P>
+ 
+   Two searches using <a href="../cspice/gfoclt_c.html">gfoclt_c</a> are required: the first search finds the
+   time window when the orbiter is occulted by the larger spheroid. The
+   result window from that search can be used as the confinement window for
+   the second search, which finds the time window when the orbiter is
+   occulted by the inner spheroid.
+<P>
+ 
+   Subtracting the result window of the second search from that of the
+   first yields a window representing the time period of the ring
+   occultations.
+<P>
+ 
+   To avoid having to create new SPICE kernels representing the
+   trajectories, orientations, sizes, shapes, names, and ID codes of the
+   spheroids, one simply creates them by temporarily changing the radii of
+   Saturn.
+<P>
+ 
+   The radii of the spheroids can be set before each <a href="../cspice/gfoclt_c.html">gfoclt_c</a> call by
+   either:
+<P>
+ 
+<UL>
+<TT>--</TT> Loading a text kernel assigning the desired radii to the kernel variable
+BODY699_RADII
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Calling <a href="../cspice/pdpool_c.html">pdpool_c</a> to assign the desired radii to the kernel variable
+BODY699_RADII
+<BR><BR></UL>
+   Normally the application should restore Saturn's original radii after
+   the second search has been completed.
+<P>
+ 
+   For each of the searches, the DSN station is the observer, Saturn (with
+   modified radii) is the ``front'' target body, and the Cassini orbiter is
+   the ``back'' target body. The aberration correction should be set to
+<P>
+ 
+<PRE>
+   "CN"
+</PRE>
+   The method described here will not work for edge-on or nearly edge-on
+   viewing geometry: the ray-spheroid intercept computation fails to model
+   the real occultation geometry in the first case and is too unstable to
+   provide accurate results in the second.
+<P>
+ 
+   The assumption of straight-line radiation paths may also be unsuitable
+   for very high-accuracy work.
+<P>
+ 
+<BR><BR>
+<A NAME="Angular offset between instrument boresight and velocity"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Angular offset between instrument boresight and velocity
+</H3><P><BR><BR>
+   Although the GF subsystem doesn't directly support searches involving
+   coordinates of velocity vectors, one can use <a href="../cspice/gfposc_c.html">gfposc_c</a> to find times when
+   the angular separation of a spacecraft-mounted instrument's boresight
+   vector and the instrument's (inertially referenced) velocity satisfies
+   specified constraints.
+<P>
+ 
+   The first step is to create an SPK file for an artificial object whose
+   position relative to the spacecraft's center of mass is parallel to the
+   instrument's boresight direction. The SPICE utility PINPOINT can be used
+   to create such an SPK file.
+<P>
+ 
+   Next, create a specification for a dynamic reference frame whose +Z axis
+   is aligned with the spacecraft velocity vector. The view frame example
+   in the Dynamic Frames tutorial demonstrates this.
+<P>
+ 
+   The colatitude of the vector from the spacecraft to the artificial
+   object, expressed in the view frame, is the desired angular separation.
+   An application program can call <a href="../cspice/gfposc_c.html">gfposc_c</a> with the coordinate system and
+   coordinate, respectively, set to
+<P>
+ 
+<PRE>
+   "SPHERICAL"
+   "COLATITUDE"
+</PRE>
+   to conduct the search.
 <P>
  
 <BR><BR>
@@ -3013,7 +3051,7 @@ approximate.
       be shorter than the shortest interval over which
       the distance is increasing or decreasing.
       We pick a conservative value: 100 days. Units
-      expected by SPICE are seconds.
+      expected by SPICE are TDB seconds.
       */
       step   = 100 * <a href="../cspice/spd_c.html">spd_c</a>();
  
@@ -3226,7 +3264,7 @@ approximate.
       be shorter than the shortest interval over which
       the elevation is increasing or decreasing.
       We pick a conservative value: 6 hours. Units
-      expected by SPICE are seconds.
+      expected by SPICE are TDB seconds.
       */
       step   =  <a href="../cspice/spd_c.html">spd_c</a>() / 4;
  
@@ -3280,8 +3318,12 @@ approximate.
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Results
 </H3><P><BR><BR>
-   When executed on a PC/Linux/gcc platform, the output from this program
-   was as follows:
+   Any numerical results shown for this example may differ between
+   platforms as the results depend on the SPICE kernels used as input and
+   the machine specific arithmetic implementation.
+<P>
+ 
+   The output from this program was as follows:
 <P>
  
 <PRE>
@@ -3639,7 +3681,7 @@ approximate.
       be shorter than the shortest interval over which
       the angular separation is increasing or decreasing.
       We pick a conservative value: 5 days. Units
-      expected by SPICE are seconds.
+      expected by SPICE are TDB seconds.
       */
       step = 5.0 * <a href="../cspice/spd_c.html">spd_c</a>();
  
@@ -3749,8 +3791,12 @@ approximate.
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Results
 </H3><P><BR><BR>
-   When executed on a PC/Linux/gcc platform, the output from this program
-   was as follows:
+   Any numerical results shown for this example may differ between
+   platforms as the results depend on the SPICE kernels used as input and
+   the machine specific arithmetic implementation.
+<P>
+ 
+   The output from this program was as follows:
 <P>
  
 <PRE>
@@ -4376,8 +4422,17 @@ rover to be visible.
       return ( 0 );
    }
 </PRE>
-   When executed on a PC/Linux/gcc platform, the output from this program
-   was as follows:
+<BR><BR>
+<A NAME="Results1"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Results
+</H3><P><BR><BR>
+   Any numerical results shown for this example may differ between
+   platforms as the results depend on the SPICE kernels used as input and
+   the machine specific arithmetic implementation.
+<P>
+ 
+   The output from this program was as follows:
 <P>
  
 <PRE>
@@ -4440,41 +4495,58 @@ rover to be visible.
 <P>
  
 <PRE>
-   <a href="../cspice/gfbail_c.html">gfbail_c</a>             GF, test for interrupt
-   <a href="../cspice/gfclrh_c.html">gfclrh_c</a>             GF, clear interrupt handler
-   <a href="../cspice/gfdist_c.html">gfdist_c</a>             GF, distance search
-   <a href="../cspice/gfevnt_c.html">gfevnt_c</a>             GF, mid-level scalar constraint search
-   <a href="../cspice/gffove_c.html">gffove_c</a>             GF, mid-level FOV intersection search
-   <a href="../cspice/gfocce_c.html">gfocce_c</a>             GF, mid-level occultation search
-   <a href="../cspice/gfoclt_c.html">gfoclt_c</a>             GF, find occultation
-   <a href="../cspice/gfposc_c.html">gfposc_c</a>             GF, position coordinate search
-   <a href="../cspice/gfrefn_c.html">gfrefn_c</a>             GF, refine solution bounds
-   <a href="../cspice/gfrepf_c.html">gfrepf_c</a>             GF, finalize progress report
-   <a href="../cspice/gfrepi_c.html">gfrepi_c</a>             GF, initialize progress report
-   <a href="../cspice/gfrepu_c.html">gfrepu_c</a>             GF, update progress report
-   <a href="../cspice/gfrfov_c.html">gfrfov_c</a>             GF, ray-FOV intersection search
-   <a href="../cspice/gfrr_c.html">gfrr_c</a>               GF, range rate search
-   <a href="../cspice/gfsep_c.html">gfsep_c</a>              GF, angular separation search
-   <a href="../cspice/gfinth_c.html">gfinth_c</a>             GF, interrupt signal handler
-   <a href="../cspice/gfsntc_c.html">gfsntc_c</a>             GF, surface intercept coordinate search
-   <a href="../cspice/gfsstp_c.html">gfsstp_c</a>             GF, set search step size
-   <a href="../cspice/gfstep_c.html">gfstep_c</a>             GF, get search step size
-   <a href="../cspice/gfsubc_c.html">gfsubc_c</a>             GF, sub-observer coordinate search
-   <a href="../cspice/gftfov_c.html">gftfov_c</a>             GF, target-FOV intersection search
-   <a href="../cspice/gfuds_c.html">gfuds_c</a>              GF, user defined scalar
+   <a href="../cspice/gfbail_c.html">gfbail_c</a>             Test for interrupt
+   <a href="../cspice/gfclrh_c.html">gfclrh_c</a>             Clear interrupt handler
+   <a href="../cspice/gfdist_c.html">gfdist_c</a>             Distance search
+   <a href="../cspice/gfevnt_c.html">gfevnt_c</a>             Mid-level scalar constraint search
+   <a href="../cspice/gffove_c.html">gffove_c</a>             Mid-level FOV intersection search
+   <a href="../cspice/gfilum_c.html">gfilum_c</a>             Illumination angle search
+   <a href="../cspice/gfinth_c.html">gfinth_c</a>             Interrupt signal handler
+   <a href="../cspice/gfocce_c.html">gfocce_c</a>             Mid-level occultation search
+   <a href="../cspice/gfoclt_c.html">gfoclt_c</a>             Find occultation
+   <a href="../cspice/gfpa_c.html">gfpa_c</a>               Phase angle search
+   <a href="../cspice/gfposc_c.html">gfposc_c</a>             Position coordinate search
+   <a href="../cspice/gfrefn_c.html">gfrefn_c</a>             Refine solution bounds
+   <a href="../cspice/gfrepf_c.html">gfrepf_c</a>             Finalize progress report
+   <a href="../cspice/gfrepi_c.html">gfrepi_c</a>             Initialize progress report
+   <a href="../cspice/gfrepu_c.html">gfrepu_c</a>             Update progress report
+   <a href="../cspice/gfrfov_c.html">gfrfov_c</a>             Ray-FOV intersection search
+   <a href="../cspice/gfrr_c.html">gfrr_c</a>               Range rate search
+   <a href="../cspice/gfsep_c.html">gfsep_c</a>              Angular separation search
+   <a href="../cspice/gfsntc_c.html">gfsntc_c</a>             Surface intercept coordinate search
+   <a href="../cspice/gfsstp_c.html">gfsstp_c</a>             Set search step size
+   <a href="../cspice/gfstep_c.html">gfstep_c</a>             Get search step size
+   <a href="../cspice/gfstol_c.html">gfstol_c</a>             Set/reset GF search tolerance
+   <a href="../cspice/gfsubc_c.html">gfsubc_c</a>             Sub-observer coordinate search
+   <a href="../cspice/gftfov_c.html">gftfov_c</a>             Target-FOV intersection search
+   <a href="../cspice/gfudb_c.html">gfudb_c</a>              User defined boolean function search
+   <a href="../cspice/gfuds_c.html">gfuds_c</a>              User defined scalar function search
 </PRE>
 <BR><BR>
-<A NAME="Appendix B---Revision History"></A>
+<A NAME="Appendix B --- Revision History"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
-<H1> Appendix B---Revision History
+<H1> Appendix B --- Revision History
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="2012 OCT 01 by E. D. Wright."></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> 2012 OCT 01 by E. D. Wright.
+</H3><P><BR><BR>
+   Documentation expanded to include descriptions of the illumination
+   angles, body center phase angle, GF tolerance adjustment, and user
+   defined boolean search routine capabilities.
+<P>
+ 
+   Edits to description of orbital longitude.
+<P>
+ 
 <BR><BR>
 <A NAME="2010 MAY 13 by E. D. Wright."></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> 2010 MAY 13 by E. D. Wright.
 </H3><P><BR><BR>
    Documentation expanded to include descriptions of the range rate and
-   user defined scalar function capabilities.
+   user defined scalar search routine capabilities.
 <P>
  
 <BR><BR>

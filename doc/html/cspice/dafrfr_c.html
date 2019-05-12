@@ -55,7 +55,7 @@
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 33%; text-align: center;">
             <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
@@ -66,7 +66,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
@@ -76,7 +76,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
@@ -220,8 +220,8 @@
       #include &lt;stdio.h&gt;
       #include &quot;SpiceUsr.h&quot;
 
-      int main ( int argc, char ** argv )
-      {
+      int main ()
+         {
          #define IFNLEN   61
 
          SpiceChar               ifname[IFNLEN];
@@ -232,16 +232,25 @@
          SpiceInt                handle;
          SpiceInt                nd;
          SpiceInt                ni;
+         SpiceChar             * kernel = &quot;/kernels/gen/spk/de421.bsp&quot;;
 
-         <a href="dafopr_c.html">dafopr_c</a> ( argv[1], &amp;handle );
+         <a href="dafopr_c.html">dafopr_c</a> ( kernel, &amp;handle );
 
          <b>dafrfr_c</b> ( handle, IFNLEN, &amp;nd, &amp;ni, ifname, &amp;fward, &amp;bward, &amp;free );
 
-         printf ( &quot;First free DAF address is %ld.\n&quot;, free );
+         printf ( &quot;First free DAF address is %d.\n&quot;, (int)free );
+ 
+        /.
+         Safely close the DAF.
+         ./
+         <a href="dafcls_c.html">dafcls_c</a> ( handle  );
 
          return ( 0 );
-      } 
+         }
 
+   The program outputs:
+   
+      First free DAF address is 2098645.
  </PRE>
 <h4><a name="Restrictions">Restrictions</a></h4>
 <PRE>
@@ -262,7 +271,11 @@
  </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
- 
+   -CSPICE Version 1.0.1, 28-JUN-2016 (EDW)
+
+      Edit to Example code, SpiceInts output as ints using 
+      explicit casting.
+
    -CSPICE Version 1.0.0, 17-JUN-2009 (NJB) (KRG) (IMU)
 </PRE>
 <h4><a name="Index_Entries">Index_Entries</a></h4>
@@ -277,7 +290,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Jun  9 13:05:20 2010</pre>
+   <pre>Wed Apr  5 17:54:31 2017</pre>
 
 </body>
 </html>

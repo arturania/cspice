@@ -124,16 +124,15 @@ static integer c__20 = 20;
 	    2], itmvec[32*2];
     char nutmod[80], oblmod[80], prcmod[80], rotsta[80], timstr[50], tmpfam[
 	    80], velfrm[32];
-    doublereal angles[2], ctrpos[3], dec, dirvec[3], eulang[3], fet, alt, lat,
+    doublereal angles[2], ctrpos[3], dec, dirvec[3], eulang[3], alt, fet, lat,
 	     minsep, mob, precxf[36]	/* was [6][6] */, r2000[9]	/* 
-	    was [3][3] */;
+	    was [3][3] */, sep, lon;
     integer cfrmid;
-    doublereal sep, lon;
     static integer j2000;
     integer obs;
-    logical corblk[15], fnd;
+    logical corblk[15];
     doublereal vet;
-    logical frozen, meaneq, ofdate, trueeq;
+    logical fnd, frozen, meaneq, ofdate, trueeq;
     extern /* Subroutine */ int irfnum_(char *, integer *, ftnlen), frmnam_(
 	    integer *, char *, ftnlen), chkout_(char *, ftnlen), cmprss_(char 
 	    *, integer *, char *, char *, ftnlen, ftnlen, ftnlen), setmsg_(
@@ -255,6 +254,11 @@ static integer c__20 = 20;
 /*                 definition depends on parameters supplied via a */
 /*                 frame kernel. */
 
+/*     ALL         indicates any of the above classes. This parameter */
+/*                 is used in APIs that fetch information about frames */
+/*                 of a specified class. */
+
+
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
@@ -265,6 +269,10 @@ static integer c__20 = 20;
 /*     None. */
 
 /* $ Version */
+
+/* -    SPICELIB Version 4.0.0, 08-MAY-2012 (NJB) */
+
+/*       The parameter ALL was added to support frame fetch APIs. */
 
 /* -    SPICELIB Version 3.0.0, 28-MAY-2004 (NJB) */
 
@@ -278,6 +286,9 @@ static integer c__20 = 20;
 /* -    SPICELIB Version 1.0.0, 10-DEC-1995 (WLT) */
 
 /* -& */
+
+/*     End of INCLUDE file frmtyp.inc */
+
 /* $ Abstract */
 
 /*     Include file zzabcorr.inc */

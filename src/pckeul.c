@@ -10,7 +10,7 @@
 static integer c__2 = 2;
 static integer c__5 = 5;
 
-/* $Procedure      PCKEUL ( Get Euler angles at time from PCK file ) */
+/* $Procedure PCKEUL ( PCK, get Euler angles at time from PCK file ) */
 /* Subroutine */ int pckeul_(integer *body, doublereal *et, logical *found, 
 	char *ref, doublereal *eulang, ftnlen ref_len)
 {
@@ -165,33 +165,26 @@ static integer c__5 = 5;
 
 /* $ Version */
 
-/* -     SPICELIB Version 2.0.0, 21-MAR-1995 (KSZ) */
+/* -    SPICELIB Version 2.0.1, 03-JAN-2014 (EDW) */
+
+/*        Minor edits to Procedure; clean trailing whitespace. */
+/*        Removed unneeded Revisions section. */
+
+/* -    SPICELIB Version 2.0.0, 21-MAR-1995 (KSZ) */
 
 /*        PCKEUL modified to check in.  PCKMAT takes */
 /*        over for PCKEUL in many cases.  REF now a character. */
 
-/* -     SPICELIB Version 1.1.0, 18-OCT-1994 (KSZ) */
+/* -    SPICELIB Version 1.1.0, 18-OCT-1994 (KSZ) */
 
 /*        Fixed bug which incorrecly modded DW by two pi. */
 
-/* -     SPICELIB Version 1.0.0, 11-MAR-1994 (KSZ) */
+/* -    SPICELIB Version 1.0.0, 11-MAR-1994 (KSZ) */
 
 /* -& */
 /* $ Index_Entries */
 
 /*     get Euler angles and their derivatives */
-
-/* -& */
-/* $ Revisions */
-
-/* -     SPICELIB Version 2.0.0, 21-MAR-1995 (KSZ) */
-
-/*        PCKEUL modified to check in.  PCKMAT takes */
-/*        over for PCKEUL in many cases.  REF now a character. */
-
-/* -     SPICELIB Version 1.1.0, 18-OCT-1994 (KSZ) */
-
-/*        Fixed bug which incorrecly modded DW by two pi. */
 
 /* -& */
 

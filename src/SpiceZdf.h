@@ -99,6 +99,18 @@
       
 -Version
 
+   -CSPICE Version 6.2.0, 10-MAR-2014 (BVS)
+
+       Updated for:
+       
+          PC-CYGWIN-64BIT-GCC_C
+          
+       environment. Added the corresponding tag:
+       
+          CSPICE_PC_CYGWIN_64BIT_GCC
+
+       tag to the #ifdefs set.
+        
    -CSPICE Version 6.1.0, 14-MAY-2010 (EDW)(BVS)
 
        Updated for:
@@ -169,6 +181,7 @@
          || defined(CSPICE_SUN_SOLARIS_64BIT_GCC )      \
          || defined(CSPICE_MAC_OSX_INTEL_64BIT_GCC )    \
          || defined(CSPICE_SUN_SOLARIS_INTEL_64BIT_CC ) \
+         || defined(CSPICE_PC_CYGWIN_64BIT_GCC )        \
          || defined(CSPICE_PC_LINUX_64BIT_GCC    )  )
    
       typedef int         SpiceInt;
@@ -187,6 +200,7 @@
          || defined(CSPICE_SUN_SOLARIS_64BIT_GCC )      \
          || defined(CSPICE_MAC_OSX_INTEL_64BIT_GCC )    \
          || defined(CSPICE_SUN_SOLARIS_INTEL_64BIT_CC ) \
+         || defined(CSPICE_PC_CYGWIN_64BIT_GCC )        \
          || defined(CSPICE_PC_LINUX_64BIT_GCC    )  )
    
       typedef const int   ConstSpiceInt;

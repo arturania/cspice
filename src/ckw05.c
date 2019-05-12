@@ -8,7 +8,7 @@
 /* Table of constant values */
 
 static integer c__4 = 4;
-static integer c__15 = 15;
+static integer c__23 = 23;
 static integer c__2 = 2;
 static integer c__6 = 6;
 static integer c__1 = 1;
@@ -679,6 +679,10 @@ static integer c__1 = 1;
 
 /* $ Version */
 
+/* -    SPICELIB Version 3.0.0, 27-JAN-2014 (NJB) */
+
+/*        Increased MAXDEG to 23 for compatibility with CK type 6. */
+
 /* -    SPICELIB Version 2.0.0, 08-FEB-2010 (NJB) */
 
 /*        The check for non-unit quaternions has been replaced */
@@ -911,11 +915,11 @@ static integer c__1 = 1;
 /*     Make sure that the degree of the interpolating polynomials is */
 /*     in range. */
 
-    if (*degree < 1 || *degree > 15) {
+    if (*degree < 1 || *degree > 23) {
 	setmsg_("The interpolating polynomials have degree #; the valid degr"
 		"ee range is [1, #]", (ftnlen)77);
 	errint_("#", degree, (ftnlen)1);
-	errint_("#", &c__15, (ftnlen)1);
+	errint_("#", &c__23, (ftnlen)1);
 	sigerr_("SPICE(INVALIDDEGREE)", (ftnlen)20);
 	chkout_("CKW05", (ftnlen)5);
 	return 0;

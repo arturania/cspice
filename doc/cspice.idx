@@ -30,8 +30,8 @@ A Permuted Index for CSPICE APIs
 Version
 --------------------------------------------------------
  
-   This index applies to version N0064 of the CSPICE Toolkit configured
-   by NAIF on Wed Jun  9 12:49:48 PDT 2010.
+   This index applies to version N0066 of the CSPICE Toolkit configured
+   by NAIF on Wed Apr  5 17:32:30 PDT 2017.
  
  
 Index
@@ -88,6 +88,8 @@ ABERRATIONS, get state relative to observer corrected for  spkez_c
                                                            spkezr_c
 ABERRATIONS, position relative to observer corrected for   spkpos_c
 ACCESS, open a das file for read                           dasopr_c
+ACCESS, open a das file for write                          dasopw_c
+ACCESS, open a new dsk file with write                     dskopn_c
 ACTION, get/set default error                              erract_c
 ADD character data to EK column                            ekacec_c
 ADD comments to a binary DAF file                          dafac_c
@@ -107,11 +109,23 @@ ADDRESS, read data from DAF                                dafgda_c
 AGAINST wildcard template, match string                    matchi_c
                                                            matchw_c
 ANGLE, emission                                            ilumin_c
+ANGLE for arbitrary illumination source, compute phase     phaseq_c
+ANGLE general source, emission                             illumg_c
+ANGLE general source, incidence                            illumg_c
+ANGLE general source, phase                                illumg_c
+ANGLE general source with flags, emission                  illumf_c
+ANGLE general source with flags, incidence                 illumf_c
+ANGLE general source with flags, phase                     illumf_c
 ANGLE, phase                                               ilumin_c
+ANGLE search, gf phase                                     gfpa_c
 ANGLE, solar incidence                                     ilumin_c
 ANGLE to rotation, axis and                                axisar_c
 ANGLES and derivatives from state transformation, euler    xf2eul_c
 ANGLES and derivatives, state transformation from euler    eul2xf_c
+ANGLES general source, illumination                        illumg_c
+ANGLES general source, lighting                            illumg_c
+ANGLES general source with flags, illumination             illumf_c
+ANGLES general source with flags, lighting                 illumf_c
 ANGLES, illumination                                       ilumin_c
 ANGLES, lighting                                           ilumin_c
 ANGLES, matrix to euler                                    m2eul_c
@@ -132,10 +146,15 @@ APPEND an item to an integer cell                          appndi_c
 APPEND comments to a DAF file comment area                 dafac_c
 APPEND comments to a das file comment area                 dasac_c
 APPEND record to EK segment                                ekappr_c
+ARBITRARY illumination source, compute phase angle for     phaseq_c
 ARCHITECTURE and type of a kernel file, determine the      getfat_c
 AREA, append comments to a DAF file comment                dafac_c
 AREA, append comments to a das file comment                dasac_c
+AREA, compute plate model                                  pltar_c
 AREA, delete DAF comment                                   dafdc_c
+AREA, delete das comment                                   dasdc_c
+ARGUMENTS, gf dummy function for udfuns signature          udf_c
+ARRAY, clear a d.p.                                        cleard_c
 ARRAY, find next DAF                                       daffna_c
 ARRAY, find previous DAF                                   daffpa_c
 ARRAY for equivalent character string, search              esrchc_c
@@ -160,6 +179,7 @@ ARRAY, sum of a d.p.                                       sumad_c
 ARRAY, sum of an integer                                   sumai_c
 ASSIGN a 3-dimensional vector to another                   vequ_c
 ASSIGN an n-dimensional vector to another                  vequg_c
+ASSOCIATED with a frame class and class id, find info      ccifrm_c
 ATTRIBUTES, fetch reference frame                          cidfrm_c
                                                            cnmfrm_c
                                                            frinfo_c
@@ -170,15 +190,19 @@ AXIS, vector rotation about an                             vrotv_c
 BACKWARD search, begin DAF                                 dafbbs_c
 BACKWARD search for position of character                  cposr_c
 BACKWARD search for position of unlisted character         ncposr_c
+BACKWARD search in dla file, begin                         dlabbs_c
 BARYCENTER, state relative to solar system                 spkssb_c
 BASE 16 scientific notation, convert d.p. to               dp2hx_c
 BASE 16 scientific notation d.p. number, convert           hx2dp_c
+BEGIN backward search in dla file                          dlabbs_c
 BEGIN DAF backward search                                  dafbbs_c
 BEGIN DAF forward search                                   dafbfs_c
+BEGIN forward search in dla file                           dlabfs_c
 BEGIN writing a type 14 SPK segment                        spk14b_c
 BESSELIAN date 1900.0                                      b1900_c
 BESSELIAN date 1950.0                                      b1950_c
 BETWEEN 3-dimensional vectors, distance                    vdist_c
+BETWEEN coordinate systems, state transformation           xfmsta_c
 BETWEEN ephemeris time and UTC, difference                 deltet_c
 BETWEEN line and ellipsoid, distance                       npedln_c
 BETWEEN line of sight and body, distance                   npedln_c
@@ -190,21 +214,29 @@ BETWEEN two uniform numeric time systems, transform        unitim_c
 BINARY DAF file, add comments to a                         dafac_c
 BINARY das file, add comments to a                         dasac_c
 BINARY pck file, find frame class id codes of frames in    pckfrm_c
+BINARY pck frame, get coverage start and stop time for     pckcov_c
 BINARY pck reference frame, get coverage window for        pckcov_c
 BINARY search for a double precision value                 bsrchd_c
 BINARY search for an integer value                         bschoi_c
                                                            bsrchi_c
+BODIES in dsk file, find id codes of                       dskobj_c
+BODIES in SPK file, find id codes of                       spkobj_c
 BODY codes get target state relative to an observer, using spkez_c
 BODY, distance between line of sight and                   npedln_c
+BODY, find limb points on target                           limbpt_c
 BODY, find nearest point to observer on target             subpnt_c
 BODY, find nearest point to sun on target                  subslr_c
 BODY, find sub-observer point on target                    subpnt_c
 BODY, find sub-solar point on target                       subslr_c
 BODY, find sub-spacecraft point on target                  subpnt_c
+BODY, find terminator points on target                     termpt_c
 BODY from the kernel pool, fetch constants for a           bodvcd_c
                                                            bodvrd_c
+BODY, get coverage start and stop time for                 spkcov_c
 BODY id code to name                                       bodc2n_c
 BODY id code to string                                     bodc2s_c
+BODY id code to surface id code, surface string and        srfscc_c
+BODY id code to surface string, surface id code and        srfc2s_c
 BODY in the kernel pool, find constants for a              bodfnd_c
 BODY, line of sight intercept with                         surfpt_c
 BODY name to code                                          bodn2c_c
@@ -215,15 +247,20 @@ BODY, physical constants for a                             bodvcd_c
                                                            bodvrd_c
 BODY relative to another, geometric position of one        spkgps_c
 BODY relative to another, geometric state of one           spkgeo_c
+BODY string to surface id code, surface string and         srfs2c_c
+BODY string to surface string, surface id code and         srfcss_c
 BODY surface, find intercept of ray on target              sincpt_c
 BODY surface, find intersection of ray and target          sincpt_c
 BODYFIXED latitudinal coordinates to rectangular, convert  srfrec_c
 BODYFIXED, transformation from inertial position to        tipbod_c
 BODYFIXED, transformation from inertial state to           tisbod_c
+BOOLEAN function search, gf user defined                   gfudb_c
+BOUNDS for type 2 dsk segment, compute range               dskrb2_c
 BRACKET a d.p. value within an interval                    brcktd_c
 BRACKET an integer value within an interval                brckti_c
 BUFFER, load the kernel pool from an internal text         lmpool_c
 BUILD a right handed coordinate frame                      frame_c
+BUILT-IN reference frames, fetch names of                  bltfrm_c
  
 C-KERNEL, --- see CK
 CALENDAR date, convert ephemeris time to a formal          etcal_c
@@ -232,6 +269,8 @@ CARDINAL text, replace marker with                         repmct_c
 CARDINALITY of a d.p. window                               wncard_c
 CARDINALITY of an integer cell                             card_c
 CARDINALITY of an integer cell, set the                    scard_c
+CARTESIAN surface points, map latitudinal coordinates to   latsrf_c
+CARTESIAN surface points to normal vectors, map            srfnrm_c
 CELL, append an item to a character                        appndc_c
 CELL, append an item to a d.p.                             appndd_c
 CELL, append an item to an integer                         appndi_c
@@ -242,6 +281,8 @@ CELL, set the size of a                                    ssize_c
 CELL, size of a                                            size_c
 CENTER and generating vectors, ellipse to                  el2cgv_c
 CENTER and generating vectors to ellipse                   cgv2el_c
+CENTER, map frame class and class id to frame name, id,    ccifrm_c
+CHANGE default convergence tolerance for gf routines       gfstol_c
 CHANGE time software defaults.                             timdef_c
 CHARACTER array, order of a                                orderc_c
 CHARACTER array, reorder a                                 reordc_c
@@ -264,7 +305,6 @@ CHARACTER element less than or equal to, last              lstlec_c
 CHARACTER entry in an EK column, replace                   ekucec_c
 CHARACTER, forward search for position of                  cpos_c
 CHARACTER, forward search for position of unlisted         ncpos_c
-CHARACTER kernel pool variable, set the value of a         pcpool_c
 CHARACTER, last non-blank                                  lastnb_c
 CHARACTER set, element of a                                elemc_c
 CHARACTER set, insert an item into a                       insrtc_c
@@ -273,6 +313,8 @@ CHARACTER string, compress a                               cmprss_c
 CHARACTER string, replace marker with                      repmc_c
 CHARACTER string, search array for equivalent              esrchc_c
 CHARACTER value of a pooled kernel variable, return the    gcpool_c
+CHARACTER variable in the kernel pool, set the value of a  pcpool_c
+CHEBYSHEV expansion, derivatives of a                      chbder_c
 CHECK in, module                                           chkin_c
 CHECK out, module                                          chkout_c
 CHECK the kernel pool for updated variables                cvpool_c
@@ -280,6 +322,9 @@ CHECK the properties of a kernel pool variable             badkpv_c
 CK file, close a                                           ckcls_c
 CK file, find id codes in                                  ckobj_c
 CK file, open a new                                        ckopn_c
+CK frame, get coverage start and stop time for             ckcov_c
+CK instrument, get coverage start and stop time for        ckcov_c
+CK object, get coverage start and stop time for            ckcov_c
 CK object, get coverage window for                         ckcov_c
 CK pointing and angular velocity, get                      ckgpav_c
 CK pointing file, load                                     cklpf_c
@@ -289,6 +334,7 @@ CK type 1 pointing data segment, write                     ckw01_c
 CK type 2 pointing data segment, write                     ckw02_c
 CK type 3 pointing data segment, write                     ckw03_c
 CK type 5 data segment, write                              ckw05_c
+CLEAR a d.p. array                                         cleard_c
 CLEAR interrupt signal status, gf                          gfclrh_c
 CLEAR the keeper system                                    kclear_c
 CLEAR the pool of kernel variables                         clpool_c
@@ -296,19 +342,31 @@ CLOCK, --- also see spacecraft clock
 CLOCK format, convert spacecraft clock ticks to character  scfmt_c
 CLOSE a CK file                                            ckcls_c
 CLOSE a das file                                           dascls_c
+CLOSE a dsk file                                           dskcls_c
+CLOSE a pck file                                           pckcls_c
 CLOSE an SPK file                                          spkcls_c
 CLOSE DAF                                                  dafcls_c
 CLOSE EK                                                   ekcls_c
 CLOSE file designated by fortran logical unit              ftncls_c
+CODE and body id code to surface string, surface id        srfc2s_c
+CODE and body string to surface string, surface id         srfcss_c
 CODE, body name to                                         bodn2c_c
                                                            bods2c_c
 CODE definition, body name/id                              boddef_c
+CODE, surface string and body id code to surface id        srfscc_c
+CODE, surface string and body string to surface id         srfs2c_c
 CODE to name, body id                                      bodc2n_c
 CODE to string, body id                                    bodc2s_c
+CODE to surface id code, surface string and body id        srfscc_c
+CODE to surface string, surface id code and body id        srfc2s_c
 CODES get target state relative to an observer, using body spkez_c
 CODES in CK file, find id                                  ckobj_c
-CODES in SPK file, find id                                 spkobj_c
+CODES of bodies in dsk file, find id                       dskobj_c
+CODES of bodies in SPK file, find id                       spkobj_c
+CODES of ephemeris objects in dsk file, find id            dskobj_c
+CODES of ephemeris objects in SPK file, find id            spkobj_c
 CODES of frames in binary pck file, find frame class id    pckfrm_c
+CODES of surfaces in dsk file, find id                     dsksrf_c
 COLUMN, add character data to EK                           ekacec_c
 COLUMN, add double precision data to EK                    ekaced_c
 COLUMN, add integer data to EK                             ekacei_c
@@ -338,6 +396,7 @@ COMBINATION of two n-dimensional vectors, linear           vlcomg_c
 COMMENT area, append comments to a DAF file                dafac_c
 COMMENT area, append comments to a das file                dasac_c
 COMMENT area, delete DAF                                   dafdc_c
+COMMENT area, delete das                                   dasdc_c
 COMMENTS from a DAF, extract                               dafec_c
 COMMENTS from a das file, extract                          dasec_c
 COMMENTS to a binary DAF file, add                         dafac_c
@@ -351,10 +410,21 @@ COMPONENT of a 3-vector, perpendicular                     vperp_c
 COMPONENTS from a vector, unpack three scalar              vupack_c
 COMPONENTS into a vector, pack three scalar                vpack_c
 COMPRESS a character string                                cmprss_c
+COMPUTE a polynomial and its derivatives                   polyds_c
+COMPUTE a state from equinoctial elements                  eqncpv_c
 COMPUTE a unit cross product and its derivative            ducrss_c
 COMPUTE l s                                                lspcn_c
 COMPUTE l sub s                                            lspcn_c
 COMPUTE ls                                                 lspcn_c
+COMPUTE normal vector for a type 2 dsk plate               dskn02_c
+COMPUTE normal vector from dsk type 2 plate id             dskn02_c
+COMPUTE normal vector of triangular plate from vertices    pltnrm_c
+COMPUTE normal vectors on dsk surface                      srfnrm_c
+COMPUTE normal vectors on topographic surface              srfnrm_c
+COMPUTE phase angle for arbitrary illumination source      phaseq_c
+COMPUTE plate model area                                   pltar_c
+COMPUTE plate model volume                                 pltvol_c
+COMPUTE range bounds for type 2 dsk segment                dskrb2_c
 COMPUTE the derivative of a cross product                  dvcrss_c
 COMPUTE the derivative of a dot product                    dvdot_c
 COMPUTE the local time for a point on a body.              et2lst_c
@@ -363,20 +433,35 @@ CONDITION, determine when a geometric quantity satisfies a gfevnt_c
 CONDITION, signal error                                    sigerr_c
 CONFIRM the existence of a pooled kernel variable          expool_c
 CONIC elements from state                                  oscelt_c
+CONIC elements from state, extended                        oscltx_c
 CONIC elements, state from                                 conics_c
 CONSTANT, plane to normal vector and                       pl2nvc_c
+CONSTANT position observer, state relative to              spkcpo_c
+CONSTANT position surface point, state relative to         spkcpo_c
 CONSTANT step size, gf get                                 gfstep_c
 CONSTANT step size, gf set                                 gfsstp_c
 CONSTANT to plane, normal vector and                       nvc2pl_c
+CONSTANT velocity observer, state relative to              spkcvo_c
+CONSTANT velocity surface point, state relative to         spkcvo_c
+CONSTANT velocity target, state of                         spkcpt_c
+                                                           spkcvt_c
 CONSTANTS for a body from the kernel pool, fetch           bodvcd_c
                                                            bodvrd_c
 CONSTANTS for a body in the kernel pool, find              bodfnd_c
 CONSTANTS for a body, physical                             bodvcd_c
                                                            bodvrd_c
+CONSTRAINTS, search using illumination angle               gfilum_c
+CONSTRAINTS, search using lighting angle                   gfilum_c
+CONSTRAINTS, solve for emission angle                      gfilum_c
+CONSTRAINTS, solve for illumination angle                  gfilum_c
+CONSTRAINTS, solve for incidence angle                     gfilum_c
+CONSTRAINTS, solve for phase angle                         gfilum_c
+CONSTRAINTS, solve for solar incidence angle               gfilum_c
 CONTINUE searching, select a DAF to                        dafcs_c
 CONTINUED string value from the kernel pool, retrieve a    stpool_c
 CONTINUOUS spacecraft clock ticks, ephemeris time to       sce2c_c
 CONTRACT the intervals of a d.p. window                    wncond_c
+CONVERGENCE tolerance for gf routines, change default      gfstol_c
 CONVERT a string to tdb seconds past the J2000 epoch       str2et_c
 CONVERT and format d.p. seconds past J2000 as a string     timout_c
 CONVERT base 16 scientific notation d.p. number            hx2dp_c
@@ -393,6 +478,8 @@ CONVERT rectangular to planetographic coordinates          recpgr_c
 CONVERT signed normalized hexadecimal string to d.p.       hx2dp_c
 CONVERT spacecraft clock string to ticks                   sctiks_c
 CONVERT spacecraft clock ticks to character clock format   scfmt_c
+CONVERT state                                              xfmsta_c
+CONVERT state to extended osculating elements              oscltx_c
 CONVERT state to osculating elements                       oscelt_c
 CONVERT surface latitudinal coordinates to rectangular     srfrec_c
 CONVERT to lowercase                                       lcase_c
@@ -402,6 +489,7 @@ COORDINATE frame, build a right handed                     frame_c
 COORDINATE search, gf position                             gfposc_c
 COORDINATE search, gf subpoint                             gfsubc_c
 COORDINATE search, gf surface intercept                    gfsntc_c
+COORDINATE systems, state transformation between           xfmsta_c
 COORDINATED universal time, --- see UTC
 COORDINATES, convert planetographic to rectangular         pgrrec_c
 COORDINATES, convert rectangular to planetographic         recpgr_c
@@ -426,6 +514,8 @@ COORDINATES, rectangular to spherical                      recsph_c
 COORDINATES, spherical to cylindrical                      sphcyl_c
 COORDINATES, spherical to latitudinal                      sphlat_c
 COORDINATES, spherical to rectangular                      sphrec_c
+COORDINATES to cartesian surface points, map latitudinal   latsrf_c
+COORDINATES to dsk surface points, map latitudinal         latsrf_c
 COORDINATES to ra and dec, rectangular                     recrad_c
 COORDINATES to rectangular, convert bodyfixed latitudinal  srfrec_c
 COORDINATES to rectangular, convert surface latitudinal    srfrec_c
@@ -441,6 +531,13 @@ CORRECTION, low-level aberration                           spkacs_c
 CORRECTION, low-level light time                           spkltc_c
 CORRECTION, low-level light time and stellar aberration    spkaps_c
 COUNT of loaded EK columns, return the                     ekccnt_c
+COVERAGE start and stop time for binary pck frame, get     pckcov_c
+COVERAGE start and stop time for body, get                 spkcov_c
+COVERAGE start and stop time for CK frame, get             ckcov_c
+COVERAGE start and stop time for CK instrument, get        ckcov_c
+COVERAGE start and stop time for CK object, get            ckcov_c
+COVERAGE start and stop time for ephemeris object, get     spkcov_c
+COVERAGE start and stop time for SPK object, get           spkcov_c
 COVERAGE window for binary pck reference frame, get        pckcov_c
 COVERAGE window for CK object, get                         ckcov_c
 COVERAGE window for SPK object, get                        spkcov_c
@@ -458,16 +555,17 @@ CYLINDRICAL to spherical                                   cylsph_c
 CYLINDRICAL w.r.t. rectangular coordinates, jacobian of    dcyldr_c
  
 D.P. 3x3 matrix, determinant of a                          det_c
+D.P. array, clear a                                        cleard_c
 D.P. array, order of a                                     orderd_c
 D.P. array, reorder a                                      reordd_c
 D.P. array, shell sort a                                   shelld_c
 D.P. array, sum of a                                       sumad_c
 D.P. cell, append an item to a                             appndd_c
 D.P., convert signed normalized hexadecimal string to      hx2dp_c
+D.P. data from a type 2 dsk segment, fetch                 dskd02_c
 D.P. element less than, last                               lstltd_c
 D.P. element less than or equal to, last                   lstled_c
 D.P. entry in an EK column, replace                        ekuced_c
-D.P. kernel pool variable, set the value of a              pdpool_c
 D.P. number, convert base 16 scientific notation           hx2dp_c
 D.P. number, convert d.p. number to encoded                dp2hx_c
 D.P. number, convert encoded d.p. number to                hx2dp_c
@@ -487,6 +585,7 @@ D.P. to signed normalized hexadecimal string, convert      dp2hx_c
 D.P. value of a pooled kernel variable, return the         gdpool_c
 D.P. value, replace marker with formatted                  repmf_c
 D.P. value within an interval, bracket a                   brcktd_c
+D.P. variable in the kernel pool, set the value of a       pdpool_c
 D.P. window, cardinality of a                              wncard_c
 D.P. window, complement a                                  wncomd_c
 D.P. window, contract the intervals of a                   wncond_c
@@ -518,20 +617,30 @@ DAF file record, read                                      dafrfr_c
 DAF for read, open                                         dafopr_c
 DAF for write, open existing                               dafopw_c
 DAF forward search, begin                                  dafbfs_c
+DAF handle, get                                            dafgh_c
 DAF summary, get                                           dafgs_c
 DAF summary, pack                                          dafps_c
 DAF summary record, read                                   dafgsr_c
 DAF summary, replace                                       dafrs_c
 DAF summary, unpack                                        dafus_c
 DAF to continue searching, select a                        dafcs_c
+DAS comment area, delete                                   dasdc_c
 DAS file, add comments to a binary                         dasac_c
 DAS file, close a                                          dascls_c
 DAS file comment area, append comments to a                dasac_c
 DAS file, extract comments from a                          dasec_c
 DAS file for read access, open a                           dasopr_c
 DAS file for reading, open a                               dasopr_c
+DAS file for write access, open a                          dasopw_c
+DAS file for writing, open a                               dasopw_c
+DAS file record, read                                      dasrfr_c
+DAS handle to file name, map                               dashfn_c
+DAS internal file name, read                               dasrfr_c
 DATA, find EK                                              ekfind_c
 DATA from a list of items, load spice                      furnsh_c
+DATA from a type 2 dsk segment, fetch d.p.                 dskd02_c
+DATA from a type 2 dsk segment, fetch integer              dski02_c
+DATA from a type 2 dsk segment, fetch plate                dskp02_c
 DATA from DAF address, read                                dafgda_c
 DATA from EK column, read character                        ekrcec_c
 DATA from EK column, read double precision                 ekrced_c
@@ -548,10 +657,12 @@ DATA segment, write CK type 1 pointing                     ckw01_c
 DATA segment, write CK type 2 pointing                     ckw02_c
 DATA segment, write CK type 3 pointing                     ckw03_c
 DATA segment, write CK type 5                              ckw05_c
+DATA segment, write pck type 2                             pckw02_c
 DATA segment, write SPK type 12 ephemeris                  spkw12_c
 DATA segment, write SPK type 13 ephemeris                  spkw13_c
 DATA segment, write SPK type 18 ephemeris                  spkw18_c
 DATA segment, write SPK type 2                             spkw02_c
+DATA segment, write SPK type 20                            spkw20_c
 DATA segment, write SPK type 3                             spkw03_c
 DATA segment, write SPK type 5 ephemeris                   spkw05_c
 DATA segment, write SPK type 8 ephemeris                   spkw08_c
@@ -580,8 +691,10 @@ DECIMAL number., scan a string for a                       lx4dec_c
 DECLINATION, rectangular to right ascension and            recrad_c
 DECLINATION to rectangular, right ascension and            radrec_c
 DECODE spacecraft clock                                    scdecd_c
+DEFAULT convergence tolerance for gf routines, change      gfstol_c
 DEFAULT error action, get/set                              erract_c
 DEFINE an orthonormal frame from two vectors               twovec_c
+DEFINED boolean function search, gf user                   gfudb_c
 DEFINED scalar function search, gf user                    gfuds_c
 DEFINITION, body name/id code                              boddef_c
 DEFINITION parameter, return a kernel pool                 szpool_c
@@ -589,7 +702,9 @@ DEGREE, radians per                                        rpd_c
 DEGREES per radian                                         dpr_c
 DELETE a kernel pool variable                              dvpool_c
 DELETE DAF comment area                                    dafdc_c
+DELETE das comment area                                    dasdc_c
 DELETE record from an EK segment                           ekdelr_c
+DEPTH, return traceback                                    trcdep_c
 DERIVATIVE, angular velocity from quaternion and           qdq2av_c
 DERIVATIVE, compute a unit cross product and its           ducrss_c
 DERIVATIVE less-than zero, first                           uddc_c
@@ -598,10 +713,13 @@ DERIVATIVE of a cross product, compute the                 dvcrss_c
 DERIVATIVE of a dot product, compute the                   dvdot_c
 DERIVATIVE of a function, first                            uddf_c
 DERIVATIVE of angular separation, time                     dvsep_c
+DERIVATIVES, compute a polynomial and its                  polyds_c
 DERIVATIVES from state transformation, euler angles and    xf2eul_c
+DERIVATIVES of a chebyshev expansion                       chbder_c
 DERIVATIVES, state transformation from euler angles and    eul2xf_c
 DESCRIPTOR, unpack and SPK segment                         spkuds_c
 DESCRIPTOR, validate and pack an SPK segment               spkpds_c
+DESCRIPTORS, dsk ray-surface intercept with handle and     dskxsi_c
 DESIGNATED by fortran logical unit, close file             ftncls_c
 DETERMINANT of a d.p. 3x3 matrix                           det_c
 DETERMINE the architecture and type of a kernel file       getfat_c
@@ -614,6 +732,7 @@ DIFFERENCE of n-dimensional vectors, relative              vrelg_c
 DIFFERENCE of two sets                                     diff_c
 DIFFERENCE of two sets, symmetric                          sdiff_c
 DIFFERENCE two d.p. windows                                wndifd_c
+DIFFERENT epochs, position transformation matrix for       pxfrm2_c
 DISTANCE between 3-dimensional vectors                     vdist_c
 DISTANCE between line and ellipsoid                        npedln_c
 DISTANCE between line of sight and body                    npedln_c
@@ -621,6 +740,10 @@ DISTANCE between n-dimensional vectors                     vdistg_c
 DISTANCE between point and line                            nplnpt_c
 DISTANCE from point to ellipsoid                           nearpt_c
 DISTANCE search, gf                                        gfdist_c
+DLA file, begin backward search in                         dlabbs_c
+DLA file, begin forward search in                          dlabfs_c
+DLA file, find next segment in                             dlafns_c
+DLA file, find previous segment in                         dlafps_c
 DOT product 3-dimensional vectors                          vdot_c
 DOT product, compute the derivative of a                   dvdot_c
 DOT product of n-dimensional vectors                       vdotg_c
@@ -636,6 +759,31 @@ DOUBLE precision value, binary search for a                bsrchd_c
 DOUBLE precision values, maximum of                        maxd_c
 DOUBLE precision values, minimum of                        mind_c
 DOWNLINK light time, compute uplink and                    ltime_c
+DSK file, close a                                          dskcls_c
+DSK file, find id codes of bodies in                       dskobj_c
+DSK file, find id codes of ephemeris objects in            dskobj_c
+DSK file, find id codes of surfaces in                     dsksrf_c
+DSK file, open a new                                       dskopn_c
+DSK file with write access, open a new                     dskopn_c
+DSK plate, compute normal vector for a type 2              dskn02_c
+DSK ray-surface intercept with handle and descriptors      dskxsi_c
+DSK ray-surface intercept with source information          dskxsi_c
+DSK segment, compute range bounds for type 2               dskrb2_c
+DSK segment descriptor, return                             dskgd_c
+DSK segment, fetch d.p. data from a type 2                 dskd02_c
+DSK segment, fetch integer data from a type 2              dski02_c
+DSK segment, fetch model size parameters from a type 2     dskz02_c
+DSK segment, fetch parameters from a type 2                dskb02_c
+DSK segment, fetch plate data from a type 2                dskp02_c
+DSK segment, make spatial index for type 2                 dskmi2_c
+DSK segment, return specified vertices from type 2         dskv02_c
+DSK segment, write a type 2                                dskw02_c
+DSK surface, compute normal vectors on                     srfnrm_c
+DSK surface points, map latitudinal coordinates to         latsrf_c
+DSK tolerance or margin parameters, retrieve               dskgtl_c
+DSK tolerance or margin parameters, set                    dskstl_c
+DSK type 2 plate id, compute normal vector from            dskn02_c
+DUMMY function for udfuns signature arguments, gf          udf_c
  
 E-KERNEL, load                                             eklef_c
 E-KERNEL, open new                                         ekopn_c
@@ -698,8 +846,12 @@ ELEMENT of a character set                                 elemc_c
 ELEMENT of a d.p. set                                      elemd_c
 ELEMENT of a d.p. window                                   wnelmd_c
 ELEMENT of an integer set                                  elemi_c
+ELEMENTS, compute a state from equinoctial                 eqncpv_c
+ELEMENTS, convert state to extended osculating             oscltx_c
 ELEMENTS, convert state to osculating                      oscelt_c
 ELEMENTS from state, conic                                 oscelt_c
+ELEMENTS from state, extended conic                        oscltx_c
+ELEMENTS from state, extended osculating                   oscltx_c
 ELEMENTS from state, osculating                            oscelt_c
 ELEMENTS in a column entry, return the number of           eknelt_c
 ELEMENTS, parse two-line                                   getelm_c
@@ -713,6 +865,9 @@ ELLIPSE to point, nearest point on                         npelpt_c
 ELLIPSOID and plane, intersection of                       inedpl_c
 ELLIPSOID, distance between line and                       npedln_c
 ELLIPSOID, distance from point to                          nearpt_c
+ELLIPSOID, find penumbral terminator on                    edterm_c
+ELLIPSOID, find terminator on                              edterm_c
+ELLIPSOID, find umbral terminator on                       edterm_c
 ELLIPSOID limb                                             edlimb_c
 ELLIPSOID, nearest point on an                             nearpt_c
 ELLIPSOID, point of intersection between ray and           surfpt_c
@@ -721,6 +876,9 @@ ELLIPSOID surface point and velocity                       surfpv_c
 ELLIPSOID, surface point of intersection of ray and        surfpt_c
 ELLIPSOID to line, nearest point on                        npedln_c
 EMISSION angle                                             ilumin_c
+EMISSION angle constraints, solve for                      gfilum_c
+EMISSION angle general source                              illumg_c
+EMISSION angle general source with flags                   illumf_c
 ENCAPSULATED error handling, parse d.p. number with        prsdp_c
 ENCAPSULATED error handling, parse integer with            prsint_c
 ENCODE spacecraft clock                                    scencd_c
@@ -751,6 +909,10 @@ EPHEMERIS data segment, write SPK type 8                   spkw08_c
 EPHEMERIS data segment, write SPK type 9                   spkw09_c
 EPHEMERIS file, load SPK                                   spklef_c
 EPHEMERIS file, unload SPK                                 spkuef_c
+EPHEMERIS object, get coverage start and stop time for     spkcov_c
+EPHEMERIS objects in dsk file, find id codes of            dskobj_c
+EPHEMERIS objects in SPK file, find id codes of            spkobj_c
+EPHEMERIS, position and velocity from                      spkpvn_c
 EPHEMERIS time and UTC, difference between                 deltet_c
 EPHEMERIS time, spacecraft clock string to                 scs2e_c
 EPHEMERIS time, spacecraft clock ticks to                  sct2e_c
@@ -761,9 +923,11 @@ EPHEMERIS time to spacecraft clock ticks                   sce2t_c
 EPHEMERIS time to UTC                                      et2utc_c
 EPHEMERIS time, UTC to                                     utc2et_c
 EPOCH, convert a string to tdb seconds past the J2000      str2et_c
+EPOCHS, position transformation matrix for different       pxfrm2_c
 EQUAL to another 3x3 matrix                                mequ_c
 EQUAL to another n-dimensional matrix                      mequg_c
 EQUATION, roots of a quadratic                             rquad_c
+EQUINOCTIAL elements, compute a state from                 eqncpv_c
 EQUIVALENT character string, search array for              esrchc_c
 EQUIVALENT strings                                         eqstr_c
 ERROR action, get/set default                              erract_c
@@ -789,7 +953,20 @@ EXISTENCE of a pooled kernel variable, confirm the         expool_c
 EXISTING DAF for write, open                               dafopw_c
 EXISTING SPK file for adding segments, open an             spkopa_c
 EXPAND the intervals of a d.p. window                      wnexpd_c
+EXPAND triangular plate                                    pltexp_c
+EXPANSION, derivatives of a chebyshev                      chbder_c
 EXPANSION for abbreviated years, set the interval of       tsetyr_c
+EXTENDED conic elements from state                         oscltx_c
+EXTENDED object, state of landmark on                      spkcpt_c
+                                                           spkcvt_c
+EXTENDED object, state of surface point on                 spkcpt_c
+                                                           spkcvt_c
+EXTENDED object, state relative to landmark on             spkcpo_c
+                                                           spkcvo_c
+EXTENDED object, state relative to surface point on        spkcpo_c
+                                                           spkcvo_c
+EXTENDED osculating elements, convert state to             oscltx_c
+EXTENDED osculating elements from state                    oscltx_c
 EXTRACT a substring starting with a keyword                kxtrct_c
 EXTRACT comments from a DAF                                dafec_c
 EXTRACT comments from a das file                           dasec_c
@@ -801,19 +978,34 @@ FAST writing, start new EK segment for                     ekifld_c
 FETCH an interval from a d.p. window                       wnfetd_c
 FETCH constants for a body from the kernel pool            bodvcd_c
                                                            bodvrd_c
+FETCH constants for a body from the kernel pool, deprecate bodvar_c
+FETCH d.p. data from a type 2 dsk segment                  dskd02_c
 FETCH element from character column entry                  ekgc_c
 FETCH element from double precision column entry           ekgd_c
 FETCH element from integer column entry                    ekgi_c
 FETCH information about a loaded spice kernel              kinfo_c
+FETCH integer data from a type 2 dsk segment               dski02_c
+FETCH model size parameters from a type 2 dsk segment      dskz02_c
+FETCH names of built-in reference frames                   bltfrm_c
+FETCH names of reference frames from the kernel pool       kplfrm_c
+FETCH parameters from a type 2 dsk segment                 dskb02_c
+FETCH plate data from a type 2 dsk segment                 dskp02_c
 FETCH reference frame attributes                           cidfrm_c
                                                            cnmfrm_c
                                                            frinfo_c
+FIELD of view at specified time, ray in instrument         fovray_c
+FIELD of view at specified time, target in instrument      fovtrg_c
 FILE, aberration-corrected state from SPK                  spkacs_c
 FILE, add comments to a binary DAF                         dafac_c
 FILE, add comments to a binary das                         dasac_c
+FILE and segment, select SPK                               spksfs_c
 FILE, apparent position from SPK                           spkapo_c
+FILE, begin backward search in dla                         dlabbs_c
+FILE, begin forward search in dla                          dlabfs_c
 FILE, close a CK                                           ckcls_c
 FILE, close a das                                          dascls_c
+FILE, close a dsk                                          dskcls_c
+FILE, close a pck                                          pckcls_c
 FILE, close an SPK                                         spkcls_c
 FILE comment area, append comments to a DAF                dafac_c
 FILE comment area, append comments to a das                dasac_c
@@ -823,26 +1015,41 @@ FILE exist, does the                                       exists_c
 FILE, extract comments from a das                          dasec_c
 FILE, find frame class id codes of frames in binary pck    pckfrm_c
 FILE, find id codes in CK                                  ckobj_c
-FILE, find id codes in SPK                                 spkobj_c
+FILE, find id codes of bodies in dsk                       dskobj_c
+FILE, find id codes of bodies in SPK                       spkobj_c
+FILE, find id codes of ephemeris objects in dsk            dskobj_c
+FILE, find id codes of ephemeris objects in SPK            spkobj_c
+FILE, find id codes of surfaces in dsk                     dsksrf_c
+FILE, find next segment in dla                             dlafns_c
+FILE, find previous segment in dla                         dlafps_c
 FILE for adding segments, open an existing SPK             spkopa_c
 FILE for read access, open a das                           dasopr_c
 FILE for reading, open a das                               dasopr_c
+FILE for write access, open a das                          dasopw_c
+FILE for writing, open a das                               dasopw_c
 FILE into the pool, load variables from a text kernel      ldpool_c
 FILE, light-time corrected state from SPK                  spkltc_c
 FILE, load CK pointing                                     cklpf_c
 FILE, load EK                                              eklef_c
 FILE, load pck orientation                                 pcklof_c
 FILE, load SPK ephemeris                                   spklef_c
+FILE name, map das handle to                               dashfn_c
+FILE name, read das internal                               dasrfr_c
 FILE, open a new CK                                        ckopn_c
+FILE, open a new dsk                                       dskopn_c
+FILE, open a new pck                                       pckopn_c
 FILE, open a new SPK                                       spkopn_c
+FILE position and velocity, SPK                            spkpvn_c
 FILE, read a line from a text                              rdtext_c
 FILE, read a non-blank line from a text                    iswhsp_c
 FILE record, read DAF                                      dafrfr_c
+FILE record, read das                                      dasrfr_c
 FILE, subset of SPK                                        spksub_c
 FILE, unload CK pointing                                   ckupf_c
 FILE, unload EK                                            ekuef_c
 FILE, unload pck orientation                               pckuof_c
 FILE, unload SPK ephemeris                                 spkuef_c
+FILE with write access, open a new dsk                     dskopn_c
 FILL small gaps in a d.p. window                           wnfild_c
 FILTER small intervals from a d.p. window                  wnfltd_c
 FIND a position transformation matrix                      pxform_c
@@ -851,21 +1058,38 @@ FIND constants for a body in the kernel pool               bodfnd_c
 FIND EK data                                               ekfind_c
 FIND frame class id codes of frames in binary pck file     pckfrm_c
 FIND id codes in CK file                                   ckobj_c
-FIND id codes in SPK file                                  spkobj_c
+FIND id codes of bodies in dsk file                        dskobj_c
+FIND id codes of bodies in SPK file                        spkobj_c
+FIND id codes of ephemeris objects in dsk file             dskobj_c
+FIND id codes of ephemeris objects in SPK file             spkobj_c
+FIND id codes of surfaces in dsk file                      dsksrf_c
+FIND info associated with a frame class and class id       ccifrm_c
 FIND intercept of ray on target body surface               sincpt_c
 FIND intersection of ray and target body surface           sincpt_c
+FIND limb points on target body                            limbpt_c
 FIND nearest point to observer on target body              subpnt_c
 FIND nearest point to sun on target body                   subslr_c
 FIND next DAF array                                        daffna_c
+FIND next segment in dla file                              dlafns_c
+FIND penumbral terminator on ellipsoid                     edterm_c
 FIND previous DAF array                                    daffpa_c
+FIND previous segment in dla file                          dlafps_c
 FIND sub-observer point on target body                     subpnt_c
 FIND sub-solar point on target body                        subslr_c
 FIND sub-spacecraft point on target body                   subpnt_c
 FIND surface intercept point                               sincpt_c
+FIND terminator on ellipsoid                               edterm_c
+FIND terminator points on target body                      termpt_c
+FIND umbral terminator on ellipsoid                        edterm_c
 FINISH a fast EK segment write                             ekffld_c
 FINISH a progress report, gf                               gfrepf_c
 FIRST derivative less-than zero                            uddc_c
 FIRST derivative of a function                             uddf_c
+FLAGS, emission angle general source with                  illumf_c
+FLAGS, illumination angles general source with             illumf_c
+FLAGS, incidence angle general source with                 illumf_c
+FLAGS, lighting angles general source with                 illumf_c
+FLAGS, phase angle general source with                     illumf_c
 FORCE model, propagate state vector using two-body         prop2b_c
 FORMAT, convert spacecraft clock ticks to character clock  scfmt_c
 FORMAT d.p. seconds past J2000 as a string, convert and    timout_c
@@ -875,6 +1099,9 @@ FORTRAN logical unit, close file designated by             ftncls_c
 FORWARD search, begin DAF                                  dafbfs_c
 FORWARD search for position of character                   cpos_c
 FORWARD search for position of unlisted character          ncpos_c
+FORWARD search in dla file, begin                          dlabfs_c
+FOV at specified time, ray in instrument                   fovray_c
+FOV at specified time, target in instrument                fovtrg_c
 FOV parameters, return instrument's                        getfov_c
 FOV search, gf low-level target in instrument              gffove_c
 FOV search, gf ray in instrument                           gfrfov_c
@@ -883,18 +1110,40 @@ FRAME attributes, fetch reference                          cidfrm_c
                                                            cnmfrm_c
                                                            frinfo_c
 FRAME, build a right handed coordinate                     frame_c
+FRAME class and class id, find info associated with a      ccifrm_c
+FRAME class and class id to frame info, map                ccifrm_c
+FRAME class and class id to frame name, id, center, map    ccifrm_c
 FRAME class id codes of frames in binary pck file, find    pckfrm_c
 FRAME from two vectors, define an orthonormal              twovec_c
+FRAME, get coverage start and stop time for binary pck     pckcov_c
+FRAME, get coverage start and stop time for CK             ckcov_c
 FRAME, get coverage window for binary pck reference        pckcov_c
 FRAME idcode to frame name translation                     frmnam_c
 FRAME idcode translation, frame name to                    namfrm_c
+FRAME info, map frame class and class id to                ccifrm_c
+FRAME name, id, center, map frame class and class id to    ccifrm_c
 FRAME name to frame idcode translation                     namfrm_c
 FRAME name translation, frame idcode to                    frmnam_c
+FRAMES, fetch names of built-in reference                  bltfrm_c
 FRAMES in binary pck file, find frame class id codes of    pckfrm_c
 FUNCTION, first derivative of a                            uddf_c
+FUNCTION for udfuns signature arguments, gf dummy          udf_c
+FUNCTION search, gf user defined boolean                   gfudb_c
 FUNCTION search, gf user defined scalar                    gfuds_c
+FUNCTION using hermite polynomial, interpolate             hrmint_c
+FUNCTION using lagrange polynomial, interpolate            lgrind_c
  
 GAPS in a d.p. window, fill small                          wnfild_c
+GENERAL source, emission angle                             illumg_c
+GENERAL source, illumination angles                        illumg_c
+GENERAL source, incidence angle                            illumg_c
+GENERAL source, lighting angles                            illumg_c
+GENERAL source, phase angle                                illumg_c
+GENERAL source with flags, emission angle                  illumf_c
+GENERAL source with flags, illumination angles             illumf_c
+GENERAL source with flags, incidence angle                 illumf_c
+GENERAL source with flags, lighting angles                 illumf_c
+GENERAL source with flags, phase angle                     illumf_c
 GENERAL, transpose a matrix                                xposeg_c
 GENERATE a rotation matrix                                 rotate_c
 GENERATING vectors, ellipse to center and                  el2cgv_c
@@ -911,15 +1160,25 @@ GET apparent position                                      spkapo_c
 GET CK pointing                                            ckgp_c
 GET CK pointing and angular velocity                       ckgpav_c
 GET constant step size, gf                                 gfstep_c
+GET coverage start and stop time for binary pck frame      pckcov_c
+GET coverage start and stop time for body                  spkcov_c
+GET coverage start and stop time for CK frame              ckcov_c
+GET coverage start and stop time for CK instrument         ckcov_c
+GET coverage start and stop time for CK object             ckcov_c
+GET coverage start and stop time for ephemeris object      spkcov_c
+GET coverage start and stop time for SPK object            spkcov_c
 GET coverage window for binary pck reference frame         pckcov_c
 GET coverage window for CK object                          ckcov_c
 GET coverage window for SPK object                         spkcov_c
 GET DAF array name                                         dafgn_c
+GET DAF handle                                             dafgh_c
 GET DAF summary                                            dafgs_c
 GET error message                                          getmsg_c
 GET light time and stellar aberration-corrected state      spkacs_c
 GET light-time corrected state                             spkltc_c
+GET module name from traceback                             trcnam_c
 GET position relative observer corrected for aberrations   spkezp_c
+GET quick traceback                                        qcktrc_c
 GET state relative to observer corrected for aberrations   spkez_c
                                                            spkezr_c
 GET target position relative to an observer                spkezp_c
@@ -933,6 +1192,7 @@ GET/SET error output items                                 errprt_c
 GF angular separation search                               gfsep_c
 GF clear interrupt signal status                           gfclrh_c
 GF distance search                                         gfdist_c
+GF dummy function for udfuns signature arguments           udf_c
 GF finish a progress report                                gfrepf_c
 GF get constant step size                                  gfstep_c
 GF handle interrupt signal                                 gfinth_c
@@ -941,39 +1201,70 @@ GF interrupt signal receipt indicator                      gfbail_c
 GF low-level target in instrument fov search               gffove_c
 GF mid-level occultation search                            gfocce_c
 GF occultation search                                      gfoclt_c
+GF phase angle search                                      gfpa_c
 GF position coordinate search                              gfposc_c
 GF range rate search                                       gfrr_c
 GF ray in instrument fov search                            gfrfov_c
+GF routines, change default convergence tolerance for      gfstol_c
 GF set constant step size                                  gfsstp_c
 GF standard step refinement                                gfrefn_c
 GF subpoint coordinate search                              gfsubc_c
 GF surface intercept coordinate search                     gfsntc_c
 GF target in instrument fov search                         gftfov_c
 GF update progress report                                  gfrepu_c
+GF user defined boolean function search                    gfudb_c
 GF user defined scalar function search                     gfuds_c
 GIVEN type, number of loaded kernels of a                  ktotal_c
 GREGORIAN and julian calendars                             timdef_c
  
 HALF the value of pi                                       halfpi_c
 HANDED coordinate frame, build a right                     frame_c
+HANDLE and descriptors, dsk ray-surface intercept with     dskxsi_c
+HANDLE, get DAF                                            dafgh_c
 HANDLE interrupt signal, gf                                gfinth_c
+HANDLE to file name, map das                               dashfn_c
 HANDLING, parse d.p. number with encapsulated error        prsdp_c
 HANDLING, parse integer with encapsulated error            prsint_c
+HERMITE interpolation                                      hrmint_c
+HERMITE polynomial, interpolate function using             hrmint_c
 HEXADECIMAL string, convert d.p. to signed normalized      dp2hx_c
 HEXADECIMAL string to d.p., convert signed normalized      hx2dp_c
  
+ID code and body id code to surface string, surface        srfc2s_c
+ID code and body string to surface string, surface         srfcss_c
+ID code, surface string and body id code to surface        srfscc_c
+ID code, surface string and body string to surface         srfs2c_c
 ID code to name, body                                      bodc2n_c
 ID code to string, body                                    bodc2s_c
+ID code to surface id code, surface string and body        srfscc_c
+ID code to surface string, surface id code and body        srfc2s_c
 ID codes in CK file, find                                  ckobj_c
-ID codes in SPK file, find                                 spkobj_c
+ID codes of bodies in dsk file, find                       dskobj_c
+ID codes of bodies in SPK file, find                       spkobj_c
+ID codes of ephemeris objects in dsk file, find            dskobj_c
+ID codes of ephemeris objects in SPK file, find            spkobj_c
 ID codes of frames in binary pck file, find frame class    pckfrm_c
+ID codes of surfaces in dsk file, find                     dsksrf_c
+ID, compute normal vector from dsk type 2 plate            dskn02_c
+ID, find info associated with a frame class and class      ccifrm_c
+ID to frame info, map frame class and class                ccifrm_c
+ID to frame name, id, center, map frame class and class    ccifrm_c
 IDCODE to frame name translation, frame                    frmnam_c
 IDCODE translation, frame name to frame                    namfrm_c
 IDENTITY matrix, get the 3x3                               ident_c
+ILLUMINATION angle constraints, search using               gfilum_c
+ILLUMINATION angle constraints, solve for                  gfilum_c
 ILLUMINATION angles                                        ilumin_c
+ILLUMINATION angles general source                         illumg_c
+ILLUMINATION angles general source with flags              illumf_c
+ILLUMINATION source, compute phase angle for arbitrary     phaseq_c
 IMMEDIATE return indicator                                 return_c
+INCIDENCE angle constraints, solve for                     gfilum_c
+INCIDENCE angle general source                             illumg_c
+INCIDENCE angle general source with flags                  illumf_c
 INCIDENCE angle, solar                                     ilumin_c
 INCLUDED in a d.p. window                                  wnincd_c
+INDEX for type 2 dsk segment, make spatial                 dskmi2_c
 INDEX, return information on loaded EK column specified by ekcii_c
 INDICATE whether a matrix is a rotation matrix             isrot_c
 INDICATOR, error status                                    failed_c
@@ -983,6 +1274,7 @@ INERTIAL position to bodyfixed, transformation from        tipbod_c
 INERTIAL state to bodyfixed, transformation from           tisbod_c
 INFORMATION about a kernel pool variable, return summary   dtpool_c
 INFORMATION about a loaded spice kernel, fetch             kinfo_c
+INFORMATION, dsk ray-surface intercept with source         dskxsi_c
 INFORMATION on loaded EK column specified by index, return ekcii_c
 INFORMATION on loaded spice kernels, retrieve              kdata_c
 INFORMATION, spacecraft clock partition                    scpart_c
@@ -997,9 +1289,14 @@ INSERT d.p. number into error message text                 errdp_c
 INSERT integer into error message text                     errint_c
 INSERT record into EK segment                              ekinsr_c
 INSERT string into error message text                      errch_c
+INSTRUMENT field of view at specified time, ray in         fovray_c
+INSTRUMENT field of view at specified time, target in      fovtrg_c
+INSTRUMENT fov at specified time, ray in                   fovray_c
+INSTRUMENT fov at specified time, target in                fovtrg_c
 INSTRUMENT fov search, gf low-level target in              gffove_c
 INSTRUMENT fov search, gf ray in                           gfrfov_c
 INSTRUMENT fov search, gf target in                        gftfov_c
+INSTRUMENT, get coverage start and stop time for CK        ckcov_c
 INSTRUMENT'S fov parameters, return                        getfov_c
 INTEGER array is an order vector, test whether an          isordv_c
 INTEGER array, order of an                                 orderi_c
@@ -1012,6 +1309,7 @@ INTEGER cell, cardinality of an                            card_c
 INTEGER cell, set the cardinality of an                    scard_c
 INTEGER column entry, fetch element from                   ekgi_c
 INTEGER column to EK segment, write entire                 ekacli_c
+INTEGER data from a type 2 dsk segment, fetch              dski02_c
 INTEGER data from EK column, read                          ekrcei_c
 INTEGER data to EK column, add                             ekacei_c
 INTEGER data to EK column, write                           ekacei_c
@@ -1031,23 +1329,36 @@ INTEGER value of a pooled kernel variable, return the      gipool_c
 INTEGER value within an interval, bracket an               brckti_c
 INTEGER values, maximum of                                 maxi_c
 INTEGER values, minimum of                                 mini_c
+INTEGER variable from the kernel pool, return values of an gipool_c
+INTEGER variable in the kernel pool, set the value of an   pipool_c
 INTEGER with encapsulated error handling, parse            prsint_c
 INTEGER., scan a string for a signed                       lx4sgn_c
 INTEGER., scan a string for an unsigned                    lx4uns_c
 INTERCEPT coordinate search, gf surface                    gfsntc_c
 INTERCEPT of ray on target body surface, find              sincpt_c
 INTERCEPT point, find surface                              sincpt_c
+INTERCEPT, vectorized ray-dsk                              dskxv_c
+INTERCEPT, vectorized ray-surface                          dskxv_c
 INTERCEPT with body, line of sight                         surfpt_c
+INTERCEPT with handle and descriptors, dsk ray-surface     dskxsi_c
+INTERCEPT with source information, dsk ray-surface         dskxsi_c
+INTERNAL file name, read das                               dasrfr_c
 INTERNAL text buffer, load the kernel pool from an         lmpool_c
+INTERPOLATE function using hermite polynomial              hrmint_c
+INTERPOLATE function using lagrange polynomial             lgrind_c
+INTERPOLATION, hermite                                     hrmint_c
+INTERPOLATION, lagrange                                    lgrind_c
 INTERRUPT signal, gf handle                                gfinth_c
 INTERRUPT signal receipt indicator, gf                     gfbail_c
 INTERRUPT signal status, gf clear                          gfclrh_c
 INTERSECT two d.p. windows                                 wnintd_c
+INTERSECTED by ray, plate and plate model point            dskx02_c
 INTERSECTION between ray and ellipsoid, point of           surfpt_c
 INTERSECTION of ellipse and plane                          inelpl_c
 INTERSECTION of ellipsoid and plane                        inedpl_c
 INTERSECTION of ray and ellipsoid, surface point of        surfpt_c
 INTERSECTION of ray and plane                              inrypl_c
+INTERSECTION of ray and surface                            dskx02_c
 INTERSECTION of ray and target body surface, find          sincpt_c
 INTERSECTION of two sets                                   inter_c
 INTERVAL, bracket a d.p. value within an                   brcktd_c
@@ -1103,17 +1414,19 @@ KERNEL file into the pool, load variables from a text      ldpool_c
 KERNEL pool definition parameter, return a                 szpool_c
 KERNEL pool, fetch constants for a body from the           bodvcd_c
                                                            bodvrd_c
+KERNEL pool, fetch names of reference frames from the      kplfrm_c
 KERNEL pool, find constants for a body in the              bodfnd_c
 KERNEL pool for updated variables, check the               cvpool_c
 KERNEL pool from an internal text buffer, load the         lmpool_c
 KERNEL pool, retrieve a continued string value from the    stpool_c
+KERNEL pool, return values of an integer variable from the gipool_c
+KERNEL pool, set the value of a character variable in the  pcpool_c
+KERNEL pool, set the value of a d.p. variable in the       pdpool_c
+KERNEL pool, set the value of an integer variable in the   pipool_c
 KERNEL pool variable, check the properties of a            badkpv_c
 KERNEL pool variable, delete a                             dvpool_c
 KERNEL pool variable, notify a routine of an update to a   swpool_c
 KERNEL pool variable, return summary information about a   dtpool_c
-KERNEL pool variable, set the value of a character         pcpool_c
-KERNEL pool variable, set the value of a d.p.              pdpool_c
-KERNEL pool variable, set the value of a numeric           pipool_c
 KERNEL pool variable, watch for an update to a             swpool_c
 KERNEL pool variables matching a template, return names of gnpool_c
 KERNEL, unload a spice                                     unload_c
@@ -1132,6 +1445,12 @@ KEYWORD, extract a substring starting with a               kxtrct_c
  
 L s, compute                                               lspcn_c
 L sub s, compute                                           lspcn_c
+LAGRANGE interpolation                                     lgrind_c
+LAGRANGE polynomial, interpolate function using            lgrind_c
+LANDMARK on extended object, state of                      spkcpt_c
+                                                           spkcvt_c
+LANDMARK on extended object, state relative to             spkcpo_c
+                                                           spkcvo_c
 LARGEST d.p. number                                        dpmax_c
 LARGEST integer number                                     intmax_c
 LAST character element less than                           lstltc_c
@@ -1145,6 +1464,8 @@ LATITUDINAL coordinates, jacobian of rectangular w.r.t.    dlatdr_c
                                                            drdlat_c
 LATITUDINAL coordinates, rectangular to                    reclat_c
 LATITUDINAL coordinates, spherical to                      sphlat_c
+LATITUDINAL coordinates to cartesian surface points, map   latsrf_c
+LATITUDINAL coordinates to dsk surface points, map         latsrf_c
 LATITUDINAL coordinates to rectangular, convert bodyfixed  srfrec_c
 LATITUDINAL coordinates to rectangular, convert surface    srfrec_c
 LATITUDINAL coordinates to rectangular, surface point      srfrec_c
@@ -1167,8 +1488,12 @@ LIGHT time, compute uplink and downlink                    ltime_c
 LIGHT time correction, low-level                           spkltc_c
 LIGHT-TIME corrected state from SPK file                   spkltc_c
 LIGHT-TIME corrected state, get                            spkltc_c
+LIGHTING angle constraints, search using                   gfilum_c
 LIGHTING angles                                            ilumin_c
+LIGHTING angles general source                             illumg_c
+LIGHTING angles general source with flags                  illumf_c
 LIMB, ellipsoid                                            edlimb_c
+LIMB points on target body, find                           limbpt_c
 LINE and ellipsoid, distance between                       npedln_c
 LINE, distance between point and                           nplnpt_c
 LINE from a text file, read a                              rdtext_c
@@ -1213,6 +1538,15 @@ LOW-LEVEL target in instrument fov search, gf              gffove_c
 LOWERCASE, convert to                                      lcase_c
 LS, compute                                                lspcn_c
  
+MAKE spatial index for type 2 dsk segment                  dskmi2_c
+MAP cartesian surface points to normal vectors             srfnrm_c
+MAP das handle to file name                                dashfn_c
+MAP frame class and class id to frame info                 ccifrm_c
+MAP frame class and class id to frame name, id, center     ccifrm_c
+MAP latitudinal coordinates to cartesian surface points    latsrf_c
+MAP latitudinal coordinates to dsk surface points          latsrf_c
+MARGIN parameters, retrieve dsk tolerance or               dskgtl_c
+MARGIN parameters, set dsk tolerance or                    dskstl_c
 MARKER with cardinal text, replace                         repmct_c
 MARKER with character string, replace                      repmc_c
 MARKER with d.p. number, replace                           repmd_c
@@ -1231,6 +1565,7 @@ MATRIX, equal to another n-dimensional                     mequg_c
 MATRIX, euler angles to                                    eul2m_c
 MATRIX, find a position transformation                     pxform_c
 MATRIX, find a state transformation                        sxform_c
+MATRIX for different epochs, position transformation       pxfrm2_c
 MATRIX general, transpose a                                xposeg_c
 MATRIX, generate a rotation                                rotate_c
 MATRIX, get the 3x3 identity                               ident_c
@@ -1270,9 +1605,14 @@ MESSAGE text, insert string into error                     errch_c
 MID-LEVEL occultation search, gf                           gfocce_c
 MINIMUM of double precision values                         mind_c
 MINIMUM of integer values                                  mini_c
+MODEL area, compute plate                                  pltar_c
+MODEL point intersected by ray, plate and plate            dskx02_c
 MODEL, propagate state vector using two-body force         prop2b_c
+MODEL size parameters from a type 2 dsk segment, fetch     dskz02_c
+MODEL volume, compute plate                                pltvol_c
 MODULE check in                                            chkin_c
 MODULE check out                                           chkout_c
+MODULE name from traceback, get                            trcnam_c
 MULTIPLY quaternion by quaternion                          qxq_c
  
 N-DIMENSIONAL case, matrix times matrix                    mxmg_c
@@ -1297,9 +1637,12 @@ N-DIMENSIONAL vectors, dot product of                      vdotg_c
 N-DIMENSIONAL vectors, linear combination of two           vlcomg_c
 N-DIMENSIONAL vectors, relative difference of              vrelg_c
 NAME, body id code to                                      bodc2n_c
+NAME from traceback, get module                            trcnam_c
 NAME, get DAF array                                        dafgn_c
 NAME, get/set error output device                          errdev_c
+NAME, map das handle to file                               dashfn_c
 NAME of a loaded table, return                             ektnam_c
+NAME, read das internal file                               dasrfr_c
 NAME to code, body                                         bodn2c_c
                                                            bods2c_c
 NAME to frame idcode translation, frame                    namfrm_c
@@ -1307,24 +1650,31 @@ NAME translation, frame idcode to frame                    frmnam_c
 NAME/ID code definition, body                              boddef_c
 NAMES get target position relative to an observer, using   spkpos_c
 NAMES get target state relative to an observer, using body spkezr_c
+NAMES of built-in reference frames, fetch                  bltfrm_c
 NAMES of kernel pool variables matching a template, return gnpool_c
+NAMES of reference frames from the kernel pool, fetch      kplfrm_c
 NEAREST point on an ellipsoid                              nearpt_c
 NEAREST point on ellipse to point                          npelpt_c
 NEAREST point on ellipsoid to line                         npedln_c
 NEAREST point on line to point                             nplnpt_c
+NEAREST point on triangular plate                          pltnp_c
 NEAREST point to observer on target body, find             subpnt_c
 NEAREST point to sun on target body, find                  subslr_c
 NEGATE a 3-dimensional vector                              vminus_c
 NEGATE an n-dimensional vector                             vminug_c
 NEW CK file, open a                                        ckopn_c
+NEW dsk file, open a                                       dskopn_c
+NEW dsk file with write access, open a                     dskopn_c
 NEW e-kernel, open                                         ekopn_c
 NEW e-kernel segment for fast writing, start               ekifld_c
 NEW e-kernel segment, start                                ekbseg_c
 NEW EK, open                                               ekopn_c
 NEW EK segment for fast writing, start                     ekifld_c
 NEW EK segment, start                                      ekbseg_c
+NEW pck file, open a                                       pckopn_c
 NEW SPK file, open a                                       spkopn_c
 NEXT DAF array, find                                       daffna_c
+NEXT segment in dla file, find                             dlafns_c
 NON-BLANK character, last                                  lastnb_c
 NON-BLANK line from a text file, read a                    iswhsp_c
 NORM, 3-dimensional unit vector and                        unorm_c
@@ -1336,7 +1686,13 @@ NORMAL vector and constant, plane to                       pl2nvc_c
 NORMAL vector and constant to plane                        nvc2pl_c
 NORMAL vector and point, plane to                          pl2nvp_c
 NORMAL vector and point to plane                           nvp2pl_c
+NORMAL vector for a type 2 dsk plate, compute              dskn02_c
+NORMAL vector from dsk type 2 plate id, compute            dskn02_c
+NORMAL vector of triangular plate from vertices, compute   pltnrm_c
 NORMAL vector on an ellipsoid, surface                     surfnm_c
+NORMAL vectors, map cartesian surface points to            srfnrm_c
+NORMAL vectors on dsk surface, compute                     srfnrm_c
+NORMAL vectors on topographic surface, compute             srfnrm_c
 NORMALIZED hexadecimal string, convert d.p. to signed      dp2hx_c
 NORMALIZED hexadecimal string to d.p., convert signed      hx2dp_c
 NOTATION, convert d.p. to base 16 scientific               dp2hx_c
@@ -1363,15 +1719,14 @@ NUMBER to encoded d.p. number, convert d.p.                dp2hx_c
 NUMBER with encapsulated error handling, parse d.p.        prsdp_c
 NUMBER., scan a string for a                               lx4num_c
 NUMBER., scan a string for a decimal                       lx4dec_c
-NUMERIC kernel pool variable, set the value of a           pipool_c
 NUMERIC time system to another, convert one additive       unitim_c
 NUMERIC time system to another, convert one uniform        unitim_c
 NUMERIC time systems, transform between two additive       unitim_c
 NUMERIC time systems, transform between two uniform        unitim_c
 NUMERIC value of a pooled kernel variable, return the      gdpool_c
  
-OBJECT, get coverage window for CK                         ckcov_c
-OBJECT, get coverage window for SPK                        spkcov_c
+OBJECTS in dsk file, find id codes of ephemeris            dskobj_c
+OBJECTS in SPK file, find id codes of ephemeris            spkobj_c
 OBSERVER corrected for aberrations, get position relative  spkezp_c
 OBSERVER corrected for aberrations, get state relative to  spkez_c
                                                            spkezr_c
@@ -1383,10 +1738,16 @@ OBSERVER, using body names get target state relative to an spkezr_c
 OBSERVER, using names get target position relative to an   spkpos_c
 OCCULTATION search, gf                                     gfoclt_c
 OCCULTATION search, gf mid-level                           gfocce_c
+OCCULTATION type at a specified time                       occult_c
 OFF, turn tracing                                          trcoff_c
 OPEN a das file for read access                            dasopr_c
 OPEN a das file for reading                                dasopr_c
+OPEN a das file for write access                           dasopw_c
+OPEN a das file for writing                                dasopw_c
 OPEN a new CK file                                         ckopn_c
+OPEN a new dsk file                                        dskopn_c
+OPEN a new dsk file with write access                      dskopn_c
+OPEN a new pck file                                        pckopn_c
 OPEN a new SPK file                                        spkopn_c
 OPEN an existing SPK file for adding segments              spkopa_c
 OPEN DAF for read                                          dafopr_c
@@ -1411,7 +1772,9 @@ ORTHOGONAL, --- see perpendicular
 ORTHOGONAL matrix, invert a pseudo                         invort_c
 ORTHONORMAL frame from two vectors, define an              twovec_c
 OSCULATING elements, convert state to                      oscelt_c
+OSCULATING elements, convert state to extended             oscltx_c
 OSCULATING elements from state                             oscelt_c
+OSCULATING elements from state, extended                   oscltx_c
 OUT, module check                                          chkout_c
 OUTPUT device name, get/set error                          errdev_c
 OUTPUT items, get/set error                                errprt_c
@@ -1421,7 +1784,11 @@ PACK DAF summary                                           dafps_c
 PACK three scalar components into a vector                 vpack_c
 PARALLEL to a state vector, state of a unit vector         dvhat_c
 PARAMETER, return a kernel pool definition                 szpool_c
+PARAMETERS from a type 2 dsk segment, fetch                dskb02_c
+PARAMETERS from a type 2 dsk segment, fetch model size     dskz02_c
+PARAMETERS, retrieve dsk tolerance or margin               dskgtl_c
 PARAMETERS, return instrument's fov                        getfov_c
+PARAMETERS, set dsk tolerance or margin                    dskstl_c
 PARSE a list of items                                      lparsm_c
                                                            lparss_c
 PARSE a UTC time string                                    tparse_c
@@ -1433,12 +1800,22 @@ PARSE two-line elements                                    getelm_c
 PARTITION information, spacecraft clock                    scpart_c
 PAST J2000 as a string, convert and format d.p. seconds    timout_c
 PAST the J2000 epoch, convert a string to tdb seconds      str2et_c
+PCK file, close a                                          pckcls_c
 PCK file, find frame class id codes of frames in binary    pckfrm_c
+PCK file, open a new                                       pckopn_c
+PCK frame, get coverage start and stop time for binary     pckcov_c
 PCK orientation file, load                                 pcklof_c
 PCK orientation file, unload                               pckuof_c
 PCK reference frame, get coverage window for binary        pckcov_c
+PCK type 2 data segment, write                             pckw02_c
+PENUMBRAL terminator on ellipsoid, find                    edterm_c
 PERPENDICULAR component of a 3-vector                      vperp_c
 PHASE angle                                                ilumin_c
+PHASE angle constraints, solve for                         gfilum_c
+PHASE angle for arbitrary illumination source, compute     phaseq_c
+PHASE angle general source                                 illumg_c
+PHASE angle general source with flags                      illumf_c
+PHASE angle search, gf                                     gfpa_c
 PHYSICAL constants for a body                              bodvcd_c
                                                            bodvrd_c
 PI, half the value of                                      halfpi_c
@@ -1462,11 +1839,22 @@ PLANETOGRAPHIC coordinates, convert rectangular to         recpgr_c
 PLANETOGRAPHIC coordinates, jacobian of rectangular w.r.t. drdpgr_c
 PLANETOGRAPHIC to rectangular coordinates, convert         pgrrec_c
 PLANETOGRAPHIC w.r.t. rectangular coordinates, jacobian of dpgrdr_c
+PLATE and plate model point intersected by ray             dskx02_c
+PLATE, compute normal vector for a type 2 dsk              dskn02_c
+PLATE data from a type 2 dsk segment, fetch                dskp02_c
+PLATE, expand triangular                                   pltexp_c
+PLATE from vertices, compute normal vector of triangular   pltnrm_c
+PLATE id, compute normal vector from dsk type 2            dskn02_c
+PLATE model area, compute                                  pltar_c
+PLATE model point intersected by ray, plate and            dskx02_c
+PLATE model volume, compute                                pltvol_c
+PLATE, nearest point on triangular                         pltnp_c
 POINT and line, distance between                           nplnpt_c
 POINT and spanning vectors, plane to                       pl2psv_c
 POINT and spanning vectors to plane                        psv2pl_c
 POINT and velocity, ellipsoid surface                      surfpv_c
 POINT, find surface intercept                              sincpt_c
+POINT intersected by ray, plate and plate model            dskx02_c
 POINT latitudinal coordinates to rectangular, surface      srfrec_c
 POINT, nearest point on ellipse to                         npelpt_c
 POINT, nearest point on line to                            nplnpt_c
@@ -1480,6 +1868,7 @@ POINT on line to point, nearest                            nplnpt_c
 POINT on target body, find sub-observer                    subpnt_c
 POINT on target body, find sub-solar                       subslr_c
 POINT on target body, find sub-spacecraft                  subpnt_c
+POINT on triangular plate, nearest                         pltnp_c
 POINT, plane to normal vector and                          pl2nvp_c
 POINT to ellipsoid, distance from                          nearpt_c
 POINT to observer on target body, find nearest             subpnt_c
@@ -1492,6 +1881,14 @@ POINTING data segment, write CK type 3                     ckw03_c
 POINTING file, load CK                                     cklpf_c
 POINTING file, unload CK                                   ckupf_c
 POINTING, get CK                                           ckgp_c
+POINTS, map latitudinal coordinates to cartesian surface   latsrf_c
+POINTS, map latitudinal coordinates to dsk surface         latsrf_c
+POINTS on target body, find limb                           limbpt_c
+POINTS on target body, find terminator                     termpt_c
+POINTS to normal vectors, map cartesian surface            srfnrm_c
+POLYNOMIAL and its derivatives, compute a                  polyds_c
+POLYNOMIAL, interpolate function using hermite             hrmint_c
+POLYNOMIAL, interpolate function using lagrange            lgrind_c
 POOL definition parameter, return a kernel                 szpool_c
 POOL, fetch constants for a body from the kernel           bodvcd_c
                                                            bodvrd_c
@@ -1505,9 +1902,6 @@ POOL variable, check the properties of a kernel            badkpv_c
 POOL variable, delete a kernel                             dvpool_c
 POOL variable, notify a routine of an update to a kernel   swpool_c
 POOL variable, return summary information about a kernel   dtpool_c
-POOL variable, set the value of a character kernel         pcpool_c
-POOL variable, set the value of a d.p. kernel              pdpool_c
-POOL variable, set the value of a numeric kernel           pipool_c
 POOL variable, watch for an update to a kernel             swpool_c
 POOL variables matching a template, return names of kernel gnpool_c
 POOLED kernel variable, confirm the existence of a         expool_c
@@ -1516,6 +1910,8 @@ POOLED kernel variable, return the d.p. value of a         gdpool_c
 POOLED kernel variable, return the integer value of a      gipool_c
 POOLED kernel variable, return the numeric value of a      gdpool_c
 POOLED kernel variable, return the string value of a       gcpool_c
+POSITION and velocity from ephemeris                       spkpvn_c
+POSITION and velocity, SPK file                            spkpvn_c
 POSITION coordinate search, gf                             gfposc_c
 POSITION from SPK file, apparent                           spkapo_c
 POSITION, get apparent                                     spkapo_c
@@ -1535,6 +1931,7 @@ POSITION relative to an observer, using names get target   spkpos_c
 POSITION relative to observer corrected for aberrations    spkpos_c
 POSITION to bodyfixed, transformation from inertial        tipbod_c
 POSITION transformation matrix, find a                     pxform_c
+POSITION transformation matrix for different epochs        pxfrm2_c
 PRECISION array, search in an double                       isrchd_c
 PRECISION column entry, fetch element from double          ekgd_c
 PRECISION column to EK segment, write entire double        ekacld_c
@@ -1545,6 +1942,7 @@ PRECISION value, binary search for a double                bsrchd_c
 PRECISION values, maximum of double                        maxd_c
 PRECISION values, minimum of double                        mind_c
 PREVIOUS DAF array, find                                   daffpa_c
+PREVIOUS segment in dla file, find                         dlafps_c
 PRODUCE a time format picture, use a sample time string to tpictr_c
 PRODUCT 3-dimensional vectors, dot                         vdot_c
 PRODUCT and its derivative, compute a unit cross           ducrss_c
@@ -1576,6 +1974,7 @@ QUATERNION times quaternion                                qxq_c
 QUATERNION to matrix                                       q2m_c
 QUERY, issue EK                                            ekfind_c
 QUERY, parse select clause of EK                           ekpsel_c
+QUICK traceback, get                                       qcktrc_c
 QUOTED string token, lex                                   lxqstr_c
 QUOTED string token, recognize                             lxqstr_c
 QUOTED string token, scan                                  lxqstr_c
@@ -1584,15 +1983,24 @@ RA and dec, rectangular coordinates to                     recrad_c
 RA and dec to rectangular coordinates, range               radrec_c
 RADIAN, degrees per                                        dpr_c
 RADIANS per degree                                         rpd_c
+RANGE bounds for type 2 dsk segment, compute               dskrb2_c
 RANGE ra and dec to rectangular coordinates                radrec_c
 RANGE rate search, gf                                      gfrr_c
 RATE search, gf range                                      gfrr_c
 RAY and ellipsoid, point of intersection between           surfpt_c
 RAY and ellipsoid, surface point of intersection of        surfpt_c
 RAY and plane, intersection of                             inrypl_c
+RAY and surface, intersection of                           dskx02_c
 RAY and target body surface, find intersection of          sincpt_c
+RAY in instrument field of view at specified time          fovray_c
+RAY in instrument fov at specified time                    fovray_c
 RAY in instrument fov search, gf                           gfrfov_c
 RAY on target body surface, find intercept of              sincpt_c
+RAY, plate and plate model point intersected by            dskx02_c
+RAY-DSK intercept, vectorized                              dskxv_c
+RAY-SURFACE intercept, vectorized                          dskxv_c
+RAY-SURFACE intercept with handle and descriptors, dsk     dskxsi_c
+RAY-SURFACE intercept with source information, dsk         dskxsi_c
 RE-INITIALIZE the keeper system                            kclear_c
 READ a line from a text file                               rdtext_c
 READ a non-blank line from a text file                     iswhsp_c
@@ -1600,6 +2008,8 @@ READ access, open a das file for                           dasopr_c
 READ character data from EK column                         ekrcec_c
 READ DAF file record                                       dafrfr_c
 READ DAF summary record                                    dafgsr_c
+READ das file record                                       dasrfr_c
+READ das internal file name                                dasrfr_c
 READ data from DAF address                                 dafgda_c
 READ double precision data from EK column                  ekrced_c
 READ ephemeris data                                        spkez_c
@@ -1620,6 +2030,7 @@ RECORD from an EK segment, delete                          ekdelr_c
 RECORD into EK segment, insert                             ekinsr_c
 RECORD, read DAF file                                      dafrfr_c
 RECORD, read DAF summary                                   dafgsr_c
+RECORD, read das file                                      dasrfr_c
 RECORD to EK segment, append                               ekappr_c
 RECTANGULAR, convert bodyfixed latitudinal coordinates to  srfrec_c
 RECTANGULAR, convert surface latitudinal coordinates to    srfrec_c
@@ -1652,6 +2063,8 @@ REFERENCE frame attributes, fetch                          cidfrm_c
                                                            cnmfrm_c
                                                            frinfo_c
 REFERENCE frame, get coverage window for binary pck        pckcov_c
+REFERENCE frames, fetch names of built-in                  bltfrm_c
+REFERENCE frames from the kernel pool, fetch names of      kplfrm_c
 REFINEMENT, gf standard step                               gfrefn_c
 RELATIVE difference of 3-dimensional vectors               vrel_c
 RELATIVE difference of n-dimensional vectors               vrelg_c
@@ -1662,10 +2075,18 @@ RELATIVE to an observer, using body names get target state spkezr_c
 RELATIVE to an observer, using names get target position   spkpos_c
 RELATIVE to another, geometric position of one body        spkgps_c
 RELATIVE to another, geometric state of one body           spkgeo_c
+RELATIVE to constant position observer, state              spkcpo_c
+RELATIVE to constant position surface point, state         spkcpo_c
+RELATIVE to constant velocity observer, state              spkcvo_c
+RELATIVE to constant velocity surface point, state         spkcvo_c
+RELATIVE to landmark on extended object, state             spkcpo_c
+                                                           spkcvo_c
 RELATIVE to observer corrected for aberrations, get state  spkez_c
                                                            spkezr_c
 RELATIVE to observer corrected for aberrations, position   spkpos_c
 RELATIVE to solar system barycenter, state                 spkssb_c
+RELATIVE to surface point on extended object, state        spkcpo_c
+                                                           spkcvo_c
 REMOVE an item from a character set                        removc_c
 REMOVE an item from a d.p. set                             removd_c
 REMOVE an item from an integer set                         removi_c
@@ -1689,8 +2110,10 @@ REPORT, gf initialize progress                             gfrepi_c
 REPORT, gf update progress                                 gfrepu_c
 RESET error status                                         reset_c
 RETRIEVE a continued string value from the kernel pool     stpool_c
+RETRIEVE dsk tolerance or margin parameters                dskgtl_c
 RETRIEVE information on loaded spice kernels               kdata_c
 RETURN a kernel pool definition parameter                  szpool_c
+RETURN dsk segment descriptor                              dskgd_c
 RETURN EK segment summary                                  ekssum_c
 RETURN indicator, immediate                                return_c
 RETURN information on loaded EK column specified by index  ekcii_c
@@ -1699,6 +2122,7 @@ RETURN name of a loaded table                              ektnam_c
 RETURN names of kernel pool variables matching a template  gnpool_c
 RETURN number of loaded tables                             ekntab_c
 RETURN number of segments in an e-kernel                   eknseg_c
+RETURN specified vertices from type 2 dsk segment          dskv02_c
 RETURN summary information about a kernel pool variable    dtpool_c
 RETURN the character value of a pooled kernel variable     gcpool_c
 RETURN the count of loaded EK columns                      ekccnt_c
@@ -1708,6 +2132,8 @@ RETURN the number of elements in a column entry            eknelt_c
 RETURN the number of loaded EK columns                     ekccnt_c
 RETURN the numeric value of a pooled kernel variable       gdpool_c
 RETURN the string value of a pooled kernel variable        gcpool_c
+RETURN traceback depth                                     trcdep_c
+RETURN values of an integer variable from the kernel pool  gipool_c
 RETURN version strings                                     tkvrsn_c
 REVERSE search, position of substring                      posr_c
 RIGHT ascension and declination, rectangular to            recrad_c
@@ -1724,6 +2150,7 @@ ROTATION axis of a matrix                                  raxisa_c
 ROTATION matrix, generate a                                rotate_c
 ROTATION matrix, indicate whether a matrix is a            isrot_c
 ROUTINE of an update to a kernel pool variable, notify a   swpool_c
+ROUTINES, change default convergence tolerance for gf      gfstol_c
  
 S/P-KERNEL, --- see SPK
 SAMPLE time string to produce a time format picture, use a tpictr_c
@@ -1758,19 +2185,25 @@ SEARCH, gf distance                                        gfdist_c
 SEARCH, gf low-level target in instrument fov              gffove_c
 SEARCH, gf mid-level occultation                           gfocce_c
 SEARCH, gf occultation                                     gfoclt_c
+SEARCH, gf phase angle                                     gfpa_c
 SEARCH, gf position coordinate                             gfposc_c
 SEARCH, gf range rate                                      gfrr_c
 SEARCH, gf ray in instrument fov                           gfrfov_c
 SEARCH, gf subpoint coordinate                             gfsubc_c
 SEARCH, gf surface intercept coordinate                    gfsntc_c
 SEARCH, gf target in instrument fov                        gftfov_c
+SEARCH, gf user defined boolean function                   gfudb_c
 SEARCH, gf user defined scalar function                    gfuds_c
 SEARCH in a character array                                bschoc_c
                                                            bsrchc_c
                                                            isrchc_c
 SEARCH in an double precision array                        isrchd_c
 SEARCH in an integer array                                 isrchi_c
+SEARCH in dla file, begin backward                         dlabbs_c
+SEARCH in dla file, begin forward                          dlabfs_c
 SEARCH, position of substring reverse                      posr_c
+SEARCH using illumination angle constraints                gfilum_c
+SEARCH using lighting angle constraints                    gfilum_c
 SEARCHING, select a DAF to continue                        dafcs_c
 SECONDS past J2000 as a string, convert and format d.p.    timout_c
 SECONDS past the J2000 epoch, convert a string to tdb      str2et_c
@@ -1780,19 +2213,32 @@ SECONDS per tropical year, number of                       tyear_c
 SEGMENT, add data to a type 14 SPK                         spk14a_c
 SEGMENT, append record to EK                               ekappr_c
 SEGMENT, begin writing a type 14 SPK                       spk14b_c
+SEGMENT, compute range bounds for type 2 dsk               dskrb2_c
 SEGMENT, delete record from an EK                          ekdelr_c
+SEGMENT descriptor, return dsk                             dskgd_c
 SEGMENT descriptor, unpack and SPK                         spkuds_c
 SEGMENT descriptor, validate and pack an SPK               spkpds_c
 SEGMENT, end a type 14 SPK                                 spk14e_c
+SEGMENT, fetch d.p. data from a type 2 dsk                 dskd02_c
+SEGMENT, fetch integer data from a type 2 dsk              dski02_c
+SEGMENT, fetch model size parameters from a type 2 dsk     dskz02_c
+SEGMENT, fetch parameters from a type 2 dsk                dskb02_c
+SEGMENT, fetch plate data from a type 2 dsk                dskp02_c
 SEGMENT for fast writing, start new e-kernel               ekifld_c
 SEGMENT for fast writing, start new EK                     ekifld_c
+SEGMENT in dla file, find next                             dlafns_c
+SEGMENT in dla file, find previous                         dlafps_c
 SEGMENT, insert record into EK                             ekinsr_c
+SEGMENT, make spatial index for type 2 dsk                 dskmi2_c
+SEGMENT, return specified vertices from type 2 dsk         dskv02_c
+SEGMENT, select SPK file and                               spksfs_c
 SEGMENT, start new e-kernel                                ekbseg_c
 SEGMENT, start new EK                                      ekbseg_c
 SEGMENT summary, return EK                                 ekssum_c
 SEGMENT, write a type 10 SPK                               spkw10_c
 SEGMENT, write a type 15 SPK                               spkw15_c
 SEGMENT, write a type 17 SPK                               spkw17_c
+SEGMENT, write a type 2 dsk                                dskw02_c
 SEGMENT, write CK type 1 pointing data                     ckw01_c
 SEGMENT, write CK type 2 pointing data                     ckw02_c
 SEGMENT, write CK type 3 pointing data                     ckw03_c
@@ -1801,10 +2247,12 @@ SEGMENT, write entire character column to EK               ekaclc_c
 SEGMENT, write entire double precision column to EK        ekacld_c
 SEGMENT, write entire integer column to EK                 ekacli_c
 SEGMENT write, finish a fast EK                            ekffld_c
+SEGMENT, write pck type 2 data                             pckw02_c
 SEGMENT, write SPK type 12 ephemeris data                  spkw12_c
 SEGMENT, write SPK type 13 ephemeris data                  spkw13_c
 SEGMENT, write SPK type 18 ephemeris data                  spkw18_c
 SEGMENT, write SPK type 2 data                             spkw02_c
+SEGMENT, write SPK type 20 data                            spkw20_c
 SEGMENT, write SPK type 3 data                             spkw03_c
 SEGMENT, write SPK type 5 ephemeris data                   spkw05_c
 SEGMENT, write SPK type 8 ephemeris data                   spkw08_c
@@ -1813,12 +2261,14 @@ SEGMENTS in an e-kernel, return number of                  eknseg_c
 SEGMENTS, open an existing SPK file for adding             spkopa_c
 SELECT a DAF to continue searching                         dafcs_c
 SELECT clause of EK query, parse                           ekpsel_c
+SELECT SPK file and segment                                spksfs_c
 SEMI-AXES of ellipse from generating vectors               saelgv_c
 SEPARATION of 3-dimensional vectors, angular               vsep_c
 SEPARATION of n-dimensional vectors, angular               vsepg_c
 SEPARATION search, gf angular                              gfsep_c
 SEPARATION, time derivative of angular                     dvsep_c
 SET constant step size, gf                                 gfsstp_c
+SET dsk tolerance or margin parameters                     dskstl_c
 SET, element of a character                                elemc_c
 SET, element of a d.p.                                     elemd_c
 SET, element of an integer                                 elemi_c
@@ -1835,9 +2285,9 @@ SET, the ordinal position of an element in a               ordc_c
                                                            ordd_c
                                                            ordi_c
 SET the size of a cell                                     ssize_c
-SET the value of a character kernel pool variable          pcpool_c
-SET the value of a d.p. kernel pool variable               pdpool_c
-SET the value of a numeric kernel pool variable            pipool_c
+SET the value of a character variable in the kernel pool   pcpool_c
+SET the value of a d.p. variable in the kernel pool        pdpool_c
+SET the value of an integer variable in the kernel pool    pipool_c
 SET, validate a                                            valid_c
 SETS, compare                                              set_c
 SETS, difference of two                                    diff_c
@@ -1853,6 +2303,7 @@ SIGNAL error condition                                     sigerr_c
 SIGNAL, gf handle interrupt                                gfinth_c
 SIGNAL receipt indicator, gf interrupt                     gfbail_c
 SIGNAL status, gf clear interrupt                          gfclrh_c
+SIGNATURE arguments, gf dummy function for udfuns          udf_c
 SIGNED integer., scan a string for a                       lx4sgn_c
 SIGNED normalized hexadecimal string, convert d.p. to      dp2hx_c
 SIGNED normalized hexadecimal string to d.p., convert      hx2dp_c
@@ -1860,16 +2311,35 @@ SIZE, gf get constant step                                 gfstep_c
 SIZE, gf set constant step                                 gfsstp_c
 SIZE of a cell                                             size_c
 SIZE of a cell, set the                                    ssize_c
+SIZE parameters from a type 2 dsk segment, fetch model     dskz02_c
 SMALL gaps in a d.p. window, fill                          wnfild_c
 SMALL intervals from a d.p. window, filter                 wnfltd_c
 SMALLEST d.p. number                                       dpmin_c
 SMALLEST integer number                                    intmin_c
 SOFTWARE defaults., change time                            timdef_c
 SOLAR incidence angle                                      ilumin_c
+SOLAR incidence angle constraints, solve for               gfilum_c
 SOLAR system barycenter, state relative to                 spkssb_c
+SOLVE for emission angle constraints                       gfilum_c
+SOLVE for illumination angle constraints                   gfilum_c
+SOLVE for incidence angle constraints                      gfilum_c
+SOLVE for phase angle constraints                          gfilum_c
+SOLVE for solar incidence angle constraints                gfilum_c
 SORT a character array, shell                              shellc_c
 SORT a d.p. array, shell                                   shelld_c
 SORT an integer array, shell                               shelli_c
+SOURCE, compute phase angle for arbitrary illumination     phaseq_c
+SOURCE, emission angle general                             illumg_c
+SOURCE, illumination angles general                        illumg_c
+SOURCE, incidence angle general                            illumg_c
+SOURCE information, dsk ray-surface intercept with         dskxsi_c
+SOURCE, lighting angles general                            illumg_c
+SOURCE, phase angle general                                illumg_c
+SOURCE with flags, emission angle general                  illumf_c
+SOURCE with flags, illumination angles general             illumf_c
+SOURCE with flags, incidence angle general                 illumf_c
+SOURCE with flags, lighting angles general                 illumf_c
+SOURCE with flags, phase angle general                     illumf_c
 SPACECRAFT clock, decode                                   scdecd_c
 SPACECRAFT clock, encode                                   scencd_c
 SPACECRAFT clock partition information                     scpart_c
@@ -1882,7 +2352,14 @@ SPACECRAFT clock ticks to character clock format, convert  scfmt_c
 SPACECRAFT clock ticks to ephemeris time                   sct2e_c
 SPANNING vectors, plane to point and                       pl2psv_c
 SPANNING vectors to plane, point and                       psv2pl_c
+SPATIAL index for type 2 dsk segment, make                 dskmi2_c
 SPECIFIED by index, return information on loaded EK column ekcii_c
+SPECIFIED time, occultation type at a                      occult_c
+SPECIFIED time, ray in instrument field of view at         fovray_c
+SPECIFIED time, ray in instrument fov at                   fovray_c
+SPECIFIED time, target in instrument field of view at      fovtrg_c
+SPECIFIED time, target in instrument fov at                fovtrg_c
+SPECIFIED vertices from type 2 dsk segment, return         dskv02_c
 SPHERICAL coordinates, jacobian of rectangular w.r.t.      drdsph_c
 SPHERICAL coordinates, latitudinal to                      latsph_c
 SPHERICAL coordinates, rectangular to                      recsph_c
@@ -1894,13 +2371,17 @@ SPHERICAL w.r.t. rectangular coordinates, jacobian of      dsphdr_c
 SPK ephemeris file, load                                   spklef_c
 SPK ephemeris file, unload                                 spkuef_c
 SPK file, aberration-corrected state from                  spkacs_c
+SPK file and segment, select                               spksfs_c
 SPK file, apparent position from                           spkapo_c
 SPK file, close an                                         spkcls_c
-SPK file, find id codes in                                 spkobj_c
+SPK file, find id codes of bodies in                       spkobj_c
+SPK file, find id codes of ephemeris objects in            spkobj_c
 SPK file for adding segments, open an existing             spkopa_c
 SPK file, light-time corrected state from                  spkltc_c
 SPK file, open a new                                       spkopn_c
+SPK file position and velocity                             spkpvn_c
 SPK file, subset of                                        spksub_c
+SPK object, get coverage start and stop time for           spkcov_c
 SPK object, get coverage window for                        spkcov_c
 SPK segment, add data to a type 14                         spk14a_c
 SPK segment, begin writing a type 14                       spk14b_c
@@ -1914,11 +2395,19 @@ SPK type 12 ephemeris data segment, write                  spkw12_c
 SPK type 13 ephemeris data segment, write                  spkw13_c
 SPK type 18 ephemeris data segment, write                  spkw18_c
 SPK type 2 data segment, write                             spkw02_c
+SPK type 20 data segment, write                            spkw20_c
 SPK type 3 data segment, write                             spkw03_c
 SPK type 5 ephemeris data segment, write                   spkw05_c
 SPK type 8 ephemeris data segment, write                   spkw08_c
 SPK type 9 ephemeris data segment, write                   spkw09_c
 STANDARD step refinement, gf                               gfrefn_c
+START and stop time for binary pck frame, get coverage     pckcov_c
+START and stop time for body, get coverage                 spkcov_c
+START and stop time for CK frame, get coverage             ckcov_c
+START and stop time for CK instrument, get coverage        ckcov_c
+START and stop time for CK object, get coverage            ckcov_c
+START and stop time for ephemeris object, get coverage     spkcov_c
+START and stop time for SPK object, get coverage           spkcov_c
 START new e-kernel segment                                 ekbseg_c
 START new e-kernel segment for fast writing                ekifld_c
 START new EK segment                                       ekbseg_c
@@ -1926,21 +2415,41 @@ START new EK segment for fast writing                      ekifld_c
 STARTING with a keyword, extract a substring               kxtrct_c
 STATE computation, low-level aberration-corrected          spkaps_c
 STATE, conic elements from                                 oscelt_c
+STATE, convert                                             xfmsta_c
+STATE, extended conic elements from                        oscltx_c
+STATE, extended osculating elements from                   oscltx_c
 STATE from conic elements                                  conics_c
+STATE from equinoctial elements, compute a                 eqncpv_c
 STATE from SPK file, aberration-corrected                  spkacs_c
 STATE from SPK file, light-time corrected                  spkltc_c
 STATE, get light time and stellar aberration-corrected     spkacs_c
 STATE, get light-time corrected                            spkltc_c
 STATE of a unit vector parallel to a state vector          dvhat_c
+STATE of constant velocity target                          spkcpt_c
+                                                           spkcvt_c
+STATE of landmark on extended object                       spkcpt_c
+                                                           spkcvt_c
 STATE of one body relative to another, geometric           spkgeo_c
+STATE of surface point on extended object                  spkcpt_c
+                                                           spkcvt_c
 STATE, osculating elements from                            oscelt_c
 STATE relative to an observer, using body codes get target spkez_c
 STATE relative to an observer, using body names get target spkezr_c
+STATE relative to constant position observer               spkcpo_c
+STATE relative to constant position surface point          spkcpo_c
+STATE relative to constant velocity observer               spkcvo_c
+STATE relative to constant velocity surface point          spkcvo_c
+STATE relative to landmark on extended object              spkcpo_c
+                                                           spkcvo_c
 STATE relative to observer corrected for aberrations, get  spkez_c
                                                            spkezr_c
 STATE relative to solar system barycenter                  spkssb_c
+STATE relative to surface point on extended object         spkcpo_c
+                                                           spkcvo_c
 STATE to bodyfixed, transformation from inertial           tisbod_c
+STATE to extended osculating elements, convert             oscltx_c
 STATE to osculating elements, convert                      oscelt_c
+STATE transformation between coordinate systems            xfmsta_c
 STATE transformation, euler angles and derivatives from    xf2eul_c
 STATE transformation from euler angles and derivatives     eul2xf_c
 STATE transformation matrix, find a                        sxform_c
@@ -1957,10 +2466,19 @@ STELLAR aberration-corrected state, get light time and     spkacs_c
 STEP refinement, gf standard                               gfrefn_c
 STEP size, gf get constant                                 gfstep_c
 STEP size, gf set constant                                 gfsstp_c
+STOP time for binary pck frame, get coverage start and     pckcov_c
+STOP time for body, get coverage start and                 spkcov_c
+STOP time for CK frame, get coverage start and             ckcov_c
+STOP time for CK instrument, get coverage start and        ckcov_c
+STOP time for CK object, get coverage start and            ckcov_c
+STOP time for ephemeris object, get coverage start and     spkcov_c
+STOP time for SPK object, get coverage start and           spkcov_c
 STORE argc argv                                            putcml_c
 STORE/RETRIEVE argc argv                                   getcml_c
 STRING against wildcard template, match                    matchi_c
                                                            matchw_c
+STRING and body id code to surface id code, surface        srfscc_c
+STRING and body string to surface id code, surface         srfs2c_c
 STRING, body id code to                                    bodc2s_c
 STRING, convert and format d.p. seconds past J2000 as a    timout_c
 STRING, convert d.p. to signed normalized hexadecimal      dp2hx_c
@@ -1973,9 +2491,13 @@ STRING into error message text, insert                     errch_c
 STRING matches a wildcard template, test whether a         matchi_c
                                                            matchw_c
 STRING, parse a UTC time                                   tparse_c
+STRING, surface id code and body id code to surface        srfc2s_c
+STRING, surface id code and body string to surface         srfcss_c
 STRING to d.p., convert signed normalized hexadecimal      hx2dp_c
 STRING to ephemeris time, spacecraft clock                 scs2e_c
 STRING to produce a time format picture, use a sample time tpictr_c
+STRING to surface id code, surface string and body         srfs2c_c
+STRING to surface string, surface id code and body         srfcss_c
 STRING to tdb seconds past the J2000 epoch, convert a      str2et_c
 STRING to ticks, convert spacecraft clock                  sctiks_c
 STRING token, lex quoted                                   lxqstr_c
@@ -2008,15 +2530,36 @@ SUMMARY, unpack DAF                                        dafus_c
 SUN on target body, find nearest point to                  subslr_c
 SUN, planetocentric longitude of                           lspcn_c
 SUPPLIED message, prompt for input with a user             prompt_c
+SURFACE, compute normal vectors on dsk                     srfnrm_c
+SURFACE, compute normal vectors on topographic             srfnrm_c
 SURFACE, find intercept of ray on target body              sincpt_c
 SURFACE, find intersection of ray and target body          sincpt_c
+SURFACE id code and body id code to surface string         srfc2s_c
+SURFACE id code and body string to surface string          srfcss_c
+SURFACE id code, surface string and body id code to        srfscc_c
+SURFACE id code, surface string and body string to         srfs2c_c
 SURFACE intercept coordinate search, gf                    gfsntc_c
 SURFACE intercept point, find                              sincpt_c
+SURFACE, intersection of ray and                           dskx02_c
 SURFACE latitudinal coordinates to rectangular, convert    srfrec_c
 SURFACE normal vector on an ellipsoid                      surfnm_c
 SURFACE point and velocity, ellipsoid                      surfpv_c
 SURFACE point latitudinal coordinates to rectangular       srfrec_c
 SURFACE point of intersection of ray and ellipsoid         surfpt_c
+SURFACE point on extended object, state of                 spkcpt_c
+                                                           spkcvt_c
+SURFACE point on extended object, state relative to        spkcpo_c
+                                                           spkcvo_c
+SURFACE point, state relative to constant position         spkcpo_c
+SURFACE point, state relative to constant velocity         spkcvo_c
+SURFACE points, map latitudinal coordinates to cartesian   latsrf_c
+SURFACE points, map latitudinal coordinates to dsk         latsrf_c
+SURFACE points to normal vectors, map cartesian            srfnrm_c
+SURFACE string and body id code to surface id code         srfscc_c
+SURFACE string and body string to surface id code          srfs2c_c
+SURFACE string, surface id code and body id code to        srfc2s_c
+SURFACE string, surface id code and body string to         srfcss_c
+SURFACES in dsk file, find id codes of                     dsksrf_c
 SYMMETRIC 2x2 matrix, diagonalize                          diags2_c
 SYMMETRIC difference of two sets                           sdiff_c
 SYSTEM barycenter, state relative to solar                 spkssb_c
@@ -2024,18 +2567,23 @@ SYSTEM, clear the keeper                                   kclear_c
 SYSTEM, re-initialize the keeper                           kclear_c
 SYSTEM to another, convert one additive numeric time       unitim_c
 SYSTEM to another, convert one uniform numeric time        unitim_c
+SYSTEMS, state transformation between coordinate           xfmsta_c
 SYSTEMS, transform between two additive numeric time       unitim_c
 SYSTEMS, transform between two uniform numeric time        unitim_c
  
 TABLE, return name of a loaded                             ektnam_c
 TABLES, return number of loaded                            ekntab_c
+TARGET body, find limb points on                           limbpt_c
 TARGET body, find nearest point to observer on             subpnt_c
 TARGET body, find nearest point to sun on                  subslr_c
 TARGET body, find sub-observer point on                    subpnt_c
 TARGET body, find sub-solar point on                       subslr_c
 TARGET body, find sub-spacecraft point on                  subpnt_c
+TARGET body, find terminator points on                     termpt_c
 TARGET body surface, find intercept of ray on              sincpt_c
 TARGET body surface, find intersection of ray and          sincpt_c
+TARGET in instrument field of view at specified time       fovtrg_c
+TARGET in instrument fov at specified time                 fovtrg_c
 TARGET in instrument fov search, gf                        gftfov_c
 TARGET in instrument fov search, gf low-level              gffove_c
 TARGET position relative to an observer, get               spkezp_c
@@ -2048,6 +2596,10 @@ TEMPLATE, match string against wildcard                    matchi_c
 TEMPLATE, return names of kernel pool variables matching a gnpool_c
 TEMPLATE, test whether a string matches a wildcard         matchi_c
                                                            matchw_c
+TERMINATOR on ellipsoid, find                              edterm_c
+TERMINATOR on ellipsoid, find penumbral                    edterm_c
+TERMINATOR on ellipsoid, find umbral                       edterm_c
+TERMINATOR points on target body, find                     termpt_c
 TEST whether a 3-dimensional vector is the zero vector     vzero_c
 TEST whether a string matches a wildcard template          matchi_c
                                                            matchw_c
@@ -2076,7 +2628,17 @@ TIME correction, low-level light                           spkltc_c
 TIME derivative of angular separation                      dvsep_c
 TIME entry in an EK column, replace                        ekuced_c
 TIME for a point on a body., compute the local             et2lst_c
+TIME for binary pck frame, get coverage start and stop     pckcov_c
+TIME for body, get coverage start and stop                 spkcov_c
+TIME for CK frame, get coverage start and stop             ckcov_c
+TIME for CK instrument, get coverage start and stop        ckcov_c
+TIME for CK object, get coverage start and stop            ckcov_c
+TIME for ephemeris object, get coverage start and stop     spkcov_c
+TIME for SPK object, get coverage start and stop           spkcov_c
 TIME format picture, use a sample time string to produce a tpictr_c
+TIME, occultation type at a specified                      occult_c
+TIME, ray in instrument field of view at specified         fovray_c
+TIME, ray in instrument fov at specified                   fovray_c
 TIME software defaults., change                            timdef_c
 TIME, spacecraft clock string to ephemeris                 scs2e_c
 TIME, spacecraft clock ticks to ephemeris                  sct2e_c
@@ -2086,6 +2648,8 @@ TIME system to another, convert one additive numeric       unitim_c
 TIME system to another, convert one uniform numeric        unitim_c
 TIME systems, transform between two additive numeric       unitim_c
 TIME systems, transform between two uniform numeric        unitim_c
+TIME, target in instrument field of view at specified      fovtrg_c
+TIME, target in instrument fov at specified                fovtrg_c
 TIME to a formal calendar date, convert ephemeris          etcal_c
 TIME to continuous spacecraft clock ticks, ephemeris       sce2c_c
 TIME to spacecraft clock string, ephemeris                 sce2s_c
@@ -2096,7 +2660,14 @@ TIME zones                                                 timdef_c
 TOKEN, lex quoted string                                   lxqstr_c
 TOKEN, recognize quoted string                             lxqstr_c
 TOKEN, scan quoted string                                  lxqstr_c
+TOLERANCE for gf routines, change default convergence      gfstol_c
+TOLERANCE or margin parameters, retrieve dsk               dskgtl_c
+TOLERANCE or margin parameters, set dsk                    dskstl_c
+TOPOGRAPHIC surface, compute normal vectors on             srfnrm_c
 TRACE of a 3x3 matrix                                      trace_c
+TRACEBACK depth, return                                    trcdep_c
+TRACEBACK, get module name from                            trcnam_c
+TRACEBACK, get quick                                       qcktrc_c
 TRACING off, turn                                          trcoff_c
 TRAJECTORY data, read                                      spkez_c
                                                            spkezp_c
@@ -2104,12 +2675,14 @@ TRAJECTORY data, read                                      spkez_c
                                                            spkpos_c
 TRANSFORM between two additive numeric time systems        unitim_c
 TRANSFORM between two uniform numeric time systems         unitim_c
+TRANSFORMATION between coordinate systems, state           xfmsta_c
 TRANSFORMATION, euler angles and derivatives from state    xf2eul_c
 TRANSFORMATION from euler angles and derivatives, state    eul2xf_c
 TRANSFORMATION from inertial position to bodyfixed         tipbod_c
 TRANSFORMATION from inertial state to bodyfixed            tisbod_c
 TRANSFORMATION matrix, find a position                     pxform_c
 TRANSFORMATION matrix, find a state                        sxform_c
+TRANSFORMATION matrix for different epochs, position       pxfrm2_c
 TRANSFORMATION to rotation and angular velocity, state     rav2xf_c
                                                            xf2rav_c
 TRANSLATION, frame idcode to frame name                    frmnam_c
@@ -2120,6 +2693,9 @@ TRANSPOSE a matrix and invert the lengths of the rows      invort_c
 TRANSPOSE a matrix general                                 xposeg_c
 TRANSPOSE times matrix n-dimensional case, matrix          mtxmg_c
 TRANSPOSE times n-dimensional vector, matrix               mtxvg_c
+TRIANGULAR plate, expand                                   pltexp_c
+TRIANGULAR plate from vertices, compute normal vector of   pltnrm_c
+TRIANGULAR plate, nearest point on                         pltnp_c
 TROPICAL year, number of seconds per                       tyear_c
 TURN tracing off                                           trcoff_c
 TWICE the value of pi                                      twopi_c
@@ -2135,17 +2711,32 @@ TYPE 14 SPK segment, end a                                 spk14e_c
 TYPE 15 SPK segment, write a                               spkw15_c
 TYPE 17 SPK segment, write a                               spkw17_c
 TYPE 18 ephemeris data segment, write SPK                  spkw18_c
+TYPE 2 data segment, write pck                             pckw02_c
 TYPE 2 data segment, write SPK                             spkw02_c
+TYPE 2 dsk plate, compute normal vector for a              dskn02_c
+TYPE 2 dsk segment, compute range bounds for               dskrb2_c
+TYPE 2 dsk segment, fetch d.p. data from a                 dskd02_c
+TYPE 2 dsk segment, fetch integer data from a              dski02_c
+TYPE 2 dsk segment, fetch model size parameters from a     dskz02_c
+TYPE 2 dsk segment, fetch parameters from a                dskb02_c
+TYPE 2 dsk segment, fetch plate data from a                dskp02_c
+TYPE 2 dsk segment, make spatial index for                 dskmi2_c
+TYPE 2 dsk segment, return specified vertices from         dskv02_c
+TYPE 2 dsk segment, write a                                dskw02_c
+TYPE 2 plate id, compute normal vector from dsk            dskn02_c
 TYPE 2 pointing data segment, write CK                     ckw02_c
+TYPE 20 data segment, write SPK                            spkw20_c
 TYPE 3 data segment, write SPK                             spkw03_c
 TYPE 3 pointing data segment, write CK                     ckw03_c
 TYPE 5 data segment, write CK                              ckw05_c
 TYPE 5 ephemeris data segment, write SPK                   spkw05_c
 TYPE 8 ephemeris data segment, write SPK                   spkw08_c
 TYPE 9 ephemeris data segment, write SPK                   spkw09_c
+TYPE at a specified time, occultation                      occult_c
 TYPE, number of loaded kernels of a given                  ktotal_c
 TYPE of a kernel file, determine the architecture and      getfat_c
  
+UMBRAL terminator on ellipsoid, find                       edterm_c
 UNIFORM numeric time system to another, convert one        unitim_c
 UNIFORM numeric time systems, transform between two        unitim_c
 UNION of two sets                                          union_c
@@ -2179,10 +2770,15 @@ UPDATED variables, check the kernel pool for               cvpool_c
 UPLINK and downlink light time, compute                    ltime_c
 UPPERCASE, convert to                                      ucase_c
 USE a sample time string to produce a time format picture  tpictr_c
+USER defined boolean function search, gf                   gfudb_c
 USER defined scalar function search, gf                    gfuds_c
 USER supplied message, prompt for input with a             prompt_c
 USING body codes get target state relative to an observer  spkez_c
 USING body names get target state relative to an observer  spkezr_c
+USING hermite polynomial, interpolate function             hrmint_c
+USING illumination angle constraints, search               gfilum_c
+USING lagrange polynomial, interpolate function            lgrind_c
+USING lighting angle constraints, search                   gfilum_c
 USING names get target position relative to an observer    spkpos_c
 USING two-body force model, propagate state vector         prop2b_c
 UTC, difference between ephemeris time and                 deltet_c
@@ -2198,14 +2794,14 @@ VALUE, binary search for a double precision                bsrchd_c
 VALUE, binary search for an integer                        bschoi_c
                                                            bsrchi_c
 VALUE from the kernel pool, retrieve a continued string    stpool_c
-VALUE of a character kernel pool variable, set the         pcpool_c
-VALUE of a d.p. kernel pool variable, set the              pdpool_c
-VALUE of a numeric kernel pool variable, set the           pipool_c
+VALUE of a character variable in the kernel pool, set the  pcpool_c
+VALUE of a d.p. variable in the kernel pool, set the       pdpool_c
 VALUE of a pooled kernel variable, return the character    gcpool_c
 VALUE of a pooled kernel variable, return the d.p.         gdpool_c
 VALUE of a pooled kernel variable, return the integer      gipool_c
 VALUE of a pooled kernel variable, return the numeric      gdpool_c
 VALUE of a pooled kernel variable, return the string       gcpool_c
+VALUE of an integer variable in the kernel pool, set the   pipool_c
 VALUE of pi                                                pi_c
 VALUE of pi, half the                                      halfpi_c
 VALUE of pi, twice the                                     twopi_c
@@ -2216,6 +2812,7 @@ VALUES, maximum of double precision                        maxd_c
 VALUES, maximum of integer                                 maxi_c
 VALUES, minimum of double precision                        mind_c
 VALUES, minimum of integer                                 mini_c
+VALUES of an integer variable from the kernel pool, return gipool_c
 VARIABLE, check the properties of a kernel pool            badkpv_c
 VARIABLE, confirm the existence of a pooled kernel         expool_c
 VARIABLE, delete a kernel pool                             dvpool_c
@@ -2226,9 +2823,6 @@ VARIABLE, return the d.p. value of a pooled kernel         gdpool_c
 VARIABLE, return the integer value of a pooled kernel      gipool_c
 VARIABLE, return the numeric value of a pooled kernel      gdpool_c
 VARIABLE, return the string value of a pooled kernel       gcpool_c
-VARIABLE, set the value of a character kernel pool         pcpool_c
-VARIABLE, set the value of a d.p. kernel pool              pdpool_c
-VARIABLE, set the value of a numeric kernel pool           pipool_c
 VARIABLE, watch for an update to a kernel pool             swpool_c
 VARIABLES, check the kernel pool for updated               cvpool_c
 VARIABLES, clear the pool of kernel                        clpool_c
@@ -2244,6 +2838,8 @@ VECTOR and norm, n-dimensional unit                        unormg_c
 VECTOR and point, plane to normal                          pl2nvp_c
 VECTOR and point to plane, normal                          nvp2pl_c
 VECTOR cross product                                       vcrss_c
+VECTOR for a type 2 dsk plate, compute normal              dskn02_c
+VECTOR from dsk type 2 plate id, compute normal            dskn02_c
 VECTOR is the zero vector, test whether a 3-dimensional    vzero_c
 VECTOR is the zero vector, test whether an n-dimensional   vzerog_c
 VECTOR, matrix times 3-dimensional                         mxv_c
@@ -2255,6 +2851,7 @@ VECTOR, negate a 3-dimensional                             vminus_c
 VECTOR, negate an n-dimensional                            vminug_c
 VECTOR, norm of 3-dimensional                              vnorm_c
 VECTOR, norm of n-dimensional                              vnormg_c
+VECTOR of triangular plate from vertices, compute normal   pltnrm_c
 VECTOR on an ellipsoid, surface normal                     surfnm_c
 VECTOR, pack three scalar components into a                vpack_c
 VECTOR parallel to a state vector, state of a unit         dvhat_c
@@ -2279,6 +2876,8 @@ VECTOR, unitize a 3-dimensional                            vhat_c
 VECTOR, unitize a n-dimensional                            vhatg_c
 VECTOR, unpack three scalar components from a              vupack_c
 VECTOR using two-body force model, propagate state         prop2b_c
+VECTORIZED ray-dsk intercept                               dskxv_c
+VECTORIZED ray-surface intercept                           dskxv_c
 VECTORS, angular separation of 3-dimensional               vsep_c
 VECTORS, angular separation of n-dimensional               vsepg_c
 VECTORS, define an orthonormal frame from two              twovec_c
@@ -2290,6 +2889,9 @@ VECTORS, ellipse to center and generating                  el2cgv_c
 VECTORS, linear combination of three 3-dimensional         vlcom3_c
 VECTORS, linear combination of two 3-dimensional           vlcom_c
 VECTORS, linear combination of two n-dimensional           vlcomg_c
+VECTORS, map cartesian surface points to normal            srfnrm_c
+VECTORS on dsk surface, compute normal                     srfnrm_c
+VECTORS on topographic surface, compute normal             srfnrm_c
 VECTORS, plane to point and spanning                       pl2psv_c
 VECTORS, relative difference of 3-dimensional              vrel_c
 VECTORS, relative difference of n-dimensional              vrelg_c
@@ -2297,12 +2899,17 @@ VECTORS, semi-axes of ellipse from generating              saelgv_c
 VECTORS to ellipse, center and generating                  cgv2el_c
 VECTORS to plane, point and spanning                       psv2pl_c
 VELOCITY, ellipsoid surface point and                      surfpv_c
+VELOCITY from ephemeris, position and                      spkpvn_c
 VELOCITY from quaternion and derivative, angular           qdq2av_c
 VELOCITY, get CK pointing and angular                      ckgpav_c
 VELOCITY of light in a vacuum, measured                    clight_c
+VELOCITY, SPK file position and                            spkpvn_c
 VELOCITY, state transformation to rotation and angular     rav2xf_c
                                                            xf2rav_c
 VERSION strings, return                                    tkvrsn_c
+VERTICES, compute normal vector of triangular plate from   pltnrm_c
+VERTICES from type 2 dsk segment, return specified         dskv02_c
+VOLUME, compute plate model                                pltvol_c
  
 WATCH for an update to a kernel pool variable              swpool_c
 WHEN a geometric quantity satisfies a condition, determine gfevnt_c
@@ -2333,6 +2940,9 @@ WINDOWS, union two d.p.                                    wnunid_c
 WRITE a type 10 SPK segment                                spkw10_c
 WRITE a type 15 SPK segment                                spkw15_c
 WRITE a type 17 SPK segment                                spkw17_c
+WRITE a type 2 dsk segment                                 dskw02_c
+WRITE access, open a das file for                          dasopw_c
+WRITE access, open a new dsk file with                     dskopn_c
 WRITE character data to EK column                          ekacec_c
 WRITE CK type 1 pointing data segment                      ckw01_c
 WRITE CK type 2 pointing data segment                      ckw02_c
@@ -2345,15 +2955,18 @@ WRITE entire integer column to EK segment                  ekacli_c
 WRITE, finish a fast EK segment                            ekffld_c
 WRITE integer data to EK column                            ekacei_c
 WRITE, open existing DAF for                               dafopw_c
+WRITE pck type 2 data segment                              pckw02_c
 WRITE SPK type 12 ephemeris data segment                   spkw12_c
 WRITE SPK type 13 ephemeris data segment                   spkw13_c
 WRITE SPK type 18 ephemeris data segment                   spkw18_c
 WRITE SPK type 2 data segment                              spkw02_c
+WRITE SPK type 20 data segment                             spkw20_c
 WRITE SPK type 3 data segment                              spkw03_c
 WRITE SPK type 5 ephemeris data segment                    spkw05_c
 WRITE SPK type 8 ephemeris data segment                    spkw08_c
 WRITE SPK type 9 ephemeris data segment                    spkw09_c
 WRITING a type 14 SPK segment, begin                       spk14b_c
+WRITING, open a das file for                               dasopw_c
 WRITING, open EK for                                       ekopw_c
 WRITING, start new e-kernel segment for fast               ekifld_c
 WRITING, start new EK segment for fast                     ekifld_c

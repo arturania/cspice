@@ -7,7 +7,7 @@
 
 /* Table of constant values */
 
-static integer c__1000 = 1000;
+static integer c__5000 = 5000;
 static integer c__20 = 20;
 static integer c__1 = 1;
 static integer c__128 = 128;
@@ -73,7 +73,7 @@ static integer c__128 = 128;
     extern /* Subroutine */ int chkout_(char *, ftnlen);
     static doublereal sumrec[128];
     static char stifnm[60*20];
-    static integer namsiz, opnset[1006];
+    static integer namsiz, opnset[5006];
     extern /* Subroutine */ int ssizei_(integer *, integer *);
     static integer stlast[20];
     extern /* Subroutine */ int setmsg_(char *, ftnlen);
@@ -179,6 +179,30 @@ static integer c__128 = 128;
 /*     None. */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.5.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-INTEL. */
+
+/* -    SPICELIB Version 2.4.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 2.3.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-GFORTRAN. */
+
+/* -    SPICELIB Version 2.2.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 2.1.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GCC_C. */
+
+/* -    SPICELIB Version 2.0.0, 12-APR-2012 (BVS) */
+
+/*        Increased FTSIZE (from 1000 to 5000). */
 
 /* -    SPICELIB Version 1.20.0, 13-MAY-2010 (BVS) */
 
@@ -1273,7 +1297,7 @@ L_dafbna:
 /*     open DAFs. */
 
     if (first) {
-	ssizei_(&c__1000, opnset);
+	ssizei_(&c__5000, opnset);
 	for (i__ = 1; i__ <= 19; ++i__) {
 	    stpool[(i__1 = i__ - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge("stpool"
 		    , i__1, "dafana_", (ftnlen)1067)] = i__ + 1;

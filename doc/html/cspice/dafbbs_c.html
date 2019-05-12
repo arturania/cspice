@@ -55,7 +55,7 @@
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 33%; text-align: center;">
             <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
@@ -66,7 +66,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
@@ -76,7 +76,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
@@ -90,66 +90,55 @@
 
 <h4><a name="Procedure">Procedure</a></h4>
 <PRE>
-   void dafbbs_c ( SpiceInt handle ) 
+   void dafbbs_c ( SpiceInt handle )
 
 </PRE>
 <h4><a name="Abstract">Abstract</a></h4>
 <PRE>
- 
-   Begin a backward search for arrays in a DAF. 
- </PRE>
+   Begin a backward search for arrays in a DAF.
+</PRE>
 <h4><a name="Required_Reading">Required_Reading</a></h4>
 <PRE>
- 
-   <a href="../req/daf.html">DAF</a> 
- </PRE>
+   <a href="../req/daf.html">DAF</a>
+</PRE>
 <h4><a name="Keywords">Keywords</a></h4>
 <PRE>
- 
-   FILES 
- 
+   FILES
+
 
 </PRE>
 <h4><a name="Brief_I/O">Brief_I/O</a></h4>
 <PRE>
- 
-   Variable  I/O  Description 
-   --------  ---  -------------------------------------------------- 
-   handle     I   Handle of DAF to be searched. 
- </PRE>
+   Variable  I/O  Description
+   --------  ---  --------------------------------------------------
+   handle     I   Handle of DAF to be searched.
+</PRE>
 <h4><a name="Detailed_Input">Detailed_Input</a></h4>
 <PRE>
- 
-   handle      is the handle of a DAF on which a backward 
-               search is to be conducted. 
- </PRE>
+   handle      is the handle of a DAF on which a backward
+               search is to be conducted.
+</PRE>
 <h4><a name="Detailed_Output">Detailed_Output</a></h4>
 <PRE>
- 
-   None. 
- </PRE>
+   None.
+</PRE>
 <h4><a name="Parameters">Parameters</a></h4>
 <PRE>
- 
-   None. 
- </PRE>
+   None.
+</PRE>
 <h4><a name="Exceptions">Exceptions</a></h4>
 <PRE>
- 
-   1)  If the input handle is invalid, the error will be diagnosed 
-       by routines called by this routine. 
- </PRE>
+   1)  If the input handle is invalid, the error will be diagnosed
+       by routines called by this routine.
+</PRE>
 <h4><a name="Files">Files</a></h4>
 <PRE>
- 
-   See argument handle. 
- </PRE>
+   See argument handle.
+</PRE>
 <h4><a name="Particulars">Particulars</a></h4>
 <PRE>
- 
- 
    The DAF search routines are:
-   
+
       <a href="dafbfs_c.html">dafbfs_c</a>       Begin forward search.
       daffna         Find next array.
 
@@ -158,7 +147,7 @@
 
       <a href="dafgs_c.html">dafgs_c</a>        Get summary.
       <a href="dafgn_c.html">dafgn_c</a>        Get name.
-      dafgh_c        Get handle.
+      <a href="dafgh_c.html">dafgh_c</a>        Get handle.
 
       <a href="dafcs_c.html">dafcs_c</a>        Continue search.
 
@@ -230,7 +219,7 @@
 
       while ( found1 || found2 )
       {
-         if ( found1 )  
+         if ( found1 )
          {
             <a href="dafcs_c.html">dafcs_c</a> ( handl1 );
             <a href="dafgs_c.html">dafgs_c</a> ( sum    );
@@ -241,7 +230,7 @@
             <a href="daffna_c.html">daffna_c</a> ( &amp;found1 );
          }
 
-         if ( found2 )  
+         if ( found2 )
          {
             <a href="dafcs_c.html">dafcs_c</a> ( handl2 );
             <a href="dafgs_c.html">dafgs_c</a> ( sum    );
@@ -257,51 +246,191 @@
    At any time, the latest array found (whether by <a href="daffna_c.html">daffna_c</a> or <a href="daffpa_c.html">daffpa_c</a>)
    is regarded as the &quot;current&quot; array for the file in which the
    array was found.  The last DAF in which a search was started,
-   executed, or continued by any of <a href="dafbfs_c.html">dafbfs_c</a>, <b>dafbbs_c</b>, <a href="daffna_c.html">daffna_c</a>, 
-   <a href="daffpa_c.html">daffpa_c</a> or <a href="dafcs_c.html">dafcs_c</a> is regarded as the &quot;current&quot; DAF.  The summary 
+   executed, or continued by any of <a href="dafbfs_c.html">dafbfs_c</a>, <b>dafbbs_c</b>, <a href="daffna_c.html">daffna_c</a>,
+   <a href="daffpa_c.html">daffpa_c</a> or <a href="dafcs_c.html">dafcs_c</a> is regarded as the &quot;current&quot; DAF.  The summary
    and name for the current array in the current DAF can be obtained
    separately, as shown above, by calls to DAFGS (get summary) and
    <a href="dafgn_c.html">dafgn_c</a> (get name).  The handle of the current DAF can also be
-   obtained by calling dafgh_c (get handle).
+   obtained by calling <a href="dafgh_c.html">dafgh_c</a> (get handle).
 
    Once a search has been begun, it may be continued in either
    direction. That is, <a href="daffpa_c.html">daffpa_c</a> may be used to back up during a
    forward search, and <a href="daffna_c.html">daffna_c</a> may be used to advance during a
    backward search.
- </PRE>
+</PRE>
 <h4><a name="Examples">Examples</a></h4>
 <PRE>
- 
-   1) See Particulars. 
- </PRE>
+   Example (1):
+
+      See Particulars.
+
+   Example (2):
+
+   Use a simple routine to output the double precision and integer
+   values stored in an SPK's segments descriptors. This function
+   opens a DAF for read, performs a backwards search for the DAF
+   arrays, prints segments description for each array found, then
+   closes the DAF.
+
+      #include &lt;stdio.h&gt;
+      #include &quot;SpiceUsr.h&quot;
+
+      int main()
+         {
+
+         /.
+         Local constants
+         ./
+
+         /.
+         Define the summary parameters appropriate
+         for an SPK file.
+         ./
+
+         #define ND              2
+         #define NI              6
+         #define MAXSUM          125
+
+         SpiceInt                ic  [ NI ];
+         SpiceInt                handle;
+
+         SpiceDouble             dc  [ ND ];
+         SpiceDouble             sum [ MAXSUM ];
+
+         SpiceChar             * kernel = &quot;/kernels/gen/spk/de421.bsp&quot;;
+
+         SpiceBoolean            found;
+
+
+         /.
+         Open a DAF for read. Return a handle referring to the file.
+         ./
+         <a href="dafopr_c.html">dafopr_c</a> ( kernel, &amp;handle );
+
+         /.
+         Begin a backward search on the file.
+         ./
+         <b>dafbbs_c</b> ( handle );
+
+         /.
+         Search until a DAF array is found.
+         ./
+         <a href="daffpa_c.html">daffpa_c</a> ( &amp;found );
+
+         /.
+         Loop while the search finds subsequent DAF arrays.
+         ./
+         while ( found )
+            {
+
+            <a href="dafgs_c.html">dafgs_c</a> ( sum );
+            <a href="dafus_c.html">dafus_c</a> ( sum, ND, NI, dc, ic );
+
+            printf( &quot; Doubles: %f %f \n&quot;, dc[0], dc[1] );
+            printf( &quot;Integers: %d %d %d %d %d %d\n\n&quot;, 
+                       (int)ic[0], (int)ic[1], (int)ic[2], 
+                       (int)ic[3], (int)ic[4], (int)ic[5] );
+
+            /.
+            Check for another segment.
+            ./
+            <a href="daffpa_c.html">daffpa_c</a> ( &amp;found );
+            }
+
+         /.
+         Safely close the DAF.
+         ./
+         <a href="dafcls_c.html">dafcls_c</a> ( handle  );
+
+         return ( 0 );
+         }
+
+   The program outouts:
+
+       Doubles: -3169195200.000000 1696852800.000000 
+      Integers: 499 4 1 2 2098633 2098644
+      
+       Doubles: -3169195200.000000 1696852800.000000 
+      Integers: 299 2 1 2 2098621 2098632
+      
+       Doubles: -3169195200.000000 1696852800.000000 
+      Integers: 199 1 1 2 2098609 2098620
+      
+       Doubles: -3169195200.000000 1696852800.000000 
+      Integers: 399 3 1 2 1521325 2098608
+      
+       Doubles: -3169195200.000000 1696852800.000000 
+      Integers: 301 3 1 2 944041 1521324
+      
+       Doubles: -3169195200.000000 1696852800.000000 
+      Integers: 10 0 1 2 820837 944040
+      
+       Doubles: -3169195200.000000 1696852800.000000 
+      Integers: 9 0 1 2 785633 820836
+      
+       Doubles: -3169195200.000000 1696852800.000000 
+      Integers: 8 0 1 2 750429 785632
+      
+       Doubles: -3169195200.000000 1696852800.000000 
+      Integers: 7 0 1 2 715225 750428
+      
+       Doubles: -3169195200.000000 1696852800.000000 
+      Integers: 6 0 1 2 674741 715224
+      
+       Doubles: -3169195200.000000 1696852800.000000 
+      Integers: 5 0 1 2 628977 674740
+      
+       Doubles: -3169195200.000000 1696852800.000000 
+      Integers: 4 0 1 2 567373 628976
+      
+       Doubles: -3169195200.000000 1696852800.000000 
+      Integers: 3 0 1 2 423049 567372
+      
+       Doubles: -3169195200.000000 1696852800.000000 
+      Integers: 2 0 1 2 310405 423048
+      
+       Doubles: -3169195200.000000 1696852800.000000 
+      Integers: 1 0 1 2 641 310404
+
+      Note, the final entries in the integer arrays record the segment
+      start/end indexes. The output indicates the search proceeded
+      from the end of the file (high value index) towards the beginning
+      (low value index).
+</PRE>
 <h4><a name="Restrictions">Restrictions</a></h4>
 <PRE>
- 
-   None. 
- </PRE>
+   None.
+</PRE>
 <h4><a name="Literature_References">Literature_References</a></h4>
 <PRE>
- 
-   NAIF Document 167.0, &quot;Double Precision Array Files (DAF) 
-   Specification and User's Guide&quot; 
- </PRE>
+   None.
+</PRE>
 <h4><a name="Author_and_Institution">Author_and_Institution</a></h4>
 <PRE>
- 
-   N.J. Bachman    (JPL) 
-   W.L. Taber      (JPL) 
-   I.M. Underwood  (JPL) 
- </PRE>
+   N.J. Bachman    (JPL)
+   W.L. Taber      (JPL)
+   I.M. Underwood  (JPL)
+</PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
- 
+   -CSPICE Version 1.0.2, 28-JUN-2016 (EDW)
+
+      Edit to Example code, SpiceInts output as ints using 
+      explicit casting.
+
+   -CSPICE Version 1.0.1, 10-OCT-2012 (EDW)
+
+      Added a functional code example to the Examples section.
+
+      Removed the obsolete Reference citation to &quot;NAIF
+      Document 167.0.&quot;
+
    -CSPICE Version 1.0.0, 31-JUL-1999 (NJB) (WLT) (IMU)
 </PRE>
 <h4><a name="Index_Entries">Index_Entries</a></h4>
 <PRE>
- 
-   begin daf backward search 
- </PRE>
+   begin daf backward search
+</PRE>
 <h4>Link to routine dafbbs_c source file <a href='../../../src/cspice/dafbbs_c.c'>dafbbs_c.c</a> </h4>
 
       </td>
@@ -309,7 +438,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Jun  9 13:05:20 2010</pre>
+   <pre>Wed Apr  5 17:54:30 2017</pre>
 
 </body>
 </html>

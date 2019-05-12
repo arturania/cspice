@@ -10,7 +10,7 @@
 static integer c__3 = 3;
 static integer c__1 = 1;
 
-/* $Procedure      PCKE03 ( PCK, evaluate type 03 ) */
+/* $Procedure PCKE03 ( PCK, evaluate data record from type 3 segment ) */
 /* Subroutine */ int pcke03_(doublereal *et, doublereal *record, doublereal *
 	rotmat)
 {
@@ -51,7 +51,7 @@ static integer c__1 = 1;
 /*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
 /*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
 /*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
-/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     ADMINISTRATION (NASA). THE SOFTsWARE IS TECHNOLOGY AND SOFTWARE */
 /*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
 /*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
 /*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
@@ -186,6 +186,11 @@ static integer c__1 = 1;
 
 /* $ Version */
 
+/* -    SPICELIB Version 3.0.1, 03-JAN-2014 (EDW) */
+
+/*        Minor edits to Procedure; clean trailing whitespace. */
+/*        Removed unneeded Revisions section. */
+
 /* -    SPICELIB Version 3.0.0, 6-OCT-1995 (WLT) */
 
 /*        Brian Carcich at Cornell discovered that the Euler */
@@ -208,25 +213,6 @@ static integer c__1 = 1;
 /* $ Index_Entries */
 
 /*     evaluate type_03 pck segment */
-
-/* -& */
-/* $ Revisions */
-
-/* -    SPICELIB Version 3.0.0, 6-OCT-1995 (WLT) */
-
-/*        Brian Carcich at Cornell discovered that the Euler */
-/*        angles were being re-arranged unnecessarily.  As a */
-/*        result the state transformation matrix computed was */
-/*        not the one we expected.  (The re-arrangement was */
-/*        a left-over from  implementation 1.0.0.  This problem */
-/*        has now been corrected. */
-
-/* -    SPICELIB Version 2.0.0, 28-JUL-1995 (WLT) */
-
-/*        Version 1.0.0 was written under the assumption that */
-/*        RA, DEC, W and dRA/dt, dDEC/dt and dW/dt were supplied */
-/*        in the input RECORD.  This version repairs the */
-/*        previous misinterpretation. */
 
 /* -& */
 
@@ -289,14 +275,14 @@ static integer c__1 = 1;
 
 	chbval_(&record[cofloc - 1], &degree, &record[1], et, &eulang[(i__1 = 
 		i__ - 1) < 6 && 0 <= i__1 ? i__1 : s_rnge("eulang", i__1, 
-		"pcke03_", (ftnlen)278)]);
+		"pcke03_", (ftnlen)262)]);
 
 /*        Convert to radians. */
 
 	eulang[(i__1 = i__ - 1) < 6 && 0 <= i__1 ? i__1 : s_rnge("eulang", 
-		i__1, "pcke03_", (ftnlen)283)] = rpd_() * eulang[(i__2 = i__ 
+		i__1, "pcke03_", (ftnlen)267)] = rpd_() * eulang[(i__2 = i__ 
 		- 1) < 6 && 0 <= i__2 ? i__2 : s_rnge("eulang", i__2, "pcke0"
-		"3_", (ftnlen)283)];
+		"3_", (ftnlen)267)];
     }
 
 /*     EULANG(1) is RA make it PHI */
@@ -387,19 +373,19 @@ static integer c__1 = 1;
     for (i__ = 1; i__ <= 3; ++i__) {
 	for (j = 1; j <= 3; ++j) {
 	    rotmat[(i__1 = i__ + j * 6 - 7) < 36 && 0 <= i__1 ? i__1 : s_rnge(
-		    "rotmat", i__1, "pcke03_", (ftnlen)378)] = rot[(i__2 = 
+		    "rotmat", i__1, "pcke03_", (ftnlen)362)] = rot[(i__2 = 
 		    i__ + j * 3 - 4) < 9 && 0 <= i__2 ? i__2 : s_rnge("rot", 
-		    i__2, "pcke03_", (ftnlen)378)];
+		    i__2, "pcke03_", (ftnlen)362)];
 	    rotmat[(i__1 = i__ + 3 + j * 6 - 7) < 36 && 0 <= i__1 ? i__1 : 
-		    s_rnge("rotmat", i__1, "pcke03_", (ftnlen)379)] = drotdt[(
+		    s_rnge("rotmat", i__1, "pcke03_", (ftnlen)363)] = drotdt[(
 		    i__2 = i__ + j * 3 - 4) < 9 && 0 <= i__2 ? i__2 : s_rnge(
-		    "drotdt", i__2, "pcke03_", (ftnlen)379)];
+		    "drotdt", i__2, "pcke03_", (ftnlen)363)];
 	    rotmat[(i__1 = i__ + (j + 3) * 6 - 7) < 36 && 0 <= i__1 ? i__1 : 
-		    s_rnge("rotmat", i__1, "pcke03_", (ftnlen)380)] = 0.;
+		    s_rnge("rotmat", i__1, "pcke03_", (ftnlen)364)] = 0.;
 	    rotmat[(i__1 = i__ + 3 + (j + 3) * 6 - 7) < 36 && 0 <= i__1 ? 
-		    i__1 : s_rnge("rotmat", i__1, "pcke03_", (ftnlen)381)] = 
+		    i__1 : s_rnge("rotmat", i__1, "pcke03_", (ftnlen)365)] = 
 		    rot[(i__2 = i__ + j * 3 - 4) < 9 && 0 <= i__2 ? i__2 : 
-		    s_rnge("rot", i__2, "pcke03_", (ftnlen)381)];
+		    s_rnge("rot", i__2, "pcke03_", (ftnlen)365)];
 	}
     }
     chkout_("PCKE03", (ftnlen)6);

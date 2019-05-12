@@ -10,7 +10,7 @@
 static integer c__2 = 2;
 static integer c__5 = 5;
 
-/* $Procedure      PCKPDS ( PCK pack descriptor ) */
+/* $Procedure PCKPDS ( PCK, pack descriptor ) */
 /* Subroutine */ int pckpds_(integer *body, char *frame, integer *type__, 
 	doublereal *first, doublereal *last, doublereal *descr, ftnlen 
 	frame_len)
@@ -101,6 +101,29 @@ static integer c__5 = 5;
 
 /*     None. */
 
+/* $ Exceptions */
+
+/*     1) The error 'SPICE(BARYCENTERIDCODE)' is signalled if the */
+/*        value of BODY is the ID code of a barycenter, codes */
+/*        0, 1, ..., 9. */
+
+/*     3) The error 'SPICE(INVALIDREFFRAME)' is signalled if FRAME */
+/*        is not one of the known SPICE inertial reference frames. */
+
+/*     4) The error 'SPICE(BADDESCRTIMES)' is signalled if FIRST */
+/*        is greater than or equal to LAST */
+
+/*     5) The error 'SPICE(UNKNOWNPCKTYPE)' is signalled if the */
+/*        value of TYPE is outside the range 2 to 1000 (inclusive). */
+/*        This does not ensure that the TYPE is a legitimate PCK */
+/*        segment type, but it is a simple check that helps avoid */
+/*        problems that arise from unitialized values or improperly */
+/*        ordered calling arguments. */
+
+/* $ Files */
+
+/*     None. */
+
 /* $ Particulars */
 
 /*     This is a utility routine for validating and creating */
@@ -126,26 +149,7 @@ static integer c__5 = 5;
 
 /*     None. */
 
-/* $ Exceptions */
-
-/*     1) The error 'SPICE(BARYCENTERIDCODE)' is signalled if the */
-/*        value of BODY is the ID code of a barycenter, codes */
-/*        0, 1, ..., 9. */
-
-/*     3) The error 'SPICE(INVALIDREFFRAME)' is signalled if FRAME */
-/*        is not one of the known SPICE inertial reference frames. */
-
-/*     4) The error 'SPICE(BADDESCRTIMES)' is signalled if FIRST */
-/*        is greater than or equal to LAST */
-
-/*     5) The error 'SPICE(UNKNOWNPCKTYPE)' is signalled if the */
-/*        value of TYPE is outside the range 2 to 1000 (inclusive). */
-/*        This does not ensure that the TYPE is a legitimate PCK */
-/*        segment type, but it is a simple check that helps avoid */
-/*        problems that arise from unitialized values or improperly */
-/*        ordered calling arguments. */
-
-/* $ Files */
+/* $ Literature_References */
 
 /*     None. */
 
@@ -153,11 +157,13 @@ static integer c__5 = 5;
 
 /*     W.L. Taber      (JPL) */
 
-/* $ Literature_References */
-
-/*     None. */
-
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1, 03-JAN-2014 (EDW) */
+
+/*        Minor edits to Procedure; clean trailing whitespace. */
+/*        Corrected order of header sections to conform to NAIF */
+/*        standard. */
 
 /* -    SPICELIB Version 1.0.0, 04-JAN-1995 (WLT) */
 

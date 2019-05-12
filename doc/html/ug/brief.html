@@ -34,6 +34,7 @@
          <A HREF="#Displaying Centers-of-Motion/Relative-to-Frames (``-c'')">Displaying Centers-of-Motion/Relative-to-Frames (``-c'')</A>
          <A HREF="#Treating All Files as a Single File (``-a'')">Treating All Files as a Single File (``-a'')</A>
          <A HREF="#Display Summary in a Tabular Format (``-t'')">Display Summary in a Tabular Format (``-t'')</A>
+         <A HREF="#Displaying Tabular Summary Sorted by Start Time (``-s'')">Displaying Tabular Summary Sorted by Start Time (``-s'')</A>
          <A HREF="#Displaying Tabular Summary Grouped by Coverage (``-g'')">Displaying Tabular Summary Grouped by Coverage (``-g'')</A>
          <A HREF="#Displaying Bodies/Frames Using Only Numeric IDs (``-n'')">Displaying Bodies/Frames Using Only Numeric IDs (``-n'')</A>
          <A HREF="#Displaying Summary Ordered by Body/Frame Name (``-o'')">Displaying Summary Ordered by Body/Frame Name (``-o'')</A>
@@ -68,7 +69,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> BRIEF User's Guide
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2008 OCT 14 by B. V. Semenov.
+   Last revised on 2010 SEP 08 by B. V. Semenov.
 <P>
  
 <BR><BR>
@@ -121,6 +122,7 @@
    -t           display summary in a tabular format
    -a           treat all files as a single file
  
+   -s           display summary sorted by start time for each body
    -g           display summary grouped by coverage
    -n           display bodies/frames using only numeric id-codes
    -o           display summary ordered by body/frame name
@@ -175,6 +177,9 @@ format
 <UL>
 <TT>--</TT> use ``-c'' to see centers-of-motion when you need to identify those for
 which a SPICE error message reported lack of ephemeris data
+<BR><BR></UL>
+<UL>
+<TT>--</TT> use ``-t -c -s'' to see when/if a body switches its center-of-motion
 <BR><BR></UL>
 <UL>
 <TT>--</TT> use ``-a'' for a set of kernels that are to be used together
@@ -512,6 +517,45 @@ files are provided in a meta-kernel(s), BRIEF ignores them.
 <P>
  
 <BR><BR>
+<A NAME="Displaying Tabular Summary Sorted by Start Time (``-s'')"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Displaying Tabular Summary Sorted by Start Time (``-s'')
+</H3><P><BR><BR>
+   The ``-s'' option tells BRIEF to re-order records in the tables of the
+   tabular output in such way that the records for a particular body or
+   frame are grouped together and sorted by the start time within each
+   group. This option is particularly useful for the output including the
+   centers-of-motion (for SPKs) or relative-to-frames (for binary PCKs)
+   because it shows in chronological order when/if a body switches its
+   center-of-motion or a frame switches its relative-to-frame. This option
+   supersedes ``-g'' and has no effect without ``-t''.
+<P>
+ 
+   In this example ``-s'' is used to produce a summary of the CASSINI inner
+   cruise SPK file, which provides CASSINI spacecraft trajectory relative
+   to different centers-of-motion during different time intervals:
+<P>
+ 
+<PRE>
+   &gt; brief -c -t -s cas_inner_cruise.bsp
+ 
+   BRIEF -- Version 4.0.0, September 8, 2010 -- Toolkit Version N0064
+ 
+ 
+   Summary for: cas_inner_cruise.bsp
+ 
+   Bodies                                 Start of Interval (ET)    End
+   -------                                ------------------------  ----
+   -82 CASSINI w.r.t. 10 SUN              1997 NOV 15 00:00:00.000  1998
+   -82 CASSINI w.r.t. 2 VENUS BARYCENTER  1998 APR 25 10:37:10.235  1998
+   -82 CASSINI w.r.t. 10 SUN              1998 APR 27 16:54:58.844  1999
+   -82 CASSINI w.r.t. 2 VENUS BARYCENTER  1999 JUN 24 02:37:43.459  1999
+   -82 CASSINI w.r.t. 10 SUN              1999 JUN 25 14:24:23.301  1999
+                                          1999 JUL 06 16:01:04.183  1999
+   -82 CASSINI w.r.t. 399 EARTH           1999 AUG 17 11:38:55.368  1999
+   -82 CASSINI w.r.t. 10 SUN              1999 AUG 18 19:20:02.623  1999
+</PRE>
+<BR><BR>
 <A NAME="Displaying Tabular Summary Grouped by Coverage (``-g'')"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Displaying Tabular Summary Grouped by Coverage (``-g'')
@@ -610,11 +654,11 @@ files are provided in a meta-kernel(s), BRIEF ignores them.
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Specifying Multiple Options Controlling Output Format
 </H3><P><BR><BR>
-   When ``-c'', ``-a'', ``-t'', ``-o'', ``-n'', and ``-g'' are provided
-   together their effects are combined, resulting in a large variety of
-   display formats (see ``Appendix 1: Matrix of Output Formats''). They can
-   be provided in any combination and, in general, don't depend on each
-   other, except in these cases:
+   When ``-c'', ``-a'', ``-t'', ``-o'', ``-n'', ``-g'', and ``-s'' are
+   provided together their effects are combined, resulting in a large
+   variety of display formats (see ``Appendix 1: Matrix of Output
+   Formats''). They can be provided in any combination and, in general,
+   don't depend on each other, except in these cases:
 <P>
  
 <UL>
@@ -624,7 +668,17 @@ files are provided in a meta-kernel(s), BRIEF ignores them.
 <TT>--</TT> ``-g'' has effect only when provided together with ``-t''
 <BR><BR></UL>
 <UL>
+<TT>--</TT> ``-s'' has effect only when provided together with ``-t''
+<BR><BR></UL>
+<UL>
+<TT>--</TT> ``-s'' supersedes ``-g''
+<BR><BR></UL>
+<UL>
 <TT>--</TT> ``-g'' regroups tabular display tables already ordered by name (``-o'') or
+by numeric ID (no ``-o'')
+<BR><BR></UL>
+<UL>
+<TT>--</TT> ``-s'' re-sorts tabular display tables already ordered by name (``-o'') or
 by numeric ID (no ``-o'')
 <BR><BR></UL>
 <BR><BR>

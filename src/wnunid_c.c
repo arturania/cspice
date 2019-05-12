@@ -58,7 +58,7 @@
    --------  ---  -------------------------------------------------- 
    a, 
    b          I   Input windows. 
-   c          I   Union of a and b. 
+   c          O   Union of a and b. 
  
 -Detailed_Input
  
@@ -127,11 +127,16 @@
 
    N.J. Bachman    (JPL)
    H.A. Neilan     (JPL) 
+   B.V. Semenov    (JPL) 
    W.L. Taber      (JPL) 
    I.M. Underwood  (JPL) 
  
 -Version
  
+   -CSPICE Version 1.0.1, 11-FEB-2013 (BVS)
+
+       Corrected typo in Brief I/O section.
+
    -CSPICE Version 1.0.0, 29-JUL-2002 (NJB) (HAN) (WLT) (IMU)
 
 -Index_Entries

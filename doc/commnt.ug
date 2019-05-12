@@ -2,7 +2,7 @@
 COMMNT User's Guide
 ===========================================================================
  
-   Last revised on 2008 JAN 17 by B. V. Semenov.
+   Last revised on 2017 MAR 23 by N. J. Bachman
  
  
 Abstract
@@ -81,14 +81,15 @@ Overview
    information, determining the utility or applicability of the data in a
    file would be difficult.
  
-   The COMMNT program supports the CK, EK, PCK, and SPK SPICE binary kernel
-   file formats. CK files contain orientation information, commonly called
-   ``pointing,'' for various spacecraft structures or instruments. EK files
-   contain time tagged event information for a spacecraft. Binary PCK files
-   contain body orientation models. Binary PCK files are currently only
-   available for the Earth and the Moon with limited time coverage. SPK
-   files contain ephemeris information for solar system objects: planets,
-   satellites, comets, asteroids, and spacecraft.
+   The COMMNT program supports the CK, DSK, EK, PCK, and SPK SPICE binary
+   kernel file formats. CK files contain orientation information, commonly
+   called ``pointing,'' for various spacecraft structures or instruments.
+   DSK files contain shape models for extended objects. EK files contain
+   time tagged event information for a spacecraft. Binary PCK files contain
+   body orientation models. Binary PCK files are currently only available
+   for the Earth and the Moon with limited time coverage. SPK files contain
+   ephemeris information for solar system objects: planets, satellites,
+   comets, asteroids, and spacecraft.
  
    The comments are stored in a ``what you put in is what you get out''
    fashion, so care should be taken when formatting the comments before
@@ -98,16 +99,18 @@ Overview
 References
 --------------------------------------------------------
  
-   Detailed descriptions of the CK, EK, PCK, and SPK SPICE binary kernel
-   file formats may be found in the NAIF documents:
+   Detailed descriptions of the CK, DSK, EK, PCK, and SPK SPICE binary
+   kernel file formats may be found in the NAIF documents:
  
        1.   CK Required Reading (ck.req).
  
-       2.   EK Required Reading (ek.req).
+       2.   DSK Required Reading (dsk.req).
  
-       3.   PCK Required Reading (pck.req).
+       3.   EK Required Reading (ek.req).
  
-       4.   SPK Required Reading (spk.req).
+       4.   PCK Required Reading (pck.req).
+ 
+       5.   SPK Required Reading (spk.req).
  
    Information related to other aspects of the COMMNT program and its
    options may be found in the NAIF document:
@@ -366,4 +369,16 @@ COMMNT Option: D -- Delete the comments in a binary file.
    SPICE binary kernel file may be corrupted due to a partial deletion of
    the comments. It is advisable to keep a backup copy of the binary kernel
    file.
+ 
+ 
+Appendix A --- Revision History
+===========================================================================
+ 
+ 
+2017 MAR 23 by N. J. Bachman
+ 
+   Updated to mention that COMMNT works with DSK files.
+ 
+ 
+2008 JAN 17 by B. V. Semenov.
  

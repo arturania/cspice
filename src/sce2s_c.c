@@ -144,6 +144,7 @@
  
    2)  If the SCLK kernel used with this routine does not map SCLK 
        directly to barycentric dynamical time, a leapseconds kernel 
+       must be loaded at the time this routine is called.
  
 -Particulars
  
@@ -320,9 +321,15 @@
  
    C.H. Acton     (JPL)
    N.J. Bachman   (JPL) 
+   B.V. Semenov   (JPL)
  
 -Version
  
+   -CSPICE Version 1.1.2, 21-JAN-2014 (BVS)
+
+      Fixed an incomplete sentence in the item 2) in the header 
+      section Files.
+
    -CSPICE Version 1.1.1, 29-JUL-2003 (NJB) (CHA)
 
       Various header changes were made to improve clarity and 

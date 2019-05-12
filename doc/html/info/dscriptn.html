@@ -39,8 +39,11 @@
          <A HREF="#CKBRIEF">CKBRIEF</A>
          <A HREF="#COMMNT">COMMNT</A>
          <A HREF="#COOKBOOK">COOKBOOK</A>
+         <A HREF="#DSKBRIEF">DSKBRIEF</A>
+         <A HREF="#DSKEXP">DSKEXP</A>
          <A HREF="#FRMDIFF">FRMDIFF</A>
          <A HREF="#INSPEKT">INSPEKT</A>
+         <A HREF="#MKDSK">MKDSK</A>
          <A HREF="#MKSPK">MKSPK</A>
          <A HREF="#MSOPCK">MSOPCK</A>
          <A HREF="#SPACIT">SPACIT</A>
@@ -72,8 +75,8 @@
 <H1> Introduction
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
    This document describes the structure and contents of the latest version
-   of the NAIF cspice Toolkit for PC computers using MICROSOFT WINDOWS
-   operating system and MICROSOFT VISUAL C++ compiler.
+   of the NAIF cspice Toolkit for INTEL MAC computers using MAC OS-X
+   operating system and CC 64BIT compiler.
 <P>
  
    Most C compilers come with a large set of compilation options that can
@@ -88,15 +91,15 @@
 <H2> Version Information
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
 <PRE>
-   Creation Date: Thu Jun 10 12:01:50 PDT 2010
-   Version      : CSPICE.............V.N0064
+   Creation Date: Fri Apr  7 16:41:22 PDT 2017
+   Version      : CSPICE.............V.N0066
 </PRE>
 <BR><BR>
 <A NAME="Directory Structure and Contents"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Directory Structure and Contents
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   The top level directory, cspice, contains the file makeall.bat. This is
+   The top level directory, cspice, contains the file makeall.csh. This is
    a script that builds all of the object libraries and executables in the
    cspice Toolkit.
 <P>
@@ -106,7 +109,7 @@
       |
       cspice
          |
-         makeall.bat
+         makeall.csh
 </PRE>
    cspice also contains several subdirectories that will be described in
    more detail in the following sections.
@@ -280,24 +283,27 @@ products in this package.
          |
          exe
             |
-            brief.exe
-            chronos.exe
-            ckbrief.exe
-            commnt.exe
-            simple.exe
-            states.exe
-            subpt.exe
-            tictoc.exe
-            frmdiff.exe
-            inspekt.exe
-            mkspk.exe
-            msopck.exe
-            spacit.exe
-            spkdiff.exe
-            spkmerge.exe
-            tobin.exe
-            toxfr.exe
-            version.exe
+            brief
+            chronos
+            ckbrief
+            commnt
+            simple
+            states
+            subpt
+            tictoc
+            dskbrief
+            dskexp
+            frmdiff
+            inspekt
+            mkdsk
+            mkspk
+            msopck
+            spacit
+            spkdiff
+            spkmerge
+            tobin
+            toxfr
+            version
 </PRE>
 <BR><BR>
 <A NAME="INCLUDE"></A>
@@ -320,11 +326,19 @@ products in this package.
             |
             SpiceCK.h
             SpiceCel.h
+            SpiceDLA.h
+            SpiceDSK.h
+            SpiceDtl.h
             SpiceEK.h
             SpiceEll.h
+            SpiceErr.h
+            SpiceFrm.h
             SpiceGF.h
+            SpiceOccult.h
+            SpiceOsc.h
             SpicePln.h
             SpiceSPK.h
+            SpiceSrf.h
             SpiceUsr.h
             SpiceZad.h
             SpiceZdf.h
@@ -333,6 +347,7 @@ products in this package.
             SpiceZmc.h
             SpiceZpl.h
             SpiceZpr.h
+            SpiceZrnm.h
             SpiceZst.h
             f2c.h
             f2cMang.h
@@ -358,14 +373,8 @@ products in this package.
 <P>
  
 <PRE>
-   /c /O2 -D_COMPLEX_DEFINED -DMSDOS -DOMIT_BLANK_CC
-   -DNON_ANSI_STDIO
+   -m64 -c -ansi -O2 -fPIC -DNON_UNIX_STDIO
 </PRE>
-   One routine, zzsecprt.c, is compiled without the /O2 optimization
-   option, because the MS Visual C++/C compiler is unable to process the
-   routine correctly when using this optimization feature.
-<P>
- 
    The libraries contained in this directory are listed below. Each library
    is discussed in more detail later in the section devoted to the SRC
    directory.
@@ -378,8 +387,8 @@ products in this package.
          |
          lib
             |
-            cspice.lib
-            csupport.lib
+            cspice.a
+            csupport.a
 </PRE>
 <BR><BR>
 <A NAME="SRC"></A>
@@ -403,8 +412,11 @@ products in this package.
             ckbref_c
             commnt_c
             cook_c
+            dskbrief_c
+            dskexp_c
             frmdif_c
             inspkt_c
+            mkdsk_c
             mkspk_c
             msopck_c
             spacit_c
@@ -442,7 +454,7 @@ products in this package.
                brief.pgm
                *.c
                *.h
-               mkprodct.bat
+               mkprodct.csh
 </PRE>
 <BR><BR>
 <A NAME="CHRONOS"></A>
@@ -469,7 +481,7 @@ products in this package.
                main.x
                chronos.pgm
                *.c
-               mkprodct.bat
+               mkprodct.csh
 </PRE>
 <BR><BR>
 <A NAME="CKBRIEF"></A>
@@ -496,7 +508,7 @@ products in this package.
                main.x
                ckbrief.pgm
                *.c
-               mkprodct.bat
+               mkprodct.csh
 </PRE>
 <BR><BR>
 <A NAME="COMMNT"></A>
@@ -524,7 +536,7 @@ products in this package.
                main.x
                commnt.pgm
                *.h
-               mkprodct.bat
+               mkprodct.csh
 </PRE>
 <BR><BR>
 <A NAME="COOKBOOK"></A>
@@ -553,7 +565,62 @@ products in this package.
                states.pgm
                subpt.pgm
                tictoc.pgm
-               mkprodct.bat
+               mkprodct.csh
+</PRE>
+<BR><BR>
+<A NAME="DSKBRIEF"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> DSKBRIEF
+</H3><P><BR><BR>
+   DSKBRIEF is a utility program that allows you to summarize DSK files.
+<P>
+ 
+   This directory contains the DSKBRIEF main program, supporting routines,
+   and a script to create the executable program dskbrief.
+<P>
+ 
+<PRE>
+   (installation directory)
+      |
+      cspice
+         |
+         src
+            |
+            dskbrief_c
+               |
+               main.x
+               dskbrief.pgm
+               *.c
+               *.h
+               mkprodct.csh
+</PRE>
+<BR><BR>
+<A NAME="DSKEXP"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> DSKEXP
+</H3><P><BR><BR>
+   DSKEXP is a utility program for exporting data from a DSK file to any of
+   a variety of simple, easily parsed text formats.
+<P>
+ 
+   This directory contains the DSKEXP main program, supporting routines,
+   and a script to create the executable program dskexp.
+<P>
+ 
+<PRE>
+   (installation directory)
+      |
+      cspice
+         |
+         src
+            |
+            dskexp_c
+               |
+               main.x
+               dskexp.pgm
+               *.c
+               *.h
+               mkprodct.csh
 </PRE>
 <BR><BR>
 <A NAME="FRMDIFF"></A>
@@ -582,7 +649,7 @@ products in this package.
                frmdiff.pgm
                *.c
                *.h
-               mkprodct.bat
+               mkprodct.csh
 </PRE>
 <BR><BR>
 <A NAME="INSPEKT"></A>
@@ -610,7 +677,35 @@ products in this package.
                inspekt.pgm
                *.c
                *.h
-               mkprodct.bat
+               mkprodct.csh
+</PRE>
+<BR><BR>
+<A NAME="MKDSK"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> MKDSK
+</H3><P><BR><BR>
+   MKDSK is a utility program for converting text plate model files to DSK
+   files.
+<P>
+ 
+   This directory contains the MKDSK main program, supporting routines, and
+   a script to create the executable program mkdsk.
+<P>
+ 
+<PRE>
+   (installation directory)
+      |
+      cspice
+         |
+         src
+            |
+            mkdsk_c
+               |
+               main.x
+               mkdsk.pgm
+               *.c
+               *.h
+               mkprodct.csh
 </PRE>
 <BR><BR>
 <A NAME="MKSPK"></A>
@@ -638,7 +733,7 @@ products in this package.
                mkspk.pgm
                *.c
                *.h
-               mkprodct.bat
+               mkprodct.csh
 </PRE>
 <BR><BR>
 <A NAME="MSOPCK"></A>
@@ -668,7 +763,7 @@ products in this package.
                msopck.pgm
                *.c
                *.h
-               mkprodct.bat
+               mkprodct.csh
 </PRE>
 <BR><BR>
 <A NAME="SPACIT"></A>
@@ -698,7 +793,7 @@ products in this package.
                spacit.pgm
                *.c
                *.h
-               mkprodct.bat
+               mkprodct.csh
 </PRE>
 <BR><BR>
 <A NAME="CSPICE"></A>
@@ -723,7 +818,7 @@ products in this package.
                |
                *.c
                *.h
-               mkprodct.bat
+               mkprodct.csh
 </PRE>
 <BR><BR>
 <A NAME="SPKDIFF"></A>
@@ -752,7 +847,7 @@ products in this package.
                spkdiff.pgm
                *.c
                *.h
-               mkprodct.bat
+               mkprodct.csh
 </PRE>
 <BR><BR>
 <A NAME="SPKMERGE"></A>
@@ -780,7 +875,7 @@ products in this package.
                spkmerge.pgm
                *.c
                *.h
-               mkprodct.bat
+               mkprodct.csh
 </PRE>
 <BR><BR>
 <A NAME="CSUPPORT"></A>
@@ -794,8 +889,8 @@ products in this package.
    be deleted. Do not use them!
 <P>
  
-   This directory contains the CSUPPORT library source files and a batch
-   file to create the object library csupport.a.
+   This directory contains the CSUPPORT library source files and a script
+   to create the object library csupport.a.
 <P>
  
 <PRE>
@@ -809,7 +904,7 @@ products in this package.
                |
                *.c
                *.h
-               mkprodct.bat
+               mkprodct.csh
 </PRE>
 <BR><BR>
 <A NAME="TOBIN"></A>
@@ -836,7 +931,7 @@ products in this package.
                main.x
                tobin.pgm
                *.h
-               mkprodct.bat
+               mkprodct.csh
 </PRE>
 <BR><BR>
 <A NAME="TOXFR"></A>
@@ -863,7 +958,7 @@ products in this package.
                main.x
                toxfr.pgm
                *.h
-               mkprodct.bat
+               mkprodct.csh
 </PRE>
 <BR><BR>
 <A NAME="VERSION"></A>
@@ -889,7 +984,7 @@ products in this package.
                |
                main.x
                version.pgm
-               mkprodct.bat
+               mkprodct.csh
 </PRE>
 <BR><BR>
 <A NAME="Using the Toolkit"></A>
@@ -1040,44 +1135,30 @@ products in this package.
 <P>
  
 <PRE>
+   *.bc            Binary CK (pointing) files.
+   *.bdb           Binary DBK (database) files.
+   *.bds           Binary DSK (digital shape) files.
+   *.bep           Binary EK (events) Science Plan files.
+   *.bes           Binary EK (events) Sequence files.
+   *.bpc           Binary PCK (planetary rotation) files.
    *.bsp           Binary SPK (ephemeris) files.
  
-   *.tsp           Transfer format SPK files.
-   *.xsp
- 
-   *.bc            Binary CK (pointing) files.
- 
-   *.tc            Transfer format CK files.
-   *.xc
- 
-   *.tpc           Text PCK (planetary constants) files.
- 
-   *.bpc           Binary PCK files.
- 
-   *.xpc           Transfer format PCK files.
- 
+   *.ten           Text EK (events) Experimenter's Notebook files.
+   *.tep           Text EK (events) Science Plan files.
+   *.tf            Text FK (frame definitions) files.
    *.ti            Text IK (instrument parameters) files.
- 
    *.tls           Text LSK (leapseconds) files.
- 
+   *.tm            Text MK (meta-kernels, aka ``furnsh'') files
+   *.tpc           Text PCK (planetary constants) files.
    *.tsc           Text SCLK (spacecraft clock) files.
  
-   *.tf            Text FK (frame definitions) files.
- 
-   *.bes           Binary EK (events) Sequence files.
- 
-   *.tes           Transfer format EK Sequence files.
-   *.xes
- 
-   *.ten           Text EK Experimenter's Notebook files.
- 
-   *.tep           Text EK Science Plan files.
- 
-   *.bdb           Binary SPICE Database files.
- 
-   *.xdb           Transfer format SPICE Database files.
- 
-   *.tm            Text meta-kernels (``furnsh'') files.
+   *.xc            Transfer format CK (pointing) files.
+   *.xdb           Transfer format DBK (database) files.
+   *.xds           Transfer format DSK (digital shape) files.
+   *.xep           Transfer format EK (events) Science Plan files.
+   *.xes           Transfer format EK (events) Sequence files.
+   *.xpc           Transfer format PCK (planetary rotation) files.
+   *.xsp           Transfer format SPK (ephemeris) files.
 </PRE>
    Build scripts:
 <P>

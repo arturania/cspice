@@ -92,6 +92,7 @@ static integer c__0 = 0;
 /*     LAST       O   LXIDNT */
 /*     NCHAR      O   LXIDNT */
 /*     MXSPEC     P   LXDFID, LXCSID */
+/*     LBCELL     P   LXIDNT, LXDFID, LXCSID */
 
 /* $ Detailed_Input */
 
@@ -108,7 +109,7 @@ static integer c__0 = 0;
 /* $ Exceptions */
 
 /*     1) If this routine is called directly, the error */
-/*        SPICE(BOGUSENTRY) is signalled. */
+/*        SPICE(BOGUSENTRY) is signaled. */
 
 /*     See the entry points for descriptions of the exceptions */
 /*     specific to those entry points. */
@@ -290,8 +291,13 @@ static integer c__0 = 0;
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman       (JPL) */
+/*     B.V. Semenov       (JPL) */
 
 /* $ Version */
+
+/* -    Beta Version 1.0.1, 10-FEB-2014 (BVS) */
+
+/*        Added LBCELL to the Brief_I/O section. */
 
 /* -    Beta Version 1.0.0, 25-OCT-1995 (NJB) */
 
@@ -377,6 +383,9 @@ L_lxidnt:
 
 /* $ Declarations */
 
+/*     INTEGER               LBCELL */
+/*     PARAMETER           ( LBCELL = -5 ) */
+
 /*     INTEGER               IDSPEC ( LBCELL : * ) */
 /*     CHARACTER*(*)         STRING */
 /*     INTEGER               FIRST */
@@ -392,6 +401,7 @@ L_lxidnt:
 /*     FIRST      I   Character position at which to start scanning. */
 /*     LAST       O   Character position of end of token. */
 /*     NCHAR      O   Number of characters in token. */
+/*     LBCELL     P   The SPICELIB cell lower bound. */
 
 /* $ Detailed_Input */
 
@@ -436,7 +446,7 @@ L_lxidnt:
 
 /* $ Parameters */
 
-/*     None. */
+/*     LBCELL         is the SPICELIB cell lower bound. */
 
 /* $ Exceptions */
 
@@ -471,8 +481,14 @@ L_lxidnt:
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman       (JPL) */
+/*     B.V. Semenov       (JPL) */
 
 /* $ Version */
+
+/* -    Beta Version 1.0.1, 10-FEB-2014 (BVS) */
+
+/*        Added LBCELL to the Declarations, Brief_I/O, and Parameters */
+/*        sections. */
 
 /* -    Beta Version 1.0.0, 25-OCT-1995 (NJB) */
 
@@ -581,6 +597,9 @@ L_lxdfid:
 /*     INTEGER               MXSPEC */
 /*     PARAMETER           ( MXSPEC = 512 ) */
 
+/*     INTEGER               LBCELL */
+/*     PARAMETER           ( LBCELL = -5 ) */
+
 /*     INTEGER               IDSPEC ( LBCELL : * ) */
 
 /* $ Brief_I/O */
@@ -589,6 +608,7 @@ L_lxdfid:
 /*     --------  ---  -------------------------------------------------- */
 /*     IDSPEC    I-O  Identifier character specification. */
 /*     MXSPEC     P   Recommended size for declaration of IDSPEC. */
+/*     LBCELL     P   The SPICELIB cell lower bound. */
 
 /* $ Detailed_Input */
 
@@ -612,6 +632,8 @@ L_lxdfid:
 /*                    The caller should also initialize IDSPEC as shown: */
 
 /*                       CALL SSIZEI ( MXSPEC, IDSPEC ) */
+
+/*     LBCELL         is the SPICELIB cell lower bound. */
 
 /* $ Exceptions */
 
@@ -647,8 +669,14 @@ L_lxdfid:
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman       (JPL) */
+/*     B.V. Semenov       (JPL) */
 
 /* $ Version */
+
+/* -    Beta Version 1.0.1, 10-FEB-2014 (BVS) */
+
+/*        Added LBCELL to the Declarations, Brief_I/O, and Parameters */
+/*        sections. */
 
 /* -    Beta Version 1.0.0, 25-OCT-1995 (NJB) */
 
@@ -667,7 +695,7 @@ L_lxdfid:
 	chkin_("LXDFID", (ftnlen)6);
     }
 
-/*     Intialize our head and tail character sets. */
+/*     Initialize our head and tail character sets. */
 
     ssizei_(&c__255, headc);
     ssizei_(&c__255, tailc);
@@ -677,21 +705,21 @@ L_lxdfid:
 
     for (i__ = 1; i__ <= 26; ++i__) {
 	headc[(i__1 = i__ + 5) < 261 && 0 <= i__1 ? i__1 : s_rnge("headc", 
-		i__1, "lxname_", (ftnlen)733)] = 'A' + i__ - 1;
+		i__1, "lxname_", (ftnlen)761)] = 'A' + i__ - 1;
 	headc[(i__1 = i__ + 31) < 261 && 0 <= i__1 ? i__1 : s_rnge("headc", 
-		i__1, "lxname_", (ftnlen)734)] = 'a' + i__ - 1;
+		i__1, "lxname_", (ftnlen)762)] = 'a' + i__ - 1;
 	tailc[(i__1 = i__ + 5) < 261 && 0 <= i__1 ? i__1 : s_rnge("tailc", 
-		i__1, "lxname_", (ftnlen)735)] = headc[(i__2 = i__ + 5) < 261 
+		i__1, "lxname_", (ftnlen)763)] = headc[(i__2 = i__ + 5) < 261 
 		&& 0 <= i__2 ? i__2 : s_rnge("headc", i__2, "lxname_", (
-		ftnlen)735)];
+		ftnlen)763)];
 	tailc[(i__1 = i__ + 31) < 261 && 0 <= i__1 ? i__1 : s_rnge("tailc", 
-		i__1, "lxname_", (ftnlen)736)] = headc[(i__2 = i__ + 31) < 
+		i__1, "lxname_", (ftnlen)764)] = headc[(i__2 = i__ + 31) < 
 		261 && 0 <= i__2 ? i__2 : s_rnge("headc", i__2, "lxname_", (
-		ftnlen)736)];
+		ftnlen)764)];
     }
     for (i__ = 1; i__ <= 10; ++i__) {
 	tailc[(i__1 = i__ + 57) < 261 && 0 <= i__1 ? i__1 : s_rnge("tailc", 
-		i__1, "lxname_", (ftnlen)741)] = '0' + i__ - 1;
+		i__1, "lxname_", (ftnlen)769)] = '0' + i__ - 1;
     }
     tailc[68] = '$';
     tailc[69] = '_';
@@ -720,12 +748,12 @@ L_lxdfid:
     i__1 = nhead;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	appndi_(&headc[(i__2 = i__ + 5) < 261 && 0 <= i__2 ? i__2 : s_rnge(
-		"headc", i__2, "lxname_", (ftnlen)774)], idspec);
+		"headc", i__2, "lxname_", (ftnlen)802)], idspec);
     }
     i__1 = ntail;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	appndi_(&tailc[(i__2 = i__ + 5) < 261 && 0 <= i__2 ? i__2 : s_rnge(
-		"tailc", i__2, "lxname_", (ftnlen)778)], idspec);
+		"tailc", i__2, "lxname_", (ftnlen)806)], idspec);
     }
     chkout_("LXDFID", (ftnlen)6);
     return 0;
@@ -779,6 +807,9 @@ L_lxcsid:
 /*     INTEGER               MXSPEC */
 /*     PARAMETER           ( MXSPEC = 512 ) */
 
+/*     INTEGER               LBCELL */
+/*     PARAMETER           ( LBCELL = -5 ) */
+
 /*     CHARACTER*(*)         HDCHRS */
 /*     CHARACTER*(*)         TLCHRS */
 /*     INTEGER               IDSPEC ( LBCELL : * ) */
@@ -791,6 +822,7 @@ L_lxcsid:
 /*     TLCHRS     I   Allowed tail characters for identifiers. */
 /*     IDSPEC    I-O  Identifier character specification. */
 /*     MXSPEC     P   Recommended size for declaration of IDSPEC. */
+/*     LBCELL     P   The SPICELIB cell lower bound. */
 
 /* $ Detailed_Input */
 
@@ -830,11 +862,13 @@ L_lxcsid:
 
 /*                       CALL SSIZEI ( MXSPEC, IDSPEC ) */
 
+/*     LBCELL         is the SPICELIB cell lower bound. */
+
 /* $ Exceptions */
 
 /*     1) If non-printing characters are found in either of the input */
 /*        arguments HDCHRS or TLCHRS, the error SPICE(NONPRINTINGCHARS) */
-/*        is signalled.  The set of allowed identifier characters is not */
+/*        is signaled.  The set of allowed identifier characters is not */
 /*        modified. */
 
 /* $ Files */
@@ -864,8 +898,14 @@ L_lxcsid:
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman       (JPL) */
+/*     B.V. Semenov       (JPL) */
 
 /* $ Version */
+
+/* -    Beta Version 1.0.1, 10-FEB-2014 (BVS) */
+
+/*        Added LBCELL to the Declarations, Brief_I/O, and Parameters */
+/*        sections. */
 
 /* -    Beta Version 1.0.0, 25-OCT-1995 (NJB) */
 
@@ -884,7 +924,7 @@ L_lxcsid:
 	chkin_("LXCSID", (ftnlen)6);
     }
 
-/*     Intialize our head and tail character sets, every time. */
+/*     Initialize our head and tail character sets, every time. */
 
     ssizei_(&c__255, headc);
     ssizei_(&c__255, tailc);
@@ -960,12 +1000,12 @@ L_lxcsid:
     i__1 = nhead;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	appndi_(&headc[(i__2 = i__ + 5) < 261 && 0 <= i__2 ? i__2 : s_rnge(
-		"headc", i__2, "lxname_", (ftnlen)1049)], idspec);
+		"headc", i__2, "lxname_", (ftnlen)1089)], idspec);
     }
     i__1 = ntail;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	appndi_(&tailc[(i__2 = i__ + 5) < 261 && 0 <= i__2 ? i__2 : s_rnge(
-		"tailc", i__2, "lxname_", (ftnlen)1053)], idspec);
+		"tailc", i__2, "lxname_", (ftnlen)1093)], idspec);
     }
     chkout_("LXCSID", (ftnlen)6);
     return 0;

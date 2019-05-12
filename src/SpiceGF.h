@@ -83,10 +83,21 @@
                                gfdist_c and the underlying SPICELIB
                                routine GFDIST.
 
+         SPICE_GF_NWILUM       Number of workspace windows used by
+                               gfilum_c and the underlying SPICELIB
+                               routine GFILUM.
+
          SPICE_GF_NWSEP        Number of workspace windows used by
                                gfsep_c and the underlying SPICELIB
                                routine GFSEP.
 
+         SPICE_GF_NWRR         Number of workspace windows used by
+                               gfrr_c and the underlying SPICELIB
+                               routine GFRR.
+                               
+         SPICE_GF_NWPA         Number of workspace windows used by
+                               gfpa_c and the underlying SPICELIB
+                               routine GFPA.                               
 
 
       Field of view (FOV) parameters
@@ -182,7 +193,7 @@
                                known.
  
          SPICE_GF_SPSHAP       Parameter indicating a target object's
-                               shape is modeled as a point.
+                               shape is modeled as a sphere.
 
 
 
@@ -242,6 +253,18 @@
 
 -Version
 
+   -CSPICE Version 2.1.1, 29-NOV-2016 (NJB)
+
+      Corrected description of parameter SPICE_GF_SPSHAP.
+
+   -CSPICE Version 2.1.0, 23-FEB-2012 (NJB)
+
+      Added parameters:
+      
+         SPICE_GF_NWILUM
+         SPICE_GF_NWRR
+         SPICE_GF_NWPA
+
    -CSPICE Version 2.0.0, 23-JUN-2009 (NJB)
 
       Added parameter for maximum length of FOV shape string.
@@ -265,7 +288,10 @@
    */      
    #define SPICE_GF_NWMAX          15
    #define SPICE_GF_NWDIST         5
+   #define SPICE_GF_NWILUM         5
    #define SPICE_GF_NWSEP          5
+   #define SPICE_GF_NWRR           5
+   #define SPICE_GF_NWPA           5
 
 
    /*

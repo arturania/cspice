@@ -5,7 +5,7 @@
 
 #include "f2c.h"
 
-/* $Procedure      GFSTEP ( GF, step size ) */
+/* $Procedure GFSTEP ( GF, step size ) */
 /* Subroutine */ int gfstep_0_(int n__, doublereal *time, doublereal *step)
 {
     /* Initialized data */
@@ -156,6 +156,13 @@
 
 /* $ Version */
 
+/* -    SPICELIB version 1.1.0 31-AUG-2010 (EDW) */
+
+/*        Expanded error message on STEP for clarity. */
+
+/*        Added TIME = TIME declaration to eliminate unused dummy */
+/*        variable warning during compilation. */
+
 /* -    SPICELIB Version 1.0.0 05-MAR-2009 (NJB) (LSE) (IMU) (WLT) (EDW) */
 
 /* -& */
@@ -194,8 +201,9 @@
 /*     Set STEP to the saved value from the last call to GFSSTP. */
 
     *step = svstep;
+    *time = *time;
     return 0;
-/* $Procedure      GFSSTP ( Geometry finder set step size ) */
+/* $Procedure GFSSTP ( Geometry finder set step size ) */
 
 L_gfsstp:
 /* $ Abstract */
@@ -259,7 +267,6 @@ L_gfsstp:
 /*               TIME+STEP may bracket a state transition and definitely */
 /*               do not bracket more than one state transition. */
 
-
 /* $ Detailed_Output */
 
 /*     None. */
@@ -304,6 +311,10 @@ L_gfsstp:
 
 /* $ Version */
 
+/* -    SPICELIB version 1.1.0 31-AUG-2010 (EDW) */
+
+/*        Expanded error message on STEP for clarity. */
+
 /* -    SPICELIB version 1.0.0 15-APR-2009 (LSE) (NJB) */
 
 /* -& */
@@ -313,11 +324,11 @@ L_gfsstp:
 
 /* -& */
 
-/*     Discovery check-in. */
+/*     Check the step size. */
 
     if (*step <= 0.) {
 	chkin_("GFSSTP", (ftnlen)6);
-	setmsg_("Step size was #.", (ftnlen)16);
+	setmsg_("Step has value #; step size must be positive.", (ftnlen)45);
 	errdp_("#", step, (ftnlen)1);
 	sigerr_("SPICE(INVALIDSTEP)", (ftnlen)18);
 	chkout_("GFSSTP", (ftnlen)6);

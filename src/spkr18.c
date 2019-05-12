@@ -232,6 +232,9 @@ static integer c__6 = 6;
 /*     6) If the segment subtype is not recognized, the error */
 /*        SPICE(NOTSUPPORTED) is signaled. */
 
+/*     7) If the input segment contains fewer than 2 packets, the */
+/*        error SPICE(TOOFEWSTATES) is signaled. */
+
 /* $ Files */
 
 /*     See argument HANDLE. */
@@ -286,6 +289,16 @@ static integer c__6 = 6;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.0.0, 21-DEC-2012 (NJB) */
+
+/*        An error check was added for segment packet counts */
+/*        less than 2. */
+
+/*        An in-line comment regarding deducibility of record size from */
+/*        segment subtype was removed. The comment now says the actual */
+/*        count of packets in the output record is inserted into the */
+/*        record. */
+
 /* -    SPICELIB Version 1.0.0, 04-SEP-2002 (NJB) */
 
 /* -& */
@@ -295,6 +308,11 @@ static integer c__6 = 6;
 
 /* -& */
 /* $ Revisions */
+
+/* -    SPICELIB Version 2.0.0, 21-DEC-2012 (NJB) */
+
+/*        An error check was added for segment packet counts */
+/*        less than 2. */
 
 /* -& */
 
@@ -346,6 +364,31 @@ static integer c__6 = 6;
 	chkout_("SPKR18", (ftnlen)6);
 	return 0;
     }
+/*     We'll need the last two items before we can determine which */
+/*     packets make up our output record. */
+
+    i__1 = end - 2;
+    dafgda_(handle, &i__1, &end, contrl);
+
+/*     Check the FAILED flag just in case HANDLE is not attached to */
+/*     any DAF file and the error action is not set to ABORT. You need */
+/*     need to do this only after the first call to DAFGDA. */
+
+    if (failed_()) {
+	chkout_("SPKR18", (ftnlen)6);
+	return 0;
+    }
+    subtyp = i_dnnt(contrl);
+    wndsiz = i_dnnt(&contrl[1]);
+    n = i_dnnt(&contrl[2]);
+    if (n < 2) {
+	setmsg_("Packet count # is less than the minimum valid value, which "
+		"is 2.", (ftnlen)64);
+	errint_("#", &n, (ftnlen)1);
+	sigerr_("SPICE(TOOFEWSTATES)", (ftnlen)19);
+	chkout_("SPKR18", (ftnlen)6);
+	return 0;
+    }
 
 /*     From this point onward, we assume the segment was constructed */
 /*     correctly.  In particular, we assume: */
@@ -365,24 +408,6 @@ static integer c__6 = 6;
 
 /*               MAXDEG */
 
-/*     We'll need the last two items before we can determine which */
-/*     packets make up our output record. */
-
-
-    i__1 = end - 2;
-    dafgda_(handle, &i__1, &end, contrl);
-
-/*     Check the FAILED flag just in case HANDLE is not attached to */
-/*     any DAF file and the error action is not set to ABORT. You need */
-/*     need to do this only after the first call to DAFGDA. */
-
-    if (failed_()) {
-	chkout_("SPKR18", (ftnlen)6);
-	return 0;
-    }
-    subtyp = i_dnnt(contrl);
-    wndsiz = i_dnnt(&contrl[1]);
-    n = i_dnnt(&contrl[2]);
 
 /*     Set the packet size, which is a function of the subtype. */
 
@@ -487,7 +512,7 @@ static integer c__6 = 6;
 	i__2 = bufbas + nread;
 	dafgda_(handle, &i__1, &i__2, buffer);
 	while(buffer[(i__1 = nread - 1) < 101 && 0 <= i__1 ? i__1 : s_rnge(
-		"buffer", i__1, "spkr18_", (ftnlen)486)] < *et && remain > 0) 
+		"buffer", i__1, "spkr18_", (ftnlen)515)] < *et && remain > 0) 
 		{
 	    bufbas += nread;
 	    nread = min(remain,100);
@@ -592,9 +617,8 @@ static integer c__6 = 6;
     first = low - lsize + 1;
     last = first + wndsiz - 1;
 
-/*     Put the subtype into the output record.  The size of the group */
-/*     of packets is derived from the subtype, so we need not include */
-/*     the size. */
+/*     Put the subtype and actual window size, which is the number of */
+/*     packets in the record, into the output record. */
 
     record[0] = (doublereal) subtyp;
     record[1] = (doublereal) wndsiz;

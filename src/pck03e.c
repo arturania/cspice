@@ -5,7 +5,7 @@
 
 #include "f2c.h"
 
-/* $Procedure      PCK03E ( PCK type 03: End a segment. ) */
+/* $Procedure PCK03E ( PCK, end a type 3 segment ) */
 /* Subroutine */ int pck03e_(integer *handle)
 {
     extern /* Subroutine */ int chkin_(char *, ftnlen), sgwes_(integer *), 
@@ -74,6 +74,14 @@
 /* $ Parameters */
 
 /*     None. */
+
+/* $ Exceptions */
+
+/*     None. */
+
+/* $ Files */
+
+/*     See the argument HANDLE. */
 
 /* $ Particulars */
 
@@ -282,23 +290,21 @@
 /*        started by the routine PCK03B, the routine which begins a type */
 /*        03 PCK segment. */
 
-/* $ Exceptions */
+/* $ Literature_References */
 
 /*     None. */
-
-/* $ Files */
-
-/*     See the argument HANDLE. */
 
 /* $ Author_and_Institution */
 
 /*     K.R. Gehringer      (JPL) */
 
-/* $ Literature_References */
-
-/*     None. */
-
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1, 03-JAN-2014 (EDW) */
+
+/*        Minor edits to Procedure; clean trailing whitespace. */
+/*        Corrected order of header sections to conform to NAIF */
+/*        standard. */
 
 /* -    SPICELIB Version 1.0.0, 06-MAR-1995 (KRG) */
 

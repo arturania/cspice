@@ -5,14 +5,24 @@
 
 #include "f2c.h"
 
-/* $Procedure ZZBODINI ( Private --- Body-Code Initialization ) */
+/* $Procedure ZZBODINI ( Private --- Body-Code Hash Initialization ) */
 /* Subroutine */ int zzbodini_(char *names, char *nornam, integer *codes, 
-	integer *nvals, integer *ordnom, integer *ordcod, integer *nocds, 
-	ftnlen names_len, ftnlen nornam_len)
+	integer *nvals, integer *maxval, integer *bnmlst, integer *bnmpol, 
+	char *bnmnms, integer *bnmidx, integer *bidlst, integer *bidpol, 
+	integer *bidids, integer *bididx, ftnlen names_len, ftnlen nornam_len,
+	 ftnlen bnmnms_len)
 {
-    integer i__, n;
-    extern /* Subroutine */ int orderc_(char *, integer *, integer *, ftnlen),
-	     orderi_(integer *, integer *, integer *);
+    integer item;
+    extern /* Subroutine */ int zzhscadd_(integer *, integer *, char *, char *
+	    , integer *, logical *, ftnlen, ftnlen), zzhsiadd_(integer *, 
+	    integer *, integer *, integer *, integer *, logical *), zzhscini_(
+	    integer *, integer *, integer *), zzhsiini_(integer *, integer *, 
+	    integer *);
+    integer i__;
+    extern /* Subroutine */ int chkin_(char *, ftnlen), errch_(char *, char *,
+	     ftnlen, ftnlen), sigerr_(char *, ftnlen), chkout_(char *, ftnlen)
+	    , setmsg_(char *, ftnlen), errint_(char *, integer *, ftnlen);
+    logical new__;
 
 /* $ Abstract */
 
@@ -20,8 +30,9 @@
 /*     routines.  Users should not call this routine directly due */
 /*     to the volatile nature of this routine. */
 
-/*     Initialize the two order vectors. This routine should be called */
-/*     by ZZBODTRN only. */
+/*     Initialize the name-based and ID-based hashes used for efficient */
+/*     access to body-name mapping arrays. This routine should be called */
+/*     by ZZBODTRN and ZZBODKER only. */
 
 /* $ Disclaimer */
 
@@ -87,22 +98,53 @@
 /*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
 /*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
 
+/* $ Parameters */
+
+/*     MAXL        is the maximum length of a body name. */
+
+/*     MAXP        is the maximum number of additional names that may */
+/*                 be added via the ZZBODDEF interface. */
+
+/*     NPERM       is the count of the mapping assignments built into */
+/*                 SPICE. */
+
+/*     MAXE        is the size of the lists and hashes storing combined */
+/*                 built-in and ZZBODDEF-defined name/ID mappings. To */
+/*                 ensure efficient hashing this size is the set to the */
+/*                 first prime number greater than ( MAXP + NPERM ). */
+
+/*     NROOM       is the size of the lists and hashes storing the */
+/*                 POOL-defined name/ID mappings. To ensure efficient */
+/*                 hashing and to provide the ability to store nearly as */
+/*                 many names as can fit in the POOL, this size is */
+/*                 set to the first prime number less than MAXLIN */
+/*                 defined in the POOL umbrella routine. */
+
 /* $ Required_Reading */
 
 /*     naif_ids.req */
 
 /* $ Keywords */
 
-/*     Body mappings. */
+/*     BODY */
+/*     CONVERSION */
 
 /* $ Author_and_Institution */
 
-/*     E.D. Wright (JPL) */
+/*     B.V. Semenov (JPL) */
+/*     E.D. Wright  (JPL) */
 
 /* $ Version */
 
-/*     SPICELIB 1.0.0 Thu May 20 07:57:58 2010 (EDW) */
+/* -    SPICELIB Version 2.0.0, 04-APR-2017 (BVS)(EDW) */
 
+/*        Increased NROOM to 14983. Added a comment note explaining */
+/*        NROOM and MAXE */
+
+/* -    SPICELIB Version 1.0.0, 20-MAY-2010 (EDW) */
+
+/*        N0064 version with MAXP = 150, NPERM = 563, */
+/*        MAXE = MAXP + NPERM, and NROOM = 2000. */
 
 /*     A script generates this file. Do not edit by hand. */
 /*     Edit the creation script to modify the contents of */
@@ -112,66 +154,113 @@
 /*     Maximum size of a NAME string */
 
 
+/*     Maximum number of additional names that may be added via the */
+/*     ZZBODDEF interface. */
+
+
 /*     Count of default SPICE mapping assignments. */
+
+
+/*     Size of the lists and hashes storing the built-in and */
+/*     ZZBODDEF-defined name/ID mappings. To ensure efficient hashing */
+/*     this size is the set to the first prime number greater than */
+/*     ( MAXP + NPERM ). */
+
+
+/*     Size of the lists and hashes storing the POOL-defined name/ID */
+/*     mappings. To ensure efficient hashing and to provide the ability */
+/*     to store nearly as many names as can fit in the POOL, this size */
+/*     is set to the first prime number less than MAXLIN defined in */
+/*     the POOL umbrella routine. */
 
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
 /*     --------  ---  -------------------------------------------------- */
-/*     NAMES      I   Array of kernel pool assigned names. */
-/*     NORNAM     I   Array of normalized kernel pool assigned names. */
-/*     CODES      I   Array of ID codes for NAMES/NORNAM. */
-/*     NVALS      I   Length of NAMES, NORNAM, CODES, and ORDNOM arrays. */
-/*     ORDNOM     O   Order vector for NORNAM. */
-/*     ORDCOD     O   Modified order vector for CODES. */
-/*     NOCDS      O   Length of ORDCOD array. */
-/*     MAXL       P   Maximum length of body name strings. */
+/*     NAMES      I   Array of names */
+/*     NORNAM     I   Array of normalized names */
+/*     CODES      I   Array of ID codes for NAMES/NORNAM */
+/*     NVALS      I   Length of NAMES, NORNAM, and CODES arrays */
+/*     MAXVAL     I   Size of the hash arrays */
+/*     BNMLST     O   Body name-based hash head node pointer list */
+/*     BNMPOL     O   Body name-based hash node collision list */
+/*     BNMNMS     O   Body name-based hash item list */
+/*     BNMIDX     O   Body name-based hash index storage array */
+/*     BIDLST     O   Body ID-based hash head node pointer list */
+/*     BIDPOL     O   Body ID-based hash node collision list */
+/*     BIDIDS     O   Body ID-based hash item list */
+/*     BIDIDX     O   Body ID-based hash index storage array */
+/*     LBPOOL     P   Lower bound of hash pool arrays */
+/*     MAXL       P   Maximum length of body name strings */
 
 /* $ Detailed_Input */
 
-/*     NAMES     the array of highest precedent names extracted */
-/*               from the kernel pool vector NAIF_BODY_NAME.  This */
-/*               array is parallel to NORNAM and CODES. */
+/*     NAMES     is the array of body names. This array is parallel to */
+/*               NORNAM and CODES. */
 
-/*     NORNAM    the array of highest precedent names extracted */
-/*               from the kernel pool vector NAIF_BODY_NAME.  After */
-/*               extraction, each entry is converted to uppercase, */
-/*               and groups of spaces are compressed to a single */
-/*               space.  This represents the canonical member of the */
-/*               equivalence class each parallel entry in NAMES */
-/*               belongs. */
+/*     NORNAM    is the array of normalized body names, made from */
+/*               elements of NAMES by upper-casing, left-justifying, and */
+/*               compressing groups of spaces to a single space. This */
+/*               represents the canonical member of the equivalence */
+/*               class each parallel entry in NAMES belongs. */
 
-/*     CODES     the array of highest precedent codes extracted */
-/*               from the kernel pool vector NAIF_BODY_CODE.  This */
-/*               array is parallel to NAMES and NORNAM. */
+/*     CODES     is the array of body codes extracted. This array is */
+/*               parallel to NAMES and NORNAM. */
 
-/*     NVALS     the number of items contained in NAMES, NORNAM, */
-/*               CODES and ORDNOM. */
+/*     NVALS     is the number of items contained in NAMES, NORNAM, */
+/*               CODES. */
+
+/*     MAXVAL    is the output hash size. */
 
 /* $ Detailed_Output */
 
-/*     ORDNOM    the order vector of indexes for NORNAM.  The set */
-/*               of values NORNAM( ORDNOM(1) ), NORNAM( ORDNOM(2) ), */
-/*               ... forms an increasing list of name values. */
+/*     All output arrays must be declared with the dimension MAXVAL. */
+/*     MAXVAL must be greater than or equal to NVALS. */
 
-/*     ORDCOD    the modified ordering vector of indexes into */
-/*               CODES.  The list CODES( ORDCOD(1) ), */
-/*               CODES( ORDCOD(2) ), ... , CODES( ORDCOD(NOCDS) ) */
-/*               forms an increasing non-repeating list of integers. */
-/*               Moreover, every value in CODES is listed exactly */
-/*               once in this sequence. */
+/*     BNMLST */
+/*     BNMPOL */
+/*     BNMNMS    are the body name-based hash head node pointer, node */
+/*               collision, and item lists. Together they return the */
+/*               index of the element in the BNMIDX index storage array */
+/*               that stores the index of the body items in the input */
+/*               storage arrays. */
 
-/*     NOCDS     the number of indexes listed in ORDCOD.  This */
-/*               value will never exceed NVALS.C */
+/*     BNMIDX    is the body name-based hash index storage array */
+/*               containing at the index determined by the hash for a */
+/*               given normalized name the index corresponding to this */
+/*               name in the NAMES, NORNAM, and CODES arrays. */
+
+/*     BIDLST */
+/*     BIDPOL */
+/*     BIDIDS    are the body ID-based hash head node pointer, node */
+/*               collision, and item lists. Together they return the */
+/*               index of the element in the BNMIDX index storage array */
+/*               that stores the index of the body items in the input */
+/*               storage arrays. */
+
+/*     BIDIDX    is the body ID-based hash index storage array */
+/*               containing at the index determined by the hash for a */
+/*               given ID the index corresponding to the same ID in the */
+/*               NAMES, NORNAM, and CODES arrays. */
 
 /* $ Parameters */
 
-/*     MAXL        is the maximum length of a body name.  Defined in */
-/*                 the include file 'zzbodtrn.inc'. */
+/*     LBPOOL    is the lower bound of the hashes' collision list array. */
+
+/*     MAXL      is the maximum length of a body name. Defined in the */
+/*               include file 'zzbodtrn.inc'. */
 
 /* $ Exceptions */
 
-/*     Error free. */
+/*     1) If the input number of bodies NVALS is not less than or equal */
+/*        to the size of the output hash, the error 'SPICE(BUG1)' will be */
+/*        signaled. */
+
+/*     2) If registering an ID in the output ID-based hash fails, the */
+/*        error 'SPICE(BUG2)' will be signaled. */
+
+/*     3) If registering an name in the output name-based hash fails, */
+/*        the error 'SPICE(BUG3)' will be signaled. */
 
 /* $ Files */
 
@@ -179,9 +268,23 @@
 
 /* $ Particulars */
 
-/*     This is a utility routine used for initializing the ordering */
-/*     vectors that point to the recognized names and codes used by */
-/*     the private routine ZZBODTRN. */
+/*     This is a utility routine used for initializing the hashes */
+/*     facilitating efficient body name-ID translation in ZZBODTRN. */
+
+/*     The order of mapping in the input arrays determines the priority, */
+/*     with the mapping with the lowest priority being first and the */
+/*     mapping with the highest priority being last. */
+
+/*     If more than one entry with a particular normalized name is */
+/*     present in the input arrays, only the latest entry is registered */
+/*     in the name-based hash. */
+
+/*     If more than one entry with a particular ID is present in the */
+/*     input arrays, only the latest entry that maps to a not-yet */
+/*     registered normalized name is registered in the ID-based hash. */
+/*     Registering IDs only for not-yet registered names achieves masking */
+/*     all IDs with the lower priority in cases when a single normalized */
+/*     name maps to more than one ID. */
 
 /* $ Examples */
 
@@ -189,16 +292,16 @@
 
 /* $ Restrictions */
 
-/*     1) This routine is intended only for use by ZZBODTRN. */
+/*     1) This routine is intended only for use by ZZBODTRN and */
+/*        ZZBODKER. */
 
-/*     2) NAMES and NORNAM must contain only unique entries. */
-/*        If duplicate entries exist, this routine may not */
-/*        perform as expected. */
+/*     2) All output hash arrays must be declared with the same dimension */
+/*        which is greater than or equal to MAXVAL. */
 
-/*     3) This routine relies rather heavily on the implementation of */
-/*        BSCHOI.  The specification of BSCHOI requires an order vector */
-/*        as input, however it turns out that a generalization of an */
-/*        order vector (as defined by this routine) will work as well. */
+/*     3) The order of mappings in the input arrays determines the */
+/*        priority, with the mapping with the lowest priority being */
+/*        the first and the mapping with the highest priority being */
+/*        the last. */
 
 /* $ Literature_References */
 
@@ -213,6 +316,12 @@
 /*     E.D. Wright        (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 4.0.0, 16-SEP-2013 (BVS) */
+
+/*        Changed routine's calling sequence by dropping name and ID */
+/*        order vectors and adding name- and ID-based hashes and */
+/*        modified it to initialize hashes instead of the order arrays. */
 
 /* -    SPICELIB Version 3.0.0, 23-AUG-2002 (FST) */
 
@@ -255,51 +364,74 @@
 /*     Local Variables */
 
 
-/*     Create the order vectors ORDCOD and ORDNOM. */
+/*     Consistency check. */
 
-    orderc_(nornam, nvals, ordnom, (ftnlen)36);
-    orderi_(codes, nvals, ordcod);
-
-/*     Remove duplicate entries in the code order table. The entry that */
-/*     points to the highest entry in CODES should remain. */
-
-    n = 1;
-    i__ = 2;
-
-/*     Now for some very funky maneuvering.  We are going to take our */
-/*     order vector for the id-codes and modify it! */
-
-/*     Here's what is true now. */
-
-/*       CODES(ORDCOD(1)) <= CODES(ORDCOD(2)) <=...<= CODES(ORDCOD(NVALS) */
-
-/*     For each element such that CODES(ORDCOD(I)) = CODES(ORDCOD(I+1)) */
-/*     we are going to "shift" the items ORDCOD(I+1), ORDCOD(I+2), ... */
-/*     left by one.  We will then repeat the test and shift as needed. */
-/*     When we get done we will have a possibly shorter array ORDCOD */
-/*     and the array will satisfy */
-
-/*       CODES(ORDCOD(1)) < CODES(ORDCOD(2)) < ... < CODES(ORDCOD(NVALS) */
-
-/*     We can still use the resulting "ordered vector" (as opposed to */
-/*     order vector) in the BSCHOI routine because it only relies */
-/*     upon the indexes to ORDCOD and not to CODES itself.  This is */
-/*     making very heavy use of the implementation of BSCHOI but we */
-/*     are going to let it go for the moment because this is a private */
-/*     routine. */
-
-    while(i__ <= *nvals) {
-	if (codes[ordcod[i__ - 1] - 1] == codes[ordcod[n - 1] - 1]) {
-	    if (ordcod[i__ - 1] > ordcod[n - 1]) {
-		ordcod[n - 1] = ordcod[i__ - 1];
-	    }
-	} else {
-	    ++n;
-	    ordcod[n - 1] = ordcod[i__ - 1];
-	}
-	++i__;
+    if (*maxval < *nvals) {
+	chkin_("ZZBODINI", (ftnlen)8);
+	setmsg_("There is an inconsistency between the number of input bodie"
+		"s and the size of the output hashes. The number of input bod"
+		"ies was #. The size of the output hashes was #.", (ftnlen)166)
+		;
+	errint_("#", nvals, (ftnlen)1);
+	errint_("#", maxval, (ftnlen)1);
+	sigerr_("SPICE(BUG1)", (ftnlen)11);
+	chkout_("ZZBODINI", (ftnlen)8);
+	return 0;
     }
-    *nocds = n;
+
+/*     Initialize output hashes. */
+
+    zzhsiini_(maxval, bidlst, bidpol);
+    zzhscini_(maxval, bnmlst, bnmpol);
+
+/*     Loop through the input arrays to populate hashes. We do it */
+/*     backwards to pick and register only the highest priority (latest) */
+/*     values for each normalized name. */
+
+    for (i__ = *nvals; i__ >= 1; --i__) {
+
+/*        Register this normalized name, but only if it is not already */
+/*        in the hash. */
+
+	zzhscadd_(bnmlst, bnmpol, bnmnms, nornam + (i__ - 1) * 36, &item, &
+		new__, (ftnlen)36, (ftnlen)36);
+	if (new__) {
+	    if (item != 0) {
+		bnmidx[item - 1] = i__;
+	    } else {
+		chkin_("ZZBODINI", (ftnlen)8);
+		setmsg_("Could not add name # to the hash.", (ftnlen)33);
+		errch_("#", nornam + (i__ - 1) * 36, (ftnlen)1, (ftnlen)36);
+		sigerr_("SPICE(BUG3)", (ftnlen)11);
+		chkout_("ZZBODINI", (ftnlen)8);
+	    }
+	}
+
+/*        We may have a situation when a single normalized name maps to */
+/*        more than one ID. In such cases we want to completely mask all */
+/*        IDs with the lower priority. This is easy to do by simply not */
+/*        attempting to register any more IDs if the name is already */
+/*        registered. */
+
+	if (new__) {
+
+/*           Register this ID, but only if it is not already in the hash. */
+
+	    zzhsiadd_(bidlst, bidpol, bidids, &codes[i__ - 1], &item, &new__);
+	    if (new__) {
+		if (item != 0) {
+		    bididx[item - 1] = i__;
+		} else {
+		    chkin_("ZZBODINI", (ftnlen)8);
+		    setmsg_("Could not add ID # to the hash.", (ftnlen)31);
+		    errint_("#", &codes[i__ - 1], (ftnlen)1);
+		    sigerr_("SPICE(BUG2)", (ftnlen)11);
+		    chkout_("ZZBODINI", (ftnlen)8);
+		    return 0;
+		}
+	    }
+	}
+    }
     return 0;
 } /* zzbodini_ */
 

@@ -55,7 +55,7 @@
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 33%; text-align: center;">
             <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
@@ -66,7 +66,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
@@ -76,7 +76,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
@@ -145,12 +145,14 @@
 
 
    alt        Altitude of point above the reference spheroid.
+              `alt' must be in the same units as `re'.
 
 
    re         Equatorial radius of a reference spheroid.  This spheroid
               is a volume of revolution:  its horizontal cross sections
               are circular.  The shape of the spheroid is defined by
-              an equatorial radius `re' and a polar radius `rp'.
+              an equatorial radius `re' and a polar radius `rp'. `re' 
+              must be in the same units as `alt'.
 
 
    f          Flattening coefficient = (re-rp) / re,  where `rp' is
@@ -161,7 +163,7 @@
    rectan     Rectangular coordinates of the input point. 
 
               The units associated with `rectan' are those associated
-              with the input `alt'.
+              with the inputs `alt' and `re'.
 </PRE>
 <h4><a name="Parameters">Parameters</a></h4>
 <PRE>
@@ -270,6 +272,10 @@
 </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
+   -CSPICE Version 1.0.3, 26-JUL-2016 (BVS)
+
+      Minor headers edits.
+
    -CSPICE Version 1.0.2, 30-JUL-2003 (NJB)
 
       Various header corrections were made.
@@ -291,7 +297,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Jun  9 13:05:23 2010</pre>
+   <pre>Wed Apr  5 17:54:35 2017</pre>
 
 </body>
 </html>

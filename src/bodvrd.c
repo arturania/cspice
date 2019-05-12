@@ -14,23 +14,33 @@ static integer c__1 = 1;
 /* Subroutine */ int bodvrd_(char *bodynm, char *item, integer *maxn, integer 
 	*dim, doublereal *values, ftnlen bodynm_len, ftnlen item_len)
 {
+    /* Initialized data */
+
+    static logical first = TRUE_;
+
     /* Builtin functions */
     /* Subroutine */ int s_copy(char *, char *, ftnlen, ftnlen);
 
     /* Local variables */
-    char code[16], type__[1];
-    extern /* Subroutine */ int chkin_(char *, ftnlen), errch_(char *, char *,
-	     ftnlen, ftnlen);
+    char code[16];
+    extern /* Subroutine */ int zzbods2c_(integer *, char *, integer *, 
+	    logical *, char *, integer *, logical *, ftnlen, ftnlen);
+    char type__[1];
+    extern /* Subroutine */ int zzctruin_(integer *), chkin_(char *, ftnlen), 
+	    errch_(char *, char *, ftnlen, ftnlen);
     logical found;
-    extern /* Subroutine */ int bods2c_(char *, integer *, logical *, ftnlen);
+    static logical svfnd1;
+    static integer svctr1[2];
     integer bodyid;
+    static integer svbdid;
     char varnam[32];
     extern /* Subroutine */ int gdpool_(char *, integer *, integer *, integer 
-	    *, doublereal *, logical *, ftnlen), sigerr_(char *, ftnlen), 
-	    chkout_(char *, ftnlen), dtpool_(char *, logical *, integer *, 
-	    char *, ftnlen, ftnlen), setmsg_(char *, ftnlen), errint_(char *, 
-	    integer *, ftnlen), suffix_(char *, integer *, char *, ftnlen, 
-	    ftnlen);
+	    *, doublereal *, logical *, ftnlen);
+    static char svbdnm[36];
+    extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
+	    ftnlen), dtpool_(char *, logical *, integer *, char *, ftnlen, 
+	    ftnlen), setmsg_(char *, ftnlen), errint_(char *, integer *, 
+	    ftnlen), suffix_(char *, integer *, char *, ftnlen, ftnlen);
     extern logical return_(void);
     extern /* Subroutine */ int intstr_(integer *, char *, ftnlen);
 
@@ -74,6 +84,59 @@ static integer c__1 = 1;
 /*     CONSTANTS */
 
 /* $ Declarations */
+/* $ Abstract */
+
+/*     This include file defines the dimension of the counter */
+/*     array used by various SPICE subsystems to uniquely identify */
+/*     changes in their states. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 29-JUL-2013 (BVS) */
+
+/* -& */
+
+/*     End of include file. */
+
 /* $ Brief_I/O */
 
 /*     VARIABLE  I/O  DESCRIPTION */
@@ -260,6 +323,11 @@ static integer c__1 = 1;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.2.0, 19-SEP-2013 (BVS) */
+
+/*        Updated to save the input body name and ZZBODTRN state counter */
+/*        and to do name-ID conversion only if the counter has changed. */
+
 /* -    SPICELIB Version 1.1.0, 22-JUL-2004 (NJB) */
 
 /*        Updated to use BODS2C. */
@@ -288,7 +356,19 @@ static integer c__1 = 1;
 /*     Local parameters */
 
 
+/*     Saved body name length. */
+
+
 /*     Local variables */
+
+
+/*     Saved name/ID item declarations. */
+
+
+/*     Saved name/ID items. */
+
+
+/*     Initial values. */
 
 
 /*     Standard SPICE error handling. */
@@ -299,9 +379,20 @@ static integer c__1 = 1;
 	chkin_("BODVRD", (ftnlen)6);
     }
 
+/*     Initialization. */
+
+    if (first) {
+
+/*        Initialize counter. */
+
+	zzctruin_(svctr1);
+	first = FALSE_;
+    }
+
 /*     Translate the input name to an ID code. */
 
-    bods2c_(bodynm, &bodyid, &found, bodynm_len);
+    zzbods2c_(svctr1, svbdnm, &svbdid, &svfnd1, bodynm, &bodyid, &found, (
+	    ftnlen)36, bodynm_len);
     if (! found) {
 	setmsg_("The body name # could not be translated to a NAIF ID code. "
 		" The cause of this problem may be that you need an updated v"

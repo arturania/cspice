@@ -10,7 +10,7 @@
 static integer c__1000 = 1000;
 
 /* $Procedure ZZGFSOLVX ( Private --- GF, event finding routine ) */
-/* Subroutine */ int zzgfsolvx_(U_fp udfunc, S_fp udcond, S_fp udstep, S_fp 
+/* Subroutine */ int zzgfsolvx_(U_fp udfuns, S_fp udfunb, S_fp udstep, S_fp 
 	udrefn, logical *bail, L_fp udbail, logical *cstep, doublereal *step, 
 	doublereal *start, doublereal *finish, doublereal *tol, logical *rpt, 
 	S_fp udrepu, doublereal *result)
@@ -22,12 +22,14 @@ static integer c__1000 = 1000;
     /* Subroutine */ int s_copy(char *, char *, ftnlen, ftnlen);
 
     /* Local variables */
+    doublereal diff;
     extern /* Subroutine */ int zzwninsd_(doublereal *, doublereal *, char *, 
 	    doublereal *, ftnlen);
     logical s;
     doublereal begin, t;
-    extern /* Subroutine */ int chkin_(char *, ftnlen), errdp_(char *, 
-	    doublereal *, ftnlen);
+    extern /* Subroutine */ int chkin_(char *, ftnlen);
+    extern doublereal dpmax_(void);
+    extern /* Subroutine */ int errdp_(char *, doublereal *, ftnlen);
     integer nloop;
     logical l1, l2, savst;
     doublereal t1, t2;
@@ -35,6 +37,7 @@ static integer c__1000 = 1000;
     extern logical failed_(void);
     extern doublereal brcktd_(doublereal *, doublereal *, doublereal *), 
 	    touchd_(doublereal *);
+    doublereal prvdif;
     extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
 	    ftnlen);
     logical instat;
@@ -99,9 +102,9 @@ static integer c__1000 = 1000;
 
 /*     VARIABLE  I/O  DESCRIPTION */
 /*     --------  ---  -------------------------------------------------- */
-/*     UDFUNC     I   The routine that computes the scalar quantity of */
+/*     UDFUNS     I   The routine that computes the scalar quantity of */
 /*                    interest. */
-/*     UDCOND     I   Name of the routine that compares the current state */
+/*     UDFUNB     I   Name of the routine that compares the current state */
 /*                    condition with-respect-to a constraint. */
 /*     UDSTEP     I   Name of the routine that computes a time step */
 /*     UDREFN     I   Name of the routine that computes a refined time. */
@@ -119,11 +122,11 @@ static integer c__1000 = 1000;
 
 /* $ Detailed_Input */
 
-/*     UDFUNC     the routine that returns the value of the scalar */
+/*     UDFUNS     the routine that returns the value of the scalar */
 /*                quantity of interest at time ET. The calling sequence */
-/*                for UDFUNC is: */
+/*                for UDFUNS is: */
 
-/*                   CALL UDFUNC ( ET, VALUE ) */
+/*                   CALL UDFUNS ( ET, VALUE ) */
 
 /*                where: */
 
@@ -135,21 +138,21 @@ static integer c__1000 = 1000;
 /*                   VALUE   is the value of the scalar quantity */
 /*                           at ET. */
 
-/*     UDCOND     the routine that determines if UDFUNC */
+/*     UDFUNB     the routine that determines if UDFUNS */
 /*                satisfies some constraint condition at epoch ET. */
 
 /*                The calling sequence: */
 
-/*                   CALL UDCOND ( UDFUNC, ET, IN_CON ) */
+/*                   CALL UDFUNB ( UDFUNS, ET, BOOL ) */
 
 /*                where: */
 
 /*                   ET       a double precision value representing */
 /*                            ephemeris time, expressed as seconds past */
-/*                            J2000 TDB, at which to evaluate UDFUNC. */
+/*                            J2000 TDB, at which to evaluate UDFUNS. */
 
-/*                   IN_CON   a logical value indicating whether */
-/*                            or not UDFUNC satisfies the constraint */
+/*                   BOOL     a logical value indicating whether */
+/*                            or not UDFUNS satisfies the constraint */
 /*                            at ET (TRUE) or not (FALSE). */
 
 /*     UDSTEP     the routine that computes a time step in an attempt to */
@@ -323,25 +326,25 @@ static integer c__1000 = 1000;
 /*                results of the search and the contents of RESULT */
 /*                on entry. */
 
+/*                When RESULT is empty on input, the intervals of the */
+/*                output window stored in RESULT represent times when */
+/*                the state function UDFUNB returns the value .TRUE. */
+
 /* $ Parameters */
 
 /*     LBCELL     is the SPICELIB cell lower bound. */
 
 /* $ Exceptions */
 
-/*     1)  If TOL is negative, the error SPICE(VALUEOUTOFRANGE) */
+/*     1)  If TOL is non-positive, the error SPICE(VALUEOUTOFRANGE) */
 /*         will signal. */
 
-/*     2)  If START +/- TOL is indistinguishable from START or */
-/*         FINISH +/- TOL is indistinguishable from FINISH, the */
-/*         error SPICE(INVALIDVALUE) will signal. */
-
-/*     3)  If START is greater than FINISH or SVDTIM is greater than */
+/*     2)  If START is greater than FINISH or SVDTIM is greater than */
 /*         CURTIM, SPICE(BADTIMECASE) will signal. */
 
-/*     4) If the inner convergence loop fails to converge to TOL */
-/*        within MXLOOP iterations, the error SPICE(NOCONVERG) */
-/*        will signal. */
+/*     3)  If the inner convergence loop fails to converge to TOL */
+/*         within MXLOOP iterations, the error SPICE(NOCONVERG) */
+/*         will signal. */
 
 /* $ Files */
 
@@ -367,12 +370,12 @@ static integer c__1000 = 1000;
 
 /* $ Examples */
 
-/*      See GFOCCE and ZZGFRELX. */
+/*      See GFUDS and ZZGFRELX. */
 
 /* $ Restrictions */
 
 /*      It is important that the user understand how the routines */
-/*      UDCOND, UDSTEP and UDREFN are to be used and that the */
+/*      UDFUNB, UDSTEP and UDREFN are to be used and that the */
 /*      calling sequences match precisely with the descriptions given */
 /*      here. */
 
@@ -385,11 +388,25 @@ static integer c__1000 = 1000;
 /*     N.J. Bachman   (JPL) */
 /*     W.L. Taber     (JPL) */
 /*     I.M. Underwood (JPL) */
-/*     L. S. Elson    (JPL) */
+/*     L.S. Elson     (JPL) */
+/*     E.D. Wright    (JPL) */
 
 /* $ Version */
 
-/* -    SPICELIB Version 1.1.0  16-FEB-2010 (EDW) */
+/* -    SPICELIB Version 2.0.0,  31-JAN-2017 (NJB) (EDW) */
+
+/*        Restrictions on the input tolerance have been loosened: */
+/*        it is no longer required that the tolerance must yield */
+/*        a new value when it is added to, or subtracted from, */
+/*        either of the input interval bounds. The tolerance */
+/*        still must be strictly positive. */
+
+/* -    SPICELIB Version 1.2.0,  24-OCT-2010 (EDW) */
+
+/*       TOL error check now returns SPICE(INVALIDTOLERANCE) instead of */
+/*       previous return SPICE(VALUEOUTOFRANGE). */
+
+/* -    SPICELIB Version 1.1.0,  16-FEB-2010 (EDW) */
 
 /*        Modified version of ZZGFSOLV. */
 
@@ -402,7 +419,10 @@ static integer c__1000 = 1000;
 
 /* -& */
 
-/*     SPICELIB functions. */
+/*     SPICELIB functions */
+
+
+/*     Local parameters */
 
 
 /*     Local variables */
@@ -424,12 +444,12 @@ static integer c__1000 = 1000;
     }
     chkin_("ZZGFSOLVX", (ftnlen)9);
 
-/*     Make sure TOL is positive. */
+/*     Check the convergence tolerance. */
 
     if (*tol <= 0.) {
-	setmsg_("TOL was #; must be positive.", (ftnlen)28);
+	setmsg_("Tolerance must be positive but was #.", (ftnlen)37);
 	errdp_("#", tol, (ftnlen)1);
-	sigerr_("SPICE(VALUEOUTOFRANGE)", (ftnlen)22);
+	sigerr_("SPICE(INVALIDTOLERANCE)", (ftnlen)23);
 	chkout_("ZZGFSOLVX", (ftnlen)9);
 	return 0;
     }
@@ -440,36 +460,6 @@ static integer c__1000 = 1000;
     if (*start > *finish) {
 	setmsg_("Bad time interval result, START > FINISH.", (ftnlen)41);
 	sigerr_("SPICE(BADTIMECASE)", (ftnlen)18);
-	chkout_("ZZGFSOLVX", (ftnlen)9);
-	return 0;
-    }
-
-/*     Make sure that TOL is not too small, i.e. that neither */
-/*     START + TOL nor START - TOL equals START. */
-
-    d__1 = *start - *tol;
-    d__2 = *start + *tol;
-    if (touchd_(&d__1) == *start || touchd_(&d__2) == *start) {
-	setmsg_("TOL has value #1. This value is too small to distinguish ST"
-		"ART - TOL or START + TOL from START, #2.", (ftnlen)99);
-	errdp_("#1", tol, (ftnlen)2);
-	errdp_("#2", start, (ftnlen)2);
-	sigerr_("SPICE(INVALIDVALUE)", (ftnlen)19);
-	chkout_("ZZGFSOLVX", (ftnlen)9);
-	return 0;
-    }
-
-/*     Make sure that TOL is not too small, i.e. that neither */
-/*     START + TOL nor START - TOL equals START. */
-
-    d__1 = *finish - *tol;
-    d__2 = *finish + *tol;
-    if (touchd_(&d__1) == *finish || touchd_(&d__2) == *finish) {
-	setmsg_("TOL has value #1. This value is too small to distinguish FI"
-		"NISH - TOL or FINISH + TOL from FINISH, #2.", (ftnlen)102);
-	errdp_("#1", tol, (ftnlen)2);
-	errdp_("#2", finish, (ftnlen)2);
-	sigerr_("SPICE(INVALIDVALUE)", (ftnlen)19);
 	chkout_("ZZGFSOLVX", (ftnlen)9);
 	return 0;
     }
@@ -505,7 +495,7 @@ static integer c__1000 = 1000;
 /*     constraint. This constraint may indicate only existence of */
 /*     a state. */
 
-    (*udcond)((U_fp)udfunc, &curtim, &curste);
+    (*udfunb)((U_fp)udfuns, &curtim, &curste);
     if (failed_()) {
 	chkout_("ZZGFSOLVX", (ftnlen)9);
 	return 0;
@@ -560,7 +550,7 @@ static integer c__1000 = 1000;
 
 /*        Compute the state at time CURTIM. */
 
-	(*udcond)((U_fp)udfunc, &curtim, &curste);
+	(*udfunb)((U_fp)udfuns, &curtim, &curste);
 	if (failed_()) {
 	    chkout_("ZZGFSOLVX", (ftnlen)9);
 	    return 0;
@@ -614,7 +604,7 @@ static integer c__1000 = 1000;
 
 /*           Compute the current state */
 
-	    (*udcond)((U_fp)udfunc, &curtim, &curste);
+	    (*udfunb)((U_fp)udfuns, &curtim, &curste);
 	    if (failed_()) {
 		chkout_("ZZGFSOLVX", (ftnlen)9);
 		return 0;
@@ -641,6 +631,13 @@ static integer c__1000 = 1000;
 	    t1 = svdtim;
 	    t2 = curtim;
 
+/*           Set the states at T1 and T2 for use by the refinement */
+/*           function, in case the caller has passed in a function */
+/*           that uses them. */
+
+	    l1 = savst;
+	    l2 = curste;
+
 /*           Make sure that T1 is not greater than T2. Signal an */
 /*           error for T1 > T2. */
 
@@ -658,13 +655,15 @@ static integer c__1000 = 1000;
 /*           length.  Do it as described below... */
 
 /*           Loop while the difference between the times T1 and T2 */
-/*           exceeds a specified tolerance. */
+/*           exceeds a specified tolerance, and while the magnitude */
+/*           of the difference is decreasing from one loop iteration */
+/*           to the next. */
 
+	    prvdif = dpmax_();
+	    d__2 = (d__1 = t2 - t1, abs(d__1));
+	    diff = touchd_(&d__2);
 	    nloop = 0;
-	    for(;;) { /* while(complicated condition) */
-		d__1 = t2 - t1;
-		if (!(touchd_(&d__1) > *tol))
-			break;
+	    while(diff > *tol && diff < prvdif) {
 		++nloop;
 
 /*              This loop count error exists to catch pathologies */
@@ -721,13 +720,22 @@ static integer c__1000 = 1000;
 /*                 equals STATE1, set T1 to T, otherwise set */
 /*                 T2 to T. */
 
-		    (*udcond)((U_fp)udfunc, &t, &s);
+		    (*udfunb)((U_fp)udfuns, &t, &s);
 		    if (s == state1) {
 			t1 = t;
+			l1 = s;
 		    } else {
 			t2 = t;
+			l2 = s;
 		    }
 		}
+
+/*              Update PRVDIF and DIFF for the next loop termination */
+/*              test. */
+
+		prvdif = diff;
+		d__2 = (d__1 = t2 - t1, abs(d__1));
+		diff = touchd_(&d__2);
 	    }
 
 /*           Let TRNSTN be the midpoint of [T1, T2].  Record this */

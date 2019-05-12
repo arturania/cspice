@@ -149,6 +149,26 @@ static integer c__1 = 1;
 
 /* $ Version */
 
+/* -    SPICELIB Version 3.25.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-INTEL. */
+
+/* -    SPICELIB Version 3.24.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 3.23.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-GFORTRAN. */
+
+/* -    SPICELIB Version 3.22.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 3.21.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GCC_C. */
+
 /* -    SPICELIB Version 3.20.0, 13-MAY-2010 (BVS) */
 
 /*        Updated for SUN-SOLARIS-INTEL. */
@@ -305,13 +325,19 @@ static integer c__1 = 1;
 
 
 
-/*     The following code should be used in the following environments: */
-/*     VAX/FORTRAN, IBM-PC/Lahey Fortran, MacIntosh/Language Systems */
-/*     Fortran */
+
+/*     The code below should be used in the following environments: */
+
+/*     SUN/Fortran, */
+/*     HP/HP-Fortran, */
+/*     Silicon Graphics/Silicon Graphics Fortran, */
+/*     DEC Alpha-OSF/1--DEC Fortran, */
+/*     NeXT/Absoft Fortran */
+/*     PC Linux/Fort77 */
 
     ci__1.cierr = 1;
     ci__1.ciunit = 6;
-    ci__1.cifmt = "(1H ,A,$)";
+    ci__1.cifmt = "(A,$)";
     iostat = s_wsfe(&ci__1);
     if (iostat != 0) {
 	goto L100001;

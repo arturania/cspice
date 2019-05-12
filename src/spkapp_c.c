@@ -144,25 +144,25 @@
                              velocity of the target as seen by the 
                              observer. 
  
-                  "CN"       Converged Newtonian light time 
-                             correction.  In solving the light time 
-                             equation, the "CN" correction iterates 
-                             until the solution converges (three 
-                             iterations on all supported platforms). 
- 
-                             The "CN" correction typically does not 
-                             substantially improve accuracy because 
-                             the errors made by ignoring 
-                             relativistic effects may be larger than 
-                             the improvement afforded by obtaining 
-                             convergence of the light time solution. 
-                             The "CN" correction computation also  
-                             requires a significantly greater number 
-                             of CPU cycles than does the  
-                             one-iteration light time correction. 
- 
-                  "CN+S"     Converged Newtonian light time 
-                             and stellar aberration corrections. 
+                  "CN"       Converged Newtonian light time
+                             correction. In solving the light time
+                             equation, the "CN" correction iterates
+                             until the solution converges (three
+                             iterations on all supported platforms).
+                             Whether the "CN+S" solution is
+                             substantially more accurate than the
+                             "LT" solution depends on the geometry
+                             of the participating objects and on the
+                             accuracy of the input data. In all
+                             cases this routine will execute more
+                             slowly when a converged solution is
+                             computed. See the Particulars section of
+                             spkezr_c for a discussion of precision of
+                             light time corrections.
+
+                  "CN+S"     Converged Newtonian light time
+                             correction and stellar aberration
+                             correction.
  
  
                The following values of abcorr apply to the 
@@ -194,9 +194,9 @@
                   "XCN"      "Transmission" case:  converged  
                              Newtonian light time correction. 
  
-                  "XCN+S"    "Transmission" case:  converged  
-                             Newtonian light time and stellar  
-                             aberration corrections. 
+                  "XCN+S"    "Transmission" case: converged Newtonian
+                             light time correction and stellar
+                             aberration correction.
  
                Neither special nor general relativistic effects are 
                accounted for in the aberration corrections applied 
@@ -352,14 +352,14 @@
    Below, we indicate the aberration corrections to use for some 
    common applications: 
  
-      1) Find the apparent direction of a target for a remote-sensing 
-         observation: 
+      1) Find the apparent direction of a target. This is 
+         the most common case for a remote-sensing observation.
  
-            Use "LT+S":  apply both light time and stellar  
-            aberration corrections. 
+            Use "LT+S" or "CN+S": apply both light time and stellar
+            aberration corrections.
  
          Note that using light time corrections alone ("LT") is 
-         generally not a good way to obtain an aproximation to an 
+         generally not a good way to obtain an approximation to an 
          apparent target vector:  since light time and stellar 
          aberration corrections often partially cancel each other, 
          it may be more accurate to use no correction at all than to 
@@ -367,34 +367,35 @@
  
  
       2) Find the corrected pointing direction to radiate a signal 
-         to a target:   
+         to a target. This computation is often applicable for 
+         implementing communications sessions.
  
-            Use "XLT+S":  apply both light time and stellar  
-            aberration corrections for transmission. 
+            Use "XLT+S" or "XCN+S": apply both light time and stellar
+            aberration corrections for transmission.
  
+  
+      3) Compute the apparent position of a target body relative 
+         to a star or other distant object.
  
-      3) Obtain an uncorrected state vector derived directly from  
-         data in an SPK file: 
+            Use one of "LT", "CN", "LT+S", or "CN+S" as needed to match
+            the correction applied to the position of the distant
+            object. For example, if a star position is obtained from a
+            catalog, the position vector may not be corrected for
+            stellar aberration. In this case, to find the angular
+            separation of the star and the limb of a planet, the vector
+            from the observer to the planet should be corrected for
+            light time but not stellar aberration.
+ 
+
+      4) Obtain an uncorrected state vector derived directly from  
+         data in an SPK file.
  
             Use "NONE". 
  
- 
-      4) Compute the apparent position of a target body relative 
-         to a star or other distant object: 
- 
-            Use "LT" or "LT+S" as needed to match the correction 
-            applied to the position of the distant object.  For 
-            example, if a star position is obtained from a catalog, 
-            the position vector may not be corrected for stellar 
-            aberration.  In this case, to find the angular 
-            separation of the star and the limb of a planet, the 
-            vector from the observer to the planet should be 
-            corrected for light time but not stellar aberration. 
- 
- 
+
       5) Use a geometric state vector as a low-accuracy estimate 
          of the apparent state for an application where execution  
-         speed is critical: 
+         speed is critical.
  
             Use "NONE". 
  
@@ -402,9 +403,9 @@
       6) While this routine cannot perform the relativistic 
          aberration corrections required to compute states 
          with the highest possible accuracy, it can supply the 
-         geometric states required as inputs to these computations: 
+         geometric states required as inputs to these computations.
  
-            Use "NONE", then apply high-accuracy aberration 
+            Use "NONE", then apply relativistic aberration 
             corrections (not available in the SPICE Toolkit). 
  
  
@@ -640,6 +641,12 @@
    W.L. Taber      (JPL) 
  
 -Version
+
+   -CSPICE Version 2.0.4, 07-JUL-2014 (NJB)
+
+       Discussion of light time corrections was updated. Assertions
+       that converged light time corrections are unlikely to be
+       useful were removed.
 
    -CSPICE Version 2.0.3, 19-MAY-2010 (BVS)
 

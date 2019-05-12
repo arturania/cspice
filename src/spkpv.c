@@ -14,18 +14,26 @@ static integer c__6 = 6;
 /* Subroutine */ int spkpv_(integer *handle, doublereal *descr, doublereal *
 	et, char *ref, doublereal *state, integer *center, ftnlen ref_len)
 {
+    /* Initialized data */
+
+    static logical first = TRUE_;
+
     extern /* Subroutine */ int mxvg_(doublereal *, doublereal *, integer *, 
-	    integer *, doublereal *), chkin_(char *, ftnlen), dafus_(
-	    doublereal *, integer *, integer *, doublereal *, integer *), 
-	    errch_(char *, char *, ftnlen, ftnlen);
+	    integer *, doublereal *), zznamfrm_(integer *, char *, integer *, 
+	    char *, integer *, ftnlen, ftnlen), zzctruin_(integer *), chkin_(
+	    char *, ftnlen), dafus_(doublereal *, integer *, integer *, 
+	    doublereal *, integer *), errch_(char *, char *, ftnlen, ftnlen);
+    static char svref[32];
     doublereal xform[36]	/* was [6][6] */, dc[2];
     integer ic[6];
+    static integer svctr1[2];
     extern /* Subroutine */ int frmchg_(integer *, integer *, doublereal *, 
-	    doublereal *), namfrm_(char *, integer *, ftnlen);
+	    doublereal *);
     integer irfreq;
     extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
 	    ftnlen), setmsg_(char *, ftnlen);
     doublereal tstate[6];
+    static integer svirfr;
     extern logical return_(void);
     extern /* Subroutine */ int spkpvn_(integer *, doublereal *, doublereal *,
 	     integer *, doublereal *, integer *);
@@ -70,6 +78,59 @@ static integer c__6 = 6;
 /*     EPHEMERIS */
 
 /* $ Declarations */
+/* $ Abstract */
+
+/*     This include file defines the dimension of the counter */
+/*     array used by various SPICE subsystems to uniquely identify */
+/*     changes in their states. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 29-JUL-2013 (BVS) */
+
+/* -& */
+
+/*     End of include file. */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
@@ -116,15 +177,15 @@ static integer c__6 = 6;
 
 /*     NONE. */
 
-/* $ Files */
-
-/*     See argument HANDLE. */
-
 /* $ Exceptions */
 
 /*     1) If the requested reference frame is not supported by the */
 /*        current version of CHGIRF, the error 'SPICE(SPKREFNOTSUPP)' */
 /*        is signalled. */
+
+/* $ Files */
+
+/*     See argument HANDLE. */
 
 /* $ Particulars */
 
@@ -176,13 +237,21 @@ static integer c__6 = 6;
 
 /* $ Author_and_Institution */
 
+/*     N.J. Bachman    (JPL) */
 /*     K.R. Gehringer  (JPL) */
 /*     W.L. Taber      (JPL) */
 /*     J.M. Lynch      (JPL) */
+/*     B.V. Semenov    (KPL) */
 /*     R.E. Thurman    (JPL) */
 /*     I.M. Underwood  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 6.1.0, 06-DEC-2013 (BVS) (NJB) */
+
+/*        Updated to save the input frame name and POOL state counter */
+/*        and to do frame name-ID conversion only if the counter has */
+/*        changed. In-line comment regarding frame change was edited. */
 
 /* -    SPICELIB Version 6.0.0, 19-SEP-1995 (WLT) */
 
@@ -252,8 +321,23 @@ static integer c__6 = 6;
 /*     SPICELIB functions */
 
 
+/*     Local parameters. */
+
+
+/*     Saved frame name length. */
+
+
 /*     Some local space is needed in which to return records, and */
 /*     into which to unpack the segment descriptor. */
+
+
+/*     Saved frame name/ID item declarations. */
+
+
+/*     Saved frame name/ID items. */
+
+
+/*     Initial values. */
 
 
 /*     Standard SPICE error handling. */
@@ -263,14 +347,24 @@ static integer c__6 = 6;
     } else {
 	chkin_("SPKPV", (ftnlen)5);
     }
+
+/*     Initialization. */
+
+    if (first) {
+
+/*        Initialize counter. */
+
+	zzctruin_(svctr1);
+	first = FALSE_;
+    }
     dafus_(descr, &c__2, &c__6, dc, ic);
     *center = ic[1];
     irf = ic[2];
 
-/*     Rotate the raw state from its native frame to the only if the */
-/*     native frame differs from the one requested by the user. */
+/*     Rotate the raw state from its native frame to the one requested */
+/*     by the user only if the two frames differ. */
 
-    namfrm_(ref, &irfreq, ref_len);
+    zznamfrm_(svctr1, svref, &svirfr, ref, &irfreq, (ftnlen)32, ref_len);
     if (irfreq == 0) {
 	setmsg_("No support for frame #.", (ftnlen)23);
 	errch_("#", ref, (ftnlen)1, ref_len);

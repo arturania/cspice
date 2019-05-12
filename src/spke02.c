@@ -5,8 +5,7 @@
 
 #include "f2c.h"
 
-/* $Procedure      SPKE02 ( Evaluate Chebyshev polynomials, type 2 ) */
-
+/* $Procedure      SPKE02 ( SPK, evaluate record, type 2 ) */
 /* Subroutine */ int spke02_(doublereal *et, doublereal *record, doublereal *
 	xyzdot)
 {
@@ -18,18 +17,19 @@
 
     /* Local variables */
     integer degp, ncof, i__;
-    extern /* Subroutine */ int chkin_(char *, ftnlen);
+    extern /* Subroutine */ int chkin_(char *, ftnlen), errdp_(char *, 
+	    doublereal *, ftnlen);
     integer cofloc;
     extern /* Subroutine */ int chbint_(doublereal *, integer *, doublereal *,
-	     doublereal *, doublereal *, doublereal *), chkout_(char *, 
-	    ftnlen);
+	     doublereal *, doublereal *, doublereal *), sigerr_(char *, 
+	    ftnlen), chkout_(char *, ftnlen), setmsg_(char *, ftnlen), 
+	    errint_(char *, integer *, ftnlen);
     extern logical return_(void);
-
 
 /* $ Abstract */
 
-/*     Evaluate a single data record from an PCK or SPK segment of type 2 */
-/*     (Chebyshev Polynomials, 3 components). */
+/*     Evaluate a single data record from an PCK or SPK segment of type */
+/*     2 (Chebyshev Polynomials, 3 components). */
 
 /* $ Disclaimer */
 
@@ -72,23 +72,53 @@
 
 /*     Variable  I/O  Description */
 /*     --------  ---  -------------------------------------------------- */
-/*     ET         I   Target epoch. */
+/*     ET         I   Evaluation epoch. */
 /*     RECORD     I   Data record. */
-/*     XYZDOT     O   3 components and their derivatives. */
+/*     XYZDOT     O   Three function components and their derivatives. */
 
 /* $ Detailed_Input */
 
-/*     ET          is a target epoch, at which a state vector is to */
-/*                 be computed. */
+/*     ET          is the epoch at which a state vector or Euler angle */
+/*                 state is to be computed. The epoch is represented as */
+/*                 seconds past J2000 TDB. */
 
 /*     RECORD      is a data record which, when evaluated at epoch ET, */
-/*                 will give the 3 component and their derivatives. */
+/*                 will yield three function components and their */
+/*                 derivatives with respect to time. The record */
+/*                 structure for SPK type 2 data is: */
+
+/*                    +--------------------------------------+ */
+/*                    | record size (excluding this element) | */
+/*                    +--------------------------------------+ */
+/*                    | Coverage interval midpoint           | */
+/*                    +--------------------------------------+ */
+/*                    | Coverage interval radius             | */
+/*                    +--------------------------------------+ */
+/*                    | Coeffs for X position component      | */
+/*                    +--------------------------------------+ */
+/*                    | Coeffs for Y position component      | */
+/*                    +--------------------------------------+ */
+/*                    | Coeffs for Z position component      | */
+/*                    +--------------------------------------+ */
+
+/*                 In the above record */
+
+/*                    - Times are expressed as seconds past J2000 TDB. */
+/*                    - Position components have units of km. */
+
+/*                 See PCKE02 for a description of PCK type 2 records. */
+
+/*                 RECORD must be declared by the caller with size large */
+/*                 enough to accommodate the largest record that can be */
+/*                 returned by this routine. See the INCLUDE file */
+/*                 spkrec.inc for the correct record length. */
 
 /* $ Detailed_Output */
 
-/*     XYZDOT      is a 6-vector. In order, X, Y, Z, X', Y', and Z'. */
-/*                 Units for state evaluations will be km and km/sec. */
-/*                 Units for angles will be radians and radians/sec. */
+/*     XYZDOT      is a 6-vector. In order, the components of XYZDOT are */
+/*                 X, Y, Z, X', Y', and Z'. Units for state evaluations */
+/*                 will be km and km/sec. Units for angles will be */
+/*                 radians and radians/sec. */
 
 /* $ Parameters */
 
@@ -96,7 +126,12 @@
 
 /* $ Exceptions */
 
-/*     None. */
+/*     1) If the input record contains an invalid coefficient count, */
+/*        the error SPICE(INVALIDCOUNT) will be signaled. */
+
+/*     2) If the input record contains invalid domain transformation */
+/*        parameters, the error will be diagnosed by a routine in the */
+/*        call tree of this routine. */
 
 /* $ Files */
 
@@ -106,13 +141,13 @@
 
 /*     The exact format and structure of type 2 (Chebyshev polynomials, */
 /*     position only) segments are described in the SPK and PCK Required */
-/*     Reading file. */
+/*     Reading files. */
 
 /*     A type 2 segment contains three sets of Chebyshev coefficients, */
-/*     one set each for components X, Y, and Z.  SPKE02 */
-/*     calls the routine CHBINT for each set to evalute the polynomial */
-/*     AND its first derivative (which it computes internally) at the */
-/*     input epoch, thereby arriving at the complete state. */
+/*     one set each for components X, Y, and Z. SPKE02 calls the routine */
+/*     CHBINT for each set to evaluate the polynomial AND its first */
+/*     derivative (which it computes internally) at the input epoch, */
+/*     thereby arriving at the complete state. */
 
 /* $ Examples */
 
@@ -163,6 +198,12 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.0.0, 18-JAN-2014 (NJB) */
+
+/*        Added error checks for invalid coefficient counts */
+/*        and invalid interval radius. Changed error handling */
+/*        style to "discovery." Enhanced header documentation. */
+
 /* -    SPICELIB Version 1.0.4, 22-MAR-1994 (KSZ) */
 
 /*     Comments changed so this can be used as */
@@ -200,12 +241,10 @@
 /*     Local variables */
 
 
-/*     Standard SPICE error handling. */
+/*     Use discovery check-in. */
 
     if (return_()) {
 	return 0;
-    } else {
-	chkin_("SPKE02", (ftnlen)6);
     }
 
 /*     The first number in the record is the record size.  Following it */
@@ -215,6 +254,26 @@
 /*     number of coefficients for each variable. */
 
     ncof = ((integer) record[0] - 2) / 3;
+    if (ncof < 1) {
+	chkin_("SPKE02", (ftnlen)6);
+	setmsg_("The input record's coefficient count NCOF should be positiv"
+		"e but was #.", (ftnlen)71);
+	errint_("#", &ncof, (ftnlen)1);
+	sigerr_("SPICE(INVALIDCOUNT)", (ftnlen)19);
+	chkout_("SPKE02", (ftnlen)6);
+	return 0;
+    }
+
+/*     Check the radius of the domain interval. */
+
+    if (record[2] <= 0.) {
+	chkin_("SPKE02", (ftnlen)6);
+	setmsg_("Interval radius must be positive but was #.", (ftnlen)43);
+	errdp_("#", &record[2], (ftnlen)1);
+	sigerr_("SPICE(INVALIDRADIUS)", (ftnlen)20);
+	chkout_("SPKE02", (ftnlen)6);
+	return 0;
+    }
 
 /*     The degree of each polynomial is one less than the number of */
 /*     coefficients. */
@@ -236,13 +295,14 @@
 /*        parameters, which are located, in our case, in the second and */
 /*        third slots of the record. */
 
+/*        Note that CHBINT is "error free." */
+
 	chbint_(&record[cofloc - 1], &degp, &record[1], et, &xyzdot[(i__1 = 
 		i__ - 1) < 6 && 0 <= i__1 ? i__1 : s_rnge("xyzdot", i__1, 
-		"spke02_", (ftnlen)234)], &xyzdot[(i__2 = i__ + 2) < 6 && 0 <=
-		 i__2 ? i__2 : s_rnge("xyzdot", i__2, "spke02_", (ftnlen)234)]
+		"spke02_", (ftnlen)297)], &xyzdot[(i__2 = i__ + 2) < 6 && 0 <=
+		 i__2 ? i__2 : s_rnge("xyzdot", i__2, "spke02_", (ftnlen)297)]
 		);
     }
-    chkout_("SPKE02", (ftnlen)6);
     return 0;
 } /* spke02_ */
 

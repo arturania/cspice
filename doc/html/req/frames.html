@@ -29,6 +29,8 @@
          <A HREF="#Intended Audience">Intended Audience</A>
    <A HREF="#Using Frames">Using Frames</A>
       <A HREF="#Frame Functions in CSPICE">Frame Functions in CSPICE</A>
+         <A HREF="#Frame Transformation Functions">Frame Transformation Functions</A>
+         <A HREF="#Frame Information Functions">Frame Information Functions</A>
       <A HREF="#Frames Supported in SPICE">Frames Supported in SPICE</A>
       <A HREF="#Kernels Needed For Computing Frame Transformations">Kernels Needed For Computing Frame Transformations</A>
    <A HREF="#Creating a Frame Kernel">Creating a Frame Kernel</A>
@@ -144,7 +146,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Reference Frames
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2010 JUN 03 by B. V. Semenov.
+   Last revised on 2017 FEB 01 by B. V. Semenov.
 <P>
  
 <BR><BR>
@@ -204,6 +206,11 @@
    interest.
 <P>
  
+<BR><BR>
+<A NAME="Frame Transformation Functions"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Frame Transformation Functions
+</H3><P><BR><BR>
    Several user-level CSPICE functions require that the user supply the
    name of a reference frame as one of the inputs to the function. The most
    important of these is the function <a href="../cspice/spkezr_c.html">spkezr_c</a>. This function returns the
@@ -220,7 +227,7 @@
    transformations of Cartesian state vectors (6 components) between
    reference frames while <a href="../cspice/pxform_c.html">pxform_c</a> supports transformations of Cartesian
    position vectors (3 components). <a href="../cspice/pxform_c.html">pxform_c</a> may be used when only position
-   information is needed , or when the derivatives required for a state
+   information is needed, or when the derivatives required for a state
    transformation are unavailable, for example when one frame is defined by
    a C-kernel that lacks angular velocity data.
 <P>
@@ -242,6 +249,84 @@
    The output of <a href="../cspice/pxform_c.html">pxform_c</a>, `rotate', is a 3 by 3 transformation matrix
    equivalent to the upper left 3x3 block of `xform'. This matrix
    transforms position as opposed to state vectors.
+<P>
+ 
+<BR><BR>
+<A NAME="Frame Information Functions"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Frame Information Functions
+</H3><P><BR><BR>
+   The CSPICE frame subsystem contains a set of functions that enable
+   applications to retrieve information about frames known to CSPICE,
+   whether they are built-in or specified by means of frame kernels:
+<P>
+ 
+<DL><DT>
+<B>
+ <a href="../cspice/frmnam_c.html">frmnam_c</a>
+</B><BR><BR>
+<DD>
+ Convert frame ID code to frame name.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/namfrm_c.html">namfrm_c</a>
+</B><BR><BR>
+<DD>
+ Convert frame name to frame ID code.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/frinfo_c.html">frinfo_c</a>
+</B><BR><BR>
+<DD>
+ Return frame specification parameters: frame center, frame class, and
+frame class ID.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/cidfrm_c.html">cidfrm_c</a>
+</B><BR><BR>
+<DD>
+ Map body ID code to the default frame centered on the specified body.
+Both frame name and ID are returned.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/cnmfrm_c.html">cnmfrm_c</a>
+</B><BR><BR>
+<DD>
+ Map body name to the default frame centered on the specified body. Both
+frame name and ID are returned.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/ccifrm_c.html">ccifrm_c</a>
+</B><BR><BR>
+<DD>
+ Map frame class and class ID to frame specification parameters: frame
+ID code, frame name and frame center are returned.<BR>
+</DL>
+<DL><DT>
+<DD>
+ This function provides a way to identify frames referenced in CK and
+PCK files: in these files, segment descriptors contain class IDs of
+frames.<BR>
+</DL>
+   The calling sequences for the frame information functions are
+<P>
+ 
+<PRE>
+   <a href="../cspice/frmnam_c.html">frmnam_c</a> ( frcode, lenout, frname  )
+   <a href="../cspice/namfrm_c.html">namfrm_c</a> ( frname, &amp;frcode )
+   <a href="../cspice/frinfo_c.html">frinfo_c</a> ( frcode, &amp;cent,  &amp;class,  &amp;clssid, &amp;found )
+   <a href="../cspice/cidfrm_c.html">cidfrm_c</a> ( cent,   lenout, &amp;frcode, frname,  &amp;found )
+   <a href="../cspice/cnmfrm_c.html">cnmfrm_c</a> ( cname,  lenout, &amp;frcode, frname,  &amp;found )
+   <a href="../cspice/ccifrm_c.html">ccifrm_c</a> ( class,  clssid, lenout,  &amp;frcode, frname,
+              &amp;cent,  &amp;found )
+</PRE>
+   See the section ``Specifying a New Frame'' below for more information on
+   frame specification parameters.
 <P>
  
 <BR><BR>
@@ -320,7 +405,7 @@ in frame kernels.
       <a href="../cspice/furnsh_c.html">furnsh_c</a> ( "myframe.tf" );
 </PRE>
    Note that the SPICE data loading mechanism detects and prohibits loading
-   text kernel files containing lines terminated with EOF character(s)
+   text kernel files containing lines terminated with EOL character(s)
    non-native to the platform on which the Toolkit was compiled. If a
    non-native EOL terminator is detected in the first 132 characters of a
    text kernel, the execution is stopped and an error message is displayed.
@@ -358,7 +443,7 @@ in frame kernels.
    using data provided in CK files and cannot be computed without loading
    these. In addition to the CKs, an SCLK kernel establishing time
    correlation for the on-board clock that is used to tag data in the CKs
-   must be loaded to support time time conversion between that clock and
+   must be loaded to support time conversion between that clock and
    ephemeris time.
 <P>
  
@@ -513,10 +598,10 @@ associated with dynamic frames is 5.
    to specify. If you try to use a ``built in'' name, the frame subsystem
    will ignore your frame specification. In the example given above, we
    chose the name 'WALDO' for the name of our reference frame. If ``Waldo''
-   would be a lander and would would need to specify a local level frame at
-   its landing site, we could have named that frame 'WALDO_LOCAL_LEVEL'. A
-   good name for for a frame associated with the camera flown on ``Waldo''
-   would be 'WALDO_CAMERA'.
+   would be a lander and would need to specify a local level frame at its
+   landing site, we could have named that frame 'WALDO_LOCAL_LEVEL'. A good
+   name for a frame associated with the camera flown on ``Waldo'' would be
+   'WALDO_CAMERA'.
 <P>
  
 <BR><BR>
@@ -725,9 +810,9 @@ associated with dynamic frames is 5.
    object's name or ID code. For example, we have already mentioned that
    there are two ``built in'' reference frames that describe the
    orientation of the Earth: 'IAU_EARTH' and 'ITRF93'. For other objects,
-   such as the asteroid Ceres, there is no ``built in'' frame associated
-   with the object. The body-fixed frame of Ceres must be defined through a
-   text kernel. In both cases, the connection between the object and its
+   such as the asteroid Simbad, there is no ``built in'' frame associated
+   with the object. The body-fixed frame of Simbad must be defined through
+   a text kernel. In both cases, the connection between the object and its
    body-fixed frame needs to be supplied via a kernel pool variable. There
    are two ways to do this.
 <P>
@@ -974,15 +1059,15 @@ RELATIVE frame by left multiplication
 <P>
  
 <PRE>
-   TFRAME_&lt;frame&gt;_MATRIX = ( matrix_value[0][0],
-                             matrix_value[1][0],
-                             matrix_value[2][0],
-                             matrix_value[0][1],
-                             matrix_value[1][1],
-                             matrix_value[2][1],
-                             matrix_value[0][2],
-                             matrix_value[1][2],
-                             matrix_value[2][2]  )
+   TKFRAME_&lt;frame&gt;_MATRIX = ( matrix_value[0][0],
+                              matrix_value[1][0],
+                              matrix_value[2][0],
+                              matrix_value[0][1],
+                              matrix_value[1][1],
+                              matrix_value[2][1],
+                              matrix_value[0][2],
+                              matrix_value[1][2],
+                              matrix_value[2][2]  )
 </PRE>
    For example, if the matrix defining your TK frame is
 <P>
@@ -3317,16 +3402,19 @@ are likely to have at best single precision validity.
    IAU_ARIEL
    IAU_ATLAS
    IAU_BELINDA
+   IAU_BENNU
    IAU_BIANCA
    IAU_BORRELLY
    IAU_CALLIRRHOE
    IAU_CALLISTO
    IAU_CALYPSO
    IAU_CARME
+   IAU_CERES
    IAU_CHALDENE
    IAU_CHARON
    IAU_CORDELIA
    IAU_CRESSIDA
+   IAU_DAVIDA
    IAU_DEIMOS
    IAU_DESDEMONA
    IAU_DESPINA
@@ -3357,6 +3445,7 @@ are likely to have at best single precision validity.
    IAU_KALYKE
    IAU_LARISSA
    IAU_LEDA
+   IAU_LUTETIA
    IAU_LYSITHEA
    IAU_MAGACLITE
    IAU_MARS
@@ -3370,6 +3459,7 @@ are likely to have at best single precision validity.
    IAU_NEREID
    IAU_OBERON
    IAU_OPHELIA
+   IAU_PALLAS
    IAU_PAN
    IAU_PANDORA
    IAU_PASIPHAE
@@ -3385,6 +3475,7 @@ are likely to have at best single precision validity.
    IAU_ROSALIND
    IAU_SATURN
    IAU_SINOPE
+   IAU_STEINS
    IAU_SUN
    IAU_TAYGETE
    IAU_TELESTO

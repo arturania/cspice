@@ -9,8 +9,7 @@
 
 static integer c__0 = 0;
 
-/* $Procedure     ZZGFWSTS ( GF window -- Sift the first */
-/*                        through the second ) */
+/* $Procedure ZZGFWSTS ( Private --- GF, sift first window thru second ) */
 /* Subroutine */ int zzgfwsts_(doublereal *wndw1, doublereal *wndw2, char *
 	inclsn, doublereal *wndw3, ftnlen inclsn_len)
 {
@@ -175,12 +174,16 @@ static integer c__0 = 0;
 
 /* $ Version */
 
-/*     SPICELIB Version 1.0.0, 05-MAR-2009 (NJB) (LSE) (WLT) */
+/* -    SPICELIB Version 1.0.1, 08-DEC-2010 (EDW) */
+
+/*        Edit to replaced term "schedule" with "window." */
+
+/* -    SPICELIB Version 1.0.0, 05-MAR-2009 (NJB) (LSE) (WLT) */
 
 /* -& */
 /* $ Index_Entries */
 
-/*     Find intervals of a window contained in an interval of another */
+/* find window intervals contained in an interval of another */
 
 /* -& */
 
@@ -315,10 +318,10 @@ static integer c__0 = 0;
 	}
     }
     if (ovflow > 0) {
-	setmsg_("The output schedule does not have sufficient memory to cont"
-		"ain the result of sifting the two given schedules. The outpu"
-		"t schedule requires space for # more values than what has be"
-		"en provided. ", (ftnlen)192);
+	setmsg_("The output window does not have sufficient memory to contai"
+		"n the result of sifting the two given windows. The output wi"
+		"ndow requires space for # more values than what has been pro"
+		"vided. ", (ftnlen)186);
 	errint_("#", &ovflow, (ftnlen)1);
 	sigerr_("SPICE(OUTOFROOM)", (ftnlen)16);
     } else {

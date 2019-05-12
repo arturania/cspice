@@ -7,7 +7,7 @@
 
 /* Table of constant values */
 
-static integer c__1000 = 1000;
+static integer c__5000 = 5000;
 static logical c_false = FALSE_;
 static integer c__2 = 2;
 static integer c__124 = 124;
@@ -43,7 +43,7 @@ static logical c_true = TRUE_;
     static integer ibff;
     static char crec[1000];
     static doublereal drec[128];
-    static integer iarc, iamh, free, ftnd[1000], ftni[1000];
+    static integer iarc, iamh, free, ftnd[5000], ftni[5000];
     extern /* Subroutine */ int zzdafgfr_(integer *, char *, integer *, 
 	    integer *, char *, integer *, integer *, integer *, logical *, 
 	    ftnlen, ftnlen), zzddhfnh_(char *, integer *, logical *, ftnlen), 
@@ -58,12 +58,12 @@ static logical c_true = TRUE_;
     static integer i__;
     extern logical elemi_(integer *, integer *);
     extern /* Subroutine */ int chkin_(char *, ftnlen);
-    static integer bward, fthan[1000];
+    static integer bward, fthan[5000];
     extern /* Subroutine */ int ucase_(char *, char *, ftnlen, ftnlen);
     static integer fward;
     extern /* Subroutine */ int errch_(char *, char *, ftnlen, ftnlen);
     static logical found;
-    static integer ftlnk[1000];
+    static integer ftlnk[5000];
     extern /* Subroutine */ int copyi_(integer *, integer *);
     extern integer ltrim_(char *, ftnlen), rtrim_(char *, ftnlen);
     extern /* Subroutine */ int ljust_(char *, char *, ftnlen, ftnlen);
@@ -75,7 +75,7 @@ static logical c_true = TRUE_;
     static integer findex;
     extern integer isrchi_(integer *, integer *, integer *);
     static char format[8], idword[8];
-    static integer fhlist[1006];
+    static integer fhlist[5006];
     extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
 	    ftnlen), errfnm_(char *, integer *, ftnlen), removi_(integer *, 
 	    integer *), setmsg_(char *, ftnlen);
@@ -193,6 +193,30 @@ static logical c_true = TRUE_;
 /*     None. */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.5.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-INTEL. */
+
+/* -    SPICELIB Version 2.4.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 2.3.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-GFORTRAN. */
+
+/* -    SPICELIB Version 2.2.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 2.1.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GCC_C. */
+
+/* -    SPICELIB Version 2.0.0, 12-APR-2012 (BVS) */
+
+/*        Increased FTSIZE (from 1000 to 5000). */
 
 /* -    SPICELIB Version 1.20.0, 13-MAY-2010 (BVS) */
 
@@ -501,11 +525,6 @@ static logical c_true = TRUE_;
 /*                 recognized by SPICE as representing the end of the */
 /*                 comment data in the reserved record area. */
 
-
-/* $ Files */
-
-/*     All DAFs opened by this routine are specified by name. */
-
 /* $ Exceptions */
 
 /*     1) If DAFAH is called directly, the error SPICE(BOGUSENTRY) */
@@ -514,6 +533,10 @@ static logical c_true = TRUE_;
 /*     2) See entry points DAFOPR, DAFOPW, DAFONW, DAFOPN, DAFCLS, */
 /*        DAFHSF, DAFHLU, DAFLUH, DAFHFN, DAFNFH, DAFHOF, and DAFSIH for */
 /*        exceptions specific to those entry points. */
+
+/* $ Files */
+
+/*     All DAFs opened by this routine are specified by name. */
 
 /* $ Particulars */
 
@@ -609,19 +632,16 @@ static logical c_true = TRUE_;
 
 /* $ Literature_References */
 
-/*     1) NAIF Document 167.0, "Double Precision Array Files (DAF) */
-/*        Specification and User's Guide" */
+/*     1) Sun Fortran Programmer's Guide */
 
-/*     2) Sun Fortran Programmer's Guide */
+/*     2) Microsoft Fortran Optimizing Compiler User's Guide */
 
-/*     3) Microsoft Fortran Optimizing Compiler User's Guide */
+/*     3) Lahey F77 EM/32 Language Reference Manual, page 144 */
 
-/*     4) Lahey F77 EM/32 Language Reference Manual, page 144 */
-
-/*     5) Language Systems FORTRAN Reference Manual, Version 1.2, */
+/*     4) Language Systems FORTRAN Reference Manual, Version 1.2, */
 /*        page 12-7 */
 
-/*     6) "FORTRAN/9000 Reference HP 9000 Series 700 Computers", */
+/*     5) "FORTRAN/9000 Reference HP 9000 Series 700 Computers", */
 /*        First Edition, June 1991, Hewlett Packard Company, page 5-110. */
 
 /* $ Author_and_Institution */
@@ -637,6 +657,19 @@ static logical c_true = TRUE_;
 /*     I.M. Underwood  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 9.0.1, 10-OCT-2012 (EDW) */
+
+/*        Edited DAFOPN Abstract section to use "Deprecated" keyword */
+/*        and state replacement routine. */
+
+/*        Corrected ordering of all header sections. */
+
+/*        Added a functional code example to the Examples section */
+/*        in DAFOPN and DAFCLS. */
+
+/*        Removed the obsolete Reference citation to "NAIF */
+/*        Document 167.0." */
 
 /* -    SPICELIB Version 9.0.0, 09-NOV-2006 (NJB) */
 
@@ -1183,10 +1216,6 @@ L_dafopr:
 
 /*      None. */
 
-/* $ Files */
-
-/*     See argument FNAME. */
-
 /* $ Exceptions */
 
 /*     1) If the specified file has already been opened for read */
@@ -1230,12 +1259,18 @@ L_dafopr:
 /*        currently supported on this platform, an error is signaled */
 /*        by routines in the call tree of this routine. */
 
+/* $ Files */
+
+/*     See argument FNAME. */
+
 /* $ Particulars */
 
 /*     Most DAFs require only read access. If you do not need to */
 /*     change the contents of a file, you should open it with DAFOPR. */
 
 /* $ Examples */
+
+/*     Example (1): */
 
 /*     In the following code fragment, DAFOPR is used to open a file, */
 /*     which is then searched for DAFs containing data for a particular */
@@ -1258,14 +1293,124 @@ L_dafopr:
 /*           CALL DAFFNA ( FOUND ) */
 /*        END DO */
 
+
+/*     Example (2): */
+
+/*     Use a simple routine to output the double precision and integer */
+/*     values stored in an SPK's segments descriptors. This function */
+/*     opens a DAF for read, performs a forwards search for the DAF */
+/*     arrays, prints segments description for each array found, then */
+/*     closes the DAF. */
+
+/*           PROGRAM DAF_T */
+
+/*           INTEGER             HANDLE */
+
+/*     C */
+/*     C     Define the summary parameters appropriate */
+/*     C     for an SPK file. */
+/*     C */
+/*           INTEGER             ND */
+/*           PARAMETER         ( ND = 2 ) */
+
+/*           INTEGER             NI */
+/*           PARAMETER         ( NI = 6 ) */
+
+/*           INTEGER             IC( NI ) */
+
+/*           DOUBLE PRECISION    DC( ND ) */
+
+/*           CHARACTER*(32)      KERNEL */
+
+/*           LOGICAL             FOUND */
+
+
+/*     C */
+/*     C     Open a DAF for read. Return a HANDLE referring to the file. */
+/*     C */
+/*           KERNEL = 'de421.bsp' */
+/*           CALL DAFOPR ( KERNEL, HANDLE ) */
+
+/*     C */
+/*     C     Begin a forward search on the file. */
+/*     C */
+/*           CALL DAFBFS ( HANDLE ) */
+
+/*     C */
+/*     C     Search until a DAF array is found. */
+/*     C */
+/*           CALL DAFFNA ( FOUND ) */
+
+/*     C */
+/*     C     Loop while the search finds subsequent DAF arrays. */
+/*     C */
+/*           DO WHILE ( FOUND ) */
+
+/*              CALL DAFGS ( SUM ) */
+/*              CALL DAFUS ( SUM, ND, NI, DC, IC ) */
+
+/*              WRITE(*,*)                'Doubles: ', DC(1:ND) */
+/*              WRITE(*, FMT='(A,6I9)' ) 'Integers: ', IC(1:NI) */
+
+/*     C */
+/*     C        Check for another segment. */
+/*     C */
+/*              CALL DAFFNA ( FOUND ) */
+
+/*           END DO */
+
+/*     C */
+/*     C     Safely close the DAF. */
+/*     C */
+/*           CALL DAFCLS ( HANDLE ) */
+
+/*           END */
+
+/*     The program outputs: */
+
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         1        0        1        2      641   310404 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         2        0        1        2   310405   423048 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         3        0        1        2   423049   567372 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         4        0        1        2   567373   628976 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         5        0        1        2   628977   674740 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         6        0        1        2   674741   715224 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         7        0        1        2   715225   750428 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         8        0        1        2   750429   785632 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         9        0        1        2   785633   820836 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:        10        0        1        2   820837   944040 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:       301        3        1        2   944041  1521324 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:       399        3        1        2  1521325  2098608 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:       199        1        1        2  2098609  2098620 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:       299        2        1        2  2098621  2098632 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:       499        4        1        2  2098633  2098644 */
+
+/*      Note, the final entries in the integer array contains the segment */
+/*      start/end indexes. The output indicates the search proceeded */
+/*      from the start of the file (low value index) towards the end */
+/*      (high value index). */
+
 /* $ Restrictions */
 
 /*     1) Files opened using this routine must be closed with DAFCLS. */
 
 /* $ Literature_References */
 
-/*     NAIF Document 167.0, "Double Precision Array Files (DAF) */
-/*     Specification and User's Guide" */
+/*     None. */
 
 /* $ Author_and_Institution */
 
@@ -1277,6 +1422,17 @@ L_dafopr:
 /*     I.M. Underwood  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 8.1.1, 10-OCT-2012 (EDW) */
+
+/*        Added a functional code example to the Examples section. */
+
+/*        Removed the unneeded Revisions section. */
+
+/*        Removed the obsolete Reference citation to "NAIF */
+/*        Document 167.0." */
+
+/*        Corrected ordering of header section. */
 
 /* -    SPICELIB Version 8.1.0, 02-APR-2002 (FST) */
 
@@ -1317,6 +1473,9 @@ L_dafopr:
 
 /*        This entry point now attempts to locate and validate the */
 /*        FTP validation string contained in the file record. */
+
+/*        See the Revisions section under DAFAH for a discussion */
+/*        of the impact of the changes made for this version. */
 
 /* -    SPICELIB Version 4.0.0, 27-SEP-1993 (KRG) */
 
@@ -1376,6 +1535,9 @@ L_dafopr:
 /*        This routine was updated so that it now keeps current the set */
 /*        of DAF handles returned by DAFHOF. */
 
+/*        Some error messages were changed so that they specify */
+/*        names of relevant DAFs. */
+
 /* -    SPICELIB Version 1.0.1, 22-MAR-1990 (HAN) */
 
 /*        Literature references added to the header. */
@@ -1386,22 +1548,6 @@ L_dafopr:
 /* $ Index_Entries */
 
 /*     open daf for read */
-
-/* -& */
-/* $ Revisions */
-
-/* -    SPICELIB Version 5.0.0, 03-MAR-1999 (FST) */
-
-/*        See the Revisions section under DAFAH for a discussion */
-/*        of the impact of the changes made for this version. */
-
-/* -    SPICELIB Version 2.0.0, 03-SEP-1991 (NJB) (WLT) */
-
-/*        This routine was updated so that it now keeps current the set */
-/*        of DAF handles returned by DAFHOF. */
-
-/*        Some error messages were changed so that they specify */
-/*        names of relevant DAFs. */
 
 /* -& */
 
@@ -1416,7 +1562,7 @@ L_dafopr:
 /*     Initialize the handle list, if necessary. */
 
     if (first) {
-	ssizei_(&c__1000, fhlist);
+	ssizei_(&c__5000, fhlist);
 	first = FALSE_;
     }
 
@@ -1437,10 +1583,10 @@ L_dafopr:
 
     findex = isrchi_(handle, &nft, fthan);
     if (findex != 0) {
-	ftlnk[(i__1 = findex - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("ftlnk",
-		 i__1, "dafah_", (ftnlen)1221)] = ftlnk[(i__2 = findex - 1) < 
-		1000 && 0 <= i__2 ? i__2 : s_rnge("ftlnk", i__2, "dafah_", (
-		ftnlen)1221)] + 1;
+	ftlnk[(i__1 = findex - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("ftlnk",
+		 i__1, "dafah_", (ftnlen)1343)] = ftlnk[(i__2 = findex - 1) < 
+		5000 && 0 <= i__2 ? i__2 : s_rnge("ftlnk", i__2, "dafah_", (
+		ftnlen)1343)] + 1;
 	chkout_("DAFOPR", (ftnlen)6);
 	return 0;
     }
@@ -1466,14 +1612,14 @@ L_dafopr:
 /*     opened DAF. */
 
     ++nft;
-    fthan[(i__1 = nft - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("fthan", i__1, 
-	    "dafah_", (ftnlen)1259)] = *handle;
-    ftnd[(i__1 = nft - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("ftnd", i__1, 
-	    "dafah_", (ftnlen)1260)] = fnd;
-    ftni[(i__1 = nft - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("ftni", i__1, 
-	    "dafah_", (ftnlen)1261)] = fni;
-    ftlnk[(i__1 = nft - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("ftlnk", i__1, 
-	    "dafah_", (ftnlen)1262)] = 1;
+    fthan[(i__1 = nft - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("fthan", i__1, 
+	    "dafah_", (ftnlen)1381)] = *handle;
+    ftnd[(i__1 = nft - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("ftnd", i__1, 
+	    "dafah_", (ftnlen)1382)] = fnd;
+    ftni[(i__1 = nft - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("ftni", i__1, 
+	    "dafah_", (ftnlen)1383)] = fni;
+    ftlnk[(i__1 = nft - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("ftlnk", i__1, 
+	    "dafah_", (ftnlen)1384)] = 1;
 
 /*     Insert the new handle into our handle set. */
 
@@ -1548,10 +1694,6 @@ L_dafopw:
 
 /*      None. */
 
-/* $ Files */
-
-/*     See argument FNAME. */
-
 /* $ Exceptions */
 
 /*     1) If the specified file has already been opened, either by */
@@ -1589,6 +1731,10 @@ L_dafopw:
 /*    10) If the file utilizes a non-native binary file format, an */
 /*        error is signaled by routines in the call tree of this */
 /*        routine. */
+
+/* $ Files */
+
+/*     See argument FNAME. */
 
 /* $ Particulars */
 
@@ -1635,8 +1781,7 @@ L_dafopw:
 
 /* $ Literature_References */
 
-/*     NAIF Document 167.0, "Double Precision Array Files (DAF) */
-/*     Specification and User's Guide" */
+/*     None. */
 
 /* $ Author_and_Institution */
 
@@ -1649,6 +1794,13 @@ L_dafopw:
 /*     I.M. Underwood  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 8.1.1, 10-OCT-2012 (EDW) */
+
+/*        Corrected ordering of header section. */
+
+/*        Removed the obsolete Reference citation to "NAIF */
+/*        Document 167.0." */
 
 /* -    SPICELIB Version 8.1.0, 02-APR-2002 (FST) */
 
@@ -1795,16 +1947,16 @@ L_dafopw:
 /*     Initialize the handle list, if necessary. */
 
     if (first) {
-	ssizei_(&c__1000, fhlist);
+	ssizei_(&c__5000, fhlist);
 	first = FALSE_;
     }
 
 /*     Check to see if there is room in the file table. */
 
-    if (nft == 1000) {
+    if (nft == 5000) {
 	setmsg_("The file table is full, with # entries. Could not open '#'.",
 		 (ftnlen)59);
-	errint_("#", &c__1000, (ftnlen)1);
+	errint_("#", &c__5000, (ftnlen)1);
 	errch_("#", fname, (ftnlen)1, fname_len);
 	sigerr_("SPICE(DAFFTFULL)", (ftnlen)16);
 	chkout_("DAFOPW", (ftnlen)6);
@@ -1844,14 +1996,14 @@ L_dafopw:
 /*     newly opened DAF. */
 
     ++nft;
-    fthan[(i__1 = nft - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("fthan", i__1, 
-	    "dafah_", (ftnlen)1663)] = *handle;
-    ftnd[(i__1 = nft - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("ftnd", i__1, 
-	    "dafah_", (ftnlen)1664)] = fnd;
-    ftni[(i__1 = nft - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("ftni", i__1, 
-	    "dafah_", (ftnlen)1665)] = fni;
-    ftlnk[(i__1 = nft - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("ftlnk", i__1, 
-	    "dafah_", (ftnlen)1666)] = 1;
+    fthan[(i__1 = nft - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("fthan", i__1, 
+	    "dafah_", (ftnlen)1791)] = *handle;
+    ftnd[(i__1 = nft - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("ftnd", i__1, 
+	    "dafah_", (ftnlen)1792)] = fnd;
+    ftni[(i__1 = nft - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("ftni", i__1, 
+	    "dafah_", (ftnlen)1793)] = fni;
+    ftlnk[(i__1 = nft - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("ftlnk", i__1, 
+	    "dafah_", (ftnlen)1794)] = 1;
 
 /*     Insert the new handle into our handle set. */
 
@@ -1978,10 +2130,6 @@ L_dafonw:
 /*                 recognized by SPICE as representing the end of the */
 /*                 comment data in the reserved record area. */
 
-/* $ Files */
-
-/*     See argument FNAME. */
-
 /* $ Exceptions */
 
 /*     1) If the specified file cannot be opened without exceeding */
@@ -2019,6 +2167,10 @@ L_dafonw:
 /*     10) If the file type contains nonprinting characters, decimal */
 /*         0-31 and 127-255, the error SPICE(ILLEGALCHARACTER) is */
 /*         signalled. */
+
+/* $ Files */
+
+/*     See argument FNAME. */
 
 /* $ Particulars */
 
@@ -2058,8 +2210,7 @@ L_dafonw:
 
 /* $ Literature_References */
 
-/*     NAIF Document 167.0, "Double Precision Array Files (DAF) */
-/*     Specification and User's Guide" */
+/*     None. */
 
 /* $ Author_and_Institution */
 
@@ -2072,6 +2223,13 @@ L_dafonw:
 /*     I.M. Underwood  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 9.0.1, 10-OCT-2012 (EDW) */
+
+/*        Corrected ordering of header section. */
+
+/*        Removed the obsolete Reference citation to "NAIF */
+/*        Document 167.0." */
 
 /* -    SPICELIB Version 9.0.0, 09-NOV-2006 (NJB) */
 
@@ -2168,16 +2326,16 @@ L_dafonw:
 /*     Initialize the handle list, if necessary. */
 
     if (first) {
-	ssizei_(&c__1000, fhlist);
+	ssizei_(&c__5000, fhlist);
 	first = FALSE_;
     }
 
 /*     Check to see if there is room in the file table. */
 
-    if (nft == 1000) {
+    if (nft == 5000) {
 	setmsg_("The file table is full, with # entries. Could not open '#'.",
 		 (ftnlen)59);
-	errint_("#", &c__1000, (ftnlen)1);
+	errint_("#", &c__5000, (ftnlen)1);
 	errch_("#", fname, (ftnlen)1, fname_len);
 	sigerr_("SPICE(DAFFTFULL)", (ftnlen)16);
 	chkout_("DAFONW", (ftnlen)6);
@@ -2398,14 +2556,14 @@ L100003:
 /*     opened DAF. */
 
     ++nft;
-    fthan[(i__1 = nft - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("fthan", i__1, 
-	    "dafah_", (ftnlen)2243)] = *handle;
-    ftnd[(i__1 = nft - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("ftnd", i__1, 
-	    "dafah_", (ftnlen)2244)] = fnd;
-    ftni[(i__1 = nft - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("ftni", i__1, 
-	    "dafah_", (ftnlen)2245)] = fni;
-    ftlnk[(i__1 = nft - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("ftlnk", i__1, 
-	    "dafah_", (ftnlen)2246)] = 1;
+    fthan[(i__1 = nft - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("fthan", i__1, 
+	    "dafah_", (ftnlen)2377)] = *handle;
+    ftnd[(i__1 = nft - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("ftnd", i__1, 
+	    "dafah_", (ftnlen)2378)] = fnd;
+    ftni[(i__1 = nft - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("ftni", i__1, 
+	    "dafah_", (ftnlen)2379)] = fni;
+    ftlnk[(i__1 = nft - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("ftlnk", i__1, 
+	    "dafah_", (ftnlen)2380)] = 1;
 
 /*     Insert the new handle into our handle set. */
 
@@ -2417,9 +2575,11 @@ L100003:
 L_dafopn:
 /* $ Abstract */
 
+/*     Deprecated. The routine DAFONW supersedes this routine. */
+/*     NAIF supports this routine only to provide backward */
+/*     compatibility. */
+
 /*     Open a new DAF for subsequent write requests. */
-/*     Obsolete: This routine has been superceded by DAFONW. It is */
-/*     supported for purposes of backward compatibility only. */
 
 /* $ Disclaimer */
 
@@ -2506,10 +2666,6 @@ L_dafopn:
 
 /*      None. */
 
-/* $ Files */
-
-/*     See argument FNAME. */
-
 /* $ Exceptions */
 
 /*     1) If the specified file cannot be opened without exceeding */
@@ -2540,6 +2696,10 @@ L_dafopn:
 
 /*     8) If the file name is blank, or otherwise inappropriate */
 /*        routines in the call tree of this routine signal an error. */
+
+/* $ Files */
+
+/*     See argument FNAME. */
 
 /* $ Particulars */
 
@@ -2574,8 +2734,7 @@ L_dafopn:
 
 /* $ Literature_References */
 
-/*     NAIF Document 167.0, "Double Precision Array Files (DAF) */
-/*     Specification and User's Guide" */
+/*     None. */
 
 /* $ Author_and_Institution */
 
@@ -2588,6 +2747,16 @@ L_dafopn:
 /*     I.M. Underwood  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 8.1.1, 10-OCT-2012 (EDW) */
+
+/*        Edited Abstract section to use "Deprecated" keyword */
+/*        and state replacement routine. */
+
+/*        Corrected ordering of header section. */
+
+/*        Removed the obsolete Reference citation to "NAIF */
+/*        Document 167.0." */
 
 /* -    SPICELIB Version 8.1.0, 02-APR-2002 (FST) */
 
@@ -2724,16 +2893,16 @@ L_dafopn:
 /*     Initialize the handle list, if necessary. */
 
     if (first) {
-	ssizei_(&c__1000, fhlist);
+	ssizei_(&c__5000, fhlist);
 	first = FALSE_;
     }
 
 /*     Check to see if there is room in the file table. */
 
-    if (nft == 1000) {
+    if (nft == 5000) {
 	setmsg_("The file table is full, with # entries. Could not open '#'.",
 		 (ftnlen)59);
-	errint_("#", &c__1000, (ftnlen)1);
+	errint_("#", &c__5000, (ftnlen)1);
 	errch_("#", fname, (ftnlen)1, fname_len);
 	sigerr_("SPICE(DAFFTFULL)", (ftnlen)16);
 	chkout_("DAFOPN", (ftnlen)6);
@@ -2909,14 +3078,14 @@ L100006:
 /*     our newly opened DAF. */
 
     ++nft;
-    fthan[(i__1 = nft - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("fthan", i__1, 
-	    "dafah_", (ftnlen)2776)] = *handle;
-    ftnd[(i__1 = nft - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("ftnd", i__1, 
-	    "dafah_", (ftnlen)2777)] = fnd;
-    ftni[(i__1 = nft - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("ftni", i__1, 
-	    "dafah_", (ftnlen)2778)] = fni;
-    ftlnk[(i__1 = nft - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("ftlnk", i__1, 
-	    "dafah_", (ftnlen)2779)] = 1;
+    fthan[(i__1 = nft - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("fthan", i__1, 
+	    "dafah_", (ftnlen)2921)] = *handle;
+    ftnd[(i__1 = nft - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("ftnd", i__1, 
+	    "dafah_", (ftnlen)2922)] = fnd;
+    ftni[(i__1 = nft - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("ftni", i__1, 
+	    "dafah_", (ftnlen)2923)] = fni;
+    ftlnk[(i__1 = nft - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("ftlnk", i__1, 
+	    "dafah_", (ftnlen)2924)] = 1;
 
 /*     Insert the new handle into our handle set. */
 
@@ -2986,10 +3155,6 @@ L_dafcls:
 
 /*      None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     1) If the specified handle does not belong to a DAF */
@@ -2997,6 +3162,10 @@ L_dafcls:
 
 /*     2) If this routine is used to close an HANDLE not associated */
 /*        with a DAF, routines called by this routine signal an error. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -3012,6 +3181,8 @@ L_dafcls:
 /*     the file. */
 
 /* $ Examples */
+
+/*     Example(1): */
 
 /*     In the following code fragment, the arrays in a file are */
 /*     examined in order to determine whether the file contains */
@@ -3041,14 +3212,124 @@ L_dafcls:
 /*     use by other modules without interfering with the operation of */
 /*     those routines. */
 
+
+/*     Example (2): */
+
+/*     Use a simple routine to output the double precision and integer */
+/*     values stored in an SPK's segments descriptors. This function */
+/*     opens a DAF for read, performs a forwards search for the DAF */
+/*     arrays, prints segments description for each array found, then */
+/*     closes the DAF. */
+
+/*           PROGRAM DAF_T */
+
+/*           INTEGER             HANDLE */
+
+/*     C */
+/*     C     Define the summary parameters appropriate */
+/*     C     for an SPK file. */
+/*     C */
+/*           INTEGER             ND */
+/*           PARAMETER         ( ND = 2 ) */
+
+/*           INTEGER             NI */
+/*           PARAMETER         ( NI = 6 ) */
+
+/*           INTEGER             IC( NI ) */
+
+/*           DOUBLE PRECISION    DC( ND ) */
+
+/*           CHARACTER*(32)      KERNEL */
+
+/*           LOGICAL             FOUND */
+
+
+/*     C */
+/*     C     Open a DAF for read. Return a HANDLE referring to the file. */
+/*     C */
+/*           KERNEL = 'de421.bsp' */
+/*           CALL DAFOPR ( KERNEL, HANDLE ) */
+
+/*     C */
+/*     C     Begin a forward search on the file. */
+/*     C */
+/*           CALL DAFBFS ( HANDLE ) */
+
+/*     C */
+/*     C     Search until a DAF array is found. */
+/*     C */
+/*           CALL DAFFNA ( FOUND ) */
+
+/*     C */
+/*     C     Loop while the search finds subsequent DAF arrays. */
+/*     C */
+/*           DO WHILE ( FOUND ) */
+
+/*              CALL DAFGS ( SUM ) */
+/*              CALL DAFUS ( SUM, ND, NI, DC, IC ) */
+
+/*              WRITE(*,*)                'Doubles: ', DC(1:ND) */
+/*              WRITE(*, FMT='(A,6I9)' ) 'Integers: ', IC(1:NI) */
+
+/*     C */
+/*     C        Check for another segment. */
+/*     C */
+/*              CALL DAFFNA ( FOUND ) */
+
+/*           END DO */
+
+/*     C */
+/*     C     Safely close the DAF. */
+/*     C */
+/*           CALL DAFCLS ( HANDLE ) */
+
+/*           END */
+
+/*     The program outputs: */
+
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         1        0        1        2      641   310404 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         2        0        1        2   310405   423048 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         3        0        1        2   423049   567372 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         4        0        1        2   567373   628976 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         5        0        1        2   628977   674740 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         6        0        1        2   674741   715224 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         7        0        1        2   715225   750428 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         8        0        1        2   750429   785632 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:         9        0        1        2   785633   820836 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:        10        0        1        2   820837   944040 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:       301        3        1        2   944041  1521324 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:       399        3        1        2  1521325  2098608 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:       199        1        1        2  2098609  2098620 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:       299        2        1        2  2098621  2098632 */
+/*      Doubles:   -3169195200.0000000        1696852800.0000000 */
+/*     Integers:       499        4        1        2  2098633  2098644 */
+
+/*      Note, the final entries in the integer array contains the segment */
+/*      start/end indexes. The output indicates the search proceeded */
+/*      from the start of the file (low value index) towards the end */
+/*      (high value index). */
+
 /* $ Restrictions */
 
 /*     None. */
 
 /* $ Literature_References */
 
-/*     NAIF Document 167.0, "Double Precision Array Files (DAF) */
-/*     Specification and User's Guide" */
+/*     None. */
 
 /* $ Author_and_Institution */
 
@@ -3059,6 +3340,17 @@ L_dafcls:
 /*     I.M. Underwood  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 8.1.1, 10-OCT-2012 (EDW) */
+
+/*        Added a functional code example to the Examples section. */
+
+/*        Removed the unneeded Revisions section. */
+
+/*        Removed the obsolete Reference citation to "NAIF */
+/*        Document 167.0." */
+
+/*        Corrected ordering of header section. */
 
 /* -    SPICELIB Version 8.1.0, 02-APR-2002 (FST) */
 
@@ -3118,6 +3410,11 @@ L_dafcls:
 /*        This routine was updated so that it now keeps current the set */
 /*        of DAF handles returned by DAFHOF. */
 
+/*        Upgraded to support file handle checking routines */
+/*        DAFHOF and DAFSIH.  DAFCLS now initializes the file */
+/*        handle list if necessary, and removes from the list */
+/*        the handles of files it closes. */
+
 /* -    SPICELIB Version 1.0.1, 22-MAR-1990 (HAN) */
 
 /*        Literature references added to the header. */
@@ -3128,16 +3425,6 @@ L_dafcls:
 /* $ Index_Entries */
 
 /*     close daf */
-
-/* -& */
-/* $ Revisions */
-
-/* -    SPICELIB Version 2.0.0, 03-SEP-1991 (NJB) (WLT) */
-
-/*        Upgraded to support file handle checking routines */
-/*        DAFHOF and DAFSIH.  DAFCLS now initializes the file */
-/*        handle list if necessary, and removes from the list */
-/*        the handles of files it closes. */
 
 /* -& */
 
@@ -3152,7 +3439,7 @@ L_dafcls:
 /*     Initialize the handle list, if necessary. */
 
     if (first) {
-	ssizei_(&c__1000, fhlist);
+	ssizei_(&c__5000, fhlist);
 	first = FALSE_;
     }
 
@@ -3164,31 +3451,31 @@ L_dafcls:
 
     findex = isrchi_(handle, &nft, fthan);
     if (findex > 0) {
-	ftlnk[(i__1 = findex - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge("ftlnk",
-		 i__1, "dafah_", (ftnlen)3042)] = ftlnk[(i__2 = findex - 1) < 
-		1000 && 0 <= i__2 ? i__2 : s_rnge("ftlnk", i__2, "dafah_", (
-		ftnlen)3042)] - 1;
-	if (ftlnk[(i__1 = findex - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge(
-		"ftlnk", i__1, "dafah_", (ftnlen)3044)] == 0) {
+	ftlnk[(i__1 = findex - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge("ftlnk",
+		 i__1, "dafah_", (ftnlen)3305)] = ftlnk[(i__2 = findex - 1) < 
+		5000 && 0 <= i__2 ? i__2 : s_rnge("ftlnk", i__2, "dafah_", (
+		ftnlen)3305)] - 1;
+	if (ftlnk[(i__1 = findex - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge(
+		"ftlnk", i__1, "dafah_", (ftnlen)3307)] == 0) {
 	    zzddhcls_(handle, "DAF", &c_false, (ftnlen)3);
 	    i__1 = nft - 1;
 	    for (i__ = findex; i__ <= i__1; ++i__) {
-		fthan[(i__2 = i__ - 1) < 1000 && 0 <= i__2 ? i__2 : s_rnge(
-			"fthan", i__2, "dafah_", (ftnlen)3049)] = fthan[(i__4 
-			= i__) < 1000 && 0 <= i__4 ? i__4 : s_rnge("fthan", 
-			i__4, "dafah_", (ftnlen)3049)];
-		ftlnk[(i__2 = i__ - 1) < 1000 && 0 <= i__2 ? i__2 : s_rnge(
-			"ftlnk", i__2, "dafah_", (ftnlen)3050)] = ftlnk[(i__4 
-			= i__) < 1000 && 0 <= i__4 ? i__4 : s_rnge("ftlnk", 
-			i__4, "dafah_", (ftnlen)3050)];
-		ftnd[(i__2 = i__ - 1) < 1000 && 0 <= i__2 ? i__2 : s_rnge(
-			"ftnd", i__2, "dafah_", (ftnlen)3051)] = ftnd[(i__4 = 
-			i__) < 1000 && 0 <= i__4 ? i__4 : s_rnge("ftnd", i__4,
-			 "dafah_", (ftnlen)3051)];
-		ftni[(i__2 = i__ - 1) < 1000 && 0 <= i__2 ? i__2 : s_rnge(
-			"ftni", i__2, "dafah_", (ftnlen)3052)] = ftni[(i__4 = 
-			i__) < 1000 && 0 <= i__4 ? i__4 : s_rnge("ftni", i__4,
-			 "dafah_", (ftnlen)3052)];
+		fthan[(i__2 = i__ - 1) < 5000 && 0 <= i__2 ? i__2 : s_rnge(
+			"fthan", i__2, "dafah_", (ftnlen)3312)] = fthan[(i__4 
+			= i__) < 5000 && 0 <= i__4 ? i__4 : s_rnge("fthan", 
+			i__4, "dafah_", (ftnlen)3312)];
+		ftlnk[(i__2 = i__ - 1) < 5000 && 0 <= i__2 ? i__2 : s_rnge(
+			"ftlnk", i__2, "dafah_", (ftnlen)3313)] = ftlnk[(i__4 
+			= i__) < 5000 && 0 <= i__4 ? i__4 : s_rnge("ftlnk", 
+			i__4, "dafah_", (ftnlen)3313)];
+		ftnd[(i__2 = i__ - 1) < 5000 && 0 <= i__2 ? i__2 : s_rnge(
+			"ftnd", i__2, "dafah_", (ftnlen)3314)] = ftnd[(i__4 = 
+			i__) < 5000 && 0 <= i__4 ? i__4 : s_rnge("ftnd", i__4,
+			 "dafah_", (ftnlen)3314)];
+		ftni[(i__2 = i__ - 1) < 5000 && 0 <= i__2 ? i__2 : s_rnge(
+			"ftni", i__2, "dafah_", (ftnlen)3315)] = ftni[(i__4 = 
+			i__) < 5000 && 0 <= i__4 ? i__4 : s_rnge("ftni", i__4,
+			 "dafah_", (ftnlen)3315)];
 	    }
 	    --nft;
 
@@ -3271,15 +3558,15 @@ L_dafhsf:
 
 /*      None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     1) If the specified handle does not belong to any file that is */
 /*        currently known to be open, the error SPICE(DAFNOSUCHHANDLE) */
 /*        is signalled. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -3372,8 +3659,7 @@ L_dafhsf:
 
 /* $ Literature_References */
 
-/*     NAIF Document 167.0, "Double Precision Array Files (DAF) */
-/*     Specification and User's Guide" */
+/*     NONE. */
 
 /* $ Author_and_Institution */
 
@@ -3384,6 +3670,13 @@ L_dafhsf:
 /*     I.M. Underwood  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 8.0.1, 10-OCT-2012 (EDW) */
+
+/*        Corrected ordering of header section. */
+
+/*        Removed the obsolete Reference citation to "NAIF */
+/*        Document 167.0." */
 
 /* -    SPICELIB Version 8.0.0, 13-NOV-2001 (FST) */
 
@@ -3452,10 +3745,10 @@ L_dafhsf:
     }
     findex = isrchi_(handle, &nft, fthan);
     if (findex > 0) {
-	*nd = ftnd[(i__1 = findex - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge(
-		"ftnd", i__1, "dafah_", (ftnlen)3331)];
-	*ni = ftni[(i__1 = findex - 1) < 1000 && 0 <= i__1 ? i__1 : s_rnge(
-		"ftni", i__1, "dafah_", (ftnlen)3332)];
+	*nd = ftnd[(i__1 = findex - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge(
+		"ftnd", i__1, "dafah_", (ftnlen)3600)];
+	*ni = ftni[(i__1 = findex - 1) < 5000 && 0 <= i__1 ? i__1 : s_rnge(
+		"ftni", i__1, "dafah_", (ftnlen)3601)];
     } else {
 	setmsg_("There is no DAF open with handle = #", (ftnlen)36);
 	errint_("#", handle, (ftnlen)1);
@@ -3531,16 +3824,16 @@ L_dafhlu:
 
 /*      None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     1) If an error occurs while attempting to fetch a logical */
 /*        unit, routines in the call tree process and signal any */
 /*        appropriate errors.  The value of UNIT in this case is */
 /*        undefined. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -3574,8 +3867,7 @@ L_dafhlu:
 
 /* $ Literature_References */
 
-/*     NAIF Document 167.0, "Double Precision Array Files (DAF) */
-/*     Specification and User's Guide" */
+/*     None. */
 
 /* $ Author_and_Institution */
 
@@ -3587,6 +3879,13 @@ L_dafhlu:
 /*     I.M. Underwood  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 8.0.1, 10-OCT-2012 (EDW) */
+
+/*        Corrected ordering of header section. */
+
+/*        Removed the obsolete Reference citation to "NAIF */
+/*        Document 167.0." */
 
 /* -    SPICELIB Version 8.0.0, 13-NOV-2001 (FST) */
 
@@ -3749,16 +4048,16 @@ L_dafluh:
 
 /*      None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     1) If the specified unit is not connected to any file that is */
 /*        currently loaded as a DAF, the error SPICE(DAFNOSUCHUNIT) */
 /*        is signaled.  The value of HANDLE returned is undefined in */
 /*        this case. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -3787,8 +4086,7 @@ L_dafluh:
 
 /* $ Literature_References */
 
-/*     NAIF Document 167.0, "Double Precision Array Files (DAF) */
-/*     Specification and User's Guide" */
+/*     None. */
 
 /* $ Author_and_Institution */
 
@@ -3799,6 +4097,13 @@ L_dafluh:
 /*     I.M. Underwood  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 8.0.1, 10-OCT-2012 (EDW) */
+
+/*        Corrected ordering of header section. */
+
+/*        Removed the obsolete Reference citation to "NAIF */
+/*        Document 167.0." */
 
 /* -    SPICELIB Version 8.0.0, 13-NOV-2001 (FST) */
 
@@ -3953,15 +4258,15 @@ L_dafhfn:
 
 /*      None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     1) If the specified handle does not belong to any file that is */
 /*        currently known to be loaded as a DAF, the error */
 /*        SPICE(DAFNOSUCHHANDLE) is signaled. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -4005,8 +4310,7 @@ L_dafhfn:
 
 /* $ Literature_References */
 
-/*     NAIF Document 167.0, "Double Precision Array Files (DAF) */
-/*     Specification and User's Guide" */
+/*     None. */
 
 /* $ Author_and_Institution */
 
@@ -4018,6 +4322,13 @@ L_dafhfn:
 /*     I.M. Underwood  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 8.0.1, 10-OCT-2012 (EDW) */
+
+/*        Corrected ordering of header section. */
+
+/*        Removed the obsolete Reference citation to "NAIF */
+/*        Document 167.0." */
 
 /* -    SPICELIB Version 8.0.0, 13-NOV-2001 (FST) */
 
@@ -4161,10 +4472,6 @@ L_daffnh:
 
 /*      None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     1) If the specified name does not specify any file currently known */
@@ -4179,6 +4486,10 @@ L_daffnh:
 /*        specified name with a handle cause errors to be signaled */
 /*        by routines in the call tree of this routine.  The value of */
 /*        HANDLE is undefined in this case. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -4207,8 +4518,7 @@ L_daffnh:
 
 /* $ Literature_References */
 
-/*     NAIF Document 167.0, "Double Precision Array Files (DAF) */
-/*     Specification and User's Guide" */
+/*     None. */
 
 /* $ Author_and_Institution */
 
@@ -4221,6 +4531,15 @@ L_daffnh:
 
 /* $ Version */
 
+/* -    SPICELIB Version 8.1.1, 10-OCT-2012 (EDW) */
+
+/*        Eliminated unneeded Revisions section. */
+
+/*        Corrected ordering of header section. */
+
+/*        Removed the obsolete Reference citation to "NAIF */
+/*        Document 167.0." */
+
 /* -    SPICELIB Version 8.1.0, 02-APR-2002 (FST) */
 
 /*        Fixed a bug, where an error was signaled but the call to */
@@ -4231,6 +4550,18 @@ L_daffnh:
 /*        This routine was updated to utilize the new handle manager */
 /*        software to manage binary file formats and consolidated */
 /*        I/O code. */
+
+/*        In previous version of DAFAH, this module simply */
+/*        performed an INQUIRE on FNAME and looked in the */
+/*        file table for the logical unit returned. */
+
+/*        The integration of the new handle manager interfaces */
+/*        into this entry point has the possibility of increasing */
+/*        the complexity of this routine when more than UTSIZE */
+/*        files are loaded.  Essentially, when given an arbitrary */
+/*        name, a total of FTSIZE INQUIRE statements may be executed */
+/*        to accurately connect FNAME with HANDLE.  See ZZDDHFNH and */
+/*        ZZDDHF2H for details. */
 
 /* -    SPICELIB Version 7.0.4, 08-OCT-1999 (WLT) */
 
@@ -4303,22 +4634,6 @@ L_daffnh:
 /*     file name to daf handle */
 
 /* -& */
-/* $ Revisions */
-
-/* -    SPICELIB Version 8.0.0, 15-NOV-2000 (FST) */
-
-/*        In previous version of DAFAH, this module simply */
-/*        performed an INQUIRE on FNAME and looked in the */
-/*        file table for the logical unit returned. */
-
-/*        The integration of the new handle manager interfaces */
-/*        into this entry point has the possibility of increasing */
-/*        the complexity of this routine when more than UTSIZE */
-/*        files are loaded.  Essentially, when given an arbitrary */
-/*        name, a total of FTSIZE INQUIRE statements may be executed */
-/*        to accurately connect FNAME with HANDLE.  See ZZDDHFNH and */
-/*        ZZDDHF2H for details. */
-
 
 /*     Standard SPICE error handling. */
 
@@ -4480,6 +4795,10 @@ L_dafhof:
 
 /* $ Version */
 
+/* -    SPICELIB Version 8.0.1, 10-OCT-2012 (EDW) */
+
+/*        Corrected ordering of header section. */
+
 /* -    SPICELIB Version 8.0.0, 13-NOV-2001 (FST) */
 
 /*        This routine was updated to utilize the new handle manager */
@@ -4534,7 +4853,7 @@ L_dafhof:
 /*     Initialize the handle list, if necessary. */
 
     if (first) {
-	ssizei_(&c__1000, fhlist);
+	ssizei_(&c__5000, fhlist);
 	first = FALSE_;
     }
 
@@ -4745,6 +5064,10 @@ L_dafsih:
 
 /* $ Version */
 
+/* -    SPICELIB Version 8.0.1, 10-OCT-2012 (EDW) */
+
+/*        Corrected ordering of header section. */
+
 /* -    SPICELIB Version 8.0.0, 13-NOV-2001 (FST) */
 
 /*        This routine was updated to utilize the new handle manager */
@@ -4810,7 +5133,7 @@ L_dafsih:
 /*     Initialize the handle list, if necessary. */
 
     if (first) {
-	ssizei_(&c__1000, fhlist);
+	ssizei_(&c__5000, fhlist);
 	first = FALSE_;
     }
 

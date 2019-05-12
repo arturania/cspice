@@ -5,12 +5,6 @@
 
 #include "f2c.h"
 
-/* Table of constant values */
-
-static integer c__0 = 0;
-static integer c__10 = 10;
-static integer c__3 = 3;
-
 /* $Procedure ILUMIN ( Illumination angles ) */
 /* Subroutine */ int ilumin_(char *method, char *target, doublereal *et, char 
 	*fixref, char *abcorr, char *obsrvr, doublereal *spoint, doublereal *
@@ -18,84 +12,12 @@ static integer c__3 = 3;
 	doublereal *emissn, ftnlen method_len, ftnlen target_len, ftnlen 
 	fixref_len, ftnlen abcorr_len, ftnlen obsrvr_len)
 {
-    /* Initialized data */
-
-    static logical elipsd = TRUE_;
-    static logical first = TRUE_;
-    static char prvcor[5] = "     ";
-    static char prvmth[80] = "Ellipsoid                                     "
-	    "                                  ";
-
-    /* System generated locals */
-    doublereal d__1, d__2;
-
-    /* Builtin functions */
-    integer s_cmp(char *, char *, ftnlen, ftnlen);
-    /* Subroutine */ int s_copy(char *, char *, ftnlen, ftnlen);
-
-    /* Local variables */
-    doublereal dist;
-    integer nitr;
-    extern doublereal vsep_(doublereal *, doublereal *);
-    extern /* Subroutine */ int vsub_(doublereal *, doublereal *, doublereal *
-	    ), vequ_(doublereal *, doublereal *);
-    integer type__;
-    logical xmit;
-    doublereal tpos[3];
-    extern /* Subroutine */ int mtxv_(doublereal *, doublereal *, doublereal *
-	    );
-    doublereal j2pos[3];
-    integer i__;
-    extern /* Subroutine */ int zzprscor_(char *, logical *, ftnlen);
-    integer n;
-    doublereal s, radii[3], range;
-    extern /* Subroutine */ int chkin_(char *, ftnlen), ucase_(char *, char *,
-	     ftnlen, ftnlen), errch_(char *, char *, ftnlen, ftnlen);
-    static logical usecn;
-    extern doublereal vdist_(doublereal *, doublereal *);
-    doublereal vtemp[3], xform[9]	/* was [3][3] */;
-    static logical uselt;
-    extern doublereal vnorm_(doublereal *);
-    extern /* Subroutine */ int bods2c_(char *, integer *, logical *, ftnlen);
-    doublereal corvj2[3], subvj2[3];
-    extern logical failed_(void);
-    integer refcde, obscde;
-    doublereal lt, etdiff;
-    extern /* Subroutine */ int bodvcd_(integer *, char *, integer *, integer 
-	    *, doublereal *, ftnlen);
-    doublereal ltdiff;
-    extern doublereal clight_(void);
-    integer trgcde;
-    extern /* Subroutine */ int stelab_(doublereal *, doublereal *, 
-	    doublereal *);
-    doublereal offobs[3];
-    integer center;
-    extern doublereal touchd_(doublereal *);
-    char locmth[80];
-    doublereal normal[3], offsun[3], stloff[3], subvec[3];
-    integer typeid;
-    doublereal corpos[3], obspos[3], prevet;
-    logical attblk[15];
-    extern logical return_(void);
-    doublereal prevlt, ssbost[6], ssbtst[6];
-    static logical usestl;
-    extern /* Subroutine */ int chkout_(char *, ftnlen);
-    doublereal sunpos[3];
-    extern /* Subroutine */ int setmsg_(char *, ftnlen), sigerr_(char *, 
-	    ftnlen), namfrm_(char *, integer *, ftnlen), frinfo_(integer *, 
-	    integer *, integer *, integer *, logical *), errint_(char *, 
-	    integer *, ftnlen), cmprss_(char *, integer *, char *, char *, 
-	    ftnlen, ftnlen, ftnlen), spkezp_(integer *, doublereal *, char *, 
-	    char *, integer *, doublereal *, doublereal *, ftnlen, ftnlen), 
-	    vminus_(doublereal *, doublereal *), spkssb_(integer *, 
-	    doublereal *, char *, doublereal *, ftnlen), pxform_(char *, char 
-	    *, doublereal *, doublereal *, ftnlen, ftnlen), surfnm_(
+    extern /* Subroutine */ int chkin_(char *, ftnlen), illumg_(char *, char *
+	    , char *, doublereal *, char *, char *, char *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
-	    doublereal *);
-    logical fnd;
-    doublereal slt;
-    extern /* Subroutine */ int mxv_(doublereal *, doublereal *, doublereal *)
-	    ;
+	    doublereal *, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen), 
+	    chkout_(char *, ftnlen);
+    extern logical return_(void);
 
 /* $ Abstract */
 
@@ -131,6 +53,7 @@ static integer c__3 = 3;
 
 /* $ Required_Reading */
 
+/*     DSK */
 /*     FRAMES */
 /*     NAIF_IDS */
 /*     PCK */
@@ -139,121 +62,11 @@ static integer c__3 = 3;
 
 /* $ Keywords */
 
+/*     ANGLES */
 /*     GEOMETRY */
-/*     MOSPICE */
+/*     ILLUMINATION */
 
 /* $ Declarations */
-/* $ Abstract */
-
-/*     Include file zzabcorr.inc */
-
-/*     SPICE private file intended solely for the support of SPICE */
-/*     routines.  Users should not include this file directly due */
-/*     to the volatile nature of this file */
-
-/*     The parameters below define the structure of an aberration */
-/*     correction attribute block. */
-
-/* $ Disclaimer */
-
-/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
-/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
-/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
-/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
-/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
-/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
-/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
-/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
-/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
-/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
-
-/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
-/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
-/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
-/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
-/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
-/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
-
-/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
-/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
-/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
-/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
-
-/* $ Parameters */
-
-/*     An aberration correction attribute block is an array of logical */
-/*     flags indicating the attributes of the aberration correction */
-/*     specified by an aberration correction string.  The attributes */
-/*     are: */
-
-/*        - Is the correction "geometric"? */
-
-/*        - Is light time correction indicated? */
-
-/*        - Is stellar aberration correction indicated? */
-
-/*        - Is the light time correction of the "converged */
-/*          Newtonian" variety? */
-
-/*        - Is the correction for the transmission case? */
-
-/*        - Is the correction relativistic? */
-
-/*    The parameters defining the structure of the block are as */
-/*    follows: */
-
-/*       NABCOR    Number of aberration correction choices. */
-
-/*       ABATSZ    Number of elements in the aberration correction */
-/*                 block. */
-
-/*       GEOIDX    Index in block of geometric correction flag. */
-
-/*       LTIDX     Index of light time flag. */
-
-/*       STLIDX    Index of stellar aberration flag. */
-
-/*       CNVIDX    Index of converged Newtonian flag. */
-
-/*       XMTIDX    Index of transmission flag. */
-
-/*       RELIDX    Index of relativistic flag. */
-
-/*    The following parameter is not required to define the block */
-/*    structure, but it is convenient to include it here: */
-
-/*       CORLEN    The maximum string length required by any aberration */
-/*                 correction string */
-
-/* $ Author_and_Institution */
-
-/*     N.J. Bachman    (JPL) */
-
-/* $ Literature_References */
-
-/*     None. */
-
-/* $ Version */
-
-/* -    SPICELIB Version 1.0.0, 18-DEC-2004 (NJB) */
-
-/* -& */
-/*     Number of aberration correction choices: */
-
-
-/*     Aberration correction attribute block size */
-/*     (number of aberration correction attributes): */
-
-
-/*     Indices of attributes within an aberration correction */
-/*     attribute block: */
-
-
-/*     Maximum length of an aberration correction string: */
-
-
-/*     End of include file zzabcorr.inc */
-
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
@@ -273,24 +86,70 @@ static integer c__3 = 3;
 
 /* $ Detailed_Input */
 
-
 /*     METHOD      is a short string providing parameters defining */
-/*                 the computation method to be used. Parameters */
-/*                 include, but are not limited to, the shape model */
-/*                 used to represent the surface of the target body. */
+/*                 the computation method to be used. In the syntax */
+/*                 descriptions below, items delimited by brackets */
+/*                 are optional. */
 
-/*                 The only choice currently supported is */
+/*                 METHOD may be assigned the following values: */
 
-/*                    'Ellipsoid'        The illumination angle */
-/*                                       computation uses a triaxial */
-/*                                       ellipsoid to model the surface */
-/*                                       of the target body. The */
-/*                                       ellipsoid's radii must be */
-/*                                       available in the kernel pool. */
+/*                    'ELLIPSOID' */
+
+/*                       The illumination angle computation uses a */
+/*                       triaxial ellipsoid to model the surface of the */
+/*                       target body. The ellipsoid's radii must be */
+/*                       available in the kernel pool. */
+
+
+/*                    'DSK/UNPRIORITIZED[/SURFACES = <surface list>]' */
+
+/*                       The illumination angle computation uses */
+/*                       topographic data to model the surface of the */
+/*                       target body. These data must be provided by */
+/*                       loaded DSK files. */
+
+/*                       The surface list specification is optional. The */
+/*                       syntax of the list is */
+
+/*                          <surface 1> [, <surface 2>...] */
+
+/*                       If present, it indicates that data only for the */
+/*                       listed surfaces are to be used; however, data */
+/*                       need not be available for all surfaces in the */
+/*                       list. If absent, loaded DSK data for any surface */
+/*                       associated with the target body are used. */
+
+/*                       The surface list may contain surface names or */
+/*                       surface ID codes. Names containing blanks must */
+/*                       be delimited by double quotes, for example */
+
+/*                          SURFACES = "Mars MEGDR 128 PIXEL/DEG" */
+
+/*                       If multiple surfaces are specified, their names */
+/*                       or IDs must be separated by commas. */
+
+/*                       See the Particulars section below for details */
+/*                       concerning use of DSK data. */
+
 
 /*                 Neither case nor white space are significant in */
-/*                 METHOD. For example, the string ' eLLipsoid ' is */
-/*                 valid. */
+/*                 METHOD, except within double-quoted strings. For */
+/*                 example, the string ' eLLipsoid ' is valid. */
+
+/*                 Within double-quoted strings, blank characters are */
+/*                 significant, but multiple consecutive blanks are */
+/*                 considered equivalent to a single blank. Case is */
+/*                 not significant. So */
+
+/*                    "Mars MEGDR 128 PIXEL/DEG" */
+
+/*                 is equivalent to */
+
+/*                    " mars megdr  128  pixel/deg " */
+
+/*                 but not to */
+
+/*                    "MARS MEGDR128PIXEL/DEG" */
 
 
 /*     TARGET      is the name of the target body. TARGET is */
@@ -344,12 +203,15 @@ static integer c__3 = 3;
 /*                    'LT'       Correct both the position of SPOINT as */
 /*                               seen by the observer, and the position */
 /*                               of the Sun as seen by the target, for */
-/*                               light time. */
+/*                               light time. Correct the orientation of */
+/*                               the target for light time. */
 
 /*                    'LT+S'     Correct both the position of SPOINT as */
 /*                               seen by the observer, and the position */
 /*                               of the Sun as seen by the target, for */
 /*                               light time and stellar aberration. */
+/*                               Correct the orientation of the target */
+/*                               for light time. */
 
 /*                    'CN'       Converged Newtonian light time */
 /*                               correction. In solving the light time */
@@ -369,6 +231,61 @@ static integer c__3 = 3;
 /*                               cases this routine will execute more */
 /*                               slowly when a converged solution is */
 /*                               computed. */
+
+
+/*                 The following values of ABCORR apply to the */
+/*                 "transmission" case in which photons *arrive* at */
+/*                 SPOINT at the light-time corrected epoch ET+LT and */
+/*                 *depart* from the observer's location at ET: */
+
+/*                    'XLT'      "Transmission" case: correct for */
+/*                               one-way light time using a Newtonian */
+/*                               formulation. This correction yields the */
+/*                               illumination angles at the moment that */
+/*                               SPOINT receives photons emitted from the */
+/*                               observer's location at ET. */
+
+/*                               The light time correction uses an */
+/*                               iterative solution of the light time */
+/*                               equation. The solution invoked by the */
+/*                               'XLT' option uses one iteration. */
+
+/*                               Both the target position as seen by the */
+/*                               observer, and rotation of the target */
+/*                               body, are corrected for light time. */
+
+/*                    'XLT+S'    "Transmission" case: correct for */
+/*                               one-way light time and stellar */
+/*                               aberration using a Newtonian */
+/*                               formulation  This option modifies the */
+/*                               angles obtained with the 'XLT' option */
+/*                               to account for the observer's and */
+/*                               target's velocities relative to the */
+/*                               solar system barycenter (the latter */
+/*                               velocity is used in computing the */
+/*                               direction to the apparent illumination */
+/*                               source). */
+
+/*                    'XCN'      Converged Newtonian light time */
+/*                               correction. This is the same as XLT */
+/*                               correction but with further iterations */
+/*                               to a converged Newtonian light time */
+/*                               solution. */
+
+/*                    'XCN+S'    "Transmission" case: converged */
+/*                               Newtonian light time and stellar */
+/*                               aberration corrections. This option */
+/*                               produces a solution that is at least as */
+/*                               accurate at that obtainable with the */
+/*                               'XLT+S' option. Whether the 'XCN+S' */
+/*                               solution is substantially more accurate */
+/*                               depends on the geometry of the */
+/*                               participating objects and on the */
+/*                               accuracy of the input data. In all */
+/*                               cases this routine will execute more */
+/*                               slowly when a converged solution is */
+/*                               computed. */
+
 
 /*                 Neither case nor white space are significant in */
 /*                 ABCORR. For example, the string */
@@ -436,22 +353,17 @@ static integer c__3 = 3;
 
 /*                    CALL VSUB ( SPOINT, SRFVEC, OBSPOS ) */
 
-/*                 To transform the vector SRFVEC to a time-dependent */
-/*                 reference frame REF at ET, a sequence of two frame */
-/*                 transformations is required. For example, let MFIX */
-/*                 and MREF be 3x3 matrices respectively describing the */
-/*                 target body-fixed to J2000 frame transformation at */
-/*                 TRGEPC and the J2000 to (time-dependent frame) REF */
-/*                 transformation at ET, and let XFORM be the 3x3 matrix */
-/*                 representing the composition of MREF with MFIX. Then */
+/*                 To transform the vector SRFVEC from a reference frame */
+/*                 FIXREF at time TRGEPC to a time-dependent reference */
+/*                 frame REF at time ET, the routine PXFRM2 should be */
+/*                 called. Let XFORM be the 3x3 matrix representing the */
+/*                 rotation from the reference frame FIXREF at time */
+/*                 TRGEPC to the reference frame REF at time ET. Then */
 /*                 SRFVEC can be transformed to the result REFVEC as */
 /*                 follows: */
 
-/*                     CALL PXFORM ( FIXREF,  'J2000', TRGEPC, MFIX   ) */
-/*                     CALL PXFORM ( 'J2000', REF,     ET,     MREF   ) */
-/*                     CALL MXM    ( MREF,    MFIX,            XFORM  ) */
-/*                     CALL MXV    ( XFORM,   SRFVEC,          REFVEC ) */
-
+/*                     CALL PXFRM2 ( FIXREF, REF,    TRGEPC, ET, XFORM ) */
+/*                     CALL MXV    ( XFORM,  SRFVEC, REFVEC ) */
 
 /*     PHASE       is the phase angle at SPOINT, as seen from OBSRVR at */
 /*                 time ET. This is the angle between the negative of */
@@ -479,62 +391,81 @@ static integer c__3 = 3;
 /* $ Exceptions */
 
 
-/*     1)  If the specified aberration correction is relativistic or */
-/*         calls for stellar aberration but not light time correction, */
-/*         the error SPICE(NOTSUPPORTED) is signaled. If the specified */
-/*         aberration correction is any other unrecognized value, the */
+/*     1)  If the specified aberration correction is unrecognized, the */
 /*         error will be diagnosed and signaled by a routine in the call */
 /*         tree of this routine. */
 
 /*     2)  If either the target or observer input strings cannot be */
-/*         converted to an integer ID code, the error */
-/*         SPICE(IDCODENOTFOUND) is signaled. */
+/*         converted to an integer ID code, the error will be signaled */
+/*         by a routine in the call tree of this routine. */
 
 /*     3)  If OBSRVR and TARGET map to the same NAIF integer ID code, */
-/*         the error SPICE(BODIESNOTDISTINCT) is signaled. */
+/*         the error will be signaled by a routine in the call tree of */
+/*         this routine. */
 
 /*     4)  If the input target body-fixed frame FIXREF is not */
-/*         recognized, the error SPICE(NOFRAME) is signaled. A frame */
-/*         name may fail to be recognized because a required frame */
-/*         specification kernel has not been loaded; another cause is a */
-/*         misspelling of the frame name. */
+/*         recognized, the error will be signaled by a routine in the */
+/*         call tree of this routine. A frame name may fail to be */
+/*         recognized because a required frame specification kernel has */
+/*         not been loaded; another cause is a misspelling of the frame */
+/*         name. */
 
 /*     5)  If the input frame FIXREF is not centered at the target body, */
-/*         the error SPICE(INVALIDFRAME) is signaled. */
+/*         the error will be signaled by a routine in the call tree of */
+/*         this routine. */
 
 /*     6)  If the input argument METHOD is not recognized, the error */
-/*         SPICE(INVALIDMETHOD) is signaled. */
+/*         will be signaled by a routine in the call tree of this */
+/*         routine. */
 
-/*     7)  If the target and observer have distinct identities but are */
-/*         at the same location (for example, the target is Mars and the */
-/*         observer is the Mars barycenter), the error */
-/*         SPICE(NOSEPARATION) is signaled. */
-
-/*     8)  If insufficient ephemeris data have been loaded prior to */
+/*     7)  If insufficient ephemeris data have been loaded prior to */
 /*         calling ILUMIN, the error will be diagnosed and signaled by a */
 /*         routine in the call tree of this routine. Note that when */
 /*         light time correction is used, sufficient ephemeris data must */
 /*         be available to propagate the states of observer, target, and */
 /*         the Sun to the solar system barycenter. */
 
-/*     9)  If the computation method specifies an ellipsoidal target */
+/*     8)  If the computation method specifies an ellipsoidal target */
 /*         shape and triaxial radii of the target body have not been */
 /*         loaded into the kernel pool prior to calling ILUMIN, the */
 /*         error will be diagnosed and signaled by a routine in the call */
 /*         tree of this routine. */
 
-/*     10) The target must be an extended body: if any of the radii of */
+/*     9)  The target must be an extended body: if any of the radii of */
 /*         the target body are non-positive, the error will be */
 /*         diagnosed and signaled by routines in the call tree of this */
 /*         routine. */
 
-/*     11) If PCK data specifying the target body-fixed frame */
+/*     10) If PCK data specifying the target body-fixed frame */
 /*         orientation have not been loaded prior to calling ILUMIN, */
 /*         the error will be diagnosed and signaled by a routine in the */
 /*         call tree of this routine. */
 
+/*     11) If METHOD specifies that the target surface is represented by */
+/*         DSK data, and no DSK files are loaded for the specified */
+/*         target, the error is signaled by a routine in the call tree */
+/*         of this routine. */
+
+/*     12) If METHOD specifies that the target surface is represented */
+/*         by DSK data, and data representing the portion of the surface */
+/*         on which SPOINT is located are not available, an error will */
+/*         be signaled by a routine in the call tree of this routine. */
+
+/*     13) If METHOD specifies that the target surface is represented */
+/*         by DSK data, SPOINT must lie on the target surface, not above */
+/*         or below it. A small tolerance is used to allow for round-off */
+/*         error in the calculation determining whether SPOINT is on the */
+/*         surface. If, in the DSK case, SPOINT is too far from the */
+/*         surface, an error will be signaled by a routine in the call */
+/*         tree of this routine. */
+
+/*         If the surface is represented by a triaxial ellipsoid, SPOINT */
+/*         is not required to be close to the ellipsoid; however, the */
+/*         results computed by this routine will be unreliable if SPOINT */
+/*         is too far from the ellipsoid. */
 
 /* $ Files */
+
 
 /*     Appropriate kernels must be loaded by the calling program before */
 /*     this routine is called. */
@@ -542,25 +473,60 @@ static integer c__3 = 3;
 /*     The following data are required: */
 
 /*        - SPK data: ephemeris data for target, observer, and the */
-/*          Sun must be loaded. If aberration corrections are used, the */
-/*          states of target, observer, and the Sun relative to the */
-/*          solar system barycenter must be calculable from the */
-/*          available ephemeris data. Typically ephemeris data are made */
-/*          available by loading one or more SPK files via FURNSH. */
+/*          illumination source must be loaded. If aberration */
+/*          corrections are used, the states of target, observer, and */
+/*          the illumination source relative to the solar system */
+/*          barycenter must be calculable from the available ephemeris */
+/*          data. Typically ephemeris data are made available by loading */
+/*          one or more SPK files via FURNSH. */
 
-/*        - PCK data: if the target body shape is modeled as an */
-/*          ellipsoid, triaxial radii for the target body must be loaded */
-/*          into the kernel pool. Typically this is done by loading a */
-/*          text PCK file via FURNSH. */
-
-/*        - Further PCK data: rotation data for the target body must be */
+/*        - PCK data: rotation data for the target body must be */
 /*          loaded. These may be provided in a text or binary PCK file. */
+
+/*        - Shape data for the target body: */
+
+/*            PCK data: */
+
+/*               If the target body shape is modeled as an ellipsoid, */
+/*               triaxial radii for the target body must be loaded into */
+/*               the kernel pool. Typically this is done by loading a */
+/*               text PCK file via FURNSH. */
+
+/*               Triaxial radii are also needed if the target shape is */
+/*               modeled by DSK data, but the DSK NADIR method is */
+/*               selected. */
+
+/*            DSK data: */
+
+/*               If the target shape is modeled by DSK data, DSK files */
+/*               containing topographic data for the target body must be */
+/*               loaded. If a surface list is specified, data for at */
+/*               least one of the listed surfaces must be loaded. */
+
+/*     The following data may be required: */
 
 /*        - Frame data: if a frame definition is required to convert the */
 /*          observer and target states to the body-fixed frame of the */
 /*          target, that definition must be available in the kernel */
 /*          pool. Typically the definition is supplied by loading a */
 /*          frame kernel via FURNSH. */
+
+/*        - Surface name-ID associations: if surface names are specified */
+/*          in METHOD, the association of these names with their */
+/*          corresponding surface ID codes must be established by */
+/*          assignments of the kernel variables */
+
+/*             NAIF_SURFACE_NAME */
+/*             NAIF_SURFACE_CODE */
+/*             NAIF_SURFACE_BODY */
+
+/*          Normally these associations are made by loading a text */
+/*          kernel containing the necessary assignments. An example */
+/*          of such an assignment is */
+
+/*             NAIF_SURFACE_NAME += 'Mars MEGDR 128 PIXEL/DEG' */
+/*             NAIF_SURFACE_CODE += 1 */
+/*             NAIF_SURFACE_BODY += 499 */
 
 /*     In all cases, kernel data are normally loaded once per program */
 /*     run, NOT every time this routine is called. */
@@ -569,7 +535,25 @@ static integer c__3 = 3;
 /* $ Particulars */
 
 
-/*     The term "illumination angles" refers to following set of */
+/*     SPICELIB contains four routines that compute illumination angles: */
+
+/*        ILLUMF (same as ILLUMG, except that illumination */
+/*                and visibility flags are returned.) */
+
+/*        ILLUMG (same as ILUMIN, except that the caller */
+/*                specifies the illumination source.) */
+
+/*        ILUMIN (this routine) */
+
+/*        ILLUM  (deprecated) */
+
+/*     ILLUMF is the most capable of the set. */
+
+
+/*     Illumination angles */
+/*     =================== */
+
+/*     The term "illumination angles" refers to the following set of */
 /*     angles: */
 
 
@@ -688,6 +672,140 @@ static integer c__3 = 3;
 /*           seen from the target body at time ET-LT. */
 
 
+/*     Using DSK data */
+/*     ============== */
+
+/*        DSK loading and unloading */
+/*        ------------------------- */
+
+/*        DSK files providing data used by this routine are loaded by */
+/*        calling FURNSH and can be unloaded by calling UNLOAD or */
+/*        KCLEAR. See the documentation of FURNSH for limits on numbers */
+/*        of loaded DSK files. */
+
+/*        For run-time efficiency, it's desirable to avoid frequent */
+/*        loading and unloading of DSK files. When there is a reason to */
+/*        use multiple versions of data for a given target body---for */
+/*        example, if topographic data at varying resolutions are to be */
+/*        used---the surface list can be used to select DSK data to be */
+/*        used for a given computation. It is not necessary to unload */
+/*        the data that are not to be used. This recommendation presumes */
+/*        that DSKs containing different versions of surface data for a */
+/*        given body have different surface ID codes. */
+
+
+/*        DSK data priority */
+/*        ----------------- */
+
+/*        A DSK coverage overlap occurs when two segments in loaded DSK */
+/*        files cover part or all of the same domain---for example, a */
+/*        given longitude-latitude rectangle---and when the time */
+/*        intervals of the segments overlap as well. */
+
+/*        When DSK data selection is prioritized, in case of a coverage */
+/*        overlap, if the two competing segments are in different DSK */
+/*        files, the segment in the DSK file loaded last takes */
+/*        precedence. If the two segments are in the same file, the */
+/*        segment located closer to the end of the file takes */
+/*        precedence. */
+
+/*        When DSK data selection is unprioritized, data from competing */
+/*        segments are combined. For example, if two competing segments */
+/*        both represent a surface as sets of triangular plates, the */
+/*        union of those sets of plates is considered to represent the */
+/*        surface. */
+
+/*        Currently only unprioritized data selection is supported. */
+/*        Because prioritized data selection may be the default behavior */
+/*        in a later version of the routine, the UNPRIORITIZED keyword is */
+/*        required in the METHOD argument. */
+
+
+/*        Syntax of the METHOD input argument */
+/*        ----------------------------------- */
+
+/*        The keywords and surface list in the METHOD argument */
+/*        are called "clauses." The clauses may appear in any */
+/*        order, for example */
+
+/*           DSK/<surface list>/UNPRIORITIZED */
+/*           DSK/UNPRIORITIZED/<surface list> */
+/*           UNPRIORITIZED/<surface list>/DSK */
+
+/*        The simplest form of the METHOD argument specifying use of */
+/*        DSK data is one that lacks a surface list, for example: */
+
+/*           'DSK/UNPRIORITIZED' */
+
+/*        For applications in which all loaded DSK data for the target */
+/*        body are for a single surface, and there are no competing */
+/*        segments, the above string suffices. This is expected to be */
+/*        the usual case. */
+
+/*        When, for the specified target body, there are loaded DSK */
+/*        files providing data for multiple surfaces for that body, the */
+/*        surfaces to be used by this routine for a given call must be */
+/*        specified in a surface list, unless data from all of the */
+/*        surfaces are to be used together. */
+
+/*        The surface list consists of the string */
+
+/*           SURFACES = */
+
+/*        followed by a comma-separated list of one or more surface */
+/*        identifiers. The identifiers may be names or integer codes in */
+/*        string format. For example, suppose we have the surface */
+/*        names and corresponding ID codes shown below: */
+
+/*           Surface Name                              ID code */
+/*           ------------                              ------- */
+/*           'Mars MEGDR 128 PIXEL/DEG'                1 */
+/*           'Mars MEGDR 64 PIXEL/DEG'                 2 */
+/*           'Mars_MRO_HIRISE'                         3 */
+
+/*        If data for all of the above surfaces are loaded, then */
+/*        data for surface 1 can be specified by either */
+
+/*           'SURFACES = 1' */
+
+/*        or */
+
+/*           'SURFACES = "Mars MEGDR 128 PIXEL/DEG"' */
+
+/*        Double quotes are used to delimit the surface name because */
+/*        it contains blank characters. */
+
+/*        To use data for surfaces 2 and 3 together, any */
+/*        of the following surface lists could be used: */
+
+/*           'SURFACES = 2, 3' */
+
+/*           'SURFACES = "Mars MEGDR  64 PIXEL/DEG", 3' */
+
+/*           'SURFACES = 2, Mars_MRO_HIRISE' */
+
+/*           'SURFACES = "Mars MEGDR 64 PIXEL/DEG", Mars_MRO_HIRISE' */
+
+/*        An example of a METHOD argument that could be constructed */
+/*        using one of the surface lists above is */
+
+/*              'DSK/UNPRIORITIZED/SURFACES = ' */
+/*           // '"Mars MEGDR 64 PIXEL/DEG", 3' */
+
+
+/*        Aberration corrections using DSK data */
+/*        ------------------------------------- */
+
+/*        For irregularly shaped target bodies, the distance between the */
+/*        observer and the nearest surface intercept need not be a */
+/*        continuous function of time; hence the one-way light time */
+/*        between the intercept and the observer may be discontinuous as */
+/*        well. In such cases, the computed light time, which is found */
+/*        using an iterative algorithm, may converge slowly or not at */
+/*        all. In all cases, the light time computation will terminate, */
+/*        but the result may be less accurate than expected. */
+
+
 /* $ Examples */
 
 /*     The numerical results shown for this example may differ across */
@@ -700,12 +818,15 @@ static integer c__3 = 3;
 /*        Mars Global Surveyor spacecraft at a specified UTC time. Use */
 /*        light time and stellar aberration corrections. */
 
+/*        Use both an ellipsoidal Mars shape model and topographic data */
+/*        provided by a DSK file. */
+
 /*        Use the meta-kernel shown below to load the required SPICE */
 /*        kernels. */
 
 /*           KPL/MK */
 
-/*           File: mgs_example.tm */
+/*           File: ilumin_ex1.tm */
 
 /*           This meta-kernel is intended to support operation of SPICE */
 /*           example programs. The kernels shown here should not be */
@@ -719,26 +840,34 @@ static integer c__3 = 3;
 /*           The names and contents of the kernels referenced */
 /*           by this meta-kernel are as follows: */
 
-/*              File name                     Contents */
-/*              ---------                     -------- */
-/*              de418.bsp                     Planetary ephemeris */
-/*              pck00008.tpc                  Planet orientation and */
-/*                                            radii */
-/*              naif0008.tls                  Leapseconds */
-/*              mgs_ext13_ipng_mgs95j.bsp     MGS ephemeris */
+/*              File name                        Contents */
+/*              ---------                        -------- */
+/*              de430.bsp                        Planetary ephemeris */
+/*              mar097.bsp                       Mars satellite ephemeris */
+/*              pck00010.tpc                     Planet orientation and */
+/*                                               radii */
+/*              naif0011.tls                     Leapseconds */
+/*              mgs_ext12_ipng_mgs95j.bsp        MGS ephemeris */
+/*              megr90n000cb_plate.bds           Plate model based on */
+/*                                               MEGDR DEM, resolution */
+/*                                               4 pixels/degree. */
 
 /*           \begindata */
 
-/*              KERNELS_TO_LOAD = ( 'de418.bsp', */
-/*                                  'pck00008.tpc', */
-/*                                  'naif0008.tls', */
-/*                                  'mgs_ext13_ipng_mgs95j.bsp'  ) */
+/*              KERNELS_TO_LOAD = ( 'de430.bsp', */
+/*                                  'mar097.bsp', */
+/*                                  'pck00010.tpc', */
+/*                                  'naif0011.tls', */
+/*                                  'mgs_ext12_ipng_mgs95j.bsp', */
+/*                                  'megr90n000cb_plate.bds'      ) */
 /*           \begintext */
+
 
 
 /*        Example code begins here. */
 
-/*           PROGRAM ANGLES */
+
+/*           PROGRAM EX1 */
 /*           IMPLICIT NONE */
 /*     C */
 /*     C     SPICELIB functions */
@@ -747,8 +876,17 @@ static integer c__3 = 3;
 /*     C */
 /*     C     Local parameters */
 /*     C */
+/*           CHARACTER*(*)         F1 */
+/*           PARAMETER           ( F1     = '(A,F15.9)' ) */
+
+/*           CHARACTER*(*)         F2 */
+/*           PARAMETER           ( F2     = '(A)' ) */
+
+/*           CHARACTER*(*)         F3 */
+/*           PARAMETER           ( F3     = '(A,2(2X,L))' ) */
+
 /*           CHARACTER*(*)         META */
-/*           PARAMETER           ( META   = 'mgs_example.tm' ) */
+/*           PARAMETER           ( META   = 'ilumin_ex1.tm' ) */
 
 /*           INTEGER               NAMLEN */
 /*           PARAMETER           ( NAMLEN = 32 ) */
@@ -758,11 +896,20 @@ static integer c__3 = 3;
 
 /*           INTEGER               CORLEN */
 /*           PARAMETER           ( CORLEN = 5 ) */
+
+/*           INTEGER               MTHLEN */
+/*           PARAMETER           ( MTHLEN = 50 ) */
+
+/*           INTEGER               NMETH */
+/*           PARAMETER           ( NMETH  = 2 ) */
 /*     C */
 /*     C     Local variables */
 /*     C */
 /*           CHARACTER*(CORLEN)    ABCORR */
+/*           CHARACTER*(NAMLEN)    FIXREF */
+/*           CHARACTER*(MTHLEN)    ILUMTH ( NMETH ) */
 /*           CHARACTER*(NAMLEN)    OBSRVR */
+/*           CHARACTER*(MTHLEN)    SUBMTH ( NMETH ) */
 /*           CHARACTER*(NAMLEN)    TARGET */
 /*           CHARACTER*(TIMLEN)    UTC */
 
@@ -778,6 +925,18 @@ static integer c__3 = 3;
 /*           DOUBLE PRECISION      SSOLPT ( 3 ) */
 /*           DOUBLE PRECISION      TRGEPC */
 
+/*           INTEGER               I */
+
+
+/*     C */
+/*     C     Initial values */
+/*     C */
+/*           DATA                  ILUMTH / 'Ellipsoid', */
+/*          .                               'DSK/Unprioritized' / */
+
+/*           DATA                  SUBMTH / 'Near Point/Ellipsoid', */
+/*          .                            'DSK/Nadir/Unprioritized' / */
+
 /*     C */
 /*     C     Load kernel files. */
 /*     C */
@@ -786,10 +945,12 @@ static integer c__3 = 3;
 /*     C     Convert the UTC request time string to seconds past */
 /*     C     J2000 TDB. */
 /*     C */
-/*           UTC = '2004 JAN 1 12:00:00' */
+/*           UTC = '2003 OCT 13 06:00:00 UTC' */
 
 /*           CALL UTC2ET ( UTC, ET ) */
 
+/*           WRITE (*,F2) ' ' */
+/*           WRITE (*,F2) 'UTC epoch is '//UTC */
 /*     C */
 /*     C     Assign observer and target names. The acronym MGS */
 /*     C     indicates Mars Global Surveyor. See NAIF_IDS for a */
@@ -798,94 +959,150 @@ static integer c__3 = 3;
 /*     C */
 /*           TARGET = 'Mars' */
 /*           OBSRVR = 'MGS' */
+/*           FIXREF = 'IAU_MARS' */
 /*           ABCORR = 'CN+S' */
-/*     C */
-/*     C     Find the sub-solar point on the Earth as seen from */
-/*     C     the MGS spacecraft at ET. Use the "near point: ellipsoid" */
-/*     C     style of sub-point definition. This makes it easy */
-/*     C     to verify the solar incidence angle. */
-/*     C */
-/*           CALL SUBSLR ( 'Near point: ellipsoid', */
-/*          .              TARGET,  ET,      'IAU_MARS', */
-/*          .              ABCORR,  OBSRVR,  SSOLPT, TRGEPC, SRFVEC ) */
-/*     C */
-/*     C     Now find the sub-spacecraft point. */
-/*     C */
-/*           CALL SUBPNT ( 'Near point: ellipsoid', */
-/*          .              TARGET,  ET,     'IAU_MARS', */
-/*          .              ABCORR,  OBSRVR, SSCPT,   TRGEPC, SRFVEC ) */
-/*     C */
-/*     C     Find the phase, solar incidence, and emission */
-/*     C     angles at the sub-solar point on the Earth as seen */
-/*     C     from MGS at time ET. */
-/*     C */
-/*           CALL ILUMIN ( 'Ellipsoid', TARGET, ET,     'IAU_MARS', */
-/*          .              ABCORR,      OBSRVR, SSOLPT, TRGEPC, */
-/*          .              SRFVEC,      SSLPHS, SSLSOL, SSLEMI    ) */
-/*     C */
-/*     C     Do the same for the sub-spacecraft point. */
-/*     C */
-/*           CALL ILUMIN ( 'Ellipsoid', TARGET, ET,     'IAU_MARS', */
-/*          .              ABCORR,      OBSRVR, SSCPT,  TRGEPC, */
-/*          .              SRFVEC,      SSCPHS, SSCSOL, SSCEMI    ) */
-/*     C */
-/*     C     Convert the angles to degrees and write them out. */
-/*     C */
-/*           SSLPHS = DPR() * SSLPHS */
-/*           SSLSOL = DPR() * SSLSOL */
-/*           SSLEMI = DPR() * SSLEMI */
 
-/*           SSCPHS = DPR() * SSCPHS */
-/*           SSCSOL = DPR() * SSCSOL */
-/*           SSCEMI = DPR() * SSCEMI */
+/*           DO I = 1, NMETH */
+/*     C */
+/*     C        Find the sub-solar point on Mars as */
+/*     C        seen from the MGS spacecraft at ET. Use the */
+/*     C        "near point" style of sub-point definition */
+/*     C        when the shape model is an ellipsoid, and use */
+/*     C        the "nadir" style when the shape model is */
+/*     C        provided by DSK data. This makes it easy to */
+/*     C        verify the solar incidence angle when */
+/*     C        the target is modeled as an  ellipsoid. */
+/*     C */
+/*              CALL SUBSLR ( SUBMTH(I),  TARGET,  ET, */
+/*          .                 FIXREF,     ABCORR,  OBSRVR, */
+/*          .                 SSOLPT,     TRGEPC,  SRFVEC  ) */
+/*     C */
+/*     C        Now find the sub-spacecraft point. */
+/*     C */
+/*              CALL SUBPNT ( SUBMTH(I),  TARGET,  ET, */
+/*          .                 FIXREF,     ABCORR,  OBSRVR, */
+/*          .                 SSCPT,      TRGEPC,  SRFVEC ) */
+/*     C */
+/*     C        Find the phase, solar incidence, and emission */
+/*     C        angles at the sub-solar point on Mars as */
+/*     C        seen from MGS at time ET. */
+/*     C */
+/*              CALL ILUMIN ( ILUMTH(I), TARGET, */
+/*          .                 ET,        FIXREF,  ABCORR, */
+/*          .                 OBSRVR,    SSOLPT,  TRGEPC, */
+/*          .                 SRFVEC,    SSLPHS,  SSLSOL, */
+/*          .                 SSLEMI                      ) */
+/*     C */
+/*     C        Do the same for the sub-spacecraft point. */
+/*     C */
+/*              CALL ILUMIN ( ILUMTH(I), TARGET, */
+/*          .                 ET,        FIXREF,  ABCORR, */
+/*          .                 OBSRVR,    SSCPT,   TRGEPC, */
+/*          .                 SRFVEC,    SSCPHS,  SSCSOL, */
+/*          .                 SSCEMI                      ) */
+/*     C */
+/*     C        Convert the angles to degrees and write them out. */
+/*     C */
+/*              SSLPHS = DPR() * SSLPHS */
+/*              SSLSOL = DPR() * SSLSOL */
+/*              SSLEMI = DPR() * SSLEMI */
 
-/*           WRITE (*,*) ' ' */
-/*           WRITE (*,*) 'UTC epoch is ', UTC */
-/*           WRITE (*,*) ' ' */
-/*           WRITE (*,*) 'Illumination angles at the sub-solar point:' */
-/*           WRITE (*,*) ' ' */
-/*           WRITE (*,*) 'Phase angle           (deg.): ', SSLPHS */
-/*           WRITE (*,*) 'Solar incidence angle (deg.): ', SSLSOL */
-/*           WRITE (*,*) 'Emission angle        (deg.): ', SSLEMI */
-/*           WRITE (*,*) ' ' */
-/*           WRITE (*,*) 'The solar incidence angle should be 0.' */
-/*           WRITE (*,*) 'The emission and phase angles should be equal.' */
+/*              SSCPHS = DPR() * SSCPHS */
+/*              SSCSOL = DPR() * SSCSOL */
+/*              SSCEMI = DPR() * SSCEMI */
 
-/*           WRITE (*,*) ' ' */
-/*           WRITE (*,*) 'Illumination angles at the sub-s/c point:' */
-/*           WRITE (*,*) ' ' */
-/*           WRITE (*,*) 'Phase angle           (deg.): ', SSCPHS */
-/*           WRITE (*,*) 'Solar incidence angle (deg.): ', SSCSOL */
-/*           WRITE (*,*) 'Emission angle        (deg.): ', SSCEMI */
-/*           WRITE (*,*) ' ' */
-/*           WRITE (*,*) 'The emission angle should be 0.' */
-/*           WRITE (*,*) 'The solar incidence and phase angles should ' */
-/*          .//          'be equal.' */
+/*              WRITE (*,F2) ' ' */
+/*              WRITE (*,F2) '   ILUMIN method: '//ILUMTH(I) */
+/*              WRITE (*,F2) '   SUBPNT method: '//SUBMTH(I) */
+/*              WRITE (*,F2) '   SUBSLR method: '//SUBMTH(I) */
+/*              WRITE (*,F2) ' ' */
+/*              WRITE (*,F2) '      Illumination angles at the ' */
+/*          .   //           'sub-solar point:' */
+/*              WRITE (*,F2) ' ' */
+
+/*              WRITE (*,F1) '      Phase angle           (deg.): ', */
+/*          .                SSLPHS */
+/*              WRITE (*,F1) '      Solar incidence angle (deg.): ', */
+/*          .                SSLSOL */
+/*              WRITE (*,F1) '      Emission angle        (deg.): ', */
+/*          .                SSLEMI */
+/*              WRITE (*,F2) ' ' */
+
+/*              IF ( I .EQ. 1 ) THEN */
+/*                 WRITE (*,F2) '        The solar incidence angle ' */
+/*          .      //           'should be 0.' */
+/*                 WRITE (*,F2) '        The emission and phase ' */
+/*          .      //           'angles should be equal.' */
+/*                 WRITE (*,F2) ' ' */
+/*              END IF */
+
+
+/*              WRITE (*,F2) '      Illumination angles at the ' */
+/*          .   //          'sub-s/c point:' */
+/*              WRITE (*,F2) ' ' */
+/*              WRITE (*,F1) '      Phase angle           (deg.): ', */
+/*          .               SSCPHS */
+/*              WRITE (*,F1) '      Solar incidence angle (deg.): ', */
+/*          .               SSCSOL */
+/*              WRITE (*,F1) '      Emission angle        (deg.): ', */
+/*          .               SSCEMI */
+/*              WRITE (*,F2) ' ' */
+
+/*              IF ( I .EQ. 1 ) THEN */
+/*                 WRITE (*,F2) '        The emission angle ' */
+/*          .      //           'should be 0.' */
+/*                 WRITE (*,F2) '        The solar incidence ' */
+/*          .      //           'and phase angles should be equal.' */
+/*              END IF */
+
+/*           END DO */
+
 /*           END */
 
 
-/*     When this program was executed on a PC/Linux/g77 platform, */
-/*     the output was: */
+/*     When this program was executed on a PC/Linux/gfortran 64-bit */
+/*     platform, the output was: */
 
-/*        UTC epoch is 2004 JAN 1 12:00:00 */
 
-/*        Illumination angles at the sub-solar point: */
+/*        UTC epoch is 2003 OCT 13 06:00:00 UTC */
 
-/*        Phase angle           (deg.):   115.542001 */
-/*        Solar incidence angle (deg.):   3.20530645E-15 */
-/*        Emission angle        (deg.):   115.542001 */
+/*           ILUMIN method: Ellipsoid */
+/*           SUBPNT method: Near Point/Ellipsoid */
+/*           SUBSLR method: Near Point/Ellipsoid */
 
-/*        The solar incidence angle should be 0. */
-/*        The emission and phase angles should be equal. */
+/*              Illumination angles at the sub-solar point: */
 
-/*        Illumination angles at the sub-s/c point: */
+/*              Phase angle           (deg.):   138.370270685 */
+/*              Solar incidence angle (deg.):     0.000000000 */
+/*              Emission angle        (deg.):   138.370270685 */
 
-/*        Phase angle           (deg.):   62.0840031 */
-/*        Solar incidence angle (deg.):   62.0840031 */
-/*        Emission angle        (deg.):   6.46461886E-11 */
+/*                The solar incidence angle should be 0. */
+/*                The emission and phase angles should be equal. */
 
-/*        The emission angle should be 0. */
-/*        The solar incidence and phase angles should be equal. */
+/*              Illumination angles at the sub-s/c point: */
+
+/*              Phase angle           (deg.):   101.439331040 */
+/*              Solar incidence angle (deg.):   101.439331041 */
+/*              Emission angle        (deg.):     0.000000002 */
+
+/*                The emission angle should be 0. */
+/*                The solar incidence and phase angles should be equal. */
+
+/*           ILUMIN method: DSK/Unprioritized */
+/*           SUBPNT method: DSK/Nadir/Unprioritized */
+/*           SUBSLR method: DSK/Nadir/Unprioritized */
+
+/*              Illumination angles at the sub-solar point: */
+
+/*              Phase angle           (deg.):   138.387071677 */
+/*              Solar incidence angle (deg.):     0.967122745 */
+/*              Emission angle        (deg.):   137.621480599 */
+
+/*              Illumination angles at the sub-s/c point: */
+
+/*              Phase angle           (deg.):   101.439331359 */
+/*              Solar incidence angle (deg.):   101.555993667 */
+/*              Emission angle        (deg.):     0.117861156 */
 
 
 /* $ Restrictions */
@@ -899,8 +1116,33 @@ static integer c__3 = 3;
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman   (JPL) */
+/*     S.C. Krening   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 04-APR-2017 (NJB) */
+
+/*        Fixed some header comment typos. */
+
+/*     15-AUG-2016 (NJB) */
+
+/*        Now supports DSK usage. No longer includes zzabcorr.inc. */
+/*        String 'SUN' passed to ILLUMG has been changed to '10'. */
+
+/*        Now supports transmission aberration corrections. */
+
+
+/* -    SPICELIB Version 1.2.0, 04-APR-2011 (NJB) (SCK) */
+
+/*        The routine has been completely re-implemented: */
+/*        it now calls ILLUMG. */
+
+/*        The meta-kernel used for the header example program */
+/*        has been updated. The example program outputs have */
+/*        been updated as well. */
+
+/*        References to the new PXFRM2 routine were added */
+/*        to the Detailed Output section. */
 
 /* -    SPICELIB Version 1.1.0, 17-MAY-2010 (NJB) */
 
@@ -934,462 +1176,15 @@ static integer c__3 = 3;
 /*     SPICELIB functions */
 
 
-/*     Local parameters */
-
-
-/*     This value will become system-dependent when systems */
-/*     using 128-bit d.p. numbers are supported by SPICELIB. */
-/*     CNVLIM, when added to 1.0D0, should yield 1.0D0. */
-
-
-/*     Local variables */
-
-
-/*     Saved variables */
-
-
-/*     Note: XMIT need not be saved, since it's used only */
-/*     for error checking when an aberration correction flag */
-/*     is parsed. */
-
-
-/*     Initial values */
-
-
 /*     Standard SPICE error handling. */
 
     if (return_()) {
 	return 0;
     }
     chkin_("ILUMIN", (ftnlen)6);
-    if (first || s_cmp(abcorr, prvcor, abcorr_len, (ftnlen)5) != 0) {
-
-/*        The aberration correction flag differs from the value it */
-/*        had on the previous call, if any. Analyze the new flag. */
-
-	zzprscor_(abcorr, attblk, abcorr_len);
-	if (failed_()) {
-	    chkout_("ILUMIN", (ftnlen)6);
-	    return 0;
-	}
-
-/*        The aberration correction flag is recognized; save it. */
-
-	s_copy(prvcor, abcorr, (ftnlen)5, abcorr_len);
-
-/*        Set logical flags indicating the attributes of the requested */
-/*        correction: */
-
-/*           XMIT is .TRUE. when the correction is for transmitted */
-/*           radiation. */
-
-/*           USELT is .TRUE. when any type of light time correction */
-/*           (normal or converged Newtonian) is specified. */
-
-/*           USECN indicates converged Newtonian light time correction. */
-
-/*           USESTL indicates stellar aberration corrections. */
-
-
-/*        The above definitions are consistent with those used by */
-/*        ZZPRSCOR. */
-
-	xmit = attblk[4];
-	uselt = attblk[1];
-	usecn = attblk[3];
-	usestl = attblk[2];
-
-/*        Reject an aberration correction flag calling for transmission */
-/*        corrections. */
-
-	if (xmit) {
-	    setmsg_("Aberration correction flag # calls for transmission-sty"
-		    "le corrections.", (ftnlen)70);
-	    errch_("#", abcorr, (ftnlen)1, abcorr_len);
-	    sigerr_("SPICE(NOTSUPPORTED)", (ftnlen)19);
-	    chkout_("ILUMIN", (ftnlen)6);
-	    return 0;
-	}
-
-/*        Reject an aberration correction flag calling for stellar */
-/*        aberration but not light time correction. */
-
-	if (usestl && ! uselt) {
-	    setmsg_("Aberration correction flag # calls for stellar aberrati"
-		    "on but not light time corrections. This combination is n"
-		    "ot expected.", (ftnlen)123);
-	    errch_("#", abcorr, (ftnlen)1, abcorr_len);
-	    sigerr_("SPICE(NOTSUPPORTED)", (ftnlen)19);
-	    chkout_("ILUMIN", (ftnlen)6);
-	    return 0;
-	} else if (attblk[5]) {
-
-/*           Also reject flags calling for relativistic corrections. */
-
-	    setmsg_("Aberration correction flag # calls for relativistic lig"
-		    "ht time correction.", (ftnlen)74);
-	    errch_("#", abcorr, (ftnlen)1, abcorr_len);
-	    sigerr_("SPICE(NOTSUPPORTED)", (ftnlen)19);
-	    chkout_("ILUMIN", (ftnlen)6);
-	    return 0;
-	}
-    }
-
-/*     Obtain integer codes for the target and observer. */
-
-    bods2c_(target, &trgcde, &fnd, target_len);
-    if (! fnd) {
-	setmsg_("The target, '#', is not a recognized name for an ephemeris "
-		"object. The cause of this problem may be that you need an up"
-		"dated version of the SPICE Toolkit. ", (ftnlen)155);
-	errch_("#", target, (ftnlen)1, target_len);
-	sigerr_("SPICE(IDCODENOTFOUND)", (ftnlen)21);
-	chkout_("ILUMIN", (ftnlen)6);
-	return 0;
-    }
-    bods2c_(obsrvr, &obscde, &fnd, obsrvr_len);
-    if (! fnd) {
-	setmsg_("The observer, '#', is not a recognized name for an ephemeri"
-		"s object. The cause of this problem may be that you need an "
-		"updated version of the SPICE Toolkit. ", (ftnlen)157);
-	errch_("#", obsrvr, (ftnlen)1, obsrvr_len);
-	sigerr_("SPICE(IDCODENOTFOUND)", (ftnlen)21);
-	chkout_("ILUMIN", (ftnlen)6);
-	return 0;
-    }
-
-/*     Check the input body codes. If they are equal, signal */
-/*     an error. */
-
-    if (obscde == trgcde) {
-	setmsg_("In computing the sub-solar point, the observing body and ta"
-		"rget body are the same. Both are #.", (ftnlen)94);
-	errch_("#", obsrvr, (ftnlen)1, obsrvr_len);
-	sigerr_("SPICE(BODIESNOTDISTINCT)", (ftnlen)24);
-	chkout_("ILUMIN", (ftnlen)6);
-	return 0;
-    }
-
-/*     Determine the attributes of the frame designated by FIXREF. */
-
-    namfrm_(fixref, &refcde, fixref_len);
-    frinfo_(&refcde, &center, &type__, &typeid, &fnd);
-    if (failed_()) {
-	chkout_("ILUMIN", (ftnlen)6);
-	return 0;
-    }
-    if (! fnd) {
-	setmsg_("Reference frame # is not recognized by the SPICE frame subs"
-		"ystem. Possibly a required frame definition kernel has not b"
-		"een loaded.", (ftnlen)130);
-	errch_("#", fixref, (ftnlen)1, fixref_len);
-	sigerr_("SPICE(NOFRAME)", (ftnlen)14);
-	chkout_("ILUMIN", (ftnlen)6);
-	return 0;
-    }
-
-/*     Make sure that FIXREF is centered at the target body's center. */
-
-    if (center != trgcde) {
-	setmsg_("Reference frame # is not centered at the target body #. The"
-		" ID code of the frame center is #.", (ftnlen)93);
-	errch_("#", fixref, (ftnlen)1, fixref_len);
-	errch_("#", target, (ftnlen)1, target_len);
-	errint_("#", &center, (ftnlen)1);
-	sigerr_("SPICE(INVALIDFRAME)", (ftnlen)19);
-	chkout_("ILUMIN", (ftnlen)6);
-	return 0;
-    }
-
-/*     If necessary, parse the method specification. PRVMTH */
-/*     and the derived flags NEAR and ELIPSD start out with */
-/*     valid values. PRVMTH records the last valid value of */
-/*     METHOD; ELIPSD is the corresponding shape flag. */
-
-    if (s_cmp(method, prvmth, method_len, (ftnlen)80) != 0) {
-
-/*        Parse the computation method specification. Work with a local */
-/*        copy of the method specification that contains no leading or */
-/*        embedded blanks. */
-
-	cmprss_(" ", &c__0, method, locmth, (ftnlen)1, method_len, (ftnlen)80)
-		;
-	ucase_(locmth, locmth, (ftnlen)80, (ftnlen)80);
-
-/*        Check the shape specification. */
-
-	if (s_cmp(locmth, "ELLIPSOID", (ftnlen)80, (ftnlen)9) != 0) {
-	    setmsg_("Computation method argument was <#>; this string must s"
-		    "pecify a supported shape model and computation type. See"
-		    " the header of SUBSLR for details.", (ftnlen)145);
-	    errch_("#", method, (ftnlen)1, method_len);
-	    sigerr_("SPICE(INVALIDMETHOD)", (ftnlen)20);
-	    chkout_("ILUMIN", (ftnlen)6);
-	    return 0;
-	}
-
-/*        At this point the method specification has passed our tests. */
-/*        Use the flag ELIPSD to indicate that the shape is modeled as */
-/*        an ellipsoid (which is true, for now). */
-
-	elipsd = TRUE_;
-
-/*        Save the current value of METHOD. */
-
-	s_copy(prvmth, method, (ftnlen)80, method_len);
-    }
-
-/*     Get the sign S prefixing LT in the expression for TRGEPC. */
-/*     When light time correction is not used, setting S = 0 */
-/*     allows us to seamlessly set TRGEPC equal to ET. */
-
-    if (uselt) {
-	s = -1.;
-    } else {
-	s = 0.;
-    }
-
-/*     Determine the position of the observer in target body-fixed */
-/*     coordinates. This is a first estimate. */
-
-/*         -  Call SPKEZP to compute the position of the target body as */
-/*            seen from the observing body and the light time (LT) */
-/*            between them. We request that the coordinates of POS be */
-/*            returned relative to the body fixed reference frame */
-/*            associated with the target body, using aberration */
-/*            corrections specified by the input argument ABCORR. */
-
-/*         -  Call VMINUS to negate the direction of the vector (OBSPOS) */
-/*            so it will be the position of the observer as seen from */
-/*            the target body in target body fixed coordinates. */
-
-/*            Note that this result is not the same as the result of */
-/*            calling SPKEZP with the target and observer switched. We */
-/*            computed the vector FROM the observer TO the target in */
-/*            order to get the proper light time and stellar aberration */
-/*            corrections (if requested). Now we need the inverse of */
-/*            that corrected vector in order to compute the sub-solar */
-/*            point. */
-
-    spkezp_(&trgcde, et, fixref, abcorr, &obscde, tpos, &lt, fixref_len, 
-	    abcorr_len);
-    if (failed_()) {
-	chkout_("ILUMIN", (ftnlen)6);
-	return 0;
-    }
-
-/*     Negate the target's position to obtain the position of the */
-/*     observer relative to the target. */
-
-    vminus_(tpos, obspos);
-    range = vnorm_(obspos);
-    if (range == 0.) {
-
-/*        We've already ensured that observer and target are */
-/*        distinct, so this should be a very unusual occurrence. */
-
-	setmsg_("Observer-target distance is zero. Observer is #; target is "
-		"#.", (ftnlen)61);
-	errch_("#", obsrvr, (ftnlen)1, obsrvr_len);
-	errch_("#", target, (ftnlen)1, target_len);
-	sigerr_("SPICE(NOSEPARATION)", (ftnlen)19);
-	chkout_("ILUMIN", (ftnlen)6);
-	return 0;
-    }
-
-/*     Make a first estimate of the light time and target epoch. Note */
-/*     that TRGEPC will equal ET if we're performing an uncorrected */
-/*     computation, since in that case, S will be zero. */
-
-    vsub_(spoint, obspos, srfvec);
-    dist = vnorm_(srfvec);
-    lt = dist / clight_();
-    *trgepc = *et + s * lt;
-
-/*     If we're using light time corrections, refine our light time, */
-/*     target epoch, and observer position estimates. */
-
-    if (uselt) {
-
-/*        We'll now make improved light time, target epoch, and observer */
-/*        position estimates using the previous estimates. The number of */
-/*        iterations depends on the light time correction type. */
-
-	if (usecn) {
-	    nitr = 5;
-	} else {
-	    nitr = 1;
-	}
-
-/*        Get the J2000-relative state of the observer relative to */
-/*        the solar system barycenter at ET. */
-
-	spkssb_(&obscde, et, "J2000", ssbost, (ftnlen)5);
-	if (failed_()) {
-	    chkout_("ILUMIN", (ftnlen)6);
-	    return 0;
-	}
-
-/*        Initialize the variables required to evaluate the */
-/*        loop termination condition. */
-
-	i__ = 0;
-	ltdiff = 1.;
-	etdiff = 1.;
-	prevlt = lt;
-	prevet = *trgepc;
-	while(i__ < nitr && ltdiff > abs(lt) * 1e-17 && etdiff > 0.) {
-
-/*           Get the J2000-relative state of the target relative to */
-/*           the solar system barycenter at the target epoch. */
-
-	    spkssb_(&trgcde, trgepc, "J2000", ssbtst, (ftnlen)5);
-	    if (failed_()) {
-		chkout_("ILUMIN", (ftnlen)6);
-		return 0;
-	    }
-
-/*           Find the position of the observer relative to the target. */
-/*           Convert this vector from the J2000 frame to the target */
-/*           frame at TRGEPC. */
-
-	    vsub_(ssbost, ssbtst, j2pos);
-	    pxform_("J2000", fixref, trgepc, xform, (ftnlen)5, fixref_len);
-	    if (failed_()) {
-		chkout_("ILUMIN", (ftnlen)6);
-		return 0;
-	    }
-	    mxv_(xform, j2pos, obspos);
-
-/*           If we're using stellar aberration corrections, adjust the */
-/*           observer position to account for the stellar aberration */
-/*           correction applicable to SPOINT. */
-
-	    if (usestl) {
-
-/*              We want to apply the stellar aberration correction that */
-/*              applies to our current estimate of the sub-solar point */
-/*              location, NOT the correction for the target body's */
-/*              center. In most cases the two corrections will be */
-/*              similar, but they might not be---consider the case of a */
-/*              highly prolate target body where the observer is close */
-/*              to one "end" of the body. */
-
-/*              Find the vector from the observer to the estimated */
-/*              sub-solar point. Find the stellar aberration offset */
-/*              STLOFF for this vector. Note that all vectors are */
-/*              expressed relative to the target body-fixed frame at */
-/*              TRGEPC. We must perform our corrections in an inertial */
-/*              frame. */
-
-		vsub_(spoint, obspos, subvec);
-		mtxv_(xform, subvec, subvj2);
-
-/*              Note that we don't handle the transmission */
-/*              case here. */
-
-		stelab_(subvj2, &ssbost[3], corvj2);
-		mxv_(xform, corvj2, corpos);
-		vsub_(corpos, subvec, stloff);
-
-/*              In principle, we want to shift the target body position */
-/*              relative to the solar system barycenter by STLOFF, but */
-/*              we can skip this step and just re-compute the observer's */
-/*              location relative to the target body's center by */
-/*              subtracting off STLOFF. */
-
-		vsub_(obspos, stloff, vtemp);
-		vequ_(vtemp, obspos);
-	    }
-	    dist = vdist_(obspos, spoint);
-
-/*           Compute a new light time estimate and new target epoch. */
-
-	    lt = dist / clight_();
-	    *trgepc = *et + s * lt;
-
-/*           At this point, we have new estimates of the sub-solar point */
-/*           SPOINT, the observer altitude DIST, the target epoch TRGEPC, */
-/*           and the position of the observer relative to the target */
-/*           OBSPOS. */
-
-/*           We use the d.p. identity function TOUCHD to force the */
-/*           compiler to create double precision arguments from the */
-/*           differences LT-PREVLT and TRGEPC-PREVET. Some compilers */
-/*           will perform extended-precision register arithmetic, which */
-/*           can prevent a difference from rounding to zero. Simply */
-/*           storing the result of the subtraction in a double precision */
-/*           variable doesn't solve the problem, because that variable */
-/*           can be optimized out of existence. */
-
-	    d__2 = lt - prevlt;
-	    ltdiff = (d__1 = touchd_(&d__2), abs(d__1));
-	    d__2 = *trgepc - prevet;
-	    etdiff = (d__1 = touchd_(&d__2), abs(d__1));
-	    prevlt = lt;
-	    prevet = *trgepc;
-	    ++i__;
-	}
-    }
-
-/*     Find the body-fixed position of the Sun as seen from the target */
-/*     at TRGEPC. */
-
-    spkezp_(&c__10, trgepc, fixref, abcorr, &trgcde, sunpos, &slt, fixref_len,
-	     abcorr_len);
-    if (failed_()) {
-	chkout_("ILUMIN", (ftnlen)6);
-	return 0;
-    }
-
-/*     Now we'll modify the target-Sun vector to take into account the */
-/*     offset between the target center and the surface point of */
-/*     interest; we want the vector to point from the surface point to */
-/*     Sun. */
-
-    vsub_(sunpos, spoint, offsun);
-
-/*     Let OFFOBS be the offset observer position: this vector */
-/*     points from SPOINT to the observer. */
-
-    vsub_(spoint, obspos, srfvec);
-    vminus_(srfvec, offobs);
-
-/*     Find the surface normal at SPOINT. This computation depends */
-/*     on target body shape model. */
-
-    if (elipsd) {
-
-/*        We'll need the radii of the target body. */
-
-	bodvcd_(&trgcde, "RADII", &c__3, &n, radii, (ftnlen)5);
-	if (failed_()) {
-	    chkout_("ILUMIN", (ftnlen)6);
-	    return 0;
-	}
-	surfnm_(radii, &radii[1], &radii[2], spoint, normal);
-    } else {
-
-/*        We've already checked the computation method input argument, */
-/*        so we don't expect to arrive here. This code is present for */
-/*        safety. */
-
-	setmsg_("The computation method # was not recognized. ", (ftnlen)45);
-	errch_("#", method, (ftnlen)1, method_len);
-	sigerr_("SPICE(INVALIDMETHOD)", (ftnlen)20);
-	chkout_("ILUMIN", (ftnlen)6);
-	return 0;
-    }
-
-/*     Find the illumination angles. VSEP will give us angular */
-/*     separation in radians. */
-
-    *phase = vsep_(offsun, offobs);
-    *solar = vsep_(normal, offsun);
-    *emissn = vsep_(normal, offobs);
-
-/*     TRGEPC and SRFVEC have already been set. */
-
+    illumg_(method, target, "10", et, fixref, abcorr, obsrvr, spoint, trgepc, 
+	    srfvec, phase, solar, emissn, method_len, target_len, (ftnlen)2, 
+	    fixref_len, abcorr_len, obsrvr_len);
     chkout_("ILUMIN", (ftnlen)6);
     return 0;
 } /* ilumin_ */

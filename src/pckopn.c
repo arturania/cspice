@@ -10,7 +10,7 @@
 static integer c__2 = 2;
 static integer c__5 = 5;
 
-/* $Procedure      PCKOPN ( PCK, open new file. ) */
+/* $Procedure PCKOPN ( PCK, open new file ) */
 /* Subroutine */ int pckopn_(char *name__, char *ifname, integer *ncomch, 
 	integer *handle, ftnlen name_len, ftnlen ifname_len)
 {
@@ -139,15 +139,21 @@ static integer c__5 = 5;
 
 /*     None. */
 
-/* $ Author_and_Institution */
-
-/*      K.R. Gehringer    (JPL) */
-
 /* $ Literature_References */
 
 /*      None. */
 
+/* $ Author_and_Institution */
+
+/*      K.R. Gehringer    (JPL) */
+
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.1, 03-JAN-2014 (EDW) */
+
+/*        Minor edits to Procedure; clean trailing whitespace. */
+/*        Corrected order of header sections to conform to NAIF */
+/*        standard. */
 
 /* -    SPICELIB Version 2.0.0, 09-NOV-2006 (NJB) */
 

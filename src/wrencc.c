@@ -358,6 +358,26 @@ static integer c__1 = 1;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.28.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-INTEL. */
+
+/* -    SPICELIB Version 1.27.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 1.26.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-GFORTRAN. */
+
+/* -    SPICELIB Version 1.25.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 1.24.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GCC_C. */
+
 /* -    SPICELIB Version 1.23.0, 13-MAY-2010 (BVS) */
 
 /*        Updated for SUN-SOLARIS-INTEL. */
@@ -620,27 +640,27 @@ static integer c__1 = 1;
 		i__1 = encpos;
 		s_copy(encchr + i__1, hexdig + ((i__2 = hibits) < 16 && 0 <= 
 			i__2 ? i__2 : s_rnge("hexdig", i__2, "wrencc_", (
-			ftnlen)644)), encpos + 1 - i__1, (ftnlen)1);
+			ftnlen)664)), encpos + 1 - i__1, (ftnlen)1);
 		i__1 = encpos + 1;
 		s_copy(encchr + i__1, hexdig + ((i__2 = lobits) < 16 && 0 <= 
 			i__2 ? i__2 : s_rnge("hexdig", i__2, "wrencc_", (
-			ftnlen)645)), encpos + 2 - i__1, (ftnlen)1);
+			ftnlen)665)), encpos + 2 - i__1, (ftnlen)1);
 	    } else if (room == 1) {
 		i__1 = encpos;
 		s_copy(encchr + i__1, hexdig + ((i__2 = hibits) < 16 && 0 <= 
 			i__2 ? i__2 : s_rnge("hexdig", i__2, "wrencc_", (
-			ftnlen)649)), encpos + 1 - i__1, (ftnlen)1);
+			ftnlen)669)), encpos + 1 - i__1, (ftnlen)1);
 		*(unsigned char *)lftovr = *(unsigned char *)&hexdig[(i__1 = 
 			lobits) < 16 && 0 <= i__1 ? i__1 : s_rnge("hexdig", 
-			i__1, "wrencc_", (ftnlen)650)];
+			i__1, "wrencc_", (ftnlen)670)];
 		*(unsigned char *)&lftovr[1] = ' ';
 	    } else {
 		*(unsigned char *)lftovr = *(unsigned char *)&hexdig[(i__1 = 
 			hibits) < 16 && 0 <= i__1 ? i__1 : s_rnge("hexdig", 
-			i__1, "wrencc_", (ftnlen)655)];
+			i__1, "wrencc_", (ftnlen)675)];
 		*(unsigned char *)&lftovr[1] = *(unsigned char *)&hexdig[(
 			i__1 = lobits) < 16 && 0 <= i__1 ? i__1 : s_rnge(
-			"hexdig", i__1, "wrencc_", (ftnlen)656)];
+			"hexdig", i__1, "wrencc_", (ftnlen)676)];
 	    }
 
 /*           Increment the character buffer pointers, including the */

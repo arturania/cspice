@@ -166,8 +166,8 @@ static integer c__1 = 1;
 /*     data that is written as well as data that is read.  In any case, */
 /*     the data will be flushed to the file at the time the file is */
 /*     closed, if not earlier.  A physical write of all buffered */
-/*     records can be forced by calling the SPICELIB routine DASWUR */
-/*     ( DAS, write updated records ). */
+/*     records can be forced by calling the SPICELIB routine DASWBR */
+/*     (DAS, write buffered records). */
 
 /*     In order to append character data to a DAS file, filling in a */
 /*     range of character logical addresses that starts immediately */
@@ -267,6 +267,13 @@ static integer c__1 = 1;
 /*     W.L. Taber     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.3.0 10-APR-2014 (NJB) */
+
+/*        Deleted declarations of unused parameters. */
+
+/*        Corrected header comments: routine that flushes */
+/*        written, buffered records is DASWBR, not DASWUR. */
 
 /* -    SPICELIB Version 1.2.1 19-DEC-1995 (NJB) */
 

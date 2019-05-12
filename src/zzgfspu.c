@@ -12,10 +12,11 @@ static integer c__2 = 2;
 
 /* $Procedure ZZGFSPU ( Private - GF, angular separation routines ) */
 /* Subroutine */ int zzgfspu_0_(int n__, char *of, char *from, char *shape, 
-	char *frame, doublereal *refval, doublereal *et, char *abcorr, 
-	logical *decres, logical *lssthn, doublereal *sep, ftnlen of_len, 
+	char *frame, doublereal *et, U_fp udfunc, char *abcorr, logical *
+	decres, doublereal *sep, char *xabcr, integer *xbod, char *yref, char 
+	*xref, integer *xobs, doublereal *xrad, integer *xshp, ftnlen of_len, 
 	ftnlen from_len, ftnlen shape_len, ftnlen frame_len, ftnlen 
-	abcorr_len)
+	abcorr_len, ftnlen xabcr_len, ftnlen yref_len, ftnlen xref_len)
 {
     /* Initialized data */
 
@@ -38,7 +39,6 @@ static integer c__2 = 2;
 	    char *, char *, ftnlen, ftnlen);
     integer class__;
     logical found;
-    static doublereal svang;
     extern doublereal dvsep_(doublereal *, doublereal *);
     static char svref[32];
     static integer svobs;
@@ -54,15 +54,14 @@ static integer c__2 = 2;
     static integer svshp1, svshp2;
     doublereal lt, dtheta;
     extern integer isrchc_(char *, integer *, char *, ftnlen, ftnlen);
+    static char svabcr[32];
     logical attblk[15];
     integer clssid;
-    static char svabcr[32];
     extern /* Subroutine */ int namfrm_(char *, integer *, ftnlen), frinfo_(
 	    integer *, integer *, integer *, integer *, logical *), sigerr_(
 	    char *, ftnlen), chkout_(char *, ftnlen), setmsg_(char *, ftnlen),
 	     errint_(char *, integer *, ftnlen), cmprss_(char *, integer *, 
 	    char *, char *, ftnlen, ftnlen, ftnlen);
-    doublereal seprtn;
     extern logical return_(void);
     doublereal pv1[6], pv2[6];
     integer ctr1, ctr2;
@@ -228,19 +227,17 @@ static integer c__2 = 2;
 
 /* $ Brief_I/O */
 
-/*     VARIABLE  I/O  DESCRIPTION */
+/*     VARIABLE  I/O  Entry points */
 /*     --------  ---  -------------------------------------------------- */
-/*     OF         I   Names of the two targets */
-/*     FROM       I   Name of the observing body */
-/*     SHAPE      I   Names of the shape descriptions for OF */
-/*     REFVAL     I   Anglular reference value for comparison */
-/*     ET         I   An epoch in ephemeris seconds past J2000 TDB */
-/*     ABCORR     I   Aberration correction flag */
-/*     DECRES     O   .TRUE. if angular separation is decreasing .FALSE. */
-/*                    otherwise */
-/*     LSSTHN     O   .TRUE. is angular separation is less than REFVAL, */
-/*                    .FALSE. otherwise */
-/*     SEP        O   Angular separation at time ET */
+/*     OF         I   ZZGFSPIN */
+/*     FROM       I   ZZGFSPIN */
+/*     SHAPE      I   ZZGFSPIN */
+/*     FRAME      I   ZZGFSPIN */
+/*     ET         I   ZZGFSPDC, ZZGFSPGQ */
+/*     ABCORR     I   ZZGFSPIN */
+/*     UDFUNC     I   ZZGFSPDC */
+/*     DECRES     O   ZZGFSPDC */
+/*     SEP        O   ZZGFSPGQ */
 
 /* $ Detailed_Input */
 
@@ -268,10 +265,6 @@ static integer c__2 = 2;
 /*     FRAME    the string array naming the body-fixed reference frames */
 /*              corresponding to OF. The relation between FRAME */
 /*              and OF is 1-to-1. */
-
-/*     REFVAL   the double precision value of the angle (in radians) */
-/*              against which to compare the angular separation of the */
-/*              two bodies. */
 
 /*     ET       is the time in second past J2000 at which one wants */
 /*              to determine an event condition. */
@@ -326,10 +319,6 @@ static integer c__2 = 2;
 /*     DECRES   is .TRUE. if the angular separation between the */
 /*              objects is decreasing.  Otherwise it is .FALSE. */
 
-/*     LSSTHN   is .TRUE. if the angular separation between the two */
-/*              bodies is less than the reference angle at time ET */
-/*              and .FALSE. otherwise. */
-
 /*     SEP      is the angular separation between SVBOD1 and SVBOD2 as */
 /*              seen from SVOBS at time ET. */
 
@@ -345,7 +334,7 @@ static integer c__2 = 2;
 
 /* $ Exceptions */
 
-/*     None. */
+/*     1) SPICE(BOGUSENTRY) signals if a direct call to ZZGFSPU occurs. */
 
 /* $ Files */
 
@@ -362,15 +351,10 @@ static integer c__2 = 2;
 /*                     prior to attempting to solve for any angular */
 /*                     separation event. */
 
-/*        ZZGFSPUR --- updates reference value REFVAL. */
-
 /*        ZZGFSPDC --- determines whether or not angular separation is */
 /*                     decreasing at some time. */
 
-/*        ZZGFSPLT --- determines whether or not angular separation is */
-/*                     less than REFVAL */
-
-/*        ZZGFGSEP --- returns the angular separation of the two */
+/*        ZZGFSPGQ --- returns the angular separation of the two */
 /*                     objects of interest as a function of ET. */
 
 /* $ Examples */
@@ -393,6 +377,22 @@ static integer c__2 = 2;
 /*     L.S. Elson     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB version 2.0.0 27-JUN-2012 (EDW) */
+
+/*        Code edits to implement use of ZZGFRELX. */
+/*        These edits include removal of unneeded routines: */
+
+/*           ZZGFSPUR */
+/*           ZZGFSPLT */
+
+/*        and corresponding unused variables. */
+
+/*        Routine ZZGFGSEP renamed to ZZGFSPGQ to match geometry finder */
+/*        naming convention. */
+
+/*        Implemented a proper Exceptions section. Update to header */
+/*        entries. */
 
 /* -    SPICELIB Version 1.1.0, 29-DEC-2009 (NJB) (EDW) */
 
@@ -437,14 +437,21 @@ static integer c__2 = 2;
 	}
     if (frame) {
 	}
+    if (xbod) {
+	}
+    if (xref) {
+	}
+    if (xrad) {
+	}
+    if (xshp) {
+	}
 
     /* Function Body */
     switch(n__) {
 	case 1: goto L_zzgfspin;
-	case 2: goto L_zzgfspur;
-	case 3: goto L_zzgfspdc;
-	case 4: goto L_zzgfgsep;
-	case 5: goto L_zzgfsplt;
+	case 2: goto L_zzgfspdc;
+	case 3: goto L_zzgfspgq;
+	case 4: goto L_zzgfspx;
 	}
 
 
@@ -500,10 +507,9 @@ L_zzgfspin:
 /* $ Declarations */
 
 /*      CHARACTER*(*)         OF   ( 2 ) */
-/*      INTEGER               FROM */
+/*      CHARACTER*(*)         FROM */
 /*      CHARACTER*(*)         SHAPE( 2 ) */
 /*      CHARACTER*(*)         FRAME( 2 ) */
-/*      DOUBLE PRECISION      REFVAL */
 /*      CHARACTER*(*)         ABCORR */
 
 /* $ Brief_I/O */
@@ -514,7 +520,6 @@ L_zzgfspin:
 /*     FROM       I   Observer name */
 /*     SHAPE      I   Array of shape IDs corresponding to OF */
 /*     FRAME      I   Array of frame names corresponding to OF */
-/*     REFVAL     I   Value angles will be compared to. */
 /*     ABCORR     I   Aberration correction flag. */
 
 /* $ Detailed_Input */
@@ -526,7 +531,7 @@ L_zzgfspin:
 
 /*     SHAPE    the string array naming the geometric model used to */
 /*              represent the shapes of OF. The relation between SHAPE */
-/*              and OF is 1-to-1. */
+/*              and OF is 1-to-1 and onto. */
 
 /*              Models supported by this routine: */
 
@@ -543,10 +548,6 @@ L_zzgfspin:
 /*     FRAME    the string array naming the body-fixed reference frames */
 /*              corresponding to OF. The relation between FRAME */
 /*              and OF is 1-to-1. */
-
-/*     REFVAL   the double precision value of the angle (in radians) */
-/*              against which to compare the angular separation of the */
-/*              two bodies. */
 
 /*     ABCORR   the string description of the aberration corrections */
 /*              to apply to the state evaluations to account for */
@@ -605,7 +606,41 @@ L_zzgfspin:
 
 /* $ Exceptions */
 
-/*     None. */
+/*     1) SPICE(IDCODENOTFOUND) signals if the object name for target 1, */
+/*        OF(1), is not a recognized name. */
+
+/*     2) SPICE(IDCODENOTFOUND) signals if the object name for target 2, */
+/*        OF(2), is not a recognized name. */
+
+/*     3) SPICE(IDCODENOTFOUND) signals if the object name for the */
+/*        observer, FROM, is not a recognized name. */
+
+/*     4) SPICE(BODIESNOTDISTINCT) signals if the three objects */
+/*        associated with an ANGULAR SEPARATION search are not distinct. */
+
+/*     5) SPICE(NOTRECOGNIZED) signals if the body shape for target 1, */
+/*        SHAPE(1), is not recognized. */
+
+/*     6) SPICE(BUG) signals if the SHAPE(1) value lacks a corresponding */
+/*        case block. This indicates a programming error. */
+
+/*     7) SPICE(NOTRECOGNIZED) signals if the body shape for target 2, */
+/*        SHAPE(2), is not recognized. */
+
+/*     8) SPICE(BUG) signals if the SHAPE(2) value lacks a corresponding */
+/*        case block. This indicates a programming error. */
+
+/*     9) SPICE(NOFRAME) signals if frame subsystem did not recognize */
+/*         frame name FRAME(1). */
+
+/*     10) SPICE(INVALIDFRAME) signals if the reference frame associated */
+/*         with target body 1, OF(1), is not centered on target body 1. */
+
+/*     11) SPICE(NOFRAME) signals if frame subsystem did not recognize */
+/*         frame name FRAME(2). */
+
+/*     12) SPICE(INVALIDFRAME) signals if the reference frame associated */
+/*         with target body 2, OF(2), is not centered on target body 2. */
 
 /* $ Files */
 
@@ -629,11 +664,20 @@ L_zzgfspin:
 
 /* $ Author_and_Institution */
 
+/*     N.J. Bachman   (JPL) */
 /*     W.L. Taber     (JPL) */
 /*     I.M. Underwood (JPL) */
 /*     L.S. Elson     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB version 2.0.0 27-JUN-2012 (EDW) */
+
+/*        REFVAL removed from routine argument list due to the use */
+/*        of ZZGFRELX to calculate the events. */
+
+/*        Implemented a proper Exceptions section. Update to */
+/*        Author_and_Institution section. */
 
 /* -    SPICELIB Version 1.1.0, 29-DEC-2009 (NJB) (EDW) */
 
@@ -722,7 +766,6 @@ L_zzgfspin:
 	return 0;
     }
     s_copy(svref, ref, (ftnlen)32, (ftnlen)5);
-    svang = *refval;
     s_copy(svref1, frame, (ftnlen)32, frame_len);
     s_copy(svref2, frame + frame_len, (ftnlen)32, frame_len);
 
@@ -758,7 +801,7 @@ L_zzgfspin:
 /*        name to SVSHAP then fails to update the SVSHP1 condition */
 /*        block to respond to the name. Fortran needs SWITCH...CASE. */
 
-	setmsg_("Encountered uncoded shape ID for #. This indicates a bog. P"
+	setmsg_("Encountered uncoded shape ID for #. This indicates a bug. P"
 		"lease contact NAIF.", (ftnlen)78);
 	errch_("#", shape, (ftnlen)1, shape_len);
 	sigerr_("SPICE(BUG)", (ftnlen)10);
@@ -804,7 +847,7 @@ L_zzgfspin:
     }
 
 /*     Confirm the center of the input reference frames correspond */
-/*     to the target bodies for non-point, non-sperical bodies. */
+/*     to the target bodies for non-point, non-spherical bodies. */
 
 /*        FRAME1 centered on TARG1 */
 /*        FRAME2 centered on TARG2 */
@@ -854,115 +897,6 @@ L_zzgfspin:
 	}
     }
     chkout_("ZZGFSPIN", (ftnlen)8);
-    return 0;
-/* $Procedure ZZGFSPUR ( Private - GF, update angular reference value ) */
-
-L_zzgfspur:
-/* $ Abstract */
-
-/*     This is the entry point used for updating the internal reference */
-/*     value. */
-
-/* $ Disclaimer */
-
-/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
-/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
-/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
-/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
-/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
-/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
-/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
-/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
-/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
-/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
-
-/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
-/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
-/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
-/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
-/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
-/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
-
-/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
-/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
-/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
-/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
-
-/* $ Required_Reading */
-
-/*     None. */
-
-/* $ Keywords */
-
-/*     ANGLE */
-/*     GEOMETRY */
-/*     ROOT */
-
-/* $ Declarations */
-
-/*      DOUBLE PRECISION      REFVAL */
-
-/* $ Brief_I/O */
-
-/*     VARIABLE  I/O  DESCRIPTION */
-/*     --------  ---  -------------------------------------------------- */
-/*     REFVAL     I   Anglular reference value for comparison */
-
-/* $ Detailed_Input */
-
-/*     REFVAL     the double precision value of the angle (in radians) */
-/*                against which to compare the angular separation of the */
-/*                two bodies. */
-
-/* $ Detailed_Output */
-
-/*     None */
-
-/* $ Parameters */
-
-/*     None. */
-
-/* $ Exceptions */
-
-/*     None. */
-
-/* $ Files */
-
-/*     None. */
-
-/* $ Particulars */
-
-/*     None. */
-
-/* $ Examples */
-
-/*     None. */
-
-/* $ Restrictions */
-
-/*     None. */
-
-/* $ Literature_References */
-
-/*     None. */
-
-/* $ Author_and_Institution */
-
-/*     W.L. Taber     (JPL) */
-/*     I.M. Underwood (JPL) */
-/*     L.S. Elson     (JPL) */
-
-/* $ Version */
-
-/* -    SPICELIB Version 1.0.0, 17-FEB-2009 (EDW) */
-
-/* -& */
-/* $ Index_Entries */
-
-/*     angular separation update reference value routine */
-
-/* -& */
-    svang = *refval;
     return 0;
 /* $Procedure ZZGFSPDC ( Private - GF, angular separation decreasing) */
 
@@ -1017,7 +951,7 @@ L_zzgfspdc:
 /*     VARIABLE  I/O  DESCRIPTION */
 /*     --------  ---  -------------------------------------------------- */
 /*     ET         I   Ephemeris seconds past J2000 TDB. */
-/*     DECRES     O   .TRUE if angular separation is decreasing .FALSE. */
+/*     DECRES     O   .TRUE. if angular separation is decreasing .FALSE. */
 /*                    otherwise. */
 
 /* $ Detailed_Input */
@@ -1046,10 +980,22 @@ L_zzgfspdc:
 
 /* $ Particulars */
 
-/*     This routine determines whether or not the angular separation */
-/*     between two objects as seen from a third is decreasing. The value */
-/*     of DECRES is .TRUE. if it is, otherwise it is returned as */
-/*     .FALSE. */
+/*     A function f(x) is strictly decreasing at x0 if and only if there */
+/*     exists some delta > 0 such that for all dx satisfying */
+
+/*        0  <  dx  < delta */
+
+/*     we have */
+
+/*        f(x0)       <  f(x0 + dx) */
+
+/*     and */
+
+/*        f(x0 - dx)  <  f(x) */
+
+/*     Note that a strictly decreasing function need not be */
+/*     differentiable in a neighborhood of x0; it can have jump */
+/*     discontinuities in any neighborhood of x0 and even at x0. */
 
 /* $ Examples */
 
@@ -1071,6 +1017,11 @@ L_zzgfspdc:
 /*     L.S. Elson     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB version 2.0.0 18-FEB-2011 (EDW) */
+
+/*        Added UDFUNC to argument list for use of ZZGFRELX when */
+/*        calculating the events. */
 
 /* -    SPICELIB Version 1.0.1 06-JUL-2009 (NJB) (EDW) */
 
@@ -1142,9 +1093,9 @@ L_zzgfspdc:
     }
     chkout_("ZZGFSPDC", (ftnlen)8);
     return 0;
-/* $Procedure ZZGFGSEP ( Private - GF, calculate angular separation ) */
+/* $Procedure ZZGFSPGQ ( Private - GF, calculate angular separation ) */
 
-L_zzgfgsep:
+L_zzgfspgq:
 /* $ Abstract */
 
 /*     Determine the angular separation between the limbs of the two */
@@ -1223,8 +1174,9 @@ L_zzgfgsep:
 
 /* $ Particulars */
 
-/*     This routine determins the apparent angular separation between the */
-/*     limbs of bodies SVBOD1 and SVBOD2 as seen from SVOBS at time ET. */
+/*     This routine determines the apparent angular separation between */
+/*     the limbs of bodies SVBOD1 and SVBOD2 as seen from SVOBS at */
+/*     time ET. */
 
 /* $ Examples */
 
@@ -1246,6 +1198,11 @@ L_zzgfgsep:
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.0.0 17-FEB-2011 (EDW) */
+
+/*        Routine renamed from ZZGFGSEP to ZZGFSPGQ to match geometry */
+/*        finder naming convention. */
+
 /* -    SPICELIB Version 1.0.0 26-AUG-2003 (LSE) */
 
 /* -& */
@@ -1257,13 +1214,12 @@ L_zzgfgsep:
     zzgfspq_(et, &svbod1, &svbod2, &svrad1, &svrad2, &svobs, svabcr, svref, 
 	    sep, (ftnlen)32, (ftnlen)32);
     return 0;
-/* $Procedure ZZGFSPLT  ( Private - GF, angular separation < reference ) */
+/* $Procedure ZZGFSPX ( Private -- GF, retrieve ZZGFSPIN values ) */
 
-L_zzgfsplt:
+L_zzgfspx:
 /* $ Abstract */
 
-/*     Determine whether or not the angular separation between the two */
-/*     bodies is less than the reference value. */
+/*     Retrieve values set in ZZGFSPIN. */
 
 /* $ Disclaimer */
 
@@ -1296,34 +1252,55 @@ L_zzgfsplt:
 
 /* $ Keywords */
 
-/*     ANGLE */
-/*     GEOMETRY */
-/*     ROOT */
+/*     None. */
 
 /* $ Declarations */
 
-/*      DOUBLE PRECISION      ET */
-/*      LOGICAL               LSSTHN */
+/*     None. */
 
 /* $ Brief_I/O */
 
 /*     VARIABLE  I/O  DESCRIPTION */
 /*     --------  ---  -------------------------------------------------- */
-/*     ET         I   Ephemeris seconds past J2000 TDB. */
-/*     LSSTHN     O   True if separation is less than REFVAL, */
-/*                    false otherwise. */
+/*     XABCR      O   Saved value for */
+/*     XBOD1      O   Saved value for */
+/*     XBOD2      O   Saved value for */
+/*     XREF       O   Saved value for */
+/*     XREF1      O   Saved value for */
+/*     XREF2      O   Saved value for */
+/*     XOBS       O   Saved value for */
+/*     XRAD1      O   Saved value for */
+/*     XRAD2      O   Saved value for */
+/*     XSHP1      O   Saved value for */
+/*     XSHP2      O   Saved value for */
 
 /* $ Detailed_Input */
 
-/*     ET         is the time in second past J2000 at which one wants */
-/*                to determine if the angular separation between the */
-/*                two bodies is less than the reference angle. */
+/*     None. */
 
 /* $ Detailed_Output */
 
-/*     LSSTHN     a scalar boolean indicating if the angle between the */
-/*                two bodies is less than the reference angle at */
-/*                time ET. */
+/*     XABCR    initialized via ZZGFSPIN. */
+
+/*     XBOD1    initialized via ZZGFSPIN. */
+
+/*     XBOD2    initialized via ZZGFSPIN. */
+
+/*     XREF     initialized via ZZGFSPIN. */
+
+/*     XREF1    initialized via ZZGFSPIN. */
+
+/*     XREF2    initialized via ZZGFSPIN. */
+
+/*     XOBS     initialized via ZZGFSPIN. */
+
+/*     XRAD1    initialized via ZZGFSPIN. */
+
+/*     XRAD2    initialized via ZZGFSPIN. */
+
+/*     XSHP1    initialized via ZZGFSPIN. */
+
+/*     XSHP2    initialized via ZZGFSPIN. */
 
 /* $ Parameters */
 
@@ -1339,9 +1316,7 @@ L_zzgfsplt:
 
 /* $ Particulars */
 
-/*     This routine determines whether or not the angle between */
-/*     the two objects as seen from SVOBS is less than the reference */
-/*     angle at time ET. */
+/*     None. */
 
 /* $ Examples */
 
@@ -1349,14 +1324,7 @@ L_zzgfsplt:
 
 /* $ Restrictions */
 
-/*     1) Due to the current logic implemented in ZZGFSPU, a direct */
-/*        search for the zero angular separation of two point targets */
-/*        will always fails, i.e., */
-
-/*           OP     = '=' */
-/*           REFVAL = 0.D0. */
-
-/*        Use OP values of 'ABSMIN' or 'LOCMIN' to detect such an event. */
+/*     None. */
 
 /* $ Literature_References */
 
@@ -1364,74 +1332,81 @@ L_zzgfsplt:
 
 /* $ Author_and_Institution */
 
-/*     W.L. Taber     (JPL) */
-/*     I.M. Underwood (JPL) */
-/*     L.S. Elson     (JPL) */
+/*     N.J. Bachman   (JPL) */
+/*     E.D. Wright    (JPL) */
 
 /* $ Version */
 
-/* -    SPICELIB Version 1.0.0  19-FEB-2009 (EDW) */
+/* -    SPICELIB version 1.0.0 24-SEP-2012 (EDW) */
 
 /* -& */
 /* $ Index_Entries */
 
-/*     angular separation less than an angle */
+/*     get saved separation angle parameters */
 
 /* -& */
-    zzgfspq_(et, &svbod1, &svbod2, &svrad1, &svrad2, &svobs, svabcr, svref, &
-	    seprtn, (ftnlen)32, (ftnlen)32);
-    if (seprtn < svang) {
-	*lssthn = TRUE_;
-    } else {
-	*lssthn = FALSE_;
-    }
+    s_copy(xabcr, svabcr, xabcr_len, (ftnlen)32);
+    xbod[0] = svbod1;
+    xbod[1] = svbod2;
+    s_copy(yref, svref, yref_len, (ftnlen)32);
+    s_copy(xref, svref1, xref_len, (ftnlen)32);
+    s_copy(xref + xref_len, svref2, xref_len, (ftnlen)32);
+    *xobs = svobs;
+    xrad[0] = svrad1;
+    xrad[1] = svrad2;
+    xshp[0] = svshp1;
+    xshp[1] = svshp2;
     return 0;
 } /* zzgfspu_ */
 
 /* Subroutine */ int zzgfspu_(char *of, char *from, char *shape, char *frame, 
-	doublereal *refval, doublereal *et, char *abcorr, logical *decres, 
-	logical *lssthn, doublereal *sep, ftnlen of_len, ftnlen from_len, 
-	ftnlen shape_len, ftnlen frame_len, ftnlen abcorr_len)
+	doublereal *et, U_fp udfunc, char *abcorr, logical *decres, 
+	doublereal *sep, char *xabcr, integer *xbod, char *yref, char *xref, 
+	integer *xobs, doublereal *xrad, integer *xshp, ftnlen of_len, ftnlen 
+	from_len, ftnlen shape_len, ftnlen frame_len, ftnlen abcorr_len, 
+	ftnlen xabcr_len, ftnlen yref_len, ftnlen xref_len)
 {
-    return zzgfspu_0_(0, of, from, shape, frame, refval, et, abcorr, decres, 
-	    lssthn, sep, of_len, from_len, shape_len, frame_len, abcorr_len);
+    return zzgfspu_0_(0, of, from, shape, frame, et, udfunc, abcorr, decres, 
+	    sep, xabcr, xbod, yref, xref, xobs, xrad, xshp, of_len, from_len, 
+	    shape_len, frame_len, abcorr_len, xabcr_len, yref_len, xref_len);
     }
 
 /* Subroutine */ int zzgfspin_(char *of, char *from, char *shape, char *frame,
-	 doublereal *refval, char *abcorr, ftnlen of_len, ftnlen from_len, 
-	ftnlen shape_len, ftnlen frame_len, ftnlen abcorr_len)
+	 char *abcorr, ftnlen of_len, ftnlen from_len, ftnlen shape_len, 
+	ftnlen frame_len, ftnlen abcorr_len)
 {
-    return zzgfspu_0_(1, of, from, shape, frame, refval, (doublereal *)0, 
-	    abcorr, (logical *)0, (logical *)0, (doublereal *)0, of_len, 
-	    from_len, shape_len, frame_len, abcorr_len);
+    return zzgfspu_0_(1, of, from, shape, frame, (doublereal *)0, (U_fp)0, 
+	    abcorr, (logical *)0, (doublereal *)0, (char *)0, (integer *)0, (
+	    char *)0, (char *)0, (integer *)0, (doublereal *)0, (integer *)0, 
+	    of_len, from_len, shape_len, frame_len, abcorr_len, (ftnint)0, (
+	    ftnint)0, (ftnint)0);
     }
 
-/* Subroutine */ int zzgfspur_(doublereal *refval)
+/* Subroutine */ int zzgfspdc_(U_fp udfunc, doublereal *et, logical *decres)
 {
-    return zzgfspu_0_(2, (char *)0, (char *)0, (char *)0, (char *)0, refval, (
-	    doublereal *)0, (char *)0, (logical *)0, (logical *)0, (
-	    doublereal *)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
-	    ftnint)0);
+    return zzgfspu_0_(2, (char *)0, (char *)0, (char *)0, (char *)0, et, 
+	    udfunc, (char *)0, decres, (doublereal *)0, (char *)0, (integer *)
+	    0, (char *)0, (char *)0, (integer *)0, (doublereal *)0, (integer *
+	    )0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
+	    ftnint)0, (ftnint)0, (ftnint)0);
     }
 
-/* Subroutine */ int zzgfspdc_(doublereal *et, logical *decres)
+/* Subroutine */ int zzgfspgq_(doublereal *et, doublereal *sep)
 {
-    return zzgfspu_0_(3, (char *)0, (char *)0, (char *)0, (char *)0, (
-	    doublereal *)0, et, (char *)0, decres, (logical *)0, (doublereal *
-	    )0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
+    return zzgfspu_0_(3, (char *)0, (char *)0, (char *)0, (char *)0, et, (
+	    U_fp)0, (char *)0, (logical *)0, sep, (char *)0, (integer *)0, (
+	    char *)0, (char *)0, (integer *)0, (doublereal *)0, (integer *)0, 
+	    (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, 
+	    (ftnint)0, (ftnint)0);
     }
 
-/* Subroutine */ int zzgfgsep_(doublereal *et, doublereal *sep)
+/* Subroutine */ int zzgfspx_(char *xabcr, integer *xbod, char *yref, char *
+	xref, integer *xobs, doublereal *xrad, integer *xshp, ftnlen 
+	xabcr_len, ftnlen yref_len, ftnlen xref_len)
 {
     return zzgfspu_0_(4, (char *)0, (char *)0, (char *)0, (char *)0, (
-	    doublereal *)0, et, (char *)0, (logical *)0, (logical *)0, sep, (
-	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
-    }
-
-/* Subroutine */ int zzgfsplt_(doublereal *et, logical *lssthn)
-{
-    return zzgfspu_0_(5, (char *)0, (char *)0, (char *)0, (char *)0, (
-	    doublereal *)0, et, (char *)0, (logical *)0, lssthn, (doublereal *
-	    )0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
+	    doublereal *)0, (U_fp)0, (char *)0, (logical *)0, (doublereal *)0,
+	     xabcr, xbod, yref, xref, xobs, xrad, xshp, (ftnint)0, (ftnint)0, 
+	    (ftnint)0, (ftnint)0, (ftnint)0, xabcr_len, yref_len, xref_len);
     }
 

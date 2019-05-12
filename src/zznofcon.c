@@ -43,7 +43,7 @@ static integer c__1 = 1;
     integer sclkid;
     logical havnam[2];
     integer frames[2], center, clssid;
-    char phrase[400];
+    char phrase[600];
     extern /* Subroutine */ int frmnam_(integer *, char *, ftnlen), frinfo_(
 	    integer *, integer *, integer *, integer *, logical *);
     logical ckmiss;
@@ -154,6 +154,11 @@ static integer c__1 = 1;
 /*                 definition depends on parameters supplied via a */
 /*                 frame kernel. */
 
+/*     ALL         indicates any of the above classes. This parameter */
+/*                 is used in APIs that fetch information about frames */
+/*                 of a specified class. */
+
+
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
@@ -164,6 +169,10 @@ static integer c__1 = 1;
 /*     None. */
 
 /* $ Version */
+
+/* -    SPICELIB Version 4.0.0, 08-MAY-2012 (NJB) */
+
+/*       The parameter ALL was added to support frame fetch APIs. */
 
 /* -    SPICELIB Version 3.0.0, 28-MAY-2004 (NJB) */
 
@@ -177,6 +186,9 @@ static integer c__1 = 1;
 /* -    SPICELIB Version 1.0.0, 10-DEC-1995 (WLT) */
 
 /* -& */
+
+/*     End of INCLUDE file frmtyp.inc */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
@@ -294,7 +306,7 @@ static integer c__1 = 1;
 /*     Below are some examples of messages created by this routine. */
 
 
-/*     1)  At epoch 2.8149297000000E+08 TDB (2008 DEC 02 12:29:30.000 */
+/*    1)   At epoch 2.8149297000000E+08 TDB (2008 DEC 02 12:29:30.000 */
 /*         TDB), there is insufficient information available to */
 /*         transform from reference frame -82000 (CASSINI_SC_COORD) to */
 /*         reference frame -41000 (MEX_SPACECRAFT). CASSINI_SC_COORD is */
@@ -309,21 +321,29 @@ static integer c__1 = 1;
 /*         find required CK data could be due to one or more CK files */
 /*         not having been loaded, or to the epoch shown above lying */
 /*         within a coverage gap or beyond the coverage bounds of the */
-/*         loaded CK files. You can use CKBRIEF with the -dump option to */
-/*         display coverage intervals of a CK file. */
+/*         loaded CK files. It is also possible that no loaded CK file */
+/*         has required angular velocity data for the input epoch, even */
+/*         if a loaded CK does have attitude data for that epoch. You */
+/*         can use CKBRIEF with the -dump option to display coverage */
+/*         intervals of a CK file. */
 
-/*     2)  At epoch 2.8149297000000E+08 TDB (2008 DEC 02 12:29:30.000 */
+
+/*    2)   At epoch 2.8149297000000E+08 TDB (2008 DEC 02 12:29:30.000 */
 /*         TDB), there is insufficient information available to */
-/*         transform from reference frame -82000 (CASSINI_SC_COORD) to */
-/*         reference frame 1 (J2000). CASSINI_SC_COORD is a CK frame; a */
-/*         CK file containing data for instrument or structure -82000 at */
-/*         the epoch shown above, as well as a corresponding SCLK */
-/*         kernel, must be loaded in order to use this frame. Failure to */
-/*         find required CK data could be due to one or more CK files */
-/*         not having been loaded, or to the epoch shown above lying */
-/*         within a coverage gap or beyond the coverage bounds of the */
-/*         loaded CK files. You can use CKBRIEF with the -dump option to */
-/*         display coverage intervals of a CK file. */
+/*         transform from reference frame -82360 (CASSINI_ISS_NAC) to */
+/*         reference frame 1 (J2000). Frame CASSINI_ISS_NAC could be */
+/*         transformed to frame -82000 (CASSINI_SC_COORD). The latter is */
+/*         a CK frame; a CK file containing data for instrument or */
+/*         structure -82000 at the epoch shown above, as well as a */
+/*         corresponding SCLK kernel, must be loaded in order to use */
+/*         this frame. Failure to find required CK data could be due to */
+/*         one or more CK files not having been loaded, or to the epoch */
+/*         shown above lying within a coverage gap or beyond the */
+/*         coverage bounds of the loaded CK files. It is also possible */
+/*         that no loaded CK file has required angular velocity data for */
+/*         the input epoch, even if a loaded CK does have attitude data */
+/*         for that epoch. You can use CKBRIEF with the -dump option to */
+
 
 /*     3)  At epoch 2.8149297000000E+08 TDB (2008 DEC 02 12:29:30.000 */
 /*         TDB), there is insufficient information available to */
@@ -342,6 +362,7 @@ static integer c__1 = 1;
 /*         structure -41001, with corresponding SCLK ID -41, is */
 /*         currently loaded. */
 
+
 /*     4)  At epoch 2.8149297000000E+08 TDB (2008 DEC 02 12:29:30.000 */
 /*         TDB), there is insufficient information available to */
 /*         transform from reference frame -82000 (CASSINI_SC_COORD) to */
@@ -349,20 +370,22 @@ static integer c__1 = 1;
 /*         a CK frame; a CK file containing data for instrument or */
 /*         structure -82000 at the epoch shown above, as well as a */
 /*         corresponding SCLK kernel, must be loaded in order to use */
-/*         this frame. No SCLK kernel for instrument or structure */
-/*         -82000, with corresponding SCLK ID -82, is currently loaded. */
-/*         Frame MEX_SPACECRAFT could be transformed to frame -41001 */
-/*         (MEX_SC_REF). The latter is a CK frame; a CK file containing */
-/*         data for instrument or structure -41001 at the epoch shown */
-/*         above, as well as a corresponding SCLK kernel, must be loaded */
-/*         in order to use this frame. For a CK frame for which the */
-/*         corresponding SCLK kernel has been loaded, failure to find */
-/*         required CK data could be due to one or more CK files not */
-/*         having been loaded, or to the epoch shown above lying within */
-/*         a coverage gap or beyond the coverage bounds of the loaded CK */
-/*         files. You can use CKBRIEF with the -dump option to display */
-/*         coverage intervals of a CK file. */
-
+/*         this frame. Frame MEX_SPACECRAFT could be transformed to */
+/*         frame -41001 (MEX_SC_REF). The latter is a CK frame; a CK */
+/*         file containing data for instrument or structure -41001 at */
+/*         the epoch shown above, as well as a corresponding SCLK */
+/*         kernel, must be loaded in order to use this frame. No SCLK */
+/*         kernel for instrument or structure -41001, with corresponding */
+/*         SCLK ID -41, is currently loaded. For a CK frame for which */
+/*         the corresponding SCLK kernel has been loaded, failure to */
+/*         find required CK data could be due to one or more CK files */
+/*         not having been loaded, or to the epoch shown above lying */
+/*         within a coverage gap or beyond the coverage bounds of the */
+/*         loaded CK files. It is also possible that no loaded CK file */
+/*         has required angular velocity data for the input epoch, even */
+/*         if a loaded CK does have attitude data for that epoch. You */
+/*         can use CKBRIEF with the -dump option to display coverage */
+/*         intervals of a CK file. */
 
 /* $ Restrictions */
 
@@ -380,6 +403,12 @@ static integer c__1 = 1;
 /*     N.J. Bachman   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 09-SEP-2013 (NJB) */
+
+/*        Long error message for missing CK data now */
+/*        mentions the possibility of missing angular */
+/*        velocity data. */
 
 /* -    SPICELIB Version 1.0.0, 14-DEC-2008 (NJB) */
 
@@ -439,22 +468,22 @@ static integer c__1 = 1;
     }
     for (i__ = 1; i__ <= 2; ++i__) {
 	if (s_cmp(name__ + (((i__1 = i__ - 1) < 2 && 0 <= i__1 ? i__1 : 
-		s_rnge("name", i__1, "zznofcon_", (ftnlen)366)) << 5), " ", (
+		s_rnge("name", i__1, "zznofcon_", (ftnlen)383)) << 5), " ", (
 		ftnlen)32, (ftnlen)1) == 0) {
 	    s_copy(name__ + (((i__1 = i__ - 1) < 2 && 0 <= i__1 ? i__1 : 
-		    s_rnge("name", i__1, "zznofcon_", (ftnlen)368)) << 5), 
+		    s_rnge("name", i__1, "zznofcon_", (ftnlen)385)) << 5), 
 		    "Name not available", (ftnlen)32, (ftnlen)18);
 	    havnam[(i__1 = i__ - 1) < 2 && 0 <= i__1 ? i__1 : s_rnge("havnam",
-		     i__1, "zznofcon_", (ftnlen)369)] = FALSE_;
+		     i__1, "zznofcon_", (ftnlen)386)] = FALSE_;
 	} else {
 	    havnam[(i__1 = i__ - 1) < 2 && 0 <= i__1 ? i__1 : s_rnge("havnam",
-		     i__1, "zznofcon_", (ftnlen)371)] = TRUE_;
+		     i__1, "zznofcon_", (ftnlen)388)] = TRUE_;
 	}
 	if (s_cmp(bname + (((i__1 = i__ - 1) < 2 && 0 <= i__1 ? i__1 : s_rnge(
-		"bname", i__1, "zznofcon_", (ftnlen)374)) << 5), " ", (ftnlen)
+		"bname", i__1, "zznofcon_", (ftnlen)391)) << 5), " ", (ftnlen)
 		32, (ftnlen)1) == 0) {
 	    s_copy(bname + (((i__1 = i__ - 1) < 2 && 0 <= i__1 ? i__1 : 
-		    s_rnge("bname", i__1, "zznofcon_", (ftnlen)375)) << 5), 
+		    s_rnge("bname", i__1, "zznofcon_", (ftnlen)392)) << 5), 
 		    "Name not available", (ftnlen)32, (ftnlen)18);
 	}
     }
@@ -467,10 +496,10 @@ static integer c__1 = 1;
 	    errmsg_len);
     for (i__ = 1; i__ <= 2; ++i__) {
 	repmi_(errmsg, "#", &frames[(i__1 = i__ - 1) < 2 && 0 <= i__1 ? i__1 :
-		 s_rnge("frames", i__1, "zznofcon_", (ftnlen)391)], errmsg, 
+		 s_rnge("frames", i__1, "zznofcon_", (ftnlen)408)], errmsg, 
 		errmsg_len, (ftnlen)1, errmsg_len);
 	repmc_(errmsg, "@", name__ + (((i__1 = i__ - 1) < 2 && 0 <= i__1 ? 
-		i__1 : s_rnge("name", i__1, "zznofcon_", (ftnlen)392)) << 5), 
+		i__1 : s_rnge("name", i__1, "zznofcon_", (ftnlen)409)) << 5), 
 		errmsg, errmsg_len, (ftnlen)1, (ftnlen)32, errmsg_len);
     }
 
@@ -480,30 +509,30 @@ static integer c__1 = 1;
 
     for (i__ = 1; i__ <= 2; ++i__) {
 	if (frames[(i__1 = i__ - 1) < 2 && 0 <= i__1 ? i__1 : s_rnge("frames",
-		 i__1, "zznofcon_", (ftnlen)403)] != endps[(i__2 = i__ - 1) < 
+		 i__1, "zznofcon_", (ftnlen)420)] != endps[(i__2 = i__ - 1) < 
 		2 && 0 <= i__2 ? i__2 : s_rnge("endps", i__2, "zznofcon_", (
-		ftnlen)403)]) {
+		ftnlen)420)]) {
 	    s_copy(phrase, "Frame # could be transformed to frame # (@).", (
-		    ftnlen)400, (ftnlen)44);
+		    ftnlen)600, (ftnlen)44);
 	    if (havnam[(i__1 = i__ - 1) < 2 && 0 <= i__1 ? i__1 : s_rnge(
-		    "havnam", i__1, "zznofcon_", (ftnlen)407)]) {
+		    "havnam", i__1, "zznofcon_", (ftnlen)424)]) {
 		repmc_(phrase, "#", name__ + (((i__1 = i__ - 1) < 2 && 0 <= 
 			i__1 ? i__1 : s_rnge("name", i__1, "zznofcon_", (
-			ftnlen)408)) << 5), phrase, (ftnlen)400, (ftnlen)1, (
-			ftnlen)32, (ftnlen)400);
+			ftnlen)425)) << 5), phrase, (ftnlen)600, (ftnlen)1, (
+			ftnlen)32, (ftnlen)600);
 	    } else {
 		repmi_(phrase, "#", &frames[(i__1 = i__ - 1) < 2 && 0 <= i__1 
 			? i__1 : s_rnge("frames", i__1, "zznofcon_", (ftnlen)
-			410)], phrase, (ftnlen)400, (ftnlen)1, (ftnlen)400);
+			427)], phrase, (ftnlen)600, (ftnlen)1, (ftnlen)600);
 	    }
 	    repmi_(phrase, "#", &endps[(i__1 = i__ - 1) < 2 && 0 <= i__1 ? 
-		    i__1 : s_rnge("endps", i__1, "zznofcon_", (ftnlen)413)], 
-		    phrase, (ftnlen)400, (ftnlen)1, (ftnlen)400);
+		    i__1 : s_rnge("endps", i__1, "zznofcon_", (ftnlen)430)], 
+		    phrase, (ftnlen)600, (ftnlen)1, (ftnlen)600);
 	    repmc_(phrase, "@", bname + (((i__1 = i__ - 1) < 2 && 0 <= i__1 ? 
-		    i__1 : s_rnge("bname", i__1, "zznofcon_", (ftnlen)414)) <<
-		     5), phrase, (ftnlen)400, (ftnlen)1, (ftnlen)32, (ftnlen)
-		    400);
-	    suffix_(phrase, &c__1, errmsg, (ftnlen)400, errmsg_len);
+		    i__1 : s_rnge("bname", i__1, "zznofcon_", (ftnlen)431)) <<
+		     5), phrase, (ftnlen)600, (ftnlen)1, (ftnlen)32, (ftnlen)
+		    600);
+	    suffix_(phrase, &c__1, errmsg, (ftnlen)600, errmsg_len);
 
 /*           The error messages below are appended only if they're not */
 /*           redundant. */
@@ -514,7 +543,7 @@ static integer c__1 = 1;
 /*              indicate the instrument ID for which CK data are needed. */
 
 		frinfo_(&endps[(i__1 = i__ - 1) < 2 && 0 <= i__1 ? i__1 : 
-			s_rnge("endps", i__1, "zznofcon_", (ftnlen)427)], &
+			s_rnge("endps", i__1, "zznofcon_", (ftnlen)444)], &
 			center, &class__, &clssid, &found);
 		if (failed_()) {
 		    chkout_("ZZNOFCON", (ftnlen)8);
@@ -526,11 +555,11 @@ static integer c__1 = 1;
 				"containing data for instrument or structure "
 				"# at the epoch shown above, as well as a cor"
 				"responding SCLK kernel, must be loaded in or"
-				"der to use this frame.", (ftnlen)400, (ftnlen)
+				"der to use this frame.", (ftnlen)600, (ftnlen)
 				190);
-			repmi_(phrase, "#", &clssid, phrase, (ftnlen)400, (
-				ftnlen)1, (ftnlen)400);
-			suffix_(phrase, &c__1, errmsg, (ftnlen)400, 
+			repmi_(phrase, "#", &clssid, phrase, (ftnlen)600, (
+				ftnlen)1, (ftnlen)600);
+			suffix_(phrase, &c__1, errmsg, (ftnlen)600, 
 				errmsg_len);
 
 /*                    Find out whether we have SCLK data for this */
@@ -541,13 +570,13 @@ static integer c__1 = 1;
 			    scmiss = TRUE_;
 			    s_copy(phrase, "No SCLK kernel for instrument or"
 				    " structure #, with corresponding SCLK ID"
-				    " #, is currently loaded.", (ftnlen)400, (
+				    " #, is currently loaded.", (ftnlen)600, (
 				    ftnlen)96);
-			    repmi_(phrase, "#", &clssid, phrase, (ftnlen)400, 
-				    (ftnlen)1, (ftnlen)400);
-			    repmi_(phrase, "#", &sclkid, phrase, (ftnlen)400, 
-				    (ftnlen)1, (ftnlen)400);
-			    suffix_(phrase, &c__1, errmsg, (ftnlen)400, 
+			    repmi_(phrase, "#", &clssid, phrase, (ftnlen)600, 
+				    (ftnlen)1, (ftnlen)600);
+			    repmi_(phrase, "#", &sclkid, phrase, (ftnlen)600, 
+				    (ftnlen)1, (ftnlen)600);
+			    suffix_(phrase, &c__1, errmsg, (ftnlen)600, 
 				    errmsg_len);
 			} else {
 
@@ -578,7 +607,7 @@ static integer c__1 = 1;
 /*           indicating the needed CK data. */
 
 	    frinfo_(&frames[(i__1 = i__ - 1) < 2 && 0 <= i__1 ? i__1 : s_rnge(
-		    "frames", i__1, "zznofcon_", (ftnlen)503)], &center, &
+		    "frames", i__1, "zznofcon_", (ftnlen)520)], &center, &
 		    class__, &clssid, &found);
 	    if (failed_()) {
 		chkout_("ZZNOFCON", (ftnlen)8);
@@ -590,24 +619,24 @@ static integer c__1 = 1;
 			    "ta for instrument or structure # at the epoch sh"
 			    "own above, as well as a corresponding SCLK kerne"
 			    "l, must be loaded in order to use this frame.", (
-			    ftnlen)400, (ftnlen)181);
+			    ftnlen)600, (ftnlen)181);
 		    if (havnam[(i__1 = i__ - 1) < 2 && 0 <= i__1 ? i__1 : 
-			    s_rnge("havnam", i__1, "zznofcon_", (ftnlen)522)])
+			    s_rnge("havnam", i__1, "zznofcon_", (ftnlen)539)])
 			     {
 			repmc_(phrase, "#", name__ + (((i__1 = i__ - 1) < 2 &&
 				 0 <= i__1 ? i__1 : s_rnge("name", i__1, 
-				"zznofcon_", (ftnlen)523)) << 5), phrase, (
-				ftnlen)400, (ftnlen)1, (ftnlen)32, (ftnlen)
-				400);
+				"zznofcon_", (ftnlen)540)) << 5), phrase, (
+				ftnlen)600, (ftnlen)1, (ftnlen)32, (ftnlen)
+				600);
 		    } else {
 			repmi_(phrase, "#", &frames[(i__1 = i__ - 1) < 2 && 0 
 				<= i__1 ? i__1 : s_rnge("frames", i__1, "zzn"
-				"ofcon_", (ftnlen)525)], phrase, (ftnlen)400, (
-				ftnlen)1, (ftnlen)400);
+				"ofcon_", (ftnlen)542)], phrase, (ftnlen)600, (
+				ftnlen)1, (ftnlen)600);
 		    }
-		    repmi_(phrase, "#", &clssid, phrase, (ftnlen)400, (ftnlen)
-			    1, (ftnlen)400);
-		    suffix_(phrase, &c__1, errmsg, (ftnlen)400, errmsg_len);
+		    repmi_(phrase, "#", &clssid, phrase, (ftnlen)600, (ftnlen)
+			    1, (ftnlen)600);
+		    suffix_(phrase, &c__1, errmsg, (ftnlen)600, errmsg_len);
 
 /*                 Find out whether we have SCLK data for this */
 /*                 CK ID. */
@@ -617,12 +646,12 @@ static integer c__1 = 1;
 			scmiss = TRUE_;
 			s_copy(phrase, "No SCLK kernel for instrument or str"
 				"ucture #, with corresponding SCLK ID #, is c"
-				"urrently loaded.", (ftnlen)400, (ftnlen)96);
-			repmi_(phrase, "#", &clssid, phrase, (ftnlen)400, (
-				ftnlen)1, (ftnlen)400);
-			repmi_(phrase, "#", &sclkid, phrase, (ftnlen)400, (
-				ftnlen)1, (ftnlen)400);
-			suffix_(phrase, &c__1, errmsg, (ftnlen)400, 
+				"urrently loaded.", (ftnlen)600, (ftnlen)96);
+			repmi_(phrase, "#", &clssid, phrase, (ftnlen)600, (
+				ftnlen)1, (ftnlen)600);
+			repmi_(phrase, "#", &sclkid, phrase, (ftnlen)600, (
+				ftnlen)1, (ftnlen)600);
+			suffix_(phrase, &c__1, errmsg, (ftnlen)600, 
 				errmsg_len);
 		    } else {
 
@@ -663,9 +692,11 @@ static integer c__1 = 1;
 		    " could be due to one or more CK files not having been lo"
 		    "aded, or to the epoch shown above lying within a coverag"
 		    "e gap or beyond the coverage bounds of the loaded CK fil"
-		    "es. You can use CKBRIEF with the -dump option to display"
-		    " coverage intervals of a CK file.", (ftnlen)400, (ftnlen)
-		    361);
+		    "es. It is also possible that no loaded CK file has requi"
+		    "red angular velocity data for the input epoch, even if a"
+		    " loaded CK does have attitude data for that epoch. You c"
+		    "an use CKBRIEF with the -dump option to display coverage"
+		    " intervals of a CK file.", (ftnlen)600, (ftnlen)520);
 	} else {
 
 /*           We have SCLK data but lack CK data. */
@@ -673,11 +704,14 @@ static integer c__1 = 1;
 	    s_copy(phrase, "Failure to find required CK data could be due to"
 		    " one or more CK files not having been loaded, or to the "
 		    "epoch shown above lying within a coverage gap or beyond "
-		    "the coverage bounds of the loaded CK files. You can use "
-		    "CKBRIEF with the -dump option to display coverage interv"
-		    "als of a CK file.", (ftnlen)400, (ftnlen)289);
+		    "the coverage bounds of the loaded CK files. It is also p"
+		    "ossible that no loaded CK file has required angular velo"
+		    "city data for the input epoch, even if a loaded CK does "
+		    "have attitude data for that epoch. You can use CKBRIEF w"
+		    "ith the -dump option to display coverage intervals of a "
+		    "CK file.", (ftnlen)600, (ftnlen)448);
 	}
-	suffix_(phrase, &c__1, errmsg, (ftnlen)400, errmsg_len);
+	suffix_(phrase, &c__1, errmsg, (ftnlen)600, errmsg_len);
     }
     chkout_("ZZNOFCON", (ftnlen)8);
     return 0;

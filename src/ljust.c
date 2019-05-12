@@ -5,12 +5,11 @@
 
 #include "f2c.h"
 
-/* $Procedure      LJUST ( Left justify a character string ) */
+/* $Procedure LJUST ( Left justify a character string ) */
 /* Subroutine */ int ljust_(char *input, char *output, ftnlen input_len, 
 	ftnlen output_len)
 {
     /* Builtin functions */
-    integer s_cmp(char *, char *, ftnlen, ftnlen);
     /* Subroutine */ int s_copy(char *, char *, ftnlen, ftnlen);
     integer i_len(char *, ftnlen);
 
@@ -19,7 +18,7 @@
 
 /* $ Abstract */
 
-/*      Left justify a character string. */
+/*     Left justify a character string. */
 
 /* $ Disclaimer */
 
@@ -48,29 +47,29 @@
 
 /* $ Required_Reading */
 
-/*      None. */
+/*     None. */
 
 /* $ Keywords */
 
-/*      ASCII,  CHARACTER,  STRING */
+/*     ASCII,  CHARACTER,  STRING */
 
 /* $ Declarations */
 /* $ Brief_I/O */
 
-/*      VARIABLE  I/O  DESCRIPTION */
-/*      --------  ---  -------------------------------------------------- */
-/*      INPUT      I   Input character string. */
-/*      OUTPUT     O   Output character string, left justified. */
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     INPUT      I   Input character string. */
+/*     OUTPUT     O   Output character string, left justified. */
 
 /* $ Detailed_Input */
 
-/*      INPUT       is the input character string. */
+/*     INPUT       is the input character string. */
 
 /* $ Detailed_Output */
 
-/*      OUTPUT      is the output character string, left justified. */
+/*     OUTPUT      is the output character string, left justified. */
 
-/*                  OUTPUT may overwrite INPUT. */
+/*                 OUTPUT may overwrite INPUT. */
 
 /* $ Parameters */
 
@@ -78,17 +77,21 @@
 
 /* $ Exceptions */
 
-/*      Error free. */
+/*     Error free. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
-/*      Leading blanks are removed from the input character string. */
-/*      If the output string is not large enough to hold the left */
-/*      justified string, it is truncated on the right. */
+/*     Leading blanks are removed from the input character string. */
+/*     If the output string is not large enough to hold the left */
+/*     justified string, it is truncated on the right. */
 
 /* $ Examples */
 
-/*      The following examples illustrate the use of LJUST. */
+/*     The following examples illustrate the use of LJUST. */
 
 /*            'ABCDE'             becomes   'ABCDE' */
 /*            'AN EXAMPLE'                  'AN EXAMPLE' */
@@ -97,28 +100,33 @@
 
 /* $ Restrictions */
 
-/*      None. */
-
-/* $ Files */
-
-/*      None. */
-
-/* $ Author_and_Institution */
-
-/*      I.M. Underwood  (JPL) */
+/*     None. */
 
 /* $ Literature_References */
 
-/*      None. */
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     I.M. Underwood  (JPL) */
+/*     W.L. Taber      (JPL) */
+/*     B.V. Semenov    (JPL) */
 
 /* $ Version */
 
-/* -      SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+/* -    SPICELIB Version 1.1.0, 29-JUL-2013 (BVS) */
 
-/*          Comment section for permuted index source lines was added */
-/*          following the header. */
+/*        Added the quick return branch for input strings that are */
+/*        already left-justified. Removed the initial check for blank */
+/*        input and changed logic to return an empty string after */
+/*        scanning the input. Re-ordered header sections. */
 
-/* -      SPICELIB Version 1.0.0, 31-JAN-1990 (IMU) */
+/* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
+
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
+
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (IMU) */
 
 /* -& */
 /* $ Index_Entries */
@@ -130,24 +138,25 @@
 /*     Local variables */
 
 
-/*     Blank string? */
+/*     Is the first character of the input string non-blank? If yes, the */
+/*     input string is already left-justified. There is nothing to do */
+/*     but to assign the input string to the output string. */
 
-    if (s_cmp(input, " ", input_len, (ftnlen)1) == 0) {
-	s_copy(output, " ", output_len, (ftnlen)1);
-
-/*     Get the first non-blank character. Start OUTPUT at that point. */
-
+    if (*(unsigned char *)input != ' ') {
+	s_copy(output, input, output_len, input_len);
     } else {
+
+/*        Get the first non-blank character. Start OUTPUT at that point. */
+
 	li = i_len(input, input_len);
 	lo = i_len(output, output_len);
 	j = 1;
 
-/*        Set I equal to position of first non-blank character of */
-/*        INPUT: */
+/*        Set I equal to position of first non-blank character of INPUT. */
 
 	i__ = 0;
 	pos = 1;
-	while(i__ == 0) {
+	while(i__ == 0 && pos <= li) {
 	    if (*(unsigned char *)&input[pos - 1] != ' ') {
 		i__ = pos;
 	    } else {
@@ -155,17 +164,26 @@
 	    }
 	}
 
-/*        I is now the index of the first non-blank character of INPUT; */
-/*        I is zero if INPUT is blank. */
+/*        Did we find a non-blank character? If not, the input string is */
+/*        blank. Set output to blank. */
 
-	while(i__ <= li && j <= lo) {
-	    *(unsigned char *)&output[j - 1] = *(unsigned char *)&input[i__ - 
-		    1];
-	    ++j;
-	    ++i__;
-	}
-	if (j <= lo) {
-	    s_copy(output + (j - 1), " ", output_len - (j - 1), (ftnlen)1);
+	if (i__ == 0) {
+	    s_copy(output, " ", output_len, (ftnlen)1);
+	} else {
+
+/*           I is now the index of the first non-blank character of */
+/*           INPUT. */
+
+	    while(i__ <= li && j <= lo) {
+		*(unsigned char *)&output[j - 1] = *(unsigned char *)&input[
+			i__ - 1];
+		++j;
+		++i__;
+	    }
+	    if (j <= lo) {
+		s_copy(output + (j - 1), " ", output_len - (j - 1), (ftnlen)1)
+			;
+	    }
 	}
     }
     return 0;

@@ -38,31 +38,27 @@ static integer c__9 = 9;
     static logical xmit;
     extern /* Subroutine */ int vequ_(doublereal *, doublereal *);
     doublereal tpos[3];
-    char corr2[5];
     integer i__, refid;
-    extern /* Subroutine */ int chkin_(char *, ftnlen), ucase_(char *, char *,
-	     ftnlen, ftnlen), errch_(char *, char *, ftnlen, ftnlen);
+    extern /* Subroutine */ int chkin_(char *, ftnlen), errch_(char *, char *,
+	     ftnlen, ftnlen);
     static logical usecn, uselt;
-    extern doublereal vnorm_(doublereal *), clight_(void);
+    extern doublereal vnorm_(doublereal *);
+    extern logical failed_(void);
+    extern doublereal clight_(void);
     extern integer isrchc_(char *, integer *, char *, ftnlen, ftnlen);
     extern /* Subroutine */ int stelab_(doublereal *, doublereal *, 
 	    doublereal *), sigerr_(char *, ftnlen), chkout_(char *, ftnlen), 
 	    stlabx_(doublereal *, doublereal *, doublereal *);
     integer ltsign;
-    extern /* Subroutine */ int setmsg_(char *, ftnlen), irfnum_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ int ljucrs_(integer *, char *, char *, ftnlen, 
+	    ftnlen), setmsg_(char *, ftnlen);
     integer maxitr;
-    extern /* Subroutine */ int cmprss_(char *, integer *, char *, char *, 
-	    ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ int irfnum_(char *, integer *, ftnlen);
     extern logical return_(void);
     static logical usestl;
     extern logical odd_(integer *);
 
 /* $ Abstract */
-
-/*     SPICE Private routine intended solely for the support of SPICE */
-/*     routines.  Users should not call this routine directly due */
-/*     to the volatile nature of this routine. */
 
 /*     Return the position of a target body relative to an observer, */
 /*     optionally corrected for light time and stellar aberration. */
@@ -185,24 +181,24 @@ static integer c__9 = 9;
 /*                               of the target as seen by the observer. */
 
 /*                    'CN'       Converged Newtonian light time */
-/*                               correction.  In solving the light time */
+/*                               correction. In solving the light time */
 /*                               equation, the 'CN' correction iterates */
 /*                               until the solution converges (three */
 /*                               iterations on all supported platforms). */
-
-/*                               The 'CN' correction typically does not */
-/*                               substantially improve accuracy because */
-/*                               the errors made by ignoring */
-/*                               relativistic effects may be larger than */
-/*                               the improvement afforded by obtaining */
-/*                               convergence of the light time solution. */
-/*                               The 'CN' correction computation also */
-/*                               requires a significantly greater number */
-/*                               of CPU cycles than does the */
-/*                               one-iteration light time correction. */
+/*                               Whether the 'CN+S' solution is */
+/*                               substantially more accurate than the */
+/*                               'LT' solution depends on the geometry */
+/*                               of the participating objects and on the */
+/*                               accuracy of the input data. In all */
+/*                               cases this routine will execute more */
+/*                               slowly when a converged solution is */
+/*                               computed. See the Particulars section */
+/*                               of SPKEZR for a discussion of precision */
+/*                               of light time corrections. */
 
 /*                    'CN+S'     Converged Newtonian light time */
-/*                               and stellar aberration corrections. */
+/*                               correction and stellar aberration */
+/*                               correction. */
 
 
 /*                 The following values of ABCORR apply to the */
@@ -234,8 +230,8 @@ static integer c__9 = 9;
 /*                               Newtonian light time correction. */
 
 /*                    'XCN+S'    "Transmission" case:  converged */
-/*                               Newtonian light time and stellar */
-/*                               aberration corrections. */
+/*                               Newtonian light time correction and */
+/*                               stellar aberration correction. */
 
 /*                 Neither special nor general relativistic effects are */
 /*                 accounted for in the aberration corrections applied */
@@ -384,43 +380,44 @@ static integer c__9 = 9;
 /*     common applications: */
 
 /*        1) Find the apparent direction of a target for a remote-sensing */
-/*           observation: */
+/*           observation. */
 
-/*              Use 'LT+S':  apply both light time and stellar */
+/*              Use 'LT+S' or 'CN+S: apply both light time and stellar */
 /*              aberration corrections. */
 
-/*           Note that using light time corrections alone ('LT') is */
-/*           generally not a good way to obtain an approximation to an */
-/*           apparent target vector:  since light time and stellar */
+/*           Note that using light time corrections alone ('LT' or 'CN') */
+/*           is generally not a good way to obtain an approximation to */
+/*           an apparent target vector: since light time and stellar */
 /*           aberration corrections often partially cancel each other, */
 /*           it may be more accurate to use no correction at all than to */
 /*           use light time alone. */
 
 
 /*        2) Find the corrected pointing direction to radiate a signal */
-/*           to a target: */
+/*           to a target. This computation is often applicable for */
+/*           implementing communications sessions. */
 
-/*              Use 'XLT+S':  apply both light time and stellar */
+/*              Use 'XLT+S' or 'XCN+S: apply both light time and stellar */
 /*              aberration corrections for transmission. */
 
 
-/*        3) Obtain an uncorrected position vector derived directly from */
-/*           data in an SPK file: */
+/*        3) Compute the apparent position of a target body relative */
+/*           to a star or other distant object. */
 
-/*              Use 'NONE'. */
-
-
-/*        4) Compute the apparent position of a target body relative */
-/*           to a star or other distant object: */
-
-/*              Use 'LT' or 'LT+S' as needed to match the correction */
-/*              applied to the position of the distant object.  For */
-/*              example, if a star position is obtained from a catalog, */
-/*              the position vector may not be corrected for stellar */
-/*              aberration.  In this case, to find the angular */
+/*              Use 'LT', 'CN', 'LT+S', or 'CN+S' as needed to match the */
+/*              correction applied to the position of the distant */
+/*              object. For example, if a star position is obtained from */
+/*              a catalog, the position vector may not be corrected for */
+/*              stellar aberration. In this case, to find the angular */
 /*              separation of the star and the limb of a planet, the */
 /*              vector from the observer to the planet should be */
 /*              corrected for light time but not stellar aberration. */
+
+
+/*        4) Obtain an uncorrected state vector derived directly from */
+/*           data in an SPK file. */
+
+/*              Use 'NONE'. */
 
 
 /*        5) Use a geometric position vector as a low-accuracy estimate */
@@ -447,8 +444,8 @@ static integer c__9 = 9;
 /*     Geometric case */
 /*     ============== */
 
-/*        ZZSPKPA1 begins by computing the geometric position T(ET) of */
-/*        the target body relative to the solar system barycenter (SSB). */
+/*        SPKAPO begins by computing the geometric position T(ET) of the */
+/*        target body relative to the solar system barycenter (SSB). */
 /*        Subtracting the geometric position of the observer O(ET) gives */
 /*        the geometric position of the target body relative to the */
 /*        observer. The one-way light time, LT, is given by */
@@ -479,7 +476,7 @@ static integer c__9 = 9;
 /*     ============== */
 
 /*        When any of the options 'LT', 'CN', 'LT+S', 'CN+S' are */
-/*        selected, ZZSPKPA1 computes the position of the target body at */
+/*        selected, SPKAPO computes the position of the target body at */
 /*        epoch ET-LT, where LT is the one-way light time.  Let T(t) */
 /*        and O(t) represent the positions of the target and observer */
 /*        relative to the solar system barycenter at time t; then LT */
@@ -547,8 +544,8 @@ static integer c__9 = 9;
 /*     ================== */
 
 /*        When any of the options 'XLT', 'XCN', 'XLT+S', 'XCN+S' are */
-/*        selected, ZZSPKPA1 computes the position of the target body T */
-/*        at epoch ET+LT, where LT is the one-way light time.  LT is the */
+/*        selected, SPKAPO computes the position of the target body T at */
+/*        epoch ET+LT, where LT is the one-way light time.  LT is the */
 /*        solution of the light-time equation */
 
 /*                  | T(ET+LT) - O(ET) | */
@@ -585,7 +582,7 @@ static integer c__9 = 9;
 
 /* $ Examples */
 
-/*     In the following code fragment, SPKSSB and ZZSPKPA1 are used */
+/*     In the following code fragment, SPKSSB and SPKAPO are used */
 /*     to display the position of Io (body 501) as seen from the */
 /*     Voyager 2 spacecraft (Body -32) at a series of epochs. */
 
@@ -603,7 +600,7 @@ static integer c__9 = 9;
 /*        DO WHILE ( EPOCH .LE. END ) */
 
 /*           CALL SPKSSB (  VGR2,  EPOCH, 'J2000', STVGR2  ) */
-/*           CALL ZZSPKPA1 (  IO,    EPOCH, 'J2000', STVGR2, */
+/*           CALL SPKAPO (  IO,    EPOCH, 'J2000', STVGR2, */
 /*       .                 'LT+S', STIO,   LT              ) */
 
 /*           CALL RECRAD (  STIO,  RANGE,  RA,     DEC     ) */
@@ -615,18 +612,16 @@ static integer c__9 = 9;
 
 /* $ Restrictions */
 
-/*     1) SPICE Private routine. */
-
-/*     2) The ephemeris files to be used by ZZSPKPA1 must be loaded */
+/*     1) The ephemeris files to be used by SPKAPO must be loaded */
 /*        (normally by the SPICELIB kernel loader FURNSH) before */
 /*        this routine is called. */
 
-/*     3) Unlike most other SPK position computation routines, this */
+/*     2) Unlike most other SPK position computation routines, this */
 /*        routine requires that the input state be relative to an */
 /*        inertial reference frame.  Non-inertial frames are not */
 /*        supported by this routine. */
 
-/*     4) In a future version of this routine, the implementation */
+/*     3) In a future version of this routine, the implementation */
 /*        of the aberration corrections may be enhanced to improve */
 /*        accuracy. */
 
@@ -638,19 +633,45 @@ static integer c__9 = 9;
 
 /*     N.J. Bachman    (JPL) */
 /*     H.A. Neilan     (JPL) */
-/*     I.M. Underwood  (JPL) */
+/*     B.V. Semenov    (JPL) */
 /*     W.L. Taber      (JPL) */
+/*     I.M. Underwood  (JPL) */
 
 /* $ Version */
 
-/* -    SPICELIB Version 1.1.0, 06-SEP-2005 (NJB) */
+/* -    SPICELIB Version 2.3.0, 03-JUL-2014 (NJB) (BVS) */
+
+/*        Discussion of light time corrections was updated. Assertions */
+/*        that converged light time corrections are unlikely to be */
+/*        useful were removed. */
+
+/*     Last update was 21-SEP-2013 (BVS) */
+
+/*        Updated to call LJUCRS instead of CMPRSS/UCASE. */
+
+/* -    SPICELIB Version 2.2.0, 17-MAY-2010 (NJB) */
+
+/*        Bug fix: routine now returns immediately after */
+/*        state lookup failure. */
+
+/* -    SPICELIB Version 2.1.0, 31-AUG-2005 (NJB) */
 
 /*        Updated to remove non-standard use of duplicate arguments */
 /*        in VSUB call. */
 
-/* -    SPICELIB Version 1.0.0, 12-DEC-2004 (NJB) */
+/* -    SPICELIB Version 2.0.1, 20-OCT-2003 (EDW) */
 
-/*        Based on SPICELIB Version 2.0.1, 20-OCT-2003 (EDW) */
+/*        Added mention that LT returns in seconds. */
+/*        Corrected spelling errors. */
+
+/* -    SPICELIB Version 2.0.0, 18-DEC-2001 (NJB) */
+
+/*        Updated to handle aberration corrections for transmission */
+/*        of radiation.  Formerly, only the reception case was */
+/*        supported.  The header was revised and expanded to explain */
+/*        the functionality of this routine in more detail. */
+
+/* -    SPICELIB Version 1.0.0, 03-MAR-1999 (WLT) */
 
 /* -& */
 /* $ Index_Entries */
@@ -661,7 +682,7 @@ static integer c__9 = 9;
 /* -& */
 /* $ Revisions */
 
-/* -    SPICELIB Version 1.1.0, 06-SEP-2005 (NJB) */
+/* -    SPICELIB Version 1.1.0, 31-AUG-2005 (NJB) */
 
 /*        Updated to remove non-standard use of duplicate arguments */
 /*        in VSUB call. */
@@ -704,8 +725,7 @@ static integer c__9 = 9;
 /*        Remove leading and embedded white space from the aberration */
 /*        correction flag, then convert to upper case. */
 
-	cmprss_(" ", &c__0, abcorr, corr2, (ftnlen)1, abcorr_len, (ftnlen)5);
-	ucase_(corr2, corr, (ftnlen)5, (ftnlen)5);
+	ljucrs_(&c__0, abcorr, corr, abcorr_len, (ftnlen)5);
 
 /*        Locate the flag in our list of flags. */
 
@@ -758,6 +778,10 @@ static integer c__9 = 9;
 /*     light time. */
 
     zzspkgp1_(targ, et, ref, &c__0, ptarg, lt, ref_len);
+    if (failed_()) {
+	chkout_("ZZSPKPA1", (ftnlen)8);
+	return 0;
+    }
     vsub_(ptarg, sobs, tpos);
     vequ_(tpos, ptarg);
     *lt = vnorm_(ptarg) / clight_();
@@ -777,6 +801,10 @@ static integer c__9 = 9;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	d__1 = *et + ltsign * *lt;
 	zzspkgp1_(targ, &d__1, ref, &c__0, ptarg, lt, ref_len);
+	if (failed_()) {
+	    chkout_("ZZSPKPA1", (ftnlen)8);
+	    return 0;
+	}
 	vsub_(ptarg, sobs, tpos);
 	vequ_(tpos, ptarg);
 	*lt = vnorm_(ptarg) / clight_();

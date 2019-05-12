@@ -7,7 +7,7 @@
 
 /* Table of constant values */
 
-static integer c__15 = 15;
+static integer c__27 = 27;
 static integer c__13 = 13;
 static integer c__1 = 1;
 
@@ -242,6 +242,13 @@ static integer c__1 = 1;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.0.0, 23-DEC-2013 (NJB) */
+
+/*        Increased MAXDEG to 27 for compatibility */
+/*        with SPK type 21. Deleted declaration of */
+/*        unused parameter TYPIDX. */
+
+
 /* -    SPICELIB Version 1.0.0, 20-MAR-2000 (NJB) */
 
 /* -& */
@@ -315,11 +322,11 @@ static integer c__1 = 1;
 /*     Make sure that the degree of the interpolating polynomials is */
 /*     in range. */
 
-    if (*degree < 1 || *degree > 15) {
+    if (*degree < 1 || *degree > 27) {
 	setmsg_("The interpolating polynomials have degree #; the valid degr"
 		"ee range is [1, #]", (ftnlen)77);
 	errint_("#", degree, (ftnlen)1);
-	errint_("#", &c__15, (ftnlen)1);
+	errint_("#", &c__27, (ftnlen)1);
 	sigerr_("SPICE(INVALIDDEGREE)", (ftnlen)20);
 	chkout_("SPKW13", (ftnlen)6);
 	return 0;

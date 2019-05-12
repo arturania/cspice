@@ -141,26 +141,32 @@
                              rotation of the target body are
                              corrected for light time.
  
-                  "CN"       Converged Newtonian light time
-                             corrections.  This is the same as LT
-                             corrections but with further iterations
-                             to a converged Newtonian light time
-                             solution.  Given that relativistic
-                             effects may be as large as the higher
-                             accuracy achieved by this computation,
-                             this is correction is seldom worth the
-                             additional computations required unless
-                             the user incorporates additional
-                             relativistic corrections.  Both the
-                             state and rotation of the target body
-                             are corrected for light time.
  
-                  "CN+S"     Converged Newtonian light time
-                             corrections and stellar aberration.
-                             Both the state and rotation of the
-                             target body are corrected for light
-                             time.
+                  "CN"       Converged Newtonian light time correction.
+                             In solving the light time equation, the
+                             "CN" correction iterates until the
+                             solution converges (three iterations on
+                             all supported platforms). Whether the
+                             "CN+S" solution is substantially more
+                             accurate than the "LT" solution depends on
+                             the geometry of the participating objects
+                             and on the accuracy of the input data. In
+                             all cases this routine will execute more
+                             slowly when a converged solution is
+                             computed. See the Particulars section of
+                             spkezr_c for a discussion of precision of
+                             light time corrections.
  
+                             Both the state and rotation of the target
+                             body are corrected for light time.
+
+                  "CN+S"     Converged Newtonian light time correction
+                             and stellar aberration correction.
+ 
+                             Both the state and rotation of the target
+                             body are corrected for light time.
+ 
+
    obsrvr      is the name of the observing body.  This is typically a
                spacecraft, the earth, or a surface point on the earth.
                `obsrvr' is case-insensitive, and leading and trailing
@@ -443,6 +449,12 @@
    J.E. McLean    (JPL)
  
 -Version
+
+   -CSPICE Version 1.0.5, 10-JUL-2014 (NJB)
+
+       Discussion of light time corrections was updated. Assertions
+       that converged light time corrections are unlikely to be
+       useful were removed.
 
    -CSPICE Version 1.0.4, 19-MAY-2010 (BVS)
 

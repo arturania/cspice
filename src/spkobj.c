@@ -307,6 +307,10 @@ static integer c__6 = 6;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.2, 01-JUL-2014 (NJB) */
+
+/*        Updated index entries. */
+
 /* -    SPICELIB Version 1.0.1, 30-NOV-2007 (NJB) */
 
 /*        Corrected bug in program in header Examples section: */
@@ -320,7 +324,8 @@ static integer c__6 = 6;
 /* -& */
 /* $ Index_Entries */
 
-/*     find id codes of objects in spk file */
+/*     find id codes of ephemeris objects in spk file */
+/*     find id codes of bodies in spk file */
 
 /* -& */
 

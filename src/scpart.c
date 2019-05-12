@@ -30,6 +30,8 @@ static integer c__9999 = 9999;
     double d_nint(doublereal *);
 
     /* Local variables */
+    extern /* Subroutine */ int zzcvpool_(char *, integer *, logical *, 
+	    ftnlen), zzctruin_(integer *);
     integer i__;
     extern /* Subroutine */ int scld01_(char *, integer *, integer *, integer 
 	    *, doublereal *, ftnlen), chkin_(char *, ftnlen), repmi_(char *, 
@@ -39,11 +41,11 @@ static integer c__9999 = 9999;
     char kvname[60*2];
     logical update;
     extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
-	    ftnlen), cvpool_(char *, logical *, ftnlen), setmsg_(char *, 
-	    ftnlen), suffix_(char *, integer *, char *, ftnlen, ftnlen), 
-	    errint_(char *, integer *, ftnlen);
+	    ftnlen), setmsg_(char *, ftnlen), errint_(char *, integer *, 
+	    ftnlen), suffix_(char *, integer *, char *, ftnlen, ftnlen);
     integer nprtsa;
     extern logical return_(void);
+    static integer usrctr[2];
     extern /* Subroutine */ int swpool_(char *, integer *, char *, ftnlen, 
 	    ftnlen);
     integer nprtso;
@@ -178,6 +180,59 @@ static integer c__9999 = 9999;
 
 /*     End of include file sclk.inc */
 
+/* $ Abstract */
+
+/*     This include file defines the dimension of the counter */
+/*     array used by various SPICE subsystems to uniquely identify */
+/*     changes in their states. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 29-JUL-2013 (BVS) */
+
+/* -& */
+
+/*     End of include file. */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
@@ -199,12 +254,14 @@ static integer c__9999 = 9999;
 /*                described in the kernel file for spacecraft SC. */
 
 /*     PSTART     is an array containing NPARTS partition start times */
-/*                represented as encoded ticks.  The values contained */
-/*                in PSTART are whole numbers. */
+/*                represented as double precision, encoded SCLK */
+/*                ("ticks"). The values contained in PSTART are whole */
+/*                numbers. */
 
 /*     PSTOP      is an array containing NPARTS partition end times */
-/*                represented as encoded ticks. The values contained */
-/*                in PSTOP are whole numbers. */
+/*                represented as double precision, encoded SCLK */
+/*                ("ticks"). The values contained in PSTOP are whole */
+/*                numbers. */
 
 /* $ Parameters */
 
@@ -238,7 +295,7 @@ static integer c__9999 = 9999;
 /*         'SCLK_PARTITION_START_nn' and */
 /*         'SCLK_PARTITION_END_nn'. */
 
-/*     The start and stop times returned are in encoded units of "ticks". */
+/*     The start and stop times returned are in units of "ticks". */
 
 /* $ Examples */
 
@@ -282,9 +339,18 @@ static integer c__9999 = 9999;
 
 /*     N.J. Bachman   (JPL) */
 /*     J.M. Lynch     (JPL) */
+/*     B.V. Semenov   (JPL) */
 /*     R.E. Thurman   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.3.1, 19-MAR-2014 (NJB) */
+
+/*        Minor header comment updates were made. */
+
+/* -    SPICELIB Version 2.3.0, 09-SEP-2013 (BVS) */
+
+/*        Updated to keep track of the POOL counter and call ZZCVPOOL. */
 
 /* -    SPICELIB Version 2.2.0, 05-MAR-2009 (NJB) */
 
@@ -354,13 +420,13 @@ static integer c__9999 = 9999;
 	s_copy(kvname + 60, "SCLK_PARTITION_END", (ftnlen)60, (ftnlen)18);
 	for (i__ = 1; i__ <= 2; ++i__) {
 	    suffix_("_#", &c__0, kvname + ((i__1 = i__ - 1) < 2 && 0 <= i__1 ?
-		     i__1 : s_rnge("kvname", i__1, "scpart_", (ftnlen)270)) * 
+		     i__1 : s_rnge("kvname", i__1, "scpart_", (ftnlen)284)) * 
 		    60, (ftnlen)2, (ftnlen)60);
 	    i__3 = -(*sc);
 	    repmi_(kvname + ((i__1 = i__ - 1) < 2 && 0 <= i__1 ? i__1 : 
-		    s_rnge("kvname", i__1, "scpart_", (ftnlen)271)) * 60, 
+		    s_rnge("kvname", i__1, "scpart_", (ftnlen)285)) * 60, 
 		    "#", &i__3, kvname + ((i__2 = i__ - 1) < 2 && 0 <= i__2 ? 
-		    i__2 : s_rnge("kvname", i__2, "scpart_", (ftnlen)271)) * 
+		    i__2 : s_rnge("kvname", i__2, "scpart_", (ftnlen)285)) * 
 		    60, (ftnlen)60, (ftnlen)1, (ftnlen)60);
 	}
 
@@ -371,6 +437,10 @@ static integer c__9999 = 9999;
 /*        Keep track of the last spacecraft ID encountered. */
 
 	oldsc = *sc;
+
+/*        Initialize the local POOL counter to user value. */
+
+	zzctruin_(usrctr);
 	first = FALSE_;
     }
 
@@ -378,7 +448,7 @@ static integer c__9999 = 9999;
 /*     have been updated, or if the spacecraft ID changes, look up */
 /*     the new values from the kernel pool. */
 
-    cvpool_("SCPART", &update, (ftnlen)6);
+    zzcvpool_("SCPART", usrctr, &update, (ftnlen)6);
     if (update || nodata) {
 
 /*        Read the values from the kernel pool. */
@@ -421,13 +491,13 @@ static integer c__9999 = 9999;
 	i__1 = lstprt;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    prtsa[(i__2 = i__ - 1) < 9999 && 0 <= i__2 ? i__2 : s_rnge("prtsa"
-		    , i__2, "scpart_", (ftnlen)341)] = d_nint(&prtsa[(i__3 = 
+		    , i__2, "scpart_", (ftnlen)360)] = d_nint(&prtsa[(i__3 = 
 		    i__ - 1) < 9999 && 0 <= i__3 ? i__3 : s_rnge("prtsa", 
-		    i__3, "scpart_", (ftnlen)341)]);
+		    i__3, "scpart_", (ftnlen)360)]);
 	    prtso[(i__2 = i__ - 1) < 9999 && 0 <= i__2 ? i__2 : s_rnge("prtso"
-		    , i__2, "scpart_", (ftnlen)342)] = d_nint(&prtso[(i__3 = 
+		    , i__2, "scpart_", (ftnlen)361)] = d_nint(&prtso[(i__3 = 
 		    i__ - 1) < 9999 && 0 <= i__3 ? i__3 : s_rnge("prtso", 
-		    i__3, "scpart_", (ftnlen)342)]);
+		    i__3, "scpart_", (ftnlen)361)]);
 	}
     }
 
@@ -437,9 +507,9 @@ static integer c__9999 = 9999;
     i__1 = *nparts;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	pstart[i__ - 1] = prtsa[(i__2 = i__ - 1) < 9999 && 0 <= i__2 ? i__2 : 
-		s_rnge("prtsa", i__2, "scpart_", (ftnlen)353)];
+		s_rnge("prtsa", i__2, "scpart_", (ftnlen)372)];
 	pstop[i__ - 1] = prtso[(i__2 = i__ - 1) < 9999 && 0 <= i__2 ? i__2 : 
-		s_rnge("prtso", i__2, "scpart_", (ftnlen)354)];
+		s_rnge("prtso", i__2, "scpart_", (ftnlen)373)];
     }
     chkout_("SCPART", (ftnlen)6);
     return 0;

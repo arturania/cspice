@@ -76,15 +76,14 @@ logical exists_(char *file, ftnlen file_len)
 /* $ Detailed_Input */
 
 /*      FILE        is the name of the file in question. This may be */
-/*                  a system name, e.g. */
+/*                  any unambigous file name valid on the user's */
+/*                  computer, for example */
 
-/*                        'DISK:[USER.SUB1.SUB2]DATA.DAT' */
-/*                        '\usr\dir1\dir2\data.dat' */
+/*                     '/usr/dir1/dir2/DATA.DAT' */
+/*                     './DATA.DAT' */
+/*                     'c:\usr\dir1\dir2\data.dat' */
 
-/*                  or a logical name, e.g. */
-
-/*                        'EPHEMERIS' */
-/*                        'DATA$DIR:SAMPLE.DAT' */
+/*                  Environment or shell variables may not be used. */
 
 /* $ Detailed_Output */
 
@@ -94,6 +93,18 @@ logical exists_(char *file, ftnlen file_len)
 /* $ Parameters */
 
 /*     None. */
+
+/* $ Exceptions */
+
+/*      1) If the filename is blank, the error SPICE(BLANKFILENAME) will */
+/*         be signaled. */
+
+/*      2) If an error occurs during the execution of the Fortran INQUIRE */
+/*         statement, the error SPICE(INQUIREFAILED) is signaled. */
+
+/* $ Files */
+
+/*      None. */
 
 /* $ Particulars */
 
@@ -115,15 +126,7 @@ logical exists_(char *file, ftnlen file_len)
 
 /*      None. */
 
-/* $ Exceptions */
-
-/*      1) If the filename is blank, the error SPICE(BLANKFILENAME) will */
-/*         be signalled. */
-
-/*      2) If an error occurs during the execution of the Fortran INQUIRE */
-/*         statement, the error SPICE(INQUIREFAILED) is signalled. */
-
-/* $ Files */
+/* $ Literature_References */
 
 /*      None. */
 
@@ -133,11 +136,11 @@ logical exists_(char *file, ftnlen file_len)
 /*      H.A. Neilan     (JPL) */
 /*      I.M. Underwood  (JPL) */
 
-/* $ Literature_References */
-
-/*      None. */
-
 /* $ Version */
+
+/* -     SPICELIB Version 2.2.1, 01-JUL-2014 (NJB) */
+
+/*         VAX examples were deleted from the header. */
 
 /* -     SPICELIB Version 2.2.0, 9-DEC-1999 (WLT) */
 
@@ -191,7 +194,7 @@ logical exists_(char *file, ftnlen file_len)
 /*        The IOSTAT specifier was added to the INQUIRE statement. */
 /*        If the value of IOSTAT is not equal to zero, an error */
 /*        occurred during the execution of the INQUIRE statement. */
-/*        In this case, a SPICELIB error is signalled and the routine */
+/*        In this case, a SPICELIB error is signaled and the routine */
 /*        checks out. */
 
 /* -& */

@@ -55,7 +55,7 @@
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 33%; text-align: center;">
             <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
@@ -66,7 +66,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
@@ -76,7 +76,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
@@ -272,15 +272,15 @@
                    }
                    else
                    {
-                       printf ( &quot;String length = %ld\n&quot;, 
-                               (SpiceInt) attdsc.strlen );
+                       printf ( &quot;String length = %d\n&quot;, 
+                               (int) attdsc.strlen );
                    }
                 }
 
                 /.
                 Write out the current column's entry size. 
                 ./                
-                printf ( &quot;Size = %ld\n&quot;, attdsc.size );
+                printf ( &quot;Size = %d\n&quot;, (int)attdsc.size );
  
 
                 /.
@@ -334,6 +334,11 @@
 <h4><a name="Version">Version</a></h4>
 <PRE>
  
+   -CSPICE Version 1.0.2, 12-JUL-2016 (EDW)
+
+      Edit to example program to use &quot;%d&quot; with explicit casts
+      to int for printing SpiceInts with printf.
+
    -CSPICE Version 1.0.1, 26-MAR-2003 (NJB) 
 
        Fixed description of exception (5):  replaced &quot;lenout-1&quot;
@@ -354,7 +359,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Jun  9 13:05:22 2010</pre>
+   <pre>Wed Apr  5 17:54:33 2017</pre>
 
 </body>
 </html>

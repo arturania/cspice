@@ -4,8 +4,9 @@
 
 -Abstract
  
-   Remove all variables from the kernel pool. 
- 
+   Remove all variables from the kernel pool. Watches
+   on kernel variables are retained.
+
 -Disclaimer
 
    THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE
@@ -86,6 +87,10 @@
    Any agent associated with that variable will have a notice 
    posted for it indicating that its watched variable has been 
    updated. 
+
+   Application programs can delete watches by calling the function
+   dwpool_, which is located in the source file pool.c. 
+   See the documentation of dwpool_ for details.
  
 -Examples
  
@@ -144,8 +149,12 @@
    W.L. Taber      (JPL) 
  
 -Version
- 
- 
+  
+   -CSPICE Version 1.0.1, 01-JUL-2014 (NJB)
+
+      Updated comments regarding behavior of the watcher
+      subsystem.
+
    -CSPICE Version 1.0.0, 18-JUN-1999 (IMU) (WLT) (NJB)
 
 -Index_Entries

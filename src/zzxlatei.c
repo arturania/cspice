@@ -147,6 +147,30 @@ static integer c__4 = 4;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.5.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-INTEL. */
+
+/* -    SPICELIB Version 2.4.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 2.3.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-GFORTRAN. */
+
+/* -    SPICELIB Version 2.2.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 2.1.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GCC_C. */
+
+/* -    SPICELIB Version 2.0.0, 12-APR-2012 (BVS) */
+
+/*        Increased FTSIZE (from 1000 to 5000). */
+
 /* -    SPICELIB Version 1.20.0, 13-MAY-2010 (BVS) */
 
 /*        Updated for SUN-SOLARIS-INTEL. */
@@ -435,6 +459,31 @@ static integer c__4 = 4;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.26.0, 15-NOV-2015 (EDW) */
+
+/*        Recast J = 4*(-1+I) + 1 as J = -3+4*I to accomodate */
+/*        f2c processing. */
+
+/* -    SPICELIB Version 1.25.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-INTEL. */
+
+/* -    SPICELIB Version 1.24.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 1.23.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-GFORTRAN. */
+
+/* -    SPICELIB Version 1.22.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 1.21.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GCC_C. */
+
 /* -    SPICELIB Version 1.20.0, 13-MAY-2010 (BVS) */
 
 /*        Updated for SUN-SOLARIS-INTEL. */
@@ -571,7 +620,7 @@ static integer c__4 = 4;
 	for (i__ = 1; i__ <= 4; ++i__) {
 	    zzddhgsd_("BFF", &i__, strbff + (((i__1 = i__ - 1) < 4 && 0 <= 
 		    i__1 ? i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)
-		    341)) << 3), (ftnlen)3, (ftnlen)8);
+		    366)) << 3), (ftnlen)3, (ftnlen)8);
 	}
 
 /*        Fetch the native binary file format. */
@@ -646,10 +695,10 @@ static integer c__4 = 4;
 			"ur.", (ftnlen)158);
 		errch_("#", strbff + (((i__1 = *inbff - 1) < 4 && 0 <= i__1 ? 
 			i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)
-			436)) << 3), (ftnlen)1, (ftnlen)8);
+			461)) << 3), (ftnlen)1, (ftnlen)8);
 		errch_("#", strbff + (((i__1 = natbff - 1) < 4 && 0 <= i__1 ? 
 			i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)
-			437)) << 3), (ftnlen)1, (ftnlen)8);
+			462)) << 3), (ftnlen)1, (ftnlen)8);
 		sigerr_("SPICE(BUG)", (ftnlen)10);
 		chkout_("ZZXLATEI", (ftnlen)8);
 		return 0;
@@ -666,10 +715,10 @@ static integer c__4 = 4;
 		errint_("#", &numint, (ftnlen)1);
 		errch_("#", strbff + (((i__1 = *inbff - 1) < 4 && 0 <= i__1 ? 
 			i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)
-			456)) << 3), (ftnlen)1, (ftnlen)8);
+			481)) << 3), (ftnlen)1, (ftnlen)8);
 		errch_("#", strbff + (((i__1 = natbff - 1) < 4 && 0 <= i__1 ? 
 			i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)
-			457)) << 3), (ftnlen)1, (ftnlen)8);
+			482)) << 3), (ftnlen)1, (ftnlen)8);
 		errint_("#", space, (ftnlen)1);
 		sigerr_("SPICE(BUG)", (ftnlen)10);
 		chkout_("ZZXLATEI", (ftnlen)8);
@@ -685,7 +734,7 @@ static integer c__4 = 4;
 /*              Compute the substring index of the first character */
 /*              in INPUT for this integer. */
 
-		j = (i__ - 1 << 2) + 1;
+		j = (i__ << 2) - 3;
 
 /*              Now arrange the bytes properly.  Since these characters */
 /*              were read from a file utilizing LTL-IEEE, we know that */
@@ -738,10 +787,10 @@ static integer c__4 = 4;
 		    "to #.  This error should never occur and is indicative o"
 		    "f a bug.  Contact NAIF.", (ftnlen)134);
 	    errch_("#", strbff + (((i__1 = *inbff - 1) < 4 && 0 <= i__1 ? 
-		    i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)527)) 
+		    i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)552)) 
 		    << 3), (ftnlen)1, (ftnlen)8);
 	    errch_("#", strbff + (((i__1 = natbff - 1) < 4 && 0 <= i__1 ? 
-		    i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)528)) 
+		    i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)553)) 
 		    << 3), (ftnlen)1, (ftnlen)8);
 	    sigerr_("SPICE(BUG)", (ftnlen)10);
 	    chkout_("ZZXLATEI", (ftnlen)8);
@@ -764,10 +813,10 @@ static integer c__4 = 4;
 			"ur.", (ftnlen)158);
 		errch_("#", strbff + (((i__1 = *inbff - 1) < 4 && 0 <= i__1 ? 
 			i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)
-			555)) << 3), (ftnlen)1, (ftnlen)8);
+			580)) << 3), (ftnlen)1, (ftnlen)8);
 		errch_("#", strbff + (((i__1 = natbff - 1) < 4 && 0 <= i__1 ? 
 			i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)
-			556)) << 3), (ftnlen)1, (ftnlen)8);
+			581)) << 3), (ftnlen)1, (ftnlen)8);
 		sigerr_("SPICE(BUG)", (ftnlen)10);
 		chkout_("ZZXLATEI", (ftnlen)8);
 		return 0;
@@ -784,10 +833,10 @@ static integer c__4 = 4;
 		errint_("#", &numint, (ftnlen)1);
 		errch_("#", strbff + (((i__1 = *inbff - 1) < 4 && 0 <= i__1 ? 
 			i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)
-			575)) << 3), (ftnlen)1, (ftnlen)8);
+			600)) << 3), (ftnlen)1, (ftnlen)8);
 		errch_("#", strbff + (((i__1 = natbff - 1) < 4 && 0 <= i__1 ? 
 			i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)
-			576)) << 3), (ftnlen)1, (ftnlen)8);
+			601)) << 3), (ftnlen)1, (ftnlen)8);
 		errint_("#", space, (ftnlen)1);
 		sigerr_("SPICE(BUG)", (ftnlen)10);
 		chkout_("ZZXLATEI", (ftnlen)8);
@@ -803,7 +852,7 @@ static integer c__4 = 4;
 /*              Compute the substring index of the first character */
 /*              in INPUT for this integer. */
 
-		j = (i__ - 1 << 2) + 1;
+		j = (i__ << 2) - 3;
 
 /*              Now arrange the bytes properly.  Since these characters */
 /*              were read from a file utilizing BIG-IEEE, we know that */
@@ -856,10 +905,10 @@ static integer c__4 = 4;
 		    "to #.  This error should never occur and is indicative o"
 		    "f a bug.  Contact NAIF.", (ftnlen)134);
 	    errch_("#", strbff + (((i__1 = *inbff - 1) < 4 && 0 <= i__1 ? 
-		    i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)646)) 
+		    i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)671)) 
 		    << 3), (ftnlen)1, (ftnlen)8);
 	    errch_("#", strbff + (((i__1 = natbff - 1) < 4 && 0 <= i__1 ? 
-		    i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)647)) 
+		    i__1 : s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)672)) 
 		    << 3), (ftnlen)1, (ftnlen)8);
 	    sigerr_("SPICE(BUG)", (ftnlen)10);
 	    chkout_("ZZXLATEI", (ftnlen)8);
@@ -875,7 +924,7 @@ static integer c__4 = 4;
 		"not currently supported for translation of integers from non"
 		"-native formats.", (ftnlen)135);
 	errch_("#", strbff + (((i__1 = natbff - 1) < 4 && 0 <= i__1 ? i__1 : 
-		s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)665)) << 3), (
+		s_rnge("strbff", i__1, "zzxlatei_", (ftnlen)690)) << 3), (
 		ftnlen)1, (ftnlen)8);
 	sigerr_("SPICE(BUG)", (ftnlen)10);
 	chkout_("ZZXLATEI", (ftnlen)8);

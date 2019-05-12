@@ -93,10 +93,6 @@
  
    None. 
  
--Files
- 
-   None. 
- 
 -Exceptions
  
    1) If frcode is not recognized as the name of a known reference
@@ -114,6 +110,10 @@
    4) If the length of frname (indicated by lenout) is at least two
       characters but not large enough to contain the output string, 
       the output string will be truncated on the right. 
+ 
+-Files
+ 
+   None. 
  
 -Particulars
  
@@ -160,11 +160,11 @@
       SpiceInt                frcode;
 
  
-      frname_c ( frcode, NAMELEN, frname );
+      frmnam_c ( frcode, NAMELEN, frname );
  
       if ( iswhsp_c(frname) )  
       { 
-         sprintf ( frname, "%ld", frcode );
+         sprintf ( frname, "%d", (int)frcode );
       }
 
       printf ( "Concerning reference frame: %s\n", frname );
@@ -176,17 +176,28 @@
  
    None. 
  
--Author_and_Institution
- 
-   W.L. Taber      (JPL) 
-   N.J. Bachman    (JPL)
-   
 -Literature_References
  
    None. 
  
+-Author_and_Institution
+ 
+   W.L. Taber      (JPL) 
+   B.V. Semenov    (JPL) 
+   N.J. Bachman    (JPL)
+   
 -Version
  
+   -CSPICE Version 1.0.3, 12-JUL-2016 (EDW)
+
+      Edit to example program to use "%d" with explicit casts
+      to int for printing SpiceInts with printf.
+
+   -CSPICE Version 1.0.2, 08-JAN-2014 (BVS) 
+
+       Fixed typo in Examples (frname_c -> frmnam_c). Reordered
+       header sections.
+
    -CSPICE Version 1.0.1, 26-MAR-2003 (NJB) 
 
        Fixed description of exception (4):  replaced "lenout-1"

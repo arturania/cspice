@@ -5,7 +5,7 @@
 
 #include "f2c.h"
 
-/* $Procedure      PCKE02 ( Get Euler angles at time from PCK file ) */
+/* $Procedure PCKE02 ( PCK, evaluate data record from type 2 segment ) */
 /* Subroutine */ int pcke02_(doublereal *et, doublereal *record, doublereal *
 	eulang)
 {
@@ -172,9 +172,14 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.1.1, 03-JAN-2014 (EDW) */
+
+/*        Minor edits to Procedure; clean trailing whitespace. */
+/*        Removed unneeded Revisions section. */
+
 /* -     SPICELIB Version 1.1.0, 13-MAR-1995 (KSZ) */
 
-/*       Added error handling. */
+/*         Added error handling. */
 
 /* -     SPICELIB Version 1.0.0, 30-SEP-1994 (KSZ) */
 
@@ -182,13 +187,6 @@
 /* $ Index_Entries */
 
 /*     get Euler angles and their derivatives */
-
-/* -& */
-/* $ Revisions */
-
-/* -     SPICELIB Version 1.1.0, 13-MAR-1995 (KSZ) */
-
-/*        Added error handling. */
 
 /* -& */
 

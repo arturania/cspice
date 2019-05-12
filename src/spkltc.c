@@ -9,7 +9,7 @@
 
 static integer c__0 = 0;
 static integer c__6 = 6;
-static doublereal c_b25 = -1.;
+static doublereal c_b19 = -1.;
 
 /* $Procedure SPKLTC ( S/P Kernel, light time corrected state ) */
 /* Subroutine */ int spkltc_(integer *targ, doublereal *et, char *ref, char *
@@ -18,12 +18,11 @@ static doublereal c_b25 = -1.;
 {
     /* Initialized data */
 
-    static logical first = TRUE_;
+    static logical pass1 = TRUE_;
     static char prvcor[5] = "     ";
 
     /* System generated locals */
-    integer i__1;
-    doublereal d__1;
+    doublereal d__1, d__2, d__3, d__4;
 
     /* Builtin functions */
     integer s_cmp(char *, char *, ftnlen, ftnlen);
@@ -33,28 +32,30 @@ static doublereal c_b25 = -1.;
     doublereal dist;
     extern doublereal vdot_(doublereal *, doublereal *);
     static logical xmit;
+    extern /* Subroutine */ int zzvalcor_(char *, logical *, ftnlen);
     doublereal a, b, c__;
-    integer i__;
-    extern /* Subroutine */ int zzprscor_(char *, logical *, ftnlen);
-    integer refid;
-    extern /* Subroutine */ int chkin_(char *, ftnlen), errch_(char *, char *,
-	     ftnlen, ftnlen);
+    integer i__, refid;
+    extern /* Subroutine */ int chkin_(char *, ftnlen);
+    doublereal epoch;
+    extern /* Subroutine */ int errch_(char *, char *, ftnlen, ftnlen);
     static logical usecn;
     extern /* Subroutine */ int vlcom_(doublereal *, doublereal *, doublereal 
 	    *, doublereal *, doublereal *), vsubg_(doublereal *, doublereal *,
 	     integer *, doublereal *);
-    doublereal ssblt;
+    doublereal ssblt, lterr;
     static logical uselt;
     extern doublereal vnorm_(doublereal *);
+    doublereal prvlt;
     extern logical failed_(void);
     extern doublereal clight_(void);
     logical attblk[15];
+    extern doublereal touchd_(doublereal *);
     extern /* Subroutine */ int spkgeo_(integer *, doublereal *, char *, 
 	    integer *, doublereal *, doublereal *, ftnlen), sigerr_(char *, 
 	    ftnlen), chkout_(char *, ftnlen);
     integer ltsign;
-    extern /* Subroutine */ int setmsg_(char *, ftnlen), irfnum_(char *, 
-	    integer *, ftnlen);
+    extern /* Subroutine */ int irfnum_(char *, integer *, ftnlen), setmsg_(
+	    char *, ftnlen);
     doublereal ssbtrg[6];
     integer numitr;
     extern logical return_(void);
@@ -280,21 +281,20 @@ static doublereal c_b25 = -1.;
 /*                               uses one iteration. */
 
 /*                    'CN'       Converged Newtonian light time */
-/*                               correction.  In solving the light time */
+/*                               correction. In solving the light time */
 /*                               equation, the 'CN' correction iterates */
 /*                               until the solution converges (three */
 /*                               iterations on all supported platforms). */
-
-/*                               The 'CN' correction typically does not */
-/*                               substantially improve accuracy because */
-/*                               the errors made by ignoring */
-/*                               relativistic effects may be larger than */
-/*                               the improvement afforded by obtaining */
-/*                               convergence of the light time solution. */
-/*                               The 'CN' correction computation also */
-/*                               requires a significantly greater number */
-/*                               of CPU cycles than does the */
-/*                               one-iteration light time correction. */
+/*                               Whether the 'CN+S' solution is */
+/*                               substantially more accurate than the */
+/*                               'LT' solution depends on the geometry */
+/*                               of the participating objects and on the */
+/*                               accuracy of the input data. In all */
+/*                               cases this routine will execute more */
+/*                               slowly when a converged solution is */
+/*                               computed. See the Particulars section of */
+/*                               SPKEZR for a discussion of precision of */
+/*                               light time corrections. */
 
 /*                 The following values of ABCORR apply to the */
 /*                 "transmission" case in which photons *depart* from */
@@ -381,31 +381,24 @@ static doublereal c_b25 = -1.;
 /*        inclusion of the '+S' suffix. This portion of the aberration */
 /*        correction flag is ignored if present. */
 
-/*     2) If ABCORR calls for stellar aberration but not light */
-/*        time corrections, the error SPICE(NOTSUPPORTED) is */
-/*        signaled. */
-
-/*     3) If ABCORR calls for relativistic light time corrections, the */
-/*        error SPICE(NOTSUPPORTED) is signaled. */
-
-/*     4) If the value of ABCORR is not recognized, the error */
+/*     2) If the value of ABCORR is not recognized, the error */
 /*        is diagnosed by a routine in the call tree of this */
 /*        routine. */
 
-/*     5) If the reference frame requested is not a recognized */
+/*     3) If the reference frame requested is not a recognized */
 /*        inertial reference frame, the error SPICE(BADFRAME) */
 /*        is signaled. */
 
-/*     6) If the state of the target relative to the solar system */
+/*     4) If the state of the target relative to the solar system */
 /*        barycenter cannot be computed, the error will be diagnosed */
 /*        by routines in the call tree of this routine. */
 
-/*     7) If the observer and target are at the same position, */
+/*     5) If the observer and target are at the same position, */
 /*        then DLT is set to zero. This situation could arise, */
 /*        for example, when the observer is Mars and the target */
 /*        is the Mars barycenter. */
 
-/*     8) If a division by zero error would occur in the computation */
+/*     6) If a division by zero error would occur in the computation */
 /*        of DLT, the error SPICE(DIVIDEBYZERO) is signaled. */
 
 /* $ Files */
@@ -438,6 +431,10 @@ static doublereal c_b25 = -1.;
 
 /* $ Examples */
 
+/*     The numerical results shown for this example may differ across */
+/*     platforms. The results depend on the SPICE kernels used as */
+/*     input, the compiler and supporting libraries, and the machine */
+/*     specific arithmetic implementation. */
 
 /*    1) Look up a sequence of states of the Moon as seen from the */
 /*       Earth. Use light time corrections. Compute the first state for */
@@ -451,6 +448,8 @@ static doublereal c_b25 = -1.;
 
 /*          KPL/MK */
 
+/*          File name: spkltc.tm */
+
 /*          This meta-kernel is intended to support operation of SPICE */
 /*          example programs. The kernels shown here should not be */
 /*          assumed to contain adequate or correct versions of data */
@@ -463,9 +462,9 @@ static doublereal c_b25 = -1.;
 
 /*          \begindata */
 
-/*             KERNELS_TO_LOAD = ( 'de418.bsp', */
-/*                                 'pck00008.tpc', */
-/*                                 'naif0008.tls'  ) */
+/*             KERNELS_TO_LOAD = ( 'de421.bsp', */
+/*                                 'pck00010.tpc', */
+/*                                 'naif0010.tls'  ) */
 
 /*          \begintext */
 
@@ -482,7 +481,7 @@ static doublereal c_b25 = -1.;
 /*     C     it references must exist in your current working directory. */
 /*     C */
 /*           CHARACTER*(*)         META */
-/*           PARAMETER           ( META   = 'example.mk' ) */
+/*           PARAMETER           ( META   = 'spkltc.tm' ) */
 /*     C */
 /*     C     Use a time step of 1 hour; look up 5 states. */
 /*     C */
@@ -555,60 +554,59 @@ static doublereal c_b25 = -1.;
 /*           END */
 
 
-/*     The output produced by this program will vary somewhat as */
-/*     a function of the platform on which the program is built and */
-/*     executed. On a PC/Linux/g77 platform, the following output */
-/*     was produced: */
+/*     On a PC/Linux/gfortran platform, the following output was */
+/*     produced: */
 
-/*        ET =   0. */
-/*        J2000 x-position (km):    -291569.265 */
-/*        J2000 y-position (km):    -266709.186 */
-/*        J2000 z-position (km):    -76099.1551 */
-/*        J2000 x-velocity (km/s):   0.643530613 */
-/*        J2000 y-velocity (km/s):  -0.666081817 */
-/*        J2000 z-velocity (km/s):  -0.301322832 */
-/*        One-way light time (s):    1.34231061 */
-/*        Light time rate:           1.07316909E-07 */
 
-/*        ET =   3600. */
-/*        J2000 x-position (km):    -289240.781 */
-/*        J2000 y-position (km):    -269096.441 */
-/*        J2000 z-position (km):    -77180.8997 */
-/*        J2000 x-velocity (km/s):   0.650062115 */
-/*        J2000 y-velocity (km/s):  -0.660162739 */
-/*        J2000 z-velocity (km/s):  -0.299642674 */
-/*        One-way light time (s):    1.34269395 */
-/*        Light time rate:           1.05652599E-07 */
+/*        ET =    0.0000000000000000 */
+/*        J2000 x-position (km):     -291569.26541282982 */
+/*        J2000 y-position (km):     -266709.18647825718 */
+/*        J2000 z-position (km):     -76099.155118763447 */
+/*        J2000 x-velocity (km/s):   0.64353061322177041 */
+/*        J2000 y-velocity (km/s):  -0.66608181700820079 */
+/*        J2000 z-velocity (km/s):  -0.30132283179625752 */
+/*        One-way light time (s):     1.3423106103251679 */
+/*        Light time rate:           1.07316908698977495E-007 */
 
-/*        ET =   7200. */
-/*        J2000 x-position (km):    -286888.887 */
-/*        J2000 y-position (km):    -271462.302 */
-/*        J2000 z-position (km):    -78256.5557 */
-/*        J2000 x-velocity (km/s):   0.656535992 */
-/*        J2000 y-velocity (km/s):  -0.654196577 */
-/*        J2000 z-velocity (km/s):  -0.297940273 */
-/*        One-way light time (s):    1.34307131 */
-/*        Light time rate:           1.03990457E-07 */
+/*        ET =    3600.0000000000000 */
+/*        J2000 x-position (km):     -289240.78128184378 */
+/*        J2000 y-position (km):     -269096.44087958336 */
+/*        J2000 z-position (km):     -77180.899725757539 */
+/*        J2000 x-velocity (km/s):   0.65006211520087476 */
+/*        J2000 y-velocity (km/s):  -0.66016273921695667 */
+/*        J2000 z-velocity (km/s):  -0.29964267390571342 */
+/*        One-way light time (s):     1.3426939548635302 */
+/*        Light time rate:           1.05652598952224259E-007 */
 
-/*        ET =   10800. */
-/*        J2000 x-position (km):    -284513.792 */
-/*        J2000 y-position (km):    -273806.6 */
-/*        J2000 z-position (km):    -79326.0432 */
-/*        J2000 x-velocity (km/s):   0.662951901 */
-/*        J2000 y-velocity (km/s):  -0.648183807 */
-/*        J2000 z-velocity (km/s):  -0.296215779 */
-/*        One-way light time (s):    1.34344269 */
-/*        Light time rate:           1.02330665E-07 */
+/*        ET =    7200.0000000000000 */
+/*        J2000 x-position (km):     -286888.88736709207 */
+/*        J2000 y-position (km):     -271462.30170547962 */
+/*        J2000 z-position (km):     -78256.555682137609 */
+/*        J2000 x-velocity (km/s):   0.65653599154284592 */
+/*        J2000 y-velocity (km/s):  -0.65419657680401588 */
+/*        J2000 z-velocity (km/s):  -0.29794027307420823 */
+/*        One-way light time (s):     1.3430713117337547 */
+/*        Light time rate:           1.03990456898758609E-007 */
 
-/*        ET =   14400. */
-/*        J2000 x-position (km):    -282115.704 */
-/*        J2000 y-position (km):    -276129.17 */
-/*        J2000 z-position (km):    -80389.283 */
-/*        J2000 x-velocity (km/s):   0.669309504 */
-/*        J2000 y-velocity (km/s):  -0.642124908 */
-/*        J2000 z-velocity (km/s):  -0.294469343 */
-/*        One-way light time (s):    1.3438081 */
-/*        Light time rate:           1.00673404E-07 */
+/*        ET =    10800.000000000000 */
+/*        J2000 x-position (km):     -284513.79173691198 */
+/*        J2000 y-position (km):     -273806.60031034052 */
+/*        J2000 z-position (km):     -79326.043183274567 */
+/*        J2000 x-velocity (km/s):   0.66295190054599118 */
+/*        J2000 y-velocity (km/s):  -0.64818380709706158 */
+/*        J2000 z-velocity (km/s):  -0.29621577937090349 */
+/*        One-way light time (s):     1.3434426890693671 */
+/*        Light time rate:           1.02330665243423737E-007 */
+
+/*        ET =    14400.000000000000 */
+/*        J2000 x-position (km):     -282115.70368389413 */
+/*        J2000 y-position (km):     -276129.16976799071 */
+/*        J2000 z-position (km):     -80389.282965712249 */
+/*        J2000 x-velocity (km/s):   0.66930950377548726 */
+/*        J2000 y-velocity (km/s):  -0.64212490805688027 */
+/*        J2000 z-velocity (km/s):  -0.29446934336246899 */
+/*        One-way light time (s):     1.3438080956559786 */
+/*        Light time rate:           1.00673403630050830E-007 */
 
 
 /* $ Restrictions */
@@ -629,13 +627,28 @@ static doublereal c_b25 = -1.;
 
 /* $ Literature_References */
 
-/*     SPK Required Reading. */
+/*     None. */
 
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 04-JUL-2014 (NJB) */
+
+/*        Discussion of light time corrections was updated. Assertions */
+/*        that converged light time corrections are unlikely to be */
+/*        useful were removed. */
+
+/*     Last update was 02-MAY-2012 (NJB) */
+
+/*        Updated to ensure convergence when CN or XCN light time */
+/*        corrections are used. The new algorithm also terminates early */
+/*        (after fewer than three iterations) when convergence is */
+/*        attained. */
+
+/*        Call to ZZPRSCOR was replaced by a call to ZZVALCOR. */
 
 /* -    SPICELIB Version 1.0.0, 11-JAN-2008 (NJB) */
 
@@ -663,6 +676,13 @@ static doublereal c_b25 = -1.;
 /*     performed prior to computation of DLT. */
 
 
+/*     Convergence limit: */
+
+
+/*     Maximum number of light time iterations for any */
+/*     aberration correction: */
+
+
 /*     Local variables */
 
 
@@ -679,12 +699,12 @@ static doublereal c_b25 = -1.;
     } else {
 	chkin_("SPKLTC", (ftnlen)6);
     }
-    if (first || s_cmp(abcorr, prvcor, abcorr_len, (ftnlen)5) != 0) {
+    if (pass1 || s_cmp(abcorr, prvcor, abcorr_len, (ftnlen)5) != 0) {
 
 /*        The aberration correction flag differs from the value it */
 /*        had on the previous call, if any.  Analyze the new flag. */
 
-	zzprscor_(abcorr, attblk, abcorr_len);
+	zzvalcor_(abcorr, attblk, abcorr_len);
 	if (failed_()) {
 	    chkout_("SPKLTC", (ftnlen)6);
 	    return 0;
@@ -706,29 +726,13 @@ static doublereal c_b25 = -1.;
 /*           USECN indicates converged Newtonian light time correction. */
 
 /*        The above definitions are consistent with those used by */
-/*        ZZPRSCOR. */
+/*        ZZVALCOR. */
 
 	xmit = attblk[4];
 	uselt = attblk[1];
 	usecn = attblk[3];
 	usestl = attblk[2];
-	if (usestl && ! uselt) {
-	    setmsg_("Aberration correction flag # calls for stellar aberrati"
-		    "on but not light time corrections. This combination is n"
-		    "ot expected.", (ftnlen)123);
-	    errch_("#", abcorr, (ftnlen)1, abcorr_len);
-	    sigerr_("SPICE(NOTSUPPORTED)", (ftnlen)19);
-	    chkout_("SPKLTC", (ftnlen)6);
-	    return 0;
-	} else if (attblk[5]) {
-	    setmsg_("Aberration correction flag # calls for relativistic lig"
-		    "ht time correction.", (ftnlen)74);
-	    errch_("#", abcorr, (ftnlen)1, abcorr_len);
-	    sigerr_("SPICE(NOTSUPPORTED)", (ftnlen)19);
-	    chkout_("SPKLTC", (ftnlen)6);
-	    return 0;
-	}
-	first = FALSE_;
+	pass1 = FALSE_;
     }
 
 /*     See if the reference frame is a recognized inertial frame. */
@@ -749,6 +753,10 @@ static doublereal c_b25 = -1.;
 /*     one-way light time. */
 
     spkgeo_(targ, et, ref, &c__0, ssbtrg, &ssblt, ref_len);
+    if (failed_()) {
+	chkout_("SPKLTC", (ftnlen)6);
+	return 0;
+    }
     vsubg_(ssbtrg, stobs, &c__6, starg);
     dist = vnorm_(starg);
     *lt = dist / clight_();
@@ -794,16 +802,36 @@ static doublereal c_b25 = -1.;
 /*     compute the light time. */
 
     if (usecn) {
-	numitr = 3;
+	numitr = 5;
     } else {
 	numitr = 1;
     }
-    i__1 = numitr;
-    for (i__ = 1; i__ <= i__1; ++i__) {
-	d__1 = *et + ltsign * *lt;
-	spkgeo_(targ, &d__1, ref, &c__0, ssbtrg, &ssblt, ref_len);
+    i__ = 0;
+    lterr = 1.;
+    while(i__ < numitr && lterr > 1e-17) {
+
+/*        LT was set either prior to this loop or */
+/*        during the previous loop iteration. */
+
+	epoch = *et + ltsign * *lt;
+	spkgeo_(targ, &epoch, ref, &c__0, ssbtrg, &ssblt, ref_len);
+	if (failed_()) {
+	    chkout_("SPKLTC", (ftnlen)6);
+	    return 0;
+	}
 	vsubg_(ssbtrg, stobs, &c__6, starg);
-	*lt = vnorm_(starg) / clight_();
+	prvlt = *lt;
+	d__1 = vnorm_(starg) / clight_();
+	*lt = touchd_(&d__1);
+/*        LTERR is the magnitude of the change between the current */
+/*        estimate of light time and the previous estimate, relative to */
+/*        the previous light time corrected epoch. */
+
+/* Computing MAX */
+	d__3 = 1., d__4 = abs(epoch);
+	d__2 = (d__1 = *lt - prvlt, abs(d__1)) / max(d__3,d__4);
+	lterr = touchd_(&d__2);
+	++i__;
     }
 
 /*     At this point, STARG contains the light time corrected */
@@ -912,7 +940,7 @@ static doublereal c_b25 = -1.;
 /*     with the light-time corrected velocity. */
 
     d__1 = ltsign * *dlt + 1.;
-    vlcom_(&d__1, &ssbtrg[3], &c_b25, &stobs[3], &starg[3]);
+    vlcom_(&d__1, &ssbtrg[3], &c_b19, &stobs[3], &starg[3]);
     chkout_("SPKLTC", (ftnlen)6);
     return 0;
 } /* spkltc_ */

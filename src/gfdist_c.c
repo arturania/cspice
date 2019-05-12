@@ -473,7 +473,7 @@
    monotone windows yields a dramatic efficiency improvement over a 
    state-based search that simply tests at each step whether the 
    specified constraint is satisfied. The latter type of search can 
-   miss solution intervals if the step size is shorter than the 
+   miss solution intervals if the step size is longer than the 
    shortest solution interval. 
  
    Having some knowledge of the relative geometry of the target and 
@@ -510,6 +510,14 @@
    routine. In general the accuracy of input data will be the limiting
    factor.
  
+   The user may change the convergence tolerance from the default
+   SPICE_GF_CNVTOL value by calling the routine gfstol_c, e.g.
+
+      gfstol_c( tolerance value )
+
+   Call gfstol_c prior to calling this routine. All subsequent
+   searches will use the updated tolerance value.
+
    To use a different tolerance value, a lower-level GF routine such 
    as gfevnt_c  must be called. Making the tolerance tighter than 
    SPICE_GF_CNVTOL is unlikely to be useful, since the results are unlikely 
@@ -1005,6 +1013,11 @@
  
 -Version
  
+   -CSPICE Version 1.0.1, 28-FEB-2013 (NJB) (EDW)
+
+       Header was updated to discuss use of gfstol_c. A
+       header typo was corrected.
+
    -CSPICE Version 1.0.0, 15-APR-2009 (NJB) (EDW)
 
 -Index_Entries

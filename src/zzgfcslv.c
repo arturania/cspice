@@ -13,7 +13,6 @@ static integer c__0 = 0;
 static integer c__1 = 1;
 static logical c_false = FALSE_;
 static doublereal c_b36 = 0.;
-static doublereal c_b37 = 1e-6;
 
 /* $Procedure ZZGFCSLV ( GF, coordinate solver ) */
 /* Subroutine */ int zzgfcslv_(char *vecdef, char *method, char *target, char 
@@ -46,9 +45,8 @@ static doublereal c_b37 = 1e-6;
     /* Local variables */
     extern /* Subroutine */ int zzgfcodc_();
     extern /* Subroutine */ int zzgfcoin_(char *, char *, char *, char *, 
-	    char *, char *, char *, doublereal *, char *, char *, doublereal *
-	    , ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, 
-	    ftnlen);
+	    char *, char *, char *, doublereal *, char *, char *, ftnlen, 
+	    ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen);
     extern /* Subroutine */ int zzgfcoex_();
     extern /* Subroutine */ int zzgflong_(char *, char *, char *, char *, 
 	    char *, char *, char *, doublereal *, char *, char *, char *, 
@@ -56,10 +54,11 @@ static doublereal c_b37 = 1e-6;
 	    S_fp, U_fp, S_fp, logical *, L_fp, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, ftnlen, ftnlen, ftnlen, 
 	    ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen);
-    extern /* Subroutine */ int zzgfcolt_(), zzgfcour_();
-    extern /* Subroutine */ int zzgfsolv_(U_fp, U_fp, U_fp, logical *, L_fp, 
-	    logical *, doublereal *, doublereal *, doublereal *, doublereal *,
-	     logical *, U_fp, doublereal *);
+    extern /* Subroutine */ int zzgfudlt_();
+    extern /* Subroutine */ int zzgfrelx_(U_fp, U_fp, U_fp, U_fp, U_fp, char *
+	    , doublereal *, doublereal *, doublereal *, doublereal *, integer 
+	    *, integer *, doublereal *, logical *, S_fp, U_fp, S_fp, char *, 
+	    char *, logical *, L_fp, doublereal *, ftnlen, ftnlen, ftnlen);
     integer i__;
     extern /* Subroutine */ int chkin_(char *, ftnlen), ucase_(char *, char *,
 	     ftnlen, ftnlen), errch_(char *, char *, ftnlen, ftnlen);
@@ -71,7 +70,10 @@ static doublereal c_b37 = 1e-6;
     doublereal start;
     extern /* Subroutine */ int ljust_(char *, char *, ftnlen, ftnlen);
     extern logical failed_(void);
-    extern /* Subroutine */ int scardd_(integer *, doublereal *);
+    extern /* Subroutine */ int zzgfsolvx_(U_fp, U_fp, U_fp, U_fp, logical *, 
+	    L_fp, logical *, doublereal *, doublereal *, doublereal *, 
+	    doublereal *, logical *, U_fp, doublereal *), scardd_(integer *, 
+	    doublereal *);
     extern integer isrchc_(char *, integer *, char *, ftnlen, ftnlen), 
 	    wncard_(doublereal *);
     extern logical return_(void);
@@ -85,13 +87,9 @@ static doublereal c_b37 = 1e-6;
 	    doublereal *, integer *, doublereal *, doublereal *), wncond_(
 	    doublereal *, doublereal *, doublereal *);
     integer loc;
+    extern /* Subroutine */ int udf_();
     char uop[6];
     extern /* Subroutine */ int zzgfcog_();
-    extern /* Subroutine */ int zzgfrel_(U_fp, U_fp, U_fp, U_fp, U_fp, U_fp, 
-	    char *, doublereal *, doublereal *, doublereal *, doublereal *, 
-	    integer *, integer *, doublereal *, logical *, S_fp, U_fp, S_fp, 
-	    char *, char *, logical *, L_fp, doublereal *, ftnlen, ftnlen, 
-	    ftnlen);
 
 /* $ Abstract */
 
@@ -192,7 +190,21 @@ static doublereal c_b37 = 1e-6;
 
 /* $ Version */
 
-/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+/* -    SPICELIB Version 2.0.0  29-NOV-2016 (NJB) */
+
+/*        Upgraded to support surfaces represented by DSKs. */
+
+/*        Bug fix: removed declaration of NVRMAX parameter. */
+
+/* -    SPICELIB Version 1.3.0, 01-OCT-2011 (NJB) */
+
+/*       Added NWILUM parameter. */
+
+/* -    SPICELIB Version 1.2.0, 14-SEP-2010 (EDW) */
+
+/*       Added NWPA parameter. */
+
+/* -    SPICELIB Version 1.1.0, 08-SEP-2009 (EDW) */
 
 /*       Added NWRR parameter. */
 /*       Added NWUDS parameter. */
@@ -242,6 +254,14 @@ static doublereal c_b37 = 1e-6;
 /*     count using NWUDS. */
 
 
+/*     Callers of GFPA should declare their workspace window */
+/*     count using NWPA. */
+
+
+/*     Callers of GFILUM should declare their workspace window */
+/*     count using NWILUM. */
+
+
 /*     ADDWIN is a parameter used to expand each interval of the search */
 /*     (confinement) window by a small amount at both ends in order to */
 /*     accommodate searches using equality constraints. The loaded */
@@ -249,9 +269,6 @@ static doublereal c_b37 = 1e-6;
 
 
 /*     FRMNLN is a string length for frame names. */
-
-
-/*     NVRMAX is the maximum number of vertices if FOV type is "POLYGON" */
 
 
 /*     FOVTLN -- maximum length for FOV string. */
@@ -430,7 +447,6 @@ static doublereal c_b37 = 1e-6;
 /*     VARIABLE  I/O  DESCRIPTION */
 /*     --------  ---  -------------------------------------------------- */
 /*     LBCELL     P   Cell lower bound. */
-/*     CNVTOL     P   Convergence tolerance for existence window. */
 /*     CNTRCT     P   Existence window contraction magnitude. */
 /*     VECDEF     I   Vector definition. */
 /*     METHOD     I   Computation method. */
@@ -935,9 +951,6 @@ static doublereal c_b37 = 1e-6;
 
 /*     LBCELL     is the lower bound for SPICELIB cells. */
 
-/*     CNVTOL     is the convergence tolerance used for determining the */
-/*                existence window for surface intercept computations. */
-
 /*     CNTRCT     is the contraction magnitude used to prepare the */
 /*                "existence window" for use as a confinement window. */
 /*                The existence window is applicable only to coordinates */
@@ -1098,6 +1111,15 @@ static doublereal c_b37 = 1e-6;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.2.0, 04-APR-2011 (EDW) */
+
+/*        Replaced use of rooutines ZZGFREL with ZZGFRELX, and */
+/*        ZZGFSOLV with ZZGFSOLVX. ZZGFCOIN argument list edited */
+/*        to remove the unneeded argument REFVAL. */
+
+/*        The code changes for ZZGFRELX use should not affect the */
+/*        numerical results of GF computations. */
+
 /* -    SPICELIB Version 1.0.0 06-MAR-2009 (NJB) (EDW) */
 
 /* -& */
@@ -1211,7 +1233,7 @@ static doublereal c_b37 = 1e-6;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	ssized_(mw, &work[(i__2 = i__ * work_dim1 - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : s_rnge("work", 
-		i__2, "zzgfcslv_", (ftnlen)963)]);
+		i__2, "zzgfcslv_", (ftnlen)969)]);
     }
 
 /*     Initialize the result window. */
@@ -1235,9 +1257,8 @@ static doublereal c_b37 = 1e-6;
 /*        Initialize the search for the existence window. */
 
 	zzgfcoin_(vecdef, method, target, ref, abcorr, obsrvr, dref, dvec, 
-		crdsys, crdnam, refval, vecdef_len, method_len, target_len, 
-		ref_len, abcorr_len, obsrvr_len, dref_len, crdsys_len, 
-		crdnam_len);
+		crdsys, crdnam, vecdef_len, method_len, target_len, ref_len, 
+		abcorr_len, obsrvr_len, dref_len, crdsys_len, crdnam_len);
 	if (failed_()) {
 	    chkout_("ZZGFCSLV", (ftnlen)8);
 	    return 0;
@@ -1263,18 +1284,19 @@ static doublereal c_b37 = 1e-6;
 
 	ssized_(mw, &work[(i__1 = work_dim1 * 13 - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfcslv_", (ftnlen)1016)]);
+		i__1, "zzgfcslv_", (ftnlen)1022)]);
 
 /*        Search each interval of the confinement window. */
 
 	i__1 = wncard_(cnfine);
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    wnfetd_(cnfine, &i__, &start, &finish);
-	    zzgfsolv_((U_fp)zzgfcoex_, (U_fp)udstep, (U_fp)udrefn, bail, (
-		    L_fp)udbail, &c_false, &c_b36, &start, &finish, &c_b37, 
-		    rpt, (U_fp)udrepu, &work[(i__2 = work_dim1 * 13 - 5 - 
-		    work_offset) < work_dim1 * work_dim2 && 0 <= i__2 ? i__2 :
-		     s_rnge("work", i__2, "zzgfcslv_", (ftnlen)1025)]);
+	    zzgfsolvx_((U_fp)udf_, (U_fp)zzgfcoex_, (U_fp)udstep, (U_fp)
+		    udrefn, bail, (L_fp)udbail, &c_false, &c_b36, &start, &
+		    finish, tol, rpt, (U_fp)udrepu, &work[(i__2 = work_dim1 * 
+		    13 - 5 - work_offset) < work_dim1 * work_dim2 && 0 <= 
+		    i__2 ? i__2 : s_rnge("work", i__2, "zzgfcslv_", (ftnlen)
+		    1031)]);
 	    if (failed_()) {
 		chkout_("ZZGFCSLV", (ftnlen)8);
 		return 0;
@@ -1304,14 +1326,14 @@ static doublereal c_b37 = 1e-6;
 	excon = *tol + 1.;
 	wncond_(&excon, &excon, &work[(i__1 = work_dim1 * 13 - 5 - 
 		work_offset) < work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : 
-		s_rnge("work", i__1, "zzgfcslv_", (ftnlen)1063)]);
+		s_rnge("work", i__1, "zzgfcslv_", (ftnlen)1069)]);
     } else {
 
 /*        Simply copy the confinement window to the workspace. */
 
 	copyd_(cnfine, &work[(i__1 = work_dim1 * 13 - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfcslv_", (ftnlen)1069)]);
+		i__1, "zzgfcslv_", (ftnlen)1075)]);
     }
 
 /*     If progress reporting is enabled, set the report prefix array */
@@ -1341,9 +1363,9 @@ static doublereal c_b37 = 1e-6;
 	i__1 = npass;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    repmi_(rptpre + ((i__2 = i__ - 1) < 3 && 0 <= i__2 ? i__2 : 
-		    s_rnge("rptpre", i__2, "zzgfcslv_", (ftnlen)1103)) * 55, 
+		    s_rnge("rptpre", i__2, "zzgfcslv_", (ftnlen)1110)) * 55, 
 		    "#", &npass, prebuf + ((i__3 = i__ - 1) < 3 && 0 <= i__3 ?
-		     i__3 : s_rnge("prebuf", i__3, "zzgfcslv_", (ftnlen)1103))
+		     i__3 : s_rnge("prebuf", i__3, "zzgfcslv_", (ftnlen)1110))
 		     * 55, (ftnlen)55, (ftnlen)1, (ftnlen)55);
 	}
     }
@@ -1369,7 +1391,7 @@ static doublereal c_b37 = 1e-6;
 		U_fp)udrefn, rpt, (S_fp)udrepi, (U_fp)udrepu, (S_fp)udrepf, 
 		bail, (L_fp)udbail, mw, nw, work, &work[(i__1 = work_dim1 * 
 		13 - 5 - work_offset) < work_dim1 * work_dim2 && 0 <= i__1 ? 
-		i__1 : s_rnge("work", i__1, "zzgfcslv_", (ftnlen)1125)], 
+		i__1 : s_rnge("work", i__1, "zzgfcslv_", (ftnlen)1133)], 
 		result, vecdef_len, method_len, target_len, ref_len, 
 		abcorr_len, obsrvr_len, dref_len, crdsys_len, crdnam_len, 
 		relate_len);
@@ -1380,17 +1402,16 @@ static doublereal c_b37 = 1e-6;
 /*        Initialize the coordinate quantity utilities. */
 
 	zzgfcoin_(vecdef, method, target, ref, abcorr, obsrvr, dref, dvec, 
-		crdsys, crdnam, refval, vecdef_len, method_len, target_len, 
-		ref_len, abcorr_len, obsrvr_len, dref_len, crdsys_len, 
-		crdnam_len);
+		crdsys, crdnam, vecdef_len, method_len, target_len, ref_len, 
+		abcorr_len, obsrvr_len, dref_len, crdsys_len, crdnam_len);
 
 /*        Perform the search. */
 
-	zzgfrel_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfcodc_, (U_fp)zzgfcolt_,
-		 (U_fp)zzgfcog_, (U_fp)zzgfcour_, relate, refval, tol, adjust,
-		 &work[(i__1 = work_dim1 * 13 - 5 - work_offset) < work_dim1 *
-		 work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfc"
-		"slv_", (ftnlen)1146)], mw, nw, work, rpt, (S_fp)udrepi, (U_fp)
+	zzgfrelx_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfcodc_, (U_fp)
+		zzgfudlt_, (U_fp)zzgfcog_, relate, refval, tol, adjust, &work[
+		(i__1 = work_dim1 * 13 - 5 - work_offset) < work_dim1 * 
+		work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfcs"
+		"lv_", (ftnlen)1154)], mw, nw, work, rpt, (S_fp)udrepi, (U_fp)
 		udrepu, (S_fp)udrepf, prebuf, rptsuf, bail, (L_fp)udbail, 
 		result, relate_len, (ftnlen)55, (ftnlen)13);
     }

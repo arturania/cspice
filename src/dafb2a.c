@@ -26,8 +26,11 @@
 
 /* $ Abstract */
 
+/*     Deprecated. The routine DAFBT supersedes this routine. */
+/*     NAIF supports this routine only to provide backward */
+/*     compatibility. */
+
 /*     Convert a binary DAF to an equivalent ASCII (text) DAF. */
-/*     (Obsolete, maintained for backward compatibility only.) */
 
 /* $ Disclaimer */
 
@@ -87,16 +90,16 @@
 
 /*      None. */
 
-/* $ Files */
-
-/*     See arguments BINARY, ASCII. */
-
 /* $ Exceptions */
 
 /*     None. */
 
 /*     Errors are detected and signalled by routines called by this */
 /*     routine. */
+
+/* $ Files */
+
+/*     See arguments BINARY, ASCII. */
 
 /* $ Particulars */
 
@@ -147,6 +150,13 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.1.1, 26-JUL-2012 (EDW) */
+
+/*        Edited Abstract section to use "Deprecated" keyword */
+/*        and state replacement routine. */
+
+/*        Eliminated unneeded Revisions section. */
+
 /* -    SPICELIB Version 2.1.0, 18-JUN-1999 (WLT) */
 
 /*        Fixed call to CHKOUT with wrong name. */
@@ -181,35 +191,6 @@
 /* $ Index_Entries */
 
 /*     binary daf to ascii */
-
-/* -& */
-/* $ Revisions */
-
-/* -    SPICELIB Version 2.0.0, 04-OCT-1993 (KRG) */
-
-/*        This routine was completely rewritten to make use of the */
-/*        routines DAFB2T and TXTOPN, for converting a text file to */
-/*        binary and opening a text file. It now simply calls the */
-/*        routine DAFT2B after opening the text file with TXTOPN. */
-
-/*        Added a statement to the $ Particulars section to the effect */
-/*        that this routine has been made obsolete by the introduction of */
-/*        the routine DAFBT, and that we strongly recommend the use of */
-/*        the new routine. */
-
-/*        Modified the $ Abstract section to reflect the fact that this */
-/*        routine is obsolete. */
-
-/* -    SPICELIB Version 1.0.2, 10-MAR-1992 (WLT) */
-
-/*        Comment section for permuted index source lines was added */
-/*        following the header. */
-
-/* -    SPICELIB Version 1.0.1, 22-MAR-1990 (HAN) */
-
-/*        Literature references added to the header. */
-
-/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (IMU) */
 
 /* -& */
 

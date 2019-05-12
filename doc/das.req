@@ -2,15 +2,16 @@
 DAS Required Reading
 ===========================================================================
  
-   Last revised on 2009 APR 01 by B. V. Semenov.
+   Last revised on 2017 MAR 23 by N. J. Bachman.
  
  
 Abstract
 --------------------------------------------------------
  
-   Direct Access Segregated File, DAS, is an architecture for files that
-   stores arrays of integer, double precision, and character data. The
-   SPICE EK and DBK files use the DAS architecture and associated software.
+   The ``Direct Access Segregated'' (DAS) SPICE file architecture stores
+   arrays of integer, double precision, and character data. SPICE DSK, EK
+   and DBK files, and type 1 star catalogs use the DAS architecture and
+   associated software.
  
  
 Notes for CSPICE users
@@ -19,8 +20,9 @@ Notes for CSPICE users
    This document currently discusses only the Fortran version of the SPICE
    DAS subsystem. The CSPICE version provides identical functionality.
  
-   At this time, the CSPICE DAS subsystem consists solely of modules
-   translated from Fortran via f2c; there are no DAS interface wrappers.
+   At this time, the CSPICE DAS subsystem consists primarily of modules
+   translated from Fortran via f2c; the only DAS interface C wrappers are
+   for opening and closing DAS files, and for comment area access.
  
    For a given platform, DAS files used by the Fortran and C SPICE Toolkits
    are identical.
@@ -29,10 +31,12 @@ Notes for CSPICE users
 Intended audience
 --------------------------------------------------------
  
-   This document is intended primarily for sophisticated SPICELIB users who
-   wish to create their own DAS-based file formats. Users of SPICE kernels
-   based on the DAS format can find documentation of the interface to those
-   kernels in the Required Reading for the appropriate kernel type.
+   This document is intended for SPICE users who need to use lower-level,
+   segment-oriented Digital Shape Kernel (DSK) interface functions. It is
+   also for sophisticated SPICE users who wish to create their own
+   DAS-based file formats. Users of SPICE kernels based on the DAS format
+   can find documentation for those kernels in the Required Reading for the
+   appropriate kernel type.
  
  
 Related Documents
@@ -41,9 +45,11 @@ Related Documents
    The following documents pertinent to DAS usage are included in the
    CSPICE Toolkit:
  
-       1.   Convert User's Guide (convert.ug)
+       --   DLA Required Reading (dla.req)
  
-       2.   COMMNT User's Guide (commnt.ug)
+       --   Convert User's Guide (convert.ug)
+ 
+       --   COMMNT User's Guide (commnt.ug)
  
  
 Introduction
@@ -82,21 +88,21 @@ Introduction
  
    The acronym ``DAS'' stands for ``direct access, segregated.'' The DAS
    subsystem enables application programs to view data in a DAS file as
-   though the data were segregated into three separate one-dimensional
-   arrays: one of integers, one of double precision numbers, and one of
-   characters. Each element of these virtual arrays is pointed to by an
-   integer known as a ``logical address.'' The logical addresses for each
-   data type are independent: for each data type, the range of logical
-   addresses starts at 1 and ends with the count of scalar data elements of
-   that type. Thus an application program can, by calling DAS interface
-   routines, read the ``100th through 200th integers'' or ``first through
-   3000th characters'' from a DAS file.
+   though the data were segregated into three separate, possibly empty,
+   one-dimensional arrays: one of integers, one of double precision
+   numbers, and one of characters. Each element of these virtual arrays is
+   pointed to by an integer known as a ``logical address.'' The logical
+   addresses for each data type are independent: for each data type, the
+   range of logical addresses starts at 1 and ends with the count of scalar
+   data elements of that type. Thus an application program can, by calling
+   DAS interface routines, read the ``100th through 200th integers'' or
+   ``first through 3000th characters'' from a DAS file.
  
    This simple view of the organization of data within a DAS file is
    independent of the order in which data are written to the file when it
    is created: double precision numbers, integers, and characters can be
    written to the file in an interleaved fashion, but the data of each type
-   will still appear to be be contiguous to a program reading the file.
+   will still appear to be contiguous to a program reading the file.
  
    The DAS suite of routines includes routines that convert DAS files
    between binary and transfer formats. DAS files in transfer format can be
@@ -106,59 +112,50 @@ Introduction
    command-line or menu-based programs. Therefore, any high-level file
    format based on DAS can be ported using existing SPICE utilities.
  
-   The task of adding annotation to data files is also solved by using the
-   DAS format. The SPICE Toolkit's COMMNT utility can insert annotation
-   into, or extract annotation from, any DAS file, so this capability is
-   automatically available for any files having a format based on DAS.
+   The task of adding annotation, sometimes called ``comments'' or
+   ``metadata,'' to data files is also solved by using the DAS format. The
+   SPICE Toolkit's COMMNT utility can insert annotation into, or extract
+   annotation from, any DAS file, so this capability is automatically
+   available for any files having a format based on DAS.
  
    Because speed of file access can be important for programs that use
    large files, the DAS subsystem buffers in memory data that it reads from
    or writes to a DAS file. This buffering operation is completely
    independent of the I/O mechanism of the computer system on which a
    DAS-based application program runs. User-written access routines for any
-   file format based on DAS will automatically support I/O buffering,
-   simply by calling DAS routines to carry out their I/O operations.
+   file format based on DAS will automatically support I/O buffering simply
+   by calling DAS routines to carry out their I/O operations.
  
  
-Using the DAS Subsystem
+DAS Concepts
 ===========================================================================
- 
-   This chapter explains how to use the DAS subsystem in your own
-   application program. The first section, titled ``Prerequisites,''
-   discusses concepts that must be understood in order to read the
-   discussion of the DAS routines that follows. The second section ``Using
-   the DAS Subroutines'' introduces the DAS subroutines that are normally
-   used by application programs.
- 
- 
-Prerequisites
---------------------------------------------------------
  
  
 Logical Addresses
+--------------------------------------------------------
  
-   As we've said, the DAS subsystem makes a DAS file look to an application
-   program as though the data in the file were segregated into three
-   virtual arrays, one each of character, integer, and double precision
-   type. Any or all of these arrays may be empty. In DAS terminology, each
-   element of any of these ``logical'' arrays is called a ``word.'' The
-   phrases ``integer word,'' ``character word,'' and ``double precision
-   word'' are used when specific data types are of interest. Character
-   words are single characters.
+   The DAS subsystem makes a DAS file look to an application program as
+   though the data in the file were segregated into three virtual arrays,
+   one each of character, integer, and double precision type. Any or all of
+   these arrays may be empty. In DAS terminology, each element of any of
+   these ``logical'' arrays is called a ``word.'' The phrases ``integer
+   word,'' ``character word,'' and ``double precision word'' are used when
+   specific data types are of interest. Character words are single
+   characters.
  
    The DAS logical address of a given word is the index of that word within
    its virtual array. When necessary to avoid ambiguity, we'll use the
    phrases ``integer logical address,'' ``double precision logical
    address,'' or ``character logical address'' to denote logical addresses
    of words of each data type. Logical addresses themselves, wherever
-   they're used in DAS routines, are represented by Fortran integers.
+   they're used in DAS routines, are represented by integers.
  
    The valid range of indices for each non-empty virtual array starts at 1
    and ends at the word count for that array. There are no ``holes'' in the
    arrays; every logical address in the valid range for an array points to
    data. This property of the virtual arrays is enforced by the mechanism
    by which DAS files are populated with data: data may be placed in a
-   virtual array by either by appending or by updating a range of valid
+   virtual array either by appending or by updating a range of valid
    logical addresses. Random write access to array addresses outside of the
    valid range is not supported.
  
@@ -167,17 +164,18 @@ Logical Addresses
  
    The ordering of the data within each virtual array is controlled by the
    order in which data are appended to that array. Each append operation
-   adds the contents of a Fortran array to the DAS virtual array of the
-   same data type. An append operation appends the elements of the Fortran
-   array, in an order-preserving way, to a contiguous range of logical
-   addresses, starting with the successor of the highest logical address
-   already occupied in the virtual array. In the case of arrays of strings,
-   the order of characters within an array increases from left to right,
-   and all characters within an array element precede those belonging to
-   any higher-indexed element.
+   adds the contents of an array in memory to the DAS virtual array of the
+   same data type. An append operation appends the elements of the array in
+   memory, preserving order, to a contiguous range of logical addresses,
+   starting with the successor of the highest logical address already
+   occupied in the virtual array. In the case of arrays of strings, the
+   order of characters within an array increases from left to right, and
+   all characters within an array element precede those belonging to any
+   higher-indexed element.
  
  
 Read and Write Access
+--------------------------------------------------------
  
    The DAS subsystem provides a measure of system-independent protection
    for files that are intended to be accessed in a ``read only'' fashion. A
@@ -192,9 +190,21 @@ Read and Write Access
    DAS file for write access. The routine DASOPS opens a new scratch DAS
    file for write access.
  
+   ``Opening'' a DAS file via one of the DAS file opening functions makes
+   the file available for I/O, but the file is not necessarily physically
+   opened from the perspective of the host file system. SPICE manages DAS
+   files opened by any of these functions so the files behave as though
+   they're physically open, as far as user application software is
+   concerned.
+ 
+   For convenience, we still use the term ``open'' to refer to a DAS file
+   that has been made available for read or write access by a call to a DAS
+   file open function.
+ 
    A program is allowed to open a DAS file for read access multiple times
    during a single run, but once a file is opened for write access, any
-   subsequent attempts to open it cause an error to be signaled.
+   subsequent attempts to open it before it has been closed again cause an
+   error to be signaled.
  
    The file access restrictions imposed by the DAS subsystem do not pertain
    to access of a single DAS file by multiple programs. Limitations on this
@@ -203,7 +213,26 @@ Read and Write Access
    file that has been opened for writing by any one of them.
  
  
+Access to Non-Native DAS Files
+ 
+   As of the N0066 version of the SPICE Toolkit, the DAS subsystem supports
+   reading DAS files having certain non-native binary file formats: IEEE
+   big-endian DAS files can be read on IEEE little-endian host systems, and
+   vice versa. This capability involves run-time translation of numeric
+   data.
+ 
+   Reading non-native DAS files may be substantially slower than reading
+   native files; the performance cost of run-time translation depends in
+   part on the fraction of read operations that reference buffered data.
+ 
+   Writing non-native DAS files is not supported. Non-native DAS files must
+   be converted to native format in order to update or add to their data,
+   or to modify their comment areas. See the Convert User's Guide
+   (convert.ug) or the BINGO users Guide (bingo.ug) for details.
+ 
+ 
 File Handles
+--------------------------------------------------------
  
    DAS routines that open DAS files return an integer argument called a
    ``file handle.'' Most DAS routines use file handles rather than file
@@ -218,26 +247,34 @@ File Handles
  
    The DAS subsystem does not recycle handles: once a file handle is
    assigned to a file, that integer will not be assigned to a different
-   file during the same program run, even if the file the handle is
-   assigned to is closed. At any time, a list of handles of open DAS files
-   can be obtained by calling the DAS utility DASHOF.
+   file during the same program run, even if the file to which the handle
+   was assigned has been closed. At any time, a list of handles of open DAS
+   files can be obtained by calling the DAS utility DASHOF.
  
  
 The DAS Comment Area
+--------------------------------------------------------
  
-   The DAS file architecture supports a data struture called the ``comment
-   area.'' This feature allows sequence EKs to store free-form text
-   comments. Comments may be labels or other descriptive text that fully
-   identifies the file and indicates its intended purpose.
+   The DAS file architecture supports a data structure called the ``comment
+   area.'' This feature allows DAS files to store free-form text comments,
+   also known as metadata. Comments may be labels or other descriptive text
+   that fully identifies the file and indicates its intended purpose.
  
    The contents of the comment area must be printable text. The comment
    area is line-oriented; text inserted into the comment area can be
-   retrieved with the original line breaks preserved. It is recommended
-   that text to be inserted into the comment area have no lines exceeding
-   80 characters in length.
+   retrieved with the original line breaks preserved.
+ 
+   The DAS file architecture itself imposes no limits on lengths of comment
+   lines. However, one of the SPICE Toolkit DAS comment area writer
+   routines, DASACU, does have a 255 character limit. In general, as the
+   length of comment lines increases, the portability of the formatting of
+   the comment text decreases. Limiting comment line lengths to 80
+   characters, and avoiding use of tab characters, enhances the probability
+   that comments will appear as intended when displayed.
  
  
 Internal File Names
+--------------------------------------------------------
  
    The DAS file format allows a 60-character string called an ``internal
    file name'' to be stored in a DAS file. Normally, this string is placed
@@ -256,11 +293,18 @@ Internal File Names
  
  
 Binary and Transfer DAS files
+--------------------------------------------------------
  
-   Since transfer files can be easily ported between different computer
-   systems, but direct access, binary files cannot, the DAS subsystem
-   provides routines that convert a binary DAS file to an equivalent
-   transfer file, as well as routines that perform the inverse conversion.
+   The DAS subsystem provides routines that convert a binary DAS file to an
+   equivalent transfer file, as well as routines that perform the inverse
+   conversion. These routines can be used when it is necessary to move DAS
+   files between platforms having incompatible binary architectures, and
+   when run-time translation is not adequate because the files must be
+   writable or efficiently readable on the target platform. In theory, it
+   could also be the case that there are pairs of platforms for which
+   run-time translation cannot be performed; this situation has existed in
+   the past, but does not currently exist at the time of release of the
+   N0066 SPICE Toolkit.
  
    No SPICELIB routines other than the DAS conversion routines themselves
    depend on the DAS transfer format, and this format is not considered
@@ -271,12 +315,13 @@ Binary and Transfer DAS files
  
    The transfer format has the property of preserving all of the character,
    double precision, and integer information in the virtual arrays of DAS
-   file; in particular, the full precision of all numeric quantities is
-   preserved when a binary DAS file in converted to transfer format and
+   files; in particular, the full precision of all numeric quantities is
+   preserved when a binary DAS file is converted to transfer format and
    then back to binary format on the same computer.
  
  
 Buffering
+--------------------------------------------------------
  
    When the DAS subsystem reads a physical record from a DAS file, or when
    it writes a physical record, a copy of the data in that record is saved
@@ -314,46 +359,47 @@ Buffering
    routines.
  
  
-Using Multiple DAS Files Simultaneously
+Using Multiple DAS Files Concurrently
+--------------------------------------------------------
  
-   A program may have multiple DAS files open at the same time. Normally,
-   it should not be necessary to have more than two or three DAS files open
-   simultaneously, but the DAS subsystem sets the limit at the somewhat
-   indulgent value of 20 files.
+   SPICE limits the total number of concurrently open DAS and DAF files to
+   5000.
  
-   When a program accesses multiple DAS files at the same time, the
-   program's interactions with each file are independent of the program's
-   interactions with the other files. Any DAS routine that performs an
-   operation on a DAS file accepts a handle, Fortran logical unit number,
-   or file name input argument that identifies the file to be acted upon,
-   so it is easy to ensure that a program accesses the correct files.
- 
-   Accessing multiple DAS files simultaneously may affect a program's speed
+   Accessing multiple DAS files concurrently may affect a program's speed
    of execution, since all of the files compete for the same space in the
    DAS record buffers.
  
  
 DAS vs DAF
+--------------------------------------------------------
  
    The DAS subsystem is, roughly speaking, a generalization of the DAF
    subsystem, since DAS supports storage of integer and character data as
    well as double precision data, whereas the DAF subsystem supports
    storage of double precision data only. The DAF format can easily be
-   ``simulated'' using as DAS file.
+   ``simulated'' using a DAS file.
  
    On the other hand, the DAF subsystem provides higher-level services that
    are not built into DAS: in the DAF subsystem, the data are partitioned
    into a linked list of virtual arrays, each one having its own name and
    descriptor, and the subsystem provides routines to manipulate the arrays
-   and their descriptive information. This capability can be added to DAS,
-   but DAS files are not required to have this structure.
+   and their descriptive information.
+ 
+   As of the N0066 version of the SPICE Toolkit, a virtual array capability
+   for DAS files is provided by the SPICE DLA subsystem. The DLA file
+   format is a special case of the DAS format. DLA files enable user
+   application software to view the data in a DAS file as a doubly linked
+   list of virtual arrays, also called ``segments,'' where each segment may
+   have character, double precision, and integer components. See the DLA
+   Required Reading, dla.req, for details.
  
  
-Using DAS Subroutines
---------------------------------------------------------
+Using the DAS Subsystem
+===========================================================================
  
-   This section shows how common functions involving DAS files are carried
-   out.
+   This chapter explains how to use the DAS subsystem in your own
+   application program. The preceding chapter, "DAS Concepts," contains
+   prerequisite information for the following discussion.
  
    In the code examples shown in this chapter, we'll display a brief phrase
    describing the function of each DAS routine that appears in the code, as
@@ -363,6 +409,7 @@ Using DAS Subroutines
  
  
 Creating a New DAS File
+--------------------------------------------------------
  
    New DAS files are created by calling DASONW:
  
@@ -373,13 +420,14 @@ Creating a New DAS File
    Here FNAME, FTYPE, IFNAME and NCOMR are inputs, and HANDLE is an output.
    FNAME is the name of the new file to be created, IFNAME is the internal
    file name of the new file, and NCOMR is the number of comment records to
-   reserve. .HANDLE is the integer handle assigned to the DAS file by
+   reserve. HANDLE is the integer handle assigned to the DAS file by
    DASOPN.
  
    After this call, the DAS file is ready to be populated with data.
  
  
 Writing DAS Files
+--------------------------------------------------------
  
    There are two ways to write data to a DAS file: data can be added to the
    file by appending it to the virtual arrays, and data already in the
@@ -394,7 +442,7 @@ Writing DAS Files
    DASADI adds the contents of an integer array to a DAS file. In the call
    below, the argument HANDLE identifies the file, the number 100 is the
    number of elements in the data array, and DATAI is an array of integers
-   whose contents are to be appended to the integer virtual array.
+   whose contents are to be appended to the file's integer virtual array.
  
       DO I = 1, 100
          DATAI(I) = I
@@ -416,8 +464,8 @@ Writing DAS Files
    DASADC is the character analog of DASADI. The second argument to DASADC
    indicates the total number of character logical addresses to be filled.
    DASADC has two additional input arguments that DASADI and DASADD do not
-   have: begin and end substring bounds that indicate which portion of the
-   array of input strings to transfer data from.
+   have: begin and end substring bounds that indicate from which portion of
+   the array of input strings to transfer data.
  
    In this case, we'll presume that the array DATAC is declared
  
@@ -430,7 +478,7 @@ Writing DAS Files
    logical character addresses 1:160, because all of the characters of each
    element of DATAC are written to the file.
  
-      CALL DASADC ( HANDLE, 2, 1, 80, DATAC )       {Add data, character}
+      CALL DASADC ( HANDLE, 160, 1, 80, DATAC )     {Add data, character}
  
    If we don't wish to write out all 80 characters of each element of
    DATAC, we can use different substring bounds in the call to DASADC. As
@@ -440,7 +488,7 @@ Writing DAS Files
       DATAC(1) = 'This is the third line.'
       DATAC(2) = 'This is the fourth line.'
  
-      CALL DASADC ( HANDLE, 2, 1, 50, DATAC )       {Add data, character}
+      CALL DASADC ( HANDLE, 100, 1, 50, DATAC )     {Add data, character}
  
    This call added only 100 characters to the file.
  
@@ -590,6 +638,7 @@ Writing DAS Files
  
  
 Writing to an Existing DAS file
+--------------------------------------------------------
  
    The DASADx and DASUDx routines described above can be used to write to
    an old DAS file (one that contains data and is not currently open), as
@@ -607,6 +656,7 @@ Writing to an Existing DAS file
  
  
 Reading DAS Files
+--------------------------------------------------------
  
    The DAS reading routines are DASRDC, DASRDD, and DASRDI. Each of these
    routines reads data from a range of logical addresses. These routines
@@ -638,7 +688,7 @@ Reading DAS Files
    Now for the character data: we'll read the data written by DASADC using
    DASRDC. After the call
  
-      CALL DASRDC ( HANDLE, 1,160, 1, 80, DATAC )    {Read data, character}
+      CALL DASRDC ( HANDLE, 1, 160, 1, 80, DATAC )  {Read data, character}
  
    the array DATAC (whose elements have a length of 80 characters) will
    contain the lines
@@ -662,6 +712,7 @@ Reading DAS Files
  
  
 Converting Between Binary and Transfer Format
+--------------------------------------------------------
  
    The DAS subsystem contains two routines that convert between DAS binary
    and transfer format. These are:
@@ -687,13 +738,17 @@ Converting Between Binary and Transfer Format
  
  
 Annotating DAS Files
+--------------------------------------------------------
  
-   The comment area of a DAS file may be used to store comments in an
-   encoded form. This capability is supported by the SPICELIB SPC routines:
-   using those routines the comments of a text file may be stored in the
-   comment are, and text stored in this way may be extracted again to a
-   text file. See the SPC Required Reading, spc.req, for documentation of
-   these routines.
+   The comment area of a DAS file may be used to store comments, also known
+   as metadata, in an encoded form. This capability is supported by the
+   CSPICE functions
+ 
+         DASAC     Add comments to comment area.
+ 
+         DASDC     Delete comments from comment area.
+ 
+         DASEC     Extract comments from comment area to a character array.
  
    Normally, SPICELIB users will not need to manipulate the comment area
    using DAS API routines; the basic functionality of storing comments in a
@@ -702,6 +757,7 @@ Annotating DAS Files
  
  
 Mapping Between Handles, File Names, and Units
+--------------------------------------------------------
  
    Given a valid DAS handle, the corresponding file name and Fortran
    logical unit can be found by calling the appropriate DAS routine:
@@ -716,6 +772,7 @@ Mapping Between Handles, File Names, and Units
  
  
 Obtaining a DAS File Summary
+--------------------------------------------------------
  
    Occasionally, an application program may need to know the range of
    logical addresses in use within a DAS file. This information can be
@@ -736,6 +793,7 @@ Obtaining a DAS File Summary
  
  
 Using Scratch DAS Files
+--------------------------------------------------------
  
    DAS files can be opened with a Fortran status of 'SCRATCH'. Scratch DAS
    files are always opened for write access. When they are closed, they are
@@ -773,6 +831,7 @@ DAS Architecture
  
  
 Overview of DAS Architecture
+--------------------------------------------------------
  
    DAS files are Fortran direct access files having a record length long
    enough so that NWD double precision numbers, NWI integers, or NWC
@@ -879,6 +938,7 @@ Overview of DAS Architecture
  
  
 The File Record
+--------------------------------------------------------
  
    The file record contains the following information about the DAS file
    containing it:
@@ -927,7 +987,7 @@ The File Record
          `ncc'      is the number of comment characters---the number of
                     characters in use in the comment area.
  
-         `bff'      is the FTP error detection string.
+         `ftp'      is the FTP error detection string.
  
          `bff'      is the binary file format identifier.
  
@@ -938,6 +998,7 @@ The File Record
  
  
 Reserved Records
+--------------------------------------------------------
  
    The reserved record area is a data structure that serves as a hook for
    future development. SPICE users normally will have no reason to access
@@ -951,12 +1012,14 @@ Reserved Records
  
  
 Comment Records
+--------------------------------------------------------
  
    Comment records are character records that constitute the DAS comment
    area.
  
  
 Directory Records
+--------------------------------------------------------
  
    Directory records, or ``directories,'' are records that allow the DAS
    subsystem to find the physical location in a DAS file corresponding to a
@@ -1088,8 +1151,8 @@ Directory Records
    record is limited, the number of records described by a directory is
    virtually arbitrary, because the number of records in each cluster may
    vary. In particular, after data segregation is performed, a DAS file
-   will contain only three clusters and requires a single directory in
-   order to describe those clusters.
+   contains only three clusters and requires a single directory in order to
+   describe those clusters.
  
    The cluster descriptors are implemented using a run-length encoding
    scheme. The first element of the series of descriptors occupies two
@@ -1100,6 +1163,7 @@ Directory Records
  
  
 Data Records
+--------------------------------------------------------
  
    Each DAS data record contains data of only one type.
  
@@ -1145,6 +1209,7 @@ DAS Routines
  
  
 Summary of Mnemonics
+--------------------------------------------------------
  
    All of the subroutines in the DAS family have names beginning with the
    letters ``DAS,'' followed by a two- or three-character mnemonic. For
@@ -1159,7 +1224,7 @@ Summary of Mnemonics
       ADC  Add character data to file
       ADD  Add double precision data to file
       ADI  Add integer data to file
-      BTU  Convert binary to text file
+      BT   Convert binary to transfer format file
       CLS  Close file
       CUD  Create and update directories
       DC   Delete comments
@@ -1167,6 +1232,7 @@ Summary of Mnemonics
       ECU  Extract DAS comments to logical unit
       FM   File manager
       FNH  Map file name to handle
+      HAM  Map file handle to access method
       HFN  Map handle to file name
       HFS  Map handle to file summary
       HLU  Map handle to logical unit
@@ -1174,12 +1240,15 @@ Summary of Mnemonics
       IOC  Low-level character record I/O
       IOD  Low-level double precision record I/O
       IOI  Low-level integer record I/O
+      LLA  Last logical addresses of each data type
       LLC  Low-level file close
       LUH  Map logical unit to handle
-      OPN  Open a new DAS file
+      ONW  Open a new DAS file.
+      OPN  Open a new DAS file (obsolete: use DASONW)
       OPR  Open a DAS file for reading
       OPS  Open a scratch DAS file
       OPW  Open an existing DAS file for writing
+      RCR  Remove comment records
       RDC  Read character data
       RDD  Read double precision data
       RDI  Read integer data
@@ -1190,7 +1259,7 @@ Summary of Mnemonics
       RWR  Read and write records
       SDR  Segregate data records
       SIH  Signal invalid handles
-      TB   Convert text file to binary
+      TB   Convert transfer format file to binary
       UDC  Update character data
       UDD  Update double precision data
       UDI  Update integer data
@@ -1206,6 +1275,7 @@ Summary of Mnemonics
  
  
 Summary of Calling Sequences
+--------------------------------------------------------
  
    Calling sequences of the DAS family of routines are given below.
    Routines are grouped according to function.
@@ -1215,7 +1285,8 @@ Summary of Calling Sequences
  
    Opening and closing files:
  
-      DASOPN ( FNAME, IFNAME, NRESV, HANDLE )
+      DASONW ( FNAME, FTYPE,  IFNAME, NCOMR, HANDLE )
+      DASOPN ( FNAME, IFNAME, NRESV,  HANDLE )
       DASOPW ( FNAME, HANDLE )
       DASOPR ( FNAME, HANDLE )
       DASOPS ( HANDLE )
@@ -1253,21 +1324,24 @@ Summary of Calling Sequences
  
    File record (and internal file name) access:
  
-      DASRFR ( HANDLE, IDWORD, IFNAME, NRESV )
-      DASWFR ( HANDLE, IDWORD, IFNAME, NRESV )
+      DASRFR ( HANDLE, IDWORD, IFNAME, NRESVR, NRESVC, NCOMR, NCOMC )
+      DASWFR ( HANDLE, IDWORD, IFNAME, NRESVR, NRESVC, NCOMR, NCOMC )
  
    File summary access:
  
-      DASHFS ( HANDLE, NRESV, FREE, LASTLA, LASTRC, LASTWD )
-      DASUFS ( HANDLE, NRESV, FREE, LASTLA, LASTRC, LASTWD )
+      DASHFS ( HANDLE, NRESVR, NRESVC, NCOMR, NCOMC,
+               FREE,   LASTLA, LASTRC, LASTWD       )
+      DASLLA ( HANDLE, LASTC,  LASTD,  LASTI )
+      DASUFS ( HANDLE, NRESVR, NRESVC, NCOMR, NCOMC,
+               FREE,   LASTLA, LASTRC, LASTWD       )
  
    Adding and extracting comment records:
  
-      DASACR ( HANDLE, N )
       DASAC  ( HANDLE, N, BUFFER )
+      DASACR ( HANDLE, N )
       DASACU ( COMLUN, BEGMRK, ENDMRK, INSBLN, HANDLE )
-      DASEC  ( HANDLE, N )
-      DASECR ( HANDLE, N, BUFFER )
+      DASEC  ( HANDLE, BUFSIZ, N,      BUFFER, DONE   )
+      DASECU ( HANDLE, UNIT,   FOUND )
  
    The following routines are considered to be utilities and generally will
    not need to be called by application programs.
@@ -1330,6 +1404,7 @@ Examples
  
  
 Storing a Symbol Table in a DAS File
+--------------------------------------------------------
  
    This example shows how the contents of a SPICELIB double precision
    symbol table can be stored in and retrieved from a DAS file. The source
@@ -1346,11 +1421,6 @@ Storing a Symbol Table in a DAS File
    user's file reader to know how to read the file. In the following
    example, this data structure is very simple: it is a series of three
    integers whose meanings are known to the reader.
- 
-   The routines WRSYMD and RDSYMD could be used to implement the capability
-   of loading binary PCK files into the SPICELIB kernel pool; such binary
-   files would load faster than text kernels because it is not necessary to
-   parse their contents when they're loaded.
  
    A SPICELIB double precision symbol consists of three arrays: an array of
    symbol names, an array of integers that serves to map names to their
@@ -1394,6 +1464,7 @@ Storing a Symbol Table in a DAS File
  
  
             SUBROUTINE WRSYMD ( HANDLE, SYMNAM, SYMPTR, SYMVAL )
+            IMPLICIT NONE
       C
       C     Write a double precision symbol table to a DAS file.
       C
@@ -1410,9 +1481,9 @@ Storing a Symbol Table in a DAS File
       C     VARIABLE  I/O  DESCRIPTION
       C     --------  ---  ----------------------------------------------
       C     HANDLE     I   Handle of DAS file opened for writing.
-      C     TABSYM,
-      C     TABPTR,
-      C     TABVAL     I   Components of the symbol table.
+      C     SYMSYM,
+      C     SYMPTR,
+      C     SYMVAL     I   Components of the symbol table.
       C
  
       C
@@ -1420,6 +1491,8 @@ Storing a Symbol Table in a DAS File
       C
             INTEGER               CARDC
             INTEGER               CARDD
+            INTEGER               SYDIMD
+ 
             LOGICAL               RETURN
  
       C
@@ -1433,9 +1506,7 @@ Storing a Symbol Table in a DAS File
       C
             DOUBLE PRECISION      VALUES ( MAXVAL )
  
-            INTEGER               FIRST
             INTEGER               I
-            INTEGER               LAST
             INTEGER               N
             INTEGER               NAMLEN
             INTEGER               NSYM
@@ -1448,12 +1519,12 @@ Storing a Symbol Table in a DAS File
       C
             IF ( RETURN() ) THEN
                RETURN
-            ELSE
-               CALL CHKIN ( 'WRSYMD' )
             END IF
  
+            CALL CHKIN ( 'WRSYMD' )
+ 
       C
-      C     Write the symbol and symbol value counts to the file.  Also
+      C     Write the symbol and symbol value counts to the file. Also
       C     write out the length of the symbol name strings, so a reader
       C     program can know how many characters to read to obtain each
       C     name.
@@ -1462,59 +1533,66 @@ Storing a Symbol Table in a DAS File
             NVAL    =  CARDD (SYMVAL)
             NAMLEN  =  LEN ( SYMNAM(1) )
  
-            CALL DASADI ( HANDLE, 1, NSYM,   FIRST, LAST )
-            CALL DASADI ( HANDLE, 1, NVAL,   FIRST, LAST )
-            CALL DASADI ( HANDLE, 1, NAMLEN, FIRST, LAST )
- 
+            CALL DASADI ( HANDLE, 1, NSYM   )
+            CALL DASADI ( HANDLE, 1, NVAL   )
+            CALL DASADI ( HANDLE, 1, NAMLEN )
       C
-      C     Now write out the symbol table entries.  For each symbol,
+      C     Now write out the symbol table entries. For each symbol,
       C     we'll append the symbol's name to the DAS's virtual character
       C     array, the value count to the virtual integer array, and the
       C     values to the virtual double precision array.
       C
             DO I = 1, NSYM
       C
-      C        Look up the values associated with each symbol.  We don't
+      C        Look up the values associated with each symbol. We don't
       C        need to check the FOUND flag because we already know the
-      C        symbols exist.
+      C        symbols exist. Check the count of values; we must be able
+      C        to fit them into our local VALUES array.
       C
+               N = SYDIMD ( SYMNAM(I), SYMNAM, SYMPTR, SYMVAL )
+ 
+               IF ( N .GT. MAXVAL ) THEN
+ 
+                  CALL SETMSG ( 'Symbol # has too many values: '
+           .      //            'value count = #; array size = '
+           .      //            '#.'                            )
+                  CALL ERRCH  ( '#', SYMNAM(I)                  )
+                  CALL ERRINT ( '#', N                          )
+                  CALL ERRINT ( '#', MAXVAL                     )
+                  CALL SIGERR ( 'ARRAYOVERFLOW'                 )
+                  CALL CHKOUT ( 'WRSYMD'                        )
+                  RETURN
+ 
+               END IF
+ 
                CALL SYGETD ( SYMNAM(I),
            .                 SYMNAM,    SYMPTR,    SYMVAL,
            .                 N,         VALUES,    FOUND   )
- 
       C
       C        Add the symbol's name to the DAS file.
       C
-               CALL DASADC ( HANDLE,  1,  SYMNAM(I),  FIRST,  LAST )
- 
+               CALL DASADC ( HANDLE, NAMLEN, 1, NAMLEN, SYMNAM(I) )
       C
       C        Now the value count.
       C
-               CALL DASADI ( HANDLE,  1,  N,          FIRST,  LAST )
- 
+               CALL DASADI ( HANDLE,  1,  N  )
       C
       C        Finally, the values themselves.
       C
-               CALL DASADD ( HANDLE,  N,  VALUES,     FIRST,  LAST )
+               CALL DASADD ( HANDLE,  N,  VALUES )
  
             END DO
- 
  
             CALL CHKOUT ( 'WRSYMD' )
             RETURN
             END
  
  
- 
- 
- 
    The symbol table placed in a DAS file by WRSYMD may be extracted by
    RDSYMD, shown below:
  
- 
- 
- 
             SUBROUTINE RDSYMD ( HANDLE, SYMNAM, SYMPTR, SYMVAL )
+            IMPLICIT NONE
       C
       C     Read a double precision symbol table from a DAS file.
       C
@@ -1531,9 +1609,9 @@ Storing a Symbol Table in a DAS File
       C     VARIABLE  I/O  DESCRIPTION
       C     --------  ---  ----------------------------------------------
       C     HANDLE     I   Handle of DAS file opened for writing.
-      C     TABSYM,
-      C     TABPTR,
-      C     TABVAL     O   Components of the symbol table.  These cells
+      C     SYMSYM,
+      C     SYMPTR,
+      C     SYMVAL     O   Components of the symbol table. These cells
       C                    are presumed to be initialized on input.
       C
  
@@ -1581,35 +1659,34 @@ Storing a Symbol Table in a DAS File
       C
             IF ( RETURN() ) THEN
                RETURN
-            ELSE
-               CALL CHKIN ( 'RDSYMD' )
             END IF
  
+            CALL CHKIN ( 'RDSYMD' )
+ 
       C
-      C     Read the symbol and symbol value counts from the file.  Also
+      C     Read the symbol and symbol value counts from the file. Also
       C     get the length of the symbol name strings.
       C
             CALL DASRDI ( HANDLE, 1, 1, NSYM   )
             CALL DASRDI ( HANDLE, 2, 2, NVAL   )
             CALL DASRDI ( HANDLE, 3, 3, NAMLEN )
- 
       C
       C     Now read the symbols, their value counts, and their values.
       C     Add each symbol to the output symbol table.
       C
-      C     Obtain the length of the names in the symbol table.  Check
+      C     Obtain the length of the names in the symbol table. Check
       C     that the elements of the input name array are long enough.
       C
             L  =  LEN ( SYMNAM(1) )
  
             IF ( L .LT. NAMLEN ) THEN
  
-               CALL SETMSG ( 'Name array has width #; required width ' //
-           .                 'is #'                                     )
-               CALL ERRINT ( '#',  L                                    )
-               CALL ERRINT (  NAMLEN                                    )
-               CALL SIGERR ( 'NAMEARRAYTOONARROW'                       )
-               CALL CHKOUT ( 'RDSYMD'                                   )
+               CALL SETMSG ( 'Name array has width #; required width '
+           .   //            'is #'                                   )
+               CALL ERRINT ( '#',  L                                  )
+               CALL ERRINT (  NAMLEN                                  )
+               CALL SIGERR ( 'NAMEARRAYTOONARROW'                     )
+               CALL CHKOUT ( 'RDSYMD'                                 )
                RETURN
  
             END IF
@@ -1623,7 +1700,6 @@ Storing a Symbol Table in a DAS File
             LAST(DP)   = 0
             LAST(INT)  = 3
  
- 
             DO I = 1, NSYM
       C
       C        Obtain the symbol's name.
@@ -1634,7 +1710,6 @@ Storing a Symbol Table in a DAS File
                CALL DASRDC (  HANDLE,
            .                  FIRST(CHAR),  LAST(CHAR),
            .                  1,            NAMLEN,      VARNAM  )
- 
       C
       C        Now obtain the symbol's value count.
       C
@@ -1643,6 +1718,19 @@ Storing a Symbol Table in a DAS File
  
                CALL DASRDI ( HANDLE, FIRST(INT), LAST(INT), N )
  
+               IF ( N .GT. MAXVAL ) THEN
+ 
+                  CALL SETMSG ( 'Symbol # has too many values: '
+           .      //            'value count = #; array size = '
+           .      //            '#.'                            )
+                  CALL ERRCH  ( '#', VARNAM                     )
+                  CALL ERRINT ( '#', N                          )
+                  CALL ERRINT ( '#', MAXVAL                     )
+                  CALL SIGERR ( 'ARRAYOVERFLOW'                 )
+                  CALL CHKOUT ( 'RDSYMD'                        )
+                  RETURN
+ 
+               END IF
       C
       C        Now get the symbol's values.
       C
@@ -1650,7 +1738,6 @@ Storing a Symbol Table in a DAS File
                LAST (DP)    =  LAST(DP)    +  N
  
                CALL DASRDD ( HANDLE, FIRST(DP), LAST(DP), VALUES )
- 
       C
       C        Add the symbol to the output symbol table.
       C
@@ -1659,8 +1746,42 @@ Storing a Symbol Table in a DAS File
  
             END DO
  
- 
             CALL CHKOUT ( 'RDSYMD' )
             RETURN
             END
+ 
+ 
+Appendix A --- Revision History
+===========================================================================
+ 
+ 
+2017 MAR 23 by N. J. Bachman.
+ 
+   Updated to mention:
+ 
+       --   run-time translation
+ 
+       --   handle management
+ 
+       --   new limit on number of open DAS files
+ 
+       --   DSK files
+ 
+       --   the DLA format
+ 
+       --   DAS comment area access functions
+ 
+   Errors in example code were corrected. Document organization was
+   updated. Revision history was added.
+ 
+ 
+2009 APR 01 by B. V. Semenov.
+ 
+   Edits to conform to current NAIF standards for Required Reading
+   documents.
+ 
+ 
+2002 JAN 15 by N. J. Bachman
+ 
+   Initial release.
  

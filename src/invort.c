@@ -35,9 +35,8 @@
 
 /* $ Abstract */
 
-/*     Given a matrix, construct the matrix whose rows are the */
-/*     columns of the first divided by the length squared of the */
-/*     the corresponding columns of the input matrix. */
+/*     Construct the inverse of a 3x3 matrix with orthogonal columns */
+/*     and non-zero norms using a numerical stable algorithm. */
 
 /* $ Disclaimer */
 
@@ -166,6 +165,10 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.1.1, 14-NOV-2013 (EDW) */
+
+/*        Edit to Abstract. Eliminated unneeded Revisions section. */
+
 /* -    SPICELIB Version 1.1.0, 02-SEP-2005 (NJB) */
 
 /*        Updated to remove non-standard use of duplicate arguments */
@@ -178,14 +181,6 @@
 
 /*     Transpose a matrix and invert the lengths of the rows */
 /*     Invert a pseudo orthogonal matrix */
-
-/* -& */
-/* $ Revisions */
-
-/* -    SPICELIB Version 1.1.0, 02-SEP-2005 (NJB) */
-
-/*        Updated to remove non-standard use of duplicate arguments */
-/*        in VSCL call. */
 
 /* -& */
 
@@ -216,9 +211,9 @@
 
     for (i__ = 1; i__ <= 3; ++i__) {
 	unorm_(&m[(i__1 = i__ * 3 - 3) < 9 && 0 <= i__1 ? i__1 : s_rnge("m", 
-		i__1, "invort_", (ftnlen)214)], &temp[(i__2 = i__ * 3 - 3) < 
+		i__1, "invort_", (ftnlen)208)], &temp[(i__2 = i__ * 3 - 3) < 
 		9 && 0 <= i__2 ? i__2 : s_rnge("temp", i__2, "invort_", (
-		ftnlen)214)], &length);
+		ftnlen)208)], &length);
 	if (length == 0.) {
 	    chkin_("INVORT", (ftnlen)6);
 	    setmsg_("Column # of the input matrix has a norm of zero. ", (
@@ -246,7 +241,7 @@
 	}
 	scale = 1. / length;
 	vsclip_(&scale, &temp[(i__1 = i__ * 3 - 3) < 9 && 0 <= i__1 ? i__1 : 
-		s_rnge("temp", i__1, "invort_", (ftnlen)252)]);
+		s_rnge("temp", i__1, "invort_", (ftnlen)246)]);
     }
 
 /*     If we make it this far, we just need to transpose TEMP into MIT. */

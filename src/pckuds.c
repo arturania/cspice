@@ -10,7 +10,7 @@
 static integer c__2 = 2;
 static integer c__5 = 5;
 
-/* $Procedure      PCKUDS (PCK - unpack segment descriptor ) */
+/* $Procedure PCKUDS (PCK, unpack segment descriptor ) */
 /* Subroutine */ int pckuds_(doublereal *descr, integer *body, integer *frame,
 	 integer *type__, doublereal *first, doublereal *last, integer *begin,
 	 integer *end)
@@ -103,6 +103,14 @@ static integer c__5 = 5;
 
 /*     None. */
 
+/* $ Exceptions */
+
+/*     None. */
+
+/* $ Files */
+
+/*     None. */
+
 /* $ Particulars */
 
 /*     This routine extracts the contents of a PCK segment */
@@ -137,11 +145,7 @@ static integer c__5 = 5;
 
 /*     None. */
 
-/* $ Exceptions */
-
-/*     None. */
-
-/* $ Files */
+/* $ Literature_References */
 
 /*     None. */
 
@@ -149,11 +153,13 @@ static integer c__5 = 5;
 
 /*     W.L. Taber      (JPL) */
 
-/* $ Literature_References */
-
-/*     None. */
-
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1, 03-JAN-2014 (EDW) */
+
+/*        Minor edits to Procedure; clean trailing whitespace. */
+/*        Corrected order of header sections to conform to NAIF */
+/*        standard. */
 
 /* -    SPICELIB Version 1.0.0, 1994-JAN-4 (WLT) */
 

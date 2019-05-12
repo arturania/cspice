@@ -27,7 +27,7 @@ doublereal lgresp_(integer *n, doublereal *first, doublereal *step,
 
 /*     Evaluate a Lagrange interpolating polynomial for a specified */
 /*     set of coordinate pairs whose first components are equally */
-/*     spaced, at a specified abcissisa value. */
+/*     spaced, at a specified abscissa value. */
 
 /* $ Disclaimer */
 
@@ -108,8 +108,7 @@ doublereal lgresp_(integer *n, doublereal *first, doublereal *step,
 
 /*     WORK           is a work space array of the same dimension as */
 /*                    XVALS and YVALS.  It is used by this routine as a */
-/*                    scratch area to hold intermediate results.  WORK */
-/*                    is permitted to coincide with YVALS. */
+/*                    scratch area to hold intermediate results. */
 
 
 /*     X              is the abscissa value at which the interpolating */
@@ -128,10 +127,10 @@ doublereal lgresp_(integer *n, doublereal *first, doublereal *step,
 /* $ Exceptions */
 
 /*     1)  If STEP is zero, the error SPICE(INVALIDSTEPSIZE) will */
-/*         be signalled.  The function will return the value 0.D0. */
+/*         be signaled.  The function will return the value 0.D0. */
 
 /*     2)  If N is less than 1, the error SPICE(INVALIDSIZE) is */
-/*         signalled.  The function will return the value 0.D0. */
+/*         signaled.  The function will return the value 0.D0. */
 
 /*     3)  This routine does not attempt to ward off or diagnose */
 /*         arithmetic overflows. */
@@ -257,6 +256,14 @@ doublereal lgresp_(integer *n, doublereal *first, doublereal *step,
 /*     N.J. Bachman   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1, 10-JAN-2014 (NJB) */
+
+/*        Updated description of the workspace array: now the array WORK */
+/*        is not described as being allowed to coincide with the input */
+/*        YVALS. Such overlap would be a violation of the ANSI Fortran */
+/*        77 standard. Corrected several spelling errors in header */
+/*        documentation. */
 
 /* -    SPICELIB Version 1.0.0, 14-AUG-1993 (NJB) */
 

@@ -9,7 +9,7 @@
 
 static integer c__1 = 1;
 
-/* $Procedure      PCKR03 ( Read PCK record from segment, type 03 ) */
+/* $Procedure PCKR03 ( PCK, read record from type 3 segment ) */
 /* Subroutine */ int pckr03_(integer *handle, doublereal *descr, doublereal *
 	et, doublereal *record)
 {
@@ -165,6 +165,10 @@ static integer c__1 = 1;
 /*     K.R. Gehringer  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1, 03-JAN-2014 (EDW) */
+
+/*        Minor edits to Procedure; clean trailing whitespace. */
 
 /* -    SPICELIB Version 1.0.0, 20-SEP-1995 (KRG) */
 

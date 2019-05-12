@@ -1,12 +1,12 @@
 /*
 
--Procedure zzadqdec_c ( Private - GF,  df(x)/dx < 0 adapter )
+-Procedure zzadqdec_c ( Private - GF, user defined boolean adapter )
 
 -Abstract
  
    Provide an f2c-style interface allowing f2c'd Fortran
-   code to call a CSPICE-style GF routine that determines if
-   the derivative of the gfuds_c scalar quantity is negative.
+   code to call a CSPICE-style GF routine that determines
+   the value of a user defined boolean function.
 
 -Disclaimer
 
@@ -59,24 +59,22 @@
  
    VARIABLE  I/O  DESCRIPTION 
    --------  ---  -------------------------------------------------- 
-   et         I   Epoch of interest in TDB seconds 
-   xbool       O   Boolean value of df(x)/dt < 0 at 'et'
+   udfunc     I   Name of scalar function of interest.
+   et         I   Epoch of interest in TDB seconds. 
+   xbool      O   Boolean value at `et'.
  
 -Detailed_Input
 
-   et         The epoch in TDB seconds for which to determine if the value
-              of the derivative with respect to time of the user defined 
-              scalar quantity function is less than zero.
+   udfunc     the name of the external routine that returns the
+              value of the scalar quantity of interest at time `et'.
+
+   et         a double precision value representing
+              ephemeris time, expressed as seconds past
+              J2000 TDB, at which to evaluate "udfunb."
 
 -Detailed_Output  
 
-   xbool     The boolean value of the relation
-            
-                d f(x)  |  
-                ------  |    < 0
-                d x     | et
-
-             with f(x) the user defined scalar quantity function.
+   xbool      the value of the boolean quantity function at `et'.
 
 -Parameters
  
@@ -126,12 +124,15 @@
    E.D. Wright    (JPL)  
  
 -Version
+
+   -CSPICE Version 2.0.0, 23-OCT-2013 (EDW)
+
  
    -CSPICE Version 1.0.0, 21-DEC-2008 (EDW)
 
 -Index_Entries
  
-   adapter for gf scalar quantity derivative test routine
+   adapter for gf user defined boolean quantity
 
 -&
 */

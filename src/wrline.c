@@ -41,7 +41,7 @@ static integer c__2 = 2;
     extern /* Subroutine */ int ljust_(char *, char *, ftnlen, ftnlen);
     logical opened;
     extern /* Subroutine */ int fndlun_(integer *);
-    char tmpnam[128];
+    char tmpnam[255];
     integer iostat;
     extern /* Subroutine */ int suffix_(char *, integer *, char *, ftnlen, 
 	    ftnlen);
@@ -294,6 +294,26 @@ static integer c__2 = 2;
 /*     H.A. Neilan     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 4.25.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-INTEL. */
+
+/* -    SPICELIB Version 4.24.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 4.23.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-GFORTRAN. */
+
+/* -    SPICELIB Version 4.22.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 4.21.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GCC_C. */
 
 /* -    SPICELIB Version 4.20.0, 13-MAY-2010 (BVS) */
 
@@ -569,14 +589,14 @@ static integer c__2 = 2;
 	case 1: goto L_clline;
 	}
 
-    ljust_(device, tmpnam, device_len, (ftnlen)128);
-    ucase_(tmpnam, tmpnam, (ftnlen)128, (ftnlen)128);
+    ljust_(device, tmpnam, device_len, (ftnlen)255);
+    ucase_(tmpnam, tmpnam, (ftnlen)255, (ftnlen)255);
 
 /*     TMPNAM is now left justified and is in upper case. */
 
-    if (s_cmp(tmpnam, "NULL", (ftnlen)128, (ftnlen)4) == 0) {
+    if (s_cmp(tmpnam, "NULL", (ftnlen)255, (ftnlen)4) == 0) {
 	return 0;
-    } else if (s_cmp(tmpnam, "SCREEN", (ftnlen)128, (ftnlen)6) == 0) {
+    } else if (s_cmp(tmpnam, "SCREEN", (ftnlen)255, (ftnlen)6) == 0) {
 	ci__1.cierr = 1;
 	ci__1.ciunit = 6;
 	ci__1.cifmt = "(A)";

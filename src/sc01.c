@@ -57,7 +57,10 @@ static integer c__30 = 30;
 
     /* Local variables */
     static doublereal rate;
-    static integer pntr, i__, j, n;
+    static integer pntr;
+    extern /* Subroutine */ int zzcvpool_(char *, integer *, logical *, 
+	    ftnlen), zzctruin_(integer *);
+    static integer i__, j, n;
     extern /* Subroutine */ int scld01_(char *, integer *, integer *, integer 
 	    *, doublereal *, ftnlen), scli01_(char *, integer *, integer *, 
 	    integer *, integer *, ftnlen), chkin_(char *, ftnlen), errch_(
@@ -85,19 +88,19 @@ static integer c__30 = 30;
     static doublereal partim, tikmsc, timdif;
     static integer cmpwid[10], length[10];
     static logical update;
-    extern /* Subroutine */ int sigerr_(char *, ftnlen);
     extern logical return_(void);
-    extern /* Subroutine */ int chkout_(char *, ftnlen), suffix_(char *, 
-	    integer *, char *, ftnlen, ftnlen), cvpool_(char *, logical *, 
+    extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
+	    ftnlen);
+    static integer usrctr[2];
+    extern /* Subroutine */ int suffix_(char *, integer *, char *, ftnlen, 
 	    ftnlen), swpool_(char *, integer *, char *, ftnlen, ftnlen), 
 	    setmsg_(char *, ftnlen), lparsm_(char *, char *, integer *, 
-	    integer *, char *, ftnlen, ftnlen, ftnlen), errint_(char *, 
-	    integer *, ftnlen);
+	    integer *, char *, ftnlen, ftnlen, ftnlen);
     static integer timsys;
-    extern /* Subroutine */ int nparsd_(char *, doublereal *, char *, integer 
-	    *, ftnlen, ftnlen), dpstrf_(doublereal *, integer *, char *, char 
-	    *, ftnlen, ftnlen), prefix_(char *, integer *, char *, ftnlen, 
-	    ftnlen);
+    extern /* Subroutine */ int errint_(char *, integer *, ftnlen), nparsd_(
+	    char *, doublereal *, char *, integer *, ftnlen, ftnlen), dpstrf_(
+	    doublereal *, integer *, char *, char *, ftnlen, ftnlen), prefix_(
+	    char *, integer *, char *, ftnlen, ftnlen);
     static doublereal prstrt[9999];
     static integer pad, end;
     static char cmp[30*10];
@@ -234,6 +237,59 @@ static integer c__30 = 30;
 
 /*     End of include file sclk.inc */
 
+/* $ Abstract */
+
+/*     This include file defines the dimension of the counter */
+/*     array used by various SPICE subsystems to uniquely identify */
+/*     changes in their states. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 29-JUL-2013 (BVS) */
+
+/* -& */
+
+/*     End of include file. */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Entry point */
@@ -332,6 +388,10 @@ static integer c__30 = 30;
 /*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 3.4.0, 09-SEP-2013 (BVS) */
+
+/*        Updated to keep track of the POOL counter and call ZZCVPOOL. */
 
 /* -    SPICELIB Version 3.3.0, 05-MAR-2009 (NJB) */
 
@@ -828,9 +888,14 @@ L_sctk01:
 
 /*     N.J. Bachman (JPL) */
 /*     J.M. Lynch   (JPL) */
+/*     B.V. Semenov (JPL) */
 /*     R.E. Thurman (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.3.0, 09-SEP-2013 (BVS) */
+
+/*        Updated to keep track of the POOL counter and call ZZCVPOOL. */
 
 /* -    SPICELIB Version 2.2.0, 05-MAR-2009 (NJB) */
 
@@ -907,13 +972,13 @@ L_sctk01:
 	movec_(namlst, &c__9, kvname, (ftnlen)60, (ftnlen)60);
 	for (i__ = 2; i__ <= 9; ++i__) {
 	    suffix_("_#", &c__0, kvname + ((i__1 = i__ - 1) < 9 && 0 <= i__1 ?
-		     i__1 : s_rnge("kvname", i__1, "sc01_", (ftnlen)884)) * 
+		     i__1 : s_rnge("kvname", i__1, "sc01_", (ftnlen)895)) * 
 		    60, (ftnlen)2, (ftnlen)60);
 	    i__3 = -(*sc);
 	    repmi_(kvname + ((i__1 = i__ - 1) < 9 && 0 <= i__1 ? i__1 : 
-		    s_rnge("kvname", i__1, "sc01_", (ftnlen)885)) * 60, "#", &
+		    s_rnge("kvname", i__1, "sc01_", (ftnlen)896)) * 60, "#", &
 		    i__3, kvname + ((i__2 = i__ - 1) < 9 && 0 <= i__2 ? i__2 :
-		     s_rnge("kvname", i__2, "sc01_", (ftnlen)885)) * 60, (
+		     s_rnge("kvname", i__2, "sc01_", (ftnlen)896)) * 60, (
 		    ftnlen)60, (ftnlen)1, (ftnlen)60);
 	}
 
@@ -924,6 +989,10 @@ L_sctk01:
 /*        Keep track of the last spacecraft clock ID encountered. */
 
 	oldsc = *sc;
+
+/*        Initialize the local POOL counter to user value. */
+
+	zzctruin_(usrctr);
     }
 
 /*     Find out whether we need to look up new format descriptors from */
@@ -933,7 +1002,7 @@ L_sctk01:
 /*     do a look-up, we grab everything that any of the SC01 entry */
 /*     points might need. */
 
-    cvpool_("SC01", &update, (ftnlen)4);
+    zzcvpool_("SC01", usrctr, &update, (ftnlen)4);
     if (update || nodata) {
 
 /*        Our first piece of business is to look up all of the data */
@@ -991,13 +1060,13 @@ L_sctk01:
 /*     Determine how many ticks is each field is worth. */
 
     cmptks[(i__1 = nfield - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("cmptks", 
-	    i__1, "sc01_", (ftnlen)981)] = 1.;
+	    i__1, "sc01_", (ftnlen)997)] = 1.;
     for (i__ = nfield - 1; i__ >= 1; --i__) {
 	cmptks[(i__1 = i__ - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("cmptks", 
-		i__1, "sc01_", (ftnlen)984)] = cmptks[(i__2 = i__) < 10 && 0 
-		<= i__2 ? i__2 : s_rnge("cmptks", i__2, "sc01_", (ftnlen)984)]
-		 * moduli[(i__3 = i__) < 10 && 0 <= i__3 ? i__3 : s_rnge(
-		"moduli", i__3, "sc01_", (ftnlen)984)];
+		i__1, "sc01_", (ftnlen)1000)] = cmptks[(i__2 = i__) < 10 && 0 
+		<= i__2 ? i__2 : s_rnge("cmptks", i__2, "sc01_", (ftnlen)1000)
+		] * moduli[(i__3 = i__) < 10 && 0 <= i__3 ? i__3 : s_rnge(
+		"moduli", i__3, "sc01_", (ftnlen)1000)];
     }
 
 /*     Parse the clock components from the input string. There should */
@@ -1027,24 +1096,24 @@ L_sctk01:
     i__1 = n;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	if (s_cmp(cmp + ((i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		"cmp", i__2, "sc01_", (ftnlen)1017)) * 30, " ", (ftnlen)30, (
+		"cmp", i__2, "sc01_", (ftnlen)1033)) * 30, " ", (ftnlen)30, (
 		ftnlen)1) == 0) {
 	    cmpval[(i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge("cmpval"
-		    , i__2, "sc01_", (ftnlen)1018)] = offset[(i__3 = i__ - 1) 
+		    , i__2, "sc01_", (ftnlen)1034)] = offset[(i__3 = i__ - 1) 
 		    < 10 && 0 <= i__3 ? i__3 : s_rnge("offset", i__3, "sc01_",
-		     (ftnlen)1018)];
+		     (ftnlen)1034)];
 	} else {
 	    nparsd_(cmp + ((i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		    "cmp", i__2, "sc01_", (ftnlen)1020)) * 30, &cmpval[(i__3 =
+		    "cmp", i__2, "sc01_", (ftnlen)1036)) * 30, &cmpval[(i__3 =
 		     i__ - 1) < 10 && 0 <= i__3 ? i__3 : s_rnge("cmpval", 
-		    i__3, "sc01_", (ftnlen)1020)], error, &pntr, (ftnlen)30, (
+		    i__3, "sc01_", (ftnlen)1036)], error, &pntr, (ftnlen)30, (
 		    ftnlen)240);
 	}
 	if (s_cmp(error, " ", (ftnlen)240, (ftnlen)1) != 0) {
 	    setmsg_("Could not parse SCLK component # from # as a number.", (
 		    ftnlen)52);
 	    errch_("#", cmp + ((i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : 
-		    s_rnge("cmp", i__2, "sc01_", (ftnlen)1028)) * 30, (ftnlen)
+		    s_rnge("cmp", i__2, "sc01_", (ftnlen)1044)) * 30, (ftnlen)
 		    1, (ftnlen)30);
 	    errch_("#", clkstr, (ftnlen)1, clkstr_len);
 	    sigerr_("SPICE(INVALIDSCLKSTRING)", (ftnlen)24);
@@ -1058,12 +1127,12 @@ L_sctk01:
 /*         have been invalid. */
 
 	cmpval[(i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge("cmpval", 
-		i__2, "sc01_", (ftnlen)1042)] = cmpval[(i__3 = i__ - 1) < 10 
+		i__2, "sc01_", (ftnlen)1058)] = cmpval[(i__3 = i__ - 1) < 10 
 		&& 0 <= i__3 ? i__3 : s_rnge("cmpval", i__3, "sc01_", (ftnlen)
-		1042)] - offset[(i__4 = i__ - 1) < 10 && 0 <= i__4 ? i__4 : 
-		s_rnge("offset", i__4, "sc01_", (ftnlen)1042)];
+		1058)] - offset[(i__4 = i__ - 1) < 10 && 0 <= i__4 ? i__4 : 
+		s_rnge("offset", i__4, "sc01_", (ftnlen)1058)];
 	if (d_nint(&cmpval[(i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		"cmpval", i__2, "sc01_", (ftnlen)1045)]) < 0.) {
+		"cmpval", i__2, "sc01_", (ftnlen)1061)]) < 0.) {
 	    setmsg_(" Component number # in the SCLK string  is invalid     "
 		    "                       ", (ftnlen)78);
 	    errint_("#", &i__, (ftnlen)1);
@@ -1081,9 +1150,9 @@ L_sctk01:
     i__1 = n;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	*ticks += cmpval[(i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		"cmpval", i__2, "sc01_", (ftnlen)1066)] * cmptks[(i__3 = i__ 
+		"cmpval", i__2, "sc01_", (ftnlen)1082)] * cmptks[(i__3 = i__ 
 		- 1) < 10 && 0 <= i__3 ? i__3 : s_rnge("cmptks", i__3, "sc01_"
-		, (ftnlen)1066)];
+		, (ftnlen)1082)];
     }
     chkout_("SCTK01", (ftnlen)6);
     return 0;
@@ -1319,9 +1388,14 @@ L_scfm01:
 
 /*     N.J. Bachman (JPL) */
 /*     J.M. Lynch   (JPL) */
+/*     B.V. Semenov (JPL) */
 /*     R.E. Thurman (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.3.0, 09-SEP-2013 (BVS) */
+
+/*        Updated to keep track of the POOL counter and call ZZCVPOOL. */
 
 /* -    SPICELIB Version 2.2.0, 05-MAR-2009 (NJB) */
 
@@ -1414,13 +1488,13 @@ L_scfm01:
 	movec_(namlst, &c__9, kvname, (ftnlen)60, (ftnlen)60);
 	for (i__ = 2; i__ <= 9; ++i__) {
 	    suffix_("_#", &c__0, kvname + ((i__1 = i__ - 1) < 9 && 0 <= i__1 ?
-		     i__1 : s_rnge("kvname", i__1, "sc01_", (ftnlen)1411)) * 
+		     i__1 : s_rnge("kvname", i__1, "sc01_", (ftnlen)1432)) * 
 		    60, (ftnlen)2, (ftnlen)60);
 	    i__3 = -(*sc);
 	    repmi_(kvname + ((i__1 = i__ - 1) < 9 && 0 <= i__1 ? i__1 : 
-		    s_rnge("kvname", i__1, "sc01_", (ftnlen)1412)) * 60, 
+		    s_rnge("kvname", i__1, "sc01_", (ftnlen)1433)) * 60, 
 		    "#", &i__3, kvname + ((i__2 = i__ - 1) < 9 && 0 <= i__2 ? 
-		    i__2 : s_rnge("kvname", i__2, "sc01_", (ftnlen)1412)) * 
+		    i__2 : s_rnge("kvname", i__2, "sc01_", (ftnlen)1433)) * 
 		    60, (ftnlen)60, (ftnlen)1, (ftnlen)60);
 	}
 
@@ -1431,6 +1505,10 @@ L_scfm01:
 /*        Keep track of the last spacecraft clock ID encountered. */
 
 	oldsc = *sc;
+
+/*        Initialize the local POOL counter to user value. */
+
+	zzctruin_(usrctr);
     }
 
 /*     Find out whether we need to look up new format descriptors from */
@@ -1440,7 +1518,7 @@ L_scfm01:
 /*     do a look-up, we grab everything that any of the SC01 entry */
 /*     points might need. */
 
-    cvpool_("SC01", &update, (ftnlen)4);
+    zzcvpool_("SC01", usrctr, &update, (ftnlen)4);
     if (update || nodata) {
 
 /*        Our first piece of business is to look up all of the data */
@@ -1489,13 +1567,13 @@ L_scfm01:
 /*     Determine how many ticks each field is worth. */
 
     cmptks[(i__1 = nfield - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("cmptks", 
-	    i__1, "sc01_", (ftnlen)1494)] = 1.;
+	    i__1, "sc01_", (ftnlen)1520)] = 1.;
     for (i__ = nfield - 1; i__ >= 1; --i__) {
 	cmptks[(i__1 = i__ - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("cmptks", 
-		i__1, "sc01_", (ftnlen)1497)] = cmptks[(i__2 = i__) < 10 && 0 
-		<= i__2 ? i__2 : s_rnge("cmptks", i__2, "sc01_", (ftnlen)1497)
+		i__1, "sc01_", (ftnlen)1523)] = cmptks[(i__2 = i__) < 10 && 0 
+		<= i__2 ? i__2 : s_rnge("cmptks", i__2, "sc01_", (ftnlen)1523)
 		] * moduli[(i__3 = i__) < 10 && 0 <= i__3 ? i__3 : s_rnge(
-		"moduli", i__3, "sc01_", (ftnlen)1497)];
+		"moduli", i__3, "sc01_", (ftnlen)1523)];
     }
 
 /*     Determine the width of each field. */
@@ -1503,12 +1581,12 @@ L_scfm01:
     i__1 = nfield;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	maxwid = moduli[(i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		"moduli", i__2, "sc01_", (ftnlen)1505)] + offset[(i__3 = i__ 
+		"moduli", i__2, "sc01_", (ftnlen)1531)] + offset[(i__3 = i__ 
 		- 1) < 10 && 0 <= i__3 ? i__3 : s_rnge("offset", i__3, "sc01_"
-		, (ftnlen)1505)] - 1.;
+		, (ftnlen)1531)] - 1.;
 	d__1 = maxwid + .5;
 	cmpwid[(i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge("cmpwid", 
-		i__2, "sc01_", (ftnlen)1507)] = (integer) d_lg10(&d__1) + 1;
+		i__2, "sc01_", (ftnlen)1533)] = (integer) d_lg10(&d__1) + 1;
     }
 
 /*     Check whether the output string is long enough to contain the */
@@ -1546,18 +1624,18 @@ L_scfm01:
     i__1 = nfield - 1;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	d__1 = rem / cmptks[(i__3 = i__ - 1) < 10 && 0 <= i__3 ? i__3 : 
-		s_rnge("cmptks", i__3, "sc01_", (ftnlen)1554)];
+		s_rnge("cmptks", i__3, "sc01_", (ftnlen)1580)];
 	cmpval[(i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge("cmpval", 
-		i__2, "sc01_", (ftnlen)1554)] = d_int(&d__1) + offset[(i__4 = 
+		i__2, "sc01_", (ftnlen)1580)] = d_int(&d__1) + offset[(i__4 = 
 		i__ - 1) < 10 && 0 <= i__4 ? i__4 : s_rnge("offset", i__4, 
-		"sc01_", (ftnlen)1554)];
+		"sc01_", (ftnlen)1580)];
 	rem = d_mod(&rem, &cmptks[(i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : 
-		s_rnge("cmptks", i__2, "sc01_", (ftnlen)1555)]);
+		s_rnge("cmptks", i__2, "sc01_", (ftnlen)1581)]);
     }
     cmpval[(i__1 = nfield - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("cmpval", 
-	    i__1, "sc01_", (ftnlen)1559)] = rem + offset[(i__2 = nfield - 1) <
+	    i__1, "sc01_", (ftnlen)1585)] = rem + offset[(i__2 = nfield - 1) <
 	     10 && 0 <= i__2 ? i__2 : s_rnge("offset", i__2, "sc01_", (ftnlen)
-	    1559)];
+	    1585)];
 
 /*     Convert the values of each component from double precision */
 /*     numbers to character strings. */
@@ -1565,13 +1643,13 @@ L_scfm01:
     i__1 = nfield;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	dpstrf_(&cmpval[(i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		"cmpval", i__2, "sc01_", (ftnlen)1567)], &c__30, "F", dpchar, 
+		"cmpval", i__2, "sc01_", (ftnlen)1593)], &c__30, "F", dpchar, 
 		(ftnlen)1, (ftnlen)30);
 	end = i_indx(dpchar, ".", (ftnlen)30, (ftnlen)1) - 1;
 	length[(i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge("length", 
-		i__2, "sc01_", (ftnlen)1570)] = end - 1;
+		i__2, "sc01_", (ftnlen)1596)] = end - 1;
 	s_copy(cmp + ((i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		"cmp", i__2, "sc01_", (ftnlen)1571)) * 30, dpchar + 1, (
+		"cmp", i__2, "sc01_", (ftnlen)1597)) * 30, dpchar + 1, (
 		ftnlen)30, end - 1);
     }
 
@@ -1580,14 +1658,14 @@ L_scfm01:
     i__1 = nfield;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	pad = cmpwid[(i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge("cmp"
-		"wid", i__2, "sc01_", (ftnlen)1580)] - length[(i__3 = i__ - 1) 
+		"wid", i__2, "sc01_", (ftnlen)1606)] - length[(i__3 = i__ - 1) 
 		< 10 && 0 <= i__3 ? i__3 : s_rnge("length", i__3, "sc01_", (
-		ftnlen)1580)];
+		ftnlen)1606)];
 	if (pad > 0) {
 	    i__2 = pad;
 	    for (j = 1; j <= i__2; ++j) {
 		prefix_("0", &c__0, cmp + ((i__3 = i__ - 1) < 10 && 0 <= i__3 
-			? i__3 : s_rnge("cmp", i__3, "sc01_", (ftnlen)1585)) *
+			? i__3 : s_rnge("cmp", i__3, "sc01_", (ftnlen)1611)) *
 			 30, (ftnlen)1, (ftnlen)30);
 	    }
 	}
@@ -1600,18 +1678,18 @@ L_scfm01:
     i__1 = nfield;
     for (i__ = 2; i__ <= i__1; ++i__) {
 	if (*(unsigned char *)&del[(i__2 = delcde - 1) < 5 && 0 <= i__2 ? 
-		i__2 : s_rnge("del", i__2, "sc01_", (ftnlen)1600)] != ' ') {
+		i__2 : s_rnge("del", i__2, "sc01_", (ftnlen)1626)] != ' ') {
 	    prefix_(del + ((i__2 = delcde - 1) < 5 && 0 <= i__2 ? i__2 : 
-		    s_rnge("del", i__2, "sc01_", (ftnlen)1602)), &c__0, cmp + 
+		    s_rnge("del", i__2, "sc01_", (ftnlen)1628)), &c__0, cmp + 
 		    ((i__3 = i__ - 1) < 10 && 0 <= i__3 ? i__3 : s_rnge("cmp",
-		     i__3, "sc01_", (ftnlen)1602)) * 30, (ftnlen)1, (ftnlen)
+		     i__3, "sc01_", (ftnlen)1628)) * 30, (ftnlen)1, (ftnlen)
 		    30);
 	    suffix_(cmp + ((i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		    "cmp", i__2, "sc01_", (ftnlen)1603)) * 30, &c__0, clkstr, 
+		    "cmp", i__2, "sc01_", (ftnlen)1629)) * 30, &c__0, clkstr, 
 		    (ftnlen)30, clkstr_len);
 	} else {
 	    suffix_(cmp + ((i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		    "cmp", i__2, "sc01_", (ftnlen)1605)) * 30, &c__1, clkstr, 
+		    "cmp", i__2, "sc01_", (ftnlen)1631)) * 30, &c__1, clkstr, 
 		    (ftnlen)30, clkstr_len);
 	}
     }
@@ -1828,8 +1906,13 @@ L_scte01:
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman   (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 3.3.0, 09-SEP-2013 (BVS) */
+
+/*        Updated to keep track of the POOL counter and call ZZCVPOOL. */
 
 /* -    SPICELIB Version 3.2.0, 05-MAR-2009 (NJB) */
 
@@ -1929,13 +2012,13 @@ L_scte01:
 	movec_(namlst, &c__9, kvname, (ftnlen)60, (ftnlen)60);
 	for (i__ = 2; i__ <= 9; ++i__) {
 	    suffix_("_#", &c__0, kvname + ((i__1 = i__ - 1) < 9 && 0 <= i__1 ?
-		     i__1 : s_rnge("kvname", i__1, "sc01_", (ftnlen)1937)) * 
+		     i__1 : s_rnge("kvname", i__1, "sc01_", (ftnlen)1968)) * 
 		    60, (ftnlen)2, (ftnlen)60);
 	    i__3 = -(*sc);
 	    repmi_(kvname + ((i__1 = i__ - 1) < 9 && 0 <= i__1 ? i__1 : 
-		    s_rnge("kvname", i__1, "sc01_", (ftnlen)1938)) * 60, 
+		    s_rnge("kvname", i__1, "sc01_", (ftnlen)1969)) * 60, 
 		    "#", &i__3, kvname + ((i__2 = i__ - 1) < 9 && 0 <= i__2 ? 
-		    i__2 : s_rnge("kvname", i__2, "sc01_", (ftnlen)1938)) * 
+		    i__2 : s_rnge("kvname", i__2, "sc01_", (ftnlen)1969)) * 
 		    60, (ftnlen)60, (ftnlen)1, (ftnlen)60);
 	}
 
@@ -1946,6 +2029,10 @@ L_scte01:
 /*        Keep track of the last spacecraft clock ID encountered. */
 
 	oldsc = *sc;
+
+/*        Initialize the local POOL counter to user value. */
+
+	zzctruin_(usrctr);
     }
 
 /*     Find out whether we need to look up new format descriptors from */
@@ -1955,7 +2042,7 @@ L_scte01:
 /*     do a look-up, we grab everything that any of the SC01 entry */
 /*     points might need. */
 
-    cvpool_("SC01", &update, (ftnlen)4);
+    zzcvpool_("SC01", usrctr, &update, (ftnlen)4);
     if (update || nodata) {
 
 /*        Our first piece of business is to look up all of the data */
@@ -2009,9 +2096,9 @@ L_scte01:
     i__1 = npart;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	d__1 = prend[(i__2 = i__ - 1) < 9999 && 0 <= i__2 ? i__2 : s_rnge(
-		"prend", i__2, "sc01_", (ftnlen)2025)] - prstrt[(i__3 = i__ - 
+		"prend", i__2, "sc01_", (ftnlen)2061)] - prstrt[(i__3 = i__ - 
 		1) < 9999 && 0 <= i__3 ? i__3 : s_rnge("prstrt", i__3, "sc01_"
-		, (ftnlen)2025)] + mxtick;
+		, (ftnlen)2061)] + mxtick;
 	mxtick = d_nint(&d__1);
     }
 
@@ -2049,7 +2136,7 @@ L_scte01:
 /*           last SCLK value in the array is the one we want. */
 
     if (*sclkdp < coeffs[(i__1 = ncoeff / 3 * 3 - 3) < 150000 && 0 <= i__1 ? 
-	    i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)2069)]) {
+	    i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)2105)]) {
 	lower = 1;
 	upper = ncoeff / 3;
 
@@ -2069,7 +2156,7 @@ L_scte01:
 	    middle = (lower + upper) / 2;
 	    if (*sclkdp < coeffs[(i__1 = middle * 3 - 3) < 150000 && 0 <= 
 		    i__1 ? i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)
-		    2091)]) {
+		    2127)]) {
 		upper = middle;
 	    } else {
 		lower = middle;
@@ -2112,14 +2199,14 @@ L_scte01:
     tikmsc = 1.;
     for (i__ = nfield; i__ >= 2; --i__) {
 	tikmsc *= moduli[(i__1 = i__ - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge(
-		"moduli", i__1, "sc01_", (ftnlen)2139)];
+		"moduli", i__1, "sc01_", (ftnlen)2175)];
     }
     tikdif = *sclkdp - coeffs[(i__1 = lower * 3 - 3) < 150000 && 0 <= i__1 ? 
-	    i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)2142)];
+	    i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)2178)];
     const__ = coeffs[(i__1 = lower * 3 - 2) < 150000 && 0 <= i__1 ? i__1 : 
-	    s_rnge("coeffs", i__1, "sc01_", (ftnlen)2143)];
+	    s_rnge("coeffs", i__1, "sc01_", (ftnlen)2179)];
     rate = coeffs[(i__1 = lower * 3 - 1) < 150000 && 0 <= i__1 ? i__1 : 
-	    s_rnge("coeffs", i__1, "sc01_", (ftnlen)2144)] / tikmsc;
+	    s_rnge("coeffs", i__1, "sc01_", (ftnlen)2180)] / tikmsc;
     partim = const__ + rate * tikdif;
 
 /*     Convert the parallel time to TDB, if the system is not TDB. */
@@ -2348,8 +2435,13 @@ L_scet01:
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman   (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.3.0, 09-SEP-2013 (BVS) */
+
+/*        Updated to keep track of the POOL counter and call ZZCVPOOL. */
 
 /* -    SPICELIB Version 2.2.0, 05-MAR-2009 (NJB) */
 
@@ -2454,13 +2546,13 @@ L_scet01:
 	movec_(namlst, &c__9, kvname, (ftnlen)60, (ftnlen)60);
 	for (i__ = 2; i__ <= 9; ++i__) {
 	    suffix_("_#", &c__0, kvname + ((i__1 = i__ - 1) < 9 && 0 <= i__1 ?
-		     i__1 : s_rnge("kvname", i__1, "sc01_", (ftnlen)2500)) * 
+		     i__1 : s_rnge("kvname", i__1, "sc01_", (ftnlen)2541)) * 
 		    60, (ftnlen)2, (ftnlen)60);
 	    i__3 = -(*sc);
 	    repmi_(kvname + ((i__1 = i__ - 1) < 9 && 0 <= i__1 ? i__1 : 
-		    s_rnge("kvname", i__1, "sc01_", (ftnlen)2501)) * 60, 
+		    s_rnge("kvname", i__1, "sc01_", (ftnlen)2542)) * 60, 
 		    "#", &i__3, kvname + ((i__2 = i__ - 1) < 9 && 0 <= i__2 ? 
-		    i__2 : s_rnge("kvname", i__2, "sc01_", (ftnlen)2501)) * 
+		    i__2 : s_rnge("kvname", i__2, "sc01_", (ftnlen)2542)) * 
 		    60, (ftnlen)60, (ftnlen)1, (ftnlen)60);
 	}
 
@@ -2471,6 +2563,10 @@ L_scet01:
 /*        Keep track of the last spacecraft clock ID encountered. */
 
 	oldsc = *sc;
+
+/*        Initialize the local POOL counter to user value. */
+
+	zzctruin_(usrctr);
     }
 
 /*     Find out whether we need to look up new format descriptors from */
@@ -2480,7 +2576,7 @@ L_scet01:
 /*     do a look-up, we grab everything that any of the SC01 entry */
 /*     points might need. */
 
-    cvpool_("SC01", &update, (ftnlen)4);
+    zzcvpool_("SC01", usrctr, &update, (ftnlen)4);
     if (update || nodata) {
 
 /*        Our first piece of business is to look up all of the data */
@@ -2580,7 +2676,7 @@ L_scet01:
 
 	lower = 1;
     } else if (partim < coeffs[(i__1 = ncoeff / 3 * 3 - 2) < 150000 && 0 <= 
-	    i__1 ? i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)2642)]) {
+	    i__1 ? i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)2688)]) {
 
 /*        In the following loop, we maintain an invariant: */
 
@@ -2599,7 +2695,7 @@ L_scet01:
 	while(lower < upper - 1) {
 	    middle = (lower + upper) / 2;
 	    if (partim < coeffs[(i__1 = middle * 3 - 2) < 150000 && 0 <= i__1 
-		    ? i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)2664)]) {
+		    ? i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)2710)]) {
 		upper = middle;
 	    } else {
 		lower = middle;
@@ -2644,11 +2740,11 @@ L_scet01:
 /*     ensure this. */
 
     timdif = partim - coeffs[(i__1 = lower * 3 - 2) < 150000 && 0 <= i__1 ? 
-	    i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)2713)];
+	    i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)2759)];
     const__ = coeffs[(i__1 = lower * 3 - 3) < 150000 && 0 <= i__1 ? i__1 : 
-	    s_rnge("coeffs", i__1, "sc01_", (ftnlen)2714)];
+	    s_rnge("coeffs", i__1, "sc01_", (ftnlen)2760)];
     if (coeffs[(i__1 = lower * 3 - 1) < 150000 && 0 <= i__1 ? i__1 : s_rnge(
-	    "coeffs", i__1, "sc01_", (ftnlen)2716)] <= 0.) {
+	    "coeffs", i__1, "sc01_", (ftnlen)2762)] <= 0.) {
 	setmsg_("Invalid SCLK rate.", (ftnlen)18);
 	sigerr_("SPICE(VALUEOUTOFRANGE)", (ftnlen)22);
 	chkout_("SCET01", (ftnlen)6);
@@ -2657,10 +2753,10 @@ L_scet01:
     tikmsc = 1.;
     for (i__ = nfield; i__ >= 2; --i__) {
 	tikmsc *= moduli[(i__1 = i__ - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge(
-		"moduli", i__1, "sc01_", (ftnlen)2729)];
+		"moduli", i__1, "sc01_", (ftnlen)2775)];
     }
     rate = 1. / (coeffs[(i__1 = lower * 3 - 1) < 150000 && 0 <= i__1 ? i__1 : 
-	    s_rnge("coeffs", i__1, "sc01_", (ftnlen)2732)] / tikmsc);
+	    s_rnge("coeffs", i__1, "sc01_", (ftnlen)2778)] / tikmsc);
     d__1 = const__ + rate * timdif;
     *sclkdp = d_nint(&d__1);
 
@@ -2675,9 +2771,9 @@ L_scet01:
     i__1 = npart;
     for (i__ = 2; i__ <= i__1; ++i__) {
 	d__1 = prend[(i__2 = i__ - 1) < 9999 && 0 <= i__2 ? i__2 : s_rnge(
-		"prend", i__2, "sc01_", (ftnlen)2746)] - prstrt[(i__3 = i__ - 
+		"prend", i__2, "sc01_", (ftnlen)2792)] - prstrt[(i__3 = i__ - 
 		1) < 9999 && 0 <= i__3 ? i__3 : s_rnge("prstrt", i__3, "sc01_"
-		, (ftnlen)2746)] + mxtick;
+		, (ftnlen)2792)] + mxtick;
 	mxtick = d_nint(&d__1);
     }
 
@@ -2909,8 +3005,13 @@ L_scec01:
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman   (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.4.0, 09-SEP-2013 (BVS) */
+
+/*        Updated to keep track of the POOL counter and call ZZCVPOOL. */
 
 /* -    SPICELIB Version 1.3.0, 05-MAR-2009 (NJB) */
 
@@ -2969,13 +3070,13 @@ L_scec01:
 	movec_(namlst, &c__9, kvname, (ftnlen)60, (ftnlen)60);
 	for (i__ = 2; i__ <= 9; ++i__) {
 	    suffix_("_#", &c__0, kvname + ((i__1 = i__ - 1) < 9 && 0 <= i__1 ?
-		     i__1 : s_rnge("kvname", i__1, "sc01_", (ftnlen)3054)) * 
+		     i__1 : s_rnge("kvname", i__1, "sc01_", (ftnlen)3105)) * 
 		    60, (ftnlen)2, (ftnlen)60);
 	    i__3 = -(*sc);
 	    repmi_(kvname + ((i__1 = i__ - 1) < 9 && 0 <= i__1 ? i__1 : 
-		    s_rnge("kvname", i__1, "sc01_", (ftnlen)3055)) * 60, 
+		    s_rnge("kvname", i__1, "sc01_", (ftnlen)3106)) * 60, 
 		    "#", &i__3, kvname + ((i__2 = i__ - 1) < 9 && 0 <= i__2 ? 
-		    i__2 : s_rnge("kvname", i__2, "sc01_", (ftnlen)3055)) * 
+		    i__2 : s_rnge("kvname", i__2, "sc01_", (ftnlen)3106)) * 
 		    60, (ftnlen)60, (ftnlen)1, (ftnlen)60);
 	}
 
@@ -2986,6 +3087,10 @@ L_scec01:
 /*        Keep track of the last spacecraft clock ID encountered. */
 
 	oldsc = *sc;
+
+/*        Initialize the local POOL counter to user value. */
+
+	zzctruin_(usrctr);
     }
 
 /*     Find out whether we need to look up new format descriptors from */
@@ -2995,7 +3100,7 @@ L_scec01:
 /*     do a look-up, we grab everything that any of the SC01 entry */
 /*     points might need. */
 
-    cvpool_("SC01", &update, (ftnlen)4);
+    zzcvpool_("SC01", usrctr, &update, (ftnlen)4);
     if (update || nodata) {
 
 /*        Our first piece of business is to look up all of the data */
@@ -3094,7 +3199,7 @@ L_scec01:
 	chkout_("SCEC01", (ftnlen)6);
 	return 0;
     } else if (partim < coeffs[(i__1 = ncoeff / 3 * 3 - 2) < 150000 && 0 <= 
-	    i__1 ? i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)3195)]) {
+	    i__1 ? i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)3251)]) {
 
 /*        In the following loop, we maintain an invariant: */
 
@@ -3113,7 +3218,7 @@ L_scec01:
 	while(lower < upper - 1) {
 	    middle = (lower + upper) / 2;
 	    if (partim < coeffs[(i__1 = middle * 3 - 2) < 150000 && 0 <= i__1 
-		    ? i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)3217)]) {
+		    ? i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)3273)]) {
 		upper = middle;
 	    } else {
 		lower = middle;
@@ -3154,11 +3259,11 @@ L_scec01:
 /*     most significant count') to change the rate to seconds per tick. */
 
     timdif = partim - coeffs[(i__1 = lower * 3 - 2) < 150000 && 0 <= i__1 ? 
-	    i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)3262)];
+	    i__1 : s_rnge("coeffs", i__1, "sc01_", (ftnlen)3318)];
     const__ = coeffs[(i__1 = lower * 3 - 3) < 150000 && 0 <= i__1 ? i__1 : 
-	    s_rnge("coeffs", i__1, "sc01_", (ftnlen)3263)];
+	    s_rnge("coeffs", i__1, "sc01_", (ftnlen)3319)];
     if (coeffs[(i__1 = lower * 3 - 1) < 150000 && 0 <= i__1 ? i__1 : s_rnge(
-	    "coeffs", i__1, "sc01_", (ftnlen)3265)] <= 0.) {
+	    "coeffs", i__1, "sc01_", (ftnlen)3321)] <= 0.) {
 	setmsg_("Invalid SCLK rate.", (ftnlen)18);
 	sigerr_("SPICE(VALUEOUTOFRANGE)", (ftnlen)22);
 	chkout_("SCEC01", (ftnlen)6);
@@ -3167,10 +3272,10 @@ L_scec01:
     tikmsc = 1.;
     for (i__ = nfield; i__ >= 2; --i__) {
 	tikmsc *= moduli[(i__1 = i__ - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge(
-		"moduli", i__1, "sc01_", (ftnlen)3278)];
+		"moduli", i__1, "sc01_", (ftnlen)3334)];
     }
     rate = 1. / (coeffs[(i__1 = lower * 3 - 1) < 150000 && 0 <= i__1 ? i__1 : 
-	    s_rnge("coeffs", i__1, "sc01_", (ftnlen)3281)] / tikmsc);
+	    s_rnge("coeffs", i__1, "sc01_", (ftnlen)3337)] / tikmsc);
     *sclkdp = const__ + rate * timdif;
 
 /*     Now, we'll see whether the SCLK value we've found is meaningful. */
@@ -3184,9 +3289,9 @@ L_scec01:
     i__1 = npart;
     for (i__ = 2; i__ <= i__1; ++i__) {
 	d__1 = prend[(i__2 = i__ - 1) < 9999 && 0 <= i__2 ? i__2 : s_rnge(
-		"prend", i__2, "sc01_", (ftnlen)3295)] - prstrt[(i__3 = i__ - 
+		"prend", i__2, "sc01_", (ftnlen)3351)] - prstrt[(i__3 = i__ - 
 		1) < 9999 && 0 <= i__3 ? i__3 : s_rnge("prstrt", i__3, "sc01_"
-		, (ftnlen)3295)] + mxtick;
+		, (ftnlen)3351)] + mxtick;
 	mxtick = d_nint(&d__1);
     }
 

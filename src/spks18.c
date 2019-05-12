@@ -31,7 +31,7 @@ static integer c__1 = 1;
 	    ftnlen), setmsg_(char *, ftnlen), errint_(char *, integer *, 
 	    ftnlen);
     extern logical return_(void);
-    integer subtyp, rec[2];
+    integer winsiz, subtyp, rec[2];
 
 /* $ Abstract */
 
@@ -255,6 +255,12 @@ static integer c__1 = 1;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.1.0, 22-DEC-2012 (NJB) */
+
+/*        Bug fix: code applicable to SPK type 9 for */
+/*        creating padding in the output segment was */
+/*        deleted. */
+
 /* -    SPICELIB Version 1.0.0, 16-AUG-2002 (NJB) (WLT) (IMU) */
 
 /* -& */
@@ -265,6 +271,30 @@ static integer c__1 = 1;
 /* -& */
 /* $ Revisions */
 
+/* -    SPICELIB Version 1.1.0, 22-DEC-2012 (NJB) */
+
+/*        Bug fix: code applicable to SPK type 9 for */
+/*        creating padding in the output segment was */
+/*        deleted. */
+
+/*        The offending code was meant to ensure that */
+/*        the output segment's size is at least the */
+/*        window size corresponding to the segment's */
+/*        interpolation degree. This is correct behavior */
+/*        for SPK types 9 and 13; for these types, */
+/*        segments are not allowed to have sizes less */
+/*        than the nominal window size. */
+
+/*        However, for type 18, segments can have as */
+/*        few as two data packets, regardless of their */
+/*        interpolation degree. The code that creates */
+/*        padding packets in this case reads from */
+/*        invalid locations. */
+
+/*        Also, the variable WINSIZ was introduced, and */
+/*        comments indicating that the stored size */
+/*        parameter in the segment control area is the */
+/*        window size minus one were corrected. */
 
 /* -& */
 
@@ -295,14 +325,12 @@ static integer c__1 = 1;
 /*     Read the segment structure metadata. */
 
 /*     Get the type 18 segment subtype.  Next get the quantity "window */
-/*     size minus one."  This quantity plays the same role as does the */
-/*     polynomial degree for the type 9 subsetter. Also get the number */
-/*     of records in the segment. */
+/*     size." Also get the number of records in the segment. */
 
     i__1 = *eaddr - 2;
     dafgda_(handle, &i__1, eaddr, data);
     subtyp = i_dnnt(data);
-    wnszm1 = i_dnnt(&data[1]);
+    winsiz = i_dnnt(&data[1]);
     nrec = i_dnnt(&data[2]);
 
 /*     Set the packet size based on the subtype. */
@@ -345,20 +373,16 @@ static integer c__1 = 1;
 	dafgda_(handle, &i__1, &i__2, data);
     }
 
+/*     Let WNSZM1 be one less than the window size. */
+
 /*     Make sure that there are WNSZM1/2 additional states to the right */
 /*     of the one having index REC(2), if possible.  If not, take as */
 /*     many states as we can. */
 
+    wnszm1 = winsiz - 1;
 /* Computing MIN */
     i__1 = nrec, i__2 = rec[1] + wnszm1 / 2;
     rec[1] = min(i__1,i__2);
-
-/*     Make sure that REC(2) is large enough so that there are are at */
-/*     least WNSZM1+1 states in the segment. */
-
-/* Computing MAX */
-    i__1 = rec[1], i__2 = wnszm1 + 1;
-    rec[1] = max(i__1,i__2);
 
 /*     Now examine the epochs in reverse order, looking for the first */
 /*     epoch less than or equal to BEGIN (or the initial epoch, */
@@ -383,13 +407,6 @@ static integer c__1 = 1;
 /* Computing MAX */
     i__1 = 1, i__2 = rec[0] - wnszm1 / 2;
     rec[0] = max(i__1,i__2);
-
-/*     Make sure that REC(1) is small enough so that there are are at */
-/*     least WNSZM1+1 states in the segment. */
-
-/* Computing MIN */
-    i__1 = rec[0], i__2 = nrec - wnszm1;
-    rec[0] = min(i__1,i__2);
 
 /*     Copy states REC(1) through REC(2) to the output file. */
 
@@ -423,12 +440,12 @@ static integer c__1 = 1;
 	dafada_(data, &c__1);
     }
 
-/*     Store subtype, the window size minus one and the number of */
+/*     Store subtype, the window size, and the number of */
 /*     records to end the segment. */
 
     d__1 = (doublereal) subtyp;
     dafada_(&d__1, &c__1);
-    d__1 = (doublereal) wnszm1;
+    d__1 = (doublereal) winsiz;
     dafada_(&d__1, &c__1);
     d__1 = (doublereal) (rec[1] - rec[0] + 1);
     dafada_(&d__1, &c__1);

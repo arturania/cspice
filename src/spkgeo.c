@@ -14,6 +14,10 @@ static integer c__0 = 0;
 /* Subroutine */ int spkgeo_(integer *targ, doublereal *et, char *ref, 
 	integer *obs, doublereal *state, doublereal *lt, ftnlen ref_len)
 {
+    /* Initialized data */
+
+    static logical first = TRUE_;
+
     /* System generated locals */
     integer i__1, i__2, i__3;
 
@@ -25,7 +29,8 @@ static integer c__0 = 0;
     integer cobs, legs;
     doublereal sobs[6];
     extern /* Subroutine */ int mxvg_(doublereal *, doublereal *, integer *, 
-	    integer *, doublereal *);
+	    integer *, doublereal *), zznamfrm_(integer *, char *, integer *, 
+	    char *, integer *, ftnlen, ftnlen), zzctruin_(integer *);
     integer i__;
     extern /* Subroutine */ int vaddg_(doublereal *, doublereal *, integer *, 
 	    doublereal *), etcal_(doublereal *, char *, ftnlen);
@@ -42,6 +47,7 @@ static integer c__0 = 0;
 	    ftnlen, ftnlen, ftnlen);
     doublereal starg[120]	/* was [6][20] */;
     logical nofrm;
+    static char svref[32];
     extern /* Subroutine */ int vsubg_(doublereal *, doublereal *, integer *, 
 	    doublereal *);
     doublereal stemp[6];
@@ -49,6 +55,7 @@ static integer c__0 = 0;
     doublereal vtemp[6];
     extern doublereal vnorm_(doublereal *);
     extern /* Subroutine */ int bodc2n_(integer *, char *, logical *, ftnlen);
+    static integer svctr1[2];
     extern logical failed_(void);
     extern /* Subroutine */ int cleard_(integer *, doublereal *);
     integer handle, cframe;
@@ -56,12 +63,13 @@ static integer c__0 = 0;
 	    doublereal *);
     extern doublereal clight_(void);
     integer tframe[20];
-    extern /* Subroutine */ int namfrm_(char *, integer *, ftnlen);
     extern integer isrchi_(integer *, integer *, integer *);
     extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
-	    ftnlen), prefix_(char *, integer *, char *, ftnlen, ftnlen), 
-	    irfnum_(char *, integer *, ftnlen), setmsg_(char *, ftnlen), 
-	    suffix_(char *, integer *, char *, ftnlen, ftnlen);
+	    ftnlen);
+    static integer svrefi;
+    extern /* Subroutine */ int irfnum_(char *, integer *, ftnlen), prefix_(
+	    char *, integer *, char *, ftnlen, ftnlen), setmsg_(char *, 
+	    ftnlen), suffix_(char *, integer *, char *, ftnlen, ftnlen);
     integer tmpfrm;
     extern /* Subroutine */ int irfrot_(integer *, integer *, doublereal *), 
 	    spksfs_(integer *, doublereal *, integer *, doublereal *, char *, 
@@ -182,6 +190,59 @@ static integer c__0 = 0;
 /* -    SPICELIB Version 1.0.0, 10-OCT-1996 (WLT) */
 
 /* -& */
+/* $ Abstract */
+
+/*     This include file defines the dimension of the counter */
+/*     array used by various SPICE subsystems to uniquely identify */
+/*     changes in their states. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 29-JUL-2013 (BVS) */
+
+/* -& */
+
+/*     End of include file. */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
@@ -209,14 +270,13 @@ static integer c__0 = 0;
 
 /* $ Detailed_Output */
 
-/*     STATE       contains the position and velocity of the target */
-/*                 body, relative to the observing body, corrected */
-/*                 for the specified aberrations, at epoch ET.  STATE */
-/*                 has six elements:  the first three contain the */
-/*                 target's position; the last three contain the target's */
-/*                 velocity.  These vectors are rotated into the */
-/*                 specified reference frame. Units are always */
-/*                 km and km/sec. */
+/*     STATE       contains the geometric position and velocity of the */
+/*                 target body, relative to the observing body, at epoch */
+/*                 ET. STATE has six elements: the first three contain */
+/*                 the target's position; the last three contain the */
+/*                 target's velocity. These vectors are transformed into */
+/*                 the specified reference frame. Units are always km */
+/*                 and km/sec. */
 
 /*     LT          is the one-way light time in seconds from the */
 /*                 observing body to the geometric position of the */
@@ -305,18 +365,21 @@ static integer c__0 = 0;
 /*            INTEGER               N */
 /*            PARAMETER           ( N     = 100 ) */
 
-/*            INTEGER               HANDLE */
+/*            INTEGER               I */
 /*            CHARACTER*(20)        UTC */
 /*            DOUBLE PRECISION      BEGIN */
 /*            DOUBLE PRECISION      DELTA */
 /*            DOUBLE PRECISION      END */
 /*            DOUBLE PRECISION      ET */
+/*            DOUBLE PRECISION      LT */
 /*            DOUBLE PRECISION      STATE ( 6 ) */
+
+/*            DOUBLE PRECISION      VNORM */
 
 /*     C */
 /*     C      Load the binary SPK ephemeris file. */
 /*     C */
-/*            CALL SPKLEF ( 'SAMPLE.BSP', HANDLE ) */
+/*            CALL FURNSH ( 'SAMPLE.BSP' ) */
 
 /*            . */
 /*            . */
@@ -352,10 +415,30 @@ static integer c__0 = 0;
 
 /* $ Author_and_Institution */
 
-/*     J.E. McLean (JPL) */
-/*     W.L. Taber  (JPL) */
+/*     N.J. Bachman  (JPL) */
+/*     J.E. McLean   (JPL) */
+/*     B.V. Semenov  (JPL) */
+/*     W.L. Taber    (JPL) */
+/*     W.D. Wright   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 3.0.0, 08-JAN-2014 (BVS) */
+
+/*        Updated to save the input frame name and POOL state counter */
+/*        and to do frame name-ID conversion only if the counter has */
+/*        changed. */
+
+/*        Updated to map the input frame name to its ID by first calling */
+/*        ZZNAMFRM, and then calling IRFNUM. The side effect of this */
+/*        change is that now the frame with the fixed name 'DEFAULT' */
+/*        that can be associated with any code via CHGIRF's entry point */
+/*        IRFDEF will be fully masked by a frame with indentical name */
+/*        defined via a text kernel. Previously the CHGIRF's 'DEFAULT' */
+/*        frame masked the text kernel frame with the same name. */
+
+/*        Fixed description of STATE in Detailed Output. Replaced */
+/*        SPKLEF with FURNSH and fixed errors in Examples. */
 
 /* -    SPICELIB Version 2.4.0, 01-SEP-2005 (NJB) */
 
@@ -477,7 +560,19 @@ static integer c__0 = 0;
 /*     the target or observer to the SSB. */
 
 
+/*     Saved frame name length. */
+
+
 /*     Local variables */
+
+
+/*     Saved frame name/ID item declarations. */
+
+
+/*     Saved frame name/ID items. */
+
+
+/*     Initial values. */
 
 
 /*     In-line Function Definitions */
@@ -489,6 +584,16 @@ static integer c__0 = 0;
 	return 0;
     } else {
 	chkin_("SPKGEO", (ftnlen)6);
+    }
+
+/*     Initialization. */
+
+    if (first) {
+
+/*        Initialize counter. */
+
+	zzctruin_(svctr1);
+	first = FALSE_;
     }
 
 /*     We take care of the obvious case first.  It TARG and OBS are the */
@@ -546,15 +651,28 @@ static integer c__0 = 0;
 
 /*     CTPOS is the position in CTARG of the common node. */
 
+/*     Since the upgrade to use hashes and counter bypass ZZNAMFRM */
+/*     became more efficient in looking up frame IDs than IRFNUM. So the */
+/*     original order of calls "IRFNUM first, NAMFRM second" was */
+/*     switched to "ZZNAMFRM first, IRFNUM second". */
 
-/*     Since Inertial frames are the most extensively used frames */
-/*     we use the more restrictive routine IRFNUM to attempt to */
-/*     look up the id-code for REF.  If IRFNUM comes up empty handed */
-/*     we then call the more general routine NAMFRM. */
+/*     The call to IRFNUM, now redundant for built-in inertial frames, */
+/*     was preserved to for a sole reason -- to still support the */
+/*     ancient and barely documented ability for the users to associate */
+/*     a frame with the fixed name 'DEFAULT' with any CHGIRF inertial */
+/*     frame code via CHGIRF's entry point IRFDEF. */
 
-    irfnum_(ref, &refid, ref_len);
+/*     Note that in the case of ZZNAMFRM's failure to resolve name and */
+/*     IRFNUM's success to do so, the code returned by IRFNUM for */
+/*     'DEFAULT' frame is *not* copied to the saved code SVREFI (which */
+/*     would be set to 0 by ZZNAMFRM) to make sure that on subsequent */
+/*     calls ZZNAMFRM does not do a bypass (as SVREFI always forced look */
+/*     up) and calls IRFNUM again to reset the 'DEFAULT's frame ID */
+/*     should it change between the calls. */
+
+    zznamfrm_(svctr1, svref, &svrefi, ref, &refid, (ftnlen)32, ref_len);
     if (refid == 0) {
-	namfrm_(ref, &refid, ref_len);
+	irfnum_(ref, &refid, ref_len);
     }
     if (refid == 0) {
 	if (frstnp_(ref, ref_len) > 0) {
@@ -601,20 +719,20 @@ static integer c__0 = 0;
 
     i__ = 1;
     ctarg[(i__1 = i__ - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge("ctarg", i__1, 
-	    "spkgeo_", (ftnlen)557)] = *targ;
+	    "spkgeo_", (ftnlen)640)] = *targ;
     found = TRUE_;
     cleard_(&c__6, &starg[(i__1 = i__ * 6 - 6) < 120 && 0 <= i__1 ? i__1 : 
-	    s_rnge("starg", i__1, "spkgeo_", (ftnlen)560)]);
+	    s_rnge("starg", i__1, "spkgeo_", (ftnlen)643)]);
     while(found && i__ < 20 && ctarg[(i__1 = i__ - 1) < 20 && 0 <= i__1 ? 
-	    i__1 : s_rnge("ctarg", i__1, "spkgeo_", (ftnlen)562)] != *obs && 
+	    i__1 : s_rnge("ctarg", i__1, "spkgeo_", (ftnlen)645)] != *obs && 
 	    ctarg[(i__2 = i__ - 1) < 20 && 0 <= i__2 ? i__2 : s_rnge("ctarg", 
-	    i__2, "spkgeo_", (ftnlen)562)] != 0) {
+	    i__2, "spkgeo_", (ftnlen)645)] != 0) {
 
 /*        Find a file and segment that has state */
 /*        data for CTARG(I). */
 
 	spksfs_(&ctarg[(i__1 = i__ - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge(
-		"ctarg", i__1, "spkgeo_", (ftnlen)571)], et, &handle, descr, 
+		"ctarg", i__1, "spkgeo_", (ftnlen)654)], et, &handle, descr, 
 		ident, &found, (ftnlen)40);
 	if (found) {
 
@@ -625,10 +743,10 @@ static integer c__0 = 0;
 	    ++i__;
 	    spkpvn_(&handle, descr, et, &tframe[(i__1 = i__ - 1) < 20 && 0 <= 
 		    i__1 ? i__1 : s_rnge("tframe", i__1, "spkgeo_", (ftnlen)
-		    581)], &starg[(i__2 = i__ * 6 - 6) < 120 && 0 <= i__2 ? 
-		    i__2 : s_rnge("starg", i__2, "spkgeo_", (ftnlen)581)], &
+		    664)], &starg[(i__2 = i__ * 6 - 6) < 120 && 0 <= i__2 ? 
+		    i__2 : s_rnge("starg", i__2, "spkgeo_", (ftnlen)664)], &
 		    ctarg[(i__3 = i__ - 1) < 20 && 0 <= i__3 ? i__3 : s_rnge(
-		    "ctarg", i__3, "spkgeo_", (ftnlen)581)]);
+		    "ctarg", i__3, "spkgeo_", (ftnlen)664)]);
 
 /*           Here's what we have.  STARG is the state of CTARG(I-1) */
 /*           relative to CTARG(I) in reference frame TFRAME(I) */
@@ -737,10 +855,10 @@ static integer c__0 = 0;
 /*     be zero if COBS is not found in CTARG. */
 
     if (ctarg[(i__1 = nct - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge("ctarg", 
-	    i__1, "spkgeo_", (ftnlen)717)] == cobs) {
+	    i__1, "spkgeo_", (ftnlen)800)] == cobs) {
 	ctpos = nct;
 	cframe = tframe[(i__1 = ctpos - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge(
-		"tframe", i__1, "spkgeo_", (ftnlen)719)];
+		"tframe", i__1, "spkgeo_", (ftnlen)802)];
     } else {
 	ctpos = 0;
     }
@@ -908,57 +1026,58 @@ static integer c__0 = 0;
     i__1 = ctpos - 1;
     for (i__ = 2; i__ <= i__1; ++i__) {
 	if (tframe[(i__2 = i__ - 1) < 20 && 0 <= i__2 ? i__2 : s_rnge("tframe"
-		, i__2, "spkgeo_", (ftnlen)915)] == tframe[(i__3 = i__) < 20 
+		, i__2, "spkgeo_", (ftnlen)998)] == tframe[(i__3 = i__) < 20 
 		&& 0 <= i__3 ? i__3 : s_rnge("tframe", i__3, "spkgeo_", (
-		ftnlen)915)]) {
+		ftnlen)998)]) {
 	    vaddg_(&starg[(i__2 = i__ * 6 - 6) < 120 && 0 <= i__2 ? i__2 : 
-		    s_rnge("starg", i__2, "spkgeo_", (ftnlen)917)], &starg[(
+		    s_rnge("starg", i__2, "spkgeo_", (ftnlen)1000)], &starg[(
 		    i__3 = (i__ + 1) * 6 - 6) < 120 && 0 <= i__3 ? i__3 : 
-		    s_rnge("starg", i__3, "spkgeo_", (ftnlen)917)], &c__6, 
+		    s_rnge("starg", i__3, "spkgeo_", (ftnlen)1000)], &c__6, 
 		    vtemp);
 	    moved_(vtemp, &c__6, &starg[(i__2 = (i__ + 1) * 6 - 6) < 120 && 0 
 		    <= i__2 ? i__2 : s_rnge("starg", i__2, "spkgeo_", (ftnlen)
-		    918)]);
+		    1001)]);
 	} else if (tframe[(i__3 = i__) < 20 && 0 <= i__3 ? i__3 : s_rnge(
-		"tframe", i__3, "spkgeo_", (ftnlen)920)] > 0 && tframe[(i__3 =
-		 i__) < 20 && 0 <= i__3 ? i__3 : s_rnge("tframe", i__3, "spk"
-		"geo_", (ftnlen)920)] <= 21 && tframe[(i__2 = i__ - 1) < 20 && 
-		0 <= i__2 ? i__2 : s_rnge("tframe", i__2, "spkgeo_", (ftnlen)
-		920)] > 0 && tframe[(i__2 = i__ - 1) < 20 && 0 <= i__2 ? i__2 
-		: s_rnge("tframe", i__2, "spkgeo_", (ftnlen)920)] <= 21) {
+		"tframe", i__3, "spkgeo_", (ftnlen)1003)] > 0 && tframe[(i__3 
+		= i__) < 20 && 0 <= i__3 ? i__3 : s_rnge("tframe", i__3, 
+		"spkgeo_", (ftnlen)1003)] <= 21 && tframe[(i__2 = i__ - 1) < 
+		20 && 0 <= i__2 ? i__2 : s_rnge("tframe", i__2, "spkgeo_", (
+		ftnlen)1003)] > 0 && tframe[(i__2 = i__ - 1) < 20 && 0 <= 
+		i__2 ? i__2 : s_rnge("tframe", i__2, "spkgeo_", (ftnlen)1003)]
+		 <= 21) {
 	    irfrot_(&tframe[(i__2 = i__ - 1) < 20 && 0 <= i__2 ? i__2 : 
-		    s_rnge("tframe", i__2, "spkgeo_", (ftnlen)922)], &tframe[(
-		    i__3 = i__) < 20 && 0 <= i__3 ? i__3 : s_rnge("tframe", 
-		    i__3, "spkgeo_", (ftnlen)922)], rot);
+		    s_rnge("tframe", i__2, "spkgeo_", (ftnlen)1005)], &tframe[
+		    (i__3 = i__) < 20 && 0 <= i__3 ? i__3 : s_rnge("tframe", 
+		    i__3, "spkgeo_", (ftnlen)1005)], rot);
 	    mxv_(rot, &starg[(i__2 = i__ * 6 - 6) < 120 && 0 <= i__2 ? i__2 : 
-		    s_rnge("starg", i__2, "spkgeo_", (ftnlen)923)], stemp);
+		    s_rnge("starg", i__2, "spkgeo_", (ftnlen)1006)], stemp);
 	    mxv_(rot, &starg[(i__2 = i__ * 6 - 3) < 120 && 0 <= i__2 ? i__2 : 
-		    s_rnge("starg", i__2, "spkgeo_", (ftnlen)924)], &stemp[3])
-		    ;
+		    s_rnge("starg", i__2, "spkgeo_", (ftnlen)1007)], &stemp[3]
+		    );
 	    vaddg_(stemp, &starg[(i__2 = (i__ + 1) * 6 - 6) < 120 && 0 <= 
 		    i__2 ? i__2 : s_rnge("starg", i__2, "spkgeo_", (ftnlen)
-		    925)], &c__6, vtemp);
+		    1008)], &c__6, vtemp);
 	    moved_(vtemp, &c__6, &starg[(i__2 = (i__ + 1) * 6 - 6) < 120 && 0 
 		    <= i__2 ? i__2 : s_rnge("starg", i__2, "spkgeo_", (ftnlen)
-		    926)]);
+		    1009)]);
 	} else {
 	    frmchg_(&tframe[(i__2 = i__ - 1) < 20 && 0 <= i__2 ? i__2 : 
-		    s_rnge("tframe", i__2, "spkgeo_", (ftnlen)930)], &tframe[(
-		    i__3 = i__) < 20 && 0 <= i__3 ? i__3 : s_rnge("tframe", 
-		    i__3, "spkgeo_", (ftnlen)930)], et, stxfrm);
+		    s_rnge("tframe", i__2, "spkgeo_", (ftnlen)1013)], &tframe[
+		    (i__3 = i__) < 20 && 0 <= i__3 ? i__3 : s_rnge("tframe", 
+		    i__3, "spkgeo_", (ftnlen)1013)], et, stxfrm);
 	    if (failed_()) {
 		chkout_("SPKGEO", (ftnlen)6);
 		return 0;
 	    }
 	    mxvg_(stxfrm, &starg[(i__2 = i__ * 6 - 6) < 120 && 0 <= i__2 ? 
-		    i__2 : s_rnge("starg", i__2, "spkgeo_", (ftnlen)937)], &
+		    i__2 : s_rnge("starg", i__2, "spkgeo_", (ftnlen)1020)], &
 		    c__6, &c__6, stemp);
 	    vaddg_(stemp, &starg[(i__2 = (i__ + 1) * 6 - 6) < 120 && 0 <= 
 		    i__2 ? i__2 : s_rnge("starg", i__2, "spkgeo_", (ftnlen)
-		    938)], &c__6, vtemp);
+		    1021)], &c__6, vtemp);
 	    moved_(vtemp, &c__6, &starg[(i__2 = (i__ + 1) * 6 - 6) < 120 && 0 
 		    <= i__2 ? i__2 : s_rnge("starg", i__2, "spkgeo_", (ftnlen)
-		    939)]);
+		    1022)]);
 	}
     }
 
@@ -968,12 +1087,12 @@ static integer c__0 = 0;
 /*     frame transformations. */
 
     if (tframe[(i__1 = ctpos - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge("tframe", 
-	    i__1, "spkgeo_", (ftnlen)952)] == cframe) {
+	    i__1, "spkgeo_", (ftnlen)1035)] == cframe) {
 	vsubg_(&starg[(i__1 = ctpos * 6 - 6) < 120 && 0 <= i__1 ? i__1 : 
-		s_rnge("starg", i__1, "spkgeo_", (ftnlen)954)], sobs, &c__6, 
+		s_rnge("starg", i__1, "spkgeo_", (ftnlen)1037)], sobs, &c__6, 
 		state);
     } else if (tframe[(i__1 = ctpos - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge(
-	    "tframe", i__1, "spkgeo_", (ftnlen)956)] == refid) {
+	    "tframe", i__1, "spkgeo_", (ftnlen)1039)] == refid) {
 
 /*        If the last frame associated with the target is already */
 /*        in the requested output frame, we convert the state of */
@@ -998,36 +1117,36 @@ static integer c__0 = 0;
 
 	cframe = refid;
 	vsubg_(&starg[(i__1 = ctpos * 6 - 6) < 120 && 0 <= i__1 ? i__1 : 
-		s_rnge("starg", i__1, "spkgeo_", (ftnlen)988)], stemp, &c__6, 
-		state);
+		s_rnge("starg", i__1, "spkgeo_", (ftnlen)1071)], stemp, &c__6,
+		 state);
     } else if (cframe > 0 && cframe <= 21 && tframe[(i__1 = ctpos - 1) < 20 &&
-	     0 <= i__1 ? i__1 : s_rnge("tframe", i__1, "spkgeo_", (ftnlen)991)
-	    ] > 0 && tframe[(i__1 = ctpos - 1) < 20 && 0 <= i__1 ? i__1 : 
-	    s_rnge("tframe", i__1, "spkgeo_", (ftnlen)991)] <= 21) {
+	     0 <= i__1 ? i__1 : s_rnge("tframe", i__1, "spkgeo_", (ftnlen)
+	    1074)] > 0 && tframe[(i__1 = ctpos - 1) < 20 && 0 <= i__1 ? i__1 :
+	     s_rnge("tframe", i__1, "spkgeo_", (ftnlen)1074)] <= 21) {
 
 /*        If both frames are inertial we use IRFROT instead of */
 /*        FRMCHG to get things into a common frame. */
 
 	irfrot_(&tframe[(i__1 = ctpos - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge(
-		"tframe", i__1, "spkgeo_", (ftnlen)997)], &cframe, rot);
+		"tframe", i__1, "spkgeo_", (ftnlen)1080)], &cframe, rot);
 	mxv_(rot, &starg[(i__1 = ctpos * 6 - 6) < 120 && 0 <= i__1 ? i__1 : 
-		s_rnge("starg", i__1, "spkgeo_", (ftnlen)998)], stemp);
+		s_rnge("starg", i__1, "spkgeo_", (ftnlen)1081)], stemp);
 	mxv_(rot, &starg[(i__1 = ctpos * 6 - 3) < 120 && 0 <= i__1 ? i__1 : 
-		s_rnge("starg", i__1, "spkgeo_", (ftnlen)999)], &stemp[3]);
+		s_rnge("starg", i__1, "spkgeo_", (ftnlen)1082)], &stemp[3]);
 	vsubg_(stemp, sobs, &c__6, state);
     } else {
 
 /*        Use the more general routine FRMCHG to make the transformation. */
 
 	frmchg_(&tframe[(i__1 = ctpos - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge(
-		"tframe", i__1, "spkgeo_", (ftnlen)1006)], &cframe, et, 
+		"tframe", i__1, "spkgeo_", (ftnlen)1089)], &cframe, et, 
 		stxfrm);
 	if (failed_()) {
 	    chkout_("SPKGEO", (ftnlen)6);
 	    return 0;
 	}
 	mxvg_(stxfrm, &starg[(i__1 = ctpos * 6 - 6) < 120 && 0 <= i__1 ? i__1 
-		: s_rnge("starg", i__1, "spkgeo_", (ftnlen)1013)], &c__6, &
+		: s_rnge("starg", i__1, "spkgeo_", (ftnlen)1096)], &c__6, &
 		c__6, stemp);
 	vsubg_(stemp, sobs, &c__6, state);
     }

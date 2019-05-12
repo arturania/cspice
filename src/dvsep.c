@@ -9,23 +9,20 @@
 doublereal dvsep_(doublereal *s1, doublereal *s2)
 {
     /* System generated locals */
-    doublereal ret_val;
+    doublereal ret_val, d__1;
 
     /* Local variables */
-    logical safe;
     extern doublereal vdot_(doublereal *, doublereal *);
     doublereal numr;
     extern /* Subroutine */ int chkin_(char *, ftnlen);
     doublereal denom;
-    extern /* Subroutine */ int dvhat_(doublereal *, doublereal *);
-    extern doublereal dpmax_(void);
-    extern /* Subroutine */ int vcrss_(doublereal *, doublereal *, doublereal 
-	    *);
-    extern doublereal vnorm_(doublereal *);
+    extern /* Subroutine */ int dvhat_(doublereal *, doublereal *), vcrss_(
+	    doublereal *, doublereal *, doublereal *);
+    extern doublereal vnorm_(doublereal *), zzdiv_(doublereal *, doublereal *)
+	    ;
     extern logical vzero_(doublereal *);
     doublereal u1[6], u2[6];
-    extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
-	    ftnlen), setmsg_(char *, ftnlen);
+    extern /* Subroutine */ int chkout_(char *, ftnlen);
     doublereal pcross[3];
     extern logical return_(void);
 
@@ -99,8 +96,8 @@ doublereal dvsep_(doublereal *s1, doublereal *s2)
 
 /* $ Exceptions */
 
-/*     1) The error SPICE(NUMERICOVERFLOW) signals if the inputs S1, S2 */
-/*        define states with an angular separation rate ~ DPMAX(). */
+/*     1) The routine in the call tree of this routine signal errors for */
+/*        numeric overflow and underflow cases. */
 
 /*     2) If called in RETURN mode, the return has value 0. */
 
@@ -272,11 +269,15 @@ doublereal dvsep_(doublereal *s1, doublereal *s2)
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.0.0, 21-MAR-2014 (EDW) */
+
+/*       Reimplemented algorithm using ZZDIV. */
+
 /* -    SPICELIB Version 1.0.1, 15-MAR-2010 (EDW) */
 
 /*       Trivial header format clean-up. */
 
-/* -    SPICELIB Version 1.0.1, 31-MAR-2009 (EDW) */
+/* -    SPICELIB Version 1.0.0, 31-MAR-2009 (EDW) */
 
 /* -& */
 /* $ Index_Entries */
@@ -308,20 +309,6 @@ doublereal dvsep_(doublereal *s1, doublereal *s2)
 
     vcrss_(u1, u2, pcross);
 
-/*     Now calculate the time derivate of the angular separation between */
-/*     S1 and S2. */
-
-/*     The routine needs to guard against both division by zero */
-/*     and numeric overflow. Before carrying out the division */
-/*     indicated by equation (10), the routine should verify that */
-
-/*     || U1 x U2 || >  fudge factor * | numerator | / DPMAX() */
-
-/*     A fudge factor of 10.D0 should suffice. */
-
-/*     Note that the inequality is strict. */
-
-
 /*     Handle the parallel and anti-parallel cases. */
 
     if (vzero_(pcross)) {
@@ -330,19 +317,24 @@ doublereal dvsep_(doublereal *s1, doublereal *s2)
 	return ret_val;
     }
 
-/*     Now check for possible overflow. */
+/*     Now calculate the time derivative of the angular separation */
+/*     between S1 and S2. */
+
+
+/*     Separately calculate the numerator and denominator. */
 
     numr = vdot_(u1, &u2[3]) + vdot_(&u1[3], u2);
     denom = vnorm_(pcross);
-    safe = denom > abs(numr) * 10. / dpmax_();
-    if (! safe) {
-	ret_val = 0.;
-	setmsg_("Numerical overflow event.", (ftnlen)25);
-	sigerr_("SPICE(NUMERICOVERFLOW)", (ftnlen)22);
-	chkout_("DVSEP", (ftnlen)5);
-	return ret_val;
-    }
-    ret_val = -numr / denom;
+
+/*     ZZDIV checks for over- or underflow. Finite precision */
+/*     arithmetic is a pain. */
+
+    d__1 = -numr;
+    ret_val = zzdiv_(&d__1, &denom);
+
+/*     Return, the expectation exists that a FAILED() call */
+/*     follows the DVSEP call. */
+
     chkout_("DVSEP", (ftnlen)5);
     return ret_val;
 } /* dvsep_ */

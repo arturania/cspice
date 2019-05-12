@@ -7,8 +7,9 @@
 
 /* Table of constant values */
 
-static integer c__7 = 7;
+static integer c__8 = 8;
 static integer c__10 = 10;
+static integer c__7 = 7;
 
 /* $Procedure GFEVNT ( GF, Geometric event finder ) */
 /* Subroutine */ int gfevnt_(U_fp udstep, U_fp udrefn, char *gquant, integer *
@@ -25,16 +26,17 @@ static integer c__10 = 10;
     static char dref[80] = "                                                "
 	    "                                ";
     static logical first = TRUE_;
-    static char qnames[80*7] = "ANGULAR SEPARATION                          "
+    static char qnames[80*8] = "ANGULAR SEPARATION                          "
 	    "                                    " "DISTANCE                 "
 	    "                                                       " "COORDI"
 	    "NATE                                                            "
 	    "          " "RANGE RATE                                         "
-	    "                             " "                                "
-	    "                                                " "             "
-	    "                                                                "
+	    "                             " "PHASE ANGLE                     "
+	    "                                                " "ILLUMINATION "
+	    "ANGLE                                                           "
 	    "   " "                                                          "
-	    "                      ";
+	    "                      " "                                       "
+	    "                                         ";
     static char cnames[80*7] = ">                                           "
 	    "                                    " "=                        "
 	    "                                                       " "<     "
@@ -45,7 +47,7 @@ static integer c__10 = 10;
 	    "                                                                "
 	    "   " "LOCMIN                                                    "
 	    "                      ";
-    static char qpars[80*10*7] = "TARGET1                                   "
+    static char qpars[80*10*8] = "TARGET1                                   "
 	    "                                      " "FRAME1                 "
 	    "                                                         " "SHAP"
 	    "E1                                                              "
@@ -97,12 +99,12 @@ static integer c__10 = 10;
 	    "                                         " "                    "
 	    "                                                            " 
 	    "                                                               "
-	    "                 " "TARGET1                                     "
-	    "                                    " "TARGET2                  "
-	    "                                                       " "OBSERV"
-	    "ER                                                              "
+	    "                 " "TARGET                                      "
+	    "                                    " "OBSERVER                 "
+	    "                                                       " "ILLUM "
+	    "                                                                "
 	    "          " "ABCORR                                             "
-	    "                             " "REFERENCE FRAME                 "
+	    "                             " "                                "
 	    "                                                " "             "
 	    "                                                                "
 	    "   " "                                                          "
@@ -111,11 +113,24 @@ static integer c__10 = 10;
 	    "                                                            " 
 	    "                                                               "
 	    "                 " "TARGET                                      "
-	    "                                    " "OBSERVER                 "
-	    "                                                       " "ABCORR"
+	    "                                    " "ILLUM                    "
+	    "                                                       " "OBSERV"
+	    "ER                                                              "
+	    "          " "ABCORR                                             "
+	    "                             " "REFERENCE FRAME                 "
+	    "                                                " "ANGTYP       "
 	    "                                                                "
-	    "          " "REFERENCE FRAME                                    "
-	    "                             " "                                "
+	    "   " "METHOD                                                    "
+	    "                      " "SPOINT                                 "
+	    "                                         " "                    "
+	    "                                                            " 
+	    "                                                               "
+	    "                 " "TARGET1                                     "
+	    "                                    " "TARGET2                  "
+	    "                                                       " "OBSERV"
+	    "ER                                                              "
+	    "          " "ABCORR                                             "
+	    "                             " "REFERENCE FRAME                 "
 	    "                                                " "             "
 	    "                                                                "
 	    "   " "                                                          "
@@ -149,22 +164,33 @@ static integer c__10 = 10;
     /* Local variables */
     doublereal dvec[3];
     extern /* Subroutine */ int vequ_(doublereal *, doublereal *);
-    extern /* Subroutine */ int zzgfdidc_();
-    extern /* Subroutine */ int zzgfdiin_(char *, char *, char *, doublereal *
-	    , ftnlen, ftnlen, ftnlen);
-    extern /* Subroutine */ int zzgfdigq_(), zzgfspdc_(), zzgfrrdc_(), 
-	    zzgfdilt_(), zzgfgsep_(), zzgfdiur_();
+    extern /* Subroutine */ int zzgfdidc_(), zzgfpadc_(), zzgfildc_();
+    extern /* Subroutine */ int zzgfdiin_(char *, char *, char *, ftnlen, 
+	    ftnlen, ftnlen);
+    extern /* Subroutine */ int zzgfdigq_();
+    extern /* Subroutine */ int zzgfpain_(char *, char *, char *, char *, 
+	    ftnlen, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ int zzgfpagq_(), zzgfspdc_(), zzgfrrdc_();
+    extern /* Subroutine */ int zzgfilin_(char *, char *, char *, char *, 
+	    char *, char *, char *, doublereal *, ftnlen, ftnlen, ftnlen, 
+	    ftnlen, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ int zzgfilgq_();
     extern /* Subroutine */ int zzgfcslv_(char *, char *, char *, char *, 
 	    char *, char *, char *, doublereal *, char *, char *, char *, 
 	    doublereal *, doublereal *, doublereal *, U_fp, U_fp, logical *, 
 	    U_fp, U_fp, U_fp, logical *, L_fp, integer *, integer *, 
 	    doublereal *, doublereal *, doublereal *, ftnlen, ftnlen, ftnlen, 
-	    ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen), 
-	    zzgfspin_(char *, char *, char *, char *, doublereal *, char *, 
-	    ftnlen, ftnlen, ftnlen, ftnlen, ftnlen), zzgfrrin_(char *, char *,
-	     char *, doublereal *, doublereal *, ftnlen, ftnlen, ftnlen);
-    extern /* Subroutine */ int zzgfrrgq_(), zzgfsplt_(), zzgfrrlt_(), 
-	    zzgfspur_(), zzgfrrur_();
+	    ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ int zzgfudlt_();
+    extern /* Subroutine */ int zzgfspin_(char *, char *, char *, char *, 
+	    char *, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ int zzgfspgq_(), zzgfrrgq_();
+    extern /* Subroutine */ int zzgfrelx_(U_fp, U_fp, U_fp, U_fp, U_fp, char *
+	    , doublereal *, doublereal *, doublereal *, doublereal *, integer 
+	    *, integer *, doublereal *, logical *, U_fp, U_fp, U_fp, char *, 
+	    char *, logical *, L_fp, doublereal *, ftnlen, ftnlen, ftnlen), 
+	    zzgfrrin_(char *, char *, char *, doublereal *, ftnlen, ftnlen, 
+	    ftnlen);
     integer i__;
     char frame[80*2];
     extern /* Subroutine */ int chkin_(char *, ftnlen);
@@ -174,7 +200,7 @@ static integer c__10 = 10;
     char cpars[80*10];
     extern /* Subroutine */ int repmi_(char *, char *, integer *, char *, 
 	    ftnlen, ftnlen, ftnlen);
-    char quant[80];
+    char illum[80], quant[80];
     integer npass;
     extern /* Subroutine */ int ljust_(char *, char *, ftnlen, ftnlen);
     integer qtnum;
@@ -183,22 +209,18 @@ static integer c__10 = 10;
     char vecdef[80];
     extern integer isrchc_(char *, integer *, char *, ftnlen, ftnlen);
     extern logical return_(void);
-    char abcorr[80], cornam[80], corsys[80], method[80], obsrvr[80], pnames[
-	    80*10], rptpre[55*2];
-    static char srcpre[55*2*7], srcsuf[13*2*7];
-    char target[80];
-    logical localx, noadjx;
+    char abcorr[80], angtyp[80], cornam[80], corsys[80], method[80], obsrvr[
+	    80], pnames[80*10], target[80], rptpre[55*2];
+    static char srcpre[55*2*8], srcsuf[13*2*8];
+    logical localx;
     char ref[80];
     integer loc;
+    logical noadjx;
+    doublereal spoint[3];
     extern /* Subroutine */ int setmsg_(char *, ftnlen), sigerr_(char *, 
 	    ftnlen), chkout_(char *, ftnlen), errint_(char *, integer *, 
 	    ftnlen);
     char uop[6];
-    extern /* Subroutine */ int zzgfrel_(U_fp, U_fp, U_fp, U_fp, U_fp, U_fp, 
-	    char *, doublereal *, doublereal *, doublereal *, doublereal *, 
-	    integer *, integer *, doublereal *, logical *, U_fp, U_fp, U_fp, 
-	    char *, char *, logical *, L_fp, doublereal *, ftnlen, ftnlen, 
-	    ftnlen);
 
 /* $ Abstract */
 
@@ -301,7 +323,21 @@ static integer c__10 = 10;
 
 /* $ Version */
 
-/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+/* -    SPICELIB Version 2.0.0  29-NOV-2016 (NJB) */
+
+/*        Upgraded to support surfaces represented by DSKs. */
+
+/*        Bug fix: removed declaration of NVRMAX parameter. */
+
+/* -    SPICELIB Version 1.3.0, 01-OCT-2011 (NJB) */
+
+/*       Added NWILUM parameter. */
+
+/* -    SPICELIB Version 1.2.0, 14-SEP-2010 (EDW) */
+
+/*       Added NWPA parameter. */
+
+/* -    SPICELIB Version 1.1.0, 08-SEP-2009 (EDW) */
 
 /*       Added NWRR parameter. */
 /*       Added NWUDS parameter. */
@@ -351,6 +387,14 @@ static integer c__10 = 10;
 /*     count using NWUDS. */
 
 
+/*     Callers of GFPA should declare their workspace window */
+/*     count using NWPA. */
+
+
+/*     Callers of GFILUM should declare their workspace window */
+/*     count using NWILUM. */
+
+
 /*     ADDWIN is a parameter used to expand each interval of the search */
 /*     (confinement) window by a small amount at both ends in order to */
 /*     accommodate searches using equality constraints. The loaded */
@@ -358,9 +402,6 @@ static integer c__10 = 10;
 
 
 /*     FRMNLN is a string length for frame names. */
-
-
-/*     NVRMAX is the maximum number of vertices if FOV type is "POLYGON" */
 
 
 /*     FOVTLN -- maximum length for FOV string. */
@@ -789,14 +830,99 @@ static integer c__10 = 10;
 
 /*                GQUANT may be any of the strings: */
 
+/*                   'ANGULAR SEPARATION' */
 /*                   'COORDINATE' */
 /*                   'DISTANCE' */
-/*                   'ANGULAR SEPARATION' */
+/*                   'ILLUMINATION ANGLE' */
+/*                   'PHASE ANGLE' */
 /*                   'RANGE RATE' */
 
 /*                GQUANT strings are case insensitive.  Values, */
 /*                meanings, and associated parameters are discussed */
 /*                below. */
+
+/*                The aberration correction parameter indicates the */
+/*                aberration corrections to be applied to the state of */
+/*                the target body to account for one-way light time and */
+/*                stellar aberration. If relevant, it applies to the */
+/*                rotation of the target body as well. */
+
+/*                Supported aberration correction options for */
+/*                observation (case where radiation is received by */
+/*                observer at ET) are: */
+
+/*                  'NONE'          No correction. */
+/*                  'LT'            Light time only. */
+/*                  'LT+S'          Light time and stellar aberration. */
+/*                  'CN'            Converged Newtonian (CN) light time. */
+/*                  'CN+S'          CN light time and stellar aberration. */
+
+/*                Supported aberration correction options for */
+/*                transmission (case where radiation is emitted from */
+/*                observer at ET) are: */
+
+/*                  'XLT'           Light time only. */
+/*                  'XLT+S'         Light time and stellar aberration. */
+/*                  'XCN'           Converged Newtonian (CN) light time. */
+/*                  'XCN+S'         CN light time and stellar aberration. */
+
+/*                For detailed information, see the geometry finder */
+/*                required reading, gf.req. */
+
+/*                Case, leading and trailing blanks are not significant */
+/*                in aberration correction parameter strings. */
+
+
+/*             ANGULAR SEPARATION */
+
+/*                   is the apparent angular separation of two target */
+/*                   bodies as seen from an observing body. */
+
+/*                      Quantity Parameters: */
+
+/*                      QNPARS    = 8 */
+/*                      QPNAMS(1) = 'TARGET1' */
+/*                      QPNAMS(2) = 'FRAME1' */
+/*                      QPNAMS(3) = 'SHAPE1' */
+/*                      QPNAMS(4) = 'TARGET2' */
+/*                      QPNAMS(5) = 'FRAME2' */
+/*                      QPNAMS(6) = 'SHAPE2' */
+/*                      QPNAMS(7) = 'OBSERVER' */
+/*                      QPNAMS(8) = 'ABCORR' */
+
+/*                      QCPARS(1) = <name of first target> */
+/*                      QCPARS(2) = <name of body-fixed frame */
+/*                                            of first target> */
+/*                      QCPARS(3) = <shape of first target> */
+/*                      QCPARS(4) = <name of second target> */
+/*                      QCPARS(5) = <name of body-fixed frame */
+/*                                            of second target> */
+/*                      QCPARS(6) = <shape of second target> */
+/*                      QCPARS(7) = <name of observer> */
+/*                      QCPARS(8) = <aberration correction> */
+
+/*                   The target shape model specifiers may be set to */
+/*                   either of the values */
+
+/*                      'POINT' */
+/*                      'SPHERE' */
+
+/*                   The shape models for the two bodies need not match. */
+
+/*                   Spherical models have radii equal to the longest */
+/*                   equatorial radius of the PCK-based tri-axial */
+/*                   ellipsoids used to model the respective bodies. */
+/*                   When both target bodies are modeled as spheres, the */
+/*                   angular separation between the bodies is the angle */
+/*                   between the closest points on the limbs of the */
+/*                   spheres, as viewed from the vantage point of the */
+/*                   observer. If the limbs overlap, the angular */
+/*                   separation is negative. */
+
+/*                   (In this case, the angular separation is the angle */
+/*                   between the centers of the spheres minus the sum of */
+/*                   the apparent angular radii of the spheres.) */
+
 
 /*             COORDINATE */
 
@@ -930,7 +1056,7 @@ static integer c__10 = 10;
 /*                      QPNAMS(9) = 'DREF' */
 /*                      QPNAMS(10) = 'DVEC' */
 
-/*                   Only 'SUB-OBSERVER POINT' searches make */
+/*                   Only 'SURFACE INTERCEPT POINT' searches make */
 /*                   use of the DREF and DVEC parameters. */
 
 /*                      QCPARS(1) = <name of target> */
@@ -968,60 +1094,72 @@ static integer c__10 = 10;
 /*                      QCPARS(2) = <name of observer> */
 /*                      QCPARS(3) = <aberration correction> */
 
-/*             ANGULAR SEPARATION */
 
-/*                   is the apparent angular separation of two target */
-/*                   bodies as seen from an observing body. */
+/*             ILLUMINATION ANGLE */
 
-/*                   Quantity Parameters: */
+/*                   is any of the illumination angles */
+
+/*                      emission */
+/*                      phase */
+/*                      solar incidence */
+
+/*                   defined at a surface point on a target body. */
+/*                   These angles are defined as in the SPICELIB */
+/*                   routine ILUMIN. */
+
+/*                      Quantity Parameters: */
 
 /*                      QNPARS    = 8 */
-/*                      QPNAMS(1) = 'TARGET1' */
-/*                      QPNAMS(2) = 'FRAME1' */
-/*                      QPNAMS(3) = 'SHAPE1' */
-/*                      QPNAMS(4) = 'TARGET2' */
-/*                      QPNAMS(5) = 'FRAME2' */
-/*                      QPNAMS(6) = 'SHAPE2' */
-/*                      QPNAMS(7) = 'OBSERVER' */
-/*                      QPNAMS(8) = 'ABCORR' */
+/*                      QPNAMS(1) = 'TARGET' */
+/*                      QPNAMS(2) = 'ILLUM' */
+/*                      QPNAMS(3) = 'OBSERVER' */
+/*                      QPNAMS(4) = 'ABCORR' */
+/*                      QPNAMS(5) = 'FRAME' */
+/*                      QPNAMS(6) = 'ANGTYP' */
+/*                      QPNAMS(7) = 'METHOD' */
+/*                      QPNAMS(8) = 'SPOINT' */
 
-/*                      QCPARS(1) = <name of first target> */
-/*                      QCPARS(2) = <name of body-fixed frame */
-/*                                            of first target> */
-/*                      QCPARS(3) = <shape of first target> */
-/*                      QCPARS(4) = <name of second target> */
-/*                      QCPARS(5) = <name of body-fixed frame */
-/*                                            of second target> */
-/*                      QCPARS(6) = <shape of second target> */
-/*                      QCPARS(7) = <name of observer> */
-/*                      QCPARS(8) = <aberration correction> */
+/*                      QCPARS(1) =  <name of target> */
+/*                      QCPARS(1) =  <name of illumination source> */
+/*                      QCPARS(3) =  <name of observer> */
+/*                      QCPARS(4) =  <aberration correction> */
+/*                      QCPARS(5) =  <target body-fixed frame> */
+/*                      QCPARS(6) =  <type of illumination angle> */
+/*                      QCPARS(7) =  <computation method> */
 
-/*                   The target shape model specifiers may be set to */
-/*                   either of the values */
+/*                      The surface point is specified using rectangular */
+/*                      coordinates in the specified body-fixed frame. */
 
-/*                      'POINT' */
-/*                      'SPHERE' */
+/*                      QDPARS(1) =  <X coordinate of surface point> */
+/*                      QDPARS(2) =  <Y coordinate of surface point> */
+/*                      QDPARS(3) =  <Z coordinate of surface point> */
 
-/*                   The shape models for the two bodies need not match. */
+/*             PHASE ANGLE */
 
-/*                   Spherical models have radii equal to the longest */
-/*                   equatorial radius of the PCK-based tri-axial */
-/*                   ellipsoids used to model the respective bodies. */
-/*                   When both target bodies are modeled as spheres, the */
-/*                   angular separation between the bodies is the angle */
-/*                   between the closest points on the limbs of the */
-/*                   spheres, as viewed from the vantage point of the */
-/*                   observer. If the limbs overlap, the angular */
-/*                   separation is negative. */
+/*                   is the apparent phase angle between a target body */
+/*                   center and an illuminating body center as seen from */
+/*                   an observer. */
 
-/*                   (In this case, the angular separation is the angle */
-/*                   between the centers of the spheres minus the sum of */
-/*                   the apparent angular radii of the spheres.) */
+/*                      Quantity Parameters: */
+
+/*                      QNPARS    = 4 */
+/*                      QPNAMS(1) = 'TARGET' */
+/*                      QPNAMS(2) = 'OBSERVER' */
+/*                      QPNAMS(3) = 'ABCORR' */
+/*                      QPNAMS(4) = 'ILLUM' */
+
+/*                      QCPARS(1) =  <name of target> */
+/*                      QCPARS(2) =  <name of observer> */
+/*                      QCPARS(3) =  <aberration correction> */
+/*                      QCPARS(4) =  <name of illuminating body> */
+
 
 /*             RANGE RATE */
 
 /*                   is the apparent range rate between a target body */
 /*                   and an observing body. */
+
+/*                      Quantity Parameters: */
 
 /*                      QNPARS    = 3 */
 /*                      QPNAMS(1) = 'TARGET' */
@@ -1032,36 +1170,7 @@ static integer c__10 = 10;
 /*                      QCPARS(2) = <name of observer> */
 /*                      QCPARS(3) = <aberration correction> */
 
-/*                The aberration correction parameter indicates the */
-/*                aberration corrections to be applied to the state of */
-/*                the target body to account for one-way light time and */
-/*                stellar aberration. If relevant, it applies to the */
-/*                rotation of the target body as well. */
 
-/*                Supported aberration correction options for */
-/*                observation (case where radiation is received by */
-/*                observer at ET) are: */
-
-/*                  'NONE'          No correction. */
-/*                  'LT'            Light time only. */
-/*                  'LT+S'          Light time and stellar aberration. */
-/*                  'CN'            Converged Newtonian (CN) light time. */
-/*                  'CN+S'          CN light time and stellar aberration. */
-
-/*                Supported aberration correction options for */
-/*                transmission (case where radiation is emitted from */
-/*                observer at ET) are: */
-
-/*                  'XLT'           Light time only. */
-/*                  'XLT+S'         Light time and stellar aberration. */
-/*                  'XCN'           Converged Newtonian (CN) light time. */
-/*                  'XCN+S'         CN light time and stellar aberration. */
-
-/*                For detailed information, see the geometry finder */
-/*                required reading, gf.req. */
-
-/*                Case, leading and trailing blanks are not significant */
-/*                in aberration correction parameter strings. */
 
 /*     QNPARS     is the count of quantity parameter definition */
 /*                parameters.  These parameters supply the quantity- */
@@ -1411,7 +1520,7 @@ static integer c__10 = 10;
 /*         called by this routine. */
 
 /*     8)  If TOL is not greater than zero, the error */
-/*         SPICE(VALUEOUTOFRANGE) is signaled by routines called by */
+/*         SPICE(INVALIDTOLERANCE) is signaled by routines called by */
 /*         this routine. */
 
 /*     9)  If ADJUST is negative, the error SPICE(VALUEOUTOFRANGE) will */
@@ -1473,7 +1582,7 @@ static integer c__10 = 10;
 /*     Applications that require do not require support for progress */
 /*     reporting, interrupt handling, non-default step or refinement */
 /*     functions, or non-default convergence tolerance normally should */
-/*     call GFSEP, GFDIST, GFPOSC, GFSUBC, GFRR, or GFSNTC rather than */
+/*     call a high level geometry quantity routine rather than */
 /*     this routine. */
 
 /*     The Search Process */
@@ -1490,10 +1599,14 @@ static integer c__10 = 10;
 
 /*     Within any interval of these "monotone" windows, there will be at */
 /*     most one solution of any equality constraint. Since the boundary */
-/*     of the solution set for any inequality constraint is the set */
-/*     of points where an equality constraint is met, the solutions of */
-/*     both equality and inequality constraints can be found easily */
-/*     once the monotone windows have been found. */
+/*     of the solution set for any inequality constraint is contained in */
+/*     the union of */
+
+/*        - the set of points where an equality constraint is met */
+/*        - the boundary points of the confinement window */
+
+/*     the solutions of both equality and inequality constraints can be */
+/*     found easily once the monotone windows have been found. */
 
 
 /*     Step Size */
@@ -1524,7 +1637,7 @@ static integer c__10 = 10;
 /*     monotone windows yields a dramatic efficiency improvement over a */
 /*     state-based search that simply tests at each step whether the */
 /*     specified constraint is satisfied. The latter type of search can */
-/*     miss solution intervals if the step size is shorter than the */
+/*     miss solution intervals if the step size is longer than the */
 /*     shortest solution interval. */
 
 /*     Having some knowledge of the relative geometry of the targets and */
@@ -1805,8 +1918,8 @@ static integer c__10 = 10;
 /*          .              RELATE,     REFVAL,   CNVTOL, */
 /*          .              ADJUST,     CNFINE,   RPT, */
 /*          .              GFREPI,     GFREPU,   GFREPF, */
-/*          .              MAXVAL,     NWDIST,    WORK, */
-/*          .              BAIL,       GFBAIL,    RESULT ) */
+/*          .              MAXVAL,     NWDIST,   WORK, */
+/*          .              BAIL,       GFBAIL,   RESULT ) */
 
 
 /*     C */
@@ -1892,6 +2005,27 @@ static integer c__10 = 10;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.0.0, 05-SEP-2012 (EDW) (NJB) */
+
+/*        Edit to comments to correct search description. */
+
+/*        Edit to Index_Entries. */
+
+/*        Added geometric quantities: */
+
+/*           Phase Angle */
+/*           Illumination Angle */
+
+/*        Code edits to implement use of ZZGFRELX in event calculations: */
+
+/*           Range rate */
+/*           Separation angle */
+/*           Distance */
+/*           Coordinate */
+
+/*        The code changes for ZZGFRELX use should not affect the */
+/*        numerical results of GF computations. */
+
 /* -    SPICELIB Version 1.1.0, 09-OCT-2009 (NJB) (EDW) */
 
 /*        Edits to argument descriptions. */
@@ -1905,7 +2039,7 @@ static integer c__10 = 10;
 /* -& */
 /* $ Index_Entries */
 
-/*     GF low-level geometric condition solver */
+/*     GF mid-level geometric condition solver */
 
 /* -& */
 
@@ -1921,7 +2055,13 @@ static integer c__10 = 10;
 /*     Range rate routines. */
 
 
-/*     Quantity codes: */
+/*     Phase angle routines. */
+
+
+/*     Illumination angle routines. */
+
+
+/*     Event quantity codes: */
 
 
 /*     Number of supported quantities: */
@@ -1931,16 +2071,6 @@ static integer c__10 = 10;
 
 
 /*     Assorted string lengths: */
-
-/*     BDNMLN is the maximum length of a body name. */
-
-
-/*     NAMLEN is the maximum length of both a frame name and of */
-/*     any kernel pool variable name. */
-
-
-/*     ABCLEN is the maximum length of any aberration correction */
-/*     specification string.  Room for expansion is included. */
 
 
 /*     MAXPAR is the maximum number of parameters required to define */
@@ -1954,9 +2084,6 @@ static integer c__10 = 10;
 
 /*     MAXCLN is the maximum character string length of the quantity */
 /*     parameter names and character quantity parameters. */
-
-
-/*     NAIF ID code for the sun: */
 
 
 /*     Local variables */
@@ -2008,43 +2135,49 @@ static integer c__10 = 10;
 		ftnlen)30);
 	s_copy(srcpre + 110, "Distance pass 1 of # ", (ftnlen)55, (ftnlen)21);
 	s_copy(srcpre + 165, "Distance pass 2 of # ", (ftnlen)55, (ftnlen)21);
-	s_copy(srcpre + 440, "Angular Rate pass 1 of #", (ftnlen)55, (ftnlen)
+	s_copy(srcpre + 660, "Angular Rate pass 1 of #", (ftnlen)55, (ftnlen)
 		24);
-	s_copy(srcpre + 495, "Angular Rate pass 2 of #", (ftnlen)55, (ftnlen)
+	s_copy(srcpre + 715, "Angular Rate pass 2 of #", (ftnlen)55, (ftnlen)
 		24);
 	s_copy(srcpre + 330, "Range Rate pass 1 of #", (ftnlen)55, (ftnlen)22)
 		;
 	s_copy(srcpre + 385, "Range Rate pass 2 of #", (ftnlen)55, (ftnlen)22)
 		;
-	s_copy(srcpre + 550, "Phase search pass 1 of #", (ftnlen)55, (ftnlen)
-		24);
-	s_copy(srcpre + 605, "Phase search pass 2 of #", (ftnlen)55, (ftnlen)
-		24);
-	s_copy(srcpre + 660, "Diameter pass 1 of #", (ftnlen)55, (ftnlen)20);
-	s_copy(srcpre + 715, "Diameter pass 2 of #", (ftnlen)55, (ftnlen)20);
+	s_copy(srcpre + 440, "Phase angle search pass 1 of #", (ftnlen)55, (
+		ftnlen)30);
+	s_copy(srcpre + 495, "Phase angle search pass 2 of #", (ftnlen)55, (
+		ftnlen)30);
+	s_copy(srcpre + 770, "Diameter pass 1 of #", (ftnlen)55, (ftnlen)20);
+	s_copy(srcpre + 825, "Diameter pass 2 of #", (ftnlen)55, (ftnlen)20);
+	s_copy(srcpre + 550, "Illumination angle pass 1 of #", (ftnlen)55, (
+		ftnlen)30);
+	s_copy(srcpre + 605, "Illumination angle pass 2 of #", (ftnlen)55, (
+		ftnlen)30);
 	s_copy(srcsuf, "done.", (ftnlen)13, (ftnlen)5);
 	s_copy(srcsuf + 13, "done.", (ftnlen)13, (ftnlen)5);
 	s_copy(srcsuf + 26, "done.", (ftnlen)13, (ftnlen)5);
 	s_copy(srcsuf + 39, "done.", (ftnlen)13, (ftnlen)5);
-	s_copy(srcsuf + 104, "done.", (ftnlen)13, (ftnlen)5);
-	s_copy(srcsuf + 117, "done.", (ftnlen)13, (ftnlen)5);
-	s_copy(srcsuf + 78, "done.", (ftnlen)13, (ftnlen)5);
-	s_copy(srcsuf + 91, "done.", (ftnlen)13, (ftnlen)5);
-	s_copy(srcsuf + 130, "done.", (ftnlen)13, (ftnlen)5);
-	s_copy(srcsuf + 143, "done.", (ftnlen)13, (ftnlen)5);
 	s_copy(srcsuf + 156, "done.", (ftnlen)13, (ftnlen)5);
 	s_copy(srcsuf + 169, "done.", (ftnlen)13, (ftnlen)5);
+	s_copy(srcsuf + 78, "done.", (ftnlen)13, (ftnlen)5);
+	s_copy(srcsuf + 91, "done.", (ftnlen)13, (ftnlen)5);
+	s_copy(srcsuf + 104, "done.", (ftnlen)13, (ftnlen)5);
+	s_copy(srcsuf + 117, "done.", (ftnlen)13, (ftnlen)5);
+	s_copy(srcsuf + 182, "done.", (ftnlen)13, (ftnlen)5);
+	s_copy(srcsuf + 195, "done.", (ftnlen)13, (ftnlen)5);
+	s_copy(srcsuf + 130, "done.", (ftnlen)13, (ftnlen)5);
+	s_copy(srcsuf + 143, "done.", (ftnlen)13, (ftnlen)5);
     }
 
 /*     Make sure the requested quantity is one we recognize. */
 
     ljust_(gquant, quant, gquant_len, (ftnlen)80);
     ucase_(quant, quant, (ftnlen)80, (ftnlen)80);
-    qtnum = isrchc_(quant, &c__7, qnames, (ftnlen)80, (ftnlen)80);
+    qtnum = isrchc_(quant, &c__8, qnames, (ftnlen)80, (ftnlen)80);
     if (qtnum == 0) {
-	setmsg_("The geometric quantity, # is not recognized.  Supported qua"
-		"ntities are: DISTANCE, PHASE, ANGULAR SEPARATION.", (ftnlen)
-		108);
+	setmsg_("The geometric quantity, # is not recognized. Supported quan"
+		"tities are: DISTANCE, PHASE ANGLE, COORDINATE, RANGE RATE, A"
+		"NGULAR SEPARATION,ILLUMINATION ANGLE.", (ftnlen)156);
 	errch_("#", gquant, (ftnlen)1, gquant_len);
 	sigerr_("SPICE(NOTRECOGNIZED)", (ftnlen)20);
 	chkout_("GFEVNT", (ftnlen)6);
@@ -2069,42 +2202,42 @@ static integer c__10 = 10;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	ljust_(qpnams + (i__ - 1) * qpnams_len, pnames + ((i__2 = i__ - 1) < 
 		10 && 0 <= i__2 ? i__2 : s_rnge("pnames", i__2, "gfevnt_", (
-		ftnlen)1720)) * 80, qpnams_len, (ftnlen)80);
+		ftnlen)1829)) * 80, qpnams_len, (ftnlen)80);
 	ucase_(pnames + ((i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		"pnames", i__2, "gfevnt_", (ftnlen)1721)) * 80, pnames + ((
+		"pnames", i__2, "gfevnt_", (ftnlen)1830)) * 80, pnames + ((
 		i__3 = i__ - 1) < 10 && 0 <= i__3 ? i__3 : s_rnge("pnames", 
-		i__3, "gfevnt_", (ftnlen)1721)) * 80, (ftnlen)80, (ftnlen)80);
+		i__3, "gfevnt_", (ftnlen)1830)) * 80, (ftnlen)80, (ftnlen)80);
 	ljust_(qcpars + (i__ - 1) * qcpars_len, cpars + ((i__2 = i__ - 1) < 
 		10 && 0 <= i__2 ? i__2 : s_rnge("cpars", i__2, "gfevnt_", (
-		ftnlen)1723)) * 80, qcpars_len, (ftnlen)80);
+		ftnlen)1832)) * 80, qcpars_len, (ftnlen)80);
 	ucase_(cpars + ((i__2 = i__ - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		"cpars", i__2, "gfevnt_", (ftnlen)1724)) * 80, cpars + ((i__3 
+		"cpars", i__2, "gfevnt_", (ftnlen)1833)) * 80, cpars + ((i__3 
 		= i__ - 1) < 10 && 0 <= i__3 ? i__3 : s_rnge("cpars", i__3, 
-		"gfevnt_", (ftnlen)1724)) * 80, (ftnlen)80, (ftnlen)80);
+		"gfevnt_", (ftnlen)1833)) * 80, (ftnlen)80, (ftnlen)80);
     }
 
 /*     Make sure all parameters have been supplied for the requested */
 /*     quantity. */
 
     for (i__ = 1; i__ <= 10; ++i__) {
-	if (s_cmp(qpars + ((i__1 = i__ + qtnum * 10 - 11) < 70 && 0 <= i__1 ? 
-		i__1 : s_rnge("qpars", i__1, "gfevnt_", (ftnlen)1734)) * 80, 
+	if (s_cmp(qpars + ((i__1 = i__ + qtnum * 10 - 11) < 80 && 0 <= i__1 ? 
+		i__1 : s_rnge("qpars", i__1, "gfevnt_", (ftnlen)1843)) * 80, 
 		" ", (ftnlen)80, (ftnlen)1) != 0) {
 
 /*           The Ith parameter must be supplied by the caller. */
 
-	    loc = isrchc_(qpars + ((i__1 = i__ + qtnum * 10 - 11) < 70 && 0 <=
+	    loc = isrchc_(qpars + ((i__1 = i__ + qtnum * 10 - 11) < 80 && 0 <=
 		     i__1 ? i__1 : s_rnge("qpars", i__1, "gfevnt_", (ftnlen)
-		    1738)) * 80, qnpars, pnames, (ftnlen)80, (ftnlen)80);
+		    1847)) * 80, qnpars, pnames, (ftnlen)80, (ftnlen)80);
 	    if (loc == 0) {
 		setmsg_("The parameter # is required in order to compute eve"
 			"nts pertaining to the quantity #; this parameter was"
 			" not supplied.", (ftnlen)117);
-		errch_("#", qpars + ((i__1 = i__ + qtnum * 10 - 11) < 70 && 0 
+		errch_("#", qpars + ((i__1 = i__ + qtnum * 10 - 11) < 80 && 0 
 			<= i__1 ? i__1 : s_rnge("qpars", i__1, "gfevnt_", (
-			ftnlen)1747)) * 80, (ftnlen)1, (ftnlen)80);
-		errch_("#", qnames + ((i__1 = qtnum - 1) < 7 && 0 <= i__1 ? 
-			i__1 : s_rnge("qnames", i__1, "gfevnt_", (ftnlen)1748)
+			ftnlen)1856)) * 80, (ftnlen)1, (ftnlen)80);
+		errch_("#", qnames + ((i__1 = qtnum - 1) < 8 && 0 <= i__1 ? 
+			i__1 : s_rnge("qnames", i__1, "gfevnt_", (ftnlen)1857)
 			) * 80, (ftnlen)1, (ftnlen)80);
 		sigerr_("SPICE(MISSINGVALUE)", (ftnlen)19);
 		chkout_("GFEVNT", (ftnlen)6);
@@ -2120,6 +2253,7 @@ static integer c__10 = 10;
 
 /*        TARGET */
 /*        OBSERVER */
+/*        ILLUM */
 /*        TARGET1 */
 /*        FRAME1 */
 /*        SHAPE1 */
@@ -2142,7 +2276,7 @@ static integer c__10 = 10;
     loc = isrchc_("TARGET", qnpars, pnames, (ftnlen)6, (ftnlen)80);
     if (loc > 0) {
 	s_copy(target, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1792)) * 80, (ftnlen)
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1902)) * 80, (ftnlen)
 		80, (ftnlen)80);
     }
 
@@ -2151,7 +2285,16 @@ static integer c__10 = 10;
     loc = isrchc_("OBSERVER", qnpars, pnames, (ftnlen)8, (ftnlen)80);
     if (loc > 0) {
 	s_copy(obsrvr, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1804)) * 80, (ftnlen)
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1914)) * 80, (ftnlen)
+		80, (ftnlen)80);
+    }
+
+/*     -ILLUM- */
+
+    loc = isrchc_("ILLUM", qnpars, pnames, (ftnlen)5, (ftnlen)80);
+    if (loc > 0) {
+	s_copy(illum, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1926)) * 80, (ftnlen)
 		80, (ftnlen)80);
     }
 
@@ -2160,7 +2303,7 @@ static integer c__10 = 10;
     loc = isrchc_("TARGET1", qnpars, pnames, (ftnlen)7, (ftnlen)80);
     if (loc > 0) {
 	s_copy(of, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1816)) * 80, (ftnlen)
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1938)) * 80, (ftnlen)
 		80, (ftnlen)80);
     }
 
@@ -2169,7 +2312,7 @@ static integer c__10 = 10;
     loc = isrchc_("TARGET2", qnpars, pnames, (ftnlen)7, (ftnlen)80);
     if (loc > 0) {
 	s_copy(of + 80, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1828)) * 80, (ftnlen)
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1950)) * 80, (ftnlen)
 		80, (ftnlen)80);
     }
 
@@ -2178,7 +2321,7 @@ static integer c__10 = 10;
     loc = isrchc_("FRAME1", qnpars, pnames, (ftnlen)6, (ftnlen)80);
     if (loc > 0) {
 	s_copy(frame, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1840)) * 80, (ftnlen)
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1962)) * 80, (ftnlen)
 		80, (ftnlen)80);
     }
 
@@ -2187,7 +2330,7 @@ static integer c__10 = 10;
     loc = isrchc_("FRAME2", qnpars, pnames, (ftnlen)6, (ftnlen)80);
     if (loc > 0) {
 	s_copy(frame + 80, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 
-		: s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1851)) * 80, (
+		: s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1973)) * 80, (
 		ftnlen)80, (ftnlen)80);
     }
 
@@ -2196,7 +2339,7 @@ static integer c__10 = 10;
     loc = isrchc_("SHAPE1", qnpars, pnames, (ftnlen)6, (ftnlen)80);
     if (loc > 0) {
 	s_copy(shape, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1863)) * 80, (ftnlen)
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1985)) * 80, (ftnlen)
 		80, (ftnlen)80);
     }
 
@@ -2205,7 +2348,7 @@ static integer c__10 = 10;
     loc = isrchc_("SHAPE2", qnpars, pnames, (ftnlen)6, (ftnlen)80);
     if (loc > 0) {
 	s_copy(shape + 80, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 
-		: s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1875)) * 80, (
+		: s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1997)) * 80, (
 		ftnlen)80, (ftnlen)80);
     }
 
@@ -2214,7 +2357,7 @@ static integer c__10 = 10;
     loc = isrchc_("ABCORR", qnpars, pnames, (ftnlen)6, (ftnlen)80);
     if (loc > 0) {
 	s_copy(abcorr, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1887)) * 80, (ftnlen)
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)2009)) * 80, (ftnlen)
 		80, (ftnlen)80);
     }
 
@@ -2223,7 +2366,7 @@ static integer c__10 = 10;
     loc = isrchc_("REFERENCE FRAME", qnpars, pnames, (ftnlen)15, (ftnlen)80);
     if (loc > 0) {
 	s_copy(ref, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1899)) * 80, (ftnlen)
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)2021)) * 80, (ftnlen)
 		80, (ftnlen)80);
     }
 
@@ -2273,8 +2416,24 @@ static integer c__10 = 10;
     loc = isrchc_("DREF", qnpars, pnames, (ftnlen)4, (ftnlen)80);
     if (loc > 0) {
 	s_copy(dref, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)1970)) * 80, (ftnlen)
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)2092)) * 80, (ftnlen)
 		80, (ftnlen)80);
+    }
+
+/*     -ANGTYP- */
+
+    loc = isrchc_("ANGTYP", qnpars, pnames, (ftnlen)6, (ftnlen)80);
+    if (loc > 0) {
+	s_copy(angtyp, cpars + ((i__1 = loc - 1) < 10 && 0 <= i__1 ? i__1 : 
+		s_rnge("cpars", i__1, "gfevnt_", (ftnlen)2103)) * 80, (ftnlen)
+		80, (ftnlen)80);
+    }
+
+/*     -SPOINT- */
+
+    loc = isrchc_("SPOINT", qnpars, pnames, (ftnlen)6, (ftnlen)80);
+    if (loc > 0) {
+	vequ_(qdpars, spoint);
     }
 
 /*     Make sure that the requested comparison operation is one we */
@@ -2285,8 +2444,8 @@ static integer c__10 = 10;
     loc = isrchc_(uop, &c__7, cnames, (ftnlen)6, (ftnlen)80);
     if (loc == 0) {
 	setmsg_("The comparison operator, # is not recognized.  Supported op"
-		"erators are: >,=,<,ABSMAX,ABSMIN,LOCMAX,LOCMIN.", (ftnlen)106)
-		;
+		"erators are: >, =, <, ABSMAX, ABSMIN, LOCMAX, LOCMIN. ", (
+		ftnlen)113);
 	errch_("#", op, (ftnlen)1, op_len);
 	sigerr_("SPICE(NOTRECOGNIZED)", (ftnlen)20);
 	chkout_("GFEVNT", (ftnlen)6);
@@ -2321,11 +2480,11 @@ static integer c__10 = 10;
 
 	i__1 = npass;
 	for (i__ = 1; i__ <= i__1; ++i__) {
-	    repmi_(srcpre + ((i__2 = i__ + (qtnum << 1) - 3) < 14 && 0 <= 
+	    repmi_(srcpre + ((i__2 = i__ + (qtnum << 1) - 3) < 16 && 0 <= 
 		    i__2 ? i__2 : s_rnge("srcpre", i__2, "gfevnt_", (ftnlen)
-		    2035)) * 55, "#", &npass, rptpre + ((i__3 = i__ - 1) < 2 
+		    2182)) * 55, "#", &npass, rptpre + ((i__3 = i__ - 1) < 2 
 		    && 0 <= i__3 ? i__3 : s_rnge("rptpre", i__3, "gfevnt_", (
-		    ftnlen)2035)) * 55, (ftnlen)55, (ftnlen)1, (ftnlen)55);
+		    ftnlen)2182)) * 55, (ftnlen)55, (ftnlen)1, (ftnlen)55);
 	}
     }
 
@@ -2339,24 +2498,23 @@ static integer c__10 = 10;
 
 /*        Separation condition initializer. */
 
-	zzgfspin_(of, obsrvr, shape, frame, refval, abcorr, (ftnlen)80, (
-		ftnlen)80, (ftnlen)80, (ftnlen)80, (ftnlen)80);
-	zzgfrel_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfspdc_, (U_fp)zzgfsplt_,
-		 (U_fp)zzgfgsep_, (U_fp)zzgfspur_, op, refval, tol, adjust, 
-		cnfine, mw, nw, work, rpt, (U_fp)udrepi, (U_fp)udrepu, (U_fp)
-		udrepf, rptpre, srcsuf, bail, (L_fp)udbail, result, op_len, (
-		ftnlen)55, (ftnlen)13);
+	zzgfspin_(of, obsrvr, shape, frame, abcorr, (ftnlen)80, (ftnlen)80, (
+		ftnlen)80, (ftnlen)80, (ftnlen)80);
+	zzgfrelx_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfspdc_, (U_fp)
+		zzgfudlt_, (U_fp)zzgfspgq_, op, refval, tol, adjust, cnfine, 
+		mw, nw, work, rpt, (U_fp)udrepi, (U_fp)udrepu, (U_fp)udrepf, 
+		rptpre, srcsuf, bail, (L_fp)udbail, result, op_len, (ftnlen)
+		55, (ftnlen)13);
     } else if (qtnum == 2) {
 
 /*        Distance condition initializer. */
 
-	zzgfdiin_(target, abcorr, obsrvr, refval, (ftnlen)80, (ftnlen)80, (
-		ftnlen)80);
-	zzgfrel_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfdidc_, (U_fp)zzgfdilt_,
-		 (U_fp)zzgfdigq_, (U_fp)zzgfdiur_, op, refval, tol, adjust, 
-		cnfine, mw, nw, work, rpt, (U_fp)udrepi, (U_fp)udrepu, (U_fp)
-		udrepf, rptpre, srcsuf + 26, bail, (L_fp)udbail, result, 
-		op_len, (ftnlen)55, (ftnlen)13);
+	zzgfdiin_(target, abcorr, obsrvr, (ftnlen)80, (ftnlen)80, (ftnlen)80);
+	zzgfrelx_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfdidc_, (U_fp)
+		zzgfudlt_, (U_fp)zzgfdigq_, op, refval, tol, adjust, cnfine, 
+		mw, nw, work, rpt, (U_fp)udrepi, (U_fp)udrepu, (U_fp)udrepf, 
+		rptpre, srcsuf + 26, bail, (L_fp)udbail, result, op_len, (
+		ftnlen)55, (ftnlen)13);
     } else if (qtnum == 3) {
 
 /*        Solve for a coordinate condition. ZZGFCSLV calls the coordinate */
@@ -2368,33 +2526,55 @@ static integer c__10 = 10;
 		L_fp)udbail, mw, nw, work, cnfine, result, (ftnlen)80, (
 		ftnlen)80, (ftnlen)80, (ftnlen)80, (ftnlen)80, (ftnlen)80, (
 		ftnlen)80, (ftnlen)80, (ftnlen)80, op_len);
-    } else if (qtnum == 5) {
+    } else if (qtnum == 7) {
 
 /*        d( sep ) */
-/*        -------- */
+/*        --------     ---Not yet implemented--- */
 /*        dt */
 
-/*                ---Not yet implemented--- */
     } else if (qtnum == 4) {
 
 /*        Range rate condition initializer. */
 
-
-/*        Set the interval for the QDERIV call in ZZGFRRDC to one */
-/*        TDB second. */
+/*        Default the interval for the QDERIV call in ZZGFRRDC to one */
+/*        TDB second. This should have a function interface to */
+/*        reset. */
 
 	dt = 1.;
-	zzgfrrin_(target, abcorr, obsrvr, refval, &dt, (ftnlen)80, (ftnlen)80,
-		 (ftnlen)80);
-	zzgfrel_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfrrdc_, (U_fp)zzgfrrlt_,
-		 (U_fp)zzgfrrgq_, (U_fp)zzgfrrur_, op, refval, tol, adjust, 
-		cnfine, mw, nw, work, rpt, (U_fp)udrepi, (U_fp)udrepu, (U_fp)
-		udrepf, rptpre, srcsuf + 78, bail, (L_fp)udbail, result, 
-		op_len, (ftnlen)55, (ftnlen)13);
+	zzgfrrin_(target, abcorr, obsrvr, &dt, (ftnlen)80, (ftnlen)80, (
+		ftnlen)80);
+	zzgfrelx_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfrrdc_, (U_fp)
+		zzgfudlt_, (U_fp)zzgfrrgq_, op, refval, tol, adjust, cnfine, 
+		mw, nw, work, rpt, (U_fp)udrepi, (U_fp)udrepu, (U_fp)udrepf, 
+		rptpre, srcsuf + 78, bail, (L_fp)udbail, result, op_len, (
+		ftnlen)55, (ftnlen)13);
+    } else if (qtnum == 5) {
+
+/*        Phase angle condition initializer. */
+
+	zzgfpain_(target, illum, abcorr, obsrvr, (ftnlen)80, (ftnlen)80, (
+		ftnlen)80, (ftnlen)80);
+	zzgfrelx_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfpadc_, (U_fp)
+		zzgfudlt_, (U_fp)zzgfpagq_, op, refval, tol, adjust, cnfine, 
+		mw, nw, work, rpt, (U_fp)udrepi, (U_fp)udrepu, (U_fp)udrepf, 
+		rptpre, srcsuf + 104, bail, (L_fp)udbail, result, op_len, (
+		ftnlen)55, (ftnlen)13);
+    } else if (qtnum == 8) {
+
+/*                ---Not yet implemented--- */
+
     } else if (qtnum == 6) {
-/*                ---Not yet implemented--- */
-    } else if (qtnum == 7) {
-/*                ---Not yet implemented--- */
+
+/*        Illumination angle condition initializer. */
+
+	zzgfilin_(method, angtyp, target, illum, ref, abcorr, obsrvr, spoint, 
+		(ftnlen)80, (ftnlen)80, (ftnlen)80, (ftnlen)80, (ftnlen)80, (
+		ftnlen)80, (ftnlen)80);
+	zzgfrelx_((U_fp)udstep, (U_fp)udrefn, (U_fp)zzgfildc_, (U_fp)
+		zzgfudlt_, (U_fp)zzgfilgq_, op, refval, tol, adjust, cnfine, 
+		mw, nw, work, rpt, (U_fp)udrepi, (U_fp)udrepu, (U_fp)udrepf, 
+		rptpre, srcsuf + 130, bail, (L_fp)udbail, result, op_len, (
+		ftnlen)55, (ftnlen)13);
     } else {
 
 /*        QTNUM is not a recognized event code. This block should */

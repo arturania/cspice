@@ -2,7 +2,7 @@
 CKBRIEF User's Guide
 ===========================================================================
  
-   Last revised on 2008 FEB 12 by B. V. Semenov.
+   Last revised on 2012 MAR 26 by B. V. Semenov.
  
  
 Abstract
@@ -45,6 +45,7 @@ Usage
       -n           display frames associated with structure IDs
  
       -t           display summary in a tabular format
+      -a           treat all files as a single file
       -g           display summary grouped by coverage
  
       -utc         display times in UTC calendar date format
@@ -109,6 +110,9 @@ Helpful Hints for Those in a Hurry
  
        --   use ``-t'' in combination with any other options for a more
             legible summary format
+ 
+       --   use ``-a'' treat all CK files listed on the command line and/or
+            provided in meta-kernels and/or a list file as a single CK file
  
        --   use ``-f'' with a list file to summarize large sets of kernels,
             the names of which cannot be listed on the command line all at
@@ -535,8 +539,12 @@ Displaying Times as Encoded SCLKs (``-dpsclk'')
       Object:  -53000
         Interval Begin TICKS     Interval End TICKS       AV
         ------------------------ ------------------------ ---
-          218131739502.            220122396913.          Y
+          218131739502.000000      220122396913.000000    Y
  
+ 
+   Note that only 14 significant digits of encoded SCLKs are printed in
+   this format. The digits past the 14th are printed as zeros even if they
+   are non-zero.
  
  
 Miscellaneous Options
@@ -544,6 +552,71 @@ Miscellaneous Options
  
    CKBRIEF also provides a number of miscellaneous options; they are
    described in this section.
+ 
+ 
+Summarizing Multiple CKs as a Single CK (``-a'')
+ 
+   The ``-a'' option tells CKBRIEF to display a summary for multiple CKs
+   listed on the command line and/or provided in meta-kernels and/or a list
+   file as if all data from these CKs were provided in a single CK file.
+   For example, with ``-a'' the program displays the following summary for
+   all M01 spacecraft mapping phase CKs provided in the current directory:
+ 
+      > ckbrief -a m01_sc_map*.bc naif0010.tls ORB1_SCLKSCET.00188.tsc
+ 
+      CKBRIEF -- Version 6.0.0, March 26, 2012 -- Toolkit Version N0065
+ 
+ 
+      Summary for: all CK files
+ 
+      Object:  -53000
+        Interval Begin ET        Interval End ET          AV
+        ------------------------ ------------------------ ---
+        2002-FEB-19 03:40:51.593 2002-APR-01 00:01:04.184 Y
+        2002-APR-01 01:54:10.680 2002-JUL-01 00:01:00.313 Y
+        2002-JUL-01 00:01:06.313 2002-OCT-01 00:01:03.869 Y
+        2002-OCT-01 00:01:09.572 2003-JAN-01 00:01:02.295 Y
+        2003-JAN-01 00:01:08.295 2003-APR-01 00:01:03.872 Y
+        2003-APR-01 00:01:09.872 2003-JUL-01 00:01:00.232 Y
+        2003-JUL-01 00:01:06.232 2003-OCT-01 00:00:58.672 Y
+        2003-OCT-01 00:01:04.672 2003-DEC-31 23:58:15.246 Y
+        2004-JAN-01 00:06:03.245 2004-APR-01 00:00:59.732 Y
+        2004-APR-01 00:01:05.626 2004-JUL-01 00:01:04.111 Y
+        2004-JUL-01 00:01:07.912 2004-OCT-01 00:01:03.147 Y
+ 
+   The ``-a'' option is especially useful to get a concise summary for
+   large numbers of CKs listed in a meta-kernel, as seen in this example
+   summarizing an archived MRO meta-kernel listing close to 300 CK files:
+ 
+      > ckbrief -a -n -t mro_2009_v06.tm
+ 
+      CKBRIEF -- Version 6.0.0, March 26, 2012 -- Toolkit Version N0064
+ 
+ 
+      Summary for: all CK files
+ 
+      Frames                     Interval Begin ET        Interval End ET
+      -------------------------- ------------------------ ----------------
+      MRO_HGA_INNER_GIMBAL       2008-DEC-29 23:31:01.692 2010-JAN-10 00:0
+      MRO_HGA_OUTER_GIMBAL          -- same --               -- same --
+      MRO_SAMX_INNER_GIMBAL         -- same --               -- same --
+      MRO_SAMX_OUTER_GIMBAL         -- same --               -- same --
+      MRO_SAPX_INNER_GIMBAL         -- same --               -- same --
+      MRO_SAPX_OUTER_GIMBAL         -- same --               -- same --
+      MRO_SPACECRAFT             2008-DEC-29 23:31:01.692 2009-OCT-27 00:0
+      MRO_SPACECRAFT             2009-OCT-27 00:02:06.264 2010-JAN-10 00:0
+      MRO_CRISM_ART              2009-JAN-01 05:56:09.145 2009-JAN-01 12:0
+      MRO_CRISM_ART              2009-JAN-02 01:16:14.080 2009-JAN-02 23:5
+      ...
+      MRO_CRISM_ART              2009-DEC-31 00:16:59.366 2009-DEC-31 22:4
+      MRO_MCS_AZ_GIMBAL          2009-JAN-01 00:01:06.184 2009-FEB-24 00:0
+      MRO_MCS_AZ_GIMBAL          2009-FEB-28 00:01:06.184 2009-MAR-01 00:0
+      ...
+      MRO_MCS_AZ_GIMBAL          2009-DEC-14 00:01:06.183 2010-JAN-01 00:0
+      MRO_MCS_EL_GIMBAL          2009-JAN-01 00:01:06.184 2009-FEB-24 00:0
+      MRO_MCS_EL_GIMBAL          2009-FEB-28 00:01:06.184 2009-MAR-01 00:0
+      ...
+      MRO_MCS_EL_GIMBAL          2009-DEC-14 00:01:06.183 2010-JAN-01 00:0
  
  
 Filtering for a Specified Structure ID (``[ID]'')

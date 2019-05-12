@@ -34,12 +34,17 @@ static integer c__6 = 6;
     static integer type__;
     static logical xmit;
     extern /* Subroutine */ int mxvg_(doublereal *, doublereal *, integer *, 
-	    integer *, doublereal *);
+	    integer *, doublereal *), zznamfrm_(integer *, char *, integer *, 
+	    char *, integer *, ftnlen, ftnlen), zzvalcor_(char *, logical *, 
+	    ftnlen), zzctruin_(integer *);
     static integer i__;
-    extern /* Subroutine */ int zzprscor_(char *, logical *, ftnlen), chkin_(
-	    char *, ftnlen), errch_(char *, char *, ftnlen, ftnlen);
+    extern /* Subroutine */ int chkin_(char *, ftnlen), errch_(char *, char *,
+	     ftnlen, ftnlen);
     static logical found;
-    static doublereal state[6], stobs[6], xform[36]	/* was [6][6] */;
+    static doublereal state[6];
+    static char svref[32];
+    static doublereal stobs[6], xform[36]	/* was [6][6] */;
+    static integer svctr1[2];
     extern logical failed_(void);
     extern /* Subroutine */ int frmchg_(integer *, integer *, doublereal *, 
 	    doublereal *);
@@ -54,13 +59,14 @@ static integer c__6 = 6;
     extern /* Subroutine */ int spkgeo_(integer *, doublereal *, char *, 
 	    integer *, doublereal *, doublereal *, ftnlen);
     static doublereal dltctr;
-    static integer reqfrm, typeid, ltsign;
+    static integer reqfrm, ltsign, typeid;
     extern /* Subroutine */ int chkout_(char *, ftnlen), setmsg_(char *, 
-	    ftnlen), sigerr_(char *, ftnlen), spkltc_(integer *, doublereal *,
-	     char *, char *, doublereal *, doublereal *, doublereal *, 
-	    doublereal *, ftnlen, ftnlen), spkssb_(integer *, doublereal *, 
-	    char *, doublereal *, ftnlen), vsclip_(doublereal *, doublereal *)
-	    ;
+	    ftnlen), sigerr_(char *, ftnlen), spkssb_(integer *, doublereal *,
+	     char *, doublereal *, ftnlen);
+    static integer svreqf;
+    extern /* Subroutine */ int spkltc_(integer *, doublereal *, char *, char 
+	    *, doublereal *, doublereal *, doublereal *, doublereal *, ftnlen,
+	     ftnlen), vsclip_(doublereal *, doublereal *);
     extern logical return_(void);
     static doublereal dlt;
 
@@ -161,6 +167,11 @@ static integer c__6 = 6;
 /*                 definition depends on parameters supplied via a */
 /*                 frame kernel. */
 
+/*     ALL         indicates any of the above classes. This parameter */
+/*                 is used in APIs that fetch information about frames */
+/*                 of a specified class. */
+
+
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
@@ -171,6 +182,10 @@ static integer c__6 = 6;
 /*     None. */
 
 /* $ Version */
+
+/* -    SPICELIB Version 4.0.0, 08-MAY-2012 (NJB) */
+
+/*       The parameter ALL was added to support frame fetch APIs. */
 
 /* -    SPICELIB Version 3.0.0, 28-MAY-2004 (NJB) */
 
@@ -184,6 +199,9 @@ static integer c__6 = 6;
 /* -    SPICELIB Version 1.0.0, 10-DEC-1995 (WLT) */
 
 /* -& */
+
+/*     End of INCLUDE file frmtyp.inc */
+
 /* $ Abstract */
 
 /*     Include file zzabcorr.inc */
@@ -295,6 +313,59 @@ static integer c__6 = 6;
 
 /*     End of include file zzabcorr.inc */
 
+/* $ Abstract */
+
+/*     This include file defines the dimension of the counter */
+/*     array used by various SPICE subsystems to uniquely identify */
+/*     changes in their states. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 29-JUL-2013 (BVS) */
+
+/* -& */
+
+/*     End of include file. */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
@@ -377,20 +448,20 @@ static integer c__6 = 6;
 /*                               equation, the 'CN' correction iterates */
 /*                               until the solution converges (three */
 /*                               iterations on all supported platforms). */
-
-/*                               The 'CN' correction typically does not */
-/*                               substantially improve accuracy because */
-/*                               the errors made by ignoring */
-/*                               relativistic effects may be larger than */
-/*                               the improvement afforded by obtaining */
-/*                               convergence of the light time solution. */
-/*                               The 'CN' correction computation also */
-/*                               requires a significantly greater number */
-/*                               of CPU cycles than does the */
-/*                               one-iteration light time correction. */
+/*                               Whether the 'CN+S' solution is */
+/*                               substantially more accurate than the */
+/*                               'LT' solution depends on the geometry */
+/*                               of the participating objects and on the */
+/*                               accuracy of the input data. In all */
+/*                               cases this routine will execute more */
+/*                               slowly when a converged solution is */
+/*                               computed. See the Particulars section */
+/*                               below for a discussion of precision of */
+/*                               light time corrections. */
 
 /*                    'CN+S'     Converged Newtonian light time */
-/*                               and stellar aberration corrections. */
+/*                               correction and stellar aberration */
+/*                               correction. */
 
 
 /*                 The following values of ABCORR apply to the */
@@ -423,8 +494,8 @@ static integer c__6 = 6;
 /*                               Newtonian light time correction. */
 
 /*                    'XCN+S'    "Transmission" case:  converged */
-/*                               Newtonian light time and stellar */
-/*                               aberration corrections. */
+/*                               Newtonian light time correction and */
+/*                               stellar aberration correction. */
 
 
 /*                 Neither special nor general relativistic effects are */
@@ -493,6 +564,9 @@ static integer c__6 = 6;
 /*     3) If an error occurs while reading an SPK or other kernel file, */
 /*        the error  will be diagnosed by a routine in the call tree */
 /*        of this routine. */
+
+/*     4) If any of the required attributes of the reference frame REF */
+/*        cannot be determined, 'SPICE(UNKNOWNFRAME2)' is signaled. */
 
 /* $ Files */
 
@@ -603,15 +677,16 @@ static integer c__6 = 6;
 /*     Below, we indicate the aberration corrections to use for some */
 /*     common applications: */
 
+
 /*        1) Find the apparent direction of a target for a remote-sensing */
 /*           observation. */
 
-/*              Use 'LT+S':  apply both light time and stellar */
+/*              Use 'LT+S' or 'CN+S: apply both light time and stellar */
 /*              aberration corrections. */
 
-/*           Note that using light time corrections alone ('LT') is */
-/*           generally not a good way to obtain an approximation to an */
-/*           apparent target vector:  since light time and stellar */
+/*           Note that using light time corrections alone ('LT' or 'CN') */
+/*           is generally not a good way to obtain an approximation to */
+/*           an apparent target vector: since light time and stellar */
 /*           aberration corrections often partially cancel each other, */
 /*           it may be more accurate to use no correction at all than to */
 /*           use light time alone. */
@@ -621,18 +696,18 @@ static integer c__6 = 6;
 /*           to a target. This computation is often applicable for */
 /*           implementing communications sessions. */
 
-/*              Use 'XLT+S':  apply both light time and stellar */
+/*              Use 'XLT+S' or 'XCN+S: apply both light time and stellar */
 /*              aberration corrections for transmission. */
 
 
 /*        3) Compute the apparent position of a target body relative */
 /*           to a star or other distant object. */
 
-/*              Use 'LT' or 'LT+S' as needed to match the correction */
-/*              applied to the position of the distant object. For */
-/*              example, if a star position is obtained from a catalog, */
-/*              the position vector may not be corrected for stellar */
-/*              aberration. In this case, to find the angular */
+/*              Use 'LT', 'CN', 'LT+S', or 'CN+S' as needed to match the */
+/*              correction applied to the position of the distant */
+/*              object. For example, if a star position is obtained from */
+/*              a catalog, the position vector may not be corrected for */
+/*              stellar aberration. In this case, to find the angular */
 /*              separation of the star and the limb of a planet, the */
 /*              vector from the observer to the planet should be */
 /*              corrected for light time but not stellar aberration. */
@@ -642,7 +717,6 @@ static integer c__6 = 6;
 /*           data in an SPK file. */
 
 /*              Use 'NONE'. */
-
 
 
 /*        5) Use a geometric state vector as a low-accuracy estimate */
@@ -847,49 +921,65 @@ static integer c__6 = 6;
 /*        the speed of light. */
 
 /*        For nearly all objects in the solar system V is less than 60 */
-/*        km/sec. The value of C is 300000 km/sec. Thus the one */
-/*        iteration solution for LT has a potential relative error of */
-/*        not more than 4*10**-8. This is a potential light time error */
-/*        of approximately 2*10**-5 seconds per astronomical unit of */
-/*        distance separating the observer and target. Given the bound */
-/*        on V cited above: */
+/*        km/sec. The value of C is ~300000 km/sec. Thus the */
+/*        one-iteration solution for LT has a potential relative error */
+/*        of not more than 4e-8. This is a potential light time error of */
+/*        approximately 2e-5 seconds per astronomical unit of distance */
+/*        separating the observer and target. Given the bound on V cited */
+/*        above: */
 
-/*           As long as the observer and target are */
-/*           separated by less than 50 astronomical units, */
-/*           the error in the light time returned using */
-/*           the one-iteration light time corrections */
-/*           is less than 1 millisecond. */
+/*           As long as the observer and target are separated by less */
+/*           than 50 astronomical units, the error in the light time */
+/*           returned using the one-iteration light time corrections is */
+/*           less than 1 millisecond. */
+
+/*           The magnitude of the corresponding position error, given */
+/*           the above assumptions, may be as large as (V/C)**2 * the */
+/*           distance between the observer and the uncorrected target */
+/*           position: 300 km or equivalently 6 km/AU. */
+
+/*        In practice, the difference between positions obtained using */
+/*        one-iteration and converged light time is usually much smaller */
+/*        than the value computed above and can be insignificant. For */
+/*        example, for the spacecraft Mars Reconnaissance Orbiter and */
+/*        Mars Express, the position error for the one-iteration light */
+/*        time correction, applied to the spacecraft-to-Mars center */
+/*        vector, is at the 1 cm level. */
+
+/*        Comparison of results obtained using the one-iteration and */
+/*        converged light time solutions is recommended when adequacy of */
+/*        the one-iteration solution is in doubt. */
 
 
 /*        Converged corrections */
 /*        --------------------- */
 
 /*        When the requested aberration correction is 'CN', 'CN+S', */
-/*        'XCN', or 'XCN+S', three iterations are performed in the */
-/*        computation of LT. The relative error present in this */
-/*        solution is at most */
+/*        'XCN', or 'XCN+S', as many iterations as are required for */
+/*        convergence are performed in the computation of LT. Usually */
+/*        the solution is found after three iterations. The relative */
+/*        error present in this case is at most */
 
 /*            (V/C)**4 */
 /*           ---------- */
 /*            1 - (V/C) */
 
-/*        which is well approximated by (V/C)**4. Mathematically the */
-/*        precision of this computation is better than a nanosecond for */
-/*        any pair of objects in the solar system. */
+/*        which is well approximated by (V/C)**4. */
 
-/*        However, to model the actual light time between target and */
-/*        observer one must take into account effects due to general */
-/*        relativity. These may be as high as a few hundredths of a */
-/*        millisecond for some objects. */
+/*           The precision of this computation (ignoring round-off */
+/*           error) is better than 4e-11 seconds for any pair of objects */
+/*           less than 50 AU apart, and having speed relative to the */
+/*           solar system barycenter less than 60 km/s. */
 
-/*        When one considers the extra time required to compute the */
-/*        converged Newtonian light time (the state of the target */
-/*        relative to the solar system barycenter is looked up three */
-/*        times instead of once) together with the real gain in */
-/*        accuracy, it seems unlikely that you will want to request */
-/*        either the "CN" or "CN+S" light time corrections. However, */
-/*        these corrections can be useful for testing situations where */
-/*        high precision (as opposed to accuracy) is required. */
+/*           The magnitude of the corresponding position error, given */
+/*           the above assumptions, may be as large as (V/C)**4 * the */
+/*           distance between the observer and the uncorrected target */
+/*           position: 1.2 cm at 50 AU or equivalently 0.24 mm/AU. */
+
+/*        However, to very accurately model the light time between */
+/*        target and observer one must take into account effects due to */
+/*        general relativity. These may be as high as a few hundredths */
+/*        of a millisecond for some objects. */
 
 
 /*     Relativistic Corrections */
@@ -1007,10 +1097,32 @@ static integer c__6 = 6;
 /*     N.J. Bachman    (JPL) */
 /*     J.E. McLean     (JPL) */
 /*     H.A. Neilan     (JPL) */
+/*     B.V. Semenov    (JPL) */
 /*     M.J. Spencer    (JPL) */
 /*     I.M. Underwood  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 5.1.0, 03-JUL-2014 (NJB) (BVS) */
+
+/*        Discussion of light time corrections was updated. Assertions */
+/*        that converged light time corrections are unlikely to be */
+/*        useful were removed. */
+
+/* -    Last update was 23-SEP-2013 (NJB) (BVS) */
+
+/*        Bug fix: replaced calls to ZZPRSCOR with calls to */
+/*        ZZVALCOR. The latter routine rejects all aberration */
+/*        corrections not supported by the SPK subsystem. */
+
+/*        Bug fix: added a check and an exception for the FOUND flag */
+/*        returned by FRINFO. */
+
+/*        Updated to save the input frame name and POOL state counter */
+/*        and to do frame name-ID conversion only if the counter has */
+/*        changed. */
+
+/*        Updated various in-line comments. */
 
 /* -    SPICELIB Version 5.0.1, 18-MAY-2010 (BVS) */
 
@@ -1225,7 +1337,13 @@ static integer c__6 = 6;
 /*     Local parameters */
 
 
+/*     Saved frame name length. */
+
+
 /*     Local variables */
+
+
+/*     Saved frame name/ID item declarations. */
 
 
 /*     Saved variables */
@@ -1238,15 +1356,23 @@ static integer c__6 = 6;
 
     if (return_()) {
 	return 0;
-    } else {
-	chkin_("SPKEZ", (ftnlen)5);
+    }
+    chkin_("SPKEZ", (ftnlen)5);
+
+/*     Counter initialization is done separately. */
+
+    if (first) {
+
+/*        Initialize counter. */
+
+	zzctruin_(svctr1);
     }
     if (first || s_cmp(abcorr, prvcor, abcorr_len, (ftnlen)5) != 0) {
 
 /*        The aberration correction flag differs from the value it */
 /*        had on the previous call, if any. Analyze the new flag. */
 
-	zzprscor_(abcorr, attblk, abcorr_len);
+	zzvalcor_(abcorr, attblk, abcorr_len);
 	if (failed_()) {
 	    chkout_("SPKEZ", (ftnlen)5);
 	    return 0;
@@ -1262,13 +1388,10 @@ static integer c__6 = 6;
 /*           XMIT is .TRUE. when the correction is for transmitted */
 /*           radiation. */
 
-/*           USELT is .TRUE. when any type of light time correction */
-/*           (normal or converged Newtonian) is specified. */
-
-/*           USECN indicates converged Newtonian light time correction. */
+/*           USEGEO indicates geometric state computation. */
 
 /*        The above definitions are consistent with those used by */
-/*        ZZPRSCOR. */
+/*        ZZVALCOR. */
 
 	xmit = attblk[4];
 	usegeo = attblk[0];
@@ -1296,7 +1419,7 @@ static integer c__6 = 6;
 /*        Get the auxiliary information about the requested output */
 /*        frame. */
 
-	namfrm_(ref, &reqfrm, ref_len);
+	zznamfrm_(svctr1, svref, &svreqf, ref, &reqfrm, (ftnlen)32, ref_len);
 	if (reqfrm == 0) {
 	    setmsg_("The requested output frame '#' is not recognized by the"
 		    " reference frame subsystem. Please check that the approp"
@@ -1308,6 +1431,20 @@ static integer c__6 = 6;
 	    return 0;
 	}
 	frinfo_(&reqfrm, &center, &type__, &typeid, &found);
+	if (failed_()) {
+	    chkout_("SPKEZ", (ftnlen)5);
+	    return 0;
+	}
+	if (! found) {
+	    setmsg_("The requested output frame '#' is not recognized by the"
+		    " reference frame subsystem. Please check that the approp"
+		    "riate kernels have been loaded and that you have correct"
+		    "ly entered the name of the output frame. ", (ftnlen)208);
+	    errch_("#", ref, (ftnlen)1, ref_len);
+	    sigerr_("SPICE(UNKNOWNFRAME2)", (ftnlen)20);
+	    chkout_("SPKEZ", (ftnlen)5);
+	    return 0;
+	}
 
 /*        If we are dealing with an inertial frame, we can simply */
 /*        call SPKACS and return. */
@@ -1403,7 +1540,7 @@ static integer c__6 = 6;
 	for (i__ = 1; i__ <= 3; ++i__) {
 	    d__1 = ltsign * dltctr + 1.;
 	    vsclip_(&d__1, &xform[(i__1 = i__ * 6 - 3) < 36 && 0 <= i__1 ? 
-		    i__1 : s_rnge("xform", i__1, "spkez_", (ftnlen)1240)]);
+		    i__1 : s_rnge("xform", i__1, "spkez_", (ftnlen)1329)]);
 	}
 
 /*        Now apply the frame transformation XFORM to produce the */

@@ -55,7 +55,7 @@
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 33%; text-align: center;">
             <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
@@ -66,7 +66,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
@@ -76,7 +76,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
@@ -182,42 +182,104 @@
 <h4><a name="Examples">Examples</a></h4>
 <PRE>
  
- 
-   The following code fragment demonstrates how to determine the 
-   properties of a stored kernel variable. 
- 
-      #include &lt;stdio.h&gt;
-      #include &quot;SpiceUsr.h&quot;
-            .
-            .
-            .
-      <b>dtpool_c</b> ( varnam, &amp;found, &amp;n, &amp;type );
- 
-      if ( found ) 
-      {
-         printf ( &quot;\n&quot;
-                  &quot;Properties of variable %s:\n&quot;
-                  &quot;\n&quot;
-                  &quot;   Size: %d\n&quot;,
-                  varnam,
-                  n                           );
-         
-         if ( type == 'C' )
-         {
-            printf ( &quot;   Type:  Character\n&quot; );
-         }
-         else
-         {
-            printf ( &quot;   Type:  Numeric\n&quot; );
-         }
-      }
+   1) The following program demonstrates how to determine the 
+      properties of a stored kernel variable. The program reads
+      the name of a text kernel from the command line and loads
+      the kernel. The program then prompts for the name of a 
+      kernel variable. If the variable is present in the kernel
+      pool, the dimension and type of the variable are displayed.
+
+      The output shown below was obtained using the Cassini 
+      frame kernel
+
+         cas_v40.tf
+
+      which is available in the PDS Cassini archive.
+
+          
+   Example code begins here. 
       
-      else
-      { 
-         printf ( &quot;%s is not present in the kernel pool.\n&quot;, varnam );
-      } 
- 
- </PRE>
+
+         #include &lt;stdio.h&gt;
+         #include &quot;SpiceUsr.h&quot;
+
+         int main( int argc,  char **argv )
+         {
+            /.
+            Local constants
+            ./
+            #define KVNMLN          33
+
+            /.
+            Local variables
+            ./
+            SpiceBoolean            found;
+
+            SpiceChar             * fname;
+            SpiceChar               type   [ 1 ];
+            SpiceChar               varnam [ KVNMLN ];
+            SpiceInt                n;
+
+            /.
+            Load the kernel specified on the command line.
+            ./
+            fname = argv[1];
+
+            <a href="furnsh_c.html">furnsh_c</a> ( fname );
+
+            while ( SPICETRUE )
+            {
+               <a href="prompt_c.html">prompt_c</a> ( &quot;Enter name of kernel variable &gt; &quot;,
+                          KVNMLN, varnam                      );
+
+               <b>dtpool_c</b> ( varnam, &amp;found, &amp;n, type );
+
+               if ( found )
+               {
+                  printf ( &quot;\n&quot;
+                           &quot;Properties of variable %s:\n&quot;
+                           &quot;\n&quot;
+                           &quot;   Size:   %d\n&quot;,
+                           varnam,
+                           n                           );
+
+                  if ( type[0] == 'C' )
+                  {
+                     printf ( &quot;   Type:   Character\n&quot; );
+                  }
+                  else
+                  {
+                     printf ( &quot;   Type:   Numeric\n&quot; );
+                  }
+               }
+
+               else
+               {
+                  printf ( &quot;%s is not present in the kernel pool.\n&quot;, varnam );
+               }
+               printf ( &quot;\n&quot; );
+            }
+            return(0);
+         }
+
+
+   When this program was executed on a PC/Linux/gcc platform, the 
+   output was:
+
+        Enter name of kernel variable &gt; FRAME_-82104_NAME
+
+        Properties of variable FRAME_-82104_NAME:
+
+           Size:   1
+           Type:   Character
+
+        Enter name of kernel variable &gt; TKFRAME_-82104_ANGLES
+
+        Properties of variable TKFRAME_-82104_ANGLES:
+
+           Size:   3
+           Type:   Numeric
+</PRE>
 <h4><a name="Restrictions">Restrictions</a></h4>
 <PRE>
  
@@ -231,17 +293,23 @@
 <h4><a name="Author_and_Institution">Author_and_Institution</a></h4>
 <PRE>
  
-   W.L. Taber  (JPL) 
+   N.J. Bachman (JPL)
+   W.L. Taber   (JPL) 
  </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
  
+   -CSPICE Version 1.2.0, 04-JUN-2014 (NJB)  
+
+      Header example code fragment was replaced with
+      a complete program.
+
    -CSPICE Version 1.1.0, 17-OCT-1999 (NJB)  
    
       Local type logical variable now used for found flag used in
       interface of dtpool_.
             
-   -CSPICE Version 1.0.0, 10-MAR-1999 (NJB)
+   -CSPICE Version 1.0.0, 10-MAR-1999 (NJB) (WLT)
 </PRE>
 <h4><a name="Index_Entries">Index_Entries</a></h4>
 <PRE>
@@ -255,7 +323,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Jun  9 13:05:21 2010</pre>
+   <pre>Wed Apr  5 17:54:32 2017</pre>
 
 </body>
 </html>

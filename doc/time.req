@@ -2,7 +2,7 @@
 Time Routines in CSPICE
 ===========================================================================
  
-   Last revised on 2009 APR 09 by B. V. Semenov.
+   Last revised on 2015 SEP 09 by N. J. Bachman
  
  
 Abstract
@@ -866,7 +866,7 @@ Time Zones
    simply Greenwich Mean Time (UTC+00:00). To change the default behavior
    of str2et_c so that unlabeled strings are assumed to be referenced to a
    particular time zone (for example Pacific Standard Time) issue the
-   subroutine call below.
+   subroutine call below:
  
        timdef_c ( "SET", "ZONE", lenout, "PST" );
  
@@ -895,18 +895,18 @@ Calendars
    backward in time indefinitely. The default behavior of str2et_c is to
    use the Gregorian calendar for all epochs. However, using timdef_c you
    can set the default calendar to one of three: GREGORIAN, JULIAN, or
-   MIXED.
+   MIXED:
  
        timdef_c ( "SET", "CALENDAR", lenout, "GREGORIAN" );
        timdef_c ( "SET", "CALENDAR", lenout, "JULIAN"    );
        timdef_c ( "SET", "CALENDAR", lenout, "MIXED"     );
  
    The ``MIXED'' calendar assumes that calendar strings for epochs prior to
-   October 6, 1582 belong to the Julian Calendar; strings for later epochs
+   October 5, 1582 belong to the Julian Calendar; strings for later epochs
    are assumed to belong to the Gregorian Calendar. The specification of a
    calendar, does not affect a previous setting of a time system or time
    zone. You can change the calendar used by str2et_c only through the
-   routine timdef_c, there are no labels recognized by str2et_c for the
+   routine timdef_c; there are no labels recognized by str2et_c for the
    various calendars.
  
  
@@ -1329,7 +1329,7 @@ Tying UTC to the Earth's Rotation
  
 Leapseconds
  
-   When Greenwich UT1 midnight lags behind UTC midnight by more than 0.7
+   When Greenwich UT1 midnight lags behind UTC midnight by more than 0.9
    seconds the IERS will announce that a leap second will be added to the
    collection of UTC names. This leap second has traditionally been added
    after the last ``normal'' UTC name of December 31 or June 30. Thus when
@@ -1349,7 +1349,7 @@ Leapseconds
       ... DECEMBER 31 23:59:59
       ... JANUARY   1 00:00:00
  
-   Should Greenwich UT1 midnight run ahead of UTC midnight by more than 0.7
+   Should Greenwich UT1 midnight run ahead of UTC midnight by more than 0.9
    seconds the IERS will announce a negative leap second. In this case one
    of the usual UTC hours-minutes-seconds triples will be missing from the
    list of UTC names. In this case the progression will be:
@@ -2338,6 +2338,20 @@ Appendix C: Document Revision History
 --------------------------------------------------------
  
  
+September 9, 2015
+ 
+   For Mice, added mention of Mice routines cspice_timdef_set and
+   cspice_timdef_get.
+ 
+   Corrected typo in the start date for the applicable period of the
+   Gregorian calendar when the MIXED calendar option is selected. The date
+   was changed to October 5, 1582.
+ 
+   Corrected formatting of the Utility Routines section: the ASCII versions
+   of this document for Mice and Icy displayed function names truncated to
+   8 characters (the problem did not occur in the HTML versions).
+ 
+ 
 April 9, 2009
  
    Adapted for Icy and Mice.
@@ -2410,6 +2424,18 @@ CSPICE naming conventions
        str2et_c      tsetyr_c      ttrans_      jul2gr_
        timout_c      timdef_c      tpartv_      gr2jul_
        tpictr_c      tchckd_       tcheck_      texpyr_
+ 
+ 
+2012 JUN 14, EDW (JPL)
+ 
+   Edit to leapseconds description of the UT1 to UTC deviation. The correct
+   IERS value is 0.9 seconds, the previous version of the document quoted
+   0.7 seconds.
+ 
+ 
+2009 APR 09, BVS (JPL)
+ 
+   Previous edits.
  
  
 30 June 1994

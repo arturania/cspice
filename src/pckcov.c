@@ -10,7 +10,7 @@
 static integer c__2 = 2;
 static integer c__6 = 6;
 
-/* $Procedure      PCKCOV ( PCK coverage ) */
+/* $Procedure PCKCOV ( PCK, coverage ) */
 /* Subroutine */ int pckcov_(char *pck, integer *idcode, doublereal *cover, 
 	ftnlen pck_len)
 {
@@ -465,12 +465,21 @@ static integer c__6 = 6;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.1.1, 03-JAN-2014 (NJB0 (EDW) */
+
+/*        Updated index entries. */
+
+/*     Last update was 03-JAN-2014 (EDW) */
+
+/*        Minor edits to Procedure; clean trailing whitespace. */
+
 /* -    SPICELIB Version 1.0.0, 30-NOV-2007 (NJB) */
 
 /* -& */
 /* $ Index_Entries */
 
 /*     get coverage window for binary pck reference frame */
+/*     get coverage start and stop time for binary pck frame */
 
 /* -& */
 

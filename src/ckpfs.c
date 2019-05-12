@@ -21,18 +21,22 @@ static integer c__6 = 6;
 	    doublereal *, doublereal *, doublereal *, doublereal *), cke04_(
 	    logical *, doublereal *, doublereal *, doublereal *, doublereal *)
 	    , cke05_(logical *, doublereal *, doublereal *, doublereal *, 
-	    doublereal *), ckr01_(integer *, doublereal *, doublereal *, 
-	    doublereal *, logical *, doublereal *, logical *), ckr02_(integer 
-	    *, doublereal *, doublereal *, doublereal *, doublereal *, 
-	    logical *), ckr03_(integer *, doublereal *, doublereal *, 
-	    doublereal *, logical *, doublereal *, logical *), ckr04_(integer 
-	    *, doublereal *, doublereal *, doublereal *, logical *, 
-	    doublereal *, logical *), ckr05_(integer *, doublereal *, 
-	    doublereal *, doublereal *, logical *, doublereal *, logical *);
+	    doublereal *), cke06_(logical *, doublereal *, doublereal *, 
+	    doublereal *, doublereal *), ckr01_(integer *, doublereal *, 
+	    doublereal *, doublereal *, logical *, doublereal *, logical *), 
+	    ckr02_(integer *, doublereal *, doublereal *, doublereal *, 
+	    doublereal *, logical *), ckr03_(integer *, doublereal *, 
+	    doublereal *, doublereal *, logical *, doublereal *, logical *), 
+	    ckr04_(integer *, doublereal *, doublereal *, doublereal *, 
+	    logical *, doublereal *, logical *), ckr05_(integer *, doublereal 
+	    *, doublereal *, doublereal *, logical *, doublereal *, logical *)
+	    , ckr06_(integer *, doublereal *, doublereal *, doublereal *, 
+	    logical *, doublereal *, logical *);
     integer type__;
     extern /* Subroutine */ int chkin_(char *, ftnlen), dafus_(doublereal *, 
 	    integer *, integer *, doublereal *, integer *);
-    doublereal record[228];
+    extern logical failed_(void);
+    doublereal record[340];
     extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
 	    ftnlen), setmsg_(char *, ftnlen), errint_(char *, integer *, 
 	    ftnlen);
@@ -137,6 +141,12 @@ static integer c__6 = 6;
 
 /* $ Version */
 
+/* -    SPICELIB Version 3.0.0, 27-JAN-2014 (NJB) */
+
+/*        Updated to support CK type 6. Maximum degree for */
+/*        type 5 was updated to be consistent with the */
+/*        maximum degree for type 6. */
+
 /* -    SPICELIB Version 2.0.0, 19-AUG-2002 (NJB) */
 
 /*        Updated to support CK type 5. */
@@ -223,10 +233,45 @@ static integer c__6 = 6;
 /*                 CK5RSZ = ( CK5MXD + 1 ) * CK5MXP + CK5MET */
 
 
+/*     CK Type 6 parameters: */
+
+
+/*     CK6DTP   CK data type 6 ID; */
+
+/*     CK6MXD   maximum polynomial degree allowed in type 6 */
+/*              records. */
+
+/*     CK6MET   number of additional DPs, which are not polynomial */
+/*              coefficients, located at the beginning of a type 6 */
+/*              CK record that passed between routines CKR06 and CKE06; */
+
+/*     CK6MXP   maximum packet size for any subtype.  Subtype 2 */
+/*              has the greatest packet size, since these packets */
+/*              contain a quaternion, its derivative, an angular */
+/*              velocity vector, and its derivative.  See ck06.inc */
+/*              for a description of the subtypes. */
+
+/*     CK6RSZ   maximum size of type 6 CK record passed between CKR06 */
+/*              and CKE06; CK6RSZ is computed as follows: */
+
+/*                 CK6RSZ = CK6MET + ( CK6MXD + 1 ) * ( CK6PS3 + 1 ) */
+
+/*              where CK6PS3 is equal to the parameter CK06PS3 defined */
+/*              in ck06.inc. Note that the subtype having the largest */
+/*              packet size (subtype 2) does not give rise to the */
+/*              largest record size, because that type is Hermite and */
+/*              requires half the window size used by subtype 3 for a */
+/*              given polynomial degree. */
+
+
+/*     The parameter CK6PS3 must be in sync with C06PS3 defined in */
+/*     ck06.inc. */
+
+
 
 /*     Maximum record size that can be handled by CKPFS. This value */
 /*     must be set to the maximum of all CKxRSZ parameters (currently */
-/*     CK4RSZ.) */
+/*     CK5RSZ.) */
 
 /* $ Brief_I/O */
 
@@ -264,12 +309,12 @@ static integer c__6 = 6;
 /* $ Detailed_Output */
 
 /*     CMAT       is a rotation matrix that transforms the components of */
-/*                of a vector expressed in the inertial frame given in */
+/*                of a vector expressed in the reference frame given in */
 /*                the segment to components expressed in the instrument */
 /*                fixed frame at time CLKOUT. */
 
 /*                Thus, if a vector v has components x, y, z in the */
-/*                inertial frame, then v has components x', y', z' in */
+/*                CK base frame, then v has components x', y', z' in */
 /*                the instrument fixed frame at time CLKOUT: */
 
 /*                     [ x' ]     [          ] [ x ] */
@@ -315,7 +360,7 @@ static integer c__6 = 6;
 
 /*     1)  If the data type of the segment is not one of those supported */
 /*         by this routine, the error SPICE(CKUNKNOWNDATATYPE) is */
-/*         signalled. */
+/*         signaled. */
 
 /*     2)  If the specified handle does not belong to any file that is */
 /*         currently known to be open, an error is diagnosed by a */
@@ -328,7 +373,7 @@ static integer c__6 = 6;
 /*     4)  If TOL is negative, FOUND is false. */
 
 /*     5)  If NEEDAV is true, but the segment doesn't contain AV data, */
-/*         an error is signalled by a routine that this routine calls. */
+/*         an error is signaled by a routine that this routine calls. */
 
 /* $ Files */
 
@@ -437,6 +482,14 @@ static integer c__6 = 6;
 
 /* $ Version */
 
+/* -    SPICELIB Version 6.0.0, 24-MAR-2014 (NJB) */
+
+/*        Bug fix: this routine now sets the output FOUND to */
+/*        .FALSE. if a SPICE error is detected. */
+
+/*        The routine was updated to handle data type 6 segments. */
+/*        Several comment typos were corrected. */
+
 /* -    SPICELIB Version 5.0.0, 19-AUG-2002 (NJB) */
 
 /*        The routine was updated to handle data type 5 segments. */
@@ -478,6 +531,10 @@ static integer c__6 = 6;
 
 /* -& */
 /* $ Revisions */
+
+/* -    SPICELIB Version 6.0.0, 01-FEB-2014 (NJB) */
+
+/*        The routine was updated to handle data type 6 segments. */
 
 /* -    SPICELIB Version 5.0.0, 19-AUG-2002 (NJB) */
 
@@ -560,9 +617,7 @@ static integer c__6 = 6;
 	chkin_("CKPFS", (ftnlen)5);
     }
 
-/*     Start off with FOUND set to false.  This guards against FOUND */
-/*     being left unchanged from a previous call if any errors are */
-/*     detected. */
+/*     Start off with FOUND set to false. */
 
     *found = FALSE_;
 
@@ -611,10 +666,23 @@ static integer c__6 = 6;
 	if (*found) {
 	    cke05_(needav, record, cmat, av, clkout);
 	}
+    } else if (type__ == 6) {
+	ckr06_(handle, descr, sclkdp, tol, needav, record, found);
+	if (*found) {
+	    cke06_(needav, record, cmat, av, clkout);
+	}
     } else {
 	setmsg_("The data type # is not currently supported.", (ftnlen)43);
 	errint_("#", &type__, (ftnlen)1);
 	sigerr_("SPICE(CKUNKNOWNDATATYPE)", (ftnlen)24);
+    }
+
+/*     In case an evaluator signaled an error, we check the SPICE */
+/*     error status here. If a SPICE error occurred, indicate no */
+/*     data were found. */
+
+    if (failed_()) {
+	*found = FALSE_;
     }
     chkout_("CKPFS", (ftnlen)5);
     return 0;

@@ -118,6 +118,30 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.5.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-INTEL. */
+
+/* -    SPICELIB Version 2.4.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 2.3.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-GFORTRAN. */
+
+/* -    SPICELIB Version 2.2.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 2.1.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GCC_C. */
+
+/* -    SPICELIB Version 2.0.0, 12-APR-2012 (BVS) */
+
+/*        Increased FTSIZE (from 1000 to 5000). */
+
 /* -    SPICELIB Version 1.20.0, 13-MAY-2010 (BVS) */
 
 /*        Updated for SUN-SOLARIS-INTEL. */

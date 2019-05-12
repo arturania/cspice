@@ -133,6 +133,26 @@ static integer c__1 = 1;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.25.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-INTEL. */
+
+/* -    SPICELIB Version 2.24.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 2.23.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-GFORTRAN. */
+
+/* -    SPICELIB Version 2.22.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 2.21.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GCC_C. */
+
 /* -    SPICELIB Version 2.20.1, 18-MAY-2010 (BVS) */
 
 /*        Removed "C$" marker from text in the header. */
@@ -357,14 +377,6 @@ static integer c__1 = 1;
 /* -& */
 
 /*     SPICELIB functions */
-
-
-/*     Local Parameters */
-
-/*     Set a value for the logical unit which represents the standard */
-/*     output device, commonly a terminal. A value of 6 is widely used, */
-/*     but the Fortran standard does not specify a value, so it may be */
-/*     different for different fortran implementations. */
 
 
 /*     Local variables */

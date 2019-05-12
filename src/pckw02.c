@@ -12,7 +12,7 @@ static integer c__2 = 2;
 static integer c__5 = 5;
 static integer c__1 = 1;
 
-/* $Procedure PCKW02 ( Write PCK segment, type 2 ) */
+/* $Procedure PCKW02 ( PCK, write type 2 segment ) */
 /* Subroutine */ int pckw02_(integer *handle, integer *body, char *frame, 
 	doublereal *first, doublereal *last, char *segid, doublereal *intlen, 
 	integer *n, integer *polydg, doublereal *cdata, doublereal *btime, 
@@ -257,7 +257,12 @@ static integer c__1 = 1;
 
 /* $ Version */
 
-/* -    SPICELIB Version 2.0.0, 1-AUG-1995 (KSZ) */
+/* -    SPICELIB Version 2.0.1, 03-JAN-2014 (EDW) */
+
+/*        Minor edits to Procedure; clean trailing whitespace. */
+/*        Removed unneeded Revisions section. */
+
+/* -    SPICELIB Version 2.0.0, 01-AUG-1995 (KSZ) */
 
 /*        The calling sequence was corrected so that REF is */
 /*        a character string and BTIME contains only the start */
@@ -270,16 +275,6 @@ static integer c__1 = 1;
 /* $ Index_Entries */
 
 /*     write pck type_2 data segment */
-
-/* -& */
-/* $ Revisions */
-
-/* -    SPICELIB Version 2.0.0, 1-AUG-1995 (KSZ) */
-
-/*        The calling sequence was corrected so that REF is */
-/*        a character string and BTIME contains only the start */
-/*        time of the first record.  Comments updated, and new */
-/*        routine CHCKID is called to check segment identifier. */
 
 /* -& */
 

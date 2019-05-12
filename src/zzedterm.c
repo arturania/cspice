@@ -55,10 +55,10 @@ static doublereal c_b35 = 1.;
     extern /* Subroutine */ int nvp2pl_(doublereal *, doublereal *, 
 	    doublereal *);
     extern doublereal halfpi_(void);
-    doublereal minang, minrad, maxang, maxrad;
+    doublereal minrad;
     extern /* Subroutine */ int latrec_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *);
-    doublereal angerr;
+    doublereal maxrad, angerr;
     logical umbral;
     extern doublereal touchd_(doublereal *);
     doublereal offset[3], prvdif;
@@ -275,6 +275,11 @@ static doublereal c_b35 = 1.;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.1.0, 24-APR-2012 (NJB) */
+
+/*        Deleted computations of unused quantities */
+/*        MAXANG and MINANG. */
+
 /* -    SPICELIB Version 1.0.0, 03-FEB-2007 (NJB) */
 
 /* -& */
@@ -384,17 +389,7 @@ static doublereal c_b35 = 1.;
 	return 0;
     }
 
-/*     Find bounds on the angular size of the target as seen */
-/*     from the source. */
-
-/* Computing MIN */
-    d__1 = rmax / d__;
-    minang = asin((min(d__1,1.)));
-/* Computing MIN */
-    d__1 = rmin / d__;
-    maxang = asin((min(d__1,1.)));
-
-/*     Let the inverse of the ellipsoid-light source vector be the */
+/*     Let the negative of the ellipsoid-light source vector be the */
 /*     Z-axis of a frame we'll use to generate the terminator set. */
 
     vminus_(srcpos, z__);
@@ -558,13 +553,13 @@ static doublereal c_b35 = 1.;
 	    vpack_(&d__1, &d__2, &d__3, e);
 	    vscl_(&lambda, e, &trmpts[(i__2 = i__ * 3 - 3) < trmpts_dim2 * 3 
 		    && 0 <= i__2 ? i__2 : s_rnge("trmpts", i__2, "zzedterm_", 
-		    (ftnlen)586)]);
+		    (ftnlen)582)]);
 
 /*           Make a new estimate of the plane rotation required to touch */
 /*           the target. */
 
 	    vsub_(&trmpts[(i__2 = i__ * 3 - 3) < trmpts_dim2 * 3 && 0 <= i__2 
-		    ? i__2 : s_rnge("trmpts", i__2, "zzedterm_", (ftnlen)592)]
+		    ? i__2 : s_rnge("trmpts", i__2, "zzedterm_", (ftnlen)588)]
 		    , vtx, offset);
 
 /*           Let ANGERR be an estimate of the magnitude of angular error */

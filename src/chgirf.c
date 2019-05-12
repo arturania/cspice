@@ -67,7 +67,8 @@ static integer c__21 = 21;
     integer i__1, i__2;
 
     /* Builtin functions */
-    integer s_rnge(char *, integer, char *, integer);
+    integer s_rnge(char *, integer, char *, integer), s_cmp(char *, char *, 
+	    ftnlen, ftnlen);
     /* Subroutine */ int s_copy(char *, char *, ftnlen, ftnlen);
 
     /* Local variables */
@@ -235,10 +236,6 @@ static integer c__21 = 21;
 
 /*      None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     1) If CHGIRF is called directly, the signal SPICE(BOGUSENTRY) */
@@ -246,6 +243,10 @@ static integer c__21 = 21;
 
 /*     2) See entry points IRFROT, IRFNUM, IRFNAM, and IRFDEF for */
 /*        exceptions specific to those routines. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -291,10 +292,18 @@ static integer c__21 = 21;
 
 /* $ Author_and_Institution */
 
+/*     N.J. Bachman    (JPL) */
+/*     B.V. Semenov    (JPL) */
 /*     W.L. Taber      (JPL) */
 /*     I.M. Underwood  (JPL) */
+/*     E.D. Wright     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 4.4.0, 24-SEP-2013 (BVS) */
+
+/*        Updated enrtry point IRFNUM to treat J2000 as a special case */
+/*        and to not participate of CHKIN/CHOUT to increase efficiency. */
 
 /* -    SPICELIB Version 4.3.0, 25-AUG-2005 (NJB) */
 
@@ -775,15 +784,15 @@ L_irfrot:
 
 /*      None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     1) If either REFA or REFB is outside the range [1,MAXF], */
 /*        where MAXF is the number of supported frames, the error */
 /*        SPICE(IRFNOTREC) is signalled. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -812,10 +821,16 @@ L_irfrot:
 
 /* $ Author_and_Institution */
 
+/*     B.V. Semenov    (JPL) */
 /*     W.L. Taber      (JPL) */
 /*     I.M. Underwood  (JPL) */
+/*     E.D. Wright     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 4.3.0, 24-SEP-2013 (BVS) */
+
+/*        Updated to do discovery check-in/check-out. */
 
 /* -    SPICELIB Version 4.2.1, 04-JAN-2002 (EDW) */
 
@@ -877,8 +892,6 @@ L_irfrot:
 
     if (return_()) {
 	return 0;
-    } else {
-	chkin_("IRFROT", (ftnlen)6);
     }
 
 /*     If it has not been done already, construct the transformation */
@@ -893,42 +906,44 @@ L_irfrot:
 /*         root->frame      base->frame    root->base */
 
     if (! ready) {
+	chkin_("IRFROT", (ftnlen)6);
 	for (i__ = 1; i__ <= 21; ++i__) {
 	    rotate_(&c_b6, &c__1, &trans[(i__1 = i__ * 9 - 9) < 189 && 0 <= 
 		    i__1 ? i__1 : s_rnge("trans", i__1, "chgirf_", (ftnlen)
-		    868)]);
+		    882)]);
 	    for (j = wdcnt_(defs + ((i__1 = i__ - 1) < 21 && 0 <= i__1 ? i__1 
-		    : s_rnge("defs", i__1, "chgirf_", (ftnlen)870)) * 80, (
+		    : s_rnge("defs", i__1, "chgirf_", (ftnlen)884)) * 80, (
 		    ftnlen)80); j >= 2; j += -2) {
 		nthwd_(defs + ((i__1 = i__ - 1) < 21 && 0 <= i__1 ? i__1 : 
-			s_rnge("defs", i__1, "chgirf_", (ftnlen)872)) * 80, &
+			s_rnge("defs", i__1, "chgirf_", (ftnlen)886)) * 80, &
 			j, word, &loc, (ftnlen)80, (ftnlen)25);
 		nparsi_(word, &axis, error, &p, (ftnlen)25, (ftnlen)25);
 		i__2 = j - 1;
 		nthwd_(defs + ((i__1 = i__ - 1) < 21 && 0 <= i__1 ? i__1 : 
-			s_rnge("defs", i__1, "chgirf_", (ftnlen)875)) * 80, &
+			s_rnge("defs", i__1, "chgirf_", (ftnlen)889)) * 80, &
 			i__2, word, &loc, (ftnlen)80, (ftnlen)25);
 		nparsd_(word, &angle, error, &p, (ftnlen)25, (ftnlen)25);
 		convrt_(&angle, "ARCSECONDS", "RADIANS", &radang, (ftnlen)10, 
 			(ftnlen)7);
 		rotmat_(&trans[(i__1 = i__ * 9 - 9) < 189 && 0 <= i__1 ? i__1 
-			: s_rnge("trans", i__1, "chgirf_", (ftnlen)880)], &
+			: s_rnge("trans", i__1, "chgirf_", (ftnlen)894)], &
 			radang, &axis, tmpmat);
 		moved_(tmpmat, &c__9, &trans[(i__1 = i__ * 9 - 9) < 189 && 0 
 			<= i__1 ? i__1 : s_rnge("trans", i__1, "chgirf_", (
-			ftnlen)881)]);
+			ftnlen)895)]);
 	    }
 	    b = isrchc_(bases + (((i__1 = i__ - 1) < 21 && 0 <= i__1 ? i__1 : 
-		    s_rnge("bases", i__1, "chgirf_", (ftnlen)885)) << 4), &
+		    s_rnge("bases", i__1, "chgirf_", (ftnlen)899)) << 4), &
 		    i__, frames, (ftnlen)16, (ftnlen)16);
 	    mxm_(&trans[(i__1 = i__ * 9 - 9) < 189 && 0 <= i__1 ? i__1 : 
-		    s_rnge("trans", i__1, "chgirf_", (ftnlen)887)], &trans[(
+		    s_rnge("trans", i__1, "chgirf_", (ftnlen)901)], &trans[(
 		    i__2 = b * 9 - 9) < 189 && 0 <= i__2 ? i__2 : s_rnge(
-		    "trans", i__2, "chgirf_", (ftnlen)887)], tmpmat);
+		    "trans", i__2, "chgirf_", (ftnlen)901)], tmpmat);
 	    moved_(tmpmat, &c__9, &trans[(i__1 = i__ * 9 - 9) < 189 && 0 <= 
 		    i__1 ? i__1 : s_rnge("trans", i__1, "chgirf_", (ftnlen)
-		    888)]);
+		    902)]);
 	}
+	chkout_("IRFROT", (ftnlen)6);
 	ready = TRUE_;
     }
 
@@ -950,6 +965,7 @@ L_irfrot:
 /*     should work, but why risk roundoff problems? */
 
     if (*refa < 1 || *refa > 21) {
+	chkin_("IRFROT", (ftnlen)6);
 	setmsg_("A request has been made to obtain the transformation from i"
 		"nertial reference frame # to inertial reference frame #. Unf"
 		"ortunately # is not the id-code of a known inertial frame. ", 
@@ -958,7 +974,9 @@ L_irfrot:
 	errint_("#", refb, (ftnlen)1);
 	errint_("#", refa, (ftnlen)1);
 	sigerr_("SPICE(IRFNOTREC)", (ftnlen)16);
+	chkout_("IRFROT", (ftnlen)6);
     } else if (*refb < 1 || *refb > 21) {
+	chkin_("IRFROT", (ftnlen)6);
 	setmsg_("A request has been made to obtain the transformation from i"
 		"nertial reference frame # to inertial reference frame #. Unf"
 		"ortunately # is not the id-code of a known inertial frame. ", 
@@ -967,15 +985,15 @@ L_irfrot:
 	errint_("#", refb, (ftnlen)1);
 	errint_("#", refb, (ftnlen)1);
 	sigerr_("SPICE(IRFNOTREC)", (ftnlen)16);
+	chkout_("IRFROT", (ftnlen)6);
     } else if (*refa == *refb) {
 	rotate_(&c_b6, &c__1, rotab);
     } else {
 	mxmt_(&trans[(i__1 = *refb * 9 - 9) < 189 && 0 <= i__1 ? i__1 : 
-		s_rnge("trans", i__1, "chgirf_", (ftnlen)943)], &trans[(i__2 =
+		s_rnge("trans", i__1, "chgirf_", (ftnlen)963)], &trans[(i__2 =
 		 *refa * 9 - 9) < 189 && 0 <= i__2 ? i__2 : s_rnge("trans", 
-		i__2, "chgirf_", (ftnlen)943)], rotab);
+		i__2, "chgirf_", (ftnlen)963)], rotab);
     }
-    chkout_("IRFROT", (ftnlen)6);
     return 0;
 /* $Procedure IRFNUM ( Inertial reference frame number ) */
 
@@ -1051,15 +1069,15 @@ L_irfnum:
 
 /*      None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     1) If NAME is not recognized, INDEX is zero. */
 
 /*     2) If no default frame has been specified, INDEX is zero. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -1095,10 +1113,17 @@ L_irfnum:
 
 /* $ Author_and_Institution */
 
+/*     B.V. Semenov    (JPL) */
 /*     W.L. Taber      (JPL) */
 /*     I.M. Underwood  (JPL) */
+/*     E.D. Wright     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 4.3.0, 24-SEP-2013 (BVS) */
+
+/*        Updated to treat J2000 as a special case and to not */
+/*        CHKIN/CHOUT to increase efficiency. */
 
 /* -    SPICELIB Version 4.2.1, 04-JAN-2002 (EDW) */
 
@@ -1160,15 +1185,17 @@ L_irfnum:
 
     if (return_()) {
 	return 0;
-    } else {
-	chkin_("IRFNUM", (ftnlen)6);
+    }
+    if (s_cmp(name__, "J2000", name_len, (ftnlen)5) == 0 || s_cmp(name__, 
+	    "j2000", name_len, (ftnlen)5) == 0) {
+	*index = 1;
+	return 0;
     }
     if (eqstr_(name__, "DEFAULT", name_len, (ftnlen)7)) {
 	*index = dframe;
     } else {
 	*index = esrchc_(name__, &c__21, frames, name_len, (ftnlen)16);
     }
-    chkout_("IRFNUM", (ftnlen)6);
     return 0;
 /* $Procedure IRFNAM ( Inertial reference frame name ) */
 
@@ -1243,13 +1270,13 @@ L_irfnam:
 
 /*      None. */
 
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     1) If INDEX is not the index of a supported frame, NAME is blank. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -1287,6 +1314,7 @@ L_irfnam:
 
 /*     W.L. Taber      (JPL) */
 /*     I.M. Underwood  (JPL) */
+/*     E.D. Wright     (JPL) */
 
 /* $ Version */
 
@@ -1357,7 +1385,7 @@ L_irfnam:
 	s_copy(name__, " ", name_len, (ftnlen)1);
     } else {
 	s_copy(name__, frames + (((i__1 = *index - 1) < 21 && 0 <= i__1 ? 
-		i__1 : s_rnge("frames", i__1, "chgirf_", (ftnlen)1348)) << 4),
+		i__1 : s_rnge("frames", i__1, "chgirf_", (ftnlen)1376)) << 4),
 		 name_len, (ftnlen)16);
     }
     chkout_("IRFNAM", (ftnlen)6);
@@ -1488,6 +1516,7 @@ L_irfdef:
 
 /*     W.L. Taber      (JPL) */
 /*     I.M. Underwood  (JPL) */
+/*     E.D. Wright     (JPL) */
 
 /* $ Version */
 

@@ -7,13 +7,14 @@
 
 /* Table of constant values */
 
-static integer c__121 = 121;
+static integer c__5209 = 5209;
+static integer c__127 = 127;
 static integer c__0 = 0;
 static integer c__1 = 1;
 static integer c__8 = 8;
 static integer c__100 = 100;
 
-/* $Procedure FRAMEX (Frame Expert) */
+/* $Procedure FRAMEX ( FRAMe EXpert ) */
 /* Subroutine */ int framex_0_(int n__, char *cname, char *frname, integer *
 	frcode, integer *cent, integer *class__, integer *clssid, logical *
 	found, ftnlen cname_len, ftnlen frname_len)
@@ -26,24 +27,37 @@ static integer c__100 = 100;
     integer i__1, i__2;
 
     /* Builtin functions */
-    integer s_rnge(char *, integer, char *, integer);
+    integer s_cmp(char *, char *, ftnlen, ftnlen), s_rnge(char *, integer, 
+	    char *, integer);
     /* Subroutine */ int s_copy(char *, char *, ftnlen, ftnlen);
 
     /* Local variables */
-    static char name__[32*121], line[80*8];
-    static integer item, type__[121];
-    extern /* Subroutine */ int zzdynbid_(char *, integer *, char *, integer *
-	    , ftnlen, ftnlen);
+    static char name__[32*127], line[80*8];
+    static integer item;
+    static logical lnew;
+    static integer type__[127];
+    extern /* Subroutine */ int zzhscadd_(integer *, integer *, char *, char *
+	    , integer *, logical *, ftnlen, ftnlen), zzhsiadd_(integer *, 
+	    integer *, integer *, integer *, integer *, logical *), zzhscchk_(
+	    integer *, integer *, char *, char *, integer *, ftnlen, ftnlen), 
+	    zzhsichk_(integer *, integer *, integer *, integer *, integer *), 
+	    zzdynbid_(char *, integer *, char *, integer *, ftnlen, ftnlen), 
+	    zzhscini_(integer *, integer *, integer *);
     static char look2[32];
-    extern /* Subroutine */ int zzdynvai_(char *, integer *, char *, integer *
-	    , integer *, integer *, ftnlen, ftnlen);
+    extern /* Subroutine */ int zzhsiini_(integer *, integer *, integer *), 
+	    zzpctrck_(integer *, logical *), zzdynvai_(char *, integer *, 
+	    char *, integer *, integer *, integer *, ftnlen, ftnlen), 
+	    zzctruin_(integer *);
     static integer i__, n;
+    static char kname[32*5209];
     extern /* Subroutine */ int chkin_(char *, ftnlen);
     static char pname[32];
     extern /* Subroutine */ int ucase_(char *, char *, ftnlen, ftnlen), 
-	    errch_(char *, char *, ftnlen, ftnlen), repmc_(char *, char *, 
-	    char *, char *, ftnlen, ftnlen, ftnlen, ftnlen), repmi_(char *, 
-	    char *, integer *, char *, ftnlen, ftnlen, ftnlen);
+	    errch_(char *, char *, ftnlen, ftnlen);
+    static integer kcent[5209];
+    extern /* Subroutine */ int repmc_(char *, char *, char *, char *, ftnlen,
+	     ftnlen, ftnlen, ftnlen), repmi_(char *, char *, integer *, char *
+	    , ftnlen, ftnlen, ftnlen);
     static logical gotit;
     static integer start;
     extern /* Subroutine */ int ljust_(char *, char *, ftnlen, ftnlen), 
@@ -51,39 +65,41 @@ static integer c__100 = 100;
 	    integer *, logical *, ftnlen);
     static integer id;
     extern logical failed_(void);
-    static integer idcode[121];
+    static integer idcode[127], bidids[127];
     static char lcname[36];
-    extern integer bschoc_(char *, integer *, char *, integer *, ftnlen, 
-	    ftnlen);
+    static integer bididx[127];
     static char lcfram[32];
     extern integer bschoi_(integer *, integer *, integer *, integer *);
-    static integer kvclid, corder[121], centrd[121], center[121];
+    static integer kidids[5209], kclsid[5209], kvclid, bidpol[133], centrd[
+	    127], center[127];
     static char kvbuff[32*100];
-    extern /* Subroutine */ int gcpool_(char *, integer *, integer *, integer 
-	    *, char *, logical *, ftnlen, ftnlen);
-    static integer norder[121];
-    extern /* Subroutine */ int gipool_(char *, integer *, integer *, integer 
-	    *, integer *, logical *, ftnlen), sigerr_(char *, ftnlen);
-    static integer typeid[121], values[8];
-    extern /* Subroutine */ int chkout_(char *, ftnlen), setmsg_(char *, 
-	    ftnlen), zzfdat_(integer *, char *, integer *, integer *, integer 
-	    *, integer *, integer *, integer *, integer *, ftnlen);
-    static char dattyp[1], lookup[32];
-    static integer kvclss;
-    extern /* Subroutine */ int prefix_(char *, integer *, char *, ftnlen, 
-	    ftnlen), dtpool_(char *, logical *, integer *, char *, ftnlen, 
-	    ftnlen), gnpool_(char *, integer *, integer *, integer *, char *, 
-	    logical *, ftnlen, ftnlen);
+    static integer kidpol[5215], knmids[5209], kclass[5209], kidlst[5209], 
+	    bnmpol[133], typeid[127], values[8], knmpol[5215];
+    static logical lupdte;
+    static char knmnms[32*5209], dattyp[1], lookup[32];
+    static integer kvclss, pulctr[2], knmlst[5209], bnmlst[127];
     extern logical return_(void);
-    extern /* Subroutine */ int suffix_(char *, integer *, char *, ftnlen, 
+    static char bnmnms[32*127];
+    static integer bnmidx[127], bidlst[127];
+    extern /* Subroutine */ int setmsg_(char *, ftnlen), sigerr_(char *, 
+	    ftnlen), chkout_(char *, ftnlen), zzfdat_(integer *, integer *, 
+	    char *, integer *, integer *, integer *, integer *, integer *, 
+	    integer *, integer *, char *, integer *, integer *, integer *, 
+	    integer *, integer *, ftnlen, ftnlen), prefix_(char *, integer *, 
+	    char *, ftnlen, ftnlen), gipool_(char *, integer *, integer *, 
+	    integer *, integer *, logical *, ftnlen), gcpool_(char *, integer 
+	    *, integer *, integer *, char *, logical *, ftnlen, ftnlen), 
+	    dtpool_(char *, logical *, integer *, char *, ftnlen, ftnlen), 
+	    gnpool_(char *, integer *, integer *, integer *, char *, logical *
+	    , ftnlen, ftnlen), suffix_(char *, integer *, char *, ftnlen, 
 	    ftnlen);
     static logical fnd;
 
 /* $ Abstract */
 
-/*     This is an umbrella routine for the entry points available */
-/*     for manipulating different reference frames. It should not */
-/*     be called directly. */
+/*     This is an umbrella routine for the entry points available for */
+/*     manipulating different reference frames. It should not be called */
+/*     directly. */
 
 /* $ Disclaimer */
 
@@ -112,7 +128,7 @@ static integer c__100 = 100;
 
 /* $ Required_Reading */
 
-/*     None. */
+/*     FRAMES */
 
 /* $ Keywords */
 
@@ -249,6 +265,24 @@ static integer c__100 = 100;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.6.0, 30-OCT-2014 (BVS) */
+
+/*        Increased the number of non-inertial frames from 105 to 106 */
+/*        in order to accomodate the following PCK based frame: */
+
+/*           IAU_BENNU */
+
+/* -    SPICELIB Version 1.5.0, 11-OCT-2011 (BVS) */
+
+/*        Increased the number of non-inertial frames from 100 to 105 */
+/*        in order to accomodate the following PCK based frames: */
+
+/*           IAU_CERES */
+/*           IAU_PALLAS */
+/*           IAU_LUTETIA */
+/*           IAU_DAVIDA */
+/*           IAU_STEINS */
+
 /* -    SPICELIB Version 1.4.0, 11-MAY-2010 (BVS) */
 
 /*        Increased the number of non-inertial frames from 96 to 100 */
@@ -352,6 +386,11 @@ static integer c__100 = 100;
 /*                 definition depends on parameters supplied via a */
 /*                 frame kernel. */
 
+/*     ALL         indicates any of the above classes. This parameter */
+/*                 is used in APIs that fetch information about frames */
+/*                 of a specified class. */
+
+
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
@@ -362,6 +401,10 @@ static integer c__100 = 100;
 /*     None. */
 
 /* $ Version */
+
+/* -    SPICELIB Version 4.0.0, 08-MAY-2012 (NJB) */
+
+/*       The parameter ALL was added to support frame fetch APIs. */
 
 /* -    SPICELIB Version 3.0.0, 28-MAY-2004 (NJB) */
 
@@ -375,6 +418,62 @@ static integer c__100 = 100;
 /* -    SPICELIB Version 1.0.0, 10-DEC-1995 (WLT) */
 
 /* -& */
+
+/*     End of INCLUDE file frmtyp.inc */
+
+/* $ Abstract */
+
+/*     This include file defines the dimension of the counter */
+/*     array used by various SPICE subsystems to uniquely identify */
+/*     changes in their states. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 29-JUL-2013 (BVS) */
+
+/* -& */
+
+/*     End of include file. */
+
 /* $ Brief_I/O */
 
 /*     VARIABLE  I/O  ENTRY POINT */
@@ -414,17 +513,17 @@ static integer c__100 = 100;
 /*     This is an umbrella routine that comprises the SPICE */
 /*     interface to the reference frame transformation software. */
 
-/*     There are 5 entry points. */
+/*     There are 6 entry points. */
 
-/*     NAMFRM  converts string to the id-codes used by low level */
+/*     NAMFRM  converts string to the ID codes used by low level */
 /*             SPICE software */
 
-/*     FRMNAM  converts frame id-codes to the more familiar names */
+/*     FRMNAM  converts frame ID codes to the more familiar names */
 /*             used to describe various reference frames. */
 
 /*     FRINFO  returns the center associated with a reference frame. */
 
-/*     CIDFRM  given the id-code of an object, returns the bodyfixed */
+/*     CIDFRM  given the ID code of an object, returns the bodyfixed */
 /*             frame associated with it. */
 
 /*     CNMFRM  given the name of an object, returns the bodyfixed */
@@ -438,17 +537,17 @@ static integer c__100 = 100;
 /*     Suppose that you needed to transform between two reference */
 /*     frames on the basis of their names and that you wanted to */
 /*     correct for light time to the center of the second frame */
-/*     as seen from an observer with idcode OBS. */
+/*     as seen from an observer with ID code OBS. */
 
 /*     The code fragment below illustrates how you could use the */
 /*     entry points gathered in this routine to retrieve the */
 /*     state transformation matrix. */
 
 
-/*        First convert names to frame id codes. */
+/*        First convert names to frame ID codes. */
 
-/*        CHARACTER*(32)        NAME1 */
-/*        CHARACTER*(32)        NAME2 */
+/*        CHARACTER*(26)        NAME1 */
+/*        CHARACTER*(26)        NAME2 */
 
 /*        INTEGER               FRAME1 */
 /*        INTEGER               FRAME2 */
@@ -463,7 +562,7 @@ static integer c__100 = 100;
 
 
 /*        First we use the entry points NAMFRM to convert the frame */
-/*        names to id codes. */
+/*        names to ID codes. */
 
 /*        CALL NAMFRM ( NAME1, FRAME1 ) */
 /*        CALL NAMFRM ( NAME2, FRAME2 ) */
@@ -481,7 +580,6 @@ static integer c__100 = 100;
 
 /*        CALL FRMCHG ( FRAME1, FRAME2, ET-LT, XFORM ) */
 
-
 /* $ Restrictions */
 
 /*     None. */
@@ -497,6 +595,28 @@ static integer c__100 = 100;
 /*     W.L. Taber      (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 5.2.1, 02-FEB-2017 (BVS) */
+
+/*        Shortened one of permutted index entries in CCIFRM. */
+
+/* -    SPICELIB Version 5.2.0, 08-AUG-2012 (BVS) */
+
+/*        The routine was updated to be more efficient by using hashes */
+/*        instead kernel POOL look-ups for kernel POOL frames and by */
+/*        using hases instead of ordered array searches for built-in */
+/*        frames. */
+
+/*        Bux fix: CCIFRM entry point logic was corrected to examine the */
+/*        built-in frames before looking at the kernel POOL frames. */
+
+/* -    SPICELIB Version 5.1.1, 09-FEB-2011 (NJB) */
+
+/*        Bug fix: corrected logic in entry point CIDFRM for */
+/*        object-frame association for case where the assigned frame */
+/*        value is denoted by a frame code. */
+
+/*        Fixed typo in FRAMEX header. */
 
 /* -    SPICELIB Version 5.0.1, 17-MAR-2009 (EDW) */
 
@@ -554,10 +674,10 @@ static integer c__100 = 100;
 /* -    SPICELIB Version 2.0.0, 04-APR-1997 (WLT) */
 
 /*        The routine was upgraded to reflect that a block of */
-/*        frame idcodes have been reserved for use by the DSN. */
-/*        Id-codes 13001 to 13999 have been set aside for DSN */
-/*        models for the orientation of the earth.  These frames */
-/*        are all PCK frames.  Moreover, the PCK id-code to */
+/*        frame ID codes have been reserved for use by the DSN. */
+/*        ID codes 13001 to 13999 have been set aside for DSN */
+/*        models for the orientation of the earth. These frames */
+/*        are all PCK frames. Moreover, the PCK ID code to */
 /*        use with these frames is simply the Frame-Code minus 10000. */
 /*        All of these frames are centered at the earth (body 399). */
 
@@ -572,39 +692,6 @@ static integer c__100 = 100;
 /* $ Index_Entries */
 
 /*     Frame Transformation */
-
-/* -& */
-/* $ Revisions */
-
-/* -    SPICELIB Version 4.0.0, 12-SEP-2005 (NJB) */
-
-/*        Entry point FRINFO is no longer error-free. Various frame */
-/*        definition errors that were previously ignored are now */
-/*        diagnosed. */
-
-/*        Entry point FRINFO has been updated to support specification */
-/*        of frame center by name or ID code. Previously only ID codes */
-/*        could be used to identify frame centers. */
-
-/* -    SPICELIB Version 3.1.0, 28-NOV-2002 (NJB) */
-
-/*        Bug fix: updated CNMFRM so a TK frame specified by name and */
-/*        designated as an object's preferred frame via kernel pool */
-/*        assignments is found, and so that the correct name of this */
-/*        frame is returned. */
-
-/* -    SPICELIB Version 2.0.0, 04-APR-1997 (WLT) */
-
-/*        The routine was upgraded to reflect that a block of */
-/*        frame idcodes have been reserved for use by the DSN. */
-/*        Id-codes 13001 to 13999 have been set aside for DSN */
-/*        models for the orientation of the earth.  These frames */
-/*        are all PCK frames.  Moreover, the PCK id-code to */
-/*        use with these frames is simply the Frame-Code minus 10000. */
-/*        All of these frames are centered at the earth (body 399). */
-
-/*        Accompanying documentation is provided in the appendix */
-/*        ``DSN Frames'' of the SPICE document FRAMES.REQ. */
 
 /* -& */
 
@@ -634,6 +721,56 @@ static integer c__100 = 100;
 /*     Local Variables */
 
 
+/*     POOL state counter. */
+
+
+/*     Lower bound of collision lists in hashes. */
+
+
+/*     The size of ID-based hash for kernel POOL frames. */
+
+/*     Since defining a valid kernel POOL frame takes at least 5 */
+/*     keywords and integer hash dimension must be a prime number, this */
+/*     size should be set to the first prime number greater than POOL's */
+/*     MAXVAR / 5 + 1. */
+
+/*     For the current POOL MAXVAR set to 26003, such number is 5209. */
+
+
+/*     Name-based hash for kernel pool frames. KNMLST, KNMPOL, and */
+/*     KNMNMS provide an index in the frame ID array KNMIDS at which the */
+/*     ID for the frame with a given name is stored. */
+
+
+/*     ID-based hash for kernel pool frames. KIDLST, KIDPOL, and KIDIDS */
+/*     provide the index in the kernel frame attiribut arrays KNAME, */
+/*     KCENT, KCLASS, and KCLSID at which the attributes of the frame */
+/*     with a given ID are stored. */
+
+
+/*     The size of hashes for built-in frames. */
+
+/*     Since integer hash dimension must be a prime number it cannot be */
+/*     computed in a parameter statement from the inertial and */
+/*     non-inertial frame counts provided in the include files. Instead */
+/*     it should be set manually to the first prime number greater than */
+/*     or equal to NCOUNT. */
+
+/*     For the current NCOUNT equal to 126, such number is 127. */
+
+
+/*     Name-based hash for built-in frames. BNMLST, BNMPOL, and BNMNMS */
+/*     provide the index in BNMIDX which stores the index for the frame */
+/*     attributes in the built-in frame attiributes arrays IDCODE, NAME, */
+/*     CENTER, TYPE, and TYPEID. */
+
+
+/*     ID-based hash for built-in frames. BIDLST, BIDPOL, and BIDIDS */
+/*     provide an index in BIDIDX which stores the index for the frame */
+/*     attributes in the built-in frame attiributes arrays IDCODE, NAME, */
+/*     CENTER, TYPE, and TYPEID. */
+
+
 /*     Saved variables */
 
 /*     Because we need to save almost everything we save everything */
@@ -653,19 +790,19 @@ static integer c__100 = 100;
 	}
 
     chkin_("FRAMEX", (ftnlen)6);
-    setmsg_("A call has been made to the umbrella routine FRAMEX.  This rout"
-	    "ine doesn't do anything.  It acts only as an umbrella routine fo"
-	    "r its entry points.  This call probably indicates a misunderstan"
-	    "ding in programming. ", (ftnlen)212);
+    setmsg_("A call has been made to the umbrella routine FRAMEX. This routi"
+	    "ne doesn't do anything. It acts only as an umbrella routine for "
+	    "its entry points. This call probably indicates a misunderstandin"
+	    "g in programming. ", (ftnlen)209);
     sigerr_("SPICE(BOGUSENTRY)", (ftnlen)17);
     chkout_("FRAMEX", (ftnlen)6);
     return 0;
-/* $Procedure NAMFRM (Name to frame) */
+/* $Procedure NAMFRM ( frame NAMe to FRaMe id ) */
 
 L_namfrm:
 /* $ Abstract */
 
-/*     Look up the frame id code associated with a string. */
+/*     Look up the frame ID code associated with a string. */
 
 /* $ Disclaimer */
 
@@ -694,7 +831,7 @@ L_namfrm:
 
 /* $ Required_Reading */
 
-/*     None. */
+/*     FRAMES */
 
 /* $ Keywords */
 
@@ -710,7 +847,7 @@ L_namfrm:
 /*     VARIABLE  I/O  DESCRIPTION */
 /*     --------  ---  -------------------------------------------------- */
 /*     FRNAME     I   The name of some reference frame */
-/*     FRCODE     O   The SPICE id code of the frame. */
+/*     FRCODE     O   The SPICE ID code of the frame. */
 
 /* $ Detailed_Input */
 
@@ -721,7 +858,7 @@ L_namfrm:
 /*                 case of the letters in FRNAME are insignificant. */
 
 /*                 Note that all legitimate frame names contain */
-/*                 32 or fewer characters. */
+/*                 26 or fewer characters. */
 
 /* $ Detailed_Output */
 
@@ -762,29 +899,28 @@ L_namfrm:
 
 /*        (where leading blanks of FRNAME are ignored) */
 
-/*     is present.  If it is and the number of values associated with the */
-/*     name is 1, this value is taken to be the frame id code. */
+/*     is present. If it is and the number of values associated with the */
+/*     name is 1, this value is taken to be the frame ID code. */
 
-/*     Note:  It is NOT possible to override the default names and */
-/*     id codes stored locally in this routine by placing an */
-/*     appropriately  variable in the kernel pool with a different */
-/*     id code.  The predefined values always take precedence. */
+/*     Note: It is NOT possible to override the default names and */
+/*     ID codes stored locally in this routine by placing an */
+/*     appropriately variable in the kernel pool with a different */
+/*     ID code. The predefined values always take precedence. */
 
 /*     Consult the FRAMES required reading document for more details */
 /*     about constructing your own frame definitions. */
 
 /* $ Examples */
 
-/*     Suppose that you needed to find the SPICE id code for the */
+/*     Suppose that you needed to find the SPICE ID code for the */
 /*     bodyfixed reference frame for Mars as modeled by the */
-/*     IAU cartographic working group.  Use the following code */
+/*     IAU cartographic working group. Use the following code */
 /*     to perform this task. */
 
 /*        CALL NAMFRM ( 'IAU_MARS', FRCODE ) */
 
 /*        WRITE (*,*) 'The SPICE code for the Mars bodyfixed frame is: ', */
 /*       .             FRCODE. */
-
 
 /* $ Restrictions */
 
@@ -797,8 +933,17 @@ L_namfrm:
 /* $ Author_and_Institution */
 
 /*     W.L. Taber      (JPL) */
+/*     B.V. Semenov    (JPL) */
+/*     E.D. Wright     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 3.1.0, 08-AUG-2012 (BVS) */
+
+/*        The routine was updated to be more efficient by using hashes */
+/*        instead kernel POOL look-ups for kernel POOL frames and by */
+/*        using hases instead of ordered array searches for built-in */
+/*        frames. */
 
 /* -    SPICELIB Version 3.0.2, 17-MAR-2009 (EDW) */
 
@@ -818,10 +963,10 @@ L_namfrm:
 /* -    SPICELIB Version 2.0.0, 04-APR-1997 (WLT) */
 
 /*        The routine was upgraded to reflect that a block of */
-/*        frame idcodes have been reserved for use by the DSN. */
-/*        Id-codes 13001 to 13999 have been set aside for DSN */
-/*        models for the orientation of the earth.  These frames */
-/*        are all PCK frames.  Moreover, the PCK id-code to */
+/*        frame ID codes have been reserved for use by the DSN. */
+/*        ID codes 13001 to 13999 have been set aside for DSN */
+/*        models for the orientation of the earth. These frames */
+/*        are all PCK frames. Moreover, the PCK ID code to */
 /*        use with these frames is simply the Frame-Code minus 10000. */
 /*        All of these frames are centered at the earth (body 399). */
 
@@ -835,7 +980,7 @@ L_namfrm:
 /* -& */
 /* $ Index_Entries */
 
-/*     Frame name to frame idcode translation */
+/*     Frame name to frame ID code translation */
 
 /* -& */
     *frcode = 0;
@@ -845,14 +990,39 @@ L_namfrm:
     if (return_()) {
 	return 0;
     }
+
+/*     For efficiency, J2000 deserves special treatment. */
+
+    if (s_cmp(frname, "J2000", frname_len, (ftnlen)5) == 0 || s_cmp(frname, 
+	    "j2000", frname_len, (ftnlen)5) == 0) {
+	*frcode = 1;
+	return 0;
+    }
     chkin_("NAMFRM", (ftnlen)6);
 
 /*     Perform any needed first pass initializations. */
 
     if (first) {
+
+/*        Initialize POOL state counter to the user value. */
+
+	zzctruin_(pulctr);
+
+/*        Initialize kernel POOL frame hashes. */
+
+	zzhsiini_(&c__5209, kidlst, kidpol);
+	zzhscini_(&c__5209, knmlst, knmpol);
+
+/*        Initialize built-in frame tables and hashes. */
+
+	zzfdat_(&c__127, &c__127, name__, idcode, center, type__, typeid, 
+		centrd, bnmlst, bnmpol, bnmnms, bnmidx, bidlst, bidpol, 
+		bidids, bididx, (ftnlen)32, (ftnlen)32);
+	if (failed_()) {
+	    chkout_("NAMFRM", (ftnlen)6);
+	    return 0;
+	}
 	first = FALSE_;
-	zzfdat_(&c__121, name__, idcode, center, type__, typeid, norder, 
-		corder, centrd, (ftnlen)32);
     }
 
 /*     Determine the location of the requested item in the array */
@@ -860,35 +1030,75 @@ L_namfrm:
 
     ljust_(frname, pname, frname_len, (ftnlen)32);
     ucase_(pname, pname, (ftnlen)32, (ftnlen)32);
-    item = bschoc_(pname, &c__121, name__, norder, (ftnlen)32, (ftnlen)32);
+    zzhscchk_(bnmlst, bnmpol, bnmnms, pname, &item, (ftnlen)32, (ftnlen)32);
+    if (item != 0) {
+	item = bnmidx[(i__1 = item - 1) < 127 && 0 <= i__1 ? i__1 : s_rnge(
+		"bnmidx", i__1, "framex_", (ftnlen)736)];
+    }
 
-/*     If the name is in our list, we can just look up its idcode in */
+/*     If the name is in our hash, we can just look up its ID code in */
 /*     the parallel array. */
 
     if (item > 0) {
-	*frcode = idcode[(i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 : s_rnge(
-		"idcode", i__1, "framex_", (ftnlen)627)];
+	*frcode = idcode[(i__1 = item - 1) < 127 && 0 <= i__1 ? i__1 : s_rnge(
+		"idcode", i__1, "framex_", (ftnlen)745)];
     } else {
 
-/*        The items wasn't in the list, see if it's in the kernel pool. */
+/*        See if this frame is in the kernel pool frame name-based hash. */
+/*        First reset the hash if POOL has changed. */
 
-	prefix_("FRAME_", &c__0, pname, (ftnlen)6, (ftnlen)32);
-	gipool_(pname, &c__1, &c__8, &n, values, &gotit, (ftnlen)32);
-	if (n == 1 && gotit) {
-	    *frcode = values[0];
+	zzpctrck_(pulctr, &lupdte);
+	if (lupdte) {
+	    zzhscini_(&c__5209, knmlst, knmpol);
+	    zzhsiini_(&c__5209, kidlst, kidpol);
+	}
+
+/*        Check if this name is in the hash. */
+
+	zzhscchk_(knmlst, knmpol, knmnms, pname, &item, (ftnlen)32, (ftnlen)
+		32);
+	if (item != 0) {
+	    *frcode = knmids[(i__1 = item - 1) < 5209 && 0 <= i__1 ? i__1 : 
+		    s_rnge("knmids", i__1, "framex_", (ftnlen)767)];
 	} else {
-	    *frcode = 0;
+
+/*           The name wasn't in the hash, see if we can find this frame */
+/*           in the kernel pool. */
+
+	    prefix_("FRAME_", &c__0, pname, (ftnlen)6, (ftnlen)32);
+	    gipool_(pname, &c__1, &c__8, &n, values, &gotit, (ftnlen)32);
+	    if (failed_()) {
+		chkout_("NAMFRM", (ftnlen)6);
+		return 0;
+	    }
+	    if (n == 1 && gotit) {
+		*frcode = values[0];
+
+/*              If we made it to this point, we successfully mapped the */
+/*              kernel frame name to its ID. Add this pair to the */
+/*              name-based hash. */
+
+		zzhscadd_(knmlst, knmpol, knmnms, pname, &item, &lnew, (
+			ftnlen)32, (ftnlen)32);
+		if (! failed_() && item != 0) {
+		    knmids[(i__1 = item - 1) < 5209 && 0 <= i__1 ? i__1 : 
+			    s_rnge("knmids", i__1, "framex_", (ftnlen)797)] = 
+			    *frcode;
+		}
+	    } else {
+		*frcode = 0;
+	    }
 	}
     }
     chkout_("NAMFRM", (ftnlen)6);
     return 0;
-/* $Procedure      FRMNAM (Frame to Name) */
+/* $Procedure FRMNAM ( FRaMe id to frame NAMe ) */
 
 L_frmnam:
 /* $ Abstract */
 
-/*     Retrieve the name of a reference frame associated with */
-/*     a SPICE id code. */
+/*     Retrieve the name of a reference frame associated with a SPICE ID */
+/*     code. */
 
 /* $ Disclaimer */
 
@@ -917,7 +1127,7 @@ L_frmnam:
 
 /* $ Required_Reading */
 
-/*     None. */
+/*     FRAMES */
 
 /* $ Keywords */
 
@@ -952,8 +1162,8 @@ L_frmnam:
 /*                 If FRNAME is not sufficiently long to hold the */
 /*                 name, it will be truncated on the right. */
 
-/*                 All reference frame names are 32 or fewer characters */
-/*                 in length.  Thus declaring FRNAME to be CHARACTER*(32) */
+/*                 All reference frame names are 26 or fewer characters */
+/*                 in length. Thus declaring FRNAME to be CHARACTER*(26) */
 /*                 will ensure that the returned name will not be */
 /*                 truncated. */
 
@@ -977,20 +1187,20 @@ L_frmnam:
 /* $ Particulars */
 
 /*     This routine retrieves the name of a reference frame associated */
-/*     with a SPICE frame id code. */
+/*     with a SPICE frame ID code. */
 
-/*     The id codes stored locally are scanned for a match with FRCODE. */
+/*     The ID codes stored locally are scanned for a match with FRCODE. */
 /*     If a match is found, the name stored locally will be returned */
 /*     as the name for the frame. */
 
 /*     If FRCODE is not a member of the list of internally stored */
-/*     id codes, the kernel pool will be examined to see if the */
+/*     ID codes, the kernel pool will be examined to see if the */
 /*     variable */
 
 /*        FRAME_idcode_NAME */
 
 /*     is present (where idcode is the decimal character equivalent */
-/*     of FRCODE).  If the variable is located and it has both */
+/*     of FRCODE). If the variable is located and it has both */
 /*     character type and dimension 1, the string value of the */
 /*     kernel pool variable is returned as the name of the reference */
 /*     frame. */
@@ -1005,11 +1215,11 @@ L_frmnam:
 
 /*     Suppose you needed to create a message concerning a reference */
 /*     frame and wish to use the name of the frame in the message. */
-/*     Suppose further that you have only the frame id code at your */
-/*     disposal.  You can capture the frame name using this routine */
+/*     Suppose further that you have only the frame ID code at your */
+/*     disposal. You can capture the frame name using this routine */
 /*     as shown here. */
 
-/*        CHARACTER*(32)        FRNAME */
+/*        CHARACTER*(26)        FRNAME */
 
 /*        CALL FRMNAM ( FRCODE, FRNAME ) */
 
@@ -1032,8 +1242,16 @@ L_frmnam:
 /* $ Author_and_Institution */
 
 /*     W.L. Taber      (JPL) */
+/*     B.V. Semenov    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 3.1.0, 08-AUG-2012 (BVS) */
+
+/*        The routine was updated to be more efficient by using hashes */
+/*        instead kernel POOL look-ups for kernel POOL frames and by */
+/*        using hases instead of ordered array searches for built-in */
+/*        frames. */
 
 /* -    SPICELIB Version 3.0.1, 25-JUN-1999 (WLT) */
 
@@ -1049,10 +1267,10 @@ L_frmnam:
 /* -    SPICELIB Version 2.0.0, 04-APR-1997 (WLT) */
 
 /*        The routine was upgraded to reflect that a block of */
-/*        frame idcodes have been reserved for use by the DSN. */
-/*        Id-codes 13001 to 13999 have been set aside for DSN */
-/*        models for the orientation of the earth.  These frames */
-/*        are all PCK frames.  Moreover, the PCK id-code to */
+/*        frame ID codes have been reserved for use by the DSN. */
+/*        ID codes 13001 to 13999 have been set aside for DSN */
+/*        models for the orientation of the earth. These frames */
+/*        are all PCK frames. Moreover, the PCK ID code to */
 /*        use with these frames is simply the Frame-Code minus 10000. */
 /*        All of these frames are centered at the earth (body 399). */
 
@@ -1066,7 +1284,7 @@ L_frmnam:
 /* -& */
 /* $ Index_Entries */
 
-/*     Frame idcode to frame name translation */
+/*     Frame ID code to frame name translation */
 
 /* -& */
 
@@ -1076,34 +1294,91 @@ L_frmnam:
     if (return_()) {
 	return 0;
     }
+
+/*     For efficiency, J2000 deserves special treatment. */
+
+    if (*frcode == 1) {
+	s_copy(frname, "J2000", frname_len, (ftnlen)5);
+	return 0;
+    }
     chkin_("FRMNAM", (ftnlen)6);
 
 /*     Perform any needed first pass initializations. */
 
     if (first) {
+
+/*        Initialize POOL state counter to the user value. */
+
+	zzctruin_(pulctr);
+
+/*        Initialize kernel POOL frame hashes. */
+
+	zzhsiini_(&c__5209, kidlst, kidpol);
+	zzhscini_(&c__5209, knmlst, knmpol);
+
+/*        Initialize built-in frame tables and hashes. */
+
+	zzfdat_(&c__127, &c__127, name__, idcode, center, type__, typeid, 
+		centrd, bnmlst, bnmpol, bnmnms, bnmidx, bidlst, bidpol, 
+		bidids, bididx, (ftnlen)32, (ftnlen)32);
+	if (failed_()) {
+	    chkout_("FRMNAM", (ftnlen)6);
+	    return 0;
+	}
 	first = FALSE_;
-	zzfdat_(&c__121, name__, idcode, center, type__, typeid, norder, 
-		corder, centrd, (ftnlen)32);
     }
-    item = bschoi_(frcode, &c__121, idcode, corder);
+    zzhsichk_(bidlst, bidpol, bidids, frcode, &item);
     if (item != 0) {
-	s_copy(frname, name__ + (((i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 
-		: s_rnge("name", i__1, "framex_", (ftnlen)868)) << 5), 
+	item = bididx[(i__1 = item - 1) < 127 && 0 <= i__1 ? i__1 : s_rnge(
+		"bididx", i__1, "framex_", (ftnlen)1068)];
+    }
+    if (item != 0) {
+	s_copy(frname, name__ + (((i__1 = item - 1) < 127 && 0 <= i__1 ? i__1 
+		: s_rnge("name", i__1, "framex_", (ftnlen)1073)) << 5), 
 		frname_len, (ftnlen)32);
     } else {
-	s_copy(pname, "FRAME_#_NAME", (ftnlen)32, (ftnlen)12);
-	repmi_(pname, "#", frcode, pname, (ftnlen)32, (ftnlen)1, (ftnlen)32);
-	gcpool_(pname, &c__1, &c__8, &n, line, &gotit, (ftnlen)32, (ftnlen)80)
-		;
-	if (n == 1 && gotit) {
-	    ljust_(line, frname, (ftnlen)80, frname_len);
+
+/*        See if this frame is in the kernel pool frame ID-based hash. */
+/*        First reset the hash if POOL has changed. */
+
+	zzpctrck_(pulctr, &lupdte);
+	if (lupdte) {
+	    zzhscini_(&c__5209, knmlst, knmpol);
+	    zzhsiini_(&c__5209, kidlst, kidpol);
+	}
+
+/*        Check if this ID is in the hash. */
+
+	zzhsichk_(kidlst, kidpol, kidids, frcode, &item);
+	if (item != 0) {
+	    s_copy(frname, kname + (((i__1 = item - 1) < 5209 && 0 <= i__1 ? 
+		    i__1 : s_rnge("kname", i__1, "framex_", (ftnlen)1095)) << 
+		    5), frname_len, (ftnlen)32);
 	} else {
-	    s_copy(frname, " ", frname_len, (ftnlen)1);
+
+/*           The ID wasn't in the hash, see if we can find this frame in */
+/*           the kernel pool. */
+
+	    s_copy(pname, "FRAME_#_NAME", (ftnlen)32, (ftnlen)12);
+	    repmi_(pname, "#", frcode, pname, (ftnlen)32, (ftnlen)1, (ftnlen)
+		    32);
+	    gcpool_(pname, &c__1, &c__8, &n, line, &gotit, (ftnlen)32, (
+		    ftnlen)80);
+	    if (n == 1 && gotit) {
+		ljust_(line, frname, (ftnlen)80, frname_len);
+
+/*              Note that since we did not collect all needed */
+/*              information about this frame, we will not try to add it */
+/*              to the hash. This addition is done only by FRINFO. */
+
+	    } else {
+		s_copy(frname, " ", frname_len, (ftnlen)1);
+	    }
 	}
     }
     chkout_("FRMNAM", (ftnlen)6);
     return 0;
-/* $Procedure      FRINFO ( Frame Information ) */
+/* $Procedure FRINFO ( FRame INFOrmation ) */
 
 L_frinfo:
 /* $ Abstract */
@@ -1138,7 +1413,7 @@ L_frinfo:
 
 /* $ Required_Reading */
 
-/*     None. */
+/*     FRAMES */
 
 /* $ Keywords */
 
@@ -1149,33 +1424,35 @@ L_frinfo:
 /*     IMPLICIT NONE */
 /*     INTEGER               FRCODE */
 /*     INTEGER               CENT */
+/*     INTEGER               CLASS */
+/*     INTEGER               CLSSID */
 /*     LOGICAL               FOUND */
 
 /* $ Brief_I/O */
 
 /*     VARIABLE  I/O  DESCRIPTION */
 /*     --------  ---  -------------------------------------------------- */
-/*     FRCODE     I   the idcode for some frame */
+/*     FRCODE     I   the ID code for some frame */
 /*     CENT       O   the center of the frame */
 /*     CLASS      O   the class (type) of the frame */
-/*     CLSSID     O   the idcode for the frame within its class. */
+/*     CLSSID     O   the ID code for the frame within its class. */
 /*     FOUND      O   TRUE if the requested information is available. */
 
 /* $ Detailed_Input */
 
-/*     FRCODE      is the id code for some reference frame. */
+/*     FRCODE      is the ID code for some reference frame. */
 
 /* $ Detailed_Output */
 
-/*     CENT        is the body id code for the center of the reference */
-/*                 frame (if such an id code is appropriate). */
+/*     CENT        is the body ID code for the center of the reference */
+/*                 frame (if such an ID code is appropriate). */
 
-/*     CLASS       is the class or type of the frame.  This identifies */
+/*     CLASS       is the class or type of the frame. This identifies */
 /*                 which subsystem will be used to perform frame */
 /*                 transformations. */
 
-/*     CLSSID      is the id-code used for the frame within its class. */
-/*                 This may be different from the frame id-code. */
+/*     CLSSID      is the ID code used for the frame within its class. */
+/*                 This may be different from the frame ID code. */
 
 /*     FOUND       is TRUE if CENT, CLASS and CCODE are available. */
 /*                 Otherwise, FOUND is returned with the value FALSE. */
@@ -1214,17 +1491,17 @@ L_frinfo:
 
 /*     The routine first examines local "hard-coded" information about */
 /*     reference frames to see if the requested frame belongs to this */
-/*     set.  If it does that information is returned. */
+/*     set. If it does that information is returned. */
 
 /*     If the requested information is not stored locally, the routine */
 /*     then examines the kernel pool to see if the requested information */
-/*     is stored there.  If it is and has the expected format, the data */
+/*     is stored there. If it is and has the expected format, the data */
 /*     is retrieved and returned. */
 
 /* $ Examples */
 
 /*     Suppose that you needed to determine the center of some */
-/*     reference frame.  The following code fragment illustrates */
+/*     reference frame. The following code fragment illustrates */
 /*     how to use this routine to determine this information. */
 
 /*        CALL FRINFO ( FRCODE, CENT, CLASS, CLSSID, FOUND ) */
@@ -1232,7 +1509,7 @@ L_frinfo:
 /*        IF ( FOUND ) THEN */
 
 /*           WRITE (*,*) 'The center of reference frame ', FRCODE */
-/*           WRITE (*,*) 'has body id code : ', CENT */
+/*           WRITE (*,*) 'has body ID code : ', CENT */
 
 /*        ELSE */
 
@@ -1246,25 +1523,39 @@ L_frinfo:
 
 /* $ Literature_References */
 
-/*      None. */
+/*     None. */
 
 /* $ Author_and_Institution */
 
-/*      N.J. Bachman    (JPL) */
-/*      B.V. Semenov    (JPL) */
-/*      W.L. Taber      (JPL) */
+/*     N.J. Bachman    (JPL) */
+/*     B.V. Semenov    (JPL) */
+/*     W.L. Taber      (JPL) */
 
 /* $ Version */
 
+/* -    SPICELIB Version 4.1.0, 08-AUG-2012 (BVS) */
+
+/*        The routine was updated to be more efficient by using hashes */
+/*        instead kernel POOL look-ups for kernel POOL frames and by */
+/*        using hases instead of ordered array searches for built-in */
+/*        frames. */
+
 /* -    SPICELIB Version 4.0.0, 12-SEP-2005 (NJB) */
 
-/*        Entry point FRINFO is no longer error-free. Various frame */
-/*        definition errors that were previously ignored are now */
-/*        diagnosed. */
+/*        Entry point FRINFO is no longer error-free. The following */
+/*        errors are now diagnosed: */
+
+/*           - Invalid dimension of frame name variable */
+
+/*           - If a valid frame name assignment is present: */
+
+/*              + Missing frame ID code assignment */
+/*              + Missing class assignment */
+/*              + Missing class ID assignment */
 
 /*        Specification of frame center by name or ID is now supported. */
 /*        Previously only ID codes could be used to identify frame */
-/*        centers.  Various frame definition errors that were previously */
+/*        centers. Various frame definition errors that were previously */
 /*        ignored are now diagnosed. */
 
 /* -    SPICELIB Version 3.1.0, 20-DEC-2004 (BVS) */
@@ -1291,10 +1582,10 @@ L_frinfo:
 /* -    SPICELIB Version 2.0.0, 04-APR-1997 (WLT) */
 
 /*        The routine was upgraded to reflect that a block of */
-/*        frame idcodes have been reserved for use by the DSN. */
-/*        Id-codes 13001 to 13999 have been set aside for DSN */
-/*        models for the orientation of the earth.  These frames */
-/*        are all PCK frames.  Moreover, the PCK id-code to */
+/*        frame ID codes have been reserved for use by the DSN. */
+/*        ID codes 13001 to 13999 have been set aside for DSN */
+/*        models for the orientation of the earth. These frames */
+/*        are all PCK frames. Moreover, the PCK ID code to */
 /*        use with these frames is simply the Frame-Code minus 10000. */
 /*        All of these frames are centered at the earth (body 399). */
 
@@ -1311,128 +1602,182 @@ L_frinfo:
 /*     Fetch reference frame attributes */
 
 /* -& */
-/* $ Revisions */
-
-/* -    SPICELIB Version 4.0.0, 12-SEP-2005 (NJB) */
-
-/*        Entry point FRINFO is no longer error-free. */
-/*        The following errors are now diagnosed: */
-
-/*           - Invalid dimension of frame name variable */
-
-/*           - If a valid frame name assignment is present: */
-
-/*              + Missing frame ID code assignment */
-/*              + Missing class assignment */
-/*              + Missing class ID assignment */
-
-/*        Specification of frame center by name or ID is now supported. */
-/*        Previously only ID codes could be used to identify frame */
-/*        centers. */
-
-
-/* -    SPICELIB Version 3.1.0, 20-DEC-2004 (BVS) */
-
-/*        Removed special handling of the frame IDs less than -999. If */
-/*        they cannot be ``resolved'' using kernel pool keywords, the */
-/*        frame is NOT declared CK-based with center ID derived by */
-/*        dividing frame ID by a 1000 and class ID assigned the frame ID */
-/*        anymore. In the current practice with multitude of TK frames */
-/*        with IDs set instrument IDs this default behavior is simply */
-/*        not valid. */
-
-/* -& */
 
 /*     Standard SPICE error handling. */
 
     if (return_()) {
 	return 0;
     }
+
+/*     For efficiency, J2000 deserves special treatment. */
+
+    if (*frcode == 1) {
+	*cent = 0;
+	*class__ = 1;
+	*clssid = 1;
+	*found = TRUE_;
+	return 0;
+    }
     chkin_("FRINFO", (ftnlen)6);
+
+/*     Perform any needed first pass initializations. */
+
+    if (first) {
+
+/*        Initialize POOL state counter to the user value. */
+
+	zzctruin_(pulctr);
+
+/*        Initialize kernel POOL frame hashes. */
+
+	zzhsiini_(&c__5209, kidlst, kidpol);
+	zzhscini_(&c__5209, knmlst, knmpol);
+
+/*        Initialize built-in frame tables and hashes. */
+
+	zzfdat_(&c__127, &c__127, name__, idcode, center, type__, typeid, 
+		centrd, bnmlst, bnmpol, bnmnms, bnmidx, bidlst, bidpol, 
+		bidids, bididx, (ftnlen)32, (ftnlen)32);
+	if (failed_()) {
+	    chkout_("FRINFO", (ftnlen)6);
+	    return 0;
+	}
+	first = FALSE_;
+    }
 
 /*     No frame information has been found yet. */
 
     *found = FALSE_;
 
-/*     Perform any needed first pass initializations. */
-
-    if (first) {
-	first = FALSE_;
-	zzfdat_(&c__121, name__, idcode, center, type__, typeid, norder, 
-		corder, centrd, (ftnlen)32);
-    }
-
 /*     Determine the location of the requested item in the array */
 /*     of ID codes. */
 
-    item = bschoi_(frcode, &c__121, idcode, corder);
+    zzhsichk_(bidlst, bidpol, bidids, frcode, &item);
+    if (item != 0) {
+	item = bididx[(i__1 = item - 1) < 127 && 0 <= i__1 ? i__1 : s_rnge(
+		"bididx", i__1, "framex_", (ftnlen)1424)];
+    }
 
-/*     If the name is in our list, we can just look up its ID code in */
+/*     If the name is in our hash, we can just look up its ID code in */
 /*     the parallel array. */
 
     if (item > 0) {
-	*cent = center[(i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 : s_rnge(
-		"center", i__1, "framex_", (ftnlen)1173)];
-	*class__ = type__[(i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 : 
-		s_rnge("type", i__1, "framex_", (ftnlen)1174)];
-	*clssid = typeid[(i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 : s_rnge(
-		"typeid", i__1, "framex_", (ftnlen)1175)];
+	*cent = center[(i__1 = item - 1) < 127 && 0 <= i__1 ? i__1 : s_rnge(
+		"center", i__1, "framex_", (ftnlen)1433)];
+	*class__ = type__[(i__1 = item - 1) < 127 && 0 <= i__1 ? i__1 : 
+		s_rnge("type", i__1, "framex_", (ftnlen)1434)];
+	*clssid = typeid[(i__1 = item - 1) < 127 && 0 <= i__1 ? i__1 : s_rnge(
+		"typeid", i__1, "framex_", (ftnlen)1435)];
 	*found = TRUE_;
     } else {
 
-/*        The frame ID wasn't in the list; see if the frame name */
-/*        is in the kernel pool. */
+/*        See if this frame is in the kernel pool frame ID-based hash. */
+/*        First reset the hash if POOL has changed. */
 
-	s_copy(pname, "FRAME_#_NAME", (ftnlen)32, (ftnlen)12);
-	repmi_(pname, "#", frcode, pname, (ftnlen)32, (ftnlen)1, (ftnlen)32);
-	gcpool_(pname, &c__1, &c__8, &n, line, &gotit, (ftnlen)32, (ftnlen)80)
-		;
-	if (gotit) {
-	    if (n > 1) {
+	zzpctrck_(pulctr, &lupdte);
+	if (lupdte) {
+	    zzhscini_(&c__5209, knmlst, knmpol);
+	    zzhsiini_(&c__5209, kidlst, kidpol);
+	}
 
-/*              We have an array-valued variable that looks like */
-/*              a frame name.  We consider this an error. */
+/*        Check if this ID is in the hash. */
 
-		setmsg_("Kernel variable # is array-valued; Frame name varia"
-			"bles must be scalar-valued.", (ftnlen)78);
-		errch_("#", pname, (ftnlen)1, (ftnlen)32);
-		sigerr_("SPICE(INVALIDDIMENSION)", (ftnlen)23);
-		chkout_("FRINFO", (ftnlen)6);
-		return 0;
-	    }
-	    ljust_(line, lcfram, (ftnlen)80, (ftnlen)32);
-
-/*           Start by looking up the central body of the frame. The name */
-/*           of the kernel variable for the body could refer to the */
-/*           frame by name or frame ID; the body itself could be */
-/*           specified by name or body ID. */
-
-	    zzdynbid_(lcfram, frcode, "CENTER", cent, (ftnlen)32, (ftnlen)6);
-	    if (failed_()) {
-		chkout_("FRINFO", (ftnlen)6);
-		return 0;
-	    }
+	zzhsichk_(kidlst, kidpol, kidids, frcode, &item);
+	if (item != 0) {
+	    *cent = kcent[(i__1 = item - 1) < 5209 && 0 <= i__1 ? i__1 : 
+		    s_rnge("kcent", i__1, "framex_", (ftnlen)1458)];
+	    *class__ = kclass[(i__1 = item - 1) < 5209 && 0 <= i__1 ? i__1 : 
+		    s_rnge("kclass", i__1, "framex_", (ftnlen)1459)];
+	    *clssid = kclsid[(i__1 = item - 1) < 5209 && 0 <= i__1 ? i__1 : 
+		    s_rnge("kclsid", i__1, "framex_", (ftnlen)1460)];
 	    *found = TRUE_;
+	} else {
 
-/*           FOUND has been set to indicate whether we found the frame's */
-/*           center.  If we did, CENT has been assigned. */
+/*           The ID wasn't in the hash, see if we can find this frame in */
+/*           the kernel pool. */
 
-/*           Next look up the frame class and class ID. */
+	    s_copy(pname, "FRAME_#_NAME", (ftnlen)32, (ftnlen)12);
+	    repmi_(pname, "#", frcode, pname, (ftnlen)32, (ftnlen)1, (ftnlen)
+		    32);
+	    gcpool_(pname, &c__1, &c__8, &n, line, &gotit, (ftnlen)32, (
+		    ftnlen)80);
+	    if (gotit) {
+		if (n > 1) {
 
-	    zzdynvai_(lcfram, frcode, "CLASS", &c__1, &n, values, (ftnlen)32, 
-		    (ftnlen)5);
-	    *class__ = values[0];
-	    zzdynvai_(lcfram, frcode, "CLASS_ID", &c__1, &n, values, (ftnlen)
-		    32, (ftnlen)8);
-	    *clssid = values[0];
-	    if (failed_()) {
-		chkout_("FRINFO", (ftnlen)6);
-		return 0;
+/*                 We have an array-valued variable that looks like */
+/*                 a frame name. We consider this an error. */
+
+		    setmsg_("Kernel variable # is array-valued; Frame name v"
+			    "ariables must be scalar-valued.", (ftnlen)78);
+		    errch_("#", pname, (ftnlen)1, (ftnlen)32);
+		    sigerr_("SPICE(INVALIDDIMENSION)", (ftnlen)23);
+		    chkout_("FRINFO", (ftnlen)6);
+		    return 0;
+		}
+		ljust_(line, lcfram, (ftnlen)80, (ftnlen)32);
+
+/*              Start by looking up the central body of the frame. The */
+/*              name of the kernel variable for the body could refer to */
+/*              the frame by name or frame ID; the body itself could be */
+/*              specified by name or body ID. */
+
+		zzdynbid_(lcfram, frcode, "CENTER", cent, (ftnlen)32, (ftnlen)
+			6);
+		if (failed_()) {
+		    chkout_("FRINFO", (ftnlen)6);
+		    return 0;
+		}
+		*found = TRUE_;
+
+/*              FOUND has been set to indicate whether we found the */
+/*              frame's center. If we did, CENT has been assigned. */
+
+/*              Next look up the frame class and class ID. */
+
+		zzdynvai_(lcfram, frcode, "CLASS", &c__1, &n, values, (ftnlen)
+			32, (ftnlen)5);
+		*class__ = values[0];
+		zzdynvai_(lcfram, frcode, "CLASS_ID", &c__1, &n, values, (
+			ftnlen)32, (ftnlen)8);
+		*clssid = values[0];
+		if (failed_()) {
+		    chkout_("FRINFO", (ftnlen)6);
+		    return 0;
+		}
+/*              If we made it to this point, we successfully collected */
+/*              all items for this frame. Add this frame to the */
+/*              ID-based hash. */
+
+		zzhsiadd_(kidlst, kidpol, kidids, frcode, &item, &lnew);
+		if (! failed_() && item != 0) {
+		    s_copy(kname + (((i__1 = item - 1) < 5209 && 0 <= i__1 ? 
+			    i__1 : s_rnge("kname", i__1, "framex_", (ftnlen)
+			    1534)) << 5), lcfram, (ftnlen)32, (ftnlen)32);
+		    kcent[(i__1 = item - 1) < 5209 && 0 <= i__1 ? i__1 : 
+			    s_rnge("kcent", i__1, "framex_", (ftnlen)1535)] = 
+			    *cent;
+		    kclass[(i__1 = item - 1) < 5209 && 0 <= i__1 ? i__1 : 
+			    s_rnge("kclass", i__1, "framex_", (ftnlen)1536)] =
+			     *class__;
+		    kclsid[(i__1 = item - 1) < 5209 && 0 <= i__1 ? i__1 : 
+			    s_rnge("kclsid", i__1, "framex_", (ftnlen)1537)] =
+			     *clssid;
+
+/*                 Also, try to add this frame to the name-based hash. */
+
+		    zzhscadd_(knmlst, knmpol, knmnms, lcfram, &item, &lnew, (
+			    ftnlen)32, (ftnlen)32);
+		    if (! failed_() && item != 0) {
+			knmids[(i__1 = item - 1) < 5209 && 0 <= i__1 ? i__1 : 
+				s_rnge("knmids", i__1, "framex_", (ftnlen)
+				1547)] = *frcode;
+		    }
+		}
 	    }
 	}
 
 /*        In support of the DSN, NAIF has reserved a block of */
-/*        ID-codes for DSN specific frames  from 13000 to 13999. */
+/*        ID codes for DSN specific frames  from 13000 to 13999. */
 /*        These are always PCK based frames for the earth. */
 /*        The PCK ID code is just FRCODE - 10000. */
 
@@ -1445,7 +1790,7 @@ L_frinfo:
     }
     chkout_("FRINFO", (ftnlen)6);
     return 0;
-/* $Procedure CIDFRM ( center SPK id  frame ) */
+/* $Procedure CIDFRM ( Center ID to FRaMe id and name ) */
 
 L_cidfrm:
 /* $ Abstract */
@@ -1479,7 +1824,7 @@ L_cidfrm:
 
 /* $ Required_Reading */
 
-/*     None. */
+/*     FRAMES */
 
 /* $ Keywords */
 
@@ -1499,28 +1844,28 @@ L_cidfrm:
 /*     --------  ---  -------------------------------------------------- */
 /*     CENT       I   an object to associate a frame with. */
 /*     FRCODE     O   the ID code of the frame associated with CENT */
-/*     FRNAME     O   the name of the frame with id FRCODE */
+/*     FRNAME     O   the name of the frame with ID FRCODE */
 /*     FOUND      O   TRUE if the requested information is available. */
 
 /* $ Detailed_Input */
 
-/*     CENT        is the id code for object for which there is a */
+/*     CENT        is the ID code for object for which there is a */
 /*                 preferred reference frame. */
 
 /* $ Detailed_Output */
 
-/*     FRCODE      is the frame id-code to associate with a the object */
+/*     FRCODE      is the frame ID code to associate with the object */
 /*                 specified by CENT. */
 
 /*     FRNAME      is the name of the frame that should be associated */
 /*                 with the object specified by CNAME. FRNAME should be */
-/*                 declared as CHARACTER*(32) to ensure that it can */
-/*                 contain the full name of the frame.  If FRNAME does */
+/*                 declared as CHARACTER*(26) to ensure that it can */
+/*                 contain the full name of the frame. If FRNAME does */
 /*                 not have enough room to hold the full name of the */
 /*                 frame, the name will be truncated on the right. */
 
-/*     FOUND       is TRUE if the appropriate frame id-code and frame */
-/*                 name can be determined.  Otherwise FOUND is returned */
+/*     FOUND       is TRUE if the appropriate frame ID code and frame */
+/*                 name can be determined. Otherwise FOUND is returned */
 /*                 with the value FALSE. */
 
 /* $ Parameters */
@@ -1531,7 +1876,7 @@ L_cidfrm:
 
 /*     1) If FRNAME is not have room to contain the frame name, the name */
 /*        will be truncated on the right. ( Declaring FRNAME to be */
-/*        CHARACTER*(32) will ensure that the name will not be */
+/*        CHARACTER*(26) will ensure that the name will not be */
 /*        truncated. */
 
 /* $ Files */
@@ -1541,9 +1886,9 @@ L_cidfrm:
 /* $ Particulars */
 
 /*     This routine allows the user to determine the frame that should */
-/*     be associated with a particular object.   For example, if you */
+/*     be associated with a particular object. For example, if you */
 /*     need the frame to associate with the Io, you can call CIDFRM */
-/*     to determine the frame name and id-code for the bodyfixed frame */
+/*     to determine the frame name and ID code for the bodyfixed frame */
 /*     of Io. */
 
 /*     The preferred frame to use with an object is specified via one */
@@ -1559,7 +1904,7 @@ L_cidfrm:
 /* $ Examples */
 
 /*     Suppose that you want to determine the state of a target */
-/*     in the preferred reference frame of some observer.  This */
+/*     in the preferred reference frame of some observer. This */
 /*     routine can be used in conjunction with SPKEZ to compute */
 /*     the state. */
 
@@ -1581,13 +1926,27 @@ L_cidfrm:
 
 /* $ Literature_References */
 
-/*      None. */
+/*     None. */
 
 /* $ Author_and_Institution */
 
-/*      W.L. Taber      (JPL) */
+/*     N.J. Bachman    (JPL) */
+/*     B.V. Semenov    (JPL) */
+/*     W.L. Taber      (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 3.2.0, 08-AUG-2012 (BVS) */
+
+/*        The routine was updated to be more efficient by using hashes */
+/*        instead kernel POOL look-ups for kernel POOL frames and by */
+/*        using hases instead of ordered array searches for built-in */
+/*        frames. */
+
+/* -    SPICELIB Version 3.1.1, 09-FEB-2011 (NJB) */
+
+/*        Bug fix: corrected logic for object-frame association for case */
+/*        where the assigned frame value is denoted by a frame code. */
 
 /* -    SPICELIB Version 3.0.1, 25-JUN-1999 (WLT) */
 
@@ -1604,9 +1963,9 @@ L_cidfrm:
 
 /*        The routine was upgraded to reflect that a block of */
 /*        frame ID codes have been reserved for use by the DSN. */
-/*        Id-codes 13001 to 13999 have been set aside for DSN */
-/*        models for the orientation of the earth.  These frames */
-/*        are all PCK frames.  Moreover, the PCK id-code to */
+/*        ID codes 13001 to 13999 have been set aside for DSN */
+/*        models for the orientation of the earth. These frames */
+/*        are all PCK frames. Moreover, the PCK ID code to */
 /*        use with these frames is simply the Frame-Code minus 10000. */
 /*        All of these frames are centered at the earth (body 399). */
 
@@ -1634,9 +1993,26 @@ L_cidfrm:
 /*     Perform any needed first pass initializations. */
 
     if (first) {
+
+/*        Initialize POOL state counter to the user value. */
+
+	zzctruin_(pulctr);
+
+/*        Initialize kernel POOL frame hashes. */
+
+	zzhsiini_(&c__5209, kidlst, kidpol);
+	zzhscini_(&c__5209, knmlst, knmpol);
+
+/*        Initialize built-in frame tables and hashes. */
+
+	zzfdat_(&c__127, &c__127, name__, idcode, center, type__, typeid, 
+		centrd, bnmlst, bnmpol, bnmnms, bnmidx, bidlst, bidpol, 
+		bidids, bididx, (ftnlen)32, (ftnlen)32);
+	if (failed_()) {
+	    chkout_("CIDFRM", (ftnlen)6);
+	    return 0;
+	}
 	first = FALSE_;
-	zzfdat_(&c__121, name__, idcode, center, type__, typeid, norder, 
-		corder, centrd, (ftnlen)32);
     }
 
 /*     First look up in the kernel pool the frame associated with this */
@@ -1647,12 +2023,12 @@ L_cidfrm:
     dtpool_(lookup, &gotit, &n, dattyp, (ftnlen)32, (ftnlen)1);
 
 /*     If we didn't find this object in the form OBJECT_<number>_FRAME */
-/*     maybe it is present in the form OBJECT_<name>_FRAME.  It's */
+/*     maybe it is present in the form OBJECT_<name>_FRAME. It's */
 /*     worth a try. */
 
     if (! gotit) {
 
-/*        See if we can get the name for this center's id-code. */
+/*        See if we can get the name for this center's ID code. */
 
 	bodc2n_(cent, lcname, &gotit, (ftnlen)36);
 	if (gotit) {
@@ -1668,9 +2044,9 @@ L_cidfrm:
 	}
     }
 
-/*     There are two cases.  The user may specify either a name */
-/*     or id-code for the frame to use to model the orientation of */
-/*     an object.  We assume they'll opt for the character string */
+/*     There are two cases. The user may specify either a name */
+/*     or ID code for the frame to use to model the orientation of */
+/*     an object. We assume they'll opt for the character string */
 /*     form so we test that case first. */
 
     if (gotit) {
@@ -1678,79 +2054,160 @@ L_cidfrm:
 	    gcpool_(lookup, &c__1, &c__1, &n, pname, &gotit, (ftnlen)32, (
 		    ftnlen)32);
 
-/*           We've got the name:  See if we have this in our handy list */
+/*           We've got the name:  See if we have this in our handy hash */
 /*           of built-in names. */
 
-	    item = bschoc_(pname, &c__121, name__, norder, (ftnlen)32, (
+	    zzhscchk_(bnmlst, bnmpol, bnmnms, pname, &item, (ftnlen)32, (
 		    ftnlen)32);
+	    if (item != 0) {
+		item = bnmidx[(i__1 = item - 1) < 127 && 0 <= i__1 ? i__1 : 
+			s_rnge("bnmidx", i__1, "framex_", (ftnlen)1867)];
+	    }
 	    if (item > 0) {
 		s_copy(frname, pname, frname_len, (ftnlen)32);
-		*frcode = idcode[(i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 :
-			 s_rnge("idcode", i__1, "framex_", (ftnlen)1517)];
+		*frcode = idcode[(i__1 = item - 1) < 127 && 0 <= i__1 ? i__1 :
+			 s_rnge("idcode", i__1, "framex_", (ftnlen)1873)];
 		*found = TRUE_;
 	    } else {
 
-/*              Nope.  look in the kernel pool for the data associated */
-/*              with this frame. */
+/*              See if this frame is in the kernel pool frame name-based */
+/*              hash. First reset the hash if POOL has changed. */
 
-		s_copy(frname, pname, frname_len, (ftnlen)32);
-		prefix_("FRAME_", &c__0, pname, (ftnlen)6, (ftnlen)32);
-		gipool_(pname, &c__1, &c__8, &n, values, &gotit, (ftnlen)32);
-		if (n == 1 && gotit) {
-		    *frcode = values[0];
+		zzpctrck_(pulctr, &lupdte);
+		if (lupdte) {
+		    zzhscini_(&c__5209, knmlst, knmpol);
+		    zzhsiini_(&c__5209, kidlst, kidpol);
+		}
+
+/*              Check if this name is in the hash. */
+
+		zzhscchk_(knmlst, knmpol, knmnms, pname, &item, (ftnlen)32, (
+			ftnlen)32);
+		if (item != 0) {
+		    s_copy(frname, pname, frname_len, (ftnlen)32);
+		    *frcode = knmids[(i__1 = item - 1) < 5209 && 0 <= i__1 ? 
+			    i__1 : s_rnge("knmids", i__1, "framex_", (ftnlen)
+			    1897)];
 		    *found = TRUE_;
 		} else {
-		    *frcode = 0;
-		    s_copy(frname, " ", frname_len, (ftnlen)1);
-		    *found = FALSE_;
+
+/*                 Nope. Look in the kernel pool for the data associated */
+/*                 with this frame. */
+
+/*                 Capture the frame name now, since we're going to */
+/*                 modify PNAME. */
+
+		    s_copy(frname, pname, frname_len, (ftnlen)32);
+		    prefix_("FRAME_", &c__0, pname, (ftnlen)6, (ftnlen)32);
+		    gipool_(pname, &c__1, &c__8, &n, values, &gotit, (ftnlen)
+			    32);
+		    if (failed_()) {
+			chkout_("CIDFRM", (ftnlen)6);
+			return 0;
+		    }
+		    if (n == 1 && gotit) {
+			*frcode = values[0];
+			*found = TRUE_;
+
+/*                    If we made it to this point, we successfully */
+/*                    mapped the kernel frame name to its ID. Add this */
+/*                    pair to the name-based hash. */
+
+			zzhscadd_(knmlst, knmpol, knmnms, frname, &item, &
+				lnew, (ftnlen)32, frname_len);
+			if (! failed_() && item != 0) {
+			    knmids[(i__1 = item - 1) < 5209 && 0 <= i__1 ? 
+				    i__1 : s_rnge("knmids", i__1, "framex_", (
+				    ftnlen)1934)] = *frcode;
+			}
+		    } else {
+			*frcode = 0;
+			s_copy(frname, " ", frname_len, (ftnlen)1);
+			*found = FALSE_;
+		    }
 		}
 	    }
 	} else if (*(unsigned char *)dattyp == 'N') {
 
-/*           Ok.  They decided to use the numeric form to specify */
-/*           the frame id.  We need to figure out the name of the frame. */
-/*           First we retrieve the frame id they've loaded into the */
+/*           Ok. They decided to use the numeric form to specify */
+/*           the frame ID. We need to figure out the name of the frame. */
+/*           First we retrieve the frame ID they've loaded into the */
 /*           kernel pool. */
 
 	    gipool_(lookup, &c__1, &c__1, &n, values, &gotit, (ftnlen)32);
+	    if (failed_()) {
+		chkout_("CIDFRM", (ftnlen)6);
+		return 0;
+	    }
 
 /*           We've got the frame ID, see if we already know about this */
-/*           id-code. */
+/*           ID code. */
 
-	    item = bschoi_(values, &c__121, center, centrd);
+	    zzhsichk_(bidlst, bidpol, bidids, values, &item);
+	    if (item != 0) {
+		item = bididx[(i__1 = item - 1) < 127 && 0 <= i__1 ? i__1 : 
+			s_rnge("bididx", i__1, "framex_", (ftnlen)1971)];
+	    }
 	    if (item != 0) {
 
 /*              Just look up the name and set the frame code. */
 
-		s_copy(frname, name__ + (((i__1 = item - 1) < 121 && 0 <= 
+		s_copy(frname, name__ + (((i__1 = item - 1) < 127 && 0 <= 
 			i__1 ? i__1 : s_rnge("name", i__1, "framex_", (ftnlen)
-			1565)) << 5), frname_len, (ftnlen)32);
+			1978)) << 5), frname_len, (ftnlen)32);
 		*frcode = values[0];
 		*found = TRUE_;
 	    } else {
 
-/*              Hmmm. Not on the built-in list.  See if it's in the */
-/*              kernel pool somewhere. */
+/*              See if this frame is in the kernel pool frame ID-based */
+/*              hash. First reset the hash if POOL has changed. */
 
-		s_copy(pname, "FRAME_#_NAME", (ftnlen)32, (ftnlen)12);
-		repmi_(pname, "#", values, pname, (ftnlen)32, (ftnlen)1, (
-			ftnlen)32);
-		gcpool_(pname, &c__1, &c__8, &n, line, &gotit, (ftnlen)32, (
-			ftnlen)80);
-		if (n == 1 && gotit) {
-		    ljust_(line, frname, (ftnlen)80, frname_len);
+		zzpctrck_(pulctr, &lupdte);
+		if (lupdte) {
+		    zzhscini_(&c__5209, knmlst, knmpol);
+		    zzhsiini_(&c__5209, kidlst, kidpol);
+		}
+
+/*              Check if this ID is in the hash. */
+
+		zzhsichk_(kidlst, kidpol, kidids, values, &item);
+		if (item != 0) {
+		    s_copy(frname, kname + (((i__1 = item - 1) < 5209 && 0 <= 
+			    i__1 ? i__1 : s_rnge("kname", i__1, "framex_", (
+			    ftnlen)2002)) << 5), frname_len, (ftnlen)32);
 		    *frcode = values[0];
 		    *found = TRUE_;
 		} else {
-		    *frcode = values[0];
-		    s_copy(frname, " ", frname_len, (ftnlen)1);
-		    *found = FALSE_;
+
+/*                 It is not in the hash. See if it's in the kernel pool */
+/*                 somewhere. */
+
+		    s_copy(pname, "FRAME_#_NAME", (ftnlen)32, (ftnlen)12);
+		    repmi_(pname, "#", values, pname, (ftnlen)32, (ftnlen)1, (
+			    ftnlen)32);
+		    gcpool_(pname, &c__1, &c__8, &n, line, &gotit, (ftnlen)32,
+			     (ftnlen)80);
+		    if (n == 1 && gotit) {
+			ljust_(line, frname, (ftnlen)80, frname_len);
+			*frcode = values[0];
+			*found = TRUE_;
+
+/*                    Note that since we did not collect all needed */
+/*                    information about this frame, we will not try to */
+/*                    add it to the hash. This addition is done only by */
+/*                    FRINFO. */
+
+		    } else {
+			*frcode = values[0];
+			s_copy(frname, " ", frname_len, (ftnlen)1);
+			*found = FALSE_;
+		    }
 		}
 	    }
 	}
 
 /*        One way or the other we've filled in the values at this */
-/*        point.  Nothing left to do but check out and return. */
+/*        point. Nothing left to do but check out and return. */
 
 	chkout_("CIDFRM", (ftnlen)6);
 	return 0;
@@ -1772,21 +2229,21 @@ L_cidfrm:
 /*     Determine the location of the requested item in the array */
 /*     of centers. */
 
-    item = bschoi_(cent, &c__121, center, centrd);
+    item = bschoi_(cent, &c__127, center, centrd);
 
 /*     If the name is in our list, we can just look up its ID code and */
 /*     name in the parallel array. */
 
     if (item > 0) {
-	*frcode = idcode[(i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 : s_rnge(
-		"idcode", i__1, "framex_", (ftnlen)1632)];
-	s_copy(frname, name__ + (((i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 
-		: s_rnge("name", i__1, "framex_", (ftnlen)1633)) << 5), 
+	*frcode = idcode[(i__1 = item - 1) < 127 && 0 <= i__1 ? i__1 : s_rnge(
+		"idcode", i__1, "framex_", (ftnlen)2078)];
+	s_copy(frname, name__ + (((i__1 = item - 1) < 127 && 0 <= i__1 ? i__1 
+		: s_rnge("name", i__1, "framex_", (ftnlen)2079)) << 5), 
 		frname_len, (ftnlen)32);
 	*found = TRUE_;
     } else {
 
-/*        There's nothing we can do now.  We don't know what frame */
+/*        There's nothing we can do now. We don't know what frame */
 /*        might be associated with this object. */
 
 	s_copy(frname, " ", frname_len, (ftnlen)1);
@@ -1795,7 +2252,7 @@ L_cidfrm:
     }
     chkout_("CIDFRM", (ftnlen)6);
     return 0;
-/* $Procedure CNMFRM ( Center name to associated frame ) */
+/* $Procedure CNMFRM ( Center NaMe to FRaMe id and name ) */
 
 L_cnmfrm:
 /* $ Abstract */
@@ -1829,7 +2286,7 @@ L_cnmfrm:
 
 /* $ Required_Reading */
 
-/*     None. */
+/*     FRAMES */
 
 /* $ Keywords */
 
@@ -1849,7 +2306,7 @@ L_cnmfrm:
 /*     --------  ---  -------------------------------------------------- */
 /*     CNAME      I   name of the object to find a frame for */
 /*     FRCODE     O   the ID code of the frame associated with CNAME */
-/*     FRNAME     O   the name of the frame with id FRCODE */
+/*     FRNAME     O   the name of the frame with ID FRCODE */
 /*     FOUND      O   TRUE if the requested information is available. */
 
 /* $ Detailed_Input */
@@ -1859,18 +2316,18 @@ L_cnmfrm:
 
 /* $ Detailed_Output */
 
-/*     FRCODE      is the frame id-code to associate with a the object */
+/*     FRCODE      is the frame ID code to associate with a the object */
 /*                 specified by CNAME. */
 
 /*     FRNAME      is the name of the frame that should be associated */
 /*                 with the object specified by CNAME. FRNAME should be */
-/*                 declared as CHARACTER*(32) to ensure that it can */
-/*                 contain the full name of the frame.  If FRNAME does */
+/*                 declared as CHARACTER*(26) to ensure that it can */
+/*                 contain the full name of the frame. If FRNAME does */
 /*                 not have enough room to hold the full name of the */
 /*                 frame, the name will be truncated on the right. */
 
-/*     FOUND       is TRUE if the appropriate frame id-code and frame */
-/*                 name can be determined.  Otherwise FOUND is returned */
+/*     FOUND       is TRUE if the appropriate frame ID code and frame */
+/*                 name can be determined. Otherwise FOUND is returned */
 /*                 with the value FALSE. */
 
 /* $ Parameters */
@@ -1881,7 +2338,7 @@ L_cnmfrm:
 
 /*     1) If FRNAME is not have room to contain the frame name, the name */
 /*        will be truncated on the right. ( Declaring FRNAME to be */
-/*        CHARACTER*(32) will ensure that the name will not be */
+/*        CHARACTER*(26) will ensure that the name will not be */
 /*        truncated. */
 
 /* $ Files */
@@ -1891,9 +2348,9 @@ L_cnmfrm:
 /* $ Particulars */
 
 /*     This routine allows the user to determine the frame that should */
-/*     be associated with a particular object.   For example, if you */
+/*     be associated with a particular object. For example, if you */
 /*     need the frame to associate with the Io, you can call CNMFRM */
-/*     to determine the frame name and id-code for the bodyfixed frame */
+/*     to determine the frame name and ID code for the bodyfixed frame */
 /*     of Io. */
 
 /*     The preferred frame to use with an object is specified via one */
@@ -1909,7 +2366,7 @@ L_cnmfrm:
 /* $ Examples */
 
 /*     Suppose that you want to determine the state of a target */
-/*     in the preferred reference frame of some observer.  This */
+/*     in the preferred reference frame of some observer. This */
 /*     routine can be used in conjunction with SPKEZR to compute */
 /*     the state. */
 
@@ -1931,13 +2388,22 @@ L_cnmfrm:
 
 /* $ Literature_References */
 
-/*      None. */
+/*     None. */
 
 /* $ Author_and_Institution */
 
-/*      W.L. Taber      (JPL) */
+/*     N.J. Bachman    (JPL) */
+/*     B.V. Semenov    (JPL) */
+/*     W.L. Taber      (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 3.2.0, 08-AUG-2012 (BVS) */
+
+/*        The routine was updated to be more efficient by using hashes */
+/*        instead kernel POOL look-ups for kernel POOL frames and by */
+/*        using hases instead of ordered array searches for built-in */
+/*        frames. */
 
 /* -    SPICELIB Version 3.1.0, 28-NOV-2002 (NJB) */
 
@@ -1961,9 +2427,9 @@ L_cnmfrm:
 
 /*        The routine was upgraded to reflect that a block of */
 /*        frame ID codes have been reserved for use by the DSN. */
-/*        Id-codes 13001 to 13999 have been set aside for DSN */
-/*        models for the orientation of the earth.  These frames */
-/*        are all PCK frames.  Moreover, the PCK id-code to */
+/*        ID codes 13001 to 13999 have been set aside for DSN */
+/*        models for the orientation of the earth. These frames */
+/*        are all PCK frames. Moreover, the PCK ID code to */
 /*        use with these frames is simply the Frame-Code minus 10000. */
 /*        All of these frames are centered at the earth (body 399). */
 
@@ -1981,16 +2447,6 @@ L_cnmfrm:
 /*     Find the bodyfixed frame associated with an object */
 
 /* -& */
-/* $ Revisions */
-
-/* -    SPICELIB Version 3.1.0, 28-NOV-2002 (NJB) */
-
-/*        Bug fix: updated this routine so a TK frame specified by name */
-/*        and designated as an object's preferred frame via kernel pool */
-/*        assignments is found, and so that the correct name of this */
-/*        frame is returned. */
-
-/* -& */
 
 /*     Standard SPICE error handling. */
 
@@ -2002,9 +2458,26 @@ L_cnmfrm:
 /*     Perform any needed first pass initializations. */
 
     if (first) {
+
+/*        Initialize POOL state counter to the user value. */
+
+	zzctruin_(pulctr);
+
+/*        Initialize kernel POOL frame hashes. */
+
+	zzhsiini_(&c__5209, kidlst, kidpol);
+	zzhscini_(&c__5209, knmlst, knmpol);
+
+/*        Initialize built-in frame tables and hashes. */
+
+	zzfdat_(&c__127, &c__127, name__, idcode, center, type__, typeid, 
+		centrd, bnmlst, bnmpol, bnmnms, bnmidx, bidlst, bidpol, 
+		bidids, bididx, (ftnlen)32, (ftnlen)32);
+	if (failed_()) {
+	    chkout_("CNMFRM", (ftnlen)6);
+	    return 0;
+	}
 	first = FALSE_;
-	zzfdat_(&c__121, name__, idcode, center, type__, typeid, norder, 
-		corder, centrd, (ftnlen)32);
     }
 
 /*     First look up in the kernel pool the frame associated with this */
@@ -2017,12 +2490,12 @@ L_cnmfrm:
     dtpool_(lookup, &gotit, &n, dattyp, (ftnlen)32, (ftnlen)1);
 
 /*     If we didn't find this object in the form OBJECT_<name>_FRAME */
-/*     maybe it is present in the form OBJECT_<number>_FRAME.  It's */
+/*     maybe it is present in the form OBJECT_<number>_FRAME. It's */
 /*     worth a try. */
 
     if (! gotit) {
 
-/*        See if we can get the name for this center's id-code. */
+/*        See if we can get the name for this center's ID code. */
 
 	bodn2c_(cname, &id, &gotit, cname_len);
 	if (gotit) {
@@ -2037,9 +2510,9 @@ L_cnmfrm:
 	}
     }
 
-/*     There are two cases.  The user may specify either a name */
-/*     or id-code for the frame to use to model the orientation of */
-/*     an object.  We assume they'll opt for the character string */
+/*     There are two cases. The user may specify either a name */
+/*     or ID code for the frame to use to model the orientation of */
+/*     an object. We assume they'll opt for the character string */
 /*     form so we test that case first. */
 
     if (gotit) {
@@ -2047,82 +2520,160 @@ L_cnmfrm:
 	    gcpool_(lookup, &c__1, &c__1, &n, pname, &gotit, (ftnlen)32, (
 		    ftnlen)32);
 
-/*           We've got the name:  See if we have this in our handy list */
+/*           We've got the name:  See if we have this in our handy hash */
 /*           of built-in names. */
 
-	    item = bschoc_(pname, &c__121, name__, norder, (ftnlen)32, (
+	    zzhscchk_(bnmlst, bnmpol, bnmnms, pname, &item, (ftnlen)32, (
 		    ftnlen)32);
+	    if (item != 0) {
+		item = bnmidx[(i__1 = item - 1) < 127 && 0 <= i__1 ? i__1 : 
+			s_rnge("bnmidx", i__1, "framex_", (ftnlen)2389)];
+	    }
 	    if (item > 0) {
 		s_copy(frname, pname, frname_len, (ftnlen)32);
-		*frcode = idcode[(i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 :
-			 s_rnge("idcode", i__1, "framex_", (ftnlen)1926)];
+		*frcode = idcode[(i__1 = item - 1) < 127 && 0 <= i__1 ? i__1 :
+			 s_rnge("idcode", i__1, "framex_", (ftnlen)2395)];
 		*found = TRUE_;
 	    } else {
 
-/*              Nope.  look in the kernel pool for the data associated */
-/*              with this frame. */
+/*              See if this frame is in the kernel pool frame name-based */
+/*              hash. First reset the hash if POOL has changed. */
 
-/*              Capture the frame name now, since we're going to modify */
-/*              PNAME. */
+		zzpctrck_(pulctr, &lupdte);
+		if (lupdte) {
+		    zzhscini_(&c__5209, knmlst, knmpol);
+		    zzhsiini_(&c__5209, kidlst, kidpol);
+		}
 
-		s_copy(frname, pname, frname_len, (ftnlen)32);
-		prefix_("FRAME_", &c__0, pname, (ftnlen)6, (ftnlen)32);
-		gipool_(pname, &c__1, &c__8, &n, values, &gotit, (ftnlen)32);
-		if (n == 1 && gotit) {
-		    *frcode = values[0];
+/*              Check if this name is in the hash. */
+
+		zzhscchk_(knmlst, knmpol, knmnms, pname, &item, (ftnlen)32, (
+			ftnlen)32);
+		if (item != 0) {
+		    s_copy(frname, pname, frname_len, (ftnlen)32);
+		    *frcode = knmids[(i__1 = item - 1) < 5209 && 0 <= i__1 ? 
+			    i__1 : s_rnge("knmids", i__1, "framex_", (ftnlen)
+			    2419)];
 		    *found = TRUE_;
 		} else {
-		    *frcode = 0;
-		    s_copy(frname, " ", frname_len, (ftnlen)1);
-		    *found = FALSE_;
+
+/*                 Nope. Look in the kernel pool for the data associated */
+/*                 with this frame. */
+
+/*                 Capture the frame name now, since we're going to */
+/*                 modify PNAME. */
+
+		    s_copy(frname, pname, frname_len, (ftnlen)32);
+		    prefix_("FRAME_", &c__0, pname, (ftnlen)6, (ftnlen)32);
+		    gipool_(pname, &c__1, &c__8, &n, values, &gotit, (ftnlen)
+			    32);
+		    if (failed_()) {
+			chkout_("CNMFRM", (ftnlen)6);
+			return 0;
+		    }
+		    if (n == 1 && gotit) {
+			*frcode = values[0];
+			*found = TRUE_;
+
+/*                    If we made it to this point, we successfully */
+/*                    mapped the kernel frame name to its ID. Add this */
+/*                    pair to the name-based hash. */
+
+			zzhscadd_(knmlst, knmpol, knmnms, frname, &item, &
+				lnew, (ftnlen)32, frname_len);
+			if (! failed_() && item != 0) {
+			    knmids[(i__1 = item - 1) < 5209 && 0 <= i__1 ? 
+				    i__1 : s_rnge("knmids", i__1, "framex_", (
+				    ftnlen)2456)] = *frcode;
+			}
+		    } else {
+			*frcode = 0;
+			s_copy(frname, " ", frname_len, (ftnlen)1);
+			*found = FALSE_;
+		    }
 		}
 	    }
 	} else if (*(unsigned char *)dattyp == 'N') {
 
-/*           Ok.  They decided to use the numeric form to specify */
-/*           the frame id.  We need to figure out the name of the frame. */
-/*           First we retrieve the frame id they've loaded into the */
+/*           Ok. They decided to use the numeric form to specify */
+/*           the frame ID. We need to figure out the name of the frame. */
+/*           First we retrieve the frame ID they've loaded into the */
 /*           kernel pool. */
 
 	    gipool_(lookup, &c__1, &c__1, &n, values, &gotit, (ftnlen)32);
+	    if (failed_()) {
+		chkout_("CNMFRM", (ftnlen)6);
+		return 0;
+	    }
 
 /*           We've got the frame ID, see if we already know about this */
-/*           id-code. */
+/*           ID code. */
 
-	    item = bschoi_(values, &c__121, idcode, corder);
+	    zzhsichk_(bidlst, bidpol, bidids, values, &item);
+	    if (item != 0) {
+		item = bididx[(i__1 = item - 1) < 127 && 0 <= i__1 ? i__1 : 
+			s_rnge("bididx", i__1, "framex_", (ftnlen)2493)];
+	    }
 	    if (item != 0) {
 
 /*              Just look up the name and set the frame code. */
 
-		s_copy(frname, name__ + (((i__1 = item - 1) < 121 && 0 <= 
+		s_copy(frname, name__ + (((i__1 = item - 1) < 127 && 0 <= 
 			i__1 ? i__1 : s_rnge("name", i__1, "framex_", (ftnlen)
-			1977)) << 5), frname_len, (ftnlen)32);
+			2500)) << 5), frname_len, (ftnlen)32);
 		*frcode = values[0];
 		*found = TRUE_;
 	    } else {
 
-/*              Hmmm. Not on the built-in list.  See if it's in the */
-/*              kernel pool somewhere. */
+/*              See if this frame is in the kernel pool frame ID-based */
+/*              hash. First reset the hash if POOL has changed. */
 
-		s_copy(pname, "FRAME_#_NAME", (ftnlen)32, (ftnlen)12);
-		repmi_(pname, "#", values, pname, (ftnlen)32, (ftnlen)1, (
-			ftnlen)32);
-		gcpool_(pname, &c__1, &c__8, &n, line, &gotit, (ftnlen)32, (
-			ftnlen)80);
-		if (n == 1 && gotit) {
-		    ljust_(line, frname, (ftnlen)80, frname_len);
+		zzpctrck_(pulctr, &lupdte);
+		if (lupdte) {
+		    zzhscini_(&c__5209, knmlst, knmpol);
+		    zzhsiini_(&c__5209, kidlst, kidpol);
+		}
+
+/*              Check if this ID is in the hash. */
+
+		zzhsichk_(kidlst, kidpol, kidids, values, &item);
+		if (item != 0) {
+		    s_copy(frname, kname + (((i__1 = item - 1) < 5209 && 0 <= 
+			    i__1 ? i__1 : s_rnge("kname", i__1, "framex_", (
+			    ftnlen)2524)) << 5), frname_len, (ftnlen)32);
 		    *frcode = values[0];
 		    *found = TRUE_;
 		} else {
-		    *frcode = values[0];
-		    s_copy(frname, " ", frname_len, (ftnlen)1);
-		    *found = FALSE_;
+
+/*                 It is not in the hash. See if it's in the kernel pool */
+/*                 somewhere. */
+
+		    s_copy(pname, "FRAME_#_NAME", (ftnlen)32, (ftnlen)12);
+		    repmi_(pname, "#", values, pname, (ftnlen)32, (ftnlen)1, (
+			    ftnlen)32);
+		    gcpool_(pname, &c__1, &c__8, &n, line, &gotit, (ftnlen)32,
+			     (ftnlen)80);
+		    if (n == 1 && gotit) {
+			ljust_(line, frname, (ftnlen)80, frname_len);
+			*frcode = values[0];
+			*found = TRUE_;
+
+/*                    Note that since we did not collect all needed */
+/*                    information about this frame, we will not try to */
+/*                    add it to the hash. This addition is done only by */
+/*                    FRINFO. */
+
+		    } else {
+			*frcode = values[0];
+			s_copy(frname, " ", frname_len, (ftnlen)1);
+			*found = FALSE_;
+		    }
 		}
 	    }
 	}
 
 /*        One way or the other we've filled in the values at this */
-/*        point.  Nothing left to do but check out and return. */
+/*        point. Nothing left to do but check out and return. */
 
 	chkout_("CNMFRM", (ftnlen)6);
 	return 0;
@@ -2140,18 +2691,22 @@ L_cnmfrm:
 /*     Determine the location of the requested item in the array */
 /*     of centers. */
 
-    item = bschoc_(frname, &c__121, name__, norder, frname_len, (ftnlen)32);
+    zzhscchk_(bnmlst, bnmpol, bnmnms, frname, &item, (ftnlen)32, frname_len);
+    if (item != 0) {
+	item = bnmidx[(i__1 = item - 1) < 127 && 0 <= i__1 ? i__1 : s_rnge(
+		"bnmidx", i__1, "framex_", (ftnlen)2587)];
+    }
 
-/*     If the name is in our list, we can just look up its ID code and */
+/*     If the name is in our hash, we can just look up its ID code and */
 /*     name in the parallel array. */
 
     if (item > 0) {
-	*frcode = idcode[(i__1 = item - 1) < 121 && 0 <= i__1 ? i__1 : s_rnge(
-		"idcode", i__1, "framex_", (ftnlen)2038)];
+	*frcode = idcode[(i__1 = item - 1) < 127 && 0 <= i__1 ? i__1 : s_rnge(
+		"idcode", i__1, "framex_", (ftnlen)2596)];
 	*found = TRUE_;
     } else {
 
-/*        There's nothing we can do now.  We don't know what frame */
+/*        There's nothing we can do now. We don't know what frame */
 /*        might be associated with this object. */
 
 	*frcode = 0;
@@ -2159,7 +2714,7 @@ L_cnmfrm:
     }
     chkout_("CNMFRM", (ftnlen)6);
     return 0;
-/* $Procedure CCIFRM ( Class and class ID to associated frame ) */
+/* $Procedure CCIFRM ( frame Class and Class Id to FRaMe id and name ) */
 
 L_ccifrm:
 /* $ Abstract */
@@ -2222,7 +2777,7 @@ L_ccifrm:
 
 /* $ Detailed_Input */
 
-/*     CLASS       is the class or type of the frame.  This identifies */
+/*     CLASS       is the class or type of the frame. This identifies */
 /*                 which subsystem will be used to perform frame */
 /*                 transformations. */
 
@@ -2235,9 +2790,9 @@ L_ccifrm:
 /*                 identified by CLASS and CLSSID. */
 
 /*     FRNAME      is the name of the frame identified by CLASS and */
-/*                 CLSSID. FRNAME should be declared as CHARACTER*(32) */
+/*                 CLSSID. FRNAME should be declared as CHARACTER*(26) */
 /*                 to ensure that it can contain the full name of the */
-/*                 frame.  If FRNAME does not have enough room to hold */
+/*                 frame. If FRNAME does not have enough room to hold */
 /*                 the full name of the frame, the name will be */
 /*                 truncated on the right. */
 
@@ -2264,7 +2819,7 @@ L_ccifrm:
 
 /*     2) If FRNAME does not have room to contain the frame name, the */
 /*        name will be truncated on the right. ( Declaring FRNAME to be */
-/*        CHARACTER*(32) will ensure that the name will not be */
+/*        CHARACTER*(26) will ensure that the name will not be */
 /*        truncated. */
 
 /*     3) If a frame class assignment is found that associates a */
@@ -2293,9 +2848,9 @@ L_ccifrm:
 /* $ Particulars */
 
 /*     This routine allows the user to determine the frame associated */
-/*     with a given frame class and class ID code. The kernel pool is */
-/*     searched first for a matching frame; if no match is found, then */
-/*     the set of built-in frames is searched. */
+/*     with a given frame class and class ID code. The built-in frame */
+/*     list is searched first for a matching frame; if no match is */
+/*     found, then the kernel POOL is searched. */
 
 /*     Since the neither the frame class nor the class ID are primary */
 /*     keys, searching for matching frames is a linear (and therefore */
@@ -2331,8 +2886,23 @@ L_ccifrm:
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
+/*     B.V. Semenov    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.1, 02-FEB-2017 (BVS) */
+
+/*        Shortened one of permutted index entries. */
+
+/* -    SPICELIB Version 1.1.0, 08-AUG-2012 (BVS) */
+
+/*        The routine was updated to be more efficient by using hashes */
+/*        instead kernel POOL look-ups for kernel POOL frames and by */
+/*        using hases instead of ordered array searches for built-in */
+/*        frames. */
+
+/*        Bux fix: CCIFRM logic was corrected to examine the built-in */
+/*        frames before looking at the kernel POOL frames. */
 
 /* -    SPICELIB Version 1.0.0, 05-NOV-2007 (NJB) */
 
@@ -2340,8 +2910,8 @@ L_ccifrm:
 /* $ Index_Entries */
 
 /*     Find info associated with a frame class and class id */
-/*     Map frame class and class id to frame info */
-/*     Map frame class and class id to frame name, id, and center */
+/*     Map frame class and class ID to frame info */
+/*     Map frame class and class ID to frame name, id, center */
 
 /* -& */
 
@@ -2352,24 +2922,66 @@ L_ccifrm:
     }
     chkin_("CCIFRM", (ftnlen)6);
 
+/*     Perform any needed first pass initializations. */
+
+    if (first) {
+
+/*        Initialize POOL state counter to the user value. */
+
+	zzctruin_(pulctr);
+
+/*        Initialize kernel POOL frame hashes. */
+
+	zzhsiini_(&c__5209, kidlst, kidpol);
+	zzhscini_(&c__5209, knmlst, knmpol);
+
+/*        Initialize built-in frame tables and hashes. */
+
+	zzfdat_(&c__127, &c__127, name__, idcode, center, type__, typeid, 
+		centrd, bnmlst, bnmpol, bnmnms, bnmidx, bidlst, bidpol, 
+		bidids, bididx, (ftnlen)32, (ftnlen)32);
+	if (failed_()) {
+	    chkout_("CCIFRM", (ftnlen)6);
+	    return 0;
+	}
+	first = FALSE_;
+    }
+
 /*     No frame found so far. */
 
     *found = FALSE_;
 
-/*     Perform any needed first pass initializations. */
+/*     First try to look up from the built-in list the frame associated */
+/*     with the input class and class ID. Unfortunately, this is a */
+/*     linear search. */
 
-    if (first) {
-	first = FALSE_;
-	zzfdat_(&c__121, name__, idcode, center, type__, typeid, norder, 
-		corder, centrd, (ftnlen)32);
+    for (i__ = 1; i__ <= 127; ++i__) {
+	if (type__[(i__1 = i__ - 1) < 127 && 0 <= i__1 ? i__1 : s_rnge("type",
+		 i__1, "framex_", (ftnlen)2871)] == *class__ && typeid[(i__2 =
+		 i__ - 1) < 127 && 0 <= i__2 ? i__2 : s_rnge("typeid", i__2, 
+		"framex_", (ftnlen)2871)] == *clssid) {
+
+/*           We have a match. Assign the output arguments and return. */
+
+	    s_copy(frname, name__ + (((i__1 = i__ - 1) < 127 && 0 <= i__1 ? 
+		    i__1 : s_rnge("name", i__1, "framex_", (ftnlen)2876)) << 
+		    5), frname_len, (ftnlen)32);
+	    *frcode = idcode[(i__1 = i__ - 1) < 127 && 0 <= i__1 ? i__1 : 
+		    s_rnge("idcode", i__1, "framex_", (ftnlen)2877)];
+	    *cent = center[(i__1 = i__ - 1) < 127 && 0 <= i__1 ? i__1 : 
+		    s_rnge("center", i__1, "framex_", (ftnlen)2878)];
+	    *found = TRUE_;
+	    chkout_("CCIFRM", (ftnlen)6);
+	    return 0;
+	}
     }
 
-/*     First try to look up from the kernel pool the frame associated */
-/*     with the input class and class ID. Since neither of these input */
-/*     values appears in a kernel variable name, we may have to look at */
-/*     all of the frame specifications in the kernel pool. Start out by */
-/*     looking the frame class assignments from any loaded frame */
-/*     specifications. */
+/*     Unfortunately we did not find a frame associated with the input */
+/*     class and class ID in the built-in list. We need to look for this */
+/*     frame in the kernel POOL. Since neither of these input values */
+/*     appears in a kernel variable name, we may have to look at all of */
+/*     the frame specifications in the kernel pool. Start out by looking */
+/*     the frame class assignments from any loaded frame specifications. */
 
     s_copy(lookup, "FRAME_*_CLASS", (ftnlen)32, (ftnlen)13);
     start = 1;
@@ -2385,14 +2997,18 @@ L_ccifrm:
 	i__1 = n;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    gipool_(kvbuff + (((i__2 = i__ - 1) < 100 && 0 <= i__2 ? i__2 : 
-		    s_rnge("kvbuff", i__2, "framex_", (ftnlen)2293)) << 5), &
+		    s_rnge("kvbuff", i__2, "framex_", (ftnlen)2910)) << 5), &
 		    c__1, &c__1, &n, &kvclss, &fnd, (ftnlen)32);
+	    if (failed_()) {
+		chkout_("CCIFRM", (ftnlen)6);
+		return 0;
+	    }
 	    if (! fnd) {
 		setmsg_("Invalid frame specification found in kernel pool: f"
 			"rame class keyword is # but integer class was not as"
 			"sociated with this keyword.", (ftnlen)130);
 		errch_("#", kvbuff + (((i__2 = i__ - 1) < 100 && 0 <= i__2 ? 
-			i__2 : s_rnge("kvbuff", i__2, "framex_", (ftnlen)2301)
+			i__2 : s_rnge("kvbuff", i__2, "framex_", (ftnlen)2923)
 			) << 5), (ftnlen)1, (ftnlen)32);
 		sigerr_("SPICE(INVALIDFRAMEDEF)", (ftnlen)22);
 		chkout_("CCIFRM", (ftnlen)6);
@@ -2404,9 +3020,13 @@ L_ccifrm:
 
 		s_copy(look2, kvbuff + (((i__2 = i__ - 1) < 100 && 0 <= i__2 ?
 			 i__2 : s_rnge("kvbuff", i__2, "framex_", (ftnlen)
-			2312)) << 5), (ftnlen)32, (ftnlen)32);
+			2934)) << 5), (ftnlen)32, (ftnlen)32);
 		suffix_("_ID", &c__0, look2, (ftnlen)3, (ftnlen)32);
 		gipool_(look2, &c__1, &c__1, &n, &kvclid, &fnd, (ftnlen)32);
+		if (failed_()) {
+		    chkout_("CCIFRM", (ftnlen)6);
+		    return 0;
+		}
 		if (! fnd) {
 		    setmsg_("Invalid frame specification found in kernel poo"
 			    "l: frame class keyword is # but associated integ"
@@ -2414,7 +3034,7 @@ L_ccifrm:
 			    132);
 		    errch_("#", kvbuff + (((i__2 = i__ - 1) < 100 && 0 <= 
 			    i__2 ? i__2 : s_rnge("kvbuff", i__2, "framex_", (
-			    ftnlen)2325)) << 5), (ftnlen)1, (ftnlen)32);
+			    ftnlen)2952)) << 5), (ftnlen)1, (ftnlen)32);
 		    sigerr_("SPICE(INVALIDFRAMEDEF)", (ftnlen)22);
 		    chkout_("CCIFRM", (ftnlen)6);
 		    return 0;
@@ -2435,7 +3055,7 @@ L_ccifrm:
 
 		    repmc_(kvbuff + (((i__2 = i__ - 1) < 100 && 0 <= i__2 ? 
 			    i__2 : s_rnge("kvbuff", i__2, "framex_", (ftnlen)
-			    2346)) << 5), "_CLASS", "_NAME", look2, (ftnlen)
+			    2973)) << 5), "_CLASS", "_NAME", look2, (ftnlen)
 			    32, (ftnlen)6, (ftnlen)5, (ftnlen)32);
 		    gcpool_(look2, &c__1, &c__1, &n, frname, &fnd, (ftnlen)32,
 			     frname_len);
@@ -2446,7 +3066,7 @@ L_ccifrm:
 				ftnlen)126);
 			errch_("#", kvbuff + (((i__2 = i__ - 1) < 100 && 0 <= 
 				i__2 ? i__2 : s_rnge("kvbuff", i__2, "framex_"
-				, (ftnlen)2356)) << 5), (ftnlen)1, (ftnlen)32)
+				, (ftnlen)2983)) << 5), (ftnlen)1, (ftnlen)32)
 				;
 			sigerr_("SPICE(INVALIDFRAMEDEF)", (ftnlen)22);
 			chkout_("CCIFRM", (ftnlen)6);
@@ -2461,6 +3081,10 @@ L_ccifrm:
 		    prefix_("FRAME_", &c__0, look2, (ftnlen)6, (ftnlen)32);
 		    gipool_(look2, &c__1, &c__1, &n, frcode, &fnd, (ftnlen)32)
 			    ;
+		    if (failed_()) {
+			chkout_("CCIFRM", (ftnlen)6);
+			return 0;
+		    }
 		    if (! fnd) {
 			setmsg_("Invalid frame specification found in kernel"
 				" pool: frame name is is # but associated fra"
@@ -2504,31 +3128,6 @@ L_ccifrm:
 	start += n;
 	gnpool_(lookup, &start, &c__100, &n, kvbuff, &fnd, (ftnlen)32, (
 		ftnlen)32);
-    }
-
-/*     Getting to this point means we didn't find a matching */
-/*     frame specification in the kernel pool. Check the built-in */
-/*     frame list. Unfortunately, this is a linear search. */
-
-    for (i__ = 1; i__ <= 121; ++i__) {
-	if (type__[(i__1 = i__ - 1) < 121 && 0 <= i__1 ? i__1 : s_rnge("type",
-		 i__1, "framex_", (ftnlen)2434)] == *class__ && typeid[(i__2 =
-		 i__ - 1) < 121 && 0 <= i__2 ? i__2 : s_rnge("typeid", i__2, 
-		"framex_", (ftnlen)2434)] == *clssid) {
-
-/*           We have a match. Assign the output arguments and return. */
-
-	    s_copy(frname, name__ + (((i__1 = i__ - 1) < 121 && 0 <= i__1 ? 
-		    i__1 : s_rnge("name", i__1, "framex_", (ftnlen)2439)) << 
-		    5), frname_len, (ftnlen)32);
-	    *frcode = idcode[(i__1 = i__ - 1) < 121 && 0 <= i__1 ? i__1 : 
-		    s_rnge("idcode", i__1, "framex_", (ftnlen)2440)];
-	    *cent = center[(i__1 = i__ - 1) < 121 && 0 <= i__1 ? i__1 : 
-		    s_rnge("center", i__1, "framex_", (ftnlen)2441)];
-	    *found = TRUE_;
-	    chkout_("CCIFRM", (ftnlen)6);
-	    return 0;
-	}
     }
 
 /*     We drop down to this point only if no matching frame was found. */

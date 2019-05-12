@@ -55,7 +55,7 @@
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 33%; text-align: center;">
             <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
@@ -66,7 +66,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
@@ -76,7 +76,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
@@ -194,28 +194,22 @@
 <h4><a name="Particulars">Particulars</a></h4>
 <PRE>
  
-   This entry point allows you to request information directly 
+   This routine allows you to request information directly 
    for a specific SPICE kernel. 
  </PRE>
 <h4><a name="Examples">Examples</a></h4>
 <PRE>
  
-   Suppose you wish to determine the type of a loaded kernel 
-   so that you can call the correct summarizing routines 
-   for the kernel.  The following bit of pseudo code shows 
-   how you might use this entry point together with summarizing 
-   code to produce a report on the file.  (Note that the 
-   routines spk_summry, ck_summry, pck_summry and ek_summry 
-   are simply names to indicate what you might do with the 
-   information returned by <b>kinfo_c</b>.  They are not routines that 
-   are part of the SPICE Toolkit.) 
+   Suppose you wish to determine the types of kernels loaded
+   by a given meta-kernel. The following program shows 
+   how you might use this routine to do this.
 
       #include &lt;stdio.h&gt;
       #include &quot;SpiceUsr.h&quot;
 
-      #define  FILLEN   128
-      #define  TYPLEN   32
-      #define  SRCLEN   128
+      #define  FILLEN   256
+      #define  TYPLEN   33
+      #define  SRCLEN   256
 
       SpiceInt        which;
       SpiceInt        count;
@@ -229,7 +223,7 @@
 
       int main()
          { 
-         <a href="furnsh_c.html">furnsh_c</a>( &quot;/kernels/standard.tm&quot; );
+         <a href="furnsh_c.html">furnsh_c</a>( &quot;standard.tm&quot; );
    
          <a href="ktotal_c.html">ktotal_c</a> ( &quot;all&quot;, &amp;count );
     
@@ -262,6 +256,10 @@
                   {
                   printf ( &quot;%s is a PCK file.\n&quot;, file );
                   }
+               else if (  <a href="eqstr_c.html">eqstr_c</a> ( filtyp, &quot;DSK&quot; )  )
+                  {
+                  printf ( &quot;%s is a DSK file.\n&quot;, file );
+                  }
                else if (  <a href="eqstr_c.html">eqstr_c</a> ( filtyp, &quot;EK&quot; )  )
                   {
                   printf ( &quot;%s is an EK file.\n&quot;, file );
@@ -273,10 +271,9 @@
                else 
                 {
                 printf ( &quot;%s is a text kernel.\n&quot;, file );
-                }
-                
+                }                
              }
-
+             return(0);
           }
       
  </PRE>
@@ -295,9 +292,17 @@
  
    N.J. Bachman    (JPL)
    W.L. Taber      (JPL) 
- </PRE>
+   E.D. Wright     (JPL)
+</PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
+   -CSPICE Version 1.2.0, 20-JAN-2016 (NJB)
+
+      Updated header example program to support DSKs.
+      Updated description of example program. Removed
+      references to the term &quot;entry point.&quot; Added
+      Ed Wright as an author of this routine.
+
    -CSPICE Version 1.1.2, 02-MAY-2008 (EDW)
 
       standard.ker renamed standard.tm
@@ -324,7 +329,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Jun  9 13:05:25 2010</pre>
+   <pre>Wed Apr  5 17:54:37 2017</pre>
 
 </body>
 </html>

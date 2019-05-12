@@ -15,6 +15,10 @@ static integer c__0 = 0;
 	doublereal *alt, doublereal *re, doublereal *f, doublereal *jacobi, 
 	ftnlen body_len)
 {
+    /* Initialized data */
+
+    static logical first = TRUE_;
+
     /* System generated locals */
     integer i__1, i__2;
 
@@ -23,17 +27,23 @@ static integer c__0 = 0;
 	    char *, integer);
 
     /* Local variables */
+    extern /* Subroutine */ int zzbods2c_(integer *, char *, integer *, 
+	    logical *, char *, integer *, logical *, ftnlen, ftnlen), 
+	    zzctruin_(integer *);
     integer i__, n;
-    extern /* Subroutine */ int chkin_(char *, ftnlen), ucase_(char *, char *,
-	     ftnlen, ftnlen), errch_(char *, char *, ftnlen, ftnlen);
+    extern /* Subroutine */ int chkin_(char *, ftnlen), errch_(char *, char *,
+	     ftnlen, ftnlen);
     logical found;
     extern /* Subroutine */ int errdp_(char *, doublereal *, ftnlen);
     integer sense;
     extern /* Subroutine */ int repmi_(char *, char *, integer *, char *, 
-	    ftnlen, ftnlen, ftnlen), bods2c_(char *, integer *, logical *, 
-	    ftnlen), drdgeo_(doublereal *, doublereal *, doublereal *, 
-	    doublereal *, doublereal *, doublereal *);
+	    ftnlen, ftnlen, ftnlen);
+    static logical svfnd1;
+    static integer svctr1[2];
+    extern /* Subroutine */ int drdgeo_(doublereal *, doublereal *, 
+	    doublereal *, doublereal *, doublereal *, doublereal *);
     integer bodyid;
+    static integer svbdid;
     doublereal geolon;
     extern /* Subroutine */ int gcpool_(char *, integer *, integer *, integer 
 	    *, char *, logical *, ftnlen, ftnlen);
@@ -41,11 +51,12 @@ static integer c__0 = 0;
     extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
 	    ftnlen);
     char pmkvar[32], pgrlon[4];
-    extern /* Subroutine */ int setmsg_(char *, ftnlen), cmprss_(char *, 
-	    integer *, char *, char *, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ int setmsg_(char *, ftnlen);
+    static char svbody[36];
+    extern /* Subroutine */ int ljucrs_(integer *, char *, char *, ftnlen, 
+	    ftnlen);
     extern integer plnsns_(integer *);
     extern logical return_(void);
-    char tmpstr[32];
 
 /* $ Abstract */
 
@@ -88,6 +99,59 @@ static integer c__0 = 0;
 /*     MATRIX */
 
 /* $ Declarations */
+/* $ Abstract */
+
+/*     This include file defines the dimension of the counter */
+/*     array used by various SPICE subsystems to uniquely identify */
+/*     changes in their states. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 29-JUL-2013 (BVS) */
+
+/* -& */
+
+/*     End of include file. */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
@@ -521,9 +585,17 @@ static integer c__0 = 0;
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman   (JPL) */
+/*     B.V. Semenov   (JPL) */
 /*     W.L. Taber     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.0, 21-SEP-2013 (BVS) */
+
+/*        Updated to save the input body name and ZZBODTRN state counter */
+/*        and to do name-ID conversion only if the counter has changed. */
+
+/*        Updated to call LJUCRS instead of CMPRSS/UCASE. */
 
 /* -    SPICELIB Version 1.0.0, 26-DEC-2004 (NJB) (WLT) */
 
@@ -545,7 +617,19 @@ static integer c__0 = 0;
 /*     Local parameters */
 
 
+/*     Saved body name length. */
+
+
 /*     Local variables */
+
+
+/*     Saved name/ID item declarations. */
+
+
+/*     Saved name/ID items. */
+
+
+/*     Initial values. */
 
 
 /*     Standard SPICE error handling. */
@@ -555,9 +639,20 @@ static integer c__0 = 0;
     }
     chkin_("DRDPGR", (ftnlen)6);
 
+/*     Initialization. */
+
+    if (first) {
+
+/*        Initialize counter. */
+
+	zzctruin_(svctr1);
+	first = FALSE_;
+    }
+
 /*     Convert the body name to an ID code. */
 
-    bods2c_(body, &bodyid, &found, body_len);
+    zzbods2c_(svctr1, svbody, &svbdid, &svfnd1, body, &bodyid, &found, (
+	    ftnlen)36, body_len);
     if (! found) {
 	setmsg_("The value of the input argument BODY is #, this is not a re"
 		"cognized name of an ephemeris object. The cause of this prob"
@@ -602,9 +697,7 @@ static integer c__0 = 0;
 
 /*        Make sure we recognize the value of PGRLON. */
 
-	cmprss_(" ", &c__0, kvalue, tmpstr, (ftnlen)1, (ftnlen)80, (ftnlen)32)
-		;
-	ucase_(tmpstr, pgrlon, (ftnlen)32, (ftnlen)4);
+	ljucrs_(&c__0, kvalue, pgrlon, (ftnlen)80, (ftnlen)4);
 	if (s_cmp(pgrlon, "EAST", (ftnlen)4, (ftnlen)4) == 0) {
 	    sense = 1;
 	} else if (s_cmp(pgrlon, "WEST", (ftnlen)4, (ftnlen)4) == 0) {
@@ -686,9 +779,9 @@ static integer c__0 = 0;
 
     for (i__ = 1; i__ <= 3; ++i__) {
 	jacobi[(i__1 = i__ - 1) < 9 && 0 <= i__1 ? i__1 : s_rnge("jacobi", 
-		i__1, "drdpgr_", (ftnlen)736)] = sense * jacobi[(i__2 = i__ - 
+		i__1, "drdpgr_", (ftnlen)793)] = sense * jacobi[(i__2 = i__ - 
 		1) < 9 && 0 <= i__2 ? i__2 : s_rnge("jacobi", i__2, "drdpgr_",
-		 (ftnlen)736)];
+		 (ftnlen)793)];
     }
     chkout_("DRDPGR", (ftnlen)6);
     return 0;

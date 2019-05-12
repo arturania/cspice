@@ -241,6 +241,10 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.2.1, 28-JAN-2014 (NJB) */
+
+/*        Fixed a few comment typos. */
+
 /* -    SPICELIB Version 1.2.0, 31-JAN-2002 (EDW) */
 
 /*        Added the use of DBLE to convert integer values */
@@ -302,7 +306,7 @@
 
 /*     We can simplify the interpolation problem by shifting */
 /*     and scaling the abscissa values so that they start at 1 */
-/*     and are separated by a unit step.  All we need to do here is */
+/*     and are separated by a unit step. All we need to do here is */
 /*     shift and scale X. */
 
     newx = (*x - *first) / *step + 1.;
@@ -312,33 +316,33 @@
 /*     computed derivative by 1/STEP. */
 
 /*     Copy the input array into WORK.  Scale the derivatives at this */
-/*     step.  After this, the first column of WORK represents the first */
+/*     step. After this, the first column of WORK represents the first */
 /*     column of our triangular interpolation table. */
 
     i__1 = (*n << 1) - 1;
     for (i__ = 1; i__ <= i__1; i__ += 2) {
 	work[(i__2 = i__ + work_dim1 - work_offset) < work_dim1 << 1 && 0 <= 
-		i__2 ? i__2 : s_rnge("work", i__2, "hrmesp_", (ftnlen)327)] = 
+		i__2 ? i__2 : s_rnge("work", i__2, "hrmesp_", (ftnlen)331)] = 
 		yvals[(i__3 = i__ - 1) < yvals_dim1 && 0 <= i__3 ? i__3 : 
-		s_rnge("yvals", i__3, "hrmesp_", (ftnlen)327)];
+		s_rnge("yvals", i__3, "hrmesp_", (ftnlen)331)];
     }
     i__1 = *n << 1;
     for (i__ = 2; i__ <= i__1; i__ += 2) {
 	work[(i__2 = i__ + work_dim1 - work_offset) < work_dim1 << 1 && 0 <= 
-		i__2 ? i__2 : s_rnge("work", i__2, "hrmesp_", (ftnlen)331)] = 
+		i__2 ? i__2 : s_rnge("work", i__2, "hrmesp_", (ftnlen)335)] = 
 		yvals[(i__3 = i__ - 1) < yvals_dim1 && 0 <= i__3 ? i__3 : 
-		s_rnge("yvals", i__3, "hrmesp_", (ftnlen)331)] * *step;
+		s_rnge("yvals", i__3, "hrmesp_", (ftnlen)335)] * *step;
     }
 
-/*     Compute the second column of the interpolation table:  this */
-/*     consists of the N-1 values obtained by evaluating the first-degree */
-/*     interpolants at NEWX.  We'll also evaluate the derivatives of */
-/*     these interpolants at NEWX and save the results in the second */
-/*     column of WORK.  Because the derivative computations depend on the */
-/*     function computations from the previous column in the */
-/*     interpolation table, and because the function interpolation */
+/*     Compute the second column of the interpolation table: this */
+/*     consists of the N-1 values obtained by evaluating the */
+/*     first-degree interpolants at NEWX. We'll also evaluate the */
+/*     derivatives of these interpolants at NEWX and save the results in */
+/*     the second column of WORK. Because the derivative computations */
+/*     depend on the function computations from the previous column in */
+/*     the interpolation table, and because the function interpolation */
 /*     overwrites the previous column of interpolated function values, */
-/*     we must evalute the derivatives first. */
+/*     we must evaluate the derivatives first. */
 
     i__1 = *n - 1;
     for (i__ = 1; i__ <= i__1; ++i__) {
@@ -356,21 +360,21 @@
 	next = this__ + 1;
 	work[(i__2 = prev + (work_dim1 << 1) - work_offset) < work_dim1 << 1 
 		&& 0 <= i__2 ? i__2 : s_rnge("work", i__2, "hrmesp_", (ftnlen)
-		363)] = work[(i__3 = this__ + work_dim1 - work_offset) < 
+		366)] = work[(i__3 = this__ + work_dim1 - work_offset) < 
 		work_dim1 << 1 && 0 <= i__3 ? i__3 : s_rnge("work", i__3, 
-		"hrmesp_", (ftnlen)363)];
+		"hrmesp_", (ftnlen)366)];
 
 /*        The even-indexed interpolated derivatives are the slopes of */
 /*        the linear interpolating polynomials for adjacent input */
-/*        abscissa/ordinate pairs.  No scaling is needed here. */
+/*        abscissa/ordinate pairs. No scaling is needed here. */
 
 	work[(i__2 = this__ + (work_dim1 << 1) - work_offset) < work_dim1 << 
 		1 && 0 <= i__2 ? i__2 : s_rnge("work", i__2, "hrmesp_", (
-		ftnlen)370)] = work[(i__3 = next + work_dim1 - work_offset) < 
+		ftnlen)373)] = work[(i__3 = next + work_dim1 - work_offset) < 
 		work_dim1 << 1 && 0 <= i__3 ? i__3 : s_rnge("work", i__3, 
-		"hrmesp_", (ftnlen)370)] - work[(i__4 = prev + work_dim1 - 
+		"hrmesp_", (ftnlen)373)] - work[(i__4 = prev + work_dim1 - 
 		work_offset) < work_dim1 << 1 && 0 <= i__4 ? i__4 : s_rnge(
-		"work", i__4, "hrmesp_", (ftnlen)370)];
+		"work", i__4, "hrmesp_", (ftnlen)373)];
 
 /*        The first column of WORK contains interpolated function values. */
 /*        The odd-indexed entries are the linear Taylor polynomials, */
@@ -378,18 +382,18 @@
 
 	temp = work[(i__2 = this__ + work_dim1 - work_offset) < work_dim1 << 
 		1 && 0 <= i__2 ? i__2 : s_rnge("work", i__2, "hrmesp_", (
-		ftnlen)377)] * (newx - (doublereal) i__) + work[(i__3 = prev 
+		ftnlen)380)] * (newx - (doublereal) i__) + work[(i__3 = prev 
 		+ work_dim1 - work_offset) < work_dim1 << 1 && 0 <= i__3 ? 
-		i__3 : s_rnge("work", i__3, "hrmesp_", (ftnlen)377)];
+		i__3 : s_rnge("work", i__3, "hrmesp_", (ftnlen)380)];
 	work[(i__2 = this__ + work_dim1 - work_offset) < work_dim1 << 1 && 0 
-		<= i__2 ? i__2 : s_rnge("work", i__2, "hrmesp_", (ftnlen)380)]
+		<= i__2 ? i__2 : s_rnge("work", i__2, "hrmesp_", (ftnlen)383)]
 		 = c1 * work[(i__3 = prev + work_dim1 - work_offset) < 
 		work_dim1 << 1 && 0 <= i__3 ? i__3 : s_rnge("work", i__3, 
-		"hrmesp_", (ftnlen)380)] + c2 * work[(i__4 = next + work_dim1 
+		"hrmesp_", (ftnlen)383)] + c2 * work[(i__4 = next + work_dim1 
 		- work_offset) < work_dim1 << 1 && 0 <= i__4 ? i__4 : s_rnge(
-		"work", i__4, "hrmesp_", (ftnlen)380)];
+		"work", i__4, "hrmesp_", (ftnlen)383)];
 	work[(i__2 = prev + work_dim1 - work_offset) < work_dim1 << 1 && 0 <= 
-		i__2 ? i__2 : s_rnge("work", i__2, "hrmesp_", (ftnlen)383)] = 
+		i__2 ? i__2 : s_rnge("work", i__2, "hrmesp_", (ftnlen)386)] = 
 		temp;
     }
 
@@ -398,16 +402,16 @@
 
     work[(i__1 = (*n << 1) - 1 + (work_dim1 << 1) - work_offset) < work_dim1 
 	    << 1 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "hrmesp_", (
-	    ftnlen)392)] = work[(i__2 = (*n << 1) + work_dim1 - work_offset) <
+	    ftnlen)394)] = work[(i__2 = (*n << 1) + work_dim1 - work_offset) <
 	     work_dim1 << 1 && 0 <= i__2 ? i__2 : s_rnge("work", i__2, "hrme"
-	    "sp_", (ftnlen)392)];
+	    "sp_", (ftnlen)394)];
     work[(i__1 = (*n << 1) - 1 + work_dim1 - work_offset) < work_dim1 << 1 && 
-	    0 <= i__1 ? i__1 : s_rnge("work", i__1, "hrmesp_", (ftnlen)393)] =
+	    0 <= i__1 ? i__1 : s_rnge("work", i__1, "hrmesp_", (ftnlen)395)] =
 	     work[(i__2 = (*n << 1) + work_dim1 - work_offset) < work_dim1 << 
 	    1 && 0 <= i__2 ? i__2 : s_rnge("work", i__2, "hrmesp_", (ftnlen)
-	    393)] * (newx - *n) + work[(i__3 = (*n << 1) - 1 + work_dim1 - 
+	    395)] * (newx - *n) + work[(i__3 = (*n << 1) - 1 + work_dim1 - 
 	    work_offset) < work_dim1 << 1 && 0 <= i__3 ? i__3 : s_rnge("work",
-	     i__3, "hrmesp_", (ftnlen)393)];
+	     i__3, "hrmesp_", (ftnlen)395)];
 
 /*     Compute columns 3 through 2*N of the table. */
 
@@ -418,10 +422,10 @@
 
 /*           In the theoretical construction of the interpolation table, */
 /*           there are 2*N abscissa values, since each input abcissa */
-/*           value occurs with multiplicity two.  In this theoretical */
+/*           value occurs with multiplicity two. In this theoretical */
 /*           construction, the Jth column of the interpolation table */
 /*           contains results of evaluating interpolants that span J+1 */
-/*           consecutive abscissa values.  The indices XI and XIJ below */
+/*           consecutive abscissa values. The indices XI and XIJ below */
 /*           are used to pick the correct abscissa values out of this */
 /*           sequence of 2*N values. */
 
@@ -432,9 +436,9 @@
 	    denom = xij - xi;
 
 /*           Compute the interpolated derivative at NEWX for the Ith */
-/*           interpolant.  This is the derivative with respect to NEWX of */
+/*           interpolant. This is the derivative with respect to NEWX of */
 /*           the expression for the interpolated function value, which is */
-/*           the second expression below.  This derivative computation */
+/*           the second expression below. This derivative computation */
 /*           is done first because it relies on the interpolated function */
 /*           values from the previous column of the interpolation table. */
 
@@ -443,41 +447,41 @@
 
 	    work[(i__3 = i__ + (work_dim1 << 1) - work_offset) < work_dim1 << 
 		    1 && 0 <= i__3 ? i__3 : s_rnge("work", i__3, "hrmesp_", (
-		    ftnlen)432)] = (c1 * work[(i__4 = i__ + (work_dim1 << 1) 
+		    ftnlen)433)] = (c1 * work[(i__4 = i__ + (work_dim1 << 1) 
 		    - work_offset) < work_dim1 << 1 && 0 <= i__4 ? i__4 : 
-		    s_rnge("work", i__4, "hrmesp_", (ftnlen)432)] + c2 * work[
+		    s_rnge("work", i__4, "hrmesp_", (ftnlen)433)] + c2 * work[
 		    (i__5 = i__ + 1 + (work_dim1 << 1) - work_offset) < 
 		    work_dim1 << 1 && 0 <= i__5 ? i__5 : s_rnge("work", i__5, 
-		    "hrmesp_", (ftnlen)432)] + (work[(i__6 = i__ + 1 + 
+		    "hrmesp_", (ftnlen)433)] + (work[(i__6 = i__ + 1 + 
 		    work_dim1 - work_offset) < work_dim1 << 1 && 0 <= i__6 ? 
-		    i__6 : s_rnge("work", i__6, "hrmesp_", (ftnlen)432)] - 
+		    i__6 : s_rnge("work", i__6, "hrmesp_", (ftnlen)433)] - 
 		    work[(i__7 = i__ + work_dim1 - work_offset) < work_dim1 <<
 		     1 && 0 <= i__7 ? i__7 : s_rnge("work", i__7, "hrmesp_", (
-		    ftnlen)432)])) / denom;
+		    ftnlen)433)])) / denom;
 
 /*           Compute the interpolated function value at NEWX for the Ith */
 /*           interpolant. */
 
 	    work[(i__3 = i__ + work_dim1 - work_offset) < work_dim1 << 1 && 0 
 		    <= i__3 ? i__3 : s_rnge("work", i__3, "hrmesp_", (ftnlen)
-		    439)] = (c1 * work[(i__4 = i__ + work_dim1 - work_offset) 
+		    440)] = (c1 * work[(i__4 = i__ + work_dim1 - work_offset) 
 		    < work_dim1 << 1 && 0 <= i__4 ? i__4 : s_rnge("work", 
-		    i__4, "hrmesp_", (ftnlen)439)] + c2 * work[(i__5 = i__ + 
+		    i__4, "hrmesp_", (ftnlen)440)] + c2 * work[(i__5 = i__ + 
 		    1 + work_dim1 - work_offset) < work_dim1 << 1 && 0 <= 
-		    i__5 ? i__5 : s_rnge("work", i__5, "hrmesp_", (ftnlen)439)
+		    i__5 ? i__5 : s_rnge("work", i__5, "hrmesp_", (ftnlen)440)
 		    ]) / denom;
 	}
     }
 
 /*     Our interpolated function value is sitting in WORK(1,1) at this */
 /*     point.  The interpolated derivative is located in WORK(1,2). */
-/*     We must undo the scaling of the derivative.  We've already */
+/*     We must undo the scaling of the derivative. We've already */
 /*     checked that STEP is non-zero. */
 
     *f = work[(i__1 = work_dim1 + 1 - work_offset) < work_dim1 << 1 && 0 <= 
-	    i__1 ? i__1 : s_rnge("work", i__1, "hrmesp_", (ftnlen)451)];
+	    i__1 ? i__1 : s_rnge("work", i__1, "hrmesp_", (ftnlen)452)];
     *df = work[(i__1 = (work_dim1 << 1) + 1 - work_offset) < work_dim1 << 1 &&
-	     0 <= i__1 ? i__1 : s_rnge("work", i__1, "hrmesp_", (ftnlen)452)] 
+	     0 <= i__1 ? i__1 : s_rnge("work", i__1, "hrmesp_", (ftnlen)453)] 
 	    / *step;
     return 0;
 } /* hrmesp_ */

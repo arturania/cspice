@@ -25,22 +25,27 @@
 <PRE>
    <A HREF="#Planes Required Reading">Planes Required Reading</A>
       <A HREF="#Abstract">Abstract</A>
-      <A HREF="#Note on FORTRAN and C Versions">Note on FORTRAN and C Versions</A>
-      <A HREF="#Revisions">Revisions</A>
       <A HREF="#Introduction">Introduction</A>
-      <A HREF="#Definition of the plane data type">Definition of the plane data type</A>
-      <A HREF="#Making planes">Making planes</A>
-         <A HREF="#Making a plane from a normal vector and constant">Making a plane from a normal vector and constant</A>
-         <A HREF="#Making a plane from a normal vector and a point">Making a plane from a normal vector and a point</A>
-         <A HREF="#Making a plane from a point and spanning vectors">Making a plane from a point and spanning vectors</A>
-      <A HREF="#Breaking planes">Breaking planes</A>
-      <A HREF="#Planes in real life">Planes in real life</A>
+         <A HREF="#References">References</A>
+      <A HREF="#Plane Data Type Description">Plane Data Type Description</A>
+      <A HREF="#Plane routines">Plane routines</A>
+         <A HREF="#Constructing planes">Constructing planes</A>
+         <A HREF="#Construct a plane from a normal vector and constant">Construct a plane from a normal vector and constant</A>
+         <A HREF="#Construct a plane from a normal vector and a point">Construct a plane from a normal vector and a point</A>
+         <A HREF="#Construct a plane from a point and spanning vectors">Construct a plane from a point and spanning vectors</A>
+         <A HREF="#Access plane data elements">Access plane data elements</A>
+      <A HREF="#Examples">Examples</A>
          <A HREF="#Converting between representations of planes">Converting between representations of planes</A>
          <A HREF="#Translating planes">Translating planes</A>
          <A HREF="#Applying linear transformations to planes">Applying linear transformations to planes</A>
          <A HREF="#Finding the limb of an ellipsoid">Finding the limb of an ellipsoid</A>
-         <A HREF="#Altitude of a ray above the limb of an ellipsoid">Altitude of a ray above the limb of an ellipsoid</A>
+         <A HREF="#Header examples">Header examples</A>
+         <A HREF="#Use of ellipses with planes">Use of ellipses with planes</A>
    <A HREF="#Summary of routines">Summary of routines</A>
+   <A HREF="#Appendix: Document Revision History">Appendix: Document Revision History</A>
+         <A HREF="#2012 JAN 23, EDW (JPL)">2012 JAN 23, EDW (JPL)</A>
+         <A HREF="#2008 JAN 17, BVS (JPL)">2008 JAN 17, BVS (JPL)</A>
+         <A HREF="#2002 DEC 12, NAIF (JPL)">2002 DEC 12, NAIF (JPL)</A>
 
 </PRE>
 
@@ -51,7 +56,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Planes Required Reading
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2008 JAN 17 by B. V. Semenov.
+   Last revised on 2012 JAN 23 by E. D. Wright.
 <P>
  
 <BR><BR>
@@ -59,34 +64,8 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Abstract
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-   SPICELIB contains a substantial set of subroutines that solve common
+   CSPICE contains a substantial set of subroutines that solve common
    mathematical problems involving planes.
-<P>
- 
-<BR><BR>
-<A NAME="Note on FORTRAN and C Versions"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H2> Note on FORTRAN and C Versions
-</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-   This document covers the FORTRAN version of the interfaces of this
-   subsystem. CSPICE provides f2c translated equivalents for all, and
-   native C wrappers for some of them. If you wish to use the C versions of
-   the interfaces described in this document, refer to the CSPICE Required
-   Reading, <a href="../req/cspice.html">cspice.req</a>, for more information on naming conventions,
-   locations, and usage of the f2c'ed routines and native C wrappers.
-<P>
- 
-<BR><BR>
-<A NAME="Revisions"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H2> Revisions
-</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-   December 12, 2002.
-<P>
- 
-   Corrections were made to comments in code example that computes altitude
-   of ray above the limb of an ellipsoid. Previously, the quantity computed
-   was incorrectly described as the altitude of a ray above an ellipsoid.
 <P>
  
 <BR><BR>
@@ -94,157 +73,45 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Introduction
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-   In SPICELIB, the `plane' is a data type used to represent planes in
+   In CSPICE, the `plane' is a data representation describing planes in
    three-dimensional space. The purpose of the plane data type is to
-   simplify the calling sequences of geometry routines. Also, using planes
-   helps to centralize error checking and facilitate conversion between
-   different representations of planes.
-<P>
- 
-   Here's an example of how planes simplify calling sequences. Suppose that
-   you want to find the vector VOUT in plane PLANE2 whose orthogonal
-   projection onto plane PLANE1 is the vector VIN. The SPICELIB routine
-   VPRJPI can be used to find VOUT. Since VPRJPI accepts planes as
-   arguments, your subroutine call to VPRJPI looks like this:
-<P>
- 
-<PRE>
-   CALL VPRJPI ( VIN, PLANE1, PLANE2, VOUT, FOUND )
-</PRE>
-   If instead VPRJPI required a normal vector and scalar constant to define
-   each plane, a call to VPRJPI would look something like this:
-<P>
- 
-<PRE>
-   CALL VPRJPI ( VIN, NORML1, CONST1, NORML2, CONST2, VOUT, FOUND )
-</PRE>
-   And if a point and two spanning vectors were required to define each
-   plane, a call to VPRJPI would resemble the following monstrosity:
-<P>
- 
-<PRE>
-   CALL VPRJPI ( VIN, PT1, SV11, SV12, PT2, SV21, SV22, VOUT, FOUND )
-</PRE>
-   This example demonstrates another benefit of using planes in calling
-   sequences: you don't have to guess which arguments will be required to
-   define the plane. Does the routine expect a normal vector and a
-   constant? A normal vector and a point? A point and two spanning vectors?
-   Three points? Planes make the calling sequences of geometry routines
-   more predictable.
-<P>
- 
-   You will see later on that SPICELIB planes greatly simplify a number of
-   geometric operations that are commonly applied to planes: translating
-   planes by a constant, applying linear transformations to planes, and
-   converting between different representations of planes.
+   simplify the calling sequences of some geometry routines. Also, using a
+   "plane" data type helps to centralize error checking and facilitate
+   conversion between different representations of planes.
 <P>
  
 <BR><BR>
-<A NAME="Definition of the plane data type"></A>
+<A NAME="References"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
-<H2> Definition of the plane data type
+<H3> References
+</H3><P><BR><BR>
+<UL>
+<TT>1.</TT> `Calculus, Vol. II'. Tom Apostol. John Wiley and Sons, 1969. See Chapter 5,
+`Eigenvalues of Operators Acting on Euclidean Spaces'.
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> Ellipses required reading (<a href="../req/ellipses.html">ellipses.req</a>).
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Plane Data Type Description"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Plane Data Type Description
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-   Viewed as a user-defined data type, SPICELIB planes are arrays of double
-   precision numbers whose elements are set and interpreted by a small set
-   of access routines provided for that purpose. The elements of a SPICELIB
-   plane must not be accessed in any other way. The contents of SPICELIB
-   planes are not specified by the data type definition; instead, all
-   properties of SPICELIB planes other than the length and type of the
-   arrays used to store them are defined by the specifications of the
-   access routines. We'll discuss these routines below.
-<P>
- 
-   Arrays used as SPICELIB planes have length UBPL (`upper bound of
-   plane'). Currently, UBPL is 4. We strongly recommend declaring planes
-   with parameterized lengths as in this example:
-<P>
- 
-<PRE>
-   INTEGER                 UBPL
-   PARAMETER             ( UBPL = 4 )
- 
-   DOUBLE PRECISION        PLANE ( UBPL )
-</PRE>
-   The SPICELIB routines that create planes are
-<P>
- 
-<PRE>
-   NVC2PL  ( Normal vector and constant to plane )
-   NVP2PL  ( Normal vector and point to plane    )
-   PSV2PL  ( Point and spanning vectors to plane )
-</PRE>
-   These routines produce SPICELIB planes from various forms of data that
-   define geometric planes; the routines are described in the next section.
-   We bring them up at this point because they actually define the SPICELIB
-   plane data type:
-<P>
- 
-<PRE>
-   In SPICELIB, a plane is a double precision array of length UBPL
-   that is the output of one of the routines
-   NVC2PL, NVP2PL, or PSV2PL.
-</PRE>
-   SPICELIB routines that take planes as input arguments can accept planes
-   created by any of the routines listed above.
-<P>
- 
-   The SPICELIB routines that break planes apart into data that define
-   geometric planes are
-<P>
- 
-<PRE>
-   PL2NVC  ( Plane to normal vector and constant )
-   PL2NVP  ( Plane to normal vector and point    )
-   PL2PSV  ( Plane to point and spanning vectors )
-</PRE>
-   The information stored in SPICELIB planes is not necessarily the input
-   information you supply to a plane-making routine. SPICELIB planes use a
-   single, uniform internal representation for planes, no matter what data
-   you use to create them. As a consequence, when you create a SPICELIB
-   plane and then break it apart into data that define a plane, the
-   returned data will not necessarily be the data you originally supplied,
-   though they define the same geometric plane as the data you originally
-   supplied.
-<P>
- 
-   This `loss of information' may seem to be a liability at first but turns
-   out to be a convenience in the end: the SPICELIB routines that break
-   apart SPICELIB planes into various representations return outputs that
-   are particularly useful for many geometric computations. In the case of
-   the routine PL2NVP (Plane to normal vector and point), the output normal
-   vector is always a unit vector, and the output point is always the
-   closest point in the plane to the origin. The normal vector points from
-   the origin toward the plane, if the plane does not contain the origin.
-<P>
- 
-   The internal structure of the plane data type is not part of its
-   specification. This structure is considered to be an implementation
-   choice and may be changed. Therefore, you should never write code that
-   takes advantange of the internal structure of planes; such code might
-   not work with future versions of SPICELIB.
-<P>
- 
-   Having said that, and recognizing that some readers will find it easier
-   to think about planes as concrete, rather than abstract objects, we'll
-   tell you what's in them. The first three elements of a SPICELIB plane
-   contain a unit normal vector; the remaining element contains a plane
-   constant corresponding to the unit normal vector. Letting N and C
-   represent a SPICELIB plane's unit normal vector and plane constant, and
-   using the notation
+   NAIF defines a SPICE plane using a unit vector N, normal to the plane,
+   and a scalar constant C. Let
 <P>
  
 <PRE>
    &lt; X, Y &gt;
 </PRE>
-   to denote the inner product of the vectors X and Y, the relationship
+   denote the inner product of the vectors X and Y, then the relationship
 <P>
  
 <PRE>
    &lt; X, N &gt; = C
 </PRE>
-   holds for all vectors X in the plane. The constant C is the distance of
-   the plane from the origin in three-dimensional Euclidean space. The
-   vector
+   holds for all vectors X in the plane. C is the distance of the plane
+   from the origin. The vector
 <P>
  
 <PRE>
@@ -255,13 +122,85 @@
    plane.
 <P>
  
+   The internal design of the plane data type is not part of its
+   specification. The design is an implementation choice based on the
+   programming language and so the design may change. Users should not
+   write code based on the current implementation; such code might fail
+   when used with a future version of CSPICE.
+<P>
+ 
+   NAIF implemented the SPICE plane data type in C as a structure with the
+   fields
+<P>
+ 
+<PRE>
+      SpiceDouble      normal   [3];
+      SpiceDouble      constant;
+</PRE>
+   'normal' contains the unit normal vector N; 'constant' contains the
+   plane constant C.
+<P>
+ 
 <BR><BR>
-<A NAME="Making planes"></A>
+<A NAME="Plane routines"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
-<H2> Making planes
+<H2> Plane routines
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+<BR><BR>
+<A NAME="Constructing planes"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Constructing planes
+</H3><P><BR><BR>
+   The CSPICE routines that create SPICE planes from various forms of data
+   that define geometric planes:
+<P>
+ 
+<DL><DT>
+<B>
+ <a href="../cspice/nvc2pl_c.html">nvc2pl_c</a>
+</B><BR><BR>
+<DD>
+ Normal vector and constant to plane<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/nvp2pl_c.html">nvp2pl_c</a>
+</B><BR><BR>
+<DD>
+ Normal vector and point to plane<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/psv2pl_c.html">psv2pl_c</a>
+</B><BR><BR>
+<DD>
+ Point and spanning vectors to plane<BR>
+</DL>
+   CSPICE routines that take planes as input arguments can accept planes
+   created by any of the routines listed above.
+<P>
+ 
+   The information stored in SPICE planes is not necessarily the input
+   information you supply to a plane-making routine. SPICE planes use a
+   single, uniform internal representation for planes, no matter what data
+   you use to create them. As a consequence, when you create a SPICE plane
+   and then break it apart into data that define a plane, the returned data
+   will not necessarily be the data you originally supplied, though they
+   define the same geometric plane as the data you originally supplied.
+<P>
+ 
+   This `loss of information' may seem to be a liability at first but turns
+   out to be a convenience in the end: the CSPICE routines that break apart
+   SPICE planes into various representations return outputs that are
+   particularly useful for many geometric computations. In the case of the
+   routine <a href="../cspice/pl2nvp_c.html">pl2nvp_c</a> (Plane to normal vector and point), the output normal
+   vector is always a unit vector, and the output point is always the
+   closest point in the plane to the origin. The normal vector points from
+   the origin toward the plane, if the plane does not contain the origin.
+<P>
+ 
    You can convert any of the following representations of planes to a
-   SPICELIB plane:
+   SPICE plane:
 <P>
  
 <DL><DT>
@@ -302,99 +241,138 @@ points<BR>
 <DD>
  where s and t are real numbers.<BR>
 </DL>
-   The calling sequences of the SPICELIB routines that create planes are
+   The calling sequences of the CSPICE routines that create planes are
    described below. For examples of how you might use these routines in a
-   program, see the section below `Planes in Real Life'.
+   program, see the Examples section.
 <P>
  
 <BR><BR>
-<A NAME="Making a plane from a normal vector and constant"></A>
+<A NAME="Construct a plane from a normal vector and constant"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Making a plane from a normal vector and constant
+<H3> Construct a plane from a normal vector and constant
 </H3><P><BR><BR>
-   Let N, C and PLANE be declared by
+   Let `n' represent a vector normal to a plane, and `c', a scalar
+   constant.
+<P>
+ 
+   Let `n', `c' and `plane' be declared by
 <P>
  
 <PRE>
-   DOUBLE PRECISION     N     ( 3 )
-   DOUBLE PRECISION     C
-   DOUBLE PRECISION     PLANE ( UBPL )
+   SpiceDouble          n[3];
+   SpiceDouble          c;
+   SpicePlane           plane;
 </PRE>
-   After N and C have been assigned values, you can construct a SPICELIB
-   plane that represents the plane having normal N and constant C by
-   calling NVC2PL:
+   After `n' and `c' have been assigned values, you can construct a SPICE
+   plane that represents the plane having normal `n' and constant `c' by
+   calling <a href="../cspice/nvc2pl_c.html">nvc2pl_c</a>:
 <P>
  
 <PRE>
-   CALL NVC2PL ( N, C, PLANE )
+   <a href="../cspice/nvc2pl_c.html">nvc2pl_c</a> ( n, c, &amp;plane );
 </PRE>
 <BR><BR>
-<A NAME="Making a plane from a normal vector and a point"></A>
+<A NAME="Construct a plane from a normal vector and a point"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Making a plane from a normal vector and a point
+<H3> Construct a plane from a normal vector and a point
 </H3><P><BR><BR>
-   Let N, P, and PLANE be declared by
+   Let `n' represent a vector normal to a plane, and `p', a point on the
+   plane.
+<P>
+ 
+   Declare `n', `p', and `plane' as:
 <P>
  
 <PRE>
-   DOUBLE PRECISION     N     ( 3 )
-   DOUBLE PRECISION     P     ( 3 )
-   DOUBLE PRECISION     PLANE ( UBPL )
+   SpiceDouble          n[3];
+   SpiceDouble          p[3];
+   SpicePlane           plane;
 </PRE>
-   After N and P have been assigned values, you can construct a SPICELIB
-   plane that represents the plane containing point P and having normal N
-   by calling NVP2PL:
+   After `n' and `p' have been assigned values, you can construct a SPICE
+   plane that represents the plane containing point `p' and having normal
+   `n' by calling <a href="../cspice/nvp2pl_c.html">nvp2pl_c</a>:
 <P>
  
 <PRE>
-   CALL NVP2PL ( N, P, PLANE )
+   <a href="../cspice/nvp2pl_c.html">nvp2pl_c</a> ( n, p,  &amp;plane );
 </PRE>
 <BR><BR>
-<A NAME="Making a plane from a point and spanning vectors"></A>
+<A NAME="Construct a plane from a point and spanning vectors"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Making a plane from a point and spanning vectors
+<H3> Construct a plane from a point and spanning vectors
 </H3><P><BR><BR>
-   Let P, V1, V2,and PLANE be declared by
+   Let `p' represent a point on a plane, `v1' and `v2', two vectors in the
+   plane.
+<P>
+ 
+   Let `p', `v1', `v2', and `plane' be declared by
 <P>
  
 <PRE>
-   DOUBLE PRECISION     P     ( 3 )
-   DOUBLE PRECISION     V1    ( 3 )
-   DOUBLE PRECISION     V2    ( 3 )
-   DOUBLE PRECISION     PLANE ( UBPL )
+   ConstSpiceDouble    point[3];
+   ConstSpiceDouble    span1[3];
+   ConstSpiceDouble    span2[3];
+   SpicePlane          plane;
 </PRE>
-   After P, V1, and V2 have been assigned values, you can construct a
-   SPICELIB plane that represents the plane spanned by the vectors V1 and
-   V2 and containing the point P by calling PSV2PL:
+   After `p', `v1', and `v2' have been assigned values, you can construct a
+   SPICE plane that represents the plane spanned by the vectors V1 and V2
+   and containing the point P by calling <a href="../cspice/psv2pl_c.html">psv2pl_c</a>:
 <P>
  
 <PRE>
-   CALL PSV2PL ( P, V1, V2, PLANE )
+   <a href="../cspice/psv2pl_c.html">psv2pl_c</a> ( p, v1, v2, &amp;plane );
 </PRE>
 <BR><BR>
-<A NAME="Breaking planes"></A>
+<A NAME="Access plane data elements"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
-<H2> Breaking planes
-</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-   You can `take planes apart' as well as put them together. Any SPICELIB
+<H3> Access plane data elements
+</H3><P><BR><BR>
+   You can `take planes apart' as well as put them together. Any SPICE
    plane, regardless of which routine created it, can be converted to any
    of the representations listed in the previous section: normal vector and
    constant, point and normal vector, or point and spanning vectors.
 <P>
  
-   In the following discussion, PLANE is a SPICELIB plane, N is a normal
-   vector, P is a point, C is a scalar constant, and V1 and V2 are spanning
-   vectors. We omit the declarations; all are as in the previous section.
+   The CSPICE routines that break planes apart into data that define
+   geometric planes are
 <P>
  
-   To find a unit normal vector N and a plane constant C that define PLANE,
-   use PL2NVC:
+<DL><DT>
+<B>
+ <a href="../cspice/pl2nvc_c.html">pl2nvc_c</a>
+</B><BR><BR>
+<DD>
+ Plane to normal vector and constant<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/pl2nvp_c.html">pl2nvp_c</a>
+</B><BR><BR>
+<DD>
+ Plane to normal vector and point<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/pl2psv_c.html">pl2psv_c</a>
+</B><BR><BR>
+<DD>
+ Plane to point and spanning vectors<BR>
+</DL>
+   In the following discussion, `plane' is a SPICE plane, `n' is a normal
+   vector, `p' is a point, `c' is a scalar constant, and V1 and V2 are
+   spanning vectors. We omit the declarations; all are as in the previous
+   section.
+<P>
+ 
+   To find a unit normal vector `n' and a plane constant `c' that define
+   `plane', use <a href="../cspice/pl2nvc_c.html">pl2nvc_c</a>:
 <P>
  
 <PRE>
-   CALL PL2NVC ( PLANE, N, C )
+   <a href="../cspice/pl2nvc_c.html">pl2nvc_c</a> ( &amp;plane, n, &amp;c );
 </PRE>
-   The constant C is the distance of the plane from the origin. The vector
+   The constant `c' is the distance of the plane from the origin. The
+   vector
 <P>
  
 <PRE>
@@ -403,27 +381,27 @@ points<BR>
    will be the closest point in the plane to the origin.
 <P>
  
-   To find a unit normal vector N and a point P that define PLANE, use
-   PL2NVP:
+   To find a unit normal vector `n' and a point `p' that define `plane',
+   use <a href="../cspice/pl2nvp_c.html">pl2nvp_c</a>:
 <P>
  
 <PRE>
-   CALL PL2NVP ( PLANE, N, P )
+   <a href="../cspice/pl2nvp_c.html">pl2nvp_c</a> ( &amp;plane, n, p );
 </PRE>
-   P will be the closest point in the plane to the origin. The unit normal
-   vector N will point from the origin toward the plane.
+   `p' will be the closest point in the plane to the origin. The unit
+   normal vector `n' will point from the origin toward the plane.
 <P>
  
-   To find a point P and two spanning vectors V1 and V2 that define PLANE,
-   use PL2PSV:
+   To find a point `p' and two spanning vectors `v1' and `v2' that define
+   `plane', use <a href="../cspice/pl2psv_c.html">pl2psv_c</a>:
 <P>
  
 <PRE>
-   CALL PL2PSV ( PLANE, P, V1, V2 )
+   <a href="../cspice/pl2psv_c.html">pl2psv_c</a> ( &amp;plane, p, v1, v2 );
 </PRE>
-   P will be the closest point in the plane to the origin. The vectors V1
-   and V2 are mutually orthogonal unit vectors and are also orthogonal to
-   P.
+   `p' will be the closest point in the plane to the origin. The vectors
+   `v1' and `v2' are mutually orthogonal unit vectors and are also
+   orthogonal to `p'.
 <P>
  
    It is important to note that the xxx2PL and PL2xxx routines are not
@@ -431,62 +409,49 @@ points<BR>
 <P>
  
 <PRE>
-   CALL NVC2PL ( N,      C,   PLANE )
-   CALL PL2NVC ( PLANE,  N,   C     )
+   <a href="../cspice/nvc2pl_c.html">nvc2pl_c</a> ( n,      c,   &amp;plane )
+   <a href="../cspice/pl2nvc_c.html">pl2nvc_c</a> ( &amp;plane,  n,   &amp;c    )
  
-   CALL NVP2PL ( P,      N,   PLANE )
-   CALL PL2NVP ( PLANE   N,   P     )
+   <a href="../cspice/nvp2pl_c.html">nvp2pl_c</a> ( p,      n,   &amp;plane )
+   <a href="../cspice/pl2nvp_c.html">pl2nvp_c</a> ( plane   p,   n     )
  
-   CALL PSV2PL ( V1,     V2,  P     PLANE )
-   CALL PL2PSV ( PLANE,  V1,  V1    P     )
+   <a href="../cspice/psv2pl_c.html">psv2pl_c</a> ( v1,     v2,  p,    &amp;plane )
+   <a href="../cspice/pl2psv_c.html">pl2psv_c</a> ( &amp;plane, v1,  v2,   p      )
 </PRE>
    do not necessarily preserve the input arguments supplied to the xxx2PL
-   routines. This is because the uniform internal representation of
-   SPICELIB planes causes them to `forget' what data they were created
-   from; all sets of data that define the same geometric plane have the
-   same internal representation in SPICELIB planes.
+   routines. This is because the uniform internal representation of SPICE
+   planes causes them to `forget' what data they were created from; all
+   sets of data that define the same geometric plane have the same internal
+   representation in SPICE planes.
 <P>
  
-   In general, the routines PL2NVC, PL2NVP, and PL2PSV are used in routines
-   that accept planes as input arguments. In this role, they simplify the
-   routines that call them, because the calling routines no longer check
-   the input planes' validity.
+   In general, the routines <a href="../cspice/pl2nvc_c.html">pl2nvc_c</a>, <a href="../cspice/pl2nvp_c.html">pl2nvp_c</a>, and <a href="../cspice/pl2psv_c.html">pl2psv_c</a> are used in
+   routines that accept planes as input arguments. In this role, they
+   simplify the routines that call them, because the calling routines no
+   longer check the input planes' validity.
 <P>
  
 <BR><BR>
-<A NAME="Planes in real life"></A>
+<A NAME="Examples"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
-<H2> Planes in real life
+<H2> Examples
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-   This section shows how you might use the SPICELIB plane routines to
-   solve several geometry problems.
-<P>
- 
 <BR><BR>
 <A NAME="Converting between representations of planes"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Converting between representations of planes
 </H3><P><BR><BR>
-   The SPICELIB plane routines can also be used as a convenient way to
+   The CSPICE plane routines can also be used as a convenient way to
    convert one representation of a plane to another. For example, suppose
-   that given a normal vector N and constant C defining a plane, you must
-   produce the closest point in the plane to the origin. The code fragment
+   that given a normal vector `n' and constant `c' defining a plane, you
+   must produce the closest point in the plane to the origin. The code
+   fragment
 <P>
  
 <PRE>
-   CALL NVC2PL ( N,      C,  PLANE )
-   CALL PL2NVP ( PLANE,  N,  POINT )
+   <a href="../cspice/nvc2pl_c.html">nvc2pl_c</a> ( n,       c,  &amp;plane );
+   <a href="../cspice/pl2nvp_c.html">pl2nvp_c</a> ( &amp;plane,  n,  point  );
 </PRE>
-   immediately yields the answer. Some programmers would squint a bit
-   before finding the direct computation
-<P>
- 
-<PRE>
-   CALL VSCL (  C  / ( VNORM (N) )**2,  N,  POINT  )    {Scale vector}
-</PRE>
-   and others might squint while trying to determine whether it's correct.
-<P>
- 
 <BR><BR>
 <A NAME="Translating planes"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
@@ -499,23 +464,23 @@ points<BR>
    T(X) = X + A   for all vectors X
 </PRE>
    where A is a constant vector. While it's not difficult to directly apply
-   a translation map to a plane, using SPICELIB plane routines provides the
+   a translation map to a plane, using SPICE plane routines provides the
    convenience of automatically computing the closest point to the origin
    in the translated plane.
 <P>
  
-   Suppose a plane is defined by the point P and the normal vector N, and
-   you wish to translate it by the vector X. That is, you wish to find data
-   defining the plane that results from adding X to every vector in the
-   original plane. You can do this with the code fragment
+   Suppose a plane is defined by the point `p' and the normal vector `n',
+   and you wish to translate it by the vector `x'. That is, you wish to
+   find data defining the plane that results from adding `x' to every
+   vector in the original plane. You can do this with the code fragment
 <P>
  
 <PRE>
-   CALL VADD   ( P,     X, P     )              {Vector addition}
-   CALL NVP2PL ( P,     N, PLANE )
-   CALL PL2NVP ( PLANE, N, P     )
+   <a href="../cspice/vadd_c.html">vadd_c</a>   ( p,      x, p      );              (Vector addition)
+   <a href="../cspice/nvp2pl_c.html">nvp2pl_c</a> ( n,      p, &amp;plane );
+   <a href="../cspice/pl2nvp_c.html">pl2nvp_c</a> ( &amp;plane, n, p      );
 </PRE>
-   Now, P is the closest point in the translated plane to the origin.
+   Now, `p' is the closest point in the translated plane to the origin.
 <P>
  
 <BR><BR>
@@ -527,110 +492,94 @@ points<BR>
    we wish to apply a non-singular linear transformation T to the plane. We
    want to find a unit normal vector and constant that define the
    transformed plane; the constant should be the distance of the plane from
-   the origin. Let T be represented by the matrix M. We can solve the
-   problem using the following code fragment.
+   the origin.
 <P>
  
 <PRE>
-   C     Make a SPICELIB plane from N and C, and then find a
-   C     point in PLANE and spanning vectors for PLANE.  N
-   C     need not be a unit vector.
-   C
-         CALL NVC2PL ( N,      C,      PLANE     )
-         CALL PL2PSV ( PLANE,  POINT,  V1,    V2 )
+        Let T be represented by the matrix M.
  
-   C
-   C     Apply the linear transformation to the point and
-   C     spanning vectors.  All we need to do is multiply
-   C     these vectors by M, since for any linear
-   C     transformation T,
-   C
-   C           T ( POINT   +     t1 * V1     +   t2 * V2 )
-   C
-   C        =  T (POINT)   +   t1 * T (V1)   +   t2 * T (V2),
-   C
-   C     which means that T(POINT), T(V1), and T(V2) are a
-   C     a point and spanning vectors for the transformed
-   C     plane.
-   C
-         CALL MXV ( M, POINT, TPOINT )
-         CALL MXV ( M, V1,    TV1    )
-         CALL MXV ( M, V2,    TV2    )
+        If Y is a point in the transformed plane, then
  
-   C
-   C     Make a new SPICELIB plane TPLANE from the
-   C     transformed point and spanning vectors, and find a
-   C     unit normal and constant for this new plane.
-   C
-         CALL PSV2PL ( TPOINT,   TV1,  TV2,  TPLANE )
-         CALL PL2NVC ( TPLANE,   TN,   TC           )
+            -1
+           M   Y
+ 
+        is a point in the original plane, so
+ 
+                 -1
+           &lt; N, M  Y &gt;  =  C.
+ 
+        But
+ 
+                 -1           T  -1
+           &lt; N, M  Y &gt;  =    N  M   Y
+ 
+                                  -1 T     T
+                        =   (  ( M  )  N  )   Y
+ 
+                                  -1 T
+                        =   &lt;  ( M  )  N,  Y &gt;
+ 
+        So
+ 
+              -1 T
+           ( M  )  N,  C
+ 
+        are, respectively, a normal vector and constant for the
+        transformed plane.
 </PRE>
-   Let's see what transformation looks like without the SPICELIB plane
-   routines (you might try to derive the solution before reading on):
+   We can solve the problem using the following code fragments.
+<P>
+ 
+   Make a SPICE plane from `n' and `c', and then find a point in `plane'
+   and spanning vectors for `plane'. `n' need not be a unit vector.
 <P>
  
 <PRE>
-   C
-   C     If Y is a point in the transformed plane, then
-   C
-   C         -1
-   C        M   Y
-   C
-   C     is a point in the original plane, so
-   C
-   C              -1
-   C        &lt; N, M  Y &gt;  =  C.
-   C
-   C     But
-   C
-   C              -1           T  -1
-   C        &lt; N, M  Y &gt;  =    N  M   Y
-   C
-   C                               -1 T     T
-   C                     =   (  ( M  )  N  )   Y
-   C
-   C                               -1 T
-   C                     =   &lt;  ( M  )  N,  Y &gt;
-   C
-   C     So
-   C
-   C           -1 T
-   C        ( M  )  N,  C
-   C
-   C     are, respectively, a normal vector and constant for the
-   C     transformed plane.
-   C
-         CALL INV   ( M,     MINV      )   {matrix inverse}
-         CALL MTXV  ( MINV,  N,    N   )   {matrix transpose x matrix}
-         CALL UNORM ( N,     N,    MAG )   {unitize vector, find norm}
- 
-         IF ( C .LT. 0.D0 ) THEN
- 
-            CALL VMINUS ( N, N )           {negate vector}
-            C = -C / MAG
-         ELSE
-            C =  C / MAG
-         END IF
- 
+   <a href="../cspice/nvc2pl_c.html">nvc2pl_c</a> ( n,      c,      &amp;plane     )
+   <a href="../cspice/pl2psv_c.html">pl2psv_c</a> ( &amp;plane,  point,  v1,    v2 )
 </PRE>
-   The code is slightly shorter, but the solution is much harder to arrive
-   at. It's also harder to understand, unless it's very well commented.
+   Apply the linear transformation to the point and spanning vectors. All
+   we need to do is multiply these vectors by M, since for any linear
+   transformation T,
 <P>
  
+<PRE>
+              T ( POINT   +     t1 * V1     +   t2 * V2 )
+ 
+           =  T (POINT)   +   t1 * T (V1)   +   t2 * T (V2),
+</PRE>
+   which means that T(POINT), T(V1), and T(V2) are a a point and spanning
+   vectors for the transformed plane.
+<P>
+ 
+<PRE>
+   <a href="../cspice/mxv_c.html">mxv_c</a> ( m, point, tpoint );
+   <a href="../cspice/mxv_c.html">mxv_c</a> ( m, v1,    tv1    );
+   <a href="../cspice/mxv_c.html">mxv_c</a> ( m, v2,    tv2    );
+</PRE>
+   Construct a new SPICE plane `tplane' from the transformed point and
+   spanning vectors, and find a unit normal and constant for this new
+   plane.
+<P>
+ 
+<PRE>
+   <a href="../cspice/psv2pl_c.html">psv2pl_c</a> ( tpoint,   tv1,  tv2,  &amp;tplane );
+   <a href="../cspice/pl2nvc_c.html">pl2nvc_c</a> ( &amp;tplane,   tn,   tc           );
+</PRE>
 <BR><BR>
 <A NAME="Finding the limb of an ellipsoid"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Finding the limb of an ellipsoid
 </H3><P><BR><BR>
-   This problem is somewhat artificial, because the SPICELIB routine EDLIMB
+   This problem is somewhat artificial, because the SPICE routine <a href="../cspice/edlimb_c.html">edlimb_c</a>
    already solves this problem. Nonetheless, it is a good illustration of
-   how SPICELIB plane routines are used.
+   how CSPICE plane routines are used.
 <P>
  
    We'll work in body-fixed coordinates, which is to say that the ellipsoid
    is centered at the origin and has axes aligned with the x, y and z axes.
-   Suppose that the semi-axes of the ellipsoid have lengths A, B, and C,
-   and call our observation point
+   Suppose that the semi-axes of the ellipsoid has lengths A, B, and C, and
+   call our observation point
 <P>
  
 <PRE>
@@ -677,299 +626,109 @@ points<BR>
              2      2      2
    N = ( p1/A , p2/B , p3/C  )
 </PRE>
-   and constant 1. We can create a SPICELIB plane representing the limb
-   with the code fragment
+   and constant 1. We can create a SPICE plane representing the limb with
+   the code fragment
 <P>
  
 <PRE>
-   N(1) = P(1) / A**2
-   N(2) = P(2) / B**2
-   N(3) = P(3) / C**2
+   n(0) = p(0) / pow(a,2)
+   n(1) = p(1) / pow(b,2)
+   n(2) = p(2) / pow(c,2)
  
-   CALL NVC2PL ( N, 1.D0, PLANE )
+   <a href="../cspice/nvc2pl_c.html">nvc2pl_c</a> ( n, 1., &amp;plane );
 </PRE>
    The limb is the intersection of the limb plane and the ellipsoid. To
-   find the intersection, we use the SPICELIB routine INEDPL (Intersection
+   find the intersection, we use the CSPICE routine <a href="../cspice/inedpl_c.html">inedpl_c</a> (Intersection
    of ellipsoid and plane):
 <P>
  
 <PRE>
-   CALL INEDPL ( A, B, C, PLANE, ELLIPS, FOUND )
+   <a href="../cspice/inedpl_c.html">inedpl_c</a> ( a,  b,  c,  &amp;plane, &amp;ellips, &amp;found );
 </PRE>
-   ELLIPS is an array that represents the limb. The array is a SPICELIB
-   `ellipse', a data type analogous to the SPICELIB plane. We can use the
-   SPICELIB routine EL2CGV (Ellipse to center and generating vectors) to
-   find the limb's center, semi-major axis, and semi-minor axis:
+   `ellips' is a SPICE `ellipse', a data type analogous to the SPICE plane.
+   We can use the CSPICE routine <a href="../cspice/el2cgv_c.html">el2cgv_c</a> (Ellipse to center and generating
+   vectors) to find the limb's center, semi-major axis, and semi-minor
+   axis:
 <P>
  
 <PRE>
-   CALL EL2CGV ( ELLIPS, CENTER, SMAJOR, SMINOR )
+   <a href="../cspice/el2cgv_c.html">el2cgv_c</a> ( &amp;ellips, center, smajor, sminor );
 </PRE>
 <BR><BR>
-<A NAME="Altitude of a ray above the limb of an ellipsoid"></A>
+<A NAME="Header examples"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Altitude of a ray above the limb of an ellipsoid
+<H3> Header examples
 </H3><P><BR><BR>
-   The technique demonstrated here can be used to find the altitude of a
-   spacecraft-mounted remote sensing instrument's boresight ray above the
-   limb of a body modelled by a triaxial ellipsoid.
+   The headers of the plane routines (see <a href="../req/planes.html">planes.req</a>) list additional
+   ellipse usage examples.
 <P>
  
-   We assume that the angular separation of the boresight ray and the
-   `down' direction (the direction of the normal to the limb plane that
-   points away from the observer) is less than pi/2 radians. In practice,
-   this criterion will usually be met whenever the limb of the body is in
-   the instrument field of view.
+<BR><BR>
+<A NAME="Use of ellipses with planes"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Use of ellipses with planes
+</H3><P><BR><BR>
+   The nature of geometry problems involving planes often includes use of
+   the SPICE ellipse data type. The example code listed in the headers of
+   the routines <a href="../cspice/inelpl_c.html">inelpl_c</a> and <a href="../cspice/pjelpl_c.html">pjelpl_c</a> show examples of problems solved
+   using both the ellipse and plane data type.
 <P>
  
-   For example, in the case of a camera with a field of view of eight
-   milliradians (roughly the field of view of the Galileo SSI camera and
-   slightly more than the field of view of the Voyager 2 narrow angle ISS
-   camera), this technique will work for observations of the Earth as long
-   as the limb of the Earth is in the field of view, and as long as the
-   altitude of the observer above the Earth is at least 52 meters (assuming
-   a spherical Earth with all radii equal to the equatorial radius).
-<P>
- 
-   The following subroutine demonstrates the computation.
-<P>
- 
-<PRE>
-         SUBROUTINE RAYALT  ( TARG,   ET,  CORR,  SC,  RAYDIR,
-        .                     LNEAR,  ALT                      )
- 
-   C
-   C     Find the altitude of an instrument boresight ray above the
-   C     limb of a specified target body, and find the nearest point
-   C     on the limb to the ray.
-   C
-         INTEGER               TARG
-         DOUBLE PRECISION      ET
-         CHARACTER*(*)         CORR
-         INTEGER               SC
-         DOUBLE PRECISION      RAYDIR ( 3 )
-         DOUBLE PRECISION      LNEAR  ( 3 )
-         DOUBLE PRECISION      ALT
- 
- 
-   C
-   C     SPICELIB functions
-   C
-         DOUBLE PRECISION      DPR
- 
-   C
-   C     Local parameters
-   C
-         INTEGER               UBEL
-         PARAMETER           ( UBEL  =   9 )
- 
-         INTEGER               UBPL
-         PARAMETER           ( UBPL  =   4 )
- 
-   C
-   C     Local variables
-   C
-         DOUBLE PRECISION      CENTER ( 3 )
-         DOUBLE PRECISION      DIST
-         DOUBLE PRECISION      EPOCH
-         DOUBLE PRECISION      LIMB   ( UBEL )
-         DOUBLE PRECISION      NEAR   ( 3 )
-         DOUBLE PRECISION      LPLANE ( UBPL )
-         DOUBLE PRECISION      LT
-         DOUBLE PRECISION      PJLIMB ( UBEL )
-         DOUBLE PRECISION      PJPOS  ( 3 )
-         DOUBLE PRECISION      PLANE  ( UBPL )
-         DOUBLE PRECISION      SCPOS  ( 3 )
-         DOUBLE PRECISION      SMAJOR ( 3 )
-         DOUBLE PRECISION      SMINOR ( 3 )
-         DOUBLE PRECISION      RADII  ( 3 )
-         DOUBLE PRECISION      STATE  ( 6 )
-         DOUBLE PRECISION      SUBPT  ( 3 )
-         DOUBLE PRECISION      TIPM   ( 3, 3 )
- 
-         INTEGER               N
- 
-         LOGICAL               FOUND
- 
-   C
-   C                  Glossary of variables
-   C
-   C
-   C       Name                            Meaning
-   C    ----------        ------------------------------------------
-   C
-   C     SC                NAIF ID code of a spacecraft.
-   C
-   C     TARG              NAIF ID code of a target body.
-   C
-   C     ET                Ephemeris time of the observation.
-   C
-   C     STATE             State (position and velocity), light-time
-   C                       corrected, of the target body as seen from
-   C                       the spacecraft at ET.
-   C
-   C     LT                Light time from target body to the
-   C                       spacecraft at ET.
-   C
-   C     SCPOS             Spacecraft position relative to the
-   C                       light-time corrected body position, in body
-   C                       centered, inertial coordinates.
-   C
-   C     TIPM              Transformation from inertial (J2000)
-   C                       coordinates to light-time corrected body
-   C                       equator and prime meridian coordinates.
-   C
-   C     RADII             Radii of the triaxial ellipsoid used to
-   C                       model the body.
-   C
-   C     RAYDIR            `Ray direction'--the instrument boresight
-   C                       vector.
-   C
-   C     LIMB              A SPICELIB ellipse that represents the
-   C                       body's limb. (This is an array of length
-   C                       9.)
-   C
-   C     LPLANE            The limb plane.
-   C
-   C     PLANE             A plane orthogonal to the vector RAYDIR.
-   C                       (This is an array of length 4.)
-   C
-   C     PJLIMB            The orthogonal projection of the limb onto
-   C                       PLANE.
-   C
-   C     PJPOS             The orthogonal projection of the
-   C                       spacecraft position onto PLANE.
-   C
-   C     NEAR              The nearest point on the projected limb
-   C                       PJLIMB to the projected vertex PJPOS.
-   C
-   C     LNEAR             The inverse orthogonal projection of PJPOS
-   C                       back to the limb plane. This is the point
-   C                       on the limb closest to the boresight ray.
-   C
-   C     ALT               The altitude of the boresight above the
-   C                       limb of the target body.
- 
-   C
-   C
-   C     Step 1:  Find the light-time corrected position of the body
-   C              as seen from the spacecraft.  We will request the
-   C              state vector in J2000 coordinates.
-   C
-   C              Also find the light-time corrected inertial to body
-   C              equator and prime meridian transformation matrix.
-   C
-   C
-         CALL SPKEZ  ( TARG, ET, 'J2000', CORR, SC, STATE, LT )
- 
-         CALL BODMAT ( TARG, ET-LT, TIPM )
- 
-   C
-   C     Step 2:  Find the position of the spacecraft as seen from
-   C              the light-time corrected body position.  Convert
-   C              this position vector to equator and prime meridian
-   C              coordinates.  Also transform the boresight ray.
-   C
-         CALL VMINUS ( STATE, SCPOS          )
-         CALL MXV    ( TIPM,  SCPOS,  SCPOS  )
-         CALL MXV    ( TIPM,  RAYDIR, RAYDIR )
- 
-   C
-   C     Step 3:  Look up the radii of the body and find the limb.
-   C              Find the limb plane as well, since we'll use it
-   C              soon.
-   C
-         CALL BODVAR ( TARG, 'RADII', N, RADII )
- 
-         CALL EDLIMB ( RADII(1), RADII(2), RADII(3), SCPOS,  LIMB   )
-         CALL EL2CGV ( LIMB,     CENTER,   SMAJOR,   SMINOR         )
-         CALL PSV2PL (           CENTER,   SMAJOR,   SMINOR, LPLANE )
- 
-   C
-   C     Step 4.  Create a plane that is orthogonal to the instrument
-   C              boresight vector.  Orthogonally project the limb
-   C              onto this plane.  Under this projection, every
-   C              point on the limb maps to a point that is the same
-   C              distance from the boresight as the pre-image of
-   C              that point.  The intersection of
-   C              the boresight itself with the plane is just the
-   C              orthogonal projection of the boresight ray's vertex
-   C              onto the plane.
-   C
-         CALL NVC2PL ( RAYDIR, 0.D0,   PLANE  )
- 
-         CALL PJELPL ( LIMB,   PLANE,  PJLIMB )
- 
-         CALL VPRJP  ( SCPOS,  PLANE,  PJPOS  )
- 
-   C
-   C     Step 5.  Find the nearest point (NEAR) on the projected
-   C              limb to the projected vertex of the boresight
-   C              ray.  The distance between the projected ellipse
-   C              PJLIMB and the point PJPOS is the altitude of the
-   C              boresight ray above the limb.  To find the point
-   C              on the limb closest to the boresight, just find
-   C              the inverse orthogonal projection of NEAR onto the
-   C              limb plane.
-   C
- 
-         CALL NPELPT ( PJPOS,   PJLIMB,   NEAR,    ALT           )
- 
-         CALL VPRJPI ( NEAR,    PLANE,   LPLANE,  LNEAR,  FOUND )
- 
-   C
-   C     If FOUND is false, the inverse projection could not be
-   C     performed.  This indicates that the limb plane is too
-   C     close to parallel to the boresight ray for this method to
-   C     work.  This problem is very unlikely to occur.
-   C
-         IF ( .NOT. FOUND ) THEN
-            CALL SETMSG ( 'Could not compute limb altitude.' )
-            CALL SIGERR ( 'SPICE(DEGENERATECASE)'            )
-            RETURN
-         END IF
- 
-   C
-   C     LNEAR and ALT are the limb point nearest to the boresight
-   C     ray, and the altitude of the boresight ray above the limb
-   C     of the target body, respectively.
-   C
-         END
- 
- 
-</PRE>
 <BR><BR>
 <A NAME="Summary of routines"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Summary of routines
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   The following table summarizes the SPICELIB plane routines.
+   The following table summarizes the CSPICE plane routines.
 <P>
  
-<B>NVC2PL</B>     (NORMAL, CONST, PLANE)   Convert a normal vector and a
-                                           constant to a plane.
+<PRE>
+   <a href="../cspice/inedpl_c.html">inedpl_c</a>             Intersection of ellipsoid and plane
+   <a href="../cspice/inelpl_c.html">inelpl_c</a>             Intersection of ellipse and plane
+   <a href="../cspice/inrypl_c.html">inrypl_c</a>             Intersection of ray and plane
+   <a href="../cspice/nvc2pl_c.html">nvc2pl_c</a>             Normal vector and constant to plane
+   <a href="../cspice/nvp2pl_c.html">nvp2pl_c</a>             Normal vector and point to plane
+   <a href="../cspice/pjelpl_c.html">pjelpl_c</a>             Project ellipse onto plane
+   <a href="../cspice/pl2nvc_c.html">pl2nvc_c</a>             Plane to normal vector and constant)
+   <a href="../cspice/pl2nvp_c.html">pl2nvp_c</a>             Plane to normal vector and point
+   <a href="../cspice/pl2psv_c.html">pl2psv_c</a>             Plane to point and spanning vectors
+   <a href="../cspice/psv2pl_c.html">psv2pl_c</a>             Point and spanning vectors to plane
+   <a href="../cspice/vprjp_c.html">vprjp_c</a>              Vector projection onto plane
+   <a href="../cspice/vprjpi_c.html">vprjpi_c</a>             Vector projection onto plane, inverted
 </PRE>
-<BR>
-<B>NVP2PL</B>     (NORMAL, POINT, PLANE)   Convert normal vector and point
-                                           to a plane.
-</PRE>
-<BR>
-<B>PSV2PL</B>     (POINT, V1, V2, PLANE)   Convert a point and two spanning
-                                           vectors to a plane.
-</PRE>
-<BR>
-<B>PL2NVC</B>     (PLANE, NORMAL, CONST)   Convert a plane to a normal
-                                           vector and a constant.
-</PRE>
-<BR>
-<B>PL2NVP</B>     (PLANE, NORMAL, POINT)   Convert a plane to a normal
-                                           vector and a point.
-</PRE>
-<BR>
-<B>PL2PSV</B>     (PLANE, POINT, V1, V2)   Convert a plane to a point and
-                                           spanning vectors.
-</PRE>
-<BR>
+<BR><BR>
+<A NAME="Appendix: Document Revision History"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Appendix: Document Revision History
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="2012 JAN 23, EDW (JPL)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> 2012 JAN 23, EDW (JPL)
+</H3><P><BR><BR>
+   Added descriptions and examples for CSPICE, Icy, and Mice distributions.
+   Rewrote and restructured document sections for clarity and to conform to
+   NAIF documentation standard.
+<P>
+ 
+<BR><BR>
+<A NAME="2008 JAN 17, BVS (JPL)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> 2008 JAN 17, BVS (JPL)
+</H3><P><BR><BR>
+   Previous edits
+<P>
+ 
+<BR><BR>
+<A NAME="2002 DEC 12, NAIF (JPL)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> 2002 DEC 12, NAIF (JPL)
+</H3><P><BR><BR>
+   Corrections were made to comments in code example that computes altitude
+   of ray above the limb of an ellipsoid. Previously, the quantity computed
+   was incorrectly described as the altitude of a ray above an ellipsoid.
+<P>
+ 
 
 </TD>
 </TR>

@@ -18,12 +18,12 @@ static integer c__1 = 1;
 {
     /* Initialized data */
 
-    static char defmsg[78*4] = "Oh, by the way:  The SPICELIB error handling"
-	    " actions are USER-TAILORABLE.  You" "can choose whether the Tool"
-	    "kit aborts or continues when errors occur, which   " "error mess"
-	    "ages to output, and where to send the output.  Please read the E"
-	    "RROR" "\"Required Reading\" file, or see the routines ERRACT, ER"
-	    "RDEV, and ERRPRT.      ";
+    static char defmsg[80*4] = "Oh, by the way:  The SPICELIB error handling"
+	    " actions are USER-TAILORABLE.  You  " "can choose whether the To"
+	    "olkit aborts or continues when errors occur, which     " "error "
+	    "messages to output, and where to send the output.  Please read t"
+	    "he ERROR  " "\"Required Reading\" file, or see the routines ERRA"
+	    "CT, ERRDEV, and ERRPRT.        ";
     static logical first = TRUE_;
 
     /* System generated locals */
@@ -38,7 +38,7 @@ static integer c__1 = 1;
 	     s_copy(char *, char *, ftnlen, ftnlen);
 
     /* Local variables */
-    char name__[32], line[78];
+    char name__[32], line[80];
     logical long__;
     char lmsg[1840];
     logical expl;
@@ -54,9 +54,9 @@ static integer c__1 = 1;
     integer start;
     logical short__;
     extern /* Subroutine */ int ljust_(char *, char *, ftnlen, ftnlen);
-    char device[128];
+    char device[255];
     integer remain;
-    static char border[78];
+    static char border[80];
     extern /* Subroutine */ int getdev_(char *, ftnlen);
     logical dfault;
     integer length;
@@ -273,6 +273,26 @@ static integer c__1 = 1;
 /*      M.J. Spencer    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 5.27.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-INTEL. */
+
+/* -    SPICELIB Version 5.26.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 5.25.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-GFORTRAN. */
+
+/* -    SPICELIB Version 5.24.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 5.23.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GCC_C. */
 
 /* -    SPICELIB Version 5.22.0, 13-MAY-2010 (BVS) */
 
@@ -589,7 +609,7 @@ static integer c__1 = 1;
 
     if (first) {
 	first = FALSE_;
-	for (i__ = 1; i__ <= 78; ++i__) {
+	for (i__ = 1; i__ <= 80; ++i__) {
 	    *(unsigned char *)&border[i__ - 1] = '=';
 	}
     }
@@ -611,7 +631,7 @@ static integer c__1 = 1;
     i__1 = numwrd;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	ucase_(words + ((i__2 = i__ - 1) < 5 && 0 <= i__2 ? i__2 : s_rnge(
-		"words", i__2, "outmsg_", (ftnlen)593)) * 9, upword, (ftnlen)
+		"words", i__2, "outmsg_", (ftnlen)613)) * 9, upword, (ftnlen)
 		9, (ftnlen)9);
 	if (s_cmp(upword, "SHORT", (ftnlen)9, (ftnlen)5) == 0) {
 	    short__ = TRUE_;
@@ -632,19 +652,19 @@ static integer c__1 = 1;
 /*           result if this routine calls SIGERR.  So we output */
 /*           the error message directly: */
 
-	    getdev_(device, (ftnlen)128);
-	    wrline_(device, "SPICE(INVALIDLISTITEM)", (ftnlen)128, (ftnlen)22)
+	    getdev_(device, (ftnlen)255);
+	    wrline_(device, "SPICE(INVALIDLISTITEM)", (ftnlen)255, (ftnlen)22)
 		    ;
-	    wrline_(device, " ", (ftnlen)128, (ftnlen)1);
+	    wrline_(device, " ", (ftnlen)255, (ftnlen)1);
 	    wrline_(device, "OUTMSG:  An invalid message type was specified "
-		    "in the type list. ", (ftnlen)128, (ftnlen)65);
+		    "in the type list. ", (ftnlen)255, (ftnlen)65);
 /* Writing concatenation */
 	    i__3[0] = 29, a__1[0] = "The invalid message type was ";
 	    i__3[1] = 9, a__1[1] = words + ((i__2 = i__ - 1) < 5 && 0 <= i__2 
-		    ? i__2 : s_rnge("words", i__2, "outmsg_", (ftnlen)630)) * 
+		    ? i__2 : s_rnge("words", i__2, "outmsg_", (ftnlen)650)) * 
 		    9;
 	    s_cat(ch__1, a__1, i__3, &c__2, (ftnlen)38);
-	    wrline_(device, ch__1, (ftnlen)128, (ftnlen)38);
+	    wrline_(device, ch__1, (ftnlen)255, (ftnlen)38);
 	}
     }
 
@@ -656,11 +676,11 @@ static integer c__1 = 1;
 
 /*     We get the default error output device: */
 
-    getdev_(device, (ftnlen)128);
+    getdev_(device, (ftnlen)255);
     output = short__ && msgsel_("SHORT", (ftnlen)5) || expl && msgsel_("EXPL"
 	    "AIN", (ftnlen)7) || long__ && msgsel_("LONG", (ftnlen)4) || trace 
 	    && msgsel_("TRACEBACK", (ftnlen)9) || dfault && msgsel_("DEFAULT",
-	     (ftnlen)7) && s_cmp(device, "NULL", (ftnlen)128, (ftnlen)4) != 0;
+	     (ftnlen)7) && s_cmp(device, "NULL", (ftnlen)255, (ftnlen)4) != 0;
 
 /*     We go ahead and output those messages that have been specified */
 /*     in the list and also are enabled for output. The order of the */
@@ -677,9 +697,9 @@ static integer c__1 = 1;
 /*     Write the starting border: skip a line, write the border, */
 /*     skip a line. */
 
-    wrline_(device, " ", (ftnlen)128, (ftnlen)1);
-    wrline_(device, border, (ftnlen)128, (ftnlen)78);
-    wrline_(device, " ", (ftnlen)128, (ftnlen)1);
+    wrline_(device, " ", (ftnlen)255, (ftnlen)1);
+    wrline_(device, border, (ftnlen)255, (ftnlen)80);
+    wrline_(device, " ", (ftnlen)255, (ftnlen)1);
 
 /*     Output the toolkit version and skip a line. */
 
@@ -687,9 +707,9 @@ static integer c__1 = 1;
 /* Writing concatenation */
     i__3[0] = 17, a__1[0] = "Toolkit version: ";
     i__3[1] = 80, a__1[1] = versn;
-    s_cat(line, a__1, i__3, &c__2, (ftnlen)78);
-    wrline_(device, line, (ftnlen)128, (ftnlen)78);
-    wrline_(device, " ", (ftnlen)128, (ftnlen)1);
+    s_cat(line, a__1, i__3, &c__2, (ftnlen)80);
+    wrline_(device, line, (ftnlen)255, (ftnlen)80);
+    wrline_(device, " ", (ftnlen)255, (ftnlen)1);
 
 /*     Next, we output the messages specified in the list */
 /*     that have been enabled. */
@@ -711,15 +731,15 @@ static integer c__1 = 1;
 	i__4[1] = 4, a__2[1] = " -- ";
 	i__4[2] = 80, a__2[2] = xmsg;
 	s_cat(tmpmsg, a__2, i__4, &c__3, (ftnlen)105);
-	wrline_(device, tmpmsg, (ftnlen)128, (ftnlen)105);
-	wrline_(device, " ", (ftnlen)128, (ftnlen)1);
+	wrline_(device, tmpmsg, (ftnlen)255, (ftnlen)105);
+	wrline_(device, " ", (ftnlen)255, (ftnlen)1);
     } else if (short__ && msgsel_("SHORT", (ftnlen)5)) {
 
 /*        Output the short error message without the explanation. */
 
 	getsms_(smsg, (ftnlen)25);
-	wrline_(device, smsg, (ftnlen)128, (ftnlen)25);
-	wrline_(device, " ", (ftnlen)128, (ftnlen)1);
+	wrline_(device, smsg, (ftnlen)255, (ftnlen)25);
+	wrline_(device, " ", (ftnlen)255, (ftnlen)1);
     } else if (expl && msgsel_("EXPLAIN", (ftnlen)7)) {
 
 /*        Obtain the explanatory text for the short error */
@@ -727,8 +747,8 @@ static integer c__1 = 1;
 
 	getsms_(smsg, (ftnlen)25);
 	expln_(smsg, xmsg, (ftnlen)25, (ftnlen)80);
-	wrline_(device, xmsg, (ftnlen)128, (ftnlen)80);
-	wrline_(device, " ", (ftnlen)128, (ftnlen)1);
+	wrline_(device, xmsg, (ftnlen)255, (ftnlen)80);
+	wrline_(device, " ", (ftnlen)255, (ftnlen)1);
     }
     if (long__ && msgsel_("LONG", (ftnlen)4)) {
 
@@ -740,7 +760,7 @@ static integer c__1 = 1;
 /*        Get the number of words in the error message. */
 
 	numwrd = wdcnt_(lmsg, (ftnlen)1840);
-	s_copy(line, " ", (ftnlen)78, (ftnlen)1);
+	s_copy(line, " ", (ftnlen)80, (ftnlen)1);
 	start = 1;
 
 /*        Format the words into output lines and display them as */
@@ -751,19 +771,19 @@ static integer c__1 = 1;
 	    nextwd_(lmsg, outwrd, lmsg, (ftnlen)1840, (ftnlen)1840, (ftnlen)
 		    1840);
 	    wrdlen = rtrim_(outwrd, (ftnlen)1840);
-	    if (start + wrdlen <= 78) {
-		s_copy(line + (start - 1), outwrd, 78 - (start - 1), (ftnlen)
+	    if (start + wrdlen <= 80) {
+		s_copy(line + (start - 1), outwrd, 80 - (start - 1), (ftnlen)
 			1840);
 		start = start + wrdlen + 1;
 	    } else {
-		if (wrdlen <= 78) {
+		if (wrdlen <= 80) {
 
 /*                 We had a short word, so just write the line and */
 /*                 continue. */
 
-		    wrline_(device, line, (ftnlen)128, (ftnlen)78);
+		    wrline_(device, line, (ftnlen)255, (ftnlen)80);
 		    start = wrdlen + 2;
-		    s_copy(line, outwrd, (ftnlen)78, (ftnlen)1840);
+		    s_copy(line, outwrd, (ftnlen)80, (ftnlen)1840);
 		} else {
 
 /*                 We got a very long word here, so we break it up and */
@@ -776,9 +796,9 @@ static integer c__1 = 1;
 /*                 is empty, we have all of the space available. */
 
 		    if (start > 1) {
-			remain = 78 - start;
+			remain = 80 - start;
 		    } else {
-			remain = 78;
+			remain = 80;
 		    }
 
 /*                 Now we stuff bits of the word into the output line */
@@ -790,9 +810,9 @@ static integer c__1 = 1;
 /*                 output lines. */
 
 		    if (remain < 10) {
-			wrline_(device, line, (ftnlen)128, (ftnlen)78);
-			s_copy(line, " ", (ftnlen)78, (ftnlen)1);
-			remain = 78;
+			wrline_(device, line, (ftnlen)255, (ftnlen)80);
+			s_copy(line, " ", (ftnlen)80, (ftnlen)1);
+			remain = 80;
 			start = 1;
 		    }
 
@@ -801,15 +821,15 @@ static integer c__1 = 1;
 /*                 part of the long word that we just wrote, left */
 /*                 justifying the remaining part before proceeding. */
 
-		    while(wrdlen > 78) {
-			s_copy(line + (start - 1), outwrd, 78 - (start - 1), 
+		    while(wrdlen > 80) {
+			s_copy(line + (start - 1), outwrd, 80 - (start - 1), 
 				remain);
-			wrline_(device, line, (ftnlen)128, (ftnlen)78);
+			wrline_(device, line, (ftnlen)255, (ftnlen)80);
 			s_copy(outwrd, " ", remain, (ftnlen)1);
 			ljust_(outwrd, outwrd, (ftnlen)1840, (ftnlen)1840);
-			s_copy(line, " ", (ftnlen)78, (ftnlen)1);
+			s_copy(line, " ", (ftnlen)80, (ftnlen)1);
 			wrdlen -= remain;
-			remain = 78;
+			remain = 80;
 			start = 1;
 		    }
 
@@ -820,7 +840,7 @@ static integer c__1 = 1;
 
 		    if (wrdlen > 0) {
 			start = wrdlen + 2;
-			s_copy(line, outwrd, (ftnlen)78, (ftnlen)1840);
+			s_copy(line, outwrd, (ftnlen)80, (ftnlen)1840);
 		    }
 		}
 	    }
@@ -828,10 +848,10 @@ static integer c__1 = 1;
 
 /*        We may need to write the remaining part of a line. */
 
-	if (s_cmp(line, " ", (ftnlen)78, (ftnlen)1) != 0) {
-	    wrline_(device, line, (ftnlen)128, (ftnlen)78);
+	if (s_cmp(line, " ", (ftnlen)80, (ftnlen)1) != 0) {
+	    wrline_(device, line, (ftnlen)255, (ftnlen)80);
 	}
-	wrline_(device, " ", (ftnlen)128, (ftnlen)1);
+	wrline_(device, " ", (ftnlen)255, (ftnlen)1);
     }
     if (trace && msgsel_("TRACEBACK", (ftnlen)9)) {
 
@@ -845,14 +865,14 @@ static integer c__1 = 1;
 /*           So, write a line telling the reader what's coming. */
 
 	    wrline_(device, "A traceback follows.  The name of the highest l"
-		    "evel module is first.", (ftnlen)128, (ftnlen)68);
+		    "evel module is first.", (ftnlen)255, (ftnlen)68);
 
 /*           While there are more names in the traceback */
 /*           representation, we stuff them into output lines and */
 /*           write the lines out when they are full. */
 
-	    s_copy(line, " ", (ftnlen)78, (ftnlen)1);
-	    remain = 78;
+	    s_copy(line, " ", (ftnlen)80, (ftnlen)1);
+	    remain = 80;
 	    i__1 = depth;
 	    for (index = 1; index <= i__1; ++index) {
 
@@ -872,7 +892,7 @@ static integer c__1 = 1;
 /*              name into the output line. */
 
 		if (index == 1) {
-		    suffix_(name__, &c__0, line, (ftnlen)32, (ftnlen)78);
+		    suffix_(name__, &c__0, line, (ftnlen)32, (ftnlen)80);
 		    remain -= length;
 		} else {
 
@@ -881,12 +901,12 @@ static integer c__1 = 1;
 /*                 the first thing on the next line. */
 
 		    if (remain >= 4) {
-			suffix_("-->", &c__1, line, (ftnlen)3, (ftnlen)78);
+			suffix_("-->", &c__1, line, (ftnlen)3, (ftnlen)80);
 			remain += -4;
 		    } else {
-			wrline_(device, line, (ftnlen)128, (ftnlen)78);
-			s_copy(line, "-->", (ftnlen)78, (ftnlen)3);
-			remain = 75;
+			wrline_(device, line, (ftnlen)255, (ftnlen)80);
+			s_copy(line, "-->", (ftnlen)80, (ftnlen)3);
+			remain = 77;
 		    }
 
 /*                 The name fits or it doesn't. If it does, just add */
@@ -894,12 +914,12 @@ static integer c__1 = 1;
 /*                 the first thing on the next line. */
 
 		    if (remain >= length) {
-			suffix_(name__, &c__1, line, (ftnlen)32, (ftnlen)78);
+			suffix_(name__, &c__1, line, (ftnlen)32, (ftnlen)80);
 			remain = remain - length - 1;
 		    } else {
-			wrline_(device, line, (ftnlen)128, (ftnlen)78);
-			s_copy(line, name__, (ftnlen)78, (ftnlen)32);
-			remain = 78 - length;
+			wrline_(device, line, (ftnlen)255, (ftnlen)80);
+			s_copy(line, name__, (ftnlen)80, (ftnlen)32);
+			remain = 80 - length;
 		    }
 		}
 	    }
@@ -909,10 +929,10 @@ static integer c__1 = 1;
 /*           names, or part of a long name.  If it does, */
 /*           we now write it out. */
 
-	    if (s_cmp(line, " ", (ftnlen)78, (ftnlen)1) != 0) {
-		wrline_(device, line, (ftnlen)128, (ftnlen)78);
+	    if (s_cmp(line, " ", (ftnlen)80, (ftnlen)1) != 0) {
+		wrline_(device, line, (ftnlen)255, (ftnlen)80);
 	    }
-	    wrline_(device, " ", (ftnlen)128, (ftnlen)1);
+	    wrline_(device, " ", (ftnlen)255, (ftnlen)1);
 	}
 
 /*        At this point, either we have output the trace */
@@ -926,10 +946,10 @@ static integer c__1 = 1;
 
 	for (i__ = 1; i__ <= 4; ++i__) {
 	    wrline_(device, defmsg + ((i__1 = i__ - 1) < 4 && 0 <= i__1 ? 
-		    i__1 : s_rnge("defmsg", i__1, "outmsg_", (ftnlen)951)) * 
-		    78, (ftnlen)128, (ftnlen)78);
+		    i__1 : s_rnge("defmsg", i__1, "outmsg_", (ftnlen)971)) * 
+		    80, (ftnlen)255, (ftnlen)80);
 	}
-	wrline_(device, " ", (ftnlen)128, (ftnlen)1);
+	wrline_(device, " ", (ftnlen)255, (ftnlen)1);
     }
 
 /*     At this point, we've output all of the enabled messages */
@@ -938,7 +958,7 @@ static integer c__1 = 1;
 
 /*     Write the ending border out: */
 
-    wrline_(device, border, (ftnlen)128, (ftnlen)78);
+    wrline_(device, border, (ftnlen)255, (ftnlen)80);
     return 0;
 } /* outmsg_ */
 

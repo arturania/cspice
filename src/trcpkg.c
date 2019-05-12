@@ -43,7 +43,7 @@ static integer c__0 = 0;
     integer first;
     extern integer rtrim_(char *, ftnlen);
     extern logical failed_(void);
-    char device[128];
+    char device[255];
     extern /* Subroutine */ int getact_(integer *);
     integer action;
     extern /* Subroutine */ int getdev_(char *, ftnlen);
@@ -131,7 +131,7 @@ static integer c__0 = 0;
 /* $ Exceptions */
 
 /*     1)  If TRCPKG is called directly, the error SPICE(BOGUSENTRY) is */
-/*         signalled. */
+/*         signaled. */
 
 /* $ Files */
 
@@ -174,8 +174,36 @@ static integer c__0 = 0;
 /*     N.J. Bachman    (JPL) */
 /*     K.R. Gehringer  (JPL) */
 /*     H.A. Neilan     (JPL) */
+/*     B.V. Semenov    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 4.26.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-INTEL. */
+
+/* -    SPICELIB Version 4.25.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 4.24.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-GFORTRAN. */
+
+/* -    SPICELIB Version 4.23.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 4.22.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GCC_C. */
+
+/* -    SPICELIB Version 4.21.0, 29-JUL-2013 (BVS) */
+
+/*        Changed logic in the CHKIN and CHKOUT entries to check if the */
+/*        first character of the input value is not a space and, if so, */
+/*        bypass the call to FRSTNB. This change speeds up the execution */
+/*        by ~20%. */
 
 /* -    SPICELIB Version 4.20.0, 13-MAY-2010 (BVS) */
 
@@ -264,7 +292,7 @@ static integer c__0 = 0;
 /* -    SPICELIB Version 4.0.4, 08-OCT-1999 (WLT) */
 
 /*        The environment lines were expanded so that the supported */
-/*        environments are now explicitely given.  New */
+/*        environments are now explicitly given.  New */
 /*        environments are WIN-NT */
 
 /* -    SPICELIB Version 4.0.3, 24-SEP-1999 (NJB) */
@@ -415,8 +443,8 @@ static integer c__0 = 0;
 
 /*     This is the length for a local temporary string used to help */
 /*     format error messages. It and the character string are only */
-/*     present to aviod real or potential problems with pedantic */
-/*     Fortran compilers. 80 characters should be more than sufficient */
+/*     present to avoid real or potential problems with pedantic */
+/*     FORTRAN compilers. 80 characters should be more than sufficient */
 /*     to contain a module name. */
 
 
@@ -601,8 +629,15 @@ L_chkin:
 
 /*     K.R. Gehringer  (JPL) */
 /*     N.J. Bachman    (JPL) */
+/*     B.V. Semenov    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 4.1.0, 29-JUL-2013 (BVS) */
+
+/*        Changed logic to check if the first character of the input */
+/*        value is not a space and, if so, bypass the call to FRSTNB. */
+/*        This change speeds up the execution by ~20%. */
 
 /* -    SPICELIB Version 4.0.5, 17-JUL-2002 (BVS) */
 
@@ -611,7 +646,7 @@ L_chkin:
 /* -    SPICELIB Version 4.0.4, 08-OCT-1999 (WLT) */
 
 /*        The environment lines were expanded so that the supported */
-/*        environments are now explicitely given.  New */
+/*        environments are now explicitly given.  New */
 /*        environments are WIN-NT */
 
 /* -    SPICELIB Version 4.0.3, 24-SEP-1999 (NJB) */
@@ -723,7 +758,11 @@ L_chkin:
 /*     Get the position of the first and last non-blank characters in */
 /*     input module name, and set the length of the module name. */
 
-    first = frstnb_(module, module_len);
+    if (*(unsigned char *)module != ' ') {
+	first = 1;
+    } else {
+	first = frstnb_(module, module_len);
+    }
 
 /*     Check to see if the module name is blank. */
 
@@ -736,16 +775,16 @@ L_chkin:
 	if (modcnt < 100) {
 	    ++modcnt;
 	    s_copy(stack + (((i__1 = modcnt - 1) < 100 && 0 <= i__1 ? i__1 : 
-		    s_rnge("stack", i__1, "trcpkg_", (ftnlen)746)) << 5), 
+		    s_rnge("stack", i__1, "trcpkg_", (ftnlen)785)) << 5), 
 		    module + (first - 1), (ftnlen)32, module_len - (first - 1)
 		    );
 	} else {
 	    ++ovrflw;
-	    getdev_(device, (ftnlen)128);
-	    wrline_(device, "SPICE(TRACEBACKOVERFLOW)", (ftnlen)128, (ftnlen)
+	    getdev_(device, (ftnlen)255);
+	    wrline_(device, "SPICE(TRACEBACKOVERFLOW)", (ftnlen)255, (ftnlen)
 		    24);
 	    wrline_(device, "CHKIN:  The trace storage is completely full.  "
-		    "No further module names can be added.", (ftnlen)128, (
+		    "No further module names can be added.", (ftnlen)255, (
 		    ftnlen)84);
 	}
 
@@ -755,10 +794,10 @@ L_chkin:
 	    maxdep = modcnt + ovrflw;
 	}
     } else {
-	getdev_(device, (ftnlen)128);
-	wrline_(device, "SPICE(BLANKMODULENAME)", (ftnlen)128, (ftnlen)22);
+	getdev_(device, (ftnlen)255);
+	wrline_(device, "SPICE(BLANKMODULENAME)", (ftnlen)255, (ftnlen)22);
 	wrline_(device, "CHKIN:  An attempt to check in was made without sup"
-		"plying a module name.", (ftnlen)128, (ftnlen)72);
+		"plying a module name.", (ftnlen)255, (ftnlen)72);
     }
 
 /*     We're done now, so return. */
@@ -932,8 +971,15 @@ L_chkout:
 
 /*     N.J. Bachman    (JPL) */
 /*     K.R. Gehringer  (JPL) */
+/*     B.V. Semenov    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 4.1.0, 29-JUL-2013 (BVS) */
+
+/*        Changed logic to check if the first character of the input */
+/*        value is not a space and, if so, bypass the call to FRSTNB. */
+/*        This change speeds up the execution by ~20%. */
 
 /* -    SPICELIB Version 4.0.5, 17-JUL-2002 (BVS) */
 
@@ -942,7 +988,7 @@ L_chkout:
 /* -    SPICELIB Version 4.0.4, 08-OCT-1999 (WLT) */
 
 /*        The environment lines were expanded so that the supported */
-/*        environments are now explicitely given.  New */
+/*        environments are now explicitly given.  New */
 /*        environments are WIN-NT */
 
 /* -    SPICELIB Version 4.0.3, 24-SEP-1999 (NJB) */
@@ -1041,7 +1087,7 @@ L_chkout:
 /*        separating the first line of a statement from the next */
 /*        continuation line, and condensed and re-organized */
 /*        the statement.  Note:  the precompiler failed to properly */
-/*        convert the orginal statement into standard Fortran. */
+/*        convert the original statement into standard FORTRAN. */
 
 /* -& */
 
@@ -1064,19 +1110,23 @@ L_chkout:
 	if (modcnt > 0) {
 
 /*           Make the comparison using at most NAMLEN characters of the */
-/*           initial non-blank substring of MODULE. */
+/*           initial non-blank sub-string of MODULE. */
 
-	    first = frstnb_(module, module_len);
+	    if (*(unsigned char *)module != ' ') {
+		first = 1;
+	    } else {
+		first = frstnb_(module, module_len);
+	    }
 /* Computing MIN */
 	    i__1 = i_len(module, module_len), i__2 = first + 31;
 	    l = min(i__1,i__2);
 	    if (s_cmp(stack + (((i__1 = modcnt - 1) < 100 && 0 <= i__1 ? i__1 
-		    : s_rnge("stack", i__1, "trcpkg_", (ftnlen)1093)) << 5), 
+		    : s_rnge("stack", i__1, "trcpkg_", (ftnlen)1144)) << 5), 
 		    module + (first - 1), (ftnlen)32, l - (first - 1)) != 0) {
 		s_copy(tmpnam, module + (first - 1), (ftnlen)80, module_len - 
 			(first - 1));
-		getdev_(device, (ftnlen)128);
-		wrline_(device, "SPICE(NAMESDONOTMATCH)", (ftnlen)128, (
+		getdev_(device, (ftnlen)255);
+		wrline_(device, "SPICE(NAMESDONOTMATCH)", (ftnlen)255, (
 			ftnlen)22);
 /* Writing concatenation */
 		i__3[0] = 19, a__1[0] = "CHKOUT:  Caller is ";
@@ -1084,23 +1134,23 @@ L_chkout:
 		i__3[2] = 17, a__1[2] = "; popped name is ";
 		i__3[3] = rtrim_(stack + (((i__2 = modcnt - 1) < 100 && 0 <= 
 			i__2 ? i__2 : s_rnge("stack", i__2, "trcpkg_", (
-			ftnlen)1098)) << 5), (ftnlen)32), a__1[3] = stack + ((
+			ftnlen)1149)) << 5), (ftnlen)32), a__1[3] = stack + ((
 			(i__1 = modcnt - 1) < 100 && 0 <= i__1 ? i__1 : 
-			s_rnge("stack", i__1, "trcpkg_", (ftnlen)1098)) << 5);
+			s_rnge("stack", i__1, "trcpkg_", (ftnlen)1149)) << 5);
 		i__3[4] = 1, a__1[4] = ".";
 		s_cat(ch__1, a__1, i__3, &c__5, (ftnlen)149);
-		wrline_(device, ch__1, (ftnlen)128, rtrim_(tmpnam, (ftnlen)80)
+		wrline_(device, ch__1, (ftnlen)255, rtrim_(tmpnam, (ftnlen)80)
 			 + 36 + rtrim_(stack + (((i__2 = modcnt - 1) < 100 && 
 			0 <= i__2 ? i__2 : s_rnge("stack", i__2, "trcpkg_", (
-			ftnlen)1098)) << 5), (ftnlen)32) + 1);
+			ftnlen)1149)) << 5), (ftnlen)32) + 1);
 	    }
 	    --modcnt;
 	} else {
-	    getdev_(device, (ftnlen)128);
-	    wrline_(device, "SPICE(TRACESTACKEMPTY)", (ftnlen)128, (ftnlen)22)
+	    getdev_(device, (ftnlen)255);
+	    wrline_(device, "SPICE(TRACESTACKEMPTY)", (ftnlen)255, (ftnlen)22)
 		    ;
 	    wrline_(device, "CHKOUT: An attempt to check out was made when n"
-		    "o modules were checked in.", (ftnlen)128, (ftnlen)73);
+		    "o modules were checked in.", (ftnlen)255, (ftnlen)73);
 	}
     } else {
 
@@ -1182,7 +1232,7 @@ L_trcdep:
 /*                    cases: */
 
 /*                       1.  In 'RETURN' mode, when an error is */
-/*                           signalled, the traceback at that point is */
+/*                           signaled, the traceback at that point is */
 /*                           saved.  TRCDEP, TRCNAM, and QCKTRC will */
 /*                           return values pertaining to the saved */
 /*                           traceback. */
@@ -1270,7 +1320,7 @@ L_trcdep:
 /* -    SPICELIB Version 4.0.4, 08-OCT-1999 (WLT) */
 
 /*        The environment lines were expanded so that the supported */
-/*        environments are now explicitely given.  New */
+/*        environments are now explicitly given.  New */
 /*        environments are WIN-NT */
 
 /* -    SPICELIB Version 4.0.3, 24-SEP-1999 (NJB) */
@@ -1442,9 +1492,9 @@ L_trcmxd:
 
 /*     1)  You can use this routine to determine the length of the */
 /*         longest sequence of subroutine calls in a program. Suppose */
-/*         that you have a program, PROGRAM, that uses the spicelib */
+/*         that you have a program, PROGRAM, that uses the SPICELIB */
 /*         error handling with CHKIN and CHKOUT, and has three */
-/*         subroutines, SUB_A, SUB_B, and SUB_C. THe program and */
+/*         subroutines, SUB_A, SUB_B, and SUB_C. The program and */
 /*         subroutines have the following relationships: */
 
 /*             PROGRAM calls SUB_A and SUB_C */
@@ -1454,7 +1504,7 @@ L_trcmxd:
 
 /*            CALL TRCMXD ( MAXDEP ) */
 
-/*         to obtain the maximum depth reached, MAXDEP woudl have a */
+/*         to obtain the maximum depth reached, MAXDEP would have a */
 /*         value of three (3), because the program checked in, SUB_C */
 /*         checked in, and SUB_B checked in during the longest call */
 /*         chain in the program. */
@@ -1480,7 +1530,7 @@ L_trcmxd:
 /* -    SPICELIB Version 4.0.4, 08-OCT-1999 (WLT) */
 
 /*        The environment lines were expanded so that the supported */
-/*        environments are now explicitely given.  New */
+/*        environments are now explicitly given.  New */
 /*        environments are WIN-NT */
 
 /* -    SPICELIB Version 4.0.3, 24-SEP-1999 (NJB) */
@@ -1589,7 +1639,7 @@ L_trcnam:
 /*                    cases: */
 
 /*                       1.  In 'RETURN' mode, when an error is */
-/*                           signalled, the traceback at that point is */
+/*                           signaled, the traceback at that point is */
 /*                           saved.  TRCDEP, TRCNAM, and QCKTRC will */
 /*                           return values pertaining to the saved */
 /*                           traceback. */
@@ -1609,7 +1659,7 @@ L_trcnam:
 /*     Because this routine is below SIGERR in the calling hierarchy, */
 /*     this routine can not call SIGERR in the event of an error. */
 /*     Therefore, this routine outputs error messages, rather than */
-/*     signalling errors. */
+/*     signaling errors. */
 
 /*     1)  This routine detects the condition of INDEX being out of */
 /*         range.  The short error message set in that case is */
@@ -1685,7 +1735,7 @@ L_trcnam:
 /* -    SPICELIB Version 4.0.4, 08-OCT-1999 (WLT) */
 
 /*        The environment lines were expanded so that the supported */
-/*        environments are now explicitely given.  New */
+/*        environments are now explicitly given.  New */
 /*        environments are WIN-NT */
 
 /* -    SPICELIB Version 4.0.3, 24-SEP-1999 (NJB) */
@@ -1815,8 +1865,8 @@ L_trcnam:
 /*           Invalid index...we output the error messages directly */
 /*           in this case: */
 
-	    getdev_(device, (ftnlen)128);
-	    wrline_(device, "SPICE(INVALIDINDEX)", (ftnlen)128, (ftnlen)19);
+	    getdev_(device, (ftnlen)255);
+	    wrline_(device, "SPICE(INVALIDINDEX)", (ftnlen)255, (ftnlen)19);
 	    intstr_(index, string, (ftnlen)11);
 /* Writing concatenation */
 	    i__4[0] = 52, a__2[0] = "TRCNAM: An invalid index was input.  Th"
@@ -1824,7 +1874,7 @@ L_trcnam:
 	    i__4[1] = rtrim_(string, (ftnlen)11), a__2[1] = string;
 	    i__4[2] = 1, a__2[2] = ".";
 	    s_cat(ch__2, a__2, i__4, &c__3, (ftnlen)64);
-	    wrline_(device, ch__2, (ftnlen)128, rtrim_(string, (ftnlen)11) + 
+	    wrline_(device, ch__2, (ftnlen)255, rtrim_(string, (ftnlen)11) + 
 		    53);
 	    return 0;
 	}
@@ -1833,7 +1883,7 @@ L_trcnam:
 
 	if (*index <= 100) {
 	    s_copy(name__, frozen + (((i__1 = *index - 1) < 100 && 0 <= i__1 ?
-		     i__1 : s_rnge("frozen", i__1, "trcpkg_", (ftnlen)1868)) 
+		     i__1 : s_rnge("frozen", i__1, "trcpkg_", (ftnlen)1919)) 
 		    << 5), name_len, (ftnlen)32);
 	} else {
 	    s_copy(name__, "<Overflow No Name Available>", name_len, (ftnlen)
@@ -1851,8 +1901,8 @@ L_trcnam:
 /*           Invalid index...we output the error messages directly */
 /*           in this case: */
 
-	    getdev_(device, (ftnlen)128);
-	    wrline_(device, "SPICE(INVALIDINDEX)", (ftnlen)128, (ftnlen)19);
+	    getdev_(device, (ftnlen)255);
+	    wrline_(device, "SPICE(INVALIDINDEX)", (ftnlen)255, (ftnlen)19);
 	    intstr_(index, string, (ftnlen)11);
 /* Writing concatenation */
 	    i__4[0] = 52, a__2[0] = "TRCNAM: An invalid index was input.  Th"
@@ -1860,7 +1910,7 @@ L_trcnam:
 	    i__4[1] = rtrim_(string, (ftnlen)11), a__2[1] = string;
 	    i__4[2] = 1, a__2[2] = ".";
 	    s_cat(ch__2, a__2, i__4, &c__3, (ftnlen)64);
-	    wrline_(device, ch__2, (ftnlen)128, rtrim_(string, (ftnlen)11) + 
+	    wrline_(device, ch__2, (ftnlen)255, rtrim_(string, (ftnlen)11) + 
 		    53);
 	    return 0;
 	}
@@ -1869,7 +1919,7 @@ L_trcnam:
 
 	if (*index <= 100) {
 	    s_copy(name__, stack + (((i__1 = *index - 1) < 100 && 0 <= i__1 ? 
-		    i__1 : s_rnge("stack", i__1, "trcpkg_", (ftnlen)1898)) << 
+		    i__1 : s_rnge("stack", i__1, "trcpkg_", (ftnlen)1949)) << 
 		    5), name_len, (ftnlen)32);
 	} else {
 	    s_copy(name__, "<Overflow No Name Available>", name_len, (ftnlen)
@@ -1955,7 +2005,7 @@ L_qcktrc:
 /*                    cases: */
 
 /*                       1.  In 'RETURN' mode, when an error is */
-/*                           signalled, the traceback at that point is */
+/*                           signaled, the traceback at that point is */
 /*                           saved.  TRCDEP, TRCNAM, and QCKTRC will */
 /*                           return values pertaining to the saved */
 /*                           traceback. */
@@ -2033,7 +2083,7 @@ L_qcktrc:
 /* -    SPICELIB Version 4.0.4, 08-OCT-1999 (WLT) */
 
 /*        The environment lines were expanded so that the supported */
-/*        environments are now explicitely given.  New */
+/*        environments are now explicitly given.  New */
 /*        environments are WIN-NT */
 
 /* -    SPICELIB Version 4.0.3, 24-SEP-1999 (NJB) */
@@ -2155,11 +2205,11 @@ L_qcktrc:
 	    if (i__ > 1) {
 		suffix_("-->", &c__1, trace, (ftnlen)3, trace_len);
 		suffix_(frozen + (((i__2 = i__ - 1) < 100 && 0 <= i__2 ? i__2 
-			: s_rnge("frozen", i__2, "trcpkg_", (ftnlen)2190)) << 
+			: s_rnge("frozen", i__2, "trcpkg_", (ftnlen)2241)) << 
 			5), &c__1, trace, (ftnlen)32, trace_len);
 	    } else {
 		suffix_(frozen + (((i__2 = i__ - 1) < 100 && 0 <= i__2 ? i__2 
-			: s_rnge("frozen", i__2, "trcpkg_", (ftnlen)2192)) << 
+			: s_rnge("frozen", i__2, "trcpkg_", (ftnlen)2243)) << 
 			5), &c__0, trace, (ftnlen)32, trace_len);
 	    }
 	}
@@ -2182,11 +2232,11 @@ L_qcktrc:
 	    if (i__ > 1) {
 		suffix_("-->", &c__1, trace, (ftnlen)3, trace_len);
 		suffix_(stack + (((i__2 = i__ - 1) < 100 && 0 <= i__2 ? i__2 :
-			 s_rnge("stack", i__2, "trcpkg_", (ftnlen)2217)) << 5)
+			 s_rnge("stack", i__2, "trcpkg_", (ftnlen)2268)) << 5)
 			, &c__1, trace, (ftnlen)32, trace_len);
 	    } else {
 		suffix_(stack + (((i__2 = i__ - 1) < 100 && 0 <= i__2 ? i__2 :
-			 s_rnge("stack", i__2, "trcpkg_", (ftnlen)2219)) << 5)
+			 s_rnge("stack", i__2, "trcpkg_", (ftnlen)2270)) << 5)
 			, &c__0, trace, (ftnlen)32, trace_len);
 	    }
 	}
@@ -2283,7 +2333,7 @@ L_freeze:
 /*     DO NOT CALL THIS ROUTINE. */
 
 /*     When the error response action is 'RETURN', and an error is */
-/*     signalled, a copy of the traceback is saved for later retrieval */
+/*     signaled, a copy of the traceback is saved for later retrieval */
 /*     by the application program.  This is called the `frozen' version */
 /*     of the traceback.  FREEZE is used to create this frozen version. */
 
@@ -2319,7 +2369,7 @@ L_freeze:
 /* -    SPICELIB Version 4.0.4, 08-OCT-1999 (WLT) */
 
 /*        The environment lines were expanded so that the supported */
-/*        environments are now explicitely given.  New */
+/*        environments are now explicitly given.  New */
 /*        environments are WIN-NT */
 
 /* -    SPICELIB Version 4.0.3, 24-SEP-1999 (NJB) */
@@ -2395,9 +2445,9 @@ L_freeze:
     i__1 = modcnt;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	s_copy(frozen + (((i__2 = i__ - 1) < 100 && 0 <= i__2 ? i__2 : s_rnge(
-		"frozen", i__2, "trcpkg_", (ftnlen)2437)) << 5), stack + (((
+		"frozen", i__2, "trcpkg_", (ftnlen)2488)) << 5), stack + (((
 		i__5 = i__ - 1) < 100 && 0 <= i__5 ? i__5 : s_rnge("stack", 
-		i__5, "trcpkg_", (ftnlen)2437)) << 5), (ftnlen)32, (ftnlen)32)
+		i__5, "trcpkg_", (ftnlen)2488)) << 5), (ftnlen)32, (ftnlen)32)
 		;
     }
     return 0;
@@ -2482,7 +2532,7 @@ L_trcoff:
 /*     Once tracing has been disabled, it cannot be re-enabled. */
 
 /*     Additionally, TRCOFF blanks out the existing trace, since the */
-/*     trace will usually be invalid at the time an error is signalled. */
+/*     trace will usually be invalid at the time an error is signaled. */
 /*     The frozen copy of the trace, if there is one, is not modified. */
 
 /* $ Examples */
@@ -2526,7 +2576,7 @@ L_trcoff:
 /* -    SPICELIB Version 4.0.4, 08-OCT-1999 (WLT) */
 
 /*        The environment lines were expanded so that the supported */
-/*        environments are now explicitely given.  New */
+/*        environments are now explicitly given.  New */
 /*        environments are WIN-NT */
 
 /* -    SPICELIB Version 4.0.3, 24-SEP-1999 (NJB) */

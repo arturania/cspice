@@ -55,7 +55,7 @@
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 33%; text-align: center;">
             <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
@@ -66,7 +66,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
@@ -76,7 +76,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
@@ -119,9 +119,9 @@
    VARIABLE  I/O  DESCRIPTION 
    --------  ---  ------------------------------------------------- 
    rectan     I   Rectangular coordinates of a point. 
-   r          O   Distance of the point from z axis. 
-   lon        O   Angle (radians) of the point from xZ plane 
-   z          O   Height of the point above xY plane. 
+   r          O   Distance of the point from Z axis. 
+   lon        O   Angle (radians) of the point from XZ plane 
+   z          O   Height of the point above XY plane. 
  </PRE>
 <h4><a name="Detailed_Input">Detailed_Input</a></h4>
 <PRE>
@@ -131,12 +131,12 @@
 <h4><a name="Detailed_Output">Detailed_Output</a></h4>
 <PRE>
  
-   r          Distance of the point of interest from z axis. 
+   r          Distance of the point of interest from Z axis. 
  
    lon        Cylindrical angle (in radians) of the point of 
-              interest from xZ plane. 
+              interest from XZ plane. The `lon' range is [0, 2pi].
  
-   z          Height of the point above xY plane. 
+   z          Height of the point above XY plane. 
  </PRE>
 <h4><a name="Parameters">Parameters</a></h4>
 <PRE>
@@ -214,10 +214,14 @@
 <h4><a name="Version">Version</a></h4>
 <PRE>
  
+   -CSPICE Version 1.2.1, 26-JUL-2016 (BVS)
+
+      Minor headers edits.
+
    -CSPICE Version 1.2.0, 28-AUG-2001 (NJB)
      
-       Removed tab characters from source file.  Include interface
-       macro definition header SpiceZim.h.
+      Removed tab characters from source file.  Include interface
+      macro definition header SpiceZim.h.
 
    -CSPICE Version 1.1.0, 21-OCT-1998 (NJB)
 
@@ -237,7 +241,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Jun  9 13:05:28 2010</pre>
+   <pre>Wed Apr  5 17:54:41 2017</pre>
 
 </body>
 </html>

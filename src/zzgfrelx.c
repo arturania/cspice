@@ -14,10 +14,10 @@ static logical c_true = TRUE_;
 
 /* $Procedure ZZGFRELX ( Private --- GF, geometric relation finder ) */
 /* Subroutine */ int zzgfrelx_(U_fp udstep, U_fp udrefn, U_fp udqdec, U_fp 
-	udcond, S_fp udfunc, S_fp udqref, char *relate, doublereal *refval, 
-	doublereal *tol, doublereal *adjust, doublereal *cnfine, integer *mw, 
-	integer *nw, doublereal *work, logical *rpt, S_fp udrepi, U_fp udrepu,
-	 S_fp udrepf, char *rptpre, char *rptsuf, logical *bail, L_fp udbail, 
+	udcond, S_fp udfunc, char *relate, doublereal *refval, doublereal *
+	tol, doublereal *adjust, doublereal *cnfine, integer *mw, integer *nw,
+	 doublereal *work, logical *rpt, S_fp udrepi, U_fp udrepu, S_fp 
+	udrepf, char *rptpre, char *rptsuf, logical *bail, L_fp udbail, 
 	doublereal *result, ftnlen relate_len, ftnlen rptpre_len, ftnlen 
 	rptsuf_len)
 {
@@ -86,7 +86,7 @@ static logical c_true = TRUE_;
 	    doublereal *, doublereal *), wnfetd_(doublereal *, integer *, 
 	    doublereal *, doublereal *), wnextd_(char *, doublereal *, ftnlen)
 	    , wnintd_(doublereal *, doublereal *, doublereal *), wndifd_(
-	    doublereal *, doublereal *, doublereal *);
+	    doublereal *, doublereal *, doublereal *), zzgfref_(doublereal *);
 
 /* $ Abstract */
 
@@ -196,7 +196,21 @@ static logical c_true = TRUE_;
 
 /* $ Version */
 
-/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+/* -    SPICELIB Version 2.0.0  29-NOV-2016 (NJB) */
+
+/*        Upgraded to support surfaces represented by DSKs. */
+
+/*        Bug fix: removed declaration of NVRMAX parameter. */
+
+/* -    SPICELIB Version 1.3.0, 01-OCT-2011 (NJB) */
+
+/*       Added NWILUM parameter. */
+
+/* -    SPICELIB Version 1.2.0, 14-SEP-2010 (EDW) */
+
+/*       Added NWPA parameter. */
+
+/* -    SPICELIB Version 1.1.0, 08-SEP-2009 (EDW) */
 
 /*       Added NWRR parameter. */
 /*       Added NWUDS parameter. */
@@ -246,6 +260,14 @@ static logical c_true = TRUE_;
 /*     count using NWUDS. */
 
 
+/*     Callers of GFPA should declare their workspace window */
+/*     count using NWPA. */
+
+
+/*     Callers of GFILUM should declare their workspace window */
+/*     count using NWILUM. */
+
+
 /*     ADDWIN is a parameter used to expand each interval of the search */
 /*     (confinement) window by a small amount at both ends in order to */
 /*     accommodate searches using equality constraints. The loaded */
@@ -253,9 +275,6 @@ static logical c_true = TRUE_;
 
 
 /*     FRMNLN is a string length for frame names. */
-
-
-/*     NVRMAX is the maximum number of vertices if FOV type is "POLYGON" */
 
 
 /*     FOVTLN -- maximum length for FOV string. */
@@ -306,8 +325,6 @@ static logical c_true = TRUE_;
 /*                    quantity condition with-respect-to the constraint. */
 /*     UDFUNC     I   The routine that computes the scalar quantity of */
 /*                    interest. */
-/*     UDQREF     I   Name of the routine that resets the current value */
-/*                    of REFVAL. */
 /*     RELATE     I   Operator that either looks for an extreme value */
 /*                    (max, min, local, absolute) or compares the */
 /*                    scalar quantity value and a number. */
@@ -316,7 +333,7 @@ static logical c_true = TRUE_;
 /*     TOL        I   Convergence tolerance in seconds. */
 /*     ADJUST     I   Allowed variation for absolute extremal */
 /*                    scalar conditions. */
-/*     CNFINE     I   Confinement schedule */
+/*     CNFINE     I   Confinement window */
 /*     MW         I   Size of workspace windows. */
 /*     NW         I   Number of workspace windows. */
 /*     WORK       I   Array containing workspace windows */
@@ -453,13 +470,6 @@ static logical c_true = TRUE_;
 /*                   VALUE   the double precision value of the scalar */
 /*                           quantity at ET. */
 
-/*     UDQREF     the  routine that resets the current value */
-/*                of REFVAL. The calling sequence for UDQREF is: */
-
-/*                   CALL UDQREF ( REFER2 ) */
-
-/*                where REFER2 is a new value of REFVAL. */
-
 /*     RELATE     is a comparison operator, indicating the numeric */
 /*                constraint of interest. Values are: */
 
@@ -488,7 +498,7 @@ static logical c_true = TRUE_;
 
 /*     ADJUST     the amount by which the numerical quantity is */
 /*                allowed to vary from an absolute extremum. If ADJUST */
-/*                is non-zero, the resulting schedule contains */
+/*                is non-zero, the resulting window contains */
 /*                intervals when the scalar quantity has */
 /*                values either between ABSMIN and ABSMIN + ADJUST */
 /*                or between ABSMAX and ABSMAX - ADJUST. ADJUST must */
@@ -538,7 +548,7 @@ static logical c_true = TRUE_;
 /*                representation of the fraction of work done. */
 
 /*                If the user has no progress reporting initialization */
-/*                routine, the SPICELIB routine GFRPIN may be used. This */
+/*                routine, the SPICELIB routine GFREPI may be used. This */
 /*                is the default option. */
 
 /*     UDREPU     the routine that updates the progress report for a */
@@ -560,14 +570,14 @@ static logical c_true = TRUE_;
 /*                measurement is up to the user. */
 
 /*                If the user has no progress reporting update routine, */
-/*                the SPICELIB routine GFRPUD may be used. This is the */
+/*                the SPICELIB routine GFREPU may be used. This is the */
 /*                default option. */
 
 /*     UDREPF     the routine that finalizes a progress report. UDREPF */
 /*                has no arguments. */
 
 /*                If the user has no progress reporting finalizing */
-/*                routine, the SPICELIB routine GFRPEN may be used. This */
+/*                routine, the SPICELIB routine GFREPF may be used. This */
 /*                is the default option. */
 
 /*     RPTPRE     is an array of strings containing the prefixes of */
@@ -610,7 +620,7 @@ static logical c_true = TRUE_;
 /*     UDBAIL     the routine that checks to see whether an interrupt */
 /*                signal has been issued from, e.g. the keyboard. If */
 /*                this capability is not to be used, a dummy function, */
-/*                ZZGFBAIL must be supplied. */
+/*                GFBAIL must be supplied. */
 
 /*     RESULT     is an initialized SPICE window. RESULT is large */
 /*                enough to hold all of the intervals, within the */
@@ -670,8 +680,8 @@ static logical c_true = TRUE_;
 /*     scalar quantity related to one or more objects and an observer */
 /*     satisfies a user specified constraint. It puts these times in a */
 /*     result window called RESULT. It does this by first finding */
-/*     schedules (windows) when the quantity of interest is either */
-/*     monotonically increasing or decreasing. These schedules are then */
+/*     windows when the quantity of interest is either */
+/*     monotonically increasing or decreasing. These windows are then */
 /*     manipulated to give the final result. Note that the determination */
 /*     of "=" involves finding intervals where the quantity is "less */
 /*     than" to a tolerance of TOL. This means that the end points of */
@@ -700,6 +710,20 @@ static logical c_true = TRUE_;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.1.1  08-DEC-2010  (EDW) */
+
+/*        Edit to replace term "schedule" with "window." Edit to */
+/*        Procedure line text. */
+
+/*        Argument list changed, removing the argument for */
+/*        the reference value update routine, UDQREF. Setting and */
+/*        updating the reference value now occurrs in this */
+/*        (ZZGFRELX) routine. */
+
+/*        Edit to Detailed I/O description for UDREPI, UDREPU, UDREPF, */
+/*        and UDBAIL. The descriptions stated the wrong name for the */
+/*        default GF functions corresponding to these arguments. */
+
 /* -    SPICELIB Version 1.1.0  16-FEB-2010  (EDW) */
 
 /*        Modified version of ZZGFREL. This version calls ZZGFSOLVX. */
@@ -709,7 +733,7 @@ static logical c_true = TRUE_;
 /* -& */
 /* $ Index_Entries */
 
-/*     determine when a scalar quantity satisfies a condition */
+/* numeric scalar quantity satisfies a condition */
 
 /* -& */
 
@@ -831,7 +855,7 @@ static logical c_true = TRUE_;
     }
 
 /*     If the confinement window is empty, the result window must */
-/*     be empty as well.  In this case, there's not much to do. */
+/*     be empty as well. In this case, there's not much to do. */
 
     if (cardd_(cnfine) == 0) {
 	scardd_(&c__0, result);
@@ -840,24 +864,24 @@ static logical c_true = TRUE_;
     }
 
 /*     We need to set up several working windows, one each for */
-/*     increasing and decreasing schedules, one for the confining */
-/*     schedule and one for copying. */
+/*     increasing and decreasing windows, one for the confining */
+/*     window and one for copying. */
 
     ssized_(mw, &work[(i__1 = (work_dim1 << 1) - 5 - work_offset) < work_dim1 
 	    * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfrelx_"
-	    , (ftnlen)764)]);
+	    , (ftnlen)768)]);
     ssized_(mw, &work[(i__1 = work_dim1 - 5 - work_offset) < work_dim1 * 
 	    work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfrelx_", 
-	    (ftnlen)765)]);
+	    (ftnlen)769)]);
     ssized_(mw, &work[(i__1 = work_dim1 * 3 - 5 - work_offset) < work_dim1 * 
 	    work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfrelx_", 
-	    (ftnlen)766)]);
+	    (ftnlen)770)]);
     ssized_(mw, &work[(i__1 = (work_dim1 << 2) - 5 - work_offset) < work_dim1 
 	    * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfrelx_"
-	    , (ftnlen)767)]);
+	    , (ftnlen)771)]);
     ssized_(mw, &work[(i__1 = work_dim1 * 5 - 5 - work_offset) < work_dim1 * 
 	    work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfrelx_", 
-	    (ftnlen)768)]);
+	    (ftnlen)772)]);
     name__[0] = 2;
     name__[1] = 1;
     if (failed_()) {
@@ -880,14 +904,18 @@ static logical c_true = TRUE_;
     }
     copyd_(cnfine, &work[(i__1 = work_dim1 * 3 - 5 - work_offset) < work_dim1 
 	    * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfrelx_"
-	    , (ftnlen)794)]);
+	    , (ftnlen)798)]);
     wnexpd_(&addl, &addr__, &work[(i__1 = work_dim1 * 3 - 5 - work_offset) < 
 	    work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, 
-	    "zzgfrelx_", (ftnlen)795)]);
+	    "zzgfrelx_", (ftnlen)799)]);
     if (failed_()) {
 	chkout_("ZZGFRELX", (ftnlen)8);
 	return 0;
     }
+
+/*     Set the reference value. */
+
+    zzgfref_(refval);
 
 /*     Make a local copy of the reference value. */
 
@@ -902,15 +930,15 @@ static logical c_true = TRUE_;
     if (*rpt) {
 	(*udrepi)(&work[(i__1 = work_dim1 * 3 - 5 - work_offset) < work_dim1 *
 		 work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfr"
-		"elx_", (ftnlen)816)], rptpre + (pass - 1) * rptpre_len, 
+		"elx_", (ftnlen)826)], rptpre + (pass - 1) * rptpre_len, 
 		rptsuf + (pass - 1) * rptsuf_len, rptpre_len, rptsuf_len);
     }
 
-/*     Look up the size of the confinement schedule... */
+/*     Look up the size of the confinement window... */
 
     count = wncard_(&work[(i__1 = work_dim1 * 3 - 5 - work_offset) < 
 	    work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, 
-	    "zzgfrelx_", (ftnlen)822)]);
+	    "zzgfrelx_", (ftnlen)832)]);
 
 /*     Start the window that contains intervals when the quantity of */
 /*     interest is decreasing. The result will contain all intervals in */
@@ -921,16 +949,16 @@ static logical c_true = TRUE_;
     for (i__ = 1; i__ <= i__1; ++i__) {
 
 /*        Locate the bounds for the I'th interval of the confinement */
-/*        schedule. Results are accumulated in the WORK array. */
+/*        window. Results are accumulated in the WORK array. */
 
 	wnfetd_(&work[(i__2 = work_dim1 * 3 - 5 - work_offset) < work_dim1 * 
 		work_dim2 && 0 <= i__2 ? i__2 : s_rnge("work", i__2, "zzgfre"
-		"lx_", (ftnlen)835)], &i__, &start, &finish);
+		"lx_", (ftnlen)845)], &i__, &start, &finish);
 	zzgfsolvx_((S_fp)udfunc, (U_fp)udqdec, (U_fp)udstep, (U_fp)udrefn, 
 		bail, (L_fp)udbail, &cstep, &step, &start, &finish, tol, rpt, 
 		(U_fp)udrepu, &work[(i__2 = (work_dim1 << 1) - 5 - 
 		work_offset) < work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : 
-		s_rnge("work", i__2, "zzgfrelx_", (ftnlen)837)]);
+		s_rnge("work", i__2, "zzgfrelx_", (ftnlen)847)]);
 	if (failed_()) {
 	    chkout_("ZZGFRELX", (ftnlen)8);
 	    return 0;
@@ -980,14 +1008,14 @@ static logical c_true = TRUE_;
 /*        These occur at right endpoints of the intervals in TEMPW */
 /*        that are interior points of CNFINE. First extract the right */
 /*        endpoints. Then find those that are contained in the initial */
-/*        confinement schedule, excluding endpoints. */
+/*        confinement window, excluding endpoints. */
 
 	wnextd_("R", &work[(i__1 = (work_dim1 << 1) - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrelx_", (ftnlen)903)], (ftnlen)1);
+		i__1, "zzgfrelx_", (ftnlen)913)], (ftnlen)1);
 	zzgfwsts_(&work[(i__1 = (work_dim1 << 1) - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrelx_", (ftnlen)905)], cnfine, "()", result, (
+		i__1, "zzgfrelx_", (ftnlen)915)], cnfine, "()", result, (
 		ftnlen)2);
 	chkout_("ZZGFRELX", (ftnlen)8);
 	return 0;
@@ -999,10 +1027,10 @@ static logical c_true = TRUE_;
 
 	wnextd_("L", &work[(i__1 = (work_dim1 << 1) - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrelx_", (ftnlen)917)], (ftnlen)1);
+		i__1, "zzgfrelx_", (ftnlen)927)], (ftnlen)1);
 	zzgfwsts_(&work[(i__1 = (work_dim1 << 1) - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrelx_", (ftnlen)919)], cnfine, "()", result, (
+		i__1, "zzgfrelx_", (ftnlen)929)], cnfine, "()", result, (
 		ftnlen)2);
 	chkout_("ZZGFRELX", (ftnlen)8);
 	return 0;
@@ -1014,42 +1042,42 @@ static logical c_true = TRUE_;
     if (s_cmp(locrel, "ABSMIN", (ftnlen)80, (ftnlen)6) == 0 || s_cmp(locrel, 
 	    "ABSMAX", (ftnlen)80, (ftnlen)6) == 0) {
 
-/*        We need an absolute max or min over the schedule CNFINE. */
+/*        We need an absolute max or min over the window CNFINE. */
 /*        But we have decreasing values in WORK(B,DECRES). */
-/*        Make a copy of WORK(B,DECRES) then compute the schedules */
-/*        of decreasing or increasing quantity over the schedule CNFINE. */
+/*        Make a copy of WORK(B,DECRES) then compute the windows */
+/*        of decreasing or increasing quantity over the window CNFINE. */
 
 	copyd_(&work[(i__1 = (work_dim1 << 1) - 5 - work_offset) < work_dim1 *
 		 work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfr"
-		"elx_", (ftnlen)937)], &work[(i__2 = (work_dim1 << 2) - 5 - 
+		"elx_", (ftnlen)947)], &work[(i__2 = (work_dim1 << 2) - 5 - 
 		work_offset) < work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : 
-		s_rnge("work", i__2, "zzgfrelx_", (ftnlen)937)]);
+		s_rnge("work", i__2, "zzgfrelx_", (ftnlen)947)]);
 	wnintd_(cnfine, &work[(i__1 = (work_dim1 << 1) - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrelx_", (ftnlen)939)], &work[(i__2 = work_dim1 * 5 
+		i__1, "zzgfrelx_", (ftnlen)949)], &work[(i__2 = work_dim1 * 5 
 		- 5 - work_offset) < work_dim1 * work_dim2 && 0 <= i__2 ? 
-		i__2 : s_rnge("work", i__2, "zzgfrelx_", (ftnlen)939)]);
+		i__2 : s_rnge("work", i__2, "zzgfrelx_", (ftnlen)949)]);
 	copyd_(&work[(i__1 = work_dim1 * 5 - 5 - work_offset) < work_dim1 * 
 		work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfre"
-		"lx_", (ftnlen)940)], &work[(i__2 = (work_dim1 << 1) - 5 - 
+		"lx_", (ftnlen)950)], &work[(i__2 = (work_dim1 << 1) - 5 - 
 		work_offset) < work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : 
-		s_rnge("work", i__2, "zzgfrelx_", (ftnlen)940)]);
+		s_rnge("work", i__2, "zzgfrelx_", (ftnlen)950)]);
 	wndifd_(cnfine, &work[(i__1 = (work_dim1 << 1) - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrelx_", (ftnlen)942)], &work[(i__2 = work_dim1 * 5 
+		i__1, "zzgfrelx_", (ftnlen)952)], &work[(i__2 = work_dim1 * 5 
 		- 5 - work_offset) < work_dim1 * work_dim2 && 0 <= i__2 ? 
-		i__2 : s_rnge("work", i__2, "zzgfrelx_", (ftnlen)942)]);
+		i__2 : s_rnge("work", i__2, "zzgfrelx_", (ftnlen)952)]);
 	copyd_(&work[(i__1 = work_dim1 * 5 - 5 - work_offset) < work_dim1 * 
 		work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfre"
-		"lx_", (ftnlen)943)], &work[(i__2 = work_dim1 - 5 - 
+		"lx_", (ftnlen)953)], &work[(i__2 = work_dim1 - 5 - 
 		work_offset) < work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : 
-		s_rnge("work", i__2, "zzgfrelx_", (ftnlen)943)]);
+		s_rnge("work", i__2, "zzgfrelx_", (ftnlen)953)]);
 
-/*        Here's what we plan to do, we want to look over two schedules */
+/*        Here's what we plan to do, we want to look over two windows */
 /*        DECREASING and INCREASING to search for the absolute max or */
-/*        min.  We start with DECREASING.  In this schedule the max is */
+/*        min.  We start with DECREASING.  In this window the max is */
 /*        always at the left endpoint,  The min is at the right */
-/*        endpoint.  In the INCREASING schedule the min is at the LEFT */
+/*        endpoint.  In the INCREASING window the min is at the LEFT */
 /*        endpoint of an interval, the max is at the RIGHT endpoint of */
 /*        an interval */
 
@@ -1073,19 +1101,19 @@ static logical c_true = TRUE_;
 	    }
 	    winsiz = wncard_(&work[(i__2 = name__[(i__1 = case__ - 1) < 2 && 
 		    0 <= i__1 ? i__1 : s_rnge("name", i__1, "zzgfrelx_", (
-		    ftnlen)981)] * work_dim1 - 5 - work_offset) < work_dim1 * 
+		    ftnlen)991)] * work_dim1 - 5 - work_offset) < work_dim1 * 
 		    work_dim2 && 0 <= i__2 ? i__2 : s_rnge("work", i__2, 
-		    "zzgfrelx_", (ftnlen)981)]);
+		    "zzgfrelx_", (ftnlen)991)]);
 	    i__1 = winsiz;
 	    for (i__ = 1; i__ <= i__1; ++i__) {
 		wnfetd_(&work[(i__3 = name__[(i__2 = case__ - 1) < 2 && 0 <= 
 			i__2 ? i__2 : s_rnge("name", i__2, "zzgfrelx_", (
-			ftnlen)985)] * work_dim1 - 5 - work_offset) < 
+			ftnlen)995)] * work_dim1 - 5 - work_offset) < 
 			work_dim1 * work_dim2 && 0 <= i__3 ? i__3 : s_rnge(
-			"work", i__3, "zzgfrelx_", (ftnlen)985)], &i__, endpt,
+			"work", i__3, "zzgfrelx_", (ftnlen)995)], &i__, endpt,
 			 &endpt[1]);
 		(*udfunc)(&endpt[(i__2 = want - 1) < 2 && 0 <= i__2 ? i__2 : 
-			s_rnge("endpt", i__2, "zzgfrelx_", (ftnlen)988)], &
+			s_rnge("endpt", i__2, "zzgfrelx_", (ftnlen)998)], &
 			value);
 		if (failed_()) {
 		    chkout_("ZZGFRELX", (ftnlen)8);
@@ -1117,9 +1145,9 @@ static logical c_true = TRUE_;
 				500, (ftnlen)70);
 			zzwninsd_(&endpt[(i__2 = want - 1) < 2 && 0 <= i__2 ? 
 				i__2 : s_rnge("endpt", i__2, "zzgfrelx_", (
-				ftnlen)1025)], &endpt[(i__3 = want - 1) < 2 &&
+				ftnlen)1035)], &endpt[(i__3 = want - 1) < 2 &&
 				 0 <= i__3 ? i__3 : s_rnge("endpt", i__3, 
-				"zzgfrelx_", (ftnlen)1025)], contxt, result, (
+				"zzgfrelx_", (ftnlen)1035)], contxt, result, (
 				ftnlen)500);
 		    }
 		    extrem = min(extrem,value);
@@ -1136,9 +1164,9 @@ static logical c_true = TRUE_;
 				500, (ftnlen)70);
 			zzwninsd_(&endpt[(i__2 = want - 1) < 2 && 0 <= i__2 ? 
 				i__2 : s_rnge("endpt", i__2, "zzgfrelx_", (
-				ftnlen)1047)], &endpt[(i__3 = want - 1) < 2 &&
+				ftnlen)1057)], &endpt[(i__3 = want - 1) < 2 &&
 				 0 <= i__3 ? i__3 : s_rnge("endpt", i__3, 
-				"zzgfrelx_", (ftnlen)1047)], contxt, result, (
+				"zzgfrelx_", (ftnlen)1057)], contxt, result, (
 				ftnlen)500);
 		    }
 		    extrem = max(extrem,value);
@@ -1149,7 +1177,7 @@ static logical c_true = TRUE_;
 		return 0;
 	    }
 
-/*           When we go to the next schedule, the min and max are at */
+/*           When we go to the next window, the min and max are at */
 /*           opposite ends of the intervals. */
 
 	    swapi_(&minat, &maxat);
@@ -1181,17 +1209,17 @@ static logical c_true = TRUE_;
 
 	copyd_(&work[(i__1 = (work_dim1 << 2) - 5 - work_offset) < work_dim1 *
 		 work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfr"
-		"elx_", (ftnlen)1102)], &work[(i__2 = (work_dim1 << 1) - 5 - 
+		"elx_", (ftnlen)1114)], &work[(i__2 = (work_dim1 << 1) - 5 - 
 		work_offset) < work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : 
-		s_rnge("work", i__2, "zzgfrelx_", (ftnlen)1102)]);
+		s_rnge("work", i__2, "zzgfrelx_", (ftnlen)1114)]);
     }
     wndifd_(&work[(i__1 = work_dim1 * 3 - 5 - work_offset) < work_dim1 * 
 	    work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfrelx_", 
-	    (ftnlen)1106)], &work[(i__2 = (work_dim1 << 1) - 5 - work_offset) 
+	    (ftnlen)1118)], &work[(i__2 = (work_dim1 << 1) - 5 - work_offset) 
 	    < work_dim1 * work_dim2 && 0 <= i__2 ? i__2 : s_rnge("work", i__2,
-	     "zzgfrelx_", (ftnlen)1106)], &work[(i__3 = work_dim1 - 5 - 
+	     "zzgfrelx_", (ftnlen)1118)], &work[(i__3 = work_dim1 - 5 - 
 	    work_offset) < work_dim1 * work_dim2 && 0 <= i__3 ? i__3 : s_rnge(
-	    "work", i__3, "zzgfrelx_", (ftnlen)1106)]);
+	    "work", i__3, "zzgfrelx_", (ftnlen)1118)]);
     if (failed_()) {
 	chkout_("ZZGFRELX", (ftnlen)8);
 	return 0;
@@ -1203,7 +1231,7 @@ static logical c_true = TRUE_;
 /*     which may have been changed in the ABSOLUTE MAX or MIN blocks */
 /*     above. */
 
-    (*udqref)(&refer2);
+    zzgfref_(&refer2);
 
 /*     If progress reporting is enabled, initialize the progress */
 /*     reporter for a second pass over the confinement window. */
@@ -1220,7 +1248,7 @@ static logical c_true = TRUE_;
 	pass = 2;
 	(*udrepi)(&work[(i__1 = work_dim1 * 3 - 5 - work_offset) < work_dim1 *
 		 work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfr"
-		"elx_", (ftnlen)1138)], rptpre + (pass - 1) * rptpre_len, 
+		"elx_", (ftnlen)1152)], rptpre + (pass - 1) * rptpre_len, 
 		rptsuf + (pass - 1) * rptsuf_len, rptpre_len, rptsuf_len);
     }
 
@@ -1230,10 +1258,10 @@ static logical c_true = TRUE_;
     scardd_(&c__0, result);
     for (case__ = 1; case__ <= 2; ++case__) {
 	winsiz = wncard_(&work[(i__2 = name__[(i__1 = case__ - 1) < 2 && 0 <= 
-		i__1 ? i__1 : s_rnge("name", i__1, "zzgfrelx_", (ftnlen)1150)]
+		i__1 ? i__1 : s_rnge("name", i__1, "zzgfrelx_", (ftnlen)1164)]
 		 * work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 && 0 
 		<= i__2 ? i__2 : s_rnge("work", i__2, "zzgfrelx_", (ftnlen)
-		1150)]);
+		1164)]);
 
 /*        Search each interval of the window identified by NAME(CASE) for */
 /*        times when the quantity is less than the reference value. */
@@ -1241,10 +1269,10 @@ static logical c_true = TRUE_;
 	i__1 = winsiz;
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    wnfetd_(&work[(i__3 = name__[(i__2 = case__ - 1) < 2 && 0 <= i__2 
-		    ? i__2 : s_rnge("name", i__2, "zzgfrelx_", (ftnlen)1158)] 
+		    ? i__2 : s_rnge("name", i__2, "zzgfrelx_", (ftnlen)1172)] 
 		    * work_dim1 - 5 - work_offset) < work_dim1 * work_dim2 && 
 		    0 <= i__3 ? i__3 : s_rnge("work", i__3, "zzgfrelx_", (
-		    ftnlen)1158)], &i__, &start, &finish);
+		    ftnlen)1172)], &i__, &start, &finish);
 
 /*           For each interval, accumulate the result in RESULT. */
 
@@ -1283,16 +1311,16 @@ static logical c_true = TRUE_;
 	    "MIN", (ftnlen)80, (ftnlen)6) == 0) {
 
 /*        We simply need to restrict our result to the original */
-/*        confinement schedule. Note that the ABSMIN search with */
+/*        confinement window. Note that the ABSMIN search with */
 /*        non-zero adjustment is now a search for values less than the */
 /*        adjusted absolute minimum. Same for ABSMAX below. */
 
 	wnintd_(cnfine, result, &work[(i__1 = work_dim1 * 5 - 5 - work_offset)
 		 < work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrelx_", (ftnlen)1210)]);
+		i__1, "zzgfrelx_", (ftnlen)1224)]);
 	copyd_(&work[(i__1 = work_dim1 * 5 - 5 - work_offset) < work_dim1 * 
 		work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfre"
-		"lx_", (ftnlen)1211)], result);
+		"lx_", (ftnlen)1225)], result);
     } else if (s_cmp(locrel, ">", (ftnlen)80, (ftnlen)1) == 0 || s_cmp(locrel,
 	     "ABSMAX", (ftnlen)80, (ftnlen)6) == 0) {
 
@@ -1303,10 +1331,10 @@ static logical c_true = TRUE_;
 
 	wndifd_(cnfine, result, &work[(i__1 = work_dim1 * 5 - 5 - work_offset)
 		 < work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrelx_", (ftnlen)1221)]);
+		i__1, "zzgfrelx_", (ftnlen)1235)]);
 	copyd_(&work[(i__1 = work_dim1 * 5 - 5 - work_offset) < work_dim1 * 
 		work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", i__1, "zzgfre"
-		"lx_", (ftnlen)1222)], result);
+		"lx_", (ftnlen)1236)], result);
     } else {
 
 /*        This is the branch for the relational operator '='. */
@@ -1316,7 +1344,7 @@ static logical c_true = TRUE_;
 
 	scardd_(&c__0, &work[(i__1 = work_dim1 * 5 - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrelx_", (ftnlen)1231)]);
+		i__1, "zzgfrelx_", (ftnlen)1245)]);
 	i__1 = cardd_(result);
 	for (i__ = 1; i__ <= i__1; ++i__) {
 	    s_copy(contxt, "Inserting endpoints of result window into worksp"
@@ -1326,7 +1354,7 @@ static logical c_true = TRUE_;
 	    zzwninsd_(&result[i__ + 5], &result[i__ + 5], contxt, &work[(i__2 
 		    = work_dim1 * 5 - 5 - work_offset) < work_dim1 * 
 		    work_dim2 && 0 <= i__2 ? i__2 : s_rnge("work", i__2, 
-		    "zzgfrelx_", (ftnlen)1240)], (ftnlen)500);
+		    "zzgfrelx_", (ftnlen)1254)], (ftnlen)500);
 	    if (failed_()) {
 		chkout_("ZZGFRELX", (ftnlen)8);
 		return 0;
@@ -1346,7 +1374,7 @@ static logical c_true = TRUE_;
 
 	wnintd_(cnfine, &work[(i__1 = work_dim1 * 5 - 5 - work_offset) < 
 		work_dim1 * work_dim2 && 0 <= i__1 ? i__1 : s_rnge("work", 
-		i__1, "zzgfrelx_", (ftnlen)1262)], result);
+		i__1, "zzgfrelx_", (ftnlen)1276)], result);
     }
     chkout_("ZZGFRELX", (ftnlen)8);
     return 0;

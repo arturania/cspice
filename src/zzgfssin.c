@@ -9,7 +9,7 @@
 
 static integer c__3 = 3;
 static integer c__6 = 6;
-static doublereal c_b49 = 1.;
+static doublereal c_b50 = 1.;
 
 /* $Procedure      ZZGFSSIN ( GF, state of surface intercept point ) */
 /* Subroutine */ int zzgfssin_(char *method, integer *trgid, doublereal *et, 
@@ -70,7 +70,7 @@ static doublereal c_b49 = 1.;
     extern logical return_(void);
     doublereal corxfi[36]	/* was [6][6] */, corxfm[36]	/* was [6][6] 
 	    */, ctrsta[6], dcorxf[36]	/* was [6][6] */, dltctr, drxfrm[36]	
-	    /* was [6][6] */, fxdsta[6], fxosta[6], fxpsta[6], fxpvel[3], acc[
+	    /* was [6][6] */, fxdsta[6], fxosta[6], fxpsta[6], acc[3], fxpvel[
 	    3], fxtsta[6], ltsign, obspnt[6], obssta[12]	/* was [6][2] 
 	    */, obstrg[6], pntsta[6], sastat[6], spoint[3], srfvec[3], ssbobs[
 	    6], ssbtrg[6], trgepc;
@@ -80,21 +80,20 @@ static doublereal c_b49 = 1.;
 	    ftnlen), chkout_(char *, ftnlen), sxform_(char *, char *, 
 	    doublereal *, doublereal *, ftnlen, ftnlen), namfrm_(char *, 
 	    integer *, ftnlen), frinfo_(integer *, integer *, integer *, 
-	    integer *, logical *), errint_(char *, integer *, ftnlen), 
-	    spkgeo_(integer *, doublereal *, char *, integer *, doublereal *, 
-	    doublereal *, ftnlen);
+	    integer *, logical *), errint_(char *, integer *, ftnlen);
     doublereal dlt;
-    extern /* Subroutine */ int vminug_(doublereal *, integer *, doublereal *)
-	    , surfpv_(doublereal *, doublereal *, doublereal *, doublereal *, 
-	    doublereal *, doublereal *, logical *), spkacs_(integer *, 
-	    doublereal *, char *, char *, integer *, doublereal *, doublereal 
-	    *, doublereal *, ftnlen, ftnlen), sincpt_(char *, char *, 
-	    doublereal *, char *, char *, char *, char *, doublereal *, 
-	    doublereal *, doublereal *, doublereal *, logical *, ftnlen, 
-	    ftnlen, ftnlen, ftnlen, ftnlen, ftnlen), spkssb_(integer *, 
-	    doublereal *, char *, doublereal *, ftnlen), qderiv_(integer *, 
-	    doublereal *, doublereal *, doublereal *, doublereal *), invstm_(
-	    doublereal *, doublereal *);
+    extern /* Subroutine */ int spkgeo_(integer *, doublereal *, char *, 
+	    integer *, doublereal *, doublereal *, ftnlen), vminug_(
+	    doublereal *, integer *, doublereal *), surfpv_(doublereal *, 
+	    doublereal *, doublereal *, doublereal *, doublereal *, 
+	    doublereal *, logical *), spkacs_(integer *, doublereal *, char *,
+	     char *, integer *, doublereal *, doublereal *, doublereal *, 
+	    ftnlen, ftnlen), sincpt_(char *, char *, doublereal *, char *, 
+	    char *, char *, char *, doublereal *, doublereal *, doublereal *, 
+	    doublereal *, logical *, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, 
+	    ftnlen), spkssb_(integer *, doublereal *, char *, doublereal *, 
+	    ftnlen), qderiv_(integer *, doublereal *, doublereal *, 
+	    doublereal *, doublereal *), invstm_(doublereal *, doublereal *);
 
 /* $ Abstract */
 
@@ -200,7 +199,21 @@ static doublereal c_b49 = 1.;
 
 /* $ Version */
 
-/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+/* -    SPICELIB Version 2.0.0  29-NOV-2016 (NJB) */
+
+/*        Upgraded to support surfaces represented by DSKs. */
+
+/*        Bug fix: removed declaration of NVRMAX parameter. */
+
+/* -    SPICELIB Version 1.3.0, 01-OCT-2011 (NJB) */
+
+/*       Added NWILUM parameter. */
+
+/* -    SPICELIB Version 1.2.0, 14-SEP-2010 (EDW) */
+
+/*       Added NWPA parameter. */
+
+/* -    SPICELIB Version 1.1.0, 08-SEP-2009 (EDW) */
 
 /*       Added NWRR parameter. */
 /*       Added NWUDS parameter. */
@@ -250,6 +263,14 @@ static doublereal c_b49 = 1.;
 /*     count using NWUDS. */
 
 
+/*     Callers of GFPA should declare their workspace window */
+/*     count using NWPA. */
+
+
+/*     Callers of GFILUM should declare their workspace window */
+/*     count using NWILUM. */
+
+
 /*     ADDWIN is a parameter used to expand each interval of the search */
 /*     (confinement) window by a small amount at both ends in order to */
 /*     accommodate searches using equality constraints. The loaded */
@@ -257,9 +278,6 @@ static doublereal c_b49 = 1.;
 
 
 /*     FRMNLN is a string length for frame names. */
-
-
-/*     NVRMAX is the maximum number of vertices if FOV type is "POLYGON" */
 
 
 /*     FOVTLN -- maximum length for FOV string. */
@@ -811,6 +829,10 @@ static doublereal c_b49 = 1.;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.1.0 08-MAR-2017 (NJB) */
+
+/*        Bug fix: now returns after SINCPT call if FOUND is .FALSE. */
+
 /* -    SPICELIB Version 2.0.0 12-MAY-2009 (NJB) */
 
 /*        Upgraded to support targets and observers having */
@@ -1077,6 +1099,14 @@ static doublereal c_b49 = 1.;
 		 &trgepc, srfvec, found, method_len, (ftnlen)36, fixref_len, 
 		abcorr_len, (ftnlen)36, dref_len);
 
+/*        It's not an error for SINCPT to be unable to compute an */
+/*        intercept point; return now if the intercept was not found. */
+
+	if (! (*found)) {
+	    chkout_("ZZGFSSIN", (ftnlen)8);
+	    return 0;
+	}
+
 /*        Get J2000-relative states of observer and target with respect */
 /*        to the solar system barycenter at their respective epochs of */
 /*        participation. */
@@ -1111,7 +1141,7 @@ static doublereal c_b49 = 1.;
 		t = *et + ((i__ << 1) - 3) * 1.;
 		spkssb_(obsid, &t, "J2000", &obssta[(i__1 = i__ * 6 - 6) < 12 
 			&& 0 <= i__1 ? i__1 : s_rnge("obssta", i__1, "zzgfss"
-			"in_", (ftnlen)780)], (ftnlen)5);
+			"in_", (ftnlen)793)], (ftnlen)5);
 	    }
 	    if (failed_()) {
 		chkout_("ZZGFSSIN", (ftnlen)8);
@@ -1121,7 +1151,7 @@ static doublereal c_b49 = 1.;
 /*           Compute the observer's acceleration using a quadratic */
 /*           approximation. */
 
-	    qderiv_(&c__3, &obssta[3], &obssta[9], &c_b49, acc);
+	    qderiv_(&c__3, &obssta[3], &obssta[9], &c_b50, acc);
 	}
 
 /*        The rest of the algorithm is iterative. On the first */

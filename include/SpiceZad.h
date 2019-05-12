@@ -80,6 +80,10 @@ Literature_References
       
 -Version
 
+   -CSPICE Version 2.2.0, 29-NOV-2011 (EDW)  
+
+      Updated to support the user defined boolean function capability.
+
    -CSPICE Version 2.1.0, 21-DEC-2009 (EDW)  
 
       Updated to support the user defined scalar function capability.

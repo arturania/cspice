@@ -55,7 +55,7 @@
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 33%; text-align: center;">
             <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
@@ -66,7 +66,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
@@ -76,7 +76,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
@@ -154,7 +154,6 @@
  
             All units are radians, km, seconds. 
  
-
  
    handle      is the file handle of an SPK file that has been 
                opened for writing. 
@@ -177,13 +176,15 @@
    epoch       is the epoch of the orbit elements at periapse 
                in ephemeris seconds past J2000. 
  
-   tp          is a unit vector parallel to the angular momentum 
-               vector of the orbit at epoch expressed relative to 
-               frame. 
+   tp          is a vector parallel to the angular momentum vector of
+               the orbit at epoch expressed relative to `frame'. A unit
+               vector parallel to `tp' will be stored in the output
+               segment.
  
-   pa          is a unit vector parallel to the position vector 
-               of the trajectory at periapsis of epoch expressed 
-               relative to frame. 
+   pa          is a vector parallel to the position vector of the
+               trajectory at periapsis of epoch expressed relative to
+               `frame'. A unit vector parallel to `pa' will be stored
+               in the output segment.
  
    p           is the semi-latus rectum---p in the equation: 
  
@@ -214,8 +215,9 @@
                 Note that J2 effects are computed only if the orbit 
                 is elliptic and does not intersect the central body. 
  
-   pv           is a unit vector parallel to the north pole vector 
-                of the central body expressed relative to frame. 
+   pv           is a vector parallel to the north pole vector of the
+                central body expressed relative to `frame'. A unit vector
+                parallel to `pv' will be stored in the output segment.
  
    gm           is the central body gm. 
  
@@ -286,10 +288,10 @@
 <h4><a name="Particulars">Particulars</a></h4>
 <PRE>
  
-   This routine writes an SPK type 15 data segment to the open SPK 
-   file according to the format described in the type 15 section of 
-   the SPK Required Reading. The SPK file must have been opened with 
-   write access. 
+   This routine writes an SPK type 15 data segment to the open SPK file
+   according to the format described in the type 15 section of the SPK
+   Required Reading. The SPK file must have been opened with write
+   access.
  
    This routine is provided to provide direct support for the MASL 
    precessing orbit formulation. 
@@ -310,7 +312,7 @@
  
    (If your state is at an epoch other than periapse the 
    fragment below will NOT produce a &quot;correct&quot; type 15 segment 
-   for modelling the motion of your object.) 
+   for modeling the motion of your object.) 
  
       #include &quot;SpiceUsr.h&quot;
           .
@@ -365,12 +367,22 @@
 <h4><a name="Author_and_Institution">Author_and_Institution</a></h4>
 <PRE>
  
+   N.J. Bachman    (JPL)
    W.L. Taber      (JPL) 
  </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
  
-   -CSPICE Version 1.0.0, 21-JUN-1999
+   -CSPICE Version 1.0.1, 29-MAY-2012 (NJB)
+
+      Header was updated to relect changes in handling 
+      of inputs `tp', `pa', and `pv' by the f2c'd routine
+      spkw15_. That routine now writes unit length
+      versions of these vectors to the output segment.
+
+      A header comment typo was corrected.
+
+   -CSPICE Version 1.0.0, 21-JUN-1999 (WLT)
 </PRE>
 <h4><a name="Index_Entries">Index_Entries</a></h4>
 <PRE>
@@ -384,7 +396,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Jun  9 13:05:30 2010</pre>
+   <pre>Wed Apr  5 17:54:44 2017</pre>
 
 </body>
 </html>

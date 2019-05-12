@@ -9,13 +9,24 @@
 /* Subroutine */ int sxform_(char *from, char *to, doublereal *et, doublereal 
 	*xform, ftnlen from_len, ftnlen to_len)
 {
+    /* Initialized data */
+
+    static logical first = TRUE_;
+
+    static char svto[32];
+    extern /* Subroutine */ int zznamfrm_(integer *, char *, integer *, char *
+	    , integer *, ftnlen, ftnlen), zzctruin_(integer *);
     integer fcode;
     extern /* Subroutine */ int chkin_(char *, ftnlen);
     integer tcode;
-    extern /* Subroutine */ int errch_(char *, char *, ftnlen, ftnlen), 
-	    frmchg_(integer *, integer *, doublereal *, doublereal *), 
-	    namfrm_(char *, integer *, ftnlen), sigerr_(char *, ftnlen), 
-	    chkout_(char *, ftnlen), setmsg_(char *, ftnlen);
+    extern /* Subroutine */ int errch_(char *, char *, ftnlen, ftnlen);
+    static integer svctr1[2], svctr2[2];
+    extern /* Subroutine */ int frmchg_(integer *, integer *, doublereal *, 
+	    doublereal *);
+    static integer svfcod, svtcde;
+    extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
+	    ftnlen), setmsg_(char *, ftnlen);
+    static char svfrom[32];
     extern logical return_(void);
 
 /* $ Abstract */
@@ -57,6 +68,59 @@
 /*     FRAMES */
 
 /* $ Declarations */
+/* $ Abstract */
+
+/*     This include file defines the dimension of the counter */
+/*     array used by various SPICE subsystems to uniquely identify */
+/*     changes in their states. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 29-JUL-2013 (BVS) */
+
+/* -& */
+
+/*     End of include file. */
+
 /* $ Brief_I/O */
 
 /*     VARIABLE  I/O  DESCRIPTION */
@@ -167,6 +231,12 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.1.0, 23-SEP-2013 (BVS) */
+
+/*        Updated to save the input frame names and POOL state counters */
+/*        and to do frame name-ID conversions only if the counters have */
+/*        changed. */
+
 /* -    SPICELIB Version 1.0.3, 27-FEB-2008 (BVS) */
 
 /*        Added FRAMES to the Required_Reading section. */
@@ -193,7 +263,22 @@
 /*     Spicelib Functions */
 
 
+/*     Local parameters */
+
+
+/*     Saved frame name length. */
+
+
 /*     Local Variables. */
+
+
+/*     Saved frame name/ID item declarations. */
+
+
+/*     Saved frame name/ID items. */
+
+
+/*     Initial values. */
 
 
 /*     Standard SPICE error handling. */
@@ -202,8 +287,19 @@
 	return 0;
     }
     chkin_("SXFORM", (ftnlen)6);
-    namfrm_(from, &fcode, from_len);
-    namfrm_(to, &tcode, to_len);
+
+/*     Initialization. */
+
+    if (first) {
+
+/*        Initialize counters */
+
+	zzctruin_(svctr1);
+	zzctruin_(svctr2);
+	first = FALSE_;
+    }
+    zznamfrm_(svctr1, svfrom, &svfcod, from, &fcode, (ftnlen)32, from_len);
+    zznamfrm_(svctr2, svto, &svtcde, to, &tcode, (ftnlen)32, to_len);
 
 /*     Only non-zero id-codes are legitimate frame id-codes.  Zero */
 /*     indicates that the frame wasn't recognized. */

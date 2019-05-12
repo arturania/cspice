@@ -4,9 +4,8 @@
 
 -Abstract
  
-   Determine whether or not any of the variables that are to be watched
-   and have a specified agent on their distribution list have been 
-   updated.
+   Indicate whether or not any watched kernel variables that have a
+   specified agent on their notification list have been updated.
  
 -Disclaimer
 
@@ -59,7 +58,7 @@
    Variable  I/O  Description 
    --------  ---  -------------------------------------------------- 
    agent      I   Name of the agent to check for notices. 
-   update     O   SPICETRUE if variables for agent have been updated. 
+   update     O   SPICETRUE if variables for `agent' have been updated. 
  
 -Detailed_Input
  
@@ -72,9 +71,15 @@
 -Detailed_Output
  
    update    is a logical flag that will be set to SPICETRUE if the
-             variables in the kernel pool that are required by agent
+             variables in the kernel pool that are associated with `agent'
              have been updated since the last call to cvpool_c.
  
+             `update' will be set to SPICETRUE on the first call made for
+             the specified agent, whether or not the associated
+             variables have been updated since the agent was placed
+             on their notification list, as long as the agent is
+             associated with any watched variables.
+
 -Parameters
  
    See function szpool_c. 
@@ -190,10 +195,17 @@
  
    N.J. Bachman   (JPL)
    W.L. Taber     (JPL) 
+   E.D. Wright    (JPL)
  
 -Version
 
-   -CSPICE Version 1.0.1, 14-AUG-2006   (EDW)
+   -CSPICE Version 1.0.2, 30-JUN-2014 (NJB)
+
+       Description of the output variable `update' now mentions that
+       the initial value of SPICETRUE will be returned after an agent
+       is associated with kernel variables.
+
+   -CSPICE Version 1.0.1, 14-AUG-2006 (EDW)
 
       Replace mention of ldpool_c with furnsh_c.
 

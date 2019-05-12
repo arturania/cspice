@@ -7,11 +7,11 @@
 
 /* Table of constant values */
 
-static integer c__5003 = 5003;
-static integer c_b8 = 200000;
-static integer c__4000 = 4000;
+static integer c__26003 = 26003;
+static integer c_b8 = 400000;
+static integer c__15000 = 15000;
 static integer c__1000 = 1000;
-static integer c__50030 = 50030;
+static integer c_b11 = 130015;
 static integer c__1 = 1;
 static integer c__32 = 32;
 
@@ -20,10 +20,10 @@ static integer c__32 = 32;
 	name__, char *names, integer *nnames, char *agent, integer *n, 
 	doublereal *values, logical *found, logical *update, integer *start, 
 	integer *room, char *cvals, integer *ivals, char *type__, char *
-	uwvars, integer *uwptrs, integer *uwpool, char *uwagnt, ftnlen 
-	kernel_len, ftnlen name_len, ftnlen names_len, ftnlen agent_len, 
-	ftnlen cvals_len, ftnlen type_len, ftnlen uwvars_len, ftnlen 
-	uwagnt_len)
+	uwvars, integer *uwptrs, integer *uwpool, char *uwagnt, integer *
+	usrctr, ftnlen kernel_len, ftnlen name_len, ftnlen names_len, ftnlen 
+	agent_len, ftnlen cvals_len, ftnlen type_len, ftnlen uwvars_len, 
+	ftnlen uwagnt_len)
 {
     /* Initialized data */
 
@@ -44,8 +44,9 @@ static integer c__32 = 32;
     static integer head, code, need, free, node;
     static char line[132];
     static integer tail, hits;
-    extern /* Subroutine */ int zzgapool_(char *, char *, integer *, integer *
-	    , char *, char *, ftnlen, ftnlen, ftnlen, ftnlen);
+    extern /* Subroutine */ int zzctrchk_(integer *, integer *, logical *), 
+	    zzgapool_(char *, char *, integer *, integer *, char *, char *, 
+	    ftnlen, ftnlen, ftnlen, ftnlen), zzctrinc_(integer *);
     static integer i__, j, k;
     extern integer cardc_(char *, ftnlen);
     extern /* Subroutine */ int zznwpool_(char *, char *, integer *, integer *
@@ -85,7 +86,7 @@ static integer c__32 = 32;
 	    ftnlen, ftnlen);
     static integer nameat, nfetch, nw, dpnode;
     extern /* Subroutine */ int lnkila_(integer *, integer *, integer *);
-    static char active[32*50036];
+    static char active[32*130021];
     extern /* Subroutine */ int inslac_(char *, integer *, integer *, char *, 
 	    integer *, ftnlen, ftnlen);
     static integer margin;
@@ -93,49 +94,49 @@ static integer c__32 = 32;
 	    integer *);
     static char cvalue[132];
     extern integer lnknfn_(integer *), lastnb_(char *, ftnlen);
-    static char begtxt[10];
+    static char pnames[32*26003], begtxt[10];
     extern integer intmax_(void), intmin_(void);
-    static char pnames[32*5003];
-    static integer namlst[5003];
+    static integer namlst[26003], datlst[26003];
     extern integer lstltc_(char *, integer *, char *, ftnlen, ftnlen), 
 	    zzhash_(char *, ftnlen);
-    static integer nmpool[10018]	/* was [2][5009] */, datlst[5003], 
-	    chpool[8012]	/* was [2][4006] */, dppool[400012]	/* 
-	    was [2][200006] */;
-    static char chvals[80*4000];
+    static integer nmpool[52018]	/* was [2][26009] */, chpool[30012]	
+	    /* was [2][15006] */, dppool[800012]	/* was [2][400006] */;
+    static char chvals[80*15000];
+    static doublereal dpvals[400000];
     extern integer lnknxt_(integer *, integer *);
     extern logical return_(void);
-    static doublereal dpvals[200000];
-    static char wtagnt[32*50030], agents[32*50036], notify[32*50036];
-    static integer wtpool[100072]	/* was [2][50036] */;
-    static char wtvars[32*5009], finish[2], varnam[32];
+    static char wtagnt[32*130015], agents[32*130021];
+    static integer wtpool[260042]	/* was [2][130021] */;
+    static char wtvars[32*26009], notify[32*130021];
+    static integer subctr[2];
+    static char finish[2], varnam[32];
     static doublereal dvalue;
-    static integer iostat, iquote, linnum, lookat, nnodes, tofree, varlen, 
-	    wtptrs[5003];
+    static integer iostat, iquote, linnum, lookat, nnodes, tofree, wtptrs[
+	    26003], varlen;
     static logical noagnt, succes, vector;
     extern /* Subroutine */ int setmsg_(char *, ftnlen), sigerr_(char *, 
 	    ftnlen), chkout_(char *, ftnlen), zzpini_(logical *, integer *, 
 	    integer *, integer *, char *, char *, integer *, integer *, 
 	    integer *, integer *, integer *, integer *, integer *, char *, 
-	    integer *, integer *, char *, char *, char *, char *, ftnlen, 
-	    ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen), lnkini_(integer *
-	    , integer *), rdknew_(char *, ftnlen), zzrvar_(integer *, integer 
-	    *, char *, integer *, integer *, doublereal *, integer *, char *, 
-	    char *, logical *, ftnlen, ftnlen, ftnlen), cltext_(char *, 
-	    ftnlen);
+	    integer *, integer *, char *, char *, char *, char *, integer *, 
+	    ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen), lnkini_(
+	    integer *, integer *), rdknew_(char *, ftnlen);
     static doublereal big;
+    extern /* Subroutine */ int zzrvar_(integer *, integer *, char *, integer 
+	    *, integer *, doublereal *, integer *, char *, char *, logical *, 
+	    ftnlen, ftnlen, ftnlen), cltext_(char *, ftnlen);
+    static logical eof;
     extern /* Subroutine */ int errint_(char *, integer *, ftnlen), inslai_(
 	    integer *, integer *, integer *, integer *, integer *);
-    static logical eof;
-    extern /* Subroutine */ int insrtc_(char *, char *, ftnlen, ftnlen);
     static logical chr;
-    extern /* Subroutine */ int removc_(char *, char *, ftnlen, ftnlen), 
-	    zzgpnm_(integer *, integer *, char *, integer *, integer *, 
-	    doublereal *, integer *, char *, char *, logical *, integer *, 
-	    integer *, ftnlen, ftnlen, ftnlen), lnkfsl_(integer *, integer *, 
-	    integer *), zzrvbf_(char *, integer *, integer *, integer *, 
+    extern /* Subroutine */ int insrtc_(char *, char *, ftnlen, ftnlen), 
+	    removc_(char *, char *, ftnlen, ftnlen), zzgpnm_(integer *, 
 	    integer *, char *, integer *, integer *, doublereal *, integer *, 
-	    char *, char *, logical *, ftnlen, ftnlen, ftnlen, ftnlen);
+	    char *, char *, logical *, integer *, integer *, ftnlen, ftnlen, 
+	    ftnlen), lnkfsl_(integer *, integer *, integer *), zzrvbf_(char *,
+	     integer *, integer *, integer *, integer *, char *, integer *, 
+	    integer *, doublereal *, integer *, char *, char *, logical *, 
+	    ftnlen, ftnlen, ftnlen, ftnlen);
 
 /* $ Abstract */
 
@@ -176,6 +177,59 @@ static integer c__32 = 32;
 /*     FILES */
 
 /* $ Declarations */
+/* $ Abstract */
+
+/*     This include file defines the dimension of the counter */
+/*     array used by various SPICE subsystems to uniquely identify */
+/*     changes in their states. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 29-JUL-2013 (BVS) */
+
+/* -& */
+
+/*     End of include file. */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Entry */
@@ -192,7 +246,7 @@ static integer c__32 = 32;
 /*     VALUES    I/O  RTPOOL  GDPOOL, PDPOOL */
 /*     FOUND      O   RTPOOL, EXPOOL, GIPOOL, GCPOOL, GDPOOL, DTPOOL, */
 /*                    SZPOOL, GNPOOL */
-/*     UPDATE     O   CVPOOL */
+/*     UPDATE     O   CVPOOL, ZZPCTRCK */
 /*     START      I   GIPOOL, GDPOOL, GCPOOL, GNPOOL */
 /*     ROOM       I   GIPOOL, GDPOOL, GCPOOL. GNPOOL */
 /*     CVALS     I/O  GCPOOL, PCPOOL, LMPOOL, GNPOOL */
@@ -202,6 +256,7 @@ static integer c__32 = 32;
 /*     UWPTRS     O   ZZVUPOOL */
 /*     UWPOOL     O   ZZVUPOOL */
 /*     UWAGNT     O   ZZVUPOOL */
+/*     USRCTR    I/O  ZZPCTRCK */
 
 /*     MAXVAR     P   (All) */
 /*     MAXLEN     P   (All) */
@@ -210,6 +265,7 @@ static integer c__32 = 32;
 /*     MXNOTE     P   (All) */
 /*     BEGDAT     P   WRPOOL */
 /*     BEGTXT     P   WRPOOL */
+/*     CTRSIZ     P   ZZPCTRCK */
 
 /* $ Detailed_Input */
 
@@ -293,6 +349,11 @@ static integer c__32 = 32;
 
 /*     MAXLIN      is the maximum number of character strings that */
 /*                 can be stored as data for kernel pool variables. */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. This parameter is */
+/*                 defined in the private include file 'zzctr.inc'. */
 
 /* $ Exceptions */
 
@@ -444,6 +505,36 @@ static integer c__32 = 32;
 /*     I.M. Underwood  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 10.1.0, 14-JUL-2014 (NJB) (BVS) */
+
+/*        Updated header of WRPOOL to improve accuracy of */
+/*        that routine's output description. */
+
+/*        Updated header of CVPOOL to improve accuracy of */
+/*        the description of the output argument UPDATE. */
+
+/*        Updated header of CLPOOL to improve the description */
+/*        of behavior of the watcher subsystem. */
+
+/*     Last update was 17-JAN-2014 (BVS) (NJB) */
+
+/*        Increased key POOL parameters as follows: */
+
+/*           MAXVAR    5003 ->  26003 */
+/*           MAXVAL  200000 -> 400000 */
+/*           MAXLIN    4000 ->  15000 */
+
+/*        Decreased MXNOTE factor F (MXNOTE=MAXVAR*F) from 10 to 5. */
+
+/*        Updated the main umbrella argument list to include the POOL */
+/*        state counter. Added the private entry point ZZPCTRCK allowing */
+/*        other routines to check their saved POOL state counter against */
+/*        the current POOL state counter to detect and act on the POOL */
+/*        state change. */
+
+/*        Updated Index_Entries sections of entry points PCPOOL, PDPOOL, */
+/*        and PIPOOL. */
 
 /* -    SPICELIB Version 10.0.0, 24-MAY-2010 (EDW) (NJB) */
 
@@ -915,6 +1006,9 @@ static integer c__32 = 32;
 /*     First is our initialization flag. */
 
 
+/*     POOL state counter. */
+
+
 /*     The remaining local variables... */
 
 
@@ -940,6 +1034,8 @@ static integer c__32 = 32;
 	}
     if (uwagnt) {
 	}
+    if (usrctr) {
+	}
 
     /* Function Body */
     switch(n__) {
@@ -963,6 +1059,7 @@ static integer c__32 = 32;
 	case 18: goto L_gnpool;
 	case 19: goto L_dwpool;
 	case 20: goto L_zzvupool;
+	case 21: goto L_zzpctrck;
 	}
 
 
@@ -991,7 +1088,8 @@ static integer c__32 = 32;
 L_clpool:
 /* $ Abstract */
 
-/*     Remove all variables from the kernel pool. */
+/*     Remove all kernel variables from the kernel pool. Watches */
+/*     on kernel variables are retained. */
 
 /* $ Disclaimer */
 
@@ -1065,8 +1163,11 @@ L_clpool:
 
 /*     Each watched variable will be regarded as having been updated. */
 /*     Any agent associated with that variable will have a notice */
-/*     posted for it indicating that it's watched variable has been */
+/*     posted for it indicating that its watched variable has been */
 /*     updated. */
+
+/*     Application programs can delete watches by calling the entry */
+/*     point DWPOOL. See the header of DWPOOL for details. */
 
 /* $ Examples */
 
@@ -1129,8 +1230,17 @@ L_clpool:
 /*     N.J. Bachman    (JPL) */
 /*     I.M. Underwood  (JPL) */
 /*     W.L. Taber      (JPL) */
+/*     B.V. Semenov    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 8.2.0, 01-JUL-2014 (NJB) (BVS) */
+
+/*        Description of behavior of watcher subsystem was expanded. */
+
+/*     Last update was 30-JUL-2013 (BVS) */
+
+/*        Updated to increment POOL state counter. */
 
 /* -    SPICELIB Version 8.1.0, 19-MAR-2009 (NJB) */
 
@@ -1257,37 +1367,44 @@ L_clpool:
 
 /*     Initialize the pool if necessary. */
 
-    zzpini_(&first, &c__5003, &c_b8, &c__4000, begdat, begtxt, nmpool, dppool,
-	     chpool, namlst, datlst, &c__1000, &c__50030, wtvars, wtptrs, 
-	    wtpool, wtagnt, agents, active, notify, (ftnlen)10, (ftnlen)10, (
-	    ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32);
+    if (first) {
+	zzpini_(&first, &c__26003, &c_b8, &c__15000, begdat, begtxt, nmpool, 
+		dppool, chpool, namlst, datlst, &c__1000, &c_b11, wtvars, 
+		wtptrs, wtpool, wtagnt, agents, active, notify, subctr, (
+		ftnlen)10, (ftnlen)10, (ftnlen)32, (ftnlen)32, (ftnlen)32, (
+		ftnlen)32, (ftnlen)32);
+    }
+
+/*     Increment POOL state counter. */
+
+    zzctrinc_(subctr);
 
 /*     Wipe out all of the PNAMES data. */
 
-    for (i__ = 1; i__ <= 5003; ++i__) {
-	namlst[(i__1 = i__ - 1) < 5003 && 0 <= i__1 ? i__1 : s_rnge("namlst", 
-		i__1, "pool_", (ftnlen)1304)] = 0;
-	datlst[(i__1 = i__ - 1) < 5003 && 0 <= i__1 ? i__1 : s_rnge("datlst", 
-		i__1, "pool_", (ftnlen)1305)] = 0;
-	s_copy(pnames + (((i__1 = i__ - 1) < 5003 && 0 <= i__1 ? i__1 : 
-		s_rnge("pnames", i__1, "pool_", (ftnlen)1306)) << 5), " ", (
+    for (i__ = 1; i__ <= 26003; ++i__) {
+	namlst[(i__1 = i__ - 1) < 26003 && 0 <= i__1 ? i__1 : s_rnge("namlst",
+		 i__1, "pool_", (ftnlen)1368)] = 0;
+	datlst[(i__1 = i__ - 1) < 26003 && 0 <= i__1 ? i__1 : s_rnge("datlst",
+		 i__1, "pool_", (ftnlen)1369)] = 0;
+	s_copy(pnames + (((i__1 = i__ - 1) < 26003 && 0 <= i__1 ? i__1 : 
+		s_rnge("pnames", i__1, "pool_", (ftnlen)1370)) << 5), " ", (
 		ftnlen)32, (ftnlen)1);
     }
 
 /*     Free up all of the space in all of the linked list pools, except */
 /*     for the watcher pool. */
 
-    lnkini_(&c__5003, nmpool);
+    lnkini_(&c__26003, nmpool);
     lnkini_(&c_b8, dppool);
-    lnkini_(&c__4000, chpool);
+    lnkini_(&c__15000, chpool);
     i__1 = cardc_(wtvars, (ftnlen)32);
     for (i__ = 1; i__ <= i__1; ++i__) {
 
 /*        Union the update set AGENTS with the set of agents */
 /*        associated with the Ith watched variable. */
 
-	zznwpool_(wtvars + (((i__2 = i__ + 5) < 5009 && 0 <= i__2 ? i__2 : 
-		s_rnge("wtvars", i__2, "pool_", (ftnlen)1321)) << 5), wtvars, 
+	zznwpool_(wtvars + (((i__2 = i__ + 5) < 26009 && 0 <= i__2 ? i__2 : 
+		s_rnge("wtvars", i__2, "pool_", (ftnlen)1385)) << 5), wtvars, 
 		wtptrs, wtpool, wtagnt, active, notify, agents, (ftnlen)32, (
 		ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32);
     }
@@ -1438,8 +1555,13 @@ L_ldpool:
 /*     R.E. Thurman    (JPL) */
 /*     I.M. Underwood  (JPL) */
 /*     W.L. Taber      (JPL) */
+/*     B.V. Semenov    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 8.2.0, 30-JUL-2013 (BVS) */
+
+/*        Updated to increment POOL state counter. */
 
 /* -    SPICELIB Version 8.1.0, 19-MAR-2009 (NJB) */
 
@@ -1641,10 +1763,17 @@ L_ldpool:
 
 /*     Initialize the pool if necessary. */
 
-    zzpini_(&first, &c__5003, &c_b8, &c__4000, begdat, begtxt, nmpool, dppool,
-	     chpool, namlst, datlst, &c__1000, &c__50030, wtvars, wtptrs, 
-	    wtpool, wtagnt, agents, active, notify, (ftnlen)10, (ftnlen)10, (
-	    ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32);
+    if (first) {
+	zzpini_(&first, &c__26003, &c_b8, &c__15000, begdat, begtxt, nmpool, 
+		dppool, chpool, namlst, datlst, &c__1000, &c_b11, wtvars, 
+		wtptrs, wtpool, wtagnt, agents, active, notify, subctr, (
+		ftnlen)10, (ftnlen)10, (ftnlen)32, (ftnlen)32, (ftnlen)32, (
+		ftnlen)32, (ftnlen)32);
+    }
+
+/*     Increment POOL state counter. */
+
+    zzctrinc_(subctr);
 
 /*     Open the kernel file and read the first variable. */
 
@@ -1920,10 +2049,13 @@ L_rtpool:
 
 /*     Initialize the pool if necessary. */
 
-    zzpini_(&first, &c__5003, &c_b8, &c__4000, begdat, begtxt, nmpool, dppool,
-	     chpool, namlst, datlst, &c__1000, &c__50030, wtvars, wtptrs, 
-	    wtpool, wtagnt, agents, active, notify, (ftnlen)10, (ftnlen)10, (
-	    ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32);
+    if (first) {
+	zzpini_(&first, &c__26003, &c_b8, &c__15000, begdat, begtxt, nmpool, 
+		dppool, chpool, namlst, datlst, &c__1000, &c_b11, wtvars, 
+		wtptrs, wtpool, wtagnt, agents, active, notify, subctr, (
+		ftnlen)10, (ftnlen)10, (ftnlen)32, (ftnlen)32, (ftnlen)32, (
+		ftnlen)32, (ftnlen)32);
+    }
 
 /*     Compute the hash value of this name. */
 
@@ -1933,8 +2065,8 @@ L_rtpool:
 /*     input string NAME.  If so, NAMLST(LOOKAT) contains the head node */
 /*     of the conflict resolution list; this node is a positive value. */
 
-    if (namlst[(i__1 = lookat - 1) < 5003 && 0 <= i__1 ? i__1 : s_rnge("naml"
-	    "st", i__1, "pool_", (ftnlen)2019)] == 0) {
+    if (namlst[(i__1 = lookat - 1) < 26003 && 0 <= i__1 ? i__1 : s_rnge("nam"
+	    "lst", i__1, "pool_", (ftnlen)2102)] == 0) {
 	*found = FALSE_;
 	chkout_("RTPOOL", (ftnlen)6);
 	return 0;
@@ -1944,21 +2076,21 @@ L_rtpool:
 /*     a conflict resolution list.  See if the NAME corresponding */
 /*     to this node is the one we are looking for. */
 
-    node = namlst[(i__1 = lookat - 1) < 5003 && 0 <= i__1 ? i__1 : s_rnge(
-	    "namlst", i__1, "pool_", (ftnlen)2031)];
-    succes = s_cmp(name__, pnames + (((i__1 = node - 1) < 5003 && 0 <= i__1 ? 
-	    i__1 : s_rnge("pnames", i__1, "pool_", (ftnlen)2032)) << 5), 
+    node = namlst[(i__1 = lookat - 1) < 26003 && 0 <= i__1 ? i__1 : s_rnge(
+	    "namlst", i__1, "pool_", (ftnlen)2114)];
+    succes = s_cmp(name__, pnames + (((i__1 = node - 1) < 26003 && 0 <= i__1 ?
+	     i__1 : s_rnge("pnames", i__1, "pool_", (ftnlen)2115)) << 5), 
 	    name_len, (ftnlen)32) == 0;
     while(! succes) {
-	node = nmpool[(i__1 = (node << 1) + 10) < 10018 && 0 <= i__1 ? i__1 : 
-		s_rnge("nmpool", i__1, "pool_", (ftnlen)2036)];
+	node = nmpool[(i__1 = (node << 1) + 10) < 52018 && 0 <= i__1 ? i__1 : 
+		s_rnge("nmpool", i__1, "pool_", (ftnlen)2119)];
 	if (node < 0) {
 	    *found = FALSE_;
 	    chkout_("RTPOOL", (ftnlen)6);
 	    return 0;
 	}
-	succes = s_cmp(name__, pnames + (((i__1 = node - 1) < 5003 && 0 <= 
-		i__1 ? i__1 : s_rnge("pnames", i__1, "pool_", (ftnlen)2046)) 
+	succes = s_cmp(name__, pnames + (((i__1 = node - 1) < 26003 && 0 <= 
+		i__1 ? i__1 : s_rnge("pnames", i__1, "pool_", (ftnlen)2129)) 
 		<< 5), name_len, (ftnlen)32) == 0;
     }
 
@@ -1971,20 +2103,20 @@ L_rtpool:
 /*     is positive.  We use negative values to point to character */
 /*     values. */
 
-    if (datlst[(i__1 = node - 1) < 5003 && 0 <= i__1 ? i__1 : s_rnge("datlst",
-	     i__1, "pool_", (ftnlen)2059)] <= 0) {
+    if (datlst[(i__1 = node - 1) < 26003 && 0 <= i__1 ? i__1 : s_rnge("datlst"
+	    , i__1, "pool_", (ftnlen)2142)] <= 0) {
 	*found = FALSE_;
     } else {
 	*found = TRUE_;
 	*n = 0;
-	node = datlst[(i__1 = node - 1) < 5003 && 0 <= i__1 ? i__1 : s_rnge(
-		"datlst", i__1, "pool_", (ftnlen)2067)];
+	node = datlst[(i__1 = node - 1) < 26003 && 0 <= i__1 ? i__1 : s_rnge(
+		"datlst", i__1, "pool_", (ftnlen)2150)];
 	while(node > 0) {
 	    ++(*n);
-	    values[*n - 1] = dpvals[(i__1 = node - 1) < 200000 && 0 <= i__1 ? 
-		    i__1 : s_rnge("dpvals", i__1, "pool_", (ftnlen)2071)];
-	    node = dppool[(i__1 = (node << 1) + 10) < 400012 && 0 <= i__1 ? 
-		    i__1 : s_rnge("dppool", i__1, "pool_", (ftnlen)2072)];
+	    values[*n - 1] = dpvals[(i__1 = node - 1) < 400000 && 0 <= i__1 ? 
+		    i__1 : s_rnge("dpvals", i__1, "pool_", (ftnlen)2154)];
+	    node = dppool[(i__1 = (node << 1) + 10) < 800012 && 0 <= i__1 ? 
+		    i__1 : s_rnge("dppool", i__1, "pool_", (ftnlen)2155)];
 	}
     }
     chkout_("RTPOOL", (ftnlen)6);
@@ -2185,10 +2317,13 @@ L_expool:
 
 /*     Initialize the pool if necessary. */
 
-    zzpini_(&first, &c__5003, &c_b8, &c__4000, begdat, begtxt, nmpool, dppool,
-	     chpool, namlst, datlst, &c__1000, &c__50030, wtvars, wtptrs, 
-	    wtpool, wtagnt, agents, active, notify, (ftnlen)10, (ftnlen)10, (
-	    ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32);
+    if (first) {
+	zzpini_(&first, &c__26003, &c_b8, &c__15000, begdat, begtxt, nmpool, 
+		dppool, chpool, namlst, datlst, &c__1000, &c_b11, wtvars, 
+		wtptrs, wtpool, wtagnt, agents, active, notify, subctr, (
+		ftnlen)10, (ftnlen)10, (ftnlen)32, (ftnlen)32, (ftnlen)32, (
+		ftnlen)32, (ftnlen)32);
+    }
 
 /*     Compute the hash value of this name. */
 
@@ -2198,8 +2333,8 @@ L_expool:
 /*     input string NAME.  If so, NAMLST(LOOKAT) contains the head node */
 /*     of the conflict resolution list; this node is a positive value. */
 
-    if (namlst[(i__1 = lookat - 1) < 5003 && 0 <= i__1 ? i__1 : s_rnge("naml"
-	    "st", i__1, "pool_", (ftnlen)2304)] == 0) {
+    if (namlst[(i__1 = lookat - 1) < 26003 && 0 <= i__1 ? i__1 : s_rnge("nam"
+	    "lst", i__1, "pool_", (ftnlen)2392)] == 0) {
 	*found = FALSE_;
 	chkout_("EXPOOL", (ftnlen)6);
 	return 0;
@@ -2209,21 +2344,21 @@ L_expool:
 /*     a conflict resolution list.  See if the NAME corresponding */
 /*     to this node is the one we are looking for. */
 
-    node = namlst[(i__1 = lookat - 1) < 5003 && 0 <= i__1 ? i__1 : s_rnge(
-	    "namlst", i__1, "pool_", (ftnlen)2316)];
-    succes = s_cmp(name__, pnames + (((i__1 = node - 1) < 5003 && 0 <= i__1 ? 
-	    i__1 : s_rnge("pnames", i__1, "pool_", (ftnlen)2317)) << 5), 
+    node = namlst[(i__1 = lookat - 1) < 26003 && 0 <= i__1 ? i__1 : s_rnge(
+	    "namlst", i__1, "pool_", (ftnlen)2404)];
+    succes = s_cmp(name__, pnames + (((i__1 = node - 1) < 26003 && 0 <= i__1 ?
+	     i__1 : s_rnge("pnames", i__1, "pool_", (ftnlen)2405)) << 5), 
 	    name_len, (ftnlen)32) == 0;
     while(! succes) {
-	node = nmpool[(i__1 = (node << 1) + 10) < 10018 && 0 <= i__1 ? i__1 : 
-		s_rnge("nmpool", i__1, "pool_", (ftnlen)2321)];
+	node = nmpool[(i__1 = (node << 1) + 10) < 52018 && 0 <= i__1 ? i__1 : 
+		s_rnge("nmpool", i__1, "pool_", (ftnlen)2409)];
 	if (node < 0) {
 	    *found = FALSE_;
 	    chkout_("EXPOOL", (ftnlen)6);
 	    return 0;
 	}
-	succes = s_cmp(name__, pnames + (((i__1 = node - 1) < 5003 && 0 <= 
-		i__1 ? i__1 : s_rnge("pnames", i__1, "pool_", (ftnlen)2331)) 
+	succes = s_cmp(name__, pnames + (((i__1 = node - 1) < 26003 && 0 <= 
+		i__1 ? i__1 : s_rnge("pnames", i__1, "pool_", (ftnlen)2419)) 
 		<< 5), name_len, (ftnlen)32) == 0;
     }
 
@@ -2234,16 +2369,19 @@ L_expool:
 /*     However, recall that EXPOOL indicates the existence only of */
 /*     d.p. values. */
 
-    *found = datlst[(i__1 = node - 1) < 5003 && 0 <= i__1 ? i__1 : s_rnge(
-	    "datlst", i__1, "pool_", (ftnlen)2342)] > 0;
+    *found = datlst[(i__1 = node - 1) < 26003 && 0 <= i__1 ? i__1 : s_rnge(
+	    "datlst", i__1, "pool_", (ftnlen)2430)] > 0;
     chkout_("EXPOOL", (ftnlen)6);
     return 0;
-/* $Procedure WRPOOL ( Write the values in pool to a specified unit ) */
+/* $Procedure WRPOOL ( Write the variables in pool to a specified unit ) */
 
 L_wrpool:
 /* $ Abstract */
 
-/*     Write the values in the pool to the specified unit. */
+/*     Write to a specified unit a set of "keyword = value" assignments */
+/*     for all currently defined kernel variables. The assignments */
+/*     constitute a text kernel from which the current state of the */
+/*     kernel pool can be restored. */
 
 /* $ Disclaimer */
 
@@ -2287,12 +2425,12 @@ L_wrpool:
 
 /*     VARIABLE  I/O  DESCRIPTION */
 /*     --------  ---  -------------------------------------------------- */
-/*     UNIT       I   Logical unit to which the values in the pool will */
-/*                    be written. */
+/*     UNIT       I   Logical unit to which the variables in the pool */
+/*                    will be written. */
 
 /* $ Detailed_Input */
 
-/*     UNIT       is the logical unit to which the values in the pool */
+/*     UNIT       is the logical unit to which the variables in the pool */
 /*                will be written. */
 
 /* $ Detailed_Output */
@@ -2308,6 +2446,17 @@ L_wrpool:
 /*     None. */
 
 /* $ Files */
+
+/*     This routine writes to the specified logical unit the kernel */
+/*     variables present in the kernel pool. Each variable consists of a */
+/*     name and a set of associated values. The variables are written in */
+/*     the form of a series of "keyword = value" assignments. The */
+/*     assignments are preceded by a SPICE text kernel "\begindata" */
+/*     marker. */
+
+/*     The output of this routine, if written to a text file, is a SPICE */
+/*     text kernel. The current contents of the kernel pool can be */
+/*     restored by clearing the pool and then loading this text kernel. */
 
 /*     If the values are to be written to an output kernel file, the */
 /*     file should be opened with a logical unit determined by the */
@@ -2379,6 +2528,11 @@ L_wrpool:
 /*     I.M. Underwood  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 8.1.1, 30-JUN-2014 (NJB) */
+
+/*        Updated header to more accurately describe the output */
+/*        of this routine. */
 
 /* -    SPICELIB Version 8.1.0, 19-MAR-2009 (NJB) */
 
@@ -2555,18 +2709,18 @@ L100002:
 
     iquote = '\'';
     margin = 38;
-    for (k = 1; k <= 5003; ++k) {
+    for (k = 1; k <= 26003; ++k) {
 
 /*        Get the head of this list. */
 
-	nnode = namlst[(i__1 = k - 1) < 5003 && 0 <= i__1 ? i__1 : s_rnge(
-		"namlst", i__1, "pool_", (ftnlen)2665)];
+	nnode = namlst[(i__1 = k - 1) < 26003 && 0 <= i__1 ? i__1 : s_rnge(
+		"namlst", i__1, "pool_", (ftnlen)2772)];
 	while(nnode > 0) {
-	    s_copy(line, pnames + (((i__1 = nnode - 1) < 5003 && 0 <= i__1 ? 
-		    i__1 : s_rnge("pnames", i__1, "pool_", (ftnlen)2669)) << 
+	    s_copy(line, pnames + (((i__1 = nnode - 1) < 26003 && 0 <= i__1 ? 
+		    i__1 : s_rnge("pnames", i__1, "pool_", (ftnlen)2776)) << 
 		    5), (ftnlen)132, (ftnlen)32);
-	    datahd = datlst[(i__1 = nnode - 1) < 5003 && 0 <= i__1 ? i__1 : 
-		    s_rnge("datlst", i__1, "pool_", (ftnlen)2670)];
+	    datahd = datlst[(i__1 = nnode - 1) < 26003 && 0 <= i__1 ? i__1 : 
+		    s_rnge("datlst", i__1, "pool_", (ftnlen)2777)];
 	    dp = datahd > 0;
 	    chr = datahd < 0;
 	    dnode = abs(datahd);
@@ -2574,22 +2728,22 @@ L100002:
 /*           Determine whether or not this is a vector object. */
 
 	    if (dp) {
-		vector = dppool[(i__1 = (dnode << 1) + 10) < 400012 && 0 <= 
+		vector = dppool[(i__1 = (dnode << 1) + 10) < 800012 && 0 <= 
 			i__1 ? i__1 : s_rnge("dppool", i__1, "pool_", (ftnlen)
-			2678)] > 0;
+			2785)] > 0;
 	    } else if (chr) {
-		vector = chpool[(i__1 = (dnode << 1) + 10) < 8012 && 0 <= 
+		vector = chpool[(i__1 = (dnode << 1) + 10) < 30012 && 0 <= 
 			i__1 ? i__1 : s_rnge("chpool", i__1, "pool_", (ftnlen)
-			2680)] > 0;
+			2787)] > 0;
 	    } else {
 		setmsg_("This error is never supposed to occur. No data was "
 			"available for the variable '#'. ", (ftnlen)83);
-		r__ = rtrim_(pnames + (((i__1 = nnode - 1) < 5003 && 0 <= 
+		r__ = rtrim_(pnames + (((i__1 = nnode - 1) < 26003 && 0 <= 
 			i__1 ? i__1 : s_rnge("pnames", i__1, "pool_", (ftnlen)
-			2686)) << 5), (ftnlen)32);
-		errch_("#", pnames + (((i__1 = nnode - 1) < 5003 && 0 <= i__1 
-			? i__1 : s_rnge("pnames", i__1, "pool_", (ftnlen)2687)
-			) << 5), (ftnlen)1, r__);
+			2793)) << 5), (ftnlen)32);
+		errch_("#", pnames + (((i__1 = nnode - 1) < 26003 && 0 <= 
+			i__1 ? i__1 : s_rnge("pnames", i__1, "pool_", (ftnlen)
+			2794)) << 5), (ftnlen)1, r__);
 		sigerr_("SPICE(BUG)", (ftnlen)10);
 		chkout_("WRPOOL", (ftnlen)6);
 		return 0;
@@ -2611,12 +2765,12 @@ L100002:
 /*              Get the next data value and the address of the next node. */
 
 		if (dp) {
-		    dvalue = dpvals[(i__1 = dnode - 1) < 200000 && 0 <= i__1 ?
+		    dvalue = dpvals[(i__1 = dnode - 1) < 400000 && 0 <= i__1 ?
 			     i__1 : s_rnge("dpvals", i__1, "pool_", (ftnlen)
-			    2710)];
-		    dnode = dppool[(i__1 = (dnode << 1) + 10) < 400012 && 0 <=
+			    2817)];
+		    dnode = dppool[(i__1 = (dnode << 1) + 10) < 800012 && 0 <=
 			     i__1 ? i__1 : s_rnge("dppool", i__1, "pool_", (
-			    ftnlen)2711)];
+			    ftnlen)2818)];
 		} else {
 		    s_copy(cvalue, "'", (ftnlen)132, (ftnlen)1);
 		    j = 1;
@@ -2625,33 +2779,33 @@ L100002:
 /*                 For this reason we copy the letters one at a time */
 /*                 into the output holding area CVALUE. */
 
-		    i__2 = rtrim_(chvals + ((i__1 = dnode - 1) < 4000 && 0 <= 
-			    i__1 ? i__1 : s_rnge("chvals", i__1, "pool_", (
-			    ftnlen)2720)) * 80, (ftnlen)80);
+		    i__2 = rtrim_(chvals + ((i__1 = dnode - 1) < 15000 && 0 <=
+			     i__1 ? i__1 : s_rnge("chvals", i__1, "pool_", (
+			    ftnlen)2827)) * 80, (ftnlen)80);
 		    for (i__ = 1; i__ <= i__2; ++i__) {
 			++j;
 			*(unsigned char *)&cvalue[j - 1] = *(unsigned char *)&
-				chvals[((i__1 = dnode - 1) < 4000 && 0 <= 
+				chvals[((i__1 = dnode - 1) < 15000 && 0 <= 
 				i__1 ? i__1 : s_rnge("chvals", i__1, "pool_", 
-				(ftnlen)2722)) * 80 + (i__ - 1)];
+				(ftnlen)2829)) * 80 + (i__ - 1)];
 			code = *(unsigned char *)&chvals[((i__1 = dnode - 1) <
-				 4000 && 0 <= i__1 ? i__1 : s_rnge("chvals", 
-				i__1, "pool_", (ftnlen)2724)) * 80 + (i__ - 1)
+				 15000 && 0 <= i__1 ? i__1 : s_rnge("chvals", 
+				i__1, "pool_", (ftnlen)2831)) * 80 + (i__ - 1)
 				];
 			if (code == iquote) {
 			    ++j;
 			    *(unsigned char *)&cvalue[j - 1] = *(unsigned 
-				    char *)&chvals[((i__1 = dnode - 1) < 4000 
-				    && 0 <= i__1 ? i__1 : s_rnge("chvals", 
-				    i__1, "pool_", (ftnlen)2728)) * 80 + (i__ 
-				    - 1)];
+				    char *)&chvals[((i__1 = dnode - 1) < 
+				    15000 && 0 <= i__1 ? i__1 : s_rnge("chva"
+				    "ls", i__1, "pool_", (ftnlen)2835)) * 80 + 
+				    (i__ - 1)];
 			}
 		    }
 		    ++j;
 		    *(unsigned char *)&cvalue[j - 1] = '\'';
-		    dnode = chpool[(i__2 = (dnode << 1) + 10) < 8012 && 0 <= 
+		    dnode = chpool[(i__2 = (dnode << 1) + 10) < 30012 && 0 <= 
 			    i__2 ? i__2 : s_rnge("chpool", i__2, "pool_", (
-			    ftnlen)2734)];
+			    ftnlen)2841)];
 		}
 
 /*              We will need to properly finish off this write with */
@@ -2735,8 +2889,8 @@ L100004:
 
 /*           Get the next name for this node: */
 
-	    nnode = nmpool[(i__2 = (nnode << 1) + 10) < 10018 && 0 <= i__2 ? 
-		    i__2 : s_rnge("nmpool", i__2, "pool_", (ftnlen)2783)];
+	    nnode = nmpool[(i__2 = (nnode << 1) + 10) < 52018 && 0 <= i__2 ? 
+		    i__2 : s_rnge("nmpool", i__2, "pool_", (ftnlen)2890)];
 	}
 
 /*        Get the next node (if there is one). */
@@ -2990,8 +3144,13 @@ L_swpool:
 
 /*     N.J. Bachman    (JPL) */
 /*     W.L. Taber      (JPL) */
+/*     B.V. Semenov    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 8.2.0, 30-JUL-2013 (BVS) */
+
+/*        Updated to increment POOL state counter. */
 
 /* -    SPICELIB Version 8.1.0, 19-MAR-2009 (NJB) */
 
@@ -3093,10 +3252,20 @@ L_swpool:
 
 /*     Initialize the pool if necessary. */
 
-    zzpini_(&first, &c__5003, &c_b8, &c__4000, begdat, begtxt, nmpool, dppool,
-	     chpool, namlst, datlst, &c__1000, &c__50030, wtvars, wtptrs, 
-	    wtpool, wtagnt, agents, active, notify, (ftnlen)10, (ftnlen)10, (
-	    ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32);
+    if (first) {
+	zzpini_(&first, &c__26003, &c_b8, &c__15000, begdat, begtxt, nmpool, 
+		dppool, chpool, namlst, datlst, &c__1000, &c_b11, wtvars, 
+		wtptrs, wtpool, wtagnt, agents, active, notify, subctr, (
+		ftnlen)10, (ftnlen)10, (ftnlen)32, (ftnlen)32, (ftnlen)32, (
+		ftnlen)32, (ftnlen)32);
+    }
+
+/*     Increment POOL state counter. Although setting a watcher does not */
+/*     change the POOL we will increment the POOL state counter to make */
+/*     sure that the next call to CVPOOL with this watcher triggers the */
+/*     initial update. */
+
+    zzctrinc_(subctr);
 
 /*     Do all of the error checking we need to do BEFORE touching */
 /*     the watcher data structure. We don't want to end up with */
@@ -3226,8 +3395,8 @@ L_swpool:
 		i__1 = cardc_(wtvars, (ftnlen)32);
 		j = bsrchc_(names + (i__ - 1) * names_len, &i__1, wtvars + 
 			192, names_len, (ftnlen)32);
-		head = wtptrs[(i__1 = j - 1) < 5003 && 0 <= i__1 ? i__1 : 
-			s_rnge("wtptrs", i__1, "pool_", (ftnlen)3303)];
+		head = wtptrs[(i__1 = j - 1) < 26003 && 0 <= i__1 ? i__1 : 
+			s_rnge("wtptrs", i__1, "pool_", (ftnlen)3427)];
 
 /*              Allocate a free node in the watch pool; append this node */
 /*              to the tail of the agent list for the kernel variable; */
@@ -3239,8 +3408,8 @@ L_swpool:
 
 /*              Store the agent name at index NODE in the agent list. */
 
-		s_copy(wtagnt + (((i__1 = node - 1) < 50030 && 0 <= i__1 ? 
-			i__1 : s_rnge("wtagnt", i__1, "pool_", (ftnlen)3319)) 
+		s_copy(wtagnt + (((i__1 = node - 1) < 130015 && 0 <= i__1 ? 
+			i__1 : s_rnge("wtagnt", i__1, "pool_", (ftnlen)3443)) 
 			<< 5), agent, (ftnlen)32, agent_len);
 
 /*              The insertion is complete. We update AGENTS, which is */
@@ -3298,8 +3467,8 @@ L_swpool:
 
 /*           Store the agent name at index NODE in the agent list. */
 
-	    s_copy(wtagnt + (((i__1 = node - 1) < 50030 && 0 <= i__1 ? i__1 : 
-		    s_rnge("wtagnt", i__1, "pool_", (ftnlen)3381)) << 5), 
+	    s_copy(wtagnt + (((i__1 = node - 1) < 130015 && 0 <= i__1 ? i__1 :
+		     s_rnge("wtagnt", i__1, "pool_", (ftnlen)3505)) << 5), 
 		    agent, (ftnlen)32, agent_len);
 
 /*           The insertion is complete. We update AGENTS, which is the */
@@ -3320,9 +3489,8 @@ L_swpool:
 L_cvpool:
 /* $ Abstract */
 
-/*     Determine whether or not any of the variables that are to */
-/*     be watched and have AGENT on their distribution list have been */
-/*     updated. */
+/*     Indicate whether or not any watched kernel variables that have a */
+/*     specified agent on their notification list have been updated. */
 
 /* $ Disclaimer */
 
@@ -3365,7 +3533,7 @@ L_cvpool:
 
 /* $ Brief_I/O */
 
-/*     Variable  I/O  Description */
+/*     Variable  I/O  DESCRIPTION */
 /*     --------  ---  -------------------------------------------------- */
 /*     AGENT      I   Name of the agent to check for notices. */
 /*     UPDATE     O   .TRUE. if variables for AGENT have been updated. */
@@ -3380,9 +3548,15 @@ L_cvpool:
 
 /* $ Detailed_Output */
 
-/*     UPDATE    is a logical flag that will be set to true if the */
-/*               variables in the kernel pool that are required by */
+/*     UPDATE    is a logical flag that will be set to .TRUE. if the */
+/*               variables in the kernel pool that are associated with */
 /*               AGENT have been updated since the last call to CVPOOL. */
+
+/*               UPDATE will be set to .TRUE. on the first call made for */
+/*               the specified agent, whether or not the associated */
+/*               variables have been updated since the agent was placed */
+/*               on their notification list, as long as the agent is */
+/*               associated with any watched variables. */
 
 /* $ Parameters */
 
@@ -3412,8 +3586,8 @@ L_cvpool:
 /*     on the second call.  In other words, if you embed */
 /*     the following two lines of code in a piece of code */
 
-/*                  CALL CVPOOL ( AGENT, UPDATE ) */
-/*                  CALL CVPOOL ( AGENT, UPDATE ) */
+/*        CALL CVPOOL ( AGENT, UPDATE ) */
+/*        CALL CVPOOL ( AGENT, UPDATE ) */
 
 /*     and then test UPDATE, it will be FALSE.  The idea is */
 /*     that once a call to CVPOOL has been made, the */
@@ -3425,9 +3599,9 @@ L_cvpool:
 
 /*     If, on the other hand, you have code such as */
 
-/*                  CALL CVPOOL ( AGENT, UPDATE ) */
-/*                  CALL LDPOOL ( 'MYFILE.DAT'  ) */
-/*                  CALL CVPOOL ( AGENT, UPDATE ) */
+/*        CALL CVPOOL ( AGENT, UPDATE ) */
+/*        CALL LDPOOL ( 'MYFILE.DAT'  ) */
+/*        CALL CVPOOL ( AGENT, UPDATE ) */
 
 /*     the value of UPDATE will be true if one of the variables */
 /*     associated with AGENT was updated by the call to */
@@ -3440,8 +3614,8 @@ L_cvpool:
 /*     such as shown below, will always result in the value */
 /*     of UPDATE as being returned .TRUE. */
 
-/*                  CALL SWPOOL ( AGENT, NNAMES, NAMES  ) */
-/*                  CALL CVPOOL ( AGENT,         UPDATE ) */
+/*        CALL SWPOOL ( AGENT, NNAMES, NAMES  ) */
+/*        CALL CVPOOL ( AGENT,         UPDATE ) */
 
 /*     See the header for SWPOOL for a full discussion of this */
 /*     feature. */
@@ -3520,6 +3694,13 @@ L_cvpool:
 /*     W.L. Taber     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 8.1.1, 30-JUN-2014 (NJB) */
+
+/*        Description of the output variable UPDATE now */
+/*        mentions that the initial value of .TRUE. will */
+/*        be returned after an agent is associated with */
+/*        kernel variables. */
 
 /* -    SPICELIB Version 8.1.0, 19-MAR-2009 (NJB) */
 
@@ -3607,10 +3788,13 @@ L_cvpool:
 
 /*     Initialize the pool if necessary. */
 
-    zzpini_(&first, &c__5003, &c_b8, &c__4000, begdat, begtxt, nmpool, dppool,
-	     chpool, namlst, datlst, &c__1000, &c__50030, wtvars, wtptrs, 
-	    wtpool, wtagnt, agents, active, notify, (ftnlen)10, (ftnlen)10, (
-	    ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32);
+    if (first) {
+	zzpini_(&first, &c__26003, &c_b8, &c__15000, begdat, begtxt, nmpool, 
+		dppool, chpool, namlst, datlst, &c__1000, &c_b11, wtvars, 
+		wtptrs, wtpool, wtagnt, agents, active, notify, subctr, (
+		ftnlen)10, (ftnlen)10, (ftnlen)32, (ftnlen)32, (ftnlen)32, (
+		ftnlen)32, (ftnlen)32);
+    }
 
 /*     Check to see if our agent is on the list of agents to be */
 /*     notified.  If it is, we take this agent off the list---he's */
@@ -3885,10 +4069,13 @@ L_gcpool:
 
 /*     Initialize the pool if necessary. */
 
-    zzpini_(&first, &c__5003, &c_b8, &c__4000, begdat, begtxt, nmpool, dppool,
-	     chpool, namlst, datlst, &c__1000, &c__50030, wtvars, wtptrs, 
-	    wtpool, wtagnt, agents, active, notify, (ftnlen)10, (ftnlen)10, (
-	    ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32);
+    if (first) {
+	zzpini_(&first, &c__26003, &c_b8, &c__15000, begdat, begtxt, nmpool, 
+		dppool, chpool, namlst, datlst, &c__1000, &c_b11, wtvars, 
+		wtptrs, wtpool, wtagnt, agents, active, notify, subctr, (
+		ftnlen)10, (ftnlen)10, (ftnlen)32, (ftnlen)32, (ftnlen)32, (
+		ftnlen)32, (ftnlen)32);
+    }
 
 /*     Perform the one obvious error check first. */
 
@@ -3910,8 +4097,8 @@ L_gcpool:
 /*     input string NAME.  If so, NAMLST(LOOKAT) contains the head node */
 /*     of the conflict resolution list; this node is a positive value. */
 
-    if (namlst[(i__2 = lookat - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge("naml"
-	    "st", i__2, "pool_", (ftnlen)4045)] == 0) {
+    if (namlst[(i__2 = lookat - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge("nam"
+	    "lst", i__2, "pool_", (ftnlen)4189)] == 0) {
 	*found = FALSE_;
 	chkout_("GCPOOL", (ftnlen)6);
 	return 0;
@@ -3921,21 +4108,21 @@ L_gcpool:
 /*     a conflict resolution list.  See if the NAME corresponding */
 /*     to this node is the one we are looking for. */
 
-    node = namlst[(i__2 = lookat - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge(
-	    "namlst", i__2, "pool_", (ftnlen)4057)];
-    succes = s_cmp(name__, pnames + (((i__2 = node - 1) < 5003 && 0 <= i__2 ? 
-	    i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)4058)) << 5), 
+    node = namlst[(i__2 = lookat - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge(
+	    "namlst", i__2, "pool_", (ftnlen)4201)];
+    succes = s_cmp(name__, pnames + (((i__2 = node - 1) < 26003 && 0 <= i__2 ?
+	     i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)4202)) << 5), 
 	    name_len, (ftnlen)32) == 0;
     while(! succes) {
-	node = nmpool[(i__2 = (node << 1) + 10) < 10018 && 0 <= i__2 ? i__2 : 
-		s_rnge("nmpool", i__2, "pool_", (ftnlen)4062)];
+	node = nmpool[(i__2 = (node << 1) + 10) < 52018 && 0 <= i__2 ? i__2 : 
+		s_rnge("nmpool", i__2, "pool_", (ftnlen)4206)];
 	if (node < 0) {
 	    *found = FALSE_;
 	    chkout_("GCPOOL", (ftnlen)6);
 	    return 0;
 	}
-	succes = s_cmp(name__, pnames + (((i__2 = node - 1) < 5003 && 0 <= 
-		i__2 ? i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)4072)) 
+	succes = s_cmp(name__, pnames + (((i__2 = node - 1) < 26003 && 0 <= 
+		i__2 ? i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)4216)) 
 		<< 5), name_len, (ftnlen)32) == 0;
     }
 
@@ -3943,8 +4130,8 @@ L_gcpool:
 /*     list of names at PNAMES(NODE), ABS( DATLST(NODE) ) points to the */
 /*     head of a linked list of values for this NAME. */
 
-    datahd = datlst[(i__2 = node - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge(
-	    "datlst", i__2, "pool_", (ftnlen)4080)];
+    datahd = datlst[(i__2 = node - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge(
+	    "datlst", i__2, "pool_", (ftnlen)4224)];
     if (datahd > 0) {
 	*n = 0;
 	*found = FALSE_;
@@ -3970,15 +4157,15 @@ L_gcpool:
 	if (k >= begin) {
 	    ++(*n);
 	    s_copy(cvals + (*n - 1) * cvals_len, chvals + ((i__2 = node - 1) <
-		     4000 && 0 <= i__2 ? i__2 : s_rnge("chvals", i__2, "pool_"
-		    , (ftnlen)4116)) * 80, cvals_len, (ftnlen)80);
+		     15000 && 0 <= i__2 ? i__2 : s_rnge("chvals", i__2, "poo"
+		    "l_", (ftnlen)4260)) * 80, cvals_len, (ftnlen)80);
 	    if (*n == *room) {
 		chkout_("GCPOOL", (ftnlen)6);
 		return 0;
 	    }
 	}
-	node = chpool[(i__2 = (node << 1) + 10) < 8012 && 0 <= i__2 ? i__2 : 
-		s_rnge("chpool", i__2, "pool_", (ftnlen)4125)];
+	node = chpool[(i__2 = (node << 1) + 10) < 30012 && 0 <= i__2 ? i__2 : 
+		s_rnge("chpool", i__2, "pool_", (ftnlen)4269)];
     }
     chkout_("GCPOOL", (ftnlen)6);
     return 0;
@@ -4242,10 +4429,13 @@ L_gdpool:
 
 /*     Initialize the pool if necessary. */
 
-    zzpini_(&first, &c__5003, &c_b8, &c__4000, begdat, begtxt, nmpool, dppool,
-	     chpool, namlst, datlst, &c__1000, &c__50030, wtvars, wtptrs, 
-	    wtpool, wtagnt, agents, active, notify, (ftnlen)10, (ftnlen)10, (
-	    ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32);
+    if (first) {
+	zzpini_(&first, &c__26003, &c_b8, &c__15000, begdat, begtxt, nmpool, 
+		dppool, chpool, namlst, datlst, &c__1000, &c_b11, wtvars, 
+		wtptrs, wtpool, wtagnt, agents, active, notify, subctr, (
+		ftnlen)10, (ftnlen)10, (ftnlen)32, (ftnlen)32, (ftnlen)32, (
+		ftnlen)32, (ftnlen)32);
+    }
 
 /*     Perform the one obvious error check first. */
 
@@ -4267,8 +4457,8 @@ L_gdpool:
 /*     input string NAME.  If so, NAMLST(LOOKAT) contains the head node */
 /*     of the conflict resolution list; this node is a positive value. */
 
-    if (namlst[(i__2 = lookat - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge("naml"
-	    "st", i__2, "pool_", (ftnlen)4444)] == 0) {
+    if (namlst[(i__2 = lookat - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge("nam"
+	    "lst", i__2, "pool_", (ftnlen)4591)] == 0) {
 	*found = FALSE_;
 	chkout_("GDPOOL", (ftnlen)6);
 	return 0;
@@ -4278,21 +4468,21 @@ L_gdpool:
 /*     a conflict resolution list.  See if the NAME corresponding */
 /*     to this node is the one we are looking for. */
 
-    node = namlst[(i__2 = lookat - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge(
-	    "namlst", i__2, "pool_", (ftnlen)4456)];
-    succes = s_cmp(name__, pnames + (((i__2 = node - 1) < 5003 && 0 <= i__2 ? 
-	    i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)4457)) << 5), 
+    node = namlst[(i__2 = lookat - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge(
+	    "namlst", i__2, "pool_", (ftnlen)4603)];
+    succes = s_cmp(name__, pnames + (((i__2 = node - 1) < 26003 && 0 <= i__2 ?
+	     i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)4604)) << 5), 
 	    name_len, (ftnlen)32) == 0;
     while(! succes) {
-	node = nmpool[(i__2 = (node << 1) + 10) < 10018 && 0 <= i__2 ? i__2 : 
-		s_rnge("nmpool", i__2, "pool_", (ftnlen)4461)];
+	node = nmpool[(i__2 = (node << 1) + 10) < 52018 && 0 <= i__2 ? i__2 : 
+		s_rnge("nmpool", i__2, "pool_", (ftnlen)4608)];
 	if (node < 0) {
 	    *found = FALSE_;
 	    chkout_("GDPOOL", (ftnlen)6);
 	    return 0;
 	}
-	succes = s_cmp(name__, pnames + (((i__2 = node - 1) < 5003 && 0 <= 
-		i__2 ? i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)4471)) 
+	succes = s_cmp(name__, pnames + (((i__2 = node - 1) < 26003 && 0 <= 
+		i__2 ? i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)4618)) 
 		<< 5), name_len, (ftnlen)32) == 0;
     }
 
@@ -4300,8 +4490,8 @@ L_gdpool:
 /*     list of names at PNAMES(NODE), ABS( DATLST(NODE) ) points to the */
 /*     head of a linked list of values for this NAME. */
 
-    datahd = datlst[(i__2 = node - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge(
-	    "datlst", i__2, "pool_", (ftnlen)4479)];
+    datahd = datlst[(i__2 = node - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge(
+	    "datlst", i__2, "pool_", (ftnlen)4626)];
     if (datahd < 0) {
 	*n = 0;
 	*found = FALSE_;
@@ -4326,15 +4516,15 @@ L_gdpool:
 	++k;
 	if (k >= begin) {
 	    ++(*n);
-	    values[*n - 1] = dpvals[(i__2 = node - 1) < 200000 && 0 <= i__2 ? 
-		    i__2 : s_rnge("dpvals", i__2, "pool_", (ftnlen)4515)];
+	    values[*n - 1] = dpvals[(i__2 = node - 1) < 400000 && 0 <= i__2 ? 
+		    i__2 : s_rnge("dpvals", i__2, "pool_", (ftnlen)4662)];
 	    if (*n == *room) {
 		chkout_("GDPOOL", (ftnlen)6);
 		return 0;
 	    }
 	}
-	node = dppool[(i__2 = (node << 1) + 10) < 400012 && 0 <= i__2 ? i__2 :
-		 s_rnge("dppool", i__2, "pool_", (ftnlen)4524)];
+	node = dppool[(i__2 = (node << 1) + 10) < 800012 && 0 <= i__2 ? i__2 :
+		 s_rnge("dppool", i__2, "pool_", (ftnlen)4671)];
     }
     chkout_("GDPOOL", (ftnlen)6);
     return 0;
@@ -4428,9 +4618,11 @@ L_gipool:
 /*                If NAME is not in the pool with numeric type, no value */
 /*                is given to N. */
 
-/*     IVALS      is the array of values associated with NAME. */
-/*                If NAME is not in the pool with numeric type, no */
-/*                values are given to the elements of IVALS. */
+/*     IVALS      is the array of values associated with NAME. Any */
+/*                numeric value having non-zero fractional part is */
+/*                rounded to the closest integer. If NAME is not in the */
+/*                pool or does not have numeric type, no values are */
+/*                assigned to the elements of IVALS. */
 
 /*     FOUND      is TRUE if the variable is in the pool and has numeric */
 /*                type, FALSE if it is not. */
@@ -4538,6 +4730,11 @@ L_gipool:
 
 /* $ Version */
 
+/* -    SPICELIB Version 8.1.1, 14-JUL-2014 (NJB) */
+
+/*        Updated description of IVALS in Detailed_Output */
+/*        header section. */
+
 /* -    SPICELIB Version 8.1.0, 19-MAR-2009 (NJB) */
 
 /*        ZZPINI call was updated for compatibility */
@@ -4594,10 +4791,13 @@ L_gipool:
 
 /*     Initialize the pool if necessary. */
 
-    zzpini_(&first, &c__5003, &c_b8, &c__4000, begdat, begtxt, nmpool, dppool,
-	     chpool, namlst, datlst, &c__1000, &c__50030, wtvars, wtptrs, 
-	    wtpool, wtagnt, agents, active, notify, (ftnlen)10, (ftnlen)10, (
-	    ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32);
+    if (first) {
+	zzpini_(&first, &c__26003, &c_b8, &c__15000, begdat, begtxt, nmpool, 
+		dppool, chpool, namlst, datlst, &c__1000, &c_b11, wtvars, 
+		wtptrs, wtpool, wtagnt, agents, active, notify, subctr, (
+		ftnlen)10, (ftnlen)10, (ftnlen)32, (ftnlen)32, (ftnlen)32, (
+		ftnlen)32, (ftnlen)32);
+    }
 
 /*     Perform the one obvious error check first. */
 
@@ -4619,8 +4819,8 @@ L_gipool:
 /*     input string NAME.  If so, NAMLST(LOOKAT) contains the head node */
 /*     of the conflict resolution list; this node is a positive value. */
 
-    if (namlst[(i__2 = lookat - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge("naml"
-	    "st", i__2, "pool_", (ftnlen)4835)] == 0) {
+    if (namlst[(i__2 = lookat - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge("nam"
+	    "lst", i__2, "pool_", (ftnlen)4994)] == 0) {
 	*found = FALSE_;
 	chkout_("GIPOOL", (ftnlen)6);
 	return 0;
@@ -4630,21 +4830,21 @@ L_gipool:
 /*     a conflict resolution list.  See if the NAME corresponding */
 /*     to this node is the one we are looking for. */
 
-    node = namlst[(i__2 = lookat - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge(
-	    "namlst", i__2, "pool_", (ftnlen)4847)];
-    succes = s_cmp(name__, pnames + (((i__2 = node - 1) < 5003 && 0 <= i__2 ? 
-	    i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)4848)) << 5), 
+    node = namlst[(i__2 = lookat - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge(
+	    "namlst", i__2, "pool_", (ftnlen)5006)];
+    succes = s_cmp(name__, pnames + (((i__2 = node - 1) < 26003 && 0 <= i__2 ?
+	     i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)5007)) << 5), 
 	    name_len, (ftnlen)32) == 0;
     while(! succes) {
-	node = nmpool[(i__2 = (node << 1) + 10) < 10018 && 0 <= i__2 ? i__2 : 
-		s_rnge("nmpool", i__2, "pool_", (ftnlen)4852)];
+	node = nmpool[(i__2 = (node << 1) + 10) < 52018 && 0 <= i__2 ? i__2 : 
+		s_rnge("nmpool", i__2, "pool_", (ftnlen)5011)];
 	if (node < 0) {
 	    *found = FALSE_;
 	    chkout_("GIPOOL", (ftnlen)6);
 	    return 0;
 	}
-	succes = s_cmp(name__, pnames + (((i__2 = node - 1) < 5003 && 0 <= 
-		i__2 ? i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)4862)) 
+	succes = s_cmp(name__, pnames + (((i__2 = node - 1) < 26003 && 0 <= 
+		i__2 ? i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)5021)) 
 		<< 5), name_len, (ftnlen)32) == 0;
     }
 
@@ -4652,8 +4852,8 @@ L_gipool:
 /*     list of names at PNAMES(NODE), ABS( DATLST(NODE) ) points to the */
 /*     head of a linked list of values for this NAME. */
 
-    datahd = datlst[(i__2 = node - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge(
-	    "datlst", i__2, "pool_", (ftnlen)4870)];
+    datahd = datlst[(i__2 = node - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge(
+	    "datlst", i__2, "pool_", (ftnlen)5029)];
     if (datahd < 0) {
 	*n = 0;
 	*found = FALSE_;
@@ -4683,21 +4883,21 @@ L_gipool:
 	++k;
 	if (k >= begin) {
 	    ++(*n);
-	    if (dpvals[(i__2 = node - 1) < 200000 && 0 <= i__2 ? i__2 : 
-		    s_rnge("dpvals", i__2, "pool_", (ftnlen)4911)] >= small &&
-		     dpvals[(i__1 = node - 1) < 200000 && 0 <= i__1 ? i__1 : 
-		    s_rnge("dpvals", i__1, "pool_", (ftnlen)4911)] <= big) {
-		ivals[*n - 1] = i_dnnt(&dpvals[(i__2 = node - 1) < 200000 && 
+	    if (dpvals[(i__2 = node - 1) < 400000 && 0 <= i__2 ? i__2 : 
+		    s_rnge("dpvals", i__2, "pool_", (ftnlen)5070)] >= small &&
+		     dpvals[(i__1 = node - 1) < 400000 && 0 <= i__1 ? i__1 : 
+		    s_rnge("dpvals", i__1, "pool_", (ftnlen)5070)] <= big) {
+		ivals[*n - 1] = i_dnnt(&dpvals[(i__2 = node - 1) < 400000 && 
 			0 <= i__2 ? i__2 : s_rnge("dpvals", i__2, "pool_", (
-			ftnlen)4914)]);
+			ftnlen)5073)]);
 	    } else {
 		setmsg_("The value associated with index # of the kernel var"
 			"iable # is outside the range of integers. The value "
 			"stored was: # .", (ftnlen)118);
 		errint_("#", &k, (ftnlen)1);
 		errch_("#", name__, (ftnlen)1, rtrim_(name__, name_len));
-		errdp_("#", &dpvals[(i__2 = node - 1) < 200000 && 0 <= i__2 ? 
-			i__2 : s_rnge("dpvals", i__2, "pool_", (ftnlen)4926)],
+		errdp_("#", &dpvals[(i__2 = node - 1) < 400000 && 0 <= i__2 ? 
+			i__2 : s_rnge("dpvals", i__2, "pool_", (ftnlen)5085)],
 			 (ftnlen)1);
 		sigerr_("SPICE(INTOUTOFRANGE)", (ftnlen)20);
 		chkout_("GIPOOL", (ftnlen)6);
@@ -4708,8 +4908,8 @@ L_gipool:
 		return 0;
 	    }
 	}
-	node = dppool[(i__2 = (node << 1) + 10) < 400012 && 0 <= i__2 ? i__2 :
-		 s_rnge("dppool", i__2, "pool_", (ftnlen)4940)];
+	node = dppool[(i__2 = (node << 1) + 10) < 800012 && 0 <= i__2 ? i__2 :
+		 s_rnge("dppool", i__2, "pool_", (ftnlen)5099)];
     }
     chkout_("GIPOOL", (ftnlen)6);
     return 0;
@@ -4912,10 +5112,13 @@ L_dtpool:
 
 /*     Initialize the pool if necessary. */
 
-    zzpini_(&first, &c__5003, &c_b8, &c__4000, begdat, begtxt, nmpool, dppool,
-	     chpool, namlst, datlst, &c__1000, &c__50030, wtvars, wtptrs, 
-	    wtpool, wtagnt, agents, active, notify, (ftnlen)10, (ftnlen)10, (
-	    ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32);
+    if (first) {
+	zzpini_(&first, &c__26003, &c_b8, &c__15000, begdat, begtxt, nmpool, 
+		dppool, chpool, namlst, datlst, &c__1000, &c_b11, wtvars, 
+		wtptrs, wtpool, wtagnt, agents, active, notify, subctr, (
+		ftnlen)10, (ftnlen)10, (ftnlen)32, (ftnlen)32, (ftnlen)32, (
+		ftnlen)32, (ftnlen)32);
+    }
 
 /*     Until we find otherwise, we shall assume there is no data */
 /*     for this variable. */
@@ -4932,8 +5135,8 @@ L_dtpool:
 /*     input string NAME.  If so, NAMLST(LOOKAT) contains the head node */
 /*     of the conflict resolution list; this node is a positive value. */
 
-    if (namlst[(i__2 = lookat - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge("naml"
-	    "st", i__2, "pool_", (ftnlen)5180)] == 0) {
+    if (namlst[(i__2 = lookat - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge("nam"
+	    "lst", i__2, "pool_", (ftnlen)5345)] == 0) {
 	chkout_("DTPOOL", (ftnlen)6);
 	return 0;
     }
@@ -4942,20 +5145,20 @@ L_dtpool:
 /*     a conflict resolution list.  See if the NAME corresponding */
 /*     to this node is the one we are looking for. */
 
-    node = namlst[(i__2 = lookat - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge(
-	    "namlst", i__2, "pool_", (ftnlen)5191)];
-    succes = s_cmp(name__, pnames + (((i__2 = node - 1) < 5003 && 0 <= i__2 ? 
-	    i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)5192)) << 5), 
+    node = namlst[(i__2 = lookat - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge(
+	    "namlst", i__2, "pool_", (ftnlen)5356)];
+    succes = s_cmp(name__, pnames + (((i__2 = node - 1) < 26003 && 0 <= i__2 ?
+	     i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)5357)) << 5), 
 	    name_len, (ftnlen)32) == 0;
     while(! succes) {
-	node = nmpool[(i__2 = (node << 1) + 10) < 10018 && 0 <= i__2 ? i__2 : 
-		s_rnge("nmpool", i__2, "pool_", (ftnlen)5196)];
+	node = nmpool[(i__2 = (node << 1) + 10) < 52018 && 0 <= i__2 ? i__2 : 
+		s_rnge("nmpool", i__2, "pool_", (ftnlen)5361)];
 	if (node < 0) {
 	    chkout_("DTPOOL", (ftnlen)6);
 	    return 0;
 	}
-	succes = s_cmp(name__, pnames + (((i__2 = node - 1) < 5003 && 0 <= 
-		i__2 ? i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)5205)) 
+	succes = s_cmp(name__, pnames + (((i__2 = node - 1) < 26003 && 0 <= 
+		i__2 ? i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)5370)) 
 		<< 5), name_len, (ftnlen)32) == 0;
     }
 
@@ -4963,16 +5166,16 @@ L_dtpool:
 /*     list of names at PNAMES(NODE), ABS( DATLST(NODE) ) points to the */
 /*     head of a linked list of values for this NAME. */
 
-    datahd = datlst[(i__2 = node - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge(
-	    "datlst", i__2, "pool_", (ftnlen)5214)];
+    datahd = datlst[(i__2 = node - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge(
+	    "datlst", i__2, "pool_", (ftnlen)5379)];
     if (datahd < 0) {
 	s_copy(type__, "C", type_len, (ftnlen)1);
 	*found = TRUE_;
 	node = -datahd;
 	while(node > 0) {
 	    ++(*n);
-	    node = chpool[(i__2 = (node << 1) + 10) < 8012 && 0 <= i__2 ? 
-		    i__2 : s_rnge("chpool", i__2, "pool_", (ftnlen)5224)];
+	    node = chpool[(i__2 = (node << 1) + 10) < 30012 && 0 <= i__2 ? 
+		    i__2 : s_rnge("chpool", i__2, "pool_", (ftnlen)5389)];
 	}
     } else if (datahd > 0) {
 	s_copy(type__, "N", type_len, (ftnlen)1);
@@ -4980,8 +5183,8 @@ L_dtpool:
 	node = datahd;
 	while(node > 0) {
 	    ++(*n);
-	    node = dppool[(i__2 = (node << 1) + 10) < 400012 && 0 <= i__2 ? 
-		    i__2 : s_rnge("dppool", i__2, "pool_", (ftnlen)5235)];
+	    node = dppool[(i__2 = (node << 1) + 10) < 800012 && 0 <= i__2 ? 
+		    i__2 : s_rnge("dppool", i__2, "pool_", (ftnlen)5400)];
 	}
     } else if (datahd == 0) {
 	setmsg_("This is never supposed to happen.  The requested name, '#',"
@@ -5214,8 +5417,14 @@ L_pcpool:
 
 /*     N.J. Bachman    (JPL) */
 /*     W.L. Taber      (JPL) */
+/*     B.V. Semenov    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 9.1.0, 17-JAN-2014 (BVS) (NJB) */
+
+/*        Updated to increment POOL state counter. */
+/*        Updated Index_Entries section. */
 
 /* -    SPICELIB Version 9.0.0, 24-MAY-2010 (EDW) */
 
@@ -5250,7 +5459,7 @@ L_pcpool:
 /* -& */
 /* $ Index_Entries */
 
-/*     Set the value of a character kernel pool variable */
+/*     Set the value of a character_variable in the kernel_pool */
 
 /* -& */
 
@@ -5279,10 +5488,20 @@ L_pcpool:
 	chkout_("PCPOOL", (ftnlen)6);
 	return 0;
     }
-    zzpini_(&first, &c__5003, &c_b8, &c__4000, begdat, begtxt, nmpool, dppool,
-	     chpool, namlst, datlst, &c__1000, &c__50030, wtvars, wtptrs, 
-	    wtpool, wtagnt, agents, active, notify, (ftnlen)10, (ftnlen)10, (
-	    ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32);
+
+/*     Initialize the pool if necessary. */
+
+    if (first) {
+	zzpini_(&first, &c__26003, &c_b8, &c__15000, begdat, begtxt, nmpool, 
+		dppool, chpool, namlst, datlst, &c__1000, &c_b11, wtvars, 
+		wtptrs, wtpool, wtagnt, agents, active, notify, subctr, (
+		ftnlen)10, (ftnlen)10, (ftnlen)32, (ftnlen)32, (ftnlen)32, (
+		ftnlen)32, (ftnlen)32);
+    }
+
+/*     Increment POOL state counter. */
+
+    zzctrinc_(subctr);
 
 /*     Find out where the name for this item is located */
 /*     in the data tables. */
@@ -5306,8 +5525,8 @@ L_pcpool:
 /*        We need to take this into account when determining */
 /*        the amount of free room in the pool. */
 
-	datahd = datlst[(i__2 = nameat - 1) < 5003 && 0 <= i__2 ? i__2 : 
-		s_rnge("datlst", i__2, "pool_", (ftnlen)5594)];
+	datahd = datlst[(i__2 = nameat - 1) < 26003 && 0 <= i__2 ? i__2 : 
+		s_rnge("datlst", i__2, "pool_", (ftnlen)5777)];
 	if (datahd > 0) {
 
 /*           No extra strings will be freed.  We have whatever */
@@ -5322,8 +5541,9 @@ L_pcpool:
 	    node = -datahd;
 	    while(node > 0) {
 		++tofree;
-		node = chpool[(i__2 = (node << 1) + 10) < 8012 && 0 <= i__2 ? 
-			i__2 : s_rnge("chpool", i__2, "pool_", (ftnlen)5611)];
+		node = chpool[(i__2 = (node << 1) + 10) < 30012 && 0 <= i__2 ?
+			 i__2 : s_rnge("chpool", i__2, "pool_", (ftnlen)5794)]
+			;
 	    }
 
 /*           Add the number we will free to the amount currently */
@@ -5367,10 +5587,10 @@ L_pcpool:
 /*        variable.  But first make sure there will be room */
 /*        to add data. */
 
-	datahd = datlst[(i__2 = nameat - 1) < 5003 && 0 <= i__2 ? i__2 : 
-		s_rnge("datlst", i__2, "pool_", (ftnlen)5667)];
-	datlst[(i__2 = nameat - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge("datl"
-		"st", i__2, "pool_", (ftnlen)5668)] = 0;
+	datahd = datlst[(i__2 = nameat - 1) < 26003 && 0 <= i__2 ? i__2 : 
+		s_rnge("datlst", i__2, "pool_", (ftnlen)5850)];
+	datlst[(i__2 = nameat - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge("dat"
+		"lst", i__2, "pool_", (ftnlen)5851)] = 0;
 	if (datahd > 0) {
 
 /*           This variable was character type we need to */
@@ -5378,8 +5598,8 @@ L_pcpool:
 /*           pool. */
 
 	    head = datahd;
-	    tail = -dppool[(i__2 = (head << 1) + 11) < 400012 && 0 <= i__2 ? 
-		    i__2 : s_rnge("dppool", i__2, "pool_", (ftnlen)5678)];
+	    tail = -dppool[(i__2 = (head << 1) + 11) < 800012 && 0 <= i__2 ? 
+		    i__2 : s_rnge("dppool", i__2, "pool_", (ftnlen)5861)];
 	    lnkfsl_(&head, &tail, dppool);
 	} else {
 
@@ -5387,8 +5607,8 @@ L_pcpool:
 /*           free a linked list from the numeric pool. */
 
 	    head = -datahd;
-	    tail = -chpool[(i__2 = (head << 1) + 11) < 8012 && 0 <= i__2 ? 
-		    i__2 : s_rnge("chpool", i__2, "pool_", (ftnlen)5689)];
+	    tail = -chpool[(i__2 = (head << 1) + 11) < 30012 && 0 <= i__2 ? 
+		    i__2 : s_rnge("chpool", i__2, "pool_", (ftnlen)5872)];
 	    lnkfsl_(&head, &tail, chpool);
 	}
     }
@@ -5414,22 +5634,22 @@ L_pcpool:
 /*        Allocate a node for storing this string value: */
 
 	lnkan_(chpool, &chnode);
-	if (datlst[(i__1 = nameat - 1) < 5003 && 0 <= i__1 ? i__1 : s_rnge(
-		"datlst", i__1, "pool_", (ftnlen)5724)] == 0) {
+	if (datlst[(i__1 = nameat - 1) < 26003 && 0 <= i__1 ? i__1 : s_rnge(
+		"datlst", i__1, "pool_", (ftnlen)5907)] == 0) {
 
 /*           There was no data for this name yet.  We make */
 /*           CHNODE be the head of the data list for this name. */
 
-	    datlst[(i__1 = nameat - 1) < 5003 && 0 <= i__1 ? i__1 : s_rnge(
-		    "datlst", i__1, "pool_", (ftnlen)5730)] = -chnode;
+	    datlst[(i__1 = nameat - 1) < 26003 && 0 <= i__1 ? i__1 : s_rnge(
+		    "datlst", i__1, "pool_", (ftnlen)5913)] = -chnode;
 	} else {
 
 /*           Put this node after the tail of the current list. */
 
-	    head = -datlst[(i__1 = nameat - 1) < 5003 && 0 <= i__1 ? i__1 : 
-		    s_rnge("datlst", i__1, "pool_", (ftnlen)5737)];
-	    tail = -chpool[(i__1 = (head << 1) + 11) < 8012 && 0 <= i__1 ? 
-		    i__1 : s_rnge("chpool", i__1, "pool_", (ftnlen)5738)];
+	    head = -datlst[(i__1 = nameat - 1) < 26003 && 0 <= i__1 ? i__1 : 
+		    s_rnge("datlst", i__1, "pool_", (ftnlen)5920)];
+	    tail = -chpool[(i__1 = (head << 1) + 11) < 30012 && 0 <= i__1 ? 
+		    i__1 : s_rnge("chpool", i__1, "pool_", (ftnlen)5921)];
 	    lnkila_(&tail, &chnode, chpool);
 	}
 
@@ -5437,8 +5657,8 @@ L_pcpool:
 /*        at CHNODE.  Note any quotes will be doubled so we */
 /*        have to undo this affect when we store the data. */
 
-	s_copy(chvals + ((i__1 = chnode - 1) < 4000 && 0 <= i__1 ? i__1 : 
-		s_rnge("chvals", i__1, "pool_", (ftnlen)5749)) * 80, cvals + (
+	s_copy(chvals + ((i__1 = chnode - 1) < 15000 && 0 <= i__1 ? i__1 : 
+		s_rnge("chvals", i__1, "pool_", (ftnlen)5932)) * 80, cvals + (
 		i__ - 1) * cvals_len, (ftnlen)80, cvals_len);
 
 /*        That's all for this value. It's now time to loop */
@@ -5679,8 +5899,14 @@ L_pdpool:
 
 /*     N.J. Bachman    (JPL) */
 /*     W.L. Taber      (JPL) */
+/*     B.V. Semenov    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 9.1.0, 17-JAN-2014 (BVS) (NJB) */
+
+/*        Updated to increment POOL state counter. */
+/*        Updated Index_Entries section. */
 
 /* -    SPICELIB Version 9.0.0, 24-MAY-2010 (EDW) */
 
@@ -5715,7 +5941,7 @@ L_pdpool:
 /* -& */
 /* $ Index_Entries */
 
-/*     Set the value of a d.p. kernel pool variable */
+/*     Set the value of a d.p._variable in the kernel_pool */
 
 /* -& */
 
@@ -5744,10 +5970,20 @@ L_pdpool:
 	chkout_("PDPOOL", (ftnlen)6);
 	return 0;
     }
-    zzpini_(&first, &c__5003, &c_b8, &c__4000, begdat, begtxt, nmpool, dppool,
-	     chpool, namlst, datlst, &c__1000, &c__50030, wtvars, wtptrs, 
-	    wtpool, wtagnt, agents, active, notify, (ftnlen)10, (ftnlen)10, (
-	    ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32);
+
+/*     Initialize the pool if necessary. */
+
+    if (first) {
+	zzpini_(&first, &c__26003, &c_b8, &c__15000, begdat, begtxt, nmpool, 
+		dppool, chpool, namlst, datlst, &c__1000, &c_b11, wtvars, 
+		wtptrs, wtpool, wtagnt, agents, active, notify, subctr, (
+		ftnlen)10, (ftnlen)10, (ftnlen)32, (ftnlen)32, (ftnlen)32, (
+		ftnlen)32, (ftnlen)32);
+    }
+
+/*     Increment POOL state counter. */
+
+    zzctrinc_(subctr);
 
 /*     Find out where the name for this item is located */
 /*     in the data tables. */
@@ -5771,8 +6007,8 @@ L_pdpool:
 /*        We need to take this into account when determining */
 /*        the amount of free room in the pool. */
 
-	datahd = datlst[(i__2 = nameat - 1) < 5003 && 0 <= i__2 ? i__2 : 
-		s_rnge("datlst", i__2, "pool_", (ftnlen)6113)];
+	datahd = datlst[(i__2 = nameat - 1) < 26003 && 0 <= i__2 ? i__2 : 
+		s_rnge("datlst", i__2, "pool_", (ftnlen)6314)];
 	if (datahd < 0) {
 
 /*           No extra d.p.s will be freed.  We have whatever */
@@ -5787,8 +6023,8 @@ L_pdpool:
 	    node = datahd;
 	    while(node > 0) {
 		++tofree;
-		node = dppool[(i__2 = (node << 1) + 10) < 400012 && 0 <= i__2 
-			? i__2 : s_rnge("dppool", i__2, "pool_", (ftnlen)6130)
+		node = dppool[(i__2 = (node << 1) + 10) < 800012 && 0 <= i__2 
+			? i__2 : s_rnge("dppool", i__2, "pool_", (ftnlen)6331)
 			];
 	    }
 
@@ -5833,10 +6069,10 @@ L_pdpool:
 /*        variable.  But first make sure there will be room */
 /*        to add data. */
 
-	datahd = datlst[(i__2 = nameat - 1) < 5003 && 0 <= i__2 ? i__2 : 
-		s_rnge("datlst", i__2, "pool_", (ftnlen)6186)];
-	datlst[(i__2 = nameat - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge("datl"
-		"st", i__2, "pool_", (ftnlen)6187)] = 0;
+	datahd = datlst[(i__2 = nameat - 1) < 26003 && 0 <= i__2 ? i__2 : 
+		s_rnge("datlst", i__2, "pool_", (ftnlen)6387)];
+	datlst[(i__2 = nameat - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge("dat"
+		"lst", i__2, "pool_", (ftnlen)6388)] = 0;
 	if (datahd < 0) {
 
 /*           This variable was character type we need to */
@@ -5844,8 +6080,8 @@ L_pdpool:
 /*           pool. */
 
 	    head = -datahd;
-	    tail = -chpool[(i__2 = (head << 1) + 11) < 8012 && 0 <= i__2 ? 
-		    i__2 : s_rnge("chpool", i__2, "pool_", (ftnlen)6197)];
+	    tail = -chpool[(i__2 = (head << 1) + 11) < 30012 && 0 <= i__2 ? 
+		    i__2 : s_rnge("chpool", i__2, "pool_", (ftnlen)6398)];
 	    lnkfsl_(&head, &tail, chpool);
 	} else {
 
@@ -5853,8 +6089,8 @@ L_pdpool:
 /*           free a linked list from the numeric pool. */
 
 	    head = datahd;
-	    tail = -dppool[(i__2 = (head << 1) + 11) < 400012 && 0 <= i__2 ? 
-		    i__2 : s_rnge("dppool", i__2, "pool_", (ftnlen)6208)];
+	    tail = -dppool[(i__2 = (head << 1) + 11) < 800012 && 0 <= i__2 ? 
+		    i__2 : s_rnge("dppool", i__2, "pool_", (ftnlen)6409)];
 	    lnkfsl_(&head, &tail, dppool);
 	}
     }
@@ -5885,29 +6121,29 @@ L_pdpool:
 /*        Allocate a node for storing this numeric value: */
 
 	lnkan_(dppool, &dpnode);
-	if (datlst[(i__1 = nameat - 1) < 5003 && 0 <= i__1 ? i__1 : s_rnge(
-		"datlst", i__1, "pool_", (ftnlen)6249)] == 0) {
+	if (datlst[(i__1 = nameat - 1) < 26003 && 0 <= i__1 ? i__1 : s_rnge(
+		"datlst", i__1, "pool_", (ftnlen)6450)] == 0) {
 
 /*           There was no data for this name yet.  We make */
 /*           DPNODE be the head of the data list for this name. */
 
-	    datlst[(i__1 = nameat - 1) < 5003 && 0 <= i__1 ? i__1 : s_rnge(
-		    "datlst", i__1, "pool_", (ftnlen)6255)] = dpnode;
+	    datlst[(i__1 = nameat - 1) < 26003 && 0 <= i__1 ? i__1 : s_rnge(
+		    "datlst", i__1, "pool_", (ftnlen)6456)] = dpnode;
 	} else {
 
 /*           Put this node after the tail of the current list. */
 
-	    head = datlst[(i__1 = nameat - 1) < 5003 && 0 <= i__1 ? i__1 : 
-		    s_rnge("datlst", i__1, "pool_", (ftnlen)6262)];
-	    tail = -dppool[(i__1 = (head << 1) + 11) < 400012 && 0 <= i__1 ? 
-		    i__1 : s_rnge("dppool", i__1, "pool_", (ftnlen)6263)];
+	    head = datlst[(i__1 = nameat - 1) < 26003 && 0 <= i__1 ? i__1 : 
+		    s_rnge("datlst", i__1, "pool_", (ftnlen)6463)];
+	    tail = -dppool[(i__1 = (head << 1) + 11) < 800012 && 0 <= i__1 ? 
+		    i__1 : s_rnge("dppool", i__1, "pool_", (ftnlen)6464)];
 	    lnkila_(&tail, &dpnode, dppool);
 	}
 
 /*        Finally insert this data item into the numeric buffer. */
 
-	dpvals[(i__1 = dpnode - 1) < 200000 && 0 <= i__1 ? i__1 : s_rnge(
-		"dpvals", i__1, "pool_", (ftnlen)6272)] = values[i__ - 1];
+	dpvals[(i__1 = dpnode - 1) < 400000 && 0 <= i__1 ? i__1 : s_rnge(
+		"dpvals", i__1, "pool_", (ftnlen)6473)] = values[i__ - 1];
     }
 
 /*     One last thing, see if this variable is being watched, */
@@ -6142,8 +6378,14 @@ L_pipool:
 
 /*     N.J. Bachman    (JPL) */
 /*     W.L. Taber      (JPL) */
+/*     B.V. Semenov    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 9.1.0, 17-JAN-2014 (BVS) (NJB) */
+
+/*        Updated to increment POOL state counter. */
+/*        Updated Index_Entries section. */
 
 /* -    SPICELIB Version 9.0.0, 24-MAY-2010 (EDW) */
 
@@ -6178,7 +6420,7 @@ L_pipool:
 /* -& */
 /* $ Index_Entries */
 
-/*     Set the value of a numeric kernel pool variable */
+/*     Set the value of an integer_variable in the kernel_pool */
 
 /* -& */
 
@@ -6207,10 +6449,20 @@ L_pipool:
 	chkout_("PIPOOL", (ftnlen)6);
 	return 0;
     }
-    zzpini_(&first, &c__5003, &c_b8, &c__4000, begdat, begtxt, nmpool, dppool,
-	     chpool, namlst, datlst, &c__1000, &c__50030, wtvars, wtptrs, 
-	    wtpool, wtagnt, agents, active, notify, (ftnlen)10, (ftnlen)10, (
-	    ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32);
+
+/*     Initialize the pool if necessary. */
+
+    if (first) {
+	zzpini_(&first, &c__26003, &c_b8, &c__15000, begdat, begtxt, nmpool, 
+		dppool, chpool, namlst, datlst, &c__1000, &c_b11, wtvars, 
+		wtptrs, wtpool, wtagnt, agents, active, notify, subctr, (
+		ftnlen)10, (ftnlen)10, (ftnlen)32, (ftnlen)32, (ftnlen)32, (
+		ftnlen)32, (ftnlen)32);
+    }
+
+/*     Increment POOL state counter. */
+
+    zzctrinc_(subctr);
 
 /*     Find out where the name for this item is located */
 /*     in the data tables. */
@@ -6234,8 +6486,8 @@ L_pipool:
 /*        We need to take this into account when determining */
 /*        the amount of free room in the pool. */
 
-	datahd = datlst[(i__2 = nameat - 1) < 5003 && 0 <= i__2 ? i__2 : 
-		s_rnge("datlst", i__2, "pool_", (ftnlen)6631)];
+	datahd = datlst[(i__2 = nameat - 1) < 26003 && 0 <= i__2 ? i__2 : 
+		s_rnge("datlst", i__2, "pool_", (ftnlen)6850)];
 	if (datahd < 0) {
 
 /*           No extra d.p.s will be freed.  We have whatever */
@@ -6250,8 +6502,8 @@ L_pipool:
 	    node = datahd;
 	    while(node > 0) {
 		++tofree;
-		node = dppool[(i__2 = (node << 1) + 10) < 400012 && 0 <= i__2 
-			? i__2 : s_rnge("dppool", i__2, "pool_", (ftnlen)6648)
+		node = dppool[(i__2 = (node << 1) + 10) < 800012 && 0 <= i__2 
+			? i__2 : s_rnge("dppool", i__2, "pool_", (ftnlen)6867)
 			];
 	    }
 
@@ -6296,10 +6548,10 @@ L_pipool:
 /*        variable.  But first make sure there will be room */
 /*        to add data. */
 
-	datahd = datlst[(i__2 = nameat - 1) < 5003 && 0 <= i__2 ? i__2 : 
-		s_rnge("datlst", i__2, "pool_", (ftnlen)6703)];
-	datlst[(i__2 = nameat - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge("datl"
-		"st", i__2, "pool_", (ftnlen)6704)] = 0;
+	datahd = datlst[(i__2 = nameat - 1) < 26003 && 0 <= i__2 ? i__2 : 
+		s_rnge("datlst", i__2, "pool_", (ftnlen)6922)];
+	datlst[(i__2 = nameat - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge("dat"
+		"lst", i__2, "pool_", (ftnlen)6923)] = 0;
 	if (datahd < 0) {
 
 /*           This variable was character type we need to */
@@ -6307,8 +6559,8 @@ L_pipool:
 /*           pool. */
 
 	    head = -datahd;
-	    tail = -chpool[(i__2 = (head << 1) + 11) < 8012 && 0 <= i__2 ? 
-		    i__2 : s_rnge("chpool", i__2, "pool_", (ftnlen)6714)];
+	    tail = -chpool[(i__2 = (head << 1) + 11) < 30012 && 0 <= i__2 ? 
+		    i__2 : s_rnge("chpool", i__2, "pool_", (ftnlen)6933)];
 	    lnkfsl_(&head, &tail, chpool);
 	} else {
 
@@ -6316,8 +6568,8 @@ L_pipool:
 /*           free a linked list from the numeric pool. */
 
 	    head = datahd;
-	    tail = -dppool[(i__2 = (head << 1) + 11) < 400012 && 0 <= i__2 ? 
-		    i__2 : s_rnge("dppool", i__2, "pool_", (ftnlen)6725)];
+	    tail = -dppool[(i__2 = (head << 1) + 11) < 800012 && 0 <= i__2 ? 
+		    i__2 : s_rnge("dppool", i__2, "pool_", (ftnlen)6944)];
 	    lnkfsl_(&head, &tail, dppool);
 	}
     }
@@ -6348,29 +6600,29 @@ L_pipool:
 /*        Allocate a node for storing this numeric value: */
 
 	lnkan_(dppool, &dpnode);
-	if (datlst[(i__1 = nameat - 1) < 5003 && 0 <= i__1 ? i__1 : s_rnge(
-		"datlst", i__1, "pool_", (ftnlen)6766)] == 0) {
+	if (datlst[(i__1 = nameat - 1) < 26003 && 0 <= i__1 ? i__1 : s_rnge(
+		"datlst", i__1, "pool_", (ftnlen)6985)] == 0) {
 
 /*           There was no data for this name yet.  We make */
 /*           DPNODE be the head of the data list for this name. */
 
-	    datlst[(i__1 = nameat - 1) < 5003 && 0 <= i__1 ? i__1 : s_rnge(
-		    "datlst", i__1, "pool_", (ftnlen)6772)] = dpnode;
+	    datlst[(i__1 = nameat - 1) < 26003 && 0 <= i__1 ? i__1 : s_rnge(
+		    "datlst", i__1, "pool_", (ftnlen)6991)] = dpnode;
 	} else {
 
 /*           Put this node after the tail of the current list. */
 
-	    head = datlst[(i__1 = nameat - 1) < 5003 && 0 <= i__1 ? i__1 : 
-		    s_rnge("datlst", i__1, "pool_", (ftnlen)6779)];
-	    tail = -dppool[(i__1 = (head << 1) + 11) < 400012 && 0 <= i__1 ? 
-		    i__1 : s_rnge("dppool", i__1, "pool_", (ftnlen)6780)];
+	    head = datlst[(i__1 = nameat - 1) < 26003 && 0 <= i__1 ? i__1 : 
+		    s_rnge("datlst", i__1, "pool_", (ftnlen)6998)];
+	    tail = -dppool[(i__1 = (head << 1) + 11) < 800012 && 0 <= i__1 ? 
+		    i__1 : s_rnge("dppool", i__1, "pool_", (ftnlen)6999)];
 	    lnkila_(&tail, &dpnode, dppool);
 	}
 
 /*        Finally insert this data item into the numeric buffer. */
 
-	dpvals[(i__1 = dpnode - 1) < 200000 && 0 <= i__1 ? i__1 : s_rnge(
-		"dpvals", i__1, "pool_", (ftnlen)6789)] = (doublereal) ivals[
+	dpvals[(i__1 = dpnode - 1) < 400000 && 0 <= i__1 ? i__1 : s_rnge(
+		"dpvals", i__1, "pool_", (ftnlen)7008)] = (doublereal) ivals[
 		i__ - 1];
     }
 
@@ -6535,8 +6787,13 @@ L_lmpool:
 /*     R.E. Thurman    (JPL) */
 /*     I.M. Underwood  (JPL) */
 /*     W.L. Taber      (JPL) */
+/*     B.V. Semenov    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 8.3.0, 30-JUL-2013 (BVS) */
+
+/*        Updated to increment POOL state counter. */
 
 /* -    SPICELIB Version 8.2.0, 10-FEB-2010 (EDW) */
 
@@ -6584,10 +6841,17 @@ L_lmpool:
 
 /*     Initialize the pool if necessary. */
 
-    zzpini_(&first, &c__5003, &c_b8, &c__4000, begdat, begtxt, nmpool, dppool,
-	     chpool, namlst, datlst, &c__1000, &c__50030, wtvars, wtptrs, 
-	    wtpool, wtagnt, agents, active, notify, (ftnlen)10, (ftnlen)10, (
-	    ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32);
+    if (first) {
+	zzpini_(&first, &c__26003, &c_b8, &c__15000, begdat, begtxt, nmpool, 
+		dppool, chpool, namlst, datlst, &c__1000, &c_b11, wtvars, 
+		wtptrs, wtpool, wtagnt, agents, active, notify, subctr, (
+		ftnlen)10, (ftnlen)10, (ftnlen)32, (ftnlen)32, (ftnlen)32, (
+		ftnlen)32, (ftnlen)32);
+    }
+
+/*     Increment POOL state counter. */
+
+    zzctrinc_(subctr);
 
 /*     Read from the internal SPICE pool buffer */
 
@@ -6779,15 +7043,15 @@ L_szpool:
     chkin_("SZPOOL", (ftnlen)6);
     *found = TRUE_;
     if (eqstr_(name__, "MAXVAR", name_len, (ftnlen)6)) {
-	*n = 5003;
+	*n = 26003;
     } else if (eqstr_(name__, "MAXVAL", name_len, (ftnlen)6)) {
-	*n = 200000;
+	*n = 400000;
     } else if (eqstr_(name__, "MAXLIN", name_len, (ftnlen)6)) {
-	*n = 4000;
+	*n = 15000;
     } else if (eqstr_(name__, "MAXCHR", name_len, (ftnlen)6)) {
 	*n = 80;
     } else if (eqstr_(name__, "MXNOTE", name_len, (ftnlen)6)) {
-	*n = 50030;
+	*n = 130015;
     } else if (eqstr_(name__, "MAXLEN", name_len, (ftnlen)6)) {
 	*n = 32;
     } else if (eqstr_(name__, "MAXAGT", name_len, (ftnlen)6)) {
@@ -6904,8 +7168,13 @@ L_dvpool:
 
 /*     N.J. Bachman  (JPL) */
 /*     W.L. Taber    (JPL) */
+/*     B.V. Semenov  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 8.3.0, 30-JUL-2013 (BVS) */
+
+/*        Updated to increment POOL state counter. */
 
 /* -    SPICELIB Version 8.2.0, 19-MAR-2009 (NJB) */
 
@@ -6970,12 +7239,19 @@ L_dvpool:
 	chkin_("DVPOOL", (ftnlen)6);
     }
 
-/*     Initialize the kernel pool if necessary. */
+/*     Initialize the pool if necessary. */
 
-    zzpini_(&first, &c__5003, &c_b8, &c__4000, begdat, begtxt, nmpool, dppool,
-	     chpool, namlst, datlst, &c__1000, &c__50030, wtvars, wtptrs, 
-	    wtpool, wtagnt, agents, active, notify, (ftnlen)10, (ftnlen)10, (
-	    ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32);
+    if (first) {
+	zzpini_(&first, &c__26003, &c_b8, &c__15000, begdat, begtxt, nmpool, 
+		dppool, chpool, namlst, datlst, &c__1000, &c_b11, wtvars, 
+		wtptrs, wtpool, wtagnt, agents, active, notify, subctr, (
+		ftnlen)10, (ftnlen)10, (ftnlen)32, (ftnlen)32, (ftnlen)32, (
+		ftnlen)32, (ftnlen)32);
+    }
+
+/*     Increment POOL state counter. */
+
+    zzctrinc_(subctr);
 
 /*     Locate the variable name in the hash table.  If the variable */
 /*     is not present, just return. */
@@ -6989,8 +7265,8 @@ L_dvpool:
 /*     input string NAME.  If so, NAMLST(LOOKAT) contains the head node */
 /*     of the conflict resolution list; this node is a positive value. */
 
-    if (namlst[(i__2 = lookat - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge("naml"
-	    "st", i__2, "pool_", (ftnlen)7465)] == 0) {
+    if (namlst[(i__2 = lookat - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge("nam"
+	    "lst", i__2, "pool_", (ftnlen)7711)] == 0) {
 	chkout_("DVPOOL", (ftnlen)6);
 	return 0;
     }
@@ -6999,20 +7275,20 @@ L_dvpool:
 /*     a conflict resolution list.  See if the NAME corresponding */
 /*     to this node is the one we are looking for. */
 
-    nameat = namlst[(i__2 = lookat - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge(
-	    "namlst", i__2, "pool_", (ftnlen)7476)];
-    succes = s_cmp(name__, pnames + (((i__2 = nameat - 1) < 5003 && 0 <= i__2 
-	    ? i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)7477)) << 5), 
-	    name_len, (ftnlen)32) == 0;
+    nameat = namlst[(i__2 = lookat - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge(
+	    "namlst", i__2, "pool_", (ftnlen)7722)];
+    succes = s_cmp(name__, pnames + (((i__2 = nameat - 1) < 26003 && 0 <= 
+	    i__2 ? i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)7723)) << 5)
+	    , name_len, (ftnlen)32) == 0;
     while(! succes) {
-	nameat = nmpool[(i__2 = (nameat << 1) + 10) < 10018 && 0 <= i__2 ? 
-		i__2 : s_rnge("nmpool", i__2, "pool_", (ftnlen)7481)];
+	nameat = nmpool[(i__2 = (nameat << 1) + 10) < 52018 && 0 <= i__2 ? 
+		i__2 : s_rnge("nmpool", i__2, "pool_", (ftnlen)7727)];
 	if (nameat < 0) {
 	    chkout_("DVPOOL", (ftnlen)6);
 	    return 0;
 	}
-	succes = s_cmp(name__, pnames + (((i__2 = nameat - 1) < 5003 && 0 <= 
-		i__2 ? i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)7490)) 
+	succes = s_cmp(name__, pnames + (((i__2 = nameat - 1) < 26003 && 0 <= 
+		i__2 ? i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)7736)) 
 		<< 5), name_len, (ftnlen)32) == 0;
     }
 
@@ -7030,9 +7306,9 @@ L_dvpool:
 /*     when errors occur during the population of the kernel pool, PNAMES */
 /*     is not cleaned out */
 
-    s_copy(pnames + (((i__2 = nameat - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge(
-	    "pnames", i__2, "pool_", (ftnlen)7511)) << 5), " ", (ftnlen)32, (
-	    ftnlen)1);
+    s_copy(pnames + (((i__2 = nameat - 1) < 26003 && 0 <= i__2 ? i__2 : 
+	    s_rnge("pnames", i__2, "pool_", (ftnlen)7757)) << 5), " ", (
+	    ftnlen)32, (ftnlen)1);
 
 /*     There may be agents watching the variable we just wiped out.  If */
 /*     so, add these agents to the list of agents to be notified of a */
@@ -7315,10 +7591,13 @@ L_gnpool:
 
 /*     Initialize the pool if necessary. */
 
-    zzpini_(&first, &c__5003, &c_b8, &c__4000, begdat, begtxt, nmpool, dppool,
-	     chpool, namlst, datlst, &c__1000, &c__50030, wtvars, wtptrs, 
-	    wtpool, wtagnt, agents, active, notify, (ftnlen)10, (ftnlen)10, (
-	    ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32);
+    if (first) {
+	zzpini_(&first, &c__26003, &c_b8, &c__15000, begdat, begtxt, nmpool, 
+		dppool, chpool, namlst, datlst, &c__1000, &c_b11, wtvars, 
+		wtptrs, wtpool, wtagnt, agents, active, notify, subctr, (
+		ftnlen)10, (ftnlen)10, (ftnlen)32, (ftnlen)32, (ftnlen)32, (
+		ftnlen)32, (ftnlen)32);
+    }
 
 /*     Perform the one obvious error check first. */
 
@@ -7337,19 +7616,19 @@ L_gnpool:
     hits = 0;
     *n = 0;
     begin = max(1,*start);
-    for (k = 1; k <= 5003; ++k) {
+    for (k = 1; k <= 26003; ++k) {
 
 /*        See if there is any variable associated with this hash value. */
 
-	nnode = namlst[(i__2 = k - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge(
-		"namlst", i__2, "pool_", (ftnlen)7844)];
+	nnode = namlst[(i__2 = k - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge(
+		"namlst", i__2, "pool_", (ftnlen)8095)];
 	while(nnode > 0) {
 
 /*           There is some name list associated with this node. See if */
 /*           it the current one matches the supplied template. */
 
-	    if (matchi_(pnames + (((i__2 = nnode - 1) < 5003 && 0 <= i__2 ? 
-		    i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)7851)) << 
+	    if (matchi_(pnames + (((i__2 = nnode - 1) < 26003 && 0 <= i__2 ? 
+		    i__2 : s_rnge("pnames", i__2, "pool_", (ftnlen)8102)) << 
 		    5), name__, "*", "%", (ftnlen)32, name_len, (ftnlen)1, (
 		    ftnlen)1)) {
 
@@ -7362,8 +7641,8 @@ L_gnpool:
 		    if (*n < *room) {
 			++(*n);
 			s_copy(cvals + (*n - 1) * cvals_len, pnames + (((i__2 
-				= nnode - 1) < 5003 && 0 <= i__2 ? i__2 : 
-				s_rnge("pnames", i__2, "pool_", (ftnlen)7864))
+				= nnode - 1) < 26003 && 0 <= i__2 ? i__2 : 
+				s_rnge("pnames", i__2, "pool_", (ftnlen)8115))
 				 << 5), cvals_len, (ftnlen)32);
 		    }
 
@@ -7380,8 +7659,8 @@ L_gnpool:
 
 /*           Get the next name for this node. */
 
-	    nnode = nmpool[(i__2 = (nnode << 1) + 10) < 10018 && 0 <= i__2 ? 
-		    i__2 : s_rnge("nmpool", i__2, "pool_", (ftnlen)7883)];
+	    nnode = nmpool[(i__2 = (nnode << 1) + 10) < 52018 && 0 <= i__2 ? 
+		    i__2 : s_rnge("nmpool", i__2, "pool_", (ftnlen)8134)];
 	}
 
 /*        Advance to the next hash value. */
@@ -7462,10 +7741,10 @@ L_dwpool:
 
 /* $ Exceptions */
 
-/*     1) It's not an error to delete an agent that's not in */
-/*        any notification list. This policy allows routines */
-/*        to delete watches without first having to check that */
-/*        the deletion they're requesting is possible. */
+/*     1) It's not an error to delete a non-existent agent---one */
+/*        that is not present in the watcher system. A call to */
+/*        delete a non-existent agent has no effect on the state */
+/*        of the watcher system. */
 
 /*     2) If an attempt is made to delete an agent that */
 /*        has an unchecked update, the error SPICE(UPDATEPENDING) */
@@ -7509,8 +7788,14 @@ L_dwpool:
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
+/*     B.V. Semenov    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.0, 11-SEP-2013 (BVS) */
+
+/*        Updated to increment POOL state counter. Updated description */
+/*        of the exception 1). */
 
 /* -    SPICELIB Version 1.0.0, 19-MAR-2009 (NJB) */
 
@@ -7536,10 +7821,13 @@ L_dwpool:
 
 /*     Initialize the pool if necessary. */
 
-    zzpini_(&first, &c__5003, &c_b8, &c__4000, begdat, begtxt, nmpool, dppool,
-	     chpool, namlst, datlst, &c__1000, &c__50030, wtvars, wtptrs, 
-	    wtpool, wtagnt, agents, active, notify, (ftnlen)10, (ftnlen)10, (
-	    ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32, (ftnlen)32);
+    if (first) {
+	zzpini_(&first, &c__26003, &c_b8, &c__15000, begdat, begtxt, nmpool, 
+		dppool, chpool, namlst, datlst, &c__1000, &c_b11, wtvars, 
+		wtptrs, wtpool, wtagnt, agents, active, notify, subctr, (
+		ftnlen)10, (ftnlen)10, (ftnlen)32, (ftnlen)32, (ftnlen)32, (
+		ftnlen)32, (ftnlen)32);
+    }
 
 /*     Make sure we're not silencing an agent who has something */
 /*     to say. */
@@ -7553,6 +7841,10 @@ L_dwpool:
 	chkout_("DWPOOL", (ftnlen)6);
 	return 0;
     }
+
+/*     Increment POOL state counter. */
+
+    zzctrinc_(subctr);
 
 /*     AGENT is no longer on the list of agents associated with a */
 /*     kernel variable update. */
@@ -7601,8 +7893,8 @@ L_dwpool:
 /*        If we find AGENT, we'll use AGNODE to designate */
 /*        the node associated with AGENT. */
 
-	node = wtptrs[(i__2 = i__ - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge(
-		"wtptrs", i__2, "pool_", (ftnlen)8126)];
+	node = wtptrs[(i__2 = i__ - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge(
+		"wtptrs", i__2, "pool_", (ftnlen)8392)];
 	nnodes = 0;
 	agnode = 0;
 	while(node > 0) {
@@ -7610,8 +7902,8 @@ L_dwpool:
 
 /*           Fetch the next agent for the Ith kernel variable. */
 
-	    if (s_cmp(wtagnt + (((i__2 = node - 1) < 50030 && 0 <= i__2 ? 
-		    i__2 : s_rnge("wtagnt", i__2, "pool_", (ftnlen)8136)) << 
+	    if (s_cmp(wtagnt + (((i__2 = node - 1) < 130015 && 0 <= i__2 ? 
+		    i__2 : s_rnge("wtagnt", i__2, "pool_", (ftnlen)8402)) << 
 		    5), agent, (ftnlen)32, agent_len) == 0) {
 
 /*               Save the current node. */
@@ -7630,9 +7922,9 @@ L_dwpool:
 /*           the node corresponding to AGENT from the watch pool. First */
 /*           set the corresponding agent name to blank. */
 
-	    s_copy(wtagnt + (((i__2 = agnode - 1) < 50030 && 0 <= i__2 ? i__2 
-		    : s_rnge("wtagnt", i__2, "pool_", (ftnlen)8157)) << 5), 
-		    " ", (ftnlen)32, (ftnlen)1);
+	    s_copy(wtagnt + (((i__2 = agnode - 1) < 130015 && 0 <= i__2 ? 
+		    i__2 : s_rnge("wtagnt", i__2, "pool_", (ftnlen)8423)) << 
+		    5), " ", (ftnlen)32, (ftnlen)1);
 
 /*           If we're about to delete the head node of the agent list, */
 /*           we'll need to update WTPTRS(I) to point to the new head. */
@@ -7640,10 +7932,10 @@ L_dwpool:
 /*           of AGNODE; we'll handle that case after the LNKFSL call */
 /*           below. */
 
-	    if (wtptrs[(i__2 = i__ - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge(
-		    "wtptrs", i__2, "pool_", (ftnlen)8166)] == agnode) {
-		wtptrs[(i__2 = i__ - 1) < 5003 && 0 <= i__2 ? i__2 : s_rnge(
-			"wtptrs", i__2, "pool_", (ftnlen)8168)] = lnknxt_(&
+	    if (wtptrs[(i__2 = i__ - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge(
+		    "wtptrs", i__2, "pool_", (ftnlen)8432)] == agnode) {
+		wtptrs[(i__2 = i__ - 1) < 26003 && 0 <= i__2 ? i__2 : s_rnge(
+			"wtptrs", i__2, "pool_", (ftnlen)8434)] = lnknxt_(&
 			agnode, wtpool);
 	    }
 
@@ -7657,9 +7949,9 @@ L_dwpool:
 /*              variable any more, so delete the variable from the */
 /*              watched variable set. */
 		nw = cardc_(wtvars, (ftnlen)32);
-		s_copy(varnam, wtvars + (((i__2 = i__ + 5) < 5009 && 0 <= 
+		s_copy(varnam, wtvars + (((i__2 = i__ + 5) < 26009 && 0 <= 
 			i__2 ? i__2 : s_rnge("wtvars", i__2, "pool_", (ftnlen)
-			8187)) << 5), (ftnlen)32, (ftnlen)32);
+			8453)) << 5), (ftnlen)32, (ftnlen)32);
 		removc_(varnam, wtvars, (ftnlen)32, (ftnlen)32);
 
 /*              Remove the associated pointer from the pointer array. */
@@ -7830,12 +8122,17 @@ L_zzvupool:
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.1, 27-MAR-2014 (BVS) */
+
+/*        Set Index_Entries to "None." to make this entry no appear in */
+/*        permutted index. */
+
 /* -    SPICELIB Version 1.0.0, 19-MAR-2009 (NJB) */
 
 /* -& */
 /* $ Index_Entries */
 
-/*     view kernel pool watcher data structures */
+/*     None. */
 
 /* -& */
 /* $ Revisions */
@@ -7858,10 +8155,210 @@ L_zzvupool:
 
 /*        ( 2,  LBPOOL : MXNOTE ) */
 
-    i__ = 100072;
+    i__ = 260042;
     movei_(wtpool, &i__, uwpool);
-    movec_(wtagnt, &c__50030, uwagnt, (ftnlen)32, uwagnt_len);
+    movec_(wtagnt, &c_b11, uwagnt, (ftnlen)32, uwagnt_len);
     chkout_("ZZVUPOOL", (ftnlen)8);
+    return 0;
+/* $Procedure ZZPCTRCK ( Private: check/update user's POOL state counter ) */
+
+L_zzpctrck:
+/* $ Abstract */
+
+/*     SPICE Private routine intended solely for the support of SPICE */
+/*     routines.  Users should not call this routine directly due to the */
+/*     volatile nature of this routine. */
+
+/*     Check and update the POOL state counter tracked by a caller */
+/*     (user) routine. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Required_Reading */
+
+/*     KERNEL */
+
+/* $ Keywords */
+
+/*     KERNEL */
+/*     PRIVATE */
+/*     UTILITY */
+
+/* $ Declarations */
+
+/*     INTEGER               USRCTR    ( CTRSIZ ) */
+/*     LOGICAL               UPDATE */
+
+/* $ Brief_I/O */
+
+/*     VARIABLE  I/O  DESCRIPTION */
+/*     --------  ---  -------------------------------------------------- */
+/*     USRCTR    I/O  POOL state counter tracked by the caller */
+/*     UPDATE     O   Flag indicating if input counter was updated */
+
+/*     CTRSIZ     P   Dimension of the counter array */
+
+/* $ Detailed_Input */
+
+/*     USRCTR      is the value of the POOL state counter tracked by */
+/*                 (saved in) the caller (user) routine. */
+
+/* $ Detailed_Output */
+
+/*     USRCTR      is the current POOL state counter. */
+
+/*     UPDATE      is the logical flag indicating whether the input POOL */
+/*                 state counter was different from the current POOL */
+/*                 state counter and, therefore, had to be updated */
+/*                 (UPDATE = .TRUE.) or if it was the same (UPDATE = */
+/*                 .FALSE.). */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. This parameter is */
+/*                 defined in the private include file 'zzctr.inc'. */
+
+/* $ Exceptions */
+
+/*     Error free. */
+
+/* $ Files */
+
+/*     None. */
+
+/* $ Particulars */
+
+/*     This routine is not part of the SPICELIB API. This routine */
+/*     may be removed in a later version of the SPICE Toolkit, or */
+/*     its interface may change. */
+
+/*     SPICE-based application code should not call this routine. */
+
+/*     This routine allows other routines to be aware of POOL state */
+/*     change due to addition or deletion variables or watchers. Such */
+/*     awareness is needed to be able to locally save some POOL-based */
+/*     data (e.g. body name/ID mappings or frame definitions) and only */
+/*     update these locally saved values if the POOL has changed. */
+
+/*     To make use of the POOL state counter to achieve this goal the */
+/*     caller routines save the POOL state counter returned by the first */
+/*     call to this routine and then check that saved value against the */
+/*     current POOL state counter and update it by subsequent calls this */
+/*     routine. */
+
+/* $ Examples */
+
+/*     The routines that need to be aware of and act on the POOL state */
+/*     change initialize a local POOL counter array using ZZCTRUIN, save */
+/*     it, and check it against the current POOL state counter and */
+/*     update it, if needed, using this entry point, as follows: */
+
+/*        C */
+/*        C     Include zzctr.inc to access CTRSIZ. */
+/*        C */
+/*              INCLUDE              'zzctr.inc' */
+/*              ... */
+
+/*        C */
+/*        C     In local variable declarations declare and save */
+/*        C     the local POOL state counter. Also declare the */
+/*        C     update flag. */
+/*        C */
+/*              INTEGER               USRCTR ( CTRSIZ ) */
+/*              LOGICAL               UPDATE */
+/*              ... */
+/*              SAVE                  USRCTR */
+/*              ... */
+
+/*        C */
+/*        C     In all places where initialization is done */
+/*        C     initialize the local POOL state counter using */
+/*        C     ZZCTRUIN to ensure an update on the first check. */
+/*        C */
+/*              IF ( FIRST ) THEN */
+/*                 ... */
+/*                 CALL ZZCTRUIN( USRCTR ) */
+/*                 FIRST = .FALSE. */
+/*              END IF */
+/*              ... */
+
+/*        C */
+/*        C     In all places where there is a need to check for */
+/*        C     the POOL state change call this entry to */
+/*        C     check and update the local POOL state counter. */
+/*        C */
+/*              CALL ZZPCTRCK ( USRCTR, UPDATE ) */
+
+/*              IF ( UPDATE ) THEN */
+
+/*        C */
+/*        C        It the POOL state changed, do what needs to */
+/*        C        be done to deal with saved values based */
+/*        C        on POOL data. */
+/*        C */
+/*                 ... */
+
+/*              END IF */
+
+/* $ Restrictions */
+
+/*     1) This is a private routine. See $Particulars above. */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 27-MAR-2014 (BVS) */
+
+/* -& */
+/* $ Index_Entries */
+
+/*     None. */
+
+/* -& */
+/* $ Revisions */
+
+/*     None. */
+
+/* -& */
+
+/*     Standard SPICE error handling. */
+
+    if (return_()) {
+	return 0;
+    }
+    zzctrchk_(subctr, usrctr, update);
     return 0;
 } /* pool_ */
 
@@ -7869,14 +8366,14 @@ L_zzvupool:
 	names, integer *nnames, char *agent, integer *n, doublereal *values, 
 	logical *found, logical *update, integer *start, integer *room, char *
 	cvals, integer *ivals, char *type__, char *uwvars, integer *uwptrs, 
-	integer *uwpool, char *uwagnt, ftnlen kernel_len, ftnlen name_len, 
-	ftnlen names_len, ftnlen agent_len, ftnlen cvals_len, ftnlen type_len,
-	 ftnlen uwvars_len, ftnlen uwagnt_len)
+	integer *uwpool, char *uwagnt, integer *usrctr, ftnlen kernel_len, 
+	ftnlen name_len, ftnlen names_len, ftnlen agent_len, ftnlen cvals_len,
+	 ftnlen type_len, ftnlen uwvars_len, ftnlen uwagnt_len)
 {
     return pool_0_(0, kernel, unit, name__, names, nnames, agent, n, values, 
 	    found, update, start, room, cvals, ivals, type__, uwvars, uwptrs, 
-	    uwpool, uwagnt, kernel_len, name_len, names_len, agent_len, 
-	    cvals_len, type_len, uwvars_len, uwagnt_len);
+	    uwpool, uwagnt, usrctr, kernel_len, name_len, names_len, 
+	    agent_len, cvals_len, type_len, uwvars_len, uwagnt_len);
     }
 
 /* Subroutine */ int clpool_(void)
@@ -7885,8 +8382,8 @@ L_zzvupool:
 	    *)0, (char *)0, (integer *)0, (doublereal *)0, (logical *)0, (
 	    logical *)0, (integer *)0, (integer *)0, (char *)0, (integer *)0, 
 	    (char *)0, (char *)0, (integer *)0, (integer *)0, (char *)0, (
-	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
-	    ftnint)0, (ftnint)0);
+	    integer *)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)
+	    0, (ftnint)0, (ftnint)0, (ftnint)0);
     }
 
 /* Subroutine */ int ldpool_(char *kernel, ftnlen kernel_len)
@@ -7894,9 +8391,9 @@ L_zzvupool:
     return pool_0_(2, kernel, (integer *)0, (char *)0, (char *)0, (integer *)
 	    0, (char *)0, (integer *)0, (doublereal *)0, (logical *)0, (
 	    logical *)0, (integer *)0, (integer *)0, (char *)0, (integer *)0, 
-	    (char *)0, (char *)0, (integer *)0, (integer *)0, (char *)0, 
-	    kernel_len, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0,
-	     (ftnint)0, (ftnint)0);
+	    (char *)0, (char *)0, (integer *)0, (integer *)0, (char *)0, (
+	    integer *)0, kernel_len, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)
+	    0, (ftnint)0, (ftnint)0, (ftnint)0);
     }
 
 /* Subroutine */ int rtpool_(char *name__, integer *n, doublereal *values, 
@@ -7905,8 +8402,9 @@ L_zzvupool:
     return pool_0_(3, (char *)0, (integer *)0, name__, (char *)0, (integer *)
 	    0, (char *)0, n, values, found, (logical *)0, (integer *)0, (
 	    integer *)0, (char *)0, (integer *)0, (char *)0, (char *)0, (
-	    integer *)0, (integer *)0, (char *)0, (ftnint)0, name_len, (
-	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
+	    integer *)0, (integer *)0, (char *)0, (integer *)0, (ftnint)0, 
+	    name_len, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
+	    ftnint)0);
     }
 
 /* Subroutine */ int expool_(char *name__, logical *found, ftnlen name_len)
@@ -7914,9 +8412,9 @@ L_zzvupool:
     return pool_0_(4, (char *)0, (integer *)0, name__, (char *)0, (integer *)
 	    0, (char *)0, (integer *)0, (doublereal *)0, found, (logical *)0, 
 	    (integer *)0, (integer *)0, (char *)0, (integer *)0, (char *)0, (
-	    char *)0, (integer *)0, (integer *)0, (char *)0, (ftnint)0, 
-	    name_len, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
-	    ftnint)0);
+	    char *)0, (integer *)0, (integer *)0, (char *)0, (integer *)0, (
+	    ftnint)0, name_len, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
+	    ftnint)0, (ftnint)0);
     }
 
 /* Subroutine */ int wrpool_(integer *unit)
@@ -7924,9 +8422,9 @@ L_zzvupool:
     return pool_0_(5, (char *)0, unit, (char *)0, (char *)0, (integer *)0, (
 	    char *)0, (integer *)0, (doublereal *)0, (logical *)0, (logical *)
 	    0, (integer *)0, (integer *)0, (char *)0, (integer *)0, (char *)0,
-	     (char *)0, (integer *)0, (integer *)0, (char *)0, (ftnint)0, (
+	     (char *)0, (integer *)0, (integer *)0, (char *)0, (integer *)0, (
 	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
-	    ftnint)0);
+	    ftnint)0, (ftnint)0);
     }
 
 /* Subroutine */ int swpool_(char *agent, integer *nnames, char *names, 
@@ -7935,9 +8433,9 @@ L_zzvupool:
     return pool_0_(6, (char *)0, (integer *)0, (char *)0, names, nnames, 
 	    agent, (integer *)0, (doublereal *)0, (logical *)0, (logical *)0, 
 	    (integer *)0, (integer *)0, (char *)0, (integer *)0, (char *)0, (
-	    char *)0, (integer *)0, (integer *)0, (char *)0, (ftnint)0, (
-	    ftnint)0, names_len, agent_len, (ftnint)0, (ftnint)0, (ftnint)0, (
-	    ftnint)0);
+	    char *)0, (integer *)0, (integer *)0, (char *)0, (integer *)0, (
+	    ftnint)0, (ftnint)0, names_len, agent_len, (ftnint)0, (ftnint)0, (
+	    ftnint)0, (ftnint)0);
     }
 
 /* Subroutine */ int cvpool_(char *agent, logical *update, ftnlen agent_len)
@@ -7945,9 +8443,9 @@ L_zzvupool:
     return pool_0_(7, (char *)0, (integer *)0, (char *)0, (char *)0, (integer 
 	    *)0, agent, (integer *)0, (doublereal *)0, (logical *)0, update, (
 	    integer *)0, (integer *)0, (char *)0, (integer *)0, (char *)0, (
-	    char *)0, (integer *)0, (integer *)0, (char *)0, (ftnint)0, (
-	    ftnint)0, (ftnint)0, agent_len, (ftnint)0, (ftnint)0, (ftnint)0, (
-	    ftnint)0);
+	    char *)0, (integer *)0, (integer *)0, (char *)0, (integer *)0, (
+	    ftnint)0, (ftnint)0, (ftnint)0, agent_len, (ftnint)0, (ftnint)0, (
+	    ftnint)0, (ftnint)0);
     }
 
 /* Subroutine */ int gcpool_(char *name__, integer *start, integer *room, 
@@ -7957,8 +8455,8 @@ L_zzvupool:
     return pool_0_(8, (char *)0, (integer *)0, name__, (char *)0, (integer *)
 	    0, (char *)0, n, (doublereal *)0, found, (logical *)0, start, 
 	    room, cvals, (integer *)0, (char *)0, (char *)0, (integer *)0, (
-	    integer *)0, (char *)0, (ftnint)0, name_len, (ftnint)0, (ftnint)0,
-	     cvals_len, (ftnint)0, (ftnint)0, (ftnint)0);
+	    integer *)0, (char *)0, (integer *)0, (ftnint)0, name_len, (
+	    ftnint)0, (ftnint)0, cvals_len, (ftnint)0, (ftnint)0, (ftnint)0);
     }
 
 /* Subroutine */ int gdpool_(char *name__, integer *start, integer *room, 
@@ -7967,8 +8465,8 @@ L_zzvupool:
     return pool_0_(9, (char *)0, (integer *)0, name__, (char *)0, (integer *)
 	    0, (char *)0, n, values, found, (logical *)0, start, room, (char *
 	    )0, (integer *)0, (char *)0, (char *)0, (integer *)0, (integer *)
-	    0, (char *)0, (ftnint)0, name_len, (ftnint)0, (ftnint)0, (ftnint)
-	    0, (ftnint)0, (ftnint)0, (ftnint)0);
+	    0, (char *)0, (integer *)0, (ftnint)0, name_len, (ftnint)0, (
+	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
     }
 
 /* Subroutine */ int gipool_(char *name__, integer *start, integer *room, 
@@ -7977,8 +8475,8 @@ L_zzvupool:
     return pool_0_(10, (char *)0, (integer *)0, name__, (char *)0, (integer *)
 	    0, (char *)0, n, (doublereal *)0, found, (logical *)0, start, 
 	    room, (char *)0, ivals, (char *)0, (char *)0, (integer *)0, (
-	    integer *)0, (char *)0, (ftnint)0, name_len, (ftnint)0, (ftnint)0,
-	     (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
+	    integer *)0, (char *)0, (integer *)0, (ftnint)0, name_len, (
+	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
     }
 
 /* Subroutine */ int dtpool_(char *name__, logical *found, integer *n, char *
@@ -7987,8 +8485,9 @@ L_zzvupool:
     return pool_0_(11, (char *)0, (integer *)0, name__, (char *)0, (integer *)
 	    0, (char *)0, n, (doublereal *)0, found, (logical *)0, (integer *)
 	    0, (integer *)0, (char *)0, (integer *)0, type__, (char *)0, (
-	    integer *)0, (integer *)0, (char *)0, (ftnint)0, name_len, (
-	    ftnint)0, (ftnint)0, (ftnint)0, type_len, (ftnint)0, (ftnint)0);
+	    integer *)0, (integer *)0, (char *)0, (integer *)0, (ftnint)0, 
+	    name_len, (ftnint)0, (ftnint)0, (ftnint)0, type_len, (ftnint)0, (
+	    ftnint)0);
     }
 
 /* Subroutine */ int pcpool_(char *name__, integer *n, char *cvals, ftnlen 
@@ -7997,8 +8496,9 @@ L_zzvupool:
     return pool_0_(12, (char *)0, (integer *)0, name__, (char *)0, (integer *)
 	    0, (char *)0, n, (doublereal *)0, (logical *)0, (logical *)0, (
 	    integer *)0, (integer *)0, cvals, (integer *)0, (char *)0, (char *
-	    )0, (integer *)0, (integer *)0, (char *)0, (ftnint)0, name_len, (
-	    ftnint)0, (ftnint)0, cvals_len, (ftnint)0, (ftnint)0, (ftnint)0);
+	    )0, (integer *)0, (integer *)0, (char *)0, (integer *)0, (ftnint)
+	    0, name_len, (ftnint)0, (ftnint)0, cvals_len, (ftnint)0, (ftnint)
+	    0, (ftnint)0);
     }
 
 /* Subroutine */ int pdpool_(char *name__, integer *n, doublereal *values, 
@@ -8007,8 +8507,9 @@ L_zzvupool:
     return pool_0_(13, (char *)0, (integer *)0, name__, (char *)0, (integer *)
 	    0, (char *)0, n, values, (logical *)0, (logical *)0, (integer *)0,
 	     (integer *)0, (char *)0, (integer *)0, (char *)0, (char *)0, (
-	    integer *)0, (integer *)0, (char *)0, (ftnint)0, name_len, (
-	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
+	    integer *)0, (integer *)0, (char *)0, (integer *)0, (ftnint)0, 
+	    name_len, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
+	    ftnint)0);
     }
 
 /* Subroutine */ int pipool_(char *name__, integer *n, integer *ivals, ftnlen 
@@ -8017,8 +8518,9 @@ L_zzvupool:
     return pool_0_(14, (char *)0, (integer *)0, name__, (char *)0, (integer *)
 	    0, (char *)0, n, (doublereal *)0, (logical *)0, (logical *)0, (
 	    integer *)0, (integer *)0, (char *)0, ivals, (char *)0, (char *)0,
-	     (integer *)0, (integer *)0, (char *)0, (ftnint)0, name_len, (
-	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
+	     (integer *)0, (integer *)0, (char *)0, (integer *)0, (ftnint)0, 
+	    name_len, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
+	    ftnint)0);
     }
 
 /* Subroutine */ int lmpool_(char *cvals, integer *n, ftnlen cvals_len)
@@ -8027,8 +8529,8 @@ L_zzvupool:
 	    integer *)0, (char *)0, n, (doublereal *)0, (logical *)0, (
 	    logical *)0, (integer *)0, (integer *)0, cvals, (integer *)0, (
 	    char *)0, (char *)0, (integer *)0, (integer *)0, (char *)0, (
-	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, cvals_len, (ftnint)0, (
-	    ftnint)0, (ftnint)0);
+	    integer *)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, 
+	    cvals_len, (ftnint)0, (ftnint)0, (ftnint)0);
     }
 
 /* Subroutine */ int szpool_(char *name__, integer *n, logical *found, ftnlen 
@@ -8037,8 +8539,9 @@ L_zzvupool:
     return pool_0_(16, (char *)0, (integer *)0, name__, (char *)0, (integer *)
 	    0, (char *)0, n, (doublereal *)0, found, (logical *)0, (integer *)
 	    0, (integer *)0, (char *)0, (integer *)0, (char *)0, (char *)0, (
-	    integer *)0, (integer *)0, (char *)0, (ftnint)0, name_len, (
-	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
+	    integer *)0, (integer *)0, (char *)0, (integer *)0, (ftnint)0, 
+	    name_len, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
+	    ftnint)0);
     }
 
 /* Subroutine */ int dvpool_(char *name__, ftnlen name_len)
@@ -8047,8 +8550,8 @@ L_zzvupool:
 	    0, (char *)0, (integer *)0, (doublereal *)0, (logical *)0, (
 	    logical *)0, (integer *)0, (integer *)0, (char *)0, (integer *)0, 
 	    (char *)0, (char *)0, (integer *)0, (integer *)0, (char *)0, (
-	    ftnint)0, name_len, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
-	    ftnint)0, (ftnint)0);
+	    integer *)0, (ftnint)0, name_len, (ftnint)0, (ftnint)0, (ftnint)0,
+	     (ftnint)0, (ftnint)0, (ftnint)0);
     }
 
 /* Subroutine */ int gnpool_(char *name__, integer *start, integer *room, 
@@ -8058,8 +8561,8 @@ L_zzvupool:
     return pool_0_(18, (char *)0, (integer *)0, name__, (char *)0, (integer *)
 	    0, (char *)0, n, (doublereal *)0, found, (logical *)0, start, 
 	    room, cvals, (integer *)0, (char *)0, (char *)0, (integer *)0, (
-	    integer *)0, (char *)0, (ftnint)0, name_len, (ftnint)0, (ftnint)0,
-	     cvals_len, (ftnint)0, (ftnint)0, (ftnint)0);
+	    integer *)0, (char *)0, (integer *)0, (ftnint)0, name_len, (
+	    ftnint)0, (ftnint)0, cvals_len, (ftnint)0, (ftnint)0, (ftnint)0);
     }
 
 /* Subroutine */ int dwpool_(char *agent, ftnlen agent_len)
@@ -8068,8 +8571,8 @@ L_zzvupool:
 	    integer *)0, agent, (integer *)0, (doublereal *)0, (logical *)0, (
 	    logical *)0, (integer *)0, (integer *)0, (char *)0, (integer *)0, 
 	    (char *)0, (char *)0, (integer *)0, (integer *)0, (char *)0, (
-	    ftnint)0, (ftnint)0, (ftnint)0, agent_len, (ftnint)0, (ftnint)0, (
-	    ftnint)0, (ftnint)0);
+	    integer *)0, (ftnint)0, (ftnint)0, (ftnint)0, agent_len, (ftnint)
+	    0, (ftnint)0, (ftnint)0, (ftnint)0);
     }
 
 /* Subroutine */ int zzvupool_(char *uwvars, integer *uwptrs, integer *uwpool,
@@ -8078,8 +8581,18 @@ L_zzvupool:
     return pool_0_(20, (char *)0, (integer *)0, (char *)0, (char *)0, (
 	    integer *)0, (char *)0, (integer *)0, (doublereal *)0, (logical *)
 	    0, (logical *)0, (integer *)0, (integer *)0, (char *)0, (integer *
-	    )0, (char *)0, uwvars, uwptrs, uwpool, uwagnt, (ftnint)0, (ftnint)
-	    0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, uwvars_len, 
-	    uwagnt_len);
+	    )0, (char *)0, uwvars, uwptrs, uwpool, uwagnt, (integer *)0, (
+	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, 
+	    uwvars_len, uwagnt_len);
+    }
+
+/* Subroutine */ int zzpctrck_(integer *usrctr, logical *update)
+{
+    return pool_0_(21, (char *)0, (integer *)0, (char *)0, (char *)0, (
+	    integer *)0, (char *)0, (integer *)0, (doublereal *)0, (logical *)
+	    0, update, (integer *)0, (integer *)0, (char *)0, (integer *)0, (
+	    char *)0, (char *)0, (integer *)0, (integer *)0, (char *)0, 
+	    usrctr, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
+	    ftnint)0, (ftnint)0, (ftnint)0);
     }
 

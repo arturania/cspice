@@ -12,14 +12,14 @@ static integer c__1 = 1;
 static integer c__7 = 7;
 static integer c__3 = 3;
 
-/* $Procedure   ZZGFCOU ( GF, coordinate utility package ) */
+/* $Procedure ZZGFCOU ( GF, coordinate utility package ) */
 /* Subroutine */ int zzgfcou_0_(int n__, char *vecdef, char *method, char *
 	target, doublereal *et, char *ref, char *abcorr, char *obsrvr, char *
-	dref, doublereal *dvec, char *crdsys, char *crdnam, doublereal *
-	refval, logical *decres, logical *lssthn, doublereal *crdval, logical 
-	*crdfnd, ftnlen vecdef_len, ftnlen method_len, ftnlen target_len, 
-	ftnlen ref_len, ftnlen abcorr_len, ftnlen obsrvr_len, ftnlen dref_len,
-	 ftnlen crdsys_len, ftnlen crdnam_len)
+	dref, doublereal *dvec, char *crdsys, char *crdnam, logical *decres, 
+	doublereal *crdval, logical *crdfnd, U_fp udfunc, ftnlen vecdef_len, 
+	ftnlen method_len, ftnlen target_len, ftnlen ref_len, ftnlen 
+	abcorr_len, ftnlen obsrvr_len, ftnlen dref_len, ftnlen crdsys_len, 
+	ftnlen crdnam_len)
 {
     /* Initialized data */
 
@@ -53,12 +53,12 @@ static integer c__3 = 3;
 
     /* Local variables */
     static doublereal svre;
-    extern /* Subroutine */ int zzvalcor_(char *, logical *, ftnlen), 
-	    zzgfcost_(char *, char *, integer *, doublereal *, char *, char *,
-	     integer *, char *, integer *, doublereal *, doublereal *, 
-	    doublereal *, logical *, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen), 
-	    zzgfcprx_(doublereal *, char *, doublereal *, doublereal *, 
-	    integer *, integer *, ftnlen);
+    extern /* Subroutine */ int zzgfcost_(char *, char *, integer *, 
+	    doublereal *, char *, char *, integer *, char *, integer *, 
+	    doublereal *, doublereal *, doublereal *, logical *, ftnlen, 
+	    ftnlen, ftnlen, ftnlen, ftnlen), zzvalcor_(char *, logical *, 
+	    ftnlen), zzgfcprx_(doublereal *, char *, doublereal *, doublereal 
+	    *, integer *, integer *, ftnlen);
     integer n;
     extern /* Subroutine */ int etcal_(doublereal *, char *, ftnlen), chkin_(
 	    char *, ftnlen), ucase_(char *, char *, ftnlen, ftnlen), errch_(
@@ -77,8 +77,10 @@ static integer c__3 = 3;
 	     bodc2s_(integer *, char *, ftnlen);
     extern logical failed_(void);
     extern doublereal pi_(void);
-    extern /* Subroutine */ int cleard_(integer *, doublereal *), bodvcd_(
-	    integer *, char *, integer *, integer *, doublereal *, ftnlen);
+    extern /* Subroutine */ int cleard_(integer *, doublereal *);
+    extern logical bodfnd_(integer *, char *, ftnlen);
+    extern /* Subroutine */ int bodvcd_(integer *, char *, integer *, integer 
+	    *, doublereal *, ftnlen);
     integer frcode;
     extern integer isrchc_(char *, integer *, char *, ftnlen, ftnlen);
     extern logical return_(void);
@@ -86,28 +88,28 @@ static integer c__3 = 3;
 	    svvdef[32];
     char timstr[40];
     doublereal coords[3];
-    static doublereal svdvec[3], svradi[3], svrval;
+    static doublereal svdvec[3], svradi[3];
     integer cdsign[3], clssid;
     static integer svcidx, svdctr, svrctr, svsens, svtarg;
     integer sysidx;
     logical attblk[6];
     extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
-	    ftnlen), setmsg_(char *, ftnlen);
+	    ftnlen), setmsg_(char *, ftnlen), cmprss_(char *, integer *, char 
+	    *, char *, ftnlen, ftnlen, ftnlen);
     doublereal alt, lat;
-    extern /* Subroutine */ int cmprss_(char *, integer *, char *, char *, 
-	    ftnlen, ftnlen, ftnlen), namfrm_(char *, integer *, ftnlen), 
-	    frinfo_(integer *, integer *, integer *, integer *, logical *), 
-	    errint_(char *, integer *, ftnlen), recpgr_(char *, doublereal *, 
+    extern /* Subroutine */ int namfrm_(char *, integer *, ftnlen), frinfo_(
+	    integer *, integer *, integer *, integer *, logical *), errint_(
+	    char *, integer *, ftnlen), recpgr_(char *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
 	    doublereal *, ftnlen);
     doublereal lon;
     extern /* Subroutine */ int reclat_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *), recrad_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *), recsph_(doublereal *, doublereal *, 
+	    doublereal *, doublereal *), reccyl_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *);
     static doublereal svf;
-    extern /* Subroutine */ int reccyl_(doublereal *, doublereal *, 
-	    doublereal *, doublereal *), recgeo_(doublereal *, doublereal *, 
+    extern /* Subroutine */ int recgeo_(doublereal *, doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *), zzgfcoq_(
 	    char *, char *, integer *, doublereal *, char *, char *, integer *
 	    , char *, doublereal *, char *, integer *, doublereal *, 
@@ -221,7 +223,21 @@ static integer c__3 = 3;
 
 /* $ Version */
 
-/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+/* -    SPICELIB Version 2.0.0  29-NOV-2016 (NJB) */
+
+/*        Upgraded to support surfaces represented by DSKs. */
+
+/*        Bug fix: removed declaration of NVRMAX parameter. */
+
+/* -    SPICELIB Version 1.3.0, 01-OCT-2011 (NJB) */
+
+/*       Added NWILUM parameter. */
+
+/* -    SPICELIB Version 1.2.0, 14-SEP-2010 (EDW) */
+
+/*       Added NWPA parameter. */
+
+/* -    SPICELIB Version 1.1.0, 08-SEP-2009 (EDW) */
 
 /*       Added NWRR parameter. */
 /*       Added NWUDS parameter. */
@@ -271,6 +287,14 @@ static integer c__3 = 3;
 /*     count using NWUDS. */
 
 
+/*     Callers of GFPA should declare their workspace window */
+/*     count using NWPA. */
+
+
+/*     Callers of GFILUM should declare their workspace window */
+/*     count using NWILUM. */
+
+
 /*     ADDWIN is a parameter used to expand each interval of the search */
 /*     (confinement) window by a small amount at both ends in order to */
 /*     accommodate searches using equality constraints. The loaded */
@@ -278,9 +302,6 @@ static integer c__3 = 3;
 
 
 /*     FRMNLN is a string length for frame names. */
-
-
-/*     NVRMAX is the maximum number of vertices if FOV type is "POLYGON" */
 
 
 /*     FOVTLN -- maximum length for FOV string. */
@@ -572,8 +593,8 @@ static integer c__3 = 3;
 /*     VECDEF     I   COIN */
 /*     METHOD     I   COIN */
 /*     TARGET     I   COIN */
-/*     ET         I   COIN, CODC, COLT, COG, COCD, COCL, COCG, COSD, */
-/*                    COSL, COSG, COEX */
+/*     ET         I   COIN, CODC, COG, COCD, COCG, COSD, */
+/*                    COSG, COEX */
 /*     REF        I   COIN */
 /*     ABCORR     I   COIN */
 /*     OBSRVR     I   COIN */
@@ -581,9 +602,7 @@ static integer c__3 = 3;
 /*     DVEC       I   COIN */
 /*     CRDSYS     I   COIN */
 /*     CRDNAM     I   COIN */
-/*     REFVAL     I   COIN */
 /*     DECRES     O   CODC, COCD, COSD */
-/*     LSSTHN     O   COLT, COCL, COSL */
 /*     CRDVAL     O   COG,  COCG, COSG */
 /*     CRDFND     O   COEX */
 
@@ -657,19 +676,12 @@ static integer c__3 = 3;
 /*                      reference frame, computed using light time and */
 /*                      stellar aberration corrections." */
 
-/*        ZZGFCOUR      updates the reference value, REFVAL.  REFVAL */
-/*                      serves as the comparison value for equality */
-/*                      or inequality relations. */
-
 /*        ZZGFCODC      indicates whether the coordinate is strictly */
 /*                      decreasing as a function of time, at a specified */
 /*                      time. */
 
 /*        ZZGFCOG       returns the coordinate value at a specified */
 /*                      time. */
-
-/*        ZZGFCOLT      indicates whether the coordinate is less than */
-/*                      the reference value REFVAL at a specified time. */
 
 /*        ZZGFCOEX      indicates whether the coordinate is computable */
 /*                      at a specified time. ZZGFCOEX is used to */
@@ -697,14 +709,6 @@ static integer c__3 = 3;
 /*        ZZGFCOSG      returns the sine of the coordinate at a */
 /*                      specified time. */
 
-/*        ZZGFCOCL      indicates whether the cosine of the coordinate is */
-/*                      less than the reference value REFVAL at a */
-/*                      specified time. */
-
-/*        ZZGFCOSL      indicates whether the sine of the coordinate is */
-/*                      less than the reference value REFVAL at a */
-/*                      specified time. */
-
 /* $ Examples */
 
 /*     See the code of GFEVNT and ZZGFLONG for usage examples. */
@@ -727,6 +731,20 @@ static integer c__3 = 3;
 /*     N.J. Bachman   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB version 3.0.0 05-APR-2011 (EDW) */
+
+/*        Code edits to implement use of ZZGFRELX. */
+/*        These edits include removal of unneeded routines: */
+
+/*           ZZGFCOUR */
+/*           ZZGFCOLT */
+/*           ZZGFCOCL */
+/*           ZZGFCOSL */
+
+/*        and corresponding unused variables. */
+
+/*        Corresponding update to header entries. */
 
 /* -    SPICELIB Version 2.0.0 12-MAY-2009 (NJB) */
 
@@ -797,17 +815,13 @@ static integer c__3 = 3;
     /* Function Body */
     switch(n__) {
 	case 1: goto L_zzgfcoin;
-	case 2: goto L_zzgfcour;
-	case 3: goto L_zzgfcog;
-	case 4: goto L_zzgfcolt;
-	case 5: goto L_zzgfcodc;
-	case 6: goto L_zzgfcoex;
-	case 7: goto L_zzgfcocg;
-	case 8: goto L_zzgfcosg;
-	case 9: goto L_zzgfcocl;
-	case 10: goto L_zzgfcosl;
-	case 11: goto L_zzgfcocd;
-	case 12: goto L_zzgfcosd;
+	case 2: goto L_zzgfcog;
+	case 3: goto L_zzgfcodc;
+	case 4: goto L_zzgfcoex;
+	case 5: goto L_zzgfcocg;
+	case 6: goto L_zzgfcosg;
+	case 7: goto L_zzgfcocd;
+	case 8: goto L_zzgfcosd;
 	}
 
 
@@ -888,7 +902,6 @@ L_zzgfcoin:
 /*     DOUBLE PRECISION      DVEC */
 /*     CHARACTER*(*)         CRDSYS */
 /*     CHARACTER*(*)         CRDNAM */
-/*     DOUBLE PRECISION      REFVAL */
 
 /* $ Brief_I/O */
 
@@ -904,7 +917,6 @@ L_zzgfcoin:
 /*     DVEC       I   Ray's direction vector. */
 /*     CRDSYS     I   Coordinate system name. */
 /*     CRDNAM     I   Coordinate name. */
-/*     REFVAL     I   Reference value. */
 
 /* $ Detailed_Input */
 
@@ -1082,40 +1094,6 @@ L_zzgfcoin:
 /*                Case, leading and trailing blanks are not significant */
 /*                in the string CRDNAM. */
 
-
-/*     REFVAL     is the reference value used to define equality or */
-/*                inequality conditions. */
-
-/*                If the coordinate has the dimension "length," then */
-/*                REFVAL has units of kilometers. */
-
-/*                If the coordinate has the dimension "angle," then */
-/*                REFVAL has units of radians. */
-
-/*                When the coordinate of interest is longitude, REFVAL */
-/*                is interpreted as though it were translated, if */
-/*                necessary, by an integer multiple of 2*pi to place it */
-/*                in the standard range for longitude: (-pi, pi]. */
-/*                Similarly, when the coordinate of interest is right */
-/*                ascension, REFVAL is interpreted as though it were */
-/*                translated, if necessary, by an integer multiple of */
-/*                2*pi into the range [0, 2*pi). */
-
-/*                Example:  suppose REFVAL is set to -4.5. Then the */
-/*                          condition */
-
-/*                   longitude equals REFVAL */
-
-/*                is interpreted as */
-
-/*                   longitude equals -0.5 * pi */
-
-/*                so the solution window for this condition may well */
-/*                be non-empty. */
-
-/*                REFVAL is ignored if OP is not an equality or */
-/*                inequality operator. */
-
 /* $ Detailed_Output */
 
 /*     None.  This routine operates by side effects.  See Particulars */
@@ -1243,6 +1221,11 @@ L_zzgfcoin:
 
 /* $ Version */
 
+/* -    SPICELIB version 3.0.0 05-APR-2011 (EDW) */
+
+/*        REFVAL removed from routine argument list due to use */
+/*        of ZZGFRELX to calculate the events. */
+
 /* -    SPICELIB Version 2.0.0 12-MAY-2009 (NJB) */
 
 /*        Upgraded to support targets and observers having */
@@ -1359,8 +1342,8 @@ L_zzgfcoin:
 /*     supported names. */
 
     svcidx = isrchc_(svcrd, &c__3, crdnms + (((i__1 = sysidx * 3 - 3) < 21 && 
-	    0 <= i__1 ? i__1 : s_rnge("crdnms", i__1, "zzgfcou_", (ftnlen)
-	    1020)) << 5), (ftnlen)32, (ftnlen)32);
+	    0 <= i__1 ? i__1 : s_rnge("crdnms", i__1, "zzgfcou_", (ftnlen)985)
+	    ) << 5), (ftnlen)32, (ftnlen)32);
     if (svcidx == 0) {
 
 /*        We don't recognize this coordinate name. */
@@ -1378,10 +1361,6 @@ L_zzgfcoin:
 
     ljust_(ref, svref, ref_len, (ftnlen)32);
     ucase_(svref, svref, (ftnlen)32, (ftnlen)32);
-
-/*     Save the reference value. */
-
-    svrval = *refval;
 
 /*     The remaining work is a function of the vector definition */
 /*     and the coordinate system. */
@@ -1435,6 +1414,39 @@ L_zzgfcoin:
 /*        At this point, we know the frame REF is centered on the */
 /*        target if the computation method is SINDEF or SOBDEF. */
 /*        Fetch the radii of the body acting as the frame center. */
+
+
+/*        Ensure the radii data exists. If not, return an error message */
+/*        with useful information. */
+
+	if (! bodfnd_(&svrctr, "RADII", (ftnlen)5)) {
+	    if (s_cmp(svcsys, "GEODETIC", (ftnlen)32, (ftnlen)8) == 0 || 
+		    s_cmp(svcsys, "PLANETOGRAPHIC", (ftnlen)32, (ftnlen)14) ==
+		     0) {
+		setmsg_("No RADII data in kernel pool for frame '#' center b"
+			"ody #. Geodetic and planetographic coordinates requi"
+			"re a reference frame centered on a finite body. Conf"
+			"irm the proper input frame. Bodies {0,..,9} represen"
+			"t barycenters and so lack physical properties.", (
+			ftnlen)253);
+		errch_("#", ref, (ftnlen)1, ref_len);
+		errint_("#", &svrctr, (ftnlen)1);
+		sigerr_("SPICE(BADFRAME)", (ftnlen)15);
+		chkout_("ZZGFCOIN", (ftnlen)8);
+	    } else {
+		setmsg_("No RADII data in kernel pool for frame '#' center b"
+			"ody #. Confirm the proper input frame. Bodies {0,..,"
+			"9} represent barycenters and so lack physical proper"
+			"ties.", (ftnlen)160);
+		errch_("#", ref, (ftnlen)1, ref_len);
+		errint_("#", &svrctr, (ftnlen)1);
+		sigerr_("SPICE(BADFRAME)", (ftnlen)15);
+		chkout_("ZZGFCOIN", (ftnlen)8);
+	    }
+	    return 0;
+	}
+
+/*        We know the kernel pool contains data for body SVRCTR. */
 
 	bodvcd_(&svrctr, "RADII", &c__3, &n, svradi, (ftnlen)5);
 	if (failed_()) {
@@ -1595,130 +1607,6 @@ L_zzgfcoin:
     }
     chkout_("ZZGFCOIN", (ftnlen)8);
     return 0;
-/* $Procedure ZZGFCOUR ( GF, update reference value ) */
-
-L_zzgfcour:
-/* $ Abstract */
-
-/*     Update the reference value set by the last call to ZZGFCOIN. */
-
-/* $ Disclaimer */
-
-/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
-/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
-/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
-/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
-/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
-/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
-/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
-/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
-/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
-/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
-
-/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
-/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
-/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
-/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
-/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
-/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
-
-/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
-/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
-/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
-/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
-
-/* $ Required_Reading */
-
-/*     GF */
-/*     SPK */
-/*     TIME */
-/*     NAIF_IDS */
-/*     FRAMES */
-
-/* $ Keywords */
-
-/*     GEOMETRY */
-/*     PRIVATE */
-/*     ROOT */
-
-/* $ Declarations */
-
-/*     DOUBLE PRECISION      REFVAL */
-
-/* $ Brief_I/O */
-
-/*     VARIABLE  I/O  DESCRIPTION */
-/*     --------  ---  -------------------------------------------------- */
-/*     REFVAL     I   Reference value. */
-
-/* $ Detailed_Input */
-
-/*     REFVAL         is the new reference value to be used by */
-/*                    the entry points */
-
-/*                       ZZGFCODC */
-/*                       ZZGFCOCD */
-/*                       ZZGFCOSD */
-
-/*                    in this package.  The coordinate, or the cosine or */
-/*                    sine of the coordinate, is compared to the */
-/*                    reference value by these entry points. */
-
-/* $ Detailed_Output */
-
-/*     None. */
-
-/* $ Parameters */
-
-/*     None. */
-
-/* $ Exceptions */
-
-/*     None. */
-
-/* $ Files */
-
-/*     None. */
-
-/* $ Particulars */
-
-/*     This routine supports use of GFREL within ZZGFLONG.  This */
-/*     routine is used as the actual argument corresponding to */
-/*     GFREL's dummy argument GFQREF. */
-
-/* $ Examples */
-
-/*     See ZZGFLONG. */
-
-/* $ Restrictions */
-
-/*     1)  The interface and functionality of this set of routines may */
-/*         change without notice.  These routines should be called only */
-/*         by SPICELIB routines. */
-
-/*     2)  ZZGFCOIN must be called prior to use of any of the other */
-/*         entry points. */
-
-/* $ Literature_References */
-
-/*     None. */
-
-/* $ Author_and_Institution */
-
-/*     N.J. Bachman   (JPL) */
-
-/* $ Version */
-
-/* -    SPICELIB Version 1.0.0 05-MAR-2009 (NJB) */
-
-/* -& */
-/* $ Index_Entries */
-
-/*     update reference value */
-
-/* -& */
-    svrval = *refval;
-    return 0;
 /* $Procedure ZZGFCOG ( GF, get coordinate ) */
 
 L_zzgfcog:
@@ -1864,146 +1752,6 @@ L_zzgfcog:
     }
     chkout_("ZZGFCOG", (ftnlen)7);
     return 0;
-/* $Procedure ZZGFCOLT  ( GF, is coordinate less than reference value? ) */
-
-L_zzgfcolt:
-/* $ Abstract */
-
-/*     Indicate whether the coordinate defined by the last call to */
-/*     ZZGFCOIN is less than the reference value. */
-
-/* $ Disclaimer */
-
-/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
-/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
-/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
-/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
-/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
-/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
-/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
-/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
-/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
-/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
-
-/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
-/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
-/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
-/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
-/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
-/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
-
-/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
-/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
-/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
-/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
-
-/* $ Required_Reading */
-
-/*     GF */
-/*     SPK */
-/*     TIME */
-/*     NAIF_IDS */
-/*     FRAMES */
-
-/* $ Keywords */
-
-/*     GEOMETRY */
-/*     PRIVATE */
-/*     ROOT */
-
-/* $ Declarations */
-
-/*     DOUBLE PRECISION      ET */
-/*     LOGICAL               LSSTHN */
-
-/* $ Brief_I/O */
-
-/*     VARIABLE  I/O  DESCRIPTION */
-/*     --------  ---  -------------------------------------------------- */
-/*     ET         I   Computation epoch. */
-/*     LSSTHN     O   Flag indicating if "less than" relation holds. */
-
-/* $ Detailed_Input */
-
-/*     ET             is the computation epoch, expressed as seconds */
-/*                    past J2000 TDB. */
-
-/* $ Detailed_Output */
-
-/*     LSSTHN         is a logical flag indicating whether the cosine of */
-/*                    the coordinate defined by the previous call to */
-/*                    ZZGFCOIN is strictly less than the reference value */
-/*                    at the epoch ET.  LSSTHN is .TRUE. if this */
-/*                    relation holds and .FALSE. otherwise. */
-/* $ Parameters */
-
-/*     None. */
-
-/* $ Exceptions */
-
-/*     1) If an error occurs while this routine computes the coordinate */
-/*        defined by ZZGFCOIN, the error will be diagnosed by */
-/*        routines in the call tree of this routine. */
-
-/* $ Files */
-
-/*     See the Files header section of the umbrella routine ZZGFCOU. */
-
-/* $ Particulars */
-
-/*     None. */
-
-/* $ Examples */
-
-/*     See ZZGFLONG. */
-
-/* $ Restrictions */
-
-/*     1)  The interface and functionality of this set of routines may */
-/*         change without notice.  These routines should be called only */
-/*         by SPICELIB routines. */
-
-/*     2)  ZZGFCOIN must be called prior to use of any of the other */
-/*         entry points. */
-
-/* $ Literature_References */
-
-/*     None. */
-
-/* $ Author_and_Institution */
-
-/*     N.J. Bachman   (JPL) */
-
-/* $ Version */
-
-/* -    SPICELIB Version 1.0.0 05-MAR-2009 (NJB) */
-
-/* -& */
-/* $ Index_Entries */
-
-/*     is coordinate less than reference value */
-
-/* -& */
-    if (return_()) {
-	return 0;
-    }
-    chkin_("ZZGFCOLT", (ftnlen)8);
-    zzgfcoq_(svvdef, svmeth, &svtarg, et, svref, svcorr, &svobs, svdref, 
-	    svdvec, svcsys, &svrctr, &svre, &svf, svcrd, &value, &found, (
-	    ftnlen)32, (ftnlen)200, (ftnlen)32, (ftnlen)20, (ftnlen)32, (
-	    ftnlen)32, (ftnlen)32);
-    if (! found) {
-	etcal_(et, timstr, (ftnlen)40);
-	setmsg_("Coordinate # could not be computed at # TDB", (ftnlen)43);
-	errch_("#", svcrd, (ftnlen)1, (ftnlen)32);
-	errch_("#", timstr, (ftnlen)1, (ftnlen)40);
-	sigerr_("SPICE(NOTCOMPUTABLE)", (ftnlen)20);
-	chkout_("ZZGFCOLT", (ftnlen)8);
-	return 0;
-    }
-    *lssthn = value < svrval;
-    chkout_("ZZGFCOLT", (ftnlen)8);
-    return 0;
 /* $Procedure ZZGFCODC ( GF, is coordinate decreasing? ) */
 
 L_zzgfcodc:
@@ -2145,6 +1893,11 @@ L_zzgfcodc:
 
 /* $ Version */
 
+/* -    SPICELIB version 2.0.0 05-APR-2011 (EDW) */
+
+/*        Added UDFUNC to argument list for use of ZZGFRELX when */
+/*        calculating the events. */
+
 /* -    SPICELIB Version 1.0.0 05-MAR-2009 (NJB) */
 
 /* -& */
@@ -2189,7 +1942,7 @@ L_zzgfcodc:
 /*     is negative. This is indicated by a "sign" of -1. */
 
     *decres = cdsign[(i__1 = svcidx - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge(
-	    "cdsign", i__1, "zzgfcou_", (ftnlen)1966)] == -1;
+	    "cdsign", i__1, "zzgfcou_", (ftnlen)1686)] == -1;
     chkout_("ZZGFCODC", (ftnlen)8);
     return 0;
 /* $Procedure ZZGFCOEX ( GF, does coordinate state exist? ) */
@@ -2312,6 +2065,11 @@ L_zzgfcoex:
 /*     N.J. Bachman   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB version 2.0.0 05-APR-2011 (EDW) */
+
+/*        Added UDFUNC to argument list for use of ZZGFRELX when */
+/*        calculating the events. */
 
 /* -    SPICELIB Version 1.0.0 05-MAR-2009 (NJB) */
 
@@ -2619,298 +2377,6 @@ L_zzgfcosg:
     *crdval = sin(value);
     chkout_("ZZGFCOSG", (ftnlen)8);
     return 0;
-/* $Procedure ZZGFCOCL ( GF, is cosine of coordinate < reference value? ) */
-
-L_zzgfcocl:
-/* $ Abstract */
-
-/*     Indicate whether the cosine of the coordinate defined by the */
-/*     last call to ZZGFCOIN is less than the reference value. */
-
-/* $ Disclaimer */
-
-/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
-/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
-/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
-/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
-/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
-/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
-/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
-/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
-/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
-/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
-
-/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
-/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
-/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
-/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
-/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
-/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
-
-/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
-/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
-/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
-/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
-
-/* $ Required_Reading */
-
-/*     GF */
-/*     SPK */
-/*     TIME */
-/*     NAIF_IDS */
-/*     FRAMES */
-
-/* $ Keywords */
-
-/*     GEOMETRY */
-/*     PRIVATE */
-/*     ROOT */
-
-/* $ Declarations */
-
-/*     DOUBLE PRECISION      ET */
-/*     LOGICAL               LSSTHN */
-
-/* $ Brief_I/O */
-
-/*     VARIABLE  I/O  DESCRIPTION */
-/*     --------  ---  -------------------------------------------------- */
-/*     ET         I   Computation epoch. */
-/*     LSSTHN     O   Flag indicating if "less than" relation holds. */
-
-/* $ Detailed_Input */
-
-/*     ET             is the computation epoch, expressed as seconds */
-/*                    past J2000 TDB. */
-
-/* $ Detailed_Output */
-
-/*     LSSTHN         is a logical flag indicating whether the cosine of */
-/*                    the coordinate defined by the previous call to */
-/*                    ZZGFCOIN is strictly less than the reference value */
-/*                    at the epoch ET.  LSSTHN is .TRUE. if this */
-/*                    relation holds and .FALSE. otherwise. */
-/* $ Parameters */
-
-/*     None. */
-
-/* $ Exceptions */
-
-/*     1) If an error occurs while this routine computes the coordinate */
-/*        defined by ZZGFCOIN, the error will be diagnosed by */
-/*        routines in the call tree of this routine. */
-
-/* $ Files */
-
-/*     See the Files header section of the umbrella routine ZZGFCOU. */
-
-/* $ Particulars */
-
-/*     None. */
-
-/* $ Examples */
-
-/*     See ZZGFLONG. */
-
-/* $ Restrictions */
-
-/*     1)  The interface and functionality of this set of routines may */
-/*         change without notice.  These routines should be called only */
-/*         by SPICELIB routines. */
-
-/*     2)  ZZGFCOIN must be called prior to use of any of the other */
-/*         entry points. */
-
-/* $ Literature_References */
-
-/*     None. */
-
-/* $ Author_and_Institution */
-
-/*     N.J. Bachman   (JPL) */
-
-/* $ Version */
-
-/* -    SPICELIB Version 1.0.0 05-MAR-2009 (NJB) */
-
-/* -& */
-/* $ Index_Entries */
-
-/*     is cosine of coordinate less than reference value */
-
-/* -& */
-
-/*     Standard SPICE error handling. */
-
-    if (return_()) {
-	return 0;
-    }
-    chkin_("ZZGFCOCL", (ftnlen)8);
-
-/*     Compute the coordinate; compare the cosine to the reference */
-/*     value. */
-
-    zzgfcoq_(svvdef, svmeth, &svtarg, et, svref, svcorr, &svobs, svdref, 
-	    svdvec, svcsys, &svrctr, &svre, &svf, svcrd, &value, &found, (
-	    ftnlen)32, (ftnlen)200, (ftnlen)32, (ftnlen)20, (ftnlen)32, (
-	    ftnlen)32, (ftnlen)32);
-    if (! found) {
-	*lssthn = FALSE_;
-	etcal_(et, timstr, (ftnlen)40);
-	setmsg_("Coordinate # could not be computed at # TDB", (ftnlen)43);
-	errch_("#", svcrd, (ftnlen)1, (ftnlen)32);
-	errch_("#", timstr, (ftnlen)1, (ftnlen)40);
-	sigerr_("SPICE(NOTCOMPUTABLE)", (ftnlen)20);
-	chkout_("ZZGFCOCL", (ftnlen)8);
-	return 0;
-    }
-    *lssthn = cos(value) < svrval;
-    chkout_("ZZGFCOCL", (ftnlen)8);
-    return 0;
-/* $Procedure ZZGFCOSL ( GF, is sine of coordinate < reference value? ) */
-
-L_zzgfcosl:
-/* $ Abstract */
-
-/*     Indicate whether the sine of the coordinate defined by the */
-/*     last call to ZZGFCOIN is less than the reference value. */
-
-/* $ Disclaimer */
-
-/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
-/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
-/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
-/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
-/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
-/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
-/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
-/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
-/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
-/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
-
-/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
-/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
-/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
-/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
-/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
-/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
-
-/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
-/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
-/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
-/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
-
-/* $ Required_Reading */
-
-/*     GF */
-/*     SPK */
-/*     TIME */
-/*     NAIF_IDS */
-/*     FRAMES */
-
-/* $ Keywords */
-
-/*     GEOMETRY */
-/*     PRIVATE */
-/*     ROOT */
-
-/* $ Declarations */
-
-/*     DOUBLE PRECISION      ET */
-/*     LOGICAL               LSSTHN */
-
-/* $ Brief_I/O */
-
-/*     VARIABLE  I/O  DESCRIPTION */
-/*     --------  ---  -------------------------------------------------- */
-/*     ET         I   Computation epoch. */
-/*     LSSTHN     O   Flag indicating if "less than" relation holds. */
-
-/* $ Detailed_Input */
-
-/*     ET             is the computation epoch, expressed as seconds */
-/*                    past J2000 TDB. */
-
-/* $ Detailed_Output */
-
-/*     LSSTHN         is a logical flag indicating whether the sine of */
-/*                    the coordinate defined by the previous call to */
-/*                    ZZGFCOIN is strictly less than the reference value */
-/*                    at the epoch ET.  LSSTHN is .TRUE. if this */
-/*                    relation holds and .FALSE. otherwise. */
-/* $ Parameters */
-
-/*     None. */
-
-/* $ Exceptions */
-
-/*     1) If an error occurs while this routine computes the coordinate */
-/*        defined by ZZGFCOIN, the error will be diagnosed by */
-/*        routines in the call tree of this routine. */
-
-/* $ Files */
-
-/*     See the Files header section of the umbrella routine ZZGFCOU. */
-
-/* $ Particulars */
-
-/*     None. */
-
-/* $ Examples */
-
-/*     See ZZGFLONG. */
-
-/* $ Restrictions */
-
-/*     1)  The interface and functionality of this set of routines may */
-/*         change without notice.  These routines should be called only */
-/*         by SPICELIB routines. */
-
-/*     2)  ZZGFCOIN must be called prior to use of any of the other */
-/*         entry points. */
-
-/* $ Literature_References */
-
-/*     None. */
-
-/* $ Author_and_Institution */
-
-/*     N.J. Bachman   (JPL) */
-
-/* $ Version */
-
-/* -    SPICELIB Version 1.0.0 05-MAR-2009 (NJB) */
-
-/* -& */
-/* $ Index_Entries */
-
-/*     is sine of coordinate less than reference value */
-
-/* -& */
-
-/*     Standard SPICE error handling. */
-
-    if (return_()) {
-	return 0;
-    }
-    chkin_("ZZGFCOSL", (ftnlen)8);
-    zzgfcoq_(svvdef, svmeth, &svtarg, et, svref, svcorr, &svobs, svdref, 
-	    svdvec, svcsys, &svrctr, &svre, &svf, svcrd, &value, &found, (
-	    ftnlen)32, (ftnlen)200, (ftnlen)32, (ftnlen)20, (ftnlen)32, (
-	    ftnlen)32, (ftnlen)32);
-    if (! found) {
-	*lssthn = FALSE_;
-	etcal_(et, timstr, (ftnlen)40);
-	setmsg_("Coordinate # could not be computed at # TDB", (ftnlen)43);
-	errch_("#", svcrd, (ftnlen)1, (ftnlen)32);
-	errch_("#", timstr, (ftnlen)1, (ftnlen)40);
-	sigerr_("SPICE(NOTCOMPUTABLE)", (ftnlen)20);
-	chkout_("ZZGFCOSL", (ftnlen)8);
-	return 0;
-    }
-    *lssthn = sin(value) < svrval;
-    chkout_("ZZGFCOSL", (ftnlen)8);
-    return 0;
 /* $Procedure ZZGFCOCD ( GF, is cosine of coordinate decreasing? ) */
 
 L_zzgfcocd:
@@ -3052,6 +2518,11 @@ L_zzgfcocd:
 
 /* $ Version */
 
+/* -    SPICELIB version 2.0.0 05-APR-2011 (EDW) */
+
+/*        Added UDFUNC to argument list for use of ZZGFRELX when */
+/*        calculating the events. */
+
 /* -    SPICELIB Version 1.0.0 05-MAR-2009 (NJB) */
 
 /* -& */
@@ -3126,7 +2597,7 @@ L_zzgfcocd:
 /*     Pick off the coordinate value. */
 
     value = coords[(i__1 = svcidx - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("coo"
-	    "rds", i__1, "zzgfcou_", (ftnlen)3013)];
+	    "rds", i__1, "zzgfcou_", (ftnlen)2421)];
 
 /*     Compute the proxy for the derivative with respect to time of the */
 /*     coordinate. This proxy gives us the sign of the derivative, which */
@@ -3137,7 +2608,7 @@ L_zzgfcocd:
 /*     The derivative of the coordinate is negative if the "sign" is -1. */
 
     *decres = -sin(value) * cdsign[(i__1 = svcidx - 1) < 3 && 0 <= i__1 ? 
-	    i__1 : s_rnge("cdsign", i__1, "zzgfcou_", (ftnlen)3025)] < 0.;
+	    i__1 : s_rnge("cdsign", i__1, "zzgfcou_", (ftnlen)2433)] < 0.;
     chkout_("ZZGFCOCD", (ftnlen)8);
     return 0;
 /* $Procedure ZZGFCOSD ( GF, is sine of coordinate decreasing? ) */
@@ -3279,6 +2750,11 @@ L_zzgfcosd:
 
 /* $ Version */
 
+/* -    SPICELIB version 2.0.0 05-APR-2011 (EDW) */
+
+/*        Added UDFUNC to argument list for use of ZZGFRELX when */
+/*        calculating the events. */
+
 /* -    SPICELIB Version 1.0.0 05-MAR-2009 (NJB) */
 
 /* -& */
@@ -3352,7 +2828,7 @@ L_zzgfcosd:
 /*     Pick off the coordinate value. */
 
     value = coords[(i__1 = svcidx - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("coo"
-	    "rds", i__1, "zzgfcou_", (ftnlen)3280)];
+	    "rds", i__1, "zzgfcou_", (ftnlen)2693)];
 
 /*     Compute the proxy for the derivative with respect to time of the */
 /*     coordinate. This proxy gives us the sign of the derivative, which */
@@ -3363,135 +2839,98 @@ L_zzgfcosd:
 /*     The derivative of the coordinate is negative if the "sign" is -1. */
 
     *decres = cos(value) * cdsign[(i__1 = svcidx - 1) < 3 && 0 <= i__1 ? i__1 
-	    : s_rnge("cdsign", i__1, "zzgfcou_", (ftnlen)3292)] < 0.;
+	    : s_rnge("cdsign", i__1, "zzgfcou_", (ftnlen)2705)] < 0.;
     chkout_("ZZGFCOSD", (ftnlen)8);
     return 0;
 } /* zzgfcou_ */
 
 /* Subroutine */ int zzgfcou_(char *vecdef, char *method, char *target, 
 	doublereal *et, char *ref, char *abcorr, char *obsrvr, char *dref, 
-	doublereal *dvec, char *crdsys, char *crdnam, doublereal *refval, 
-	logical *decres, logical *lssthn, doublereal *crdval, logical *crdfnd,
-	 ftnlen vecdef_len, ftnlen method_len, ftnlen target_len, ftnlen 
-	ref_len, ftnlen abcorr_len, ftnlen obsrvr_len, ftnlen dref_len, 
-	ftnlen crdsys_len, ftnlen crdnam_len)
+	doublereal *dvec, char *crdsys, char *crdnam, logical *decres, 
+	doublereal *crdval, logical *crdfnd, U_fp udfunc, ftnlen vecdef_len, 
+	ftnlen method_len, ftnlen target_len, ftnlen ref_len, ftnlen 
+	abcorr_len, ftnlen obsrvr_len, ftnlen dref_len, ftnlen crdsys_len, 
+	ftnlen crdnam_len)
 {
     return zzgfcou_0_(0, vecdef, method, target, et, ref, abcorr, obsrvr, 
-	    dref, dvec, crdsys, crdnam, refval, decres, lssthn, crdval, 
-	    crdfnd, vecdef_len, method_len, target_len, ref_len, abcorr_len, 
+	    dref, dvec, crdsys, crdnam, decres, crdval, crdfnd, udfunc, 
+	    vecdef_len, method_len, target_len, ref_len, abcorr_len, 
 	    obsrvr_len, dref_len, crdsys_len, crdnam_len);
     }
 
 /* Subroutine */ int zzgfcoin_(char *vecdef, char *method, char *target, char 
 	*ref, char *abcorr, char *obsrvr, char *dref, doublereal *dvec, char *
-	crdsys, char *crdnam, doublereal *refval, ftnlen vecdef_len, ftnlen 
-	method_len, ftnlen target_len, ftnlen ref_len, ftnlen abcorr_len, 
-	ftnlen obsrvr_len, ftnlen dref_len, ftnlen crdsys_len, ftnlen 
-	crdnam_len)
+	crdsys, char *crdnam, ftnlen vecdef_len, ftnlen method_len, ftnlen 
+	target_len, ftnlen ref_len, ftnlen abcorr_len, ftnlen obsrvr_len, 
+	ftnlen dref_len, ftnlen crdsys_len, ftnlen crdnam_len)
 {
     return zzgfcou_0_(1, vecdef, method, target, (doublereal *)0, ref, abcorr,
-	     obsrvr, dref, dvec, crdsys, crdnam, refval, (logical *)0, (
-	    logical *)0, (doublereal *)0, (logical *)0, vecdef_len, 
-	    method_len, target_len, ref_len, abcorr_len, obsrvr_len, dref_len,
-	     crdsys_len, crdnam_len);
-    }
-
-/* Subroutine */ int zzgfcour_(doublereal *refval)
-{
-    return zzgfcou_0_(2, (char *)0, (char *)0, (char *)0, (doublereal *)0, (
-	    char *)0, (char *)0, (char *)0, (char *)0, (doublereal *)0, (char 
-	    *)0, (char *)0, refval, (logical *)0, (logical *)0, (doublereal *)
-	    0, (logical *)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
-	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
+	     obsrvr, dref, dvec, crdsys, crdnam, (logical *)0, (doublereal *)
+	    0, (logical *)0, (U_fp)0, vecdef_len, method_len, target_len, 
+	    ref_len, abcorr_len, obsrvr_len, dref_len, crdsys_len, crdnam_len)
+	    ;
     }
 
 /* Subroutine */ int zzgfcog_(doublereal *et, doublereal *crdval)
 {
-    return zzgfcou_0_(3, (char *)0, (char *)0, (char *)0, et, (char *)0, (
+    return zzgfcou_0_(2, (char *)0, (char *)0, (char *)0, et, (char *)0, (
 	    char *)0, (char *)0, (char *)0, (doublereal *)0, (char *)0, (char 
-	    *)0, (doublereal *)0, (logical *)0, (logical *)0, crdval, (
-	    logical *)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)
-	    0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
+	    *)0, (logical *)0, crdval, (logical *)0, (U_fp)0, (ftnint)0, (
+	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
+	    ftnint)0, (ftnint)0);
     }
 
-/* Subroutine */ int zzgfcolt_(doublereal *et, logical *lssthn)
+/* Subroutine */ int zzgfcodc_(U_fp udfunc, doublereal *et, logical *decres)
+{
+    return zzgfcou_0_(3, (char *)0, (char *)0, (char *)0, et, (char *)0, (
+	    char *)0, (char *)0, (char *)0, (doublereal *)0, (char *)0, (char 
+	    *)0, decres, (doublereal *)0, (logical *)0, udfunc, (ftnint)0, (
+	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
+	    ftnint)0, (ftnint)0);
+    }
+
+/* Subroutine */ int zzgfcoex_(U_fp udfunc, doublereal *et, logical *crdfnd)
 {
     return zzgfcou_0_(4, (char *)0, (char *)0, (char *)0, et, (char *)0, (
 	    char *)0, (char *)0, (char *)0, (doublereal *)0, (char *)0, (char 
-	    *)0, (doublereal *)0, (logical *)0, lssthn, (doublereal *)0, (
-	    logical *)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)
-	    0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
-    }
-
-/* Subroutine */ int zzgfcodc_(doublereal *et, logical *decres)
-{
-    return zzgfcou_0_(5, (char *)0, (char *)0, (char *)0, et, (char *)0, (
-	    char *)0, (char *)0, (char *)0, (doublereal *)0, (char *)0, (char 
-	    *)0, (doublereal *)0, decres, (logical *)0, (doublereal *)0, (
-	    logical *)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)
-	    0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
-    }
-
-/* Subroutine */ int zzgfcoex_(doublereal *et, logical *crdfnd)
-{
-    return zzgfcou_0_(6, (char *)0, (char *)0, (char *)0, et, (char *)0, (
-	    char *)0, (char *)0, (char *)0, (doublereal *)0, (char *)0, (char 
-	    *)0, (doublereal *)0, (logical *)0, (logical *)0, (doublereal *)0,
-	     crdfnd, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
-	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
+	    *)0, (logical *)0, (doublereal *)0, crdfnd, udfunc, (ftnint)0, (
+	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
+	    ftnint)0, (ftnint)0);
     }
 
 /* Subroutine */ int zzgfcocg_(doublereal *et, doublereal *crdval)
 {
-    return zzgfcou_0_(7, (char *)0, (char *)0, (char *)0, et, (char *)0, (
+    return zzgfcou_0_(5, (char *)0, (char *)0, (char *)0, et, (char *)0, (
 	    char *)0, (char *)0, (char *)0, (doublereal *)0, (char *)0, (char 
-	    *)0, (doublereal *)0, (logical *)0, (logical *)0, crdval, (
-	    logical *)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)
-	    0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
+	    *)0, (logical *)0, crdval, (logical *)0, (U_fp)0, (ftnint)0, (
+	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
+	    ftnint)0, (ftnint)0);
     }
 
 /* Subroutine */ int zzgfcosg_(doublereal *et, doublereal *crdval)
 {
+    return zzgfcou_0_(6, (char *)0, (char *)0, (char *)0, et, (char *)0, (
+	    char *)0, (char *)0, (char *)0, (doublereal *)0, (char *)0, (char 
+	    *)0, (logical *)0, crdval, (logical *)0, (U_fp)0, (ftnint)0, (
+	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
+	    ftnint)0, (ftnint)0);
+    }
+
+/* Subroutine */ int zzgfcocd_(U_fp udfunc, doublereal *et, logical *decres)
+{
+    return zzgfcou_0_(7, (char *)0, (char *)0, (char *)0, et, (char *)0, (
+	    char *)0, (char *)0, (char *)0, (doublereal *)0, (char *)0, (char 
+	    *)0, decres, (doublereal *)0, (logical *)0, udfunc, (ftnint)0, (
+	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
+	    ftnint)0, (ftnint)0);
+    }
+
+/* Subroutine */ int zzgfcosd_(U_fp udfunc, doublereal *et, logical *decres)
+{
     return zzgfcou_0_(8, (char *)0, (char *)0, (char *)0, et, (char *)0, (
 	    char *)0, (char *)0, (char *)0, (doublereal *)0, (char *)0, (char 
-	    *)0, (doublereal *)0, (logical *)0, (logical *)0, crdval, (
-	    logical *)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)
-	    0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
-    }
-
-/* Subroutine */ int zzgfcocl_(doublereal *et, logical *lssthn)
-{
-    return zzgfcou_0_(9, (char *)0, (char *)0, (char *)0, et, (char *)0, (
-	    char *)0, (char *)0, (char *)0, (doublereal *)0, (char *)0, (char 
-	    *)0, (doublereal *)0, (logical *)0, lssthn, (doublereal *)0, (
-	    logical *)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)
-	    0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
-    }
-
-/* Subroutine */ int zzgfcosl_(doublereal *et, logical *lssthn)
-{
-    return zzgfcou_0_(10, (char *)0, (char *)0, (char *)0, et, (char *)0, (
-	    char *)0, (char *)0, (char *)0, (doublereal *)0, (char *)0, (char 
-	    *)0, (doublereal *)0, (logical *)0, lssthn, (doublereal *)0, (
-	    logical *)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)
-	    0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
-    }
-
-/* Subroutine */ int zzgfcocd_(doublereal *et, logical *decres)
-{
-    return zzgfcou_0_(11, (char *)0, (char *)0, (char *)0, et, (char *)0, (
-	    char *)0, (char *)0, (char *)0, (doublereal *)0, (char *)0, (char 
-	    *)0, (doublereal *)0, decres, (logical *)0, (doublereal *)0, (
-	    logical *)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)
-	    0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
-    }
-
-/* Subroutine */ int zzgfcosd_(doublereal *et, logical *decres)
-{
-    return zzgfcou_0_(12, (char *)0, (char *)0, (char *)0, et, (char *)0, (
-	    char *)0, (char *)0, (char *)0, (doublereal *)0, (char *)0, (char 
-	    *)0, (doublereal *)0, decres, (logical *)0, (doublereal *)0, (
-	    logical *)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)
-	    0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
+	    *)0, decres, (doublereal *)0, (logical *)0, udfunc, (ftnint)0, (
+	    ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0, (
+	    ftnint)0, (ftnint)0);
     }
 

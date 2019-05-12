@@ -193,6 +193,10 @@ static logical c_false = FALSE_;
 
 /* $ Version */
 
+/* -    SPICELIB Version 3.6.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GCC_C. */
+
 /* -    SPICELIB Version 3.5.0, 13-MAY-2010 (BVS) */
 
 /*        Updated for SUN-SOLARIS-INTEL-CC_C. */

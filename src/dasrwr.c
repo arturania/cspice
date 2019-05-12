@@ -10,6 +10,7 @@
 static integer c__10 = 10;
 static integer c__1 = 1;
 static integer c__128 = 128;
+static logical c_false = FALSE_;
 static integer c__256 = 256;
 static integer c__1024 = 1024;
 
@@ -23,9 +24,6 @@ static integer c__1024 = 1024;
 
     static logical pass1 = TRUE_;
     static integer hnbufi[10] = { 0,0,0,0,0,0,0,0,0,0 };
-    static integer lubufc[10] = { 0,0,0,0,0,0,0,0,0,0 };
-    static integer lubufd[10] = { 0,0,0,0,0,0,0,0,0,0 };
-    static integer lubufi[10] = { 0,0,0,0,0,0,0,0,0,0 };
     static logical upbufc[10] = { FALSE_,FALSE_,FALSE_,FALSE_,FALSE_,FALSE_,
 	    FALSE_,FALSE_,FALSE_,FALSE_ };
     static logical upbufd[10] = { FALSE_,FALSE_,FALSE_,FALSE_,FALSE_,FALSE_,
@@ -35,6 +33,8 @@ static integer c__1024 = 1024;
     static integer headc = 0;
     static integer headd = 0;
     static integer headi = 0;
+    static integer unit = -1;
+    static integer wrunit = -1;
     static integer usedc = 0;
     static integer usedd = 0;
     static integer usedi = 0;
@@ -45,16 +45,19 @@ static integer c__1024 = 1024;
     static integer hnbufd[10] = { 0,0,0,0,0,0,0,0,0,0 };
 
     /* System generated locals */
-    integer i__1, i__2, i__3;
+    integer i__1, i__2;
 
     /* Builtin functions */
     integer s_rnge(char *, integer, char *, integer);
     /* Subroutine */ int s_copy(char *, char *, ftnlen, ftnlen);
 
     /* Local variables */
-    static integer node, next, unit;
-    extern /* Subroutine */ int chkin_(char *, ftnlen), lnkan_(integer *, 
-	    integer *), moved_(doublereal *, integer *, doublereal *);
+    static integer node, next;
+    extern /* Subroutine */ int zzdasgrd_(integer *, integer *, doublereal *),
+	     zzddhhlu_(integer *, char *, logical *, integer *, ftnlen), 
+	    zzdasgri_(integer *, integer *, integer *), chkin_(char *, ftnlen)
+	    , lnkan_(integer *, integer *), moved_(doublereal *, integer *, 
+	    doublereal *);
     static integer poolc[32]	/* was [2][16] */, poold[32]	/* was [2][16]
 	     */;
     extern /* Subroutine */ int movei_(integer *, integer *, integer *);
@@ -70,13 +73,12 @@ static integer c__1024 = 1024;
 	    *, ftnlen);
     static integer rcbufi[2560]	/* was [256][10] */;
     extern /* Subroutine */ int lnkilb_(integer *, integer *, integer *), 
-	    dassih_(integer *, char *, ftnlen), lnkini_(integer *, integer *),
-	     sigerr_(char *, ftnlen), chkout_(char *, ftnlen), dashlu_(
-	    integer *, integer *), errfnm_(char *, integer *, ftnlen), 
-	    setmsg_(char *, ftnlen), errint_(char *, integer *, ftnlen), 
+	    dassih_(integer *, char *, ftnlen), errhan_(char *, integer *, 
+	    ftnlen), lnkini_(integer *, integer *), sigerr_(char *, ftnlen), 
+	    chkout_(char *, ftnlen), setmsg_(char *, ftnlen), errint_(char *, 
+	    integer *, ftnlen), lnkfsl_(integer *, integer *, integer *), 
 	    lnkxsl_(integer *, integer *, integer *);
     extern logical return_(void);
-    extern /* Subroutine */ int lnkfsl_(integer *, integer *, integer *);
 
 /* $ Abstract */
 
@@ -132,9 +134,12 @@ static integer c__1024 = 1024;
 /*     DATAD      O   RRD, URD */
 /*     DATAI      O   RRI, URI */
 /*     DATAC      O   RRC, URC */
-/*     BUFSZD     P   RRD, WRD */
-/*     BUFSZI     P   RRI, WRI */
-/*     BUFSZC     P   RRC, WRC */
+/*     NWD        P   RRD, WRD, URD */
+/*     NWI        P   RRI, WRI, URI */
+/*     NWC        P   RRC, WRC, URC */
+/*     BUFSZD     P   RRD, WRD, URD */
+/*     BUFSZI     P   RRI, WRI, URI */
+/*     BUFSZC     P   RRC, WRC, URC */
 
 /* $ Detailed_Input */
 
@@ -146,6 +151,15 @@ static integer c__1024 = 1024;
 
 /* $ Parameters */
 
+/*     NWD           is the number of DPs in a single DAS record */
+/*                   containing DPs. */
+
+/*     NWI           is the number of integers in a single DAS record */
+/*                   containing integers. */
+
+/*     NWC           is the number of characters in a single DAS record */
+/*                   containing characters. */
+
 /*     BUFSZD, */
 /*     BUFSZI, */
 /*     BUFSZC        are, respectively, the number of records in the */
@@ -155,7 +169,7 @@ static integer c__1024 = 1024;
 /* $ Exceptions */
 
 /*     1)  If this routine is called directly, the error */
-/*         SPICE(BOGUSENTRY) will be signalled. */
+/*         SPICE(BOGUSENTRY) will be signaled. */
 
 /*     See the entry points for discussions of their exceptions. */
 
@@ -251,8 +265,19 @@ static integer c__1024 = 1024;
 /*     K.R. Gehringer (JPL) */
 /*     N.J. Bachman   (JPL) */
 /*     W.L. Taber     (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 05-FEB-2015 (NJB) */
+
+/*        Upgraded to support handle manager integration and */
+/*        reading of non-native files. */
+
+/* -    SPICELIB Version 1.1.1, 10-FEB-2014 (BVS) */
+
+/*        Added description of NWD, NWI, and NWC to the Parameters */
+/*        and Brief_I/O sections of the header. */
 
 /* -    SPICELIB Version 1.1.0, 17-NOV-1995 (NJB) */
 
@@ -314,7 +339,6 @@ static integer c__1024 = 1024;
 /*        -- data records */
 /*        -- Fortran record numbers */
 /*        -- file handles */
-/*        -- Fortran logical unit numbers */
 /*        -- Update flags */
 
 /*     In addition, for each buffer there is a doubly linked list that */
@@ -327,20 +351,20 @@ static integer c__1024 = 1024;
 
 
 
-/*     Linked          Record       Record   Handles   Unit     Update */
-/*      List           buffer       Numbers           Numbers   Flags */
+/*     Linked          Record       Record   Handles   Update */
+/*      List           buffer       Numbers            Flags */
 
-/*      +---+      +------------+    +---+    +---+    +---+    +---+ */
-/*      |   | ---> |            |    |   |    |   |    |   |    |   | */
-/*      +---+      +------------+    +---+    +---+    +---+    +---+ */
-/*      |   | ---> |            |    |   |    |   |    |   |    |   | */
-/*      +---+      +------------+    +---+    +---+    +---+    +---+ */
-/*        .              .             .        .        .        . */
-/*        .              .             .        .        .        . */
-/*        .              .             .        .        .        . */
-/*      +---+      +------------+    +---+    +---+    +---+    +---+ */
-/*      |   | ---> |            |    |   |    |   |    |   |    |   | */
-/*      +---+      +------------+    +---+    +---+    +---+    +---+ */
+/*      +---+      +------------+    +---+    +---+    +---+ */
+/*      |   | ---> |            |    |   |    |   |    |   | */
+/*      +---+      +------------+    +---+    +---+    +---+ */
+/*      |   | ---> |            |    |   |    |   |    |   | */
+/*      +---+      +------------+    +---+    +---+    +---+ */
+/*        .              .             .        .        . */
+/*        .              .             .        .        . */
+/*        .              .             .        .        . */
+/*      +---+      +------------+    +---+    +---+    +---+ */
+/*      |   | ---> |            |    |   |    |   |    |   | */
+/*      +---+      +------------+    +---+    +---+    +---+ */
 
 
 
@@ -449,6 +473,8 @@ L_dasrrd:
 /*     FIRST, */
 /*     LAST       I   First and last indices of range within record. */
 /*     DATAD      O   Double precision data read from record. */
+/*     BUFSZD     P   Number of records in the DP record buffer. */
+/*     NWD        P   Number of DP in a single DAS DP record. */
 
 /* $ Detailed_Input */
 
@@ -474,8 +500,11 @@ L_dasrrd:
 
 /* $ Parameters */
 
-/*     BUFSZD        is the number of records in the double precision */
-/*                   record buffer. */
+/*     NWD            is the number of DPs in a single DAS record */
+/*                    containing DPs. */
+
+/*     BUFSZD         is the number of records in the double precision */
+/*                    record buffer. */
 
 /* $ Exceptions */
 
@@ -497,7 +526,7 @@ L_dasrrd:
 /*         writing. */
 
 /*     4)  If FIRST or LAST is not in the range [1, NWD], the error */
-/*         SPICE(INDEXOUTOFRANGE) will be signalled.  The output argument */
+/*         SPICE(INDEXOUTOFRANGE) will be signaled.  The output argument */
 /*         DATAD will not be modified. */
 
 /*     5)  If FIRST > LAST, this routine will return without modifying */
@@ -542,8 +571,19 @@ L_dasrrd:
 /*     K.R. Gehringer (JPL) */
 /*     N.J. Bachman   (JPL) */
 /*     W.L. Taber     (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 05-FEB-2015 (NJB) */
+
+/*        Upgraded to support handle manager integration and */
+/*        reading of non-native files. */
+
+/* -    SPICELIB Version 1.1.1, 10-FEB-2014 (BVS) */
+
+/*        Added description of NWD to the Parameters and Brief_I/O */
+/*        sections of the header. */
 
 /* -    SPICELIB Version 1.1.0, 03-NOV-1995 (NJB) */
 
@@ -601,7 +641,6 @@ L_dasrrd:
 
     if (*first < 1 || *first > 128 || *last < 1 || *last > 128) {
 	chkin_("DASRRD", (ftnlen)6);
-	dashlu_(handle, &unit);
 	setmsg_("Array indices FIRST and LAST were #,  #; allowed range for "
 		"both is [#, #]. File was #, record number was #.", (ftnlen)
 		107);
@@ -609,7 +648,7 @@ L_dasrrd:
 	errint_("#", last, (ftnlen)1);
 	errint_("#", &c__1, (ftnlen)1);
 	errint_("#", &c__128, (ftnlen)1);
-	errfnm_("#", &unit, (ftnlen)1);
+	errhan_("#", handle, (ftnlen)1);
 	errint_("#", recno, (ftnlen)1);
 	sigerr_("SPICE(INDEXOUTOFRANGE)", (ftnlen)22);
 	chkout_("DASRRD", (ftnlen)6);
@@ -631,9 +670,9 @@ L_dasrrd:
     node = headd;
     while(node > 0) {
 	if (*handle == hnbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("hnbufd", i__1, "dasrwr_", (ftnlen)685)] && *recno == 
+		s_rnge("hnbufd", i__1, "dasrwr_", (ftnlen)715)] && *recno == 
 		rnbufd[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		"rnbufd", i__2, "dasrwr_", (ftnlen)685)]) {
+		"rnbufd", i__2, "dasrwr_", (ftnlen)715)]) {
 
 /*           Found it.  Move this record to the head of the list. */
 /*           Update our head pointer as required. */
@@ -649,12 +688,12 @@ L_dasrrd:
 	    if (*first == *last) {
 		datad[0] = rcbufd[(i__1 = *first + (node << 7) - 129) < 1280 
 			&& 0 <= i__1 ? i__1 : s_rnge("rcbufd", i__1, "dasrwr_"
-			, (ftnlen)705)];
+			, (ftnlen)735)];
 	    } else {
 		i__2 = *last - *first + 1;
 		moved_(&rcbufd[(i__1 = *first + (node << 7) - 129) < 1280 && 
 			0 <= i__1 ? i__1 : s_rnge("rcbufd", i__1, "dasrwr_", (
-			ftnlen)709)], &i__2, datad);
+			ftnlen)739)], &i__2, datad);
 	    }
 
 /*           We haven't checked in, so don't check out. */
@@ -662,7 +701,7 @@ L_dasrrd:
 	    return 0;
 	}
 	node = poold[(i__1 = (node << 1) + 10) < 32 && 0 <= i__1 ? i__1 : 
-		s_rnge("poold", i__1, "dasrwr_", (ftnlen)720)];
+		s_rnge("poold", i__1, "dasrwr_", (ftnlen)750)];
     }
 
 /*     The record wasn't buffered.  We need to allocate entries to */
@@ -684,14 +723,26 @@ L_dasrrd:
 /*        If the allocated buffer entry was updated, write it out. */
 
 	if (upbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbu"
-		"fd", i__1, "dasrwr_", (ftnlen)746)]) {
-	    dasiod_("WRITE", &lubufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? 
-		    i__1 : s_rnge("lubufd", i__1, "dasrwr_", (ftnlen)748)], &
-		    rnbufd[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : 
-		    s_rnge("rnbufd", i__2, "dasrwr_", (ftnlen)748)], &rcbufd[(
-		    i__3 = (node << 7) - 128) < 1280 && 0 <= i__3 ? i__3 : 
-		    s_rnge("rcbufd", i__3, "dasrwr_", (ftnlen)748)], (ftnlen)
-		    5);
+		"fd", i__1, "dasrwr_", (ftnlen)776)]) {
+
+/*           We'll need a logical unit in order to write to the file. */
+
+	    zzddhhlu_(&hnbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
+		    s_rnge("hnbufd", i__1, "dasrwr_", (ftnlen)780)], "DAS", &
+		    c_false, &wrunit, (ftnlen)3);
+	    if (failed_()) {
+		chkout_("DASRRD", (ftnlen)6);
+		return 0;
+	    }
+	    dasiod_("WRITE", &wrunit, &rnbufd[(i__1 = node - 1) < 10 && 0 <= 
+		    i__1 ? i__1 : s_rnge("rnbufd", i__1, "dasrwr_", (ftnlen)
+		    787)], &rcbufd[(i__2 = (node << 7) - 128) < 1280 && 0 <= 
+		    i__2 ? i__2 : s_rnge("rcbufd", i__2, "dasrwr_", (ftnlen)
+		    787)], (ftnlen)5);
+	    if (failed_()) {
+		chkout_("DASRRD", (ftnlen)6);
+		return 0;
+	    }
 	}
     } else {
 
@@ -704,10 +755,8 @@ L_dasrrd:
 
 /*     Try to read the record. */
 
-    dashlu_(handle, &unit);
-    dasiod_("READ", &unit, recno, &rcbufd[(i__1 = (node << 7) - 128) < 1280 &&
-	     0 <= i__1 ? i__1 : s_rnge("rcbufd", i__1, "dasrwr_", (ftnlen)770)
-	    ], (ftnlen)4);
+    zzdasgrd_(handle, recno, &rcbufd[(i__1 = (node << 7) - 128) < 1280 && 0 <=
+	     i__1 ? i__1 : s_rnge("rcbufd", i__1, "dasrwr_", (ftnlen)813)]);
     if (failed_()) {
 	chkout_("DASRRD", (ftnlen)6);
 	return 0;
@@ -717,25 +766,23 @@ L_dasrrd:
 /*     entries for this record in before the current head of the */
 /*     list, thus putting them at the head. */
 
-/*     Set the file handle, record number, unit, and update flag for */
+/*     Set the file handle, record number, and update flag for */
 /*     this record. */
 
     lnkilb_(&node, &headd, poold);
     hnbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("hnbufd", i__1,
-	     "dasrwr_", (ftnlen)787)] = *handle;
+	     "dasrwr_", (ftnlen)830)] = *handle;
     rnbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("rnbufd", i__1,
-	     "dasrwr_", (ftnlen)788)] = *recno;
-    lubufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("lubufd", i__1,
-	     "dasrwr_", (ftnlen)789)] = unit;
+	     "dasrwr_", (ftnlen)831)] = *recno;
     upbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbufd", i__1,
-	     "dasrwr_", (ftnlen)790)] = FALSE_;
+	     "dasrwr_", (ftnlen)832)] = FALSE_;
     headd = node;
 
 /*     Don't forget to return the requested data. */
 
     i__2 = *last - *first + 1;
     moved_(&rcbufd[(i__1 = *first + (node << 7) - 129) < 1280 && 0 <= i__1 ? 
-	    i__1 : s_rnge("rcbufd", i__1, "dasrwr_", (ftnlen)796)], &i__2, 
+	    i__1 : s_rnge("rcbufd", i__1, "dasrwr_", (ftnlen)838)], &i__2, 
 	    datad);
     chkout_("DASRRD", (ftnlen)6);
     return 0;
@@ -798,6 +845,8 @@ L_dasrri:
 /*     FIRST, */
 /*     LAST       I   First and last indices of range within record. */
 /*     DATAI      O   Integer data read from record. */
+/*     BUFSZI     P   Number of records in the integer record buffer. */
+/*     NWI        P   Number of integers in a single DAS integer record. */
 
 /* $ Detailed_Input */
 
@@ -822,6 +871,9 @@ L_dasrri:
 
 /* $ Parameters */
 
+/*     NWI           is the number of integers in a single DAS record */
+/*                   containing integers. */
+
 /*     BUFSZI        is the number of records in the integer record */
 /*                   buffer. */
 
@@ -844,7 +896,7 @@ L_dasrri:
 /*         HANDLE if multiple DAS files are open for writing. */
 
 /*     4)  If FIRST or LAST is not in the range [1, NWI], the error */
-/*         SPICE(INDEXOUTOFRANGE) will be signalled.  The output argument */
+/*         SPICE(INDEXOUTOFRANGE) will be signaled.  The output argument */
 /*         DATAI will not be modified. */
 
 /*     5)  If FIRST > LAST, this routine will return without modifying */
@@ -889,8 +941,19 @@ L_dasrri:
 /*     K.R. Gehringer (JPL) */
 /*     N.J. Bachman   (JPL) */
 /*     W.L. Taber     (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 05-FEB-2015 (NJB) */
+
+/*        Upgraded to support handle manager integration and */
+/*        reading of non-native files. */
+
+/* -    SPICELIB Version 1.1.1, 10-FEB-2014 (BVS) */
+
+/*        Added description of NWI to the Parameters and Brief_I/O */
+/*        sections of the header. */
 
 /* -    SPICELIB Version 1.1.0, 03-NOV-1995 (NJB) */
 
@@ -950,7 +1013,6 @@ L_dasrri:
 
     if (*first < 1 || *first > 256 || *last < 1 || *last > 256) {
 	chkin_("DASRRI", (ftnlen)6);
-	dashlu_(handle, &unit);
 	setmsg_("Array indices FIRST and LAST were #,  #; allowed range for "
 		"both is [#, #]. File was #, record number was #.", (ftnlen)
 		107);
@@ -958,7 +1020,7 @@ L_dasrri:
 	errint_("#", last, (ftnlen)1);
 	errint_("#", &c__1, (ftnlen)1);
 	errint_("#", &c__256, (ftnlen)1);
-	errfnm_("#", &unit, (ftnlen)1);
+	errhan_("#", handle, (ftnlen)1);
 	errint_("#", recno, (ftnlen)1);
 	sigerr_("SPICE(INDEXOUTOFRANGE)", (ftnlen)22);
 	chkout_("DASRRI", (ftnlen)6);
@@ -980,9 +1042,9 @@ L_dasrri:
     node = headi;
     while(node > 0) {
 	if (*handle == hnbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("hnbufi", i__1, "dasrwr_", (ftnlen)1068)] && *recno == 
+		s_rnge("hnbufi", i__1, "dasrwr_", (ftnlen)1124)] && *recno == 
 		rnbufi[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		"rnbufi", i__2, "dasrwr_", (ftnlen)1068)]) {
+		"rnbufi", i__2, "dasrwr_", (ftnlen)1124)]) {
 
 
 /*           Found it.  Move this record to the head of the list. */
@@ -999,12 +1061,12 @@ L_dasrri:
 	    if (*first == *last) {
 		datai[0] = rcbufi[(i__1 = *first + (node << 8) - 257) < 2560 
 			&& 0 <= i__1 ? i__1 : s_rnge("rcbufi", i__1, "dasrwr_"
-			, (ftnlen)1089)];
+			, (ftnlen)1145)];
 	    } else {
 		i__2 = *last - *first + 1;
 		movei_(&rcbufi[(i__1 = *first + (node << 8) - 257) < 2560 && 
 			0 <= i__1 ? i__1 : s_rnge("rcbufi", i__1, "dasrwr_", (
-			ftnlen)1093)], &i__2, datai);
+			ftnlen)1149)], &i__2, datai);
 	    }
 
 /*           We haven't checked in, so don't check out. */
@@ -1012,7 +1074,7 @@ L_dasrri:
 	    return 0;
 	}
 	node = pooli[(i__1 = (node << 1) + 10) < 32 && 0 <= i__1 ? i__1 : 
-		s_rnge("pooli", i__1, "dasrwr_", (ftnlen)1104)];
+		s_rnge("pooli", i__1, "dasrwr_", (ftnlen)1160)];
     }
 
 /*     The record wasn't buffered.  We need to allocate entries to */
@@ -1034,14 +1096,19 @@ L_dasrri:
 /*        If the allocated buffer entry was updated, write it out. */
 
 	if (upbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbu"
-		"fi", i__1, "dasrwr_", (ftnlen)1130)]) {
-	    dasioi_("WRITE", &lubufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? 
-		    i__1 : s_rnge("lubufi", i__1, "dasrwr_", (ftnlen)1132)], &
-		    rnbufi[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : 
-		    s_rnge("rnbufi", i__2, "dasrwr_", (ftnlen)1132)], &rcbufi[
-		    (i__3 = (node << 8) - 256) < 2560 && 0 <= i__3 ? i__3 : 
-		    s_rnge("rcbufi", i__3, "dasrwr_", (ftnlen)1132)], (ftnlen)
-		    5);
+		"fi", i__1, "dasrwr_", (ftnlen)1186)]) {
+	    zzddhhlu_(&hnbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
+		    s_rnge("hnbufi", i__1, "dasrwr_", (ftnlen)1188)], "DAS", &
+		    c_false, &wrunit, (ftnlen)3);
+	    dasioi_("WRITE", &wrunit, &rnbufi[(i__1 = node - 1) < 10 && 0 <= 
+		    i__1 ? i__1 : s_rnge("rnbufi", i__1, "dasrwr_", (ftnlen)
+		    1190)], &rcbufi[(i__2 = (node << 8) - 256) < 2560 && 0 <= 
+		    i__2 ? i__2 : s_rnge("rcbufi", i__2, "dasrwr_", (ftnlen)
+		    1190)], (ftnlen)5);
+	    if (failed_()) {
+		chkout_("DASRRI", (ftnlen)6);
+		return 0;
+	    }
 	}
     } else {
 
@@ -1054,10 +1121,8 @@ L_dasrri:
 
 /*     Try to read the record. */
 
-    dashlu_(handle, &unit);
-    dasioi_("READ", &unit, recno, &rcbufi[(i__1 = (node << 8) - 256) < 2560 &&
-	     0 <= i__1 ? i__1 : s_rnge("rcbufi", i__1, "dasrwr_", (ftnlen)
-	    1153)], (ftnlen)4);
+    zzdasgri_(handle, recno, &rcbufi[(i__1 = (node << 8) - 256) < 2560 && 0 <=
+	     i__1 ? i__1 : s_rnge("rcbufi", i__1, "dasrwr_", (ftnlen)1216)]);
     if (failed_()) {
 	chkout_("DASRRI", (ftnlen)6);
 	return 0;
@@ -1067,25 +1132,23 @@ L_dasrri:
 /*     entries for this record in before the current head of the */
 /*     list, thus putting them at the head. */
 
-/*     Set the file handle, record number, unit, and update flag for */
+/*     Set the file handle, record number, and update flag for */
 /*     this record. */
 
     lnkilb_(&node, &headi, pooli);
     hnbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("hnbufi", i__1,
-	     "dasrwr_", (ftnlen)1170)] = *handle;
+	     "dasrwr_", (ftnlen)1233)] = *handle;
     rnbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("rnbufi", i__1,
-	     "dasrwr_", (ftnlen)1171)] = *recno;
-    lubufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("lubufi", i__1,
-	     "dasrwr_", (ftnlen)1172)] = unit;
+	     "dasrwr_", (ftnlen)1234)] = *recno;
     upbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbufi", i__1,
-	     "dasrwr_", (ftnlen)1173)] = FALSE_;
+	     "dasrwr_", (ftnlen)1235)] = FALSE_;
     headi = node;
 
 /*     Don't forget to return the requested data. */
 
     i__2 = *last - *first + 1;
     movei_(&rcbufi[(i__1 = *first + (node << 8) - 257) < 2560 && 0 <= i__1 ? 
-	    i__1 : s_rnge("rcbufi", i__1, "dasrwr_", (ftnlen)1179)], &i__2, 
+	    i__1 : s_rnge("rcbufi", i__1, "dasrwr_", (ftnlen)1241)], &i__2, 
 	    datai);
     chkout_("DASRRI", (ftnlen)6);
     return 0;
@@ -1148,6 +1211,8 @@ L_dasrrc:
 /*     FIRST, */
 /*     LAST       I   First and last indices of range within record. */
 /*     DATAC      O   Character data read from record. */
+/*     BUFSZC     P   Number of records in the character record buffer. */
+/*     NWC        P   Number of characters in a single DAS char. record. */
 
 /* $ Detailed_Input */
 
@@ -1172,6 +1237,9 @@ L_dasrrc:
 
 /* $ Parameters */
 
+/*     NWC           is the number of characters in a single DAS record */
+/*                   containing characters. */
+
 /*     BUFSZC        is the number of records in the character record */
 /*                   buffer. */
 
@@ -1195,7 +1263,7 @@ L_dasrrc:
 /*         writing. */
 
 /*     4)  If FIRST or LAST is not in the range [1, NWC], the error */
-/*         SPICE(INDEXOUTOFRANGE) will be signalled.  The output argument */
+/*         SPICE(INDEXOUTOFRANGE) will be signaled.  The output argument */
 /*         DATAC will not be modified. */
 
 /*     5)  If FIRST > LAST, this routine will return without modifying */
@@ -1240,8 +1308,18 @@ L_dasrrc:
 /*     K.R. Gehringer (JPL) */
 /*     N.J. Bachman   (JPL) */
 /*     W.L. Taber     (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 05-FEB-2015 (NJB) */
+
+/*        Upgraded to support handle manager integration. */
+
+/* -    SPICELIB Version 1.1.1, 10-FEB-2014 (BVS) */
+
+/*        Added description of NWC to the Parameters and Brief_I/O */
+/*        sections of the header. */
 
 /* -    SPICELIB Version 1.1.0, 09-NOV-1995 (NJB) */
 
@@ -1298,7 +1376,6 @@ L_dasrrc:
 
     if (*first < 1 || *first > 1024 || *last < 1 || *last > 1024) {
 	chkin_("DASRRC", (ftnlen)6);
-	dashlu_(handle, &unit);
 	setmsg_("Array indices FIRST and LAST were #,  #; allowed range for "
 		"both is [#, #]. File was #, record number was #.", (ftnlen)
 		107);
@@ -1306,7 +1383,7 @@ L_dasrrc:
 	errint_("#", last, (ftnlen)1);
 	errint_("#", &c__1, (ftnlen)1);
 	errint_("#", &c__1024, (ftnlen)1);
-	errfnm_("#", &unit, (ftnlen)1);
+	errhan_("#", handle, (ftnlen)1);
 	errint_("#", recno, (ftnlen)1);
 	sigerr_("SPICE(INDEXOUTOFRANGE)", (ftnlen)22);
 	chkout_("DASRRC", (ftnlen)6);
@@ -1328,9 +1405,9 @@ L_dasrrc:
     node = headc;
     while(node > 0) {
 	if (*handle == hnbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("hnbufc", i__1, "dasrwr_", (ftnlen)1450)] && *recno == 
+		s_rnge("hnbufc", i__1, "dasrwr_", (ftnlen)1525)] && *recno == 
 		rnbufc[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		"rnbufc", i__2, "dasrwr_", (ftnlen)1450)]) {
+		"rnbufc", i__2, "dasrwr_", (ftnlen)1525)]) {
 
 
 /*           Found it.  Move this record to the head of the list. */
@@ -1345,7 +1422,7 @@ L_dasrrc:
 /*           Don't forget to return the requested data. */
 
 	    s_copy(datac, rcbufc + ((((i__1 = node - 1) < 10 && 0 <= i__1 ? 
-		    i__1 : s_rnge("rcbufc", i__1, "dasrwr_", (ftnlen)1469)) <<
+		    i__1 : s_rnge("rcbufc", i__1, "dasrwr_", (ftnlen)1544)) <<
 		     10) + (*first - 1)), datac_len, *last - (*first - 1));
 
 /*           We haven't checked in, so don't check out. */
@@ -1353,7 +1430,7 @@ L_dasrrc:
 	    return 0;
 	}
 	node = poolc[(i__1 = (node << 1) + 10) < 32 && 0 <= i__1 ? i__1 : 
-		s_rnge("poolc", i__1, "dasrwr_", (ftnlen)1478)];
+		s_rnge("poolc", i__1, "dasrwr_", (ftnlen)1553)];
     }
 
 /*     The record wasn't buffered.  We need to allocate entries to */
@@ -1375,14 +1452,19 @@ L_dasrrc:
 /*        If the allocated buffer entry was updated, write it out. */
 
 	if (upbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbu"
-		"fc", i__1, "dasrwr_", (ftnlen)1504)]) {
-	    dasioc_("WRITE", &lubufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? 
-		    i__1 : s_rnge("lubufc", i__1, "dasrwr_", (ftnlen)1506)], &
-		    rnbufc[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : 
-		    s_rnge("rnbufc", i__2, "dasrwr_", (ftnlen)1506)], rcbufc 
-		    + (((i__3 = node - 1) < 10 && 0 <= i__3 ? i__3 : s_rnge(
-		    "rcbufc", i__3, "dasrwr_", (ftnlen)1506)) << 10), (ftnlen)
-		    5, (ftnlen)1024);
+		"fc", i__1, "dasrwr_", (ftnlen)1579)]) {
+	    zzddhhlu_(&hnbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
+		    s_rnge("hnbufc", i__1, "dasrwr_", (ftnlen)1581)], "DAS", &
+		    c_false, &wrunit, (ftnlen)3);
+	    dasioc_("WRITE", &wrunit, &rnbufc[(i__1 = node - 1) < 10 && 0 <= 
+		    i__1 ? i__1 : s_rnge("rnbufc", i__1, "dasrwr_", (ftnlen)
+		    1583)], rcbufc + (((i__2 = node - 1) < 10 && 0 <= i__2 ? 
+		    i__2 : s_rnge("rcbufc", i__2, "dasrwr_", (ftnlen)1583)) <<
+		     10), (ftnlen)5, (ftnlen)1024);
+	    if (failed_()) {
+		chkout_("DASRRC", (ftnlen)6);
+		return 0;
+	    }
 	}
     } else {
 
@@ -1395,9 +1477,9 @@ L_dasrrc:
 
 /*     Try to read the record. */
 
-    dashlu_(handle, &unit);
+    zzddhhlu_(handle, "DAS", &c_false, &unit, (ftnlen)3);
     dasioc_("READ", &unit, recno, rcbufc + (((i__1 = node - 1) < 10 && 0 <= 
-	    i__1 ? i__1 : s_rnge("rcbufc", i__1, "dasrwr_", (ftnlen)1528)) << 
+	    i__1 ? i__1 : s_rnge("rcbufc", i__1, "dasrwr_", (ftnlen)1611)) << 
 	    10), (ftnlen)4, (ftnlen)1024);
     if (failed_()) {
 	chkout_("DASRRC", (ftnlen)6);
@@ -1408,24 +1490,22 @@ L_dasrrc:
 /*     entries for this record in before the current head of the */
 /*     list, thus putting them at the head. */
 
-/*     Set the file handle, record number, unit, and update flag for */
+/*     Set the file handle, record number, and update flag for */
 /*     this record. */
 
     lnkilb_(&node, &headc, poolc);
     hnbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("hnbufc", i__1,
-	     "dasrwr_", (ftnlen)1545)] = *handle;
+	     "dasrwr_", (ftnlen)1628)] = *handle;
     rnbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("rnbufc", i__1,
-	     "dasrwr_", (ftnlen)1546)] = *recno;
-    lubufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("lubufc", i__1,
-	     "dasrwr_", (ftnlen)1547)] = unit;
+	     "dasrwr_", (ftnlen)1629)] = *recno;
     upbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbufc", i__1,
-	     "dasrwr_", (ftnlen)1548)] = FALSE_;
+	     "dasrwr_", (ftnlen)1630)] = FALSE_;
     headc = node;
 
 /*     Don't forget to return the requested data. */
 
     s_copy(datac, rcbufc + ((((i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
-	    s_rnge("rcbufc", i__1, "dasrwr_", (ftnlen)1554)) << 10) + (*first 
+	    s_rnge("rcbufc", i__1, "dasrwr_", (ftnlen)1636)) << 10) + (*first 
 	    - 1)), datac_len, *last - (*first - 1));
     chkout_("DASRRC", (ftnlen)6);
     return 0;
@@ -1484,6 +1564,8 @@ L_daswrd:
 /*     HANDLE     I   Handle of DAS file. */
 /*     RECNO      I   Record number. */
 /*     RECD       I   Double precision data to be written to record. */
+/*     BUFSZD     P   Number of records in the DP record buffer. */
+/*     NWD        P   Number of DP in a single DAS DP record. */
 
 /* $ Detailed_Input */
 
@@ -1501,6 +1583,9 @@ L_daswrd:
 /*     routine. */
 
 /* $ Parameters */
+
+/*     NWD           is the number of DPs in a single DAS record */
+/*                   containing DPs. */
 
 /*     BUFSZD        is the number of records in the double precision */
 /*                   record buffer. */
@@ -1569,8 +1654,18 @@ L_daswrd:
 /*     K.R. Gehringer (JPL) */
 /*     N.J. Bachman   (JPL) */
 /*     W.L. Taber     (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 30-JUL-2014 (NJB) */
+
+/*        Upgraded to support handle manager integration. */
+
+/* -    SPICELIB Version 1.0.3, 10-FEB-2014 (BVS) */
+
+/*        Added description of NWD to the Parameters and Brief_I/O */
+/*        sections of the header. */
 
 /* -    SPICELIB Version 1.0.2, 03-NOV-1995 (NJB) */
 
@@ -1608,9 +1703,8 @@ L_daswrd:
 
     if (return_()) {
 	return 0;
-    } else {
-	chkin_("DASWRD", (ftnlen)6);
     }
+    chkin_("DASWRD", (ftnlen)6);
 
 /*     Check that the file is open for writing.  Signal an error if not. */
 
@@ -1639,21 +1733,21 @@ L_daswrd:
     node = headd;
     while(node > 0) {
 	if (*handle == hnbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("hnbufd", i__1, "dasrwr_", (ftnlen)1787)] && *recno == 
+		s_rnge("hnbufd", i__1, "dasrwr_", (ftnlen)1884)] && *recno == 
 		rnbufd[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		"rnbufd", i__2, "dasrwr_", (ftnlen)1787)]) {
+		"rnbufd", i__2, "dasrwr_", (ftnlen)1884)]) {
 
 /*           Found it.  Update the buffered record. */
 
 	    moved_(recd, &c__128, &rcbufd[(i__1 = (node << 7) - 128) < 1280 &&
 		     0 <= i__1 ? i__1 : s_rnge("rcbufd", i__1, "dasrwr_", (
-		    ftnlen)1792)]);
+		    ftnlen)1889)]);
 
 /*           Set the update flag, indicating that this buffer entry */
 /*           has been modified. */
 
 	    upbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbu"
-		    "fd", i__1, "dasrwr_", (ftnlen)1798)] = TRUE_;
+		    "fd", i__1, "dasrwr_", (ftnlen)1895)] = TRUE_;
 
 /*           Put the information about this record at the head of the */
 /*           active list, if it is not already there. */
@@ -1667,7 +1761,7 @@ L_daswrd:
 	    return 0;
 	}
 	node = poold[(i__1 = (node << 1) + 10) < 32 && 0 <= i__1 ? i__1 : 
-		s_rnge("poold", i__1, "dasrwr_", (ftnlen)1817)];
+		s_rnge("poold", i__1, "dasrwr_", (ftnlen)1914)];
     }
 
 /*     The record we're writing to is not buffered.  We'll allocate */
@@ -1692,14 +1786,15 @@ L_daswrd:
 /*        If the allocated record was updated, write it out. */
 
 	if (upbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbu"
-		"fd", i__1, "dasrwr_", (ftnlen)1847)]) {
-	    dasiod_("WRITE", &lubufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? 
-		    i__1 : s_rnge("lubufd", i__1, "dasrwr_", (ftnlen)1849)], &
-		    rnbufd[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : 
-		    s_rnge("rnbufd", i__2, "dasrwr_", (ftnlen)1849)], &rcbufd[
-		    (i__3 = (node << 7) - 128) < 1280 && 0 <= i__3 ? i__3 : 
-		    s_rnge("rcbufd", i__3, "dasrwr_", (ftnlen)1849)], (ftnlen)
-		    5);
+		"fd", i__1, "dasrwr_", (ftnlen)1944)]) {
+	    zzddhhlu_(&hnbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
+		    s_rnge("hnbufd", i__1, "dasrwr_", (ftnlen)1946)], "DAS", &
+		    c_false, &wrunit, (ftnlen)3);
+	    dasiod_("WRITE", &wrunit, &rnbufd[(i__1 = node - 1) < 10 && 0 <= 
+		    i__1 ? i__1 : s_rnge("rnbufd", i__1, "dasrwr_", (ftnlen)
+		    1948)], &rcbufd[(i__2 = (node << 7) - 128) < 1280 && 0 <= 
+		    i__2 ? i__2 : s_rnge("rcbufd", i__2, "dasrwr_", (ftnlen)
+		    1948)], (ftnlen)5);
 	    if (failed_()) {
 		chkout_("DASWRD", (ftnlen)6);
 		return 0;
@@ -1710,21 +1805,18 @@ L_daswrd:
 /*     Now update the allocated buffer entry with the input data. */
 
     moved_(recd, &c__128, &rcbufd[(i__1 = (node << 7) - 128) < 1280 && 0 <= 
-	    i__1 ? i__1 : s_rnge("rcbufd", i__1, "dasrwr_", (ftnlen)1866)]);
+	    i__1 ? i__1 : s_rnge("rcbufd", i__1, "dasrwr_", (ftnlen)1965)]);
 
 /*     Set the update flag, indicating that this buffer entry */
-/*     has been modified.  Also set the handle, unit, and record number */
+/*     has been modified. Also set the handle and record number */
 /*     entries. */
 
-    dashlu_(handle, &unit);
     upbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbufd", i__1,
-	     "dasrwr_", (ftnlen)1875)] = TRUE_;
+	     "dasrwr_", (ftnlen)1972)] = TRUE_;
     hnbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("hnbufd", i__1,
-	     "dasrwr_", (ftnlen)1876)] = *handle;
-    lubufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("lubufd", i__1,
-	     "dasrwr_", (ftnlen)1877)] = unit;
+	     "dasrwr_", (ftnlen)1973)] = *handle;
     rnbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("rnbufd", i__1,
-	     "dasrwr_", (ftnlen)1878)] = *recno;
+	     "dasrwr_", (ftnlen)1974)] = *recno;
 
 /*     Link this buffer entry to the head of the list. */
 
@@ -1787,6 +1879,8 @@ L_daswri:
 /*     HANDLE     I   Handle of DAS file. */
 /*     RECNO      I   Record number. */
 /*     RECI       I   Integer data to be written to record. */
+/*     BUFSZI     P   Number of records in the integer record buffer. */
+/*     NWI        P   Number of integers in a single DAS integer record. */
 
 /* $ Detailed_Input */
 
@@ -1804,6 +1898,9 @@ L_daswri:
 /*     routine. */
 
 /* $ Parameters */
+
+/*     NWI           is the number of integers in a single DAS record */
+/*                   containing integers. */
 
 /*     BUFSZI        is the number of records in the integer record */
 /*                   buffer. */
@@ -1871,8 +1968,18 @@ L_daswri:
 /*     K.R. Gehringer (JPL) */
 /*     N.J. Bachman   (JPL) */
 /*     W.L. Taber     (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 30-JUL-2014 (NJB) */
+
+/*        Upgraded to support handle manager integration. */
+
+/* -    SPICELIB Version 1.0.3, 10-FEB-2014 (BVS) */
+
+/*        Added description of NWI to the Parameters and Brief_I/O */
+/*        sections of the header. */
 
 /* -    SPICELIB Version 1.0.2, 03-NOV-1995 (NJB) */
 
@@ -1910,9 +2017,8 @@ L_daswri:
 
     if (return_()) {
 	return 0;
-    } else {
-	chkin_("DASWRI", (ftnlen)6);
     }
+    chkin_("DASWRI", (ftnlen)6);
 
 /*     Check that the file is open for writing.  Signal an error if not. */
 
@@ -1941,21 +2047,21 @@ L_daswri:
     node = headi;
     while(node > 0) {
 	if (*handle == hnbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("hnbufi", i__1, "dasrwr_", (ftnlen)2117)] && *recno == 
+		s_rnge("hnbufi", i__1, "dasrwr_", (ftnlen)2228)] && *recno == 
 		rnbufi[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		"rnbufi", i__2, "dasrwr_", (ftnlen)2117)]) {
+		"rnbufi", i__2, "dasrwr_", (ftnlen)2228)]) {
 
 /*           Found it.  Update the buffered record. */
 
 	    movei_(reci, &c__256, &rcbufi[(i__1 = (node << 8) - 256) < 2560 &&
 		     0 <= i__1 ? i__1 : s_rnge("rcbufi", i__1, "dasrwr_", (
-		    ftnlen)2122)]);
+		    ftnlen)2233)]);
 
 /*           Set the update flag, indicating that this buffer entry */
 /*           has been modified. */
 
 	    upbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbu"
-		    "fi", i__1, "dasrwr_", (ftnlen)2128)] = TRUE_;
+		    "fi", i__1, "dasrwr_", (ftnlen)2239)] = TRUE_;
 
 /*           Put the information about this record at the head of the */
 /*           active list, if it is not already there. */
@@ -1969,7 +2075,7 @@ L_daswri:
 	    return 0;
 	}
 	node = pooli[(i__1 = (node << 1) + 10) < 32 && 0 <= i__1 ? i__1 : 
-		s_rnge("pooli", i__1, "dasrwr_", (ftnlen)2147)];
+		s_rnge("pooli", i__1, "dasrwr_", (ftnlen)2258)];
     }
 
 /*     The record we're writing to is not buffered.  We'll allocate */
@@ -1994,35 +2100,38 @@ L_daswri:
 /*        If the allocated record was updated, write it out. */
 
 	if (upbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbu"
-		"fi", i__1, "dasrwr_", (ftnlen)2176)]) {
-	    dasioi_("WRITE", &lubufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? 
-		    i__1 : s_rnge("lubufi", i__1, "dasrwr_", (ftnlen)2178)], &
-		    rnbufi[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : 
-		    s_rnge("rnbufi", i__2, "dasrwr_", (ftnlen)2178)], &rcbufi[
-		    (i__3 = (node << 8) - 256) < 2560 && 0 <= i__3 ? i__3 : 
-		    s_rnge("rcbufi", i__3, "dasrwr_", (ftnlen)2178)], (ftnlen)
-		    5);
+		"fi", i__1, "dasrwr_", (ftnlen)2287)]) {
+	    zzddhhlu_(&hnbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
+		    s_rnge("hnbufi", i__1, "dasrwr_", (ftnlen)2289)], "DAS", &
+		    c_false, &wrunit, (ftnlen)3);
+	    dasioi_("WRITE", &wrunit, &rnbufi[(i__1 = node - 1) < 10 && 0 <= 
+		    i__1 ? i__1 : s_rnge("rnbufi", i__1, "dasrwr_", (ftnlen)
+		    2291)], &rcbufi[(i__2 = (node << 8) - 256) < 2560 && 0 <= 
+		    i__2 ? i__2 : s_rnge("rcbufi", i__2, "dasrwr_", (ftnlen)
+		    2291)], (ftnlen)5);
+	    if (failed_()) {
+		chkout_("DASWRI", (ftnlen)6);
+		return 0;
+	    }
 	}
     }
 
 /*     Now update the allocated buffer entry with the input data. */
 
     movei_(reci, &c__256, &rcbufi[(i__1 = (node << 8) - 256) < 2560 && 0 <= 
-	    i__1 ? i__1 : s_rnge("rcbufi", i__1, "dasrwr_", (ftnlen)2190)]);
+	    i__1 ? i__1 : s_rnge("rcbufi", i__1, "dasrwr_", (ftnlen)2308)]);
 
 /*     Set the update flag, indicating that this buffer entry */
-/*     has been modified.  Also set the handle, unit, and record number */
+/*     has been modified.  Also set the handle and record number */
 /*     entries. */
 
-    dashlu_(handle, &unit);
+    zzddhhlu_(handle, "DAS", &c_false, &unit, (ftnlen)3);
     upbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbufi", i__1,
-	     "dasrwr_", (ftnlen)2199)] = TRUE_;
+	     "dasrwr_", (ftnlen)2317)] = TRUE_;
     hnbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("hnbufi", i__1,
-	     "dasrwr_", (ftnlen)2200)] = *handle;
-    lubufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("lubufi", i__1,
-	     "dasrwr_", (ftnlen)2201)] = unit;
+	     "dasrwr_", (ftnlen)2318)] = *handle;
     rnbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("rnbufi", i__1,
-	     "dasrwr_", (ftnlen)2202)] = *recno;
+	     "dasrwr_", (ftnlen)2319)] = *recno;
 
 /*     Link this buffer entry to the head of the list. */
 
@@ -2085,6 +2194,8 @@ L_daswrc:
 /*     HANDLE     I   Handle of DAS file. */
 /*     RECNO      I   Record number. */
 /*     RECC       I   Character data to be written to record. */
+/*     BUFSZC     P   Number of records in the character record buffer. */
+/*     NWC        P   Number of characters in a single DAS char. record. */
 
 /* $ Detailed_Input */
 
@@ -2102,6 +2213,9 @@ L_daswrc:
 /*     routine. */
 
 /* $ Parameters */
+
+/*     NWC           is the number of characters in a single DAS record */
+/*                   containing characters. */
 
 /*     BUFSZC        is the number of records in the character record */
 /*                   buffer. */
@@ -2170,8 +2284,18 @@ L_daswrc:
 /*     K.R. Gehringer (JPL) */
 /*     N.J. Bachman   (JPL) */
 /*     W.L. Taber     (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 30-JUL-2014 (NJB) */
+
+/*        Upgraded to support handle manager integration. */
+
+/* -    SPICELIB Version 1.0.3, 10-FEB-2014 (BVS) */
+
+/*        Added description of NWC to the Parameters and Brief_I/O */
+/*        sections of the header. */
 
 /* -    SPICELIB Version 1.0.2, 03-NOV-1995 (NJB) */
 
@@ -2209,9 +2333,8 @@ L_daswrc:
 
     if (return_()) {
 	return 0;
-    } else {
-	chkin_("DASWRC", (ftnlen)6);
     }
+    chkin_("DASWRC", (ftnlen)6);
 
 /*     Check that the file is open for writing.  Signal an error if not. */
 
@@ -2240,21 +2363,21 @@ L_daswrc:
     node = headc;
     while(node > 0) {
 	if (*handle == hnbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("hnbufc", i__1, "dasrwr_", (ftnlen)2442)] && *recno == 
+		s_rnge("hnbufc", i__1, "dasrwr_", (ftnlen)2574)] && *recno == 
 		rnbufc[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		"rnbufc", i__2, "dasrwr_", (ftnlen)2442)]) {
+		"rnbufc", i__2, "dasrwr_", (ftnlen)2574)]) {
 
 /*           Found it.  Update the buffered record. */
 
 	    s_copy(rcbufc + (((i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
-		    s_rnge("rcbufc", i__1, "dasrwr_", (ftnlen)2447)) << 10), 
+		    s_rnge("rcbufc", i__1, "dasrwr_", (ftnlen)2579)) << 10), 
 		    recc, (ftnlen)1024, recc_len);
 
 /*           Set the update flag, indicating that this buffer entry */
 /*           has been modified. */
 
 	    upbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbu"
-		    "fc", i__1, "dasrwr_", (ftnlen)2453)] = TRUE_;
+		    "fc", i__1, "dasrwr_", (ftnlen)2585)] = TRUE_;
 
 /*           Put the information about this record at the head of the */
 /*           active list, if it is not already there. */
@@ -2268,7 +2391,7 @@ L_daswrc:
 	    return 0;
 	}
 	node = poolc[(i__1 = (node << 1) + 10) < 32 && 0 <= i__1 ? i__1 : 
-		s_rnge("poolc", i__1, "dasrwr_", (ftnlen)2472)];
+		s_rnge("poolc", i__1, "dasrwr_", (ftnlen)2604)];
     }
 
 /*     The record we're writing to is not buffered.  We'll allocate */
@@ -2293,14 +2416,15 @@ L_daswrc:
 /*        If the allocated record was updated, write it out. */
 
 	if (upbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbu"
-		"fc", i__1, "dasrwr_", (ftnlen)2501)]) {
-	    dasioc_("WRITE", &lubufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? 
-		    i__1 : s_rnge("lubufc", i__1, "dasrwr_", (ftnlen)2503)], &
-		    rnbufc[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : 
-		    s_rnge("rnbufc", i__2, "dasrwr_", (ftnlen)2503)], rcbufc 
-		    + (((i__3 = node - 1) < 10 && 0 <= i__3 ? i__3 : s_rnge(
-		    "rcbufc", i__3, "dasrwr_", (ftnlen)2503)) << 10), (ftnlen)
-		    5, (ftnlen)1024);
+		"fc", i__1, "dasrwr_", (ftnlen)2633)]) {
+	    zzddhhlu_(&hnbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
+		    s_rnge("hnbufc", i__1, "dasrwr_", (ftnlen)2635)], "DAS", &
+		    c_false, &wrunit, (ftnlen)3);
+	    dasioc_("WRITE", &wrunit, &rnbufc[(i__1 = node - 1) < 10 && 0 <= 
+		    i__1 ? i__1 : s_rnge("rnbufc", i__1, "dasrwr_", (ftnlen)
+		    2637)], rcbufc + (((i__2 = node - 1) < 10 && 0 <= i__2 ? 
+		    i__2 : s_rnge("rcbufc", i__2, "dasrwr_", (ftnlen)2637)) <<
+		     10), (ftnlen)5, (ftnlen)1024);
 	    if (failed_()) {
 		chkout_("DASWRC", (ftnlen)6);
 		return 0;
@@ -2311,22 +2435,19 @@ L_daswrc:
 /*     Now update the allocated buffer entry with the input data. */
 
     s_copy(rcbufc + (((i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge(
-	    "rcbufc", i__1, "dasrwr_", (ftnlen)2520)) << 10), recc, (ftnlen)
+	    "rcbufc", i__1, "dasrwr_", (ftnlen)2654)) << 10), recc, (ftnlen)
 	    1024, recc_len);
 
 /*     Set the update flag, indicating that this buffer entry */
-/*     has been modified.  Also set the handle, unit, and record number */
+/*     has been modified.  Also set the handle and record number */
 /*     entries. */
 
-    dashlu_(handle, &unit);
     upbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbufc", i__1,
-	     "dasrwr_", (ftnlen)2529)] = TRUE_;
+	     "dasrwr_", (ftnlen)2661)] = TRUE_;
     hnbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("hnbufc", i__1,
-	     "dasrwr_", (ftnlen)2530)] = *handle;
-    lubufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("lubufc", i__1,
-	     "dasrwr_", (ftnlen)2531)] = unit;
+	     "dasrwr_", (ftnlen)2662)] = *handle;
     rnbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("rnbufc", i__1,
-	     "dasrwr_", (ftnlen)2532)] = *recno;
+	     "dasrwr_", (ftnlen)2663)] = *recno;
 
 /*     Link this buffer entry to the head of the list. */
 
@@ -2393,6 +2514,8 @@ L_dasurd:
 /*     FIRST, */
 /*     LAST       I   First and last indices of range within record. */
 /*     DATAD      I   Double precision data to write to record. */
+/*     BUFSZD     P   Number of records in the DP record buffer. */
+/*     NWD        P   Number of DPs in a single DAS DP record. */
 
 /* $ Detailed_Input */
 
@@ -2420,6 +2543,9 @@ L_dasurd:
 /*     routine. */
 
 /* $ Parameters */
+
+/*     NWD           is the number of DPs in a single DAS record */
+/*                   containing DPs. */
 
 /*     BUFSZD        is the number of records in the double precision */
 /*                   record buffer. */
@@ -2449,7 +2575,7 @@ L_dasurd:
 /*         record will not be modified. */
 
 /*     4)  If FIRST or LAST is not in the range [1, NWD], the error */
-/*         SPICE(INDEXOUTOFRANGE) will be signalled.  The indicated */
+/*         SPICE(INDEXOUTOFRANGE) will be signaled.  The indicated */
 /*         record will not be modified. */
 
 /*     5)  If FIRST > LAST, this routine will return without modifying */
@@ -2507,8 +2633,18 @@ L_dasurd:
 /*     K.R. Gehringer (JPL) */
 /*     N.J. Bachman   (JPL) */
 /*     W.L. Taber     (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 05-FEB-2015 (NJB) */
+
+/*        Upgraded to support handle manager integration. */
+
+/* -    SPICELIB Version 1.0.3, 10-FEB-2014 (BVS) */
+
+/*        Added description of NWD to the Parameters and Brief_I/O */
+/*        sections of the header. */
 
 /* -    SPICELIB Version 1.0.2, 03-NOV-1995 (NJB) */
 
@@ -2546,9 +2682,8 @@ L_dasurd:
 
     if (return_()) {
 	return 0;
-    } else {
-	chkin_("DASURD", (ftnlen)6);
     }
+    chkin_("DASURD", (ftnlen)6);
 
 /*     Check that the file is open for writing.  Signal an error if not. */
 
@@ -2570,7 +2705,6 @@ L_dasurd:
 /*     If FIRST or LAST are out of range, no dice. */
 
     if (*first < 1 || *first > 128 || *last < 1 || *last > 128) {
-	dashlu_(handle, &unit);
 	setmsg_("Array indices FIRST and LAST were #,  #; allowed range for "
 		"both is [#, #]. File was #, record number was #.", (ftnlen)
 		107);
@@ -2578,7 +2712,7 @@ L_dasurd:
 	errint_("#", last, (ftnlen)1);
 	errint_("#", &c__1, (ftnlen)1);
 	errint_("#", &c__128, (ftnlen)1);
-	errfnm_("#", &unit, (ftnlen)1);
+	errhan_("#", handle, (ftnlen)1);
 	errint_("#", recno, (ftnlen)1);
 	sigerr_("SPICE(INDEXOUTOFRANGE)", (ftnlen)22);
 	chkout_("DASURD", (ftnlen)6);
@@ -2602,22 +2736,22 @@ L_dasurd:
     node = headd;
     while(node > 0) {
 	if (*handle == hnbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("hnbufd", i__1, "dasrwr_", (ftnlen)2840)] && *recno == 
+		s_rnge("hnbufd", i__1, "dasrwr_", (ftnlen)2982)] && *recno == 
 		rnbufd[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		"rnbufd", i__2, "dasrwr_", (ftnlen)2840)]) {
+		"rnbufd", i__2, "dasrwr_", (ftnlen)2982)]) {
 
 /*           Found it.  Update the buffered record. */
 
 	    i__2 = *last - *first + 1;
 	    moved_(datad, &i__2, &rcbufd[(i__1 = *first + (node << 7) - 129) <
 		     1280 && 0 <= i__1 ? i__1 : s_rnge("rcbufd", i__1, "dasr"
-		    "wr_", (ftnlen)2845)]);
+		    "wr_", (ftnlen)2987)]);
 
 /*           Set the update flag, indicating that this buffer entry */
 /*           has been modified. */
 
 	    upbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbu"
-		    "fd", i__1, "dasrwr_", (ftnlen)2851)] = TRUE_;
+		    "fd", i__1, "dasrwr_", (ftnlen)2993)] = TRUE_;
 
 /*           Put the information about this record at the head of the */
 /*           active list, if it is not already there. */
@@ -2631,7 +2765,7 @@ L_dasurd:
 	    return 0;
 	}
 	node = poold[(i__1 = (node << 1) + 10) < 32 && 0 <= i__1 ? i__1 : 
-		s_rnge("poold", i__1, "dasrwr_", (ftnlen)2870)];
+		s_rnge("poold", i__1, "dasrwr_", (ftnlen)3012)];
     }
 
 /*     The record we're writing to is not buffered.  In order to */
@@ -2657,14 +2791,15 @@ L_dasurd:
 /*        If the allocated record was updated, write it out. */
 
 	if (upbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbu"
-		"fd", i__1, "dasrwr_", (ftnlen)2901)]) {
-	    dasiod_("WRITE", &lubufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? 
-		    i__1 : s_rnge("lubufd", i__1, "dasrwr_", (ftnlen)2903)], &
-		    rnbufd[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : 
-		    s_rnge("rnbufd", i__2, "dasrwr_", (ftnlen)2903)], &rcbufd[
-		    (i__3 = (node << 7) - 128) < 1280 && 0 <= i__3 ? i__3 : 
-		    s_rnge("rcbufd", i__3, "dasrwr_", (ftnlen)2903)], (ftnlen)
-		    5);
+		"fd", i__1, "dasrwr_", (ftnlen)3043)]) {
+	    zzddhhlu_(&hnbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
+		    s_rnge("hnbufd", i__1, "dasrwr_", (ftnlen)3045)], "DAS", &
+		    c_false, &wrunit, (ftnlen)3);
+	    dasiod_("WRITE", &wrunit, &rnbufd[(i__1 = node - 1) < 10 && 0 <= 
+		    i__1 ? i__1 : s_rnge("rnbufd", i__1, "dasrwr_", (ftnlen)
+		    3047)], &rcbufd[(i__2 = (node << 7) - 128) < 1280 && 0 <= 
+		    i__2 ? i__2 : s_rnge("rcbufd", i__2, "dasrwr_", (ftnlen)
+		    3047)], (ftnlen)5);
 	    if (failed_()) {
 		chkout_("DASURD", (ftnlen)6);
 		return 0;
@@ -2674,16 +2809,14 @@ L_dasurd:
 
 /*     Now try to read the record we're going to update. */
 
-    dashlu_(handle, &unit);
-    dasiod_("READ", &unit, recno, &rcbufd[(i__1 = (node << 7) - 128) < 1280 &&
-	     0 <= i__1 ? i__1 : s_rnge("rcbufd", i__1, "dasrwr_", (ftnlen)
-	    2922)], (ftnlen)4);
+    zzdasgrd_(handle, recno, &rcbufd[(i__1 = (node << 7) - 128) < 1280 && 0 <=
+	     i__1 ? i__1 : s_rnge("rcbufd", i__1, "dasrwr_", (ftnlen)3065)]);
     if (failed_()) {
 	chkout_("DASURD", (ftnlen)6);
 	return 0;
     }
 
-/*     The read was successful, so set the record number, handle, unit, */
+/*     The read was successful, so set the record number, handle, */
 /*     and update flag for this buffer entry, and link these buffer */
 /*     entries in before the current head of the list, thus putting */
 /*     them at the head. */
@@ -2692,13 +2825,11 @@ L_dasurd:
 
     lnkilb_(&node, &headd, poold);
     hnbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("hnbufd", i__1,
-	     "dasrwr_", (ftnlen)2939)] = *handle;
+	     "dasrwr_", (ftnlen)3082)] = *handle;
     rnbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("rnbufd", i__1,
-	     "dasrwr_", (ftnlen)2940)] = *recno;
-    lubufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("lubufd", i__1,
-	     "dasrwr_", (ftnlen)2941)] = unit;
+	     "dasrwr_", (ftnlen)3083)] = *recno;
     upbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbufd", i__1,
-	     "dasrwr_", (ftnlen)2942)] = TRUE_;
+	     "dasrwr_", (ftnlen)3084)] = TRUE_;
     headd = node;
 
 /*     At long last, make the requested update.  Note that we don't */
@@ -2708,7 +2839,7 @@ L_dasurd:
     i__2 = *last - *first + 1;
     moved_(datad, &i__2, &rcbufd[(i__1 = *first + (node << 7) - 129) < 1280 &&
 	     0 <= i__1 ? i__1 : s_rnge("rcbufd", i__1, "dasrwr_", (ftnlen)
-	    2950)]);
+	    3092)]);
     chkout_("DASURD", (ftnlen)6);
     return 0;
 /* $Procedure DASURI ( DAS, update record, integer ) */
@@ -2770,6 +2901,8 @@ L_dasuri:
 /*     FIRST, */
 /*     LAST       I   First and last indices of range within record. */
 /*     DATAI      I   Integer data to write to record. */
+/*     BUFSZI     P   Number of records in the integer record buffer. */
+/*     NWI        P   Number of integers in a single DAS integer record. */
 
 /* $ Detailed_Input */
 
@@ -2797,6 +2930,9 @@ L_dasuri:
 /*     routine. */
 
 /* $ Parameters */
+
+/*     NWI           is the number of integers in a single DAS record */
+/*                   containing integers. */
 
 /*     BUFSZI        is the number of records in the integer record */
 /*                   buffer. */
@@ -2826,7 +2962,7 @@ L_dasuri:
 /*         record will not be modified. */
 
 /*     4)  If FIRST or LAST is not in the range [1, NWI], the error */
-/*         SPICE(INDEXOUTOFRANGE) will be signalled.  The indicated */
+/*         SPICE(INDEXOUTOFRANGE) will be signaled.  The indicated */
 /*         record will not be modified. */
 
 /*     5)  If FIRST > LAST, this routine will return without modifying */
@@ -2884,8 +3020,18 @@ L_dasuri:
 /*     K.R. Gehringer (JPL) */
 /*     N.J. Bachman   (JPL) */
 /*     W.L. Taber     (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 05-FEB-2015 (NJB) */
+
+/*        Upgraded to support handle manager integration. */
+
+/* -    SPICELIB Version 1.0.3, 10-FEB-2014 (BVS) */
+
+/*        Added description of NWI to the Parameters and Brief_I/O */
+/*        sections of the header. */
 
 /* -    SPICELIB Version 1.0.2, 03-NOV-1995 (NJB) */
 
@@ -2923,9 +3069,8 @@ L_dasuri:
 
     if (return_()) {
 	return 0;
-    } else {
-	chkin_("DASURI", (ftnlen)6);
     }
+    chkin_("DASURI", (ftnlen)6);
 
 /*     Check that the file is open for writing.  Signal an error if not. */
 
@@ -2947,7 +3092,6 @@ L_dasuri:
 /*     If FIRST or LAST are out of range, no dice. */
 
     if (*first < 1 || *first > 256 || *last < 1 || *last > 256) {
-	dashlu_(handle, &unit);
 	setmsg_("Array indices FIRST and LAST were #,  #; allowed range for "
 		"both is [#, #]. File was #, record number was #.", (ftnlen)
 		107);
@@ -2955,7 +3099,7 @@ L_dasuri:
 	errint_("#", last, (ftnlen)1);
 	errint_("#", &c__1, (ftnlen)1);
 	errint_("#", &c__256, (ftnlen)1);
-	errfnm_("#", &unit, (ftnlen)1);
+	errhan_("#", handle, (ftnlen)1);
 	errint_("#", recno, (ftnlen)1);
 	sigerr_("SPICE(INDEXOUTOFRANGE)", (ftnlen)22);
 	chkout_("DASURI", (ftnlen)6);
@@ -2979,22 +3123,22 @@ L_dasuri:
     node = headi;
     while(node > 0) {
 	if (*handle == hnbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("hnbufi", i__1, "dasrwr_", (ftnlen)3251)] && *recno == 
+		s_rnge("hnbufi", i__1, "dasrwr_", (ftnlen)3406)] && *recno == 
 		rnbufi[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		"rnbufi", i__2, "dasrwr_", (ftnlen)3251)]) {
+		"rnbufi", i__2, "dasrwr_", (ftnlen)3406)]) {
 
 /*           Found it.  Update the buffered record. */
 
 	    i__2 = *last - *first + 1;
 	    movei_(datai, &i__2, &rcbufi[(i__1 = *first + (node << 8) - 257) <
 		     2560 && 0 <= i__1 ? i__1 : s_rnge("rcbufi", i__1, "dasr"
-		    "wr_", (ftnlen)3256)]);
+		    "wr_", (ftnlen)3411)]);
 
 /*           Set the update flag, indicating that this buffer entry */
 /*           has been modified. */
 
 	    upbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbu"
-		    "fi", i__1, "dasrwr_", (ftnlen)3262)] = TRUE_;
+		    "fi", i__1, "dasrwr_", (ftnlen)3417)] = TRUE_;
 
 /*           Put the information about this record at the head of the */
 /*           active list, if it is not already there. */
@@ -3008,7 +3152,7 @@ L_dasuri:
 	    return 0;
 	}
 	node = pooli[(i__1 = (node << 1) + 10) < 32 && 0 <= i__1 ? i__1 : 
-		s_rnge("pooli", i__1, "dasrwr_", (ftnlen)3281)];
+		s_rnge("pooli", i__1, "dasrwr_", (ftnlen)3436)];
     }
 
 /*     The record we're writing to is not buffered.  We'll allocate */
@@ -3033,14 +3177,15 @@ L_dasuri:
 /*        If the allocated record was updated, write it out. */
 
 	if (upbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbu"
-		"fi", i__1, "dasrwr_", (ftnlen)3310)]) {
-	    dasioi_("WRITE", &lubufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? 
-		    i__1 : s_rnge("lubufi", i__1, "dasrwr_", (ftnlen)3312)], &
-		    rnbufi[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : 
-		    s_rnge("rnbufi", i__2, "dasrwr_", (ftnlen)3312)], &rcbufi[
-		    (i__3 = (node << 8) - 256) < 2560 && 0 <= i__3 ? i__3 : 
-		    s_rnge("rcbufi", i__3, "dasrwr_", (ftnlen)3312)], (ftnlen)
-		    5);
+		"fi", i__1, "dasrwr_", (ftnlen)3465)]) {
+	    zzddhhlu_(&hnbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
+		    s_rnge("hnbufi", i__1, "dasrwr_", (ftnlen)3467)], "DAS", &
+		    c_false, &wrunit, (ftnlen)3);
+	    dasioi_("WRITE", &wrunit, &rnbufi[(i__1 = node - 1) < 10 && 0 <= 
+		    i__1 ? i__1 : s_rnge("rnbufi", i__1, "dasrwr_", (ftnlen)
+		    3469)], &rcbufi[(i__2 = (node << 8) - 256) < 2560 && 0 <= 
+		    i__2 ? i__2 : s_rnge("rcbufi", i__2, "dasrwr_", (ftnlen)
+		    3469)], (ftnlen)5);
 	    if (failed_()) {
 		chkout_("DASURI", (ftnlen)6);
 		return 0;
@@ -3050,16 +3195,14 @@ L_dasuri:
 
 /*     Now try to read the record we're going to update. */
 
-    dashlu_(handle, &unit);
-    dasioi_("READ", &unit, recno, &rcbufi[(i__1 = (node << 8) - 256) < 2560 &&
-	     0 <= i__1 ? i__1 : s_rnge("rcbufi", i__1, "dasrwr_", (ftnlen)
-	    3330)], (ftnlen)4);
+    zzdasgri_(handle, recno, &rcbufi[(i__1 = (node << 8) - 256) < 2560 && 0 <=
+	     i__1 ? i__1 : s_rnge("rcbufi", i__1, "dasrwr_", (ftnlen)3486)]);
     if (failed_()) {
 	chkout_("DASURI", (ftnlen)6);
 	return 0;
     }
 
-/*     The read was successful, so set the record number, handle, unit, */
+/*     The read was successful, so set the record number, handle, */
 /*     and update flag for this buffer entry, and link these buffer */
 /*     entries in before the current head of the list, thus putting */
 /*     them at the head. */
@@ -3068,13 +3211,11 @@ L_dasuri:
 
     lnkilb_(&node, &headi, pooli);
     hnbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("hnbufi", i__1,
-	     "dasrwr_", (ftnlen)3347)] = *handle;
+	     "dasrwr_", (ftnlen)3503)] = *handle;
     rnbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("rnbufi", i__1,
-	     "dasrwr_", (ftnlen)3348)] = *recno;
-    lubufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("lubufi", i__1,
-	     "dasrwr_", (ftnlen)3349)] = unit;
+	     "dasrwr_", (ftnlen)3504)] = *recno;
     upbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbufi", i__1,
-	     "dasrwr_", (ftnlen)3350)] = TRUE_;
+	     "dasrwr_", (ftnlen)3505)] = TRUE_;
     headi = node;
 
 /*     At long last, make the requested update.  Note that we don't */
@@ -3084,7 +3225,7 @@ L_dasuri:
     i__2 = *last - *first + 1;
     movei_(datai, &i__2, &rcbufi[(i__1 = *first + (node << 8) - 257) < 2560 &&
 	     0 <= i__1 ? i__1 : s_rnge("rcbufi", i__1, "dasrwr_", (ftnlen)
-	    3358)]);
+	    3513)]);
     chkout_("DASURI", (ftnlen)6);
     return 0;
 /* $Procedure DASURC ( DAS, update record, character ) */
@@ -3146,6 +3287,8 @@ L_dasurc:
 /*     FIRST, */
 /*     LAST       I   First and last indices of range within record. */
 /*     DATAC      I   Character data to write to record. */
+/*     BUFSZC     P   Number of records in the character record buffer. */
+/*     NWC        P   Number of characters in a single DAS char. record. */
 
 /* $ Detailed_Input */
 
@@ -3173,6 +3316,9 @@ L_dasurc:
 /*     routine. */
 
 /* $ Parameters */
+
+/*     NWC           is the number of characters in a single DAS record */
+/*                   containing characters. */
 
 /*     BUFSZC        is the number of records in the character record */
 /*                   buffer. */
@@ -3202,7 +3348,7 @@ L_dasurc:
 /*         record will not be modified. */
 
 /*     4)  If FIRST or LAST is not in the range [1, NWC], the error */
-/*         SPICE(INDEXOUTOFRANGE) will be signalled.  The indicated */
+/*         SPICE(INDEXOUTOFRANGE) will be signaled.  The indicated */
 /*         record will not be modified. */
 
 /*     5)  If FIRST > LAST, this routine will return without modifying */
@@ -3265,8 +3411,18 @@ L_dasurc:
 /*     K.R. Gehringer (JPL) */
 /*     N.J. Bachman   (JPL) */
 /*     W.L. Taber     (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 05-FEB-2015 (NJB) */
+
+/*        Upgraded to support handle manager integration. */
+
+/* -    SPICELIB Version 1.0.3, 10-FEB-2014 (BVS) */
+
+/*        Added description of NWC to the Parameters and Brief_I/O */
+/*        sections of the header. */
 
 /* -    SPICELIB Version 1.0.2, 03-NOV-1995 (NJB) */
 
@@ -3304,9 +3460,8 @@ L_dasurc:
 
     if (return_()) {
 	return 0;
-    } else {
-	chkin_("DASURC", (ftnlen)6);
     }
+    chkin_("DASURC", (ftnlen)6);
 
 /*     Check that the file is open for writing.  Signal an error if not. */
 
@@ -3328,7 +3483,6 @@ L_dasurc:
 /*     If FIRST or LAST are out of range, no dice. */
 
     if (*first < 1 || *first > 1024 || *last < 1 || *last > 1024) {
-	dashlu_(handle, &unit);
 	setmsg_("String indices FIRST and LAST were #,  #; allowed range for"
 		" both is [#, #]. File was #, record number was #.", (ftnlen)
 		108);
@@ -3336,7 +3490,7 @@ L_dasurc:
 	errint_("#", last, (ftnlen)1);
 	errint_("#", &c__1, (ftnlen)1);
 	errint_("#", &c__1024, (ftnlen)1);
-	errfnm_("#", &unit, (ftnlen)1);
+	errhan_("#", handle, (ftnlen)1);
 	errint_("#", recno, (ftnlen)1);
 	sigerr_("SPICE(INDEXOUTOFRANGE)", (ftnlen)22);
 	chkout_("DASURC", (ftnlen)6);
@@ -3360,21 +3514,21 @@ L_dasurc:
     node = headc;
     while(node > 0) {
 	if (*handle == hnbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("hnbufc", i__1, "dasrwr_", (ftnlen)3665)] && *recno == 
+		s_rnge("hnbufc", i__1, "dasrwr_", (ftnlen)3833)] && *recno == 
 		rnbufc[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : s_rnge(
-		"rnbufc", i__2, "dasrwr_", (ftnlen)3665)]) {
+		"rnbufc", i__2, "dasrwr_", (ftnlen)3833)]) {
 
 /*           Found it.  Update the buffered record. */
 
 	    s_copy(rcbufc + ((((i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
-		    s_rnge("rcbufc", i__1, "dasrwr_", (ftnlen)3670)) << 10) + 
+		    s_rnge("rcbufc", i__1, "dasrwr_", (ftnlen)3838)) << 10) + 
 		    (*first - 1)), datac, *last - (*first - 1), datac_len);
 
 /*           Set the update flag, indicating that this buffer entry */
 /*           has been modified. */
 
 	    upbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbu"
-		    "fc", i__1, "dasrwr_", (ftnlen)3676)] = TRUE_;
+		    "fc", i__1, "dasrwr_", (ftnlen)3844)] = TRUE_;
 
 /*           Put the information about this record at the head of the */
 /*           active list, if it is not already there. */
@@ -3388,7 +3542,7 @@ L_dasurc:
 	    return 0;
 	}
 	node = poolc[(i__1 = (node << 1) + 10) < 32 && 0 <= i__1 ? i__1 : 
-		s_rnge("poolc", i__1, "dasrwr_", (ftnlen)3695)];
+		s_rnge("poolc", i__1, "dasrwr_", (ftnlen)3863)];
     }
 
 /*     The record we're writing to is not buffered.  We'll allocate */
@@ -3413,14 +3567,15 @@ L_dasurc:
 /*        If the allocated record was updated, write it out. */
 
 	if (upbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbu"
-		"fc", i__1, "dasrwr_", (ftnlen)3724)]) {
-	    dasioc_("WRITE", &lubufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? 
-		    i__1 : s_rnge("lubufc", i__1, "dasrwr_", (ftnlen)3726)], &
-		    rnbufc[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : 
-		    s_rnge("rnbufc", i__2, "dasrwr_", (ftnlen)3726)], rcbufc 
-		    + (((i__3 = node - 1) < 10 && 0 <= i__3 ? i__3 : s_rnge(
-		    "rcbufc", i__3, "dasrwr_", (ftnlen)3726)) << 10), (ftnlen)
-		    5, (ftnlen)1024);
+		"fc", i__1, "dasrwr_", (ftnlen)3892)]) {
+	    zzddhhlu_(&hnbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
+		    s_rnge("hnbufc", i__1, "dasrwr_", (ftnlen)3895)], "DAS", &
+		    c_false, &wrunit, (ftnlen)3);
+	    dasioc_("WRITE", &wrunit, &rnbufc[(i__1 = node - 1) < 10 && 0 <= 
+		    i__1 ? i__1 : s_rnge("rnbufc", i__1, "dasrwr_", (ftnlen)
+		    3897)], rcbufc + (((i__2 = node - 1) < 10 && 0 <= i__2 ? 
+		    i__2 : s_rnge("rcbufc", i__2, "dasrwr_", (ftnlen)3897)) <<
+		     10), (ftnlen)5, (ftnlen)1024);
 	    if (failed_()) {
 		chkout_("DASURC", (ftnlen)6);
 		return 0;
@@ -3430,16 +3585,16 @@ L_dasurc:
 
 /*     Now try to read the record we're going to update. */
 
-    dashlu_(handle, &unit);
+    zzddhhlu_(handle, "DAS", &c_false, &unit, (ftnlen)3);
     dasioc_("READ", &unit, recno, rcbufc + (((i__1 = node - 1) < 10 && 0 <= 
-	    i__1 ? i__1 : s_rnge("rcbufc", i__1, "dasrwr_", (ftnlen)3744)) << 
+	    i__1 ? i__1 : s_rnge("rcbufc", i__1, "dasrwr_", (ftnlen)3916)) << 
 	    10), (ftnlen)4, (ftnlen)1024);
     if (failed_()) {
 	chkout_("DASURC", (ftnlen)6);
 	return 0;
     }
 
-/*     The read was successful, so set the record number, handle, unit, */
+/*     The read was successful, so set the record number, handle, */
 /*     and update flag for this buffer entry, and link these buffer */
 /*     entries in before the current head of the list, thus putting */
 /*     them at the head. */
@@ -3448,13 +3603,11 @@ L_dasurc:
 
     lnkilb_(&node, &headc, poolc);
     hnbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("hnbufc", i__1,
-	     "dasrwr_", (ftnlen)3761)] = *handle;
+	     "dasrwr_", (ftnlen)3933)] = *handle;
     rnbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("rnbufc", i__1,
-	     "dasrwr_", (ftnlen)3762)] = *recno;
-    lubufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("lubufc", i__1,
-	     "dasrwr_", (ftnlen)3763)] = unit;
+	     "dasrwr_", (ftnlen)3934)] = *recno;
     upbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge("upbufc", i__1,
-	     "dasrwr_", (ftnlen)3764)] = TRUE_;
+	     "dasrwr_", (ftnlen)3935)] = TRUE_;
     headc = node;
 
 /*     At long last, make the requested update.  Note that we don't */
@@ -3462,7 +3615,7 @@ L_dasurc:
 /*     automatically before or at the time the file is closed. */
 
     s_copy(rcbufc + ((((i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : s_rnge(
-	    "rcbufc", i__1, "dasrwr_", (ftnlen)3772)) << 10) + (*first - 1)), 
+	    "rcbufc", i__1, "dasrwr_", (ftnlen)3943)) << 10) + (*first - 1)), 
 	    datac, *last - (*first - 1), datac_len);
     chkout_("DASURC", (ftnlen)6);
     return 0;
@@ -3563,7 +3716,7 @@ L_daswbr:
 /*     SPICELIB routines DASACR and DASRCR, which respectively add */
 /*     comment records to or delete comment records from a DAS file, use */
 /*     this routine to ensure that the DASRWR record buffers don't */
-/*     become out of synch with the file they operate upon. */
+/*     become out of sync with the file they operate upon. */
 
 /*     In addition, this routine can be used by application programs */
 /*     that create or update DAS files.  The reason for calling this */
@@ -3616,8 +3769,13 @@ L_daswbr:
 /*     K.R. Gehringer (JPL) */
 /*     N.J. Bachman   (JPL) */
 /*     W.L. Taber     (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 30-JUL-2014 (NJB) */
+
+/*        Upgraded to support handle manager integration. */
 
 /* -    SPICELIB Version 1.0.2, 03-NOV-1995 (NJB) */
 
@@ -3655,9 +3813,8 @@ L_daswbr:
 
     if (return_()) {
 	return 0;
-    } else {
-	chkin_("DASWBR", (ftnlen)6);
     }
+    chkin_("DASWBR", (ftnlen)6);
 
 /*     Check that the file is open for writing.  Signal an error if not. */
 
@@ -3676,6 +3833,14 @@ L_daswbr:
 	pass1 = FALSE_;
     }
 
+/*     Obtain a logical unit for HANDLE. */
+
+    zzddhhlu_(handle, "DAS", &c_false, &wrunit, (ftnlen)3);
+    if (failed_()) {
+	chkout_("DASWBR", (ftnlen)6);
+	return 0;
+    }
+
 /*     For each buffer, find the records belonging to this file, and */
 /*     write them out to the file. */
 
@@ -3684,18 +3849,16 @@ L_daswbr:
     node = headd;
     while(node > 0) {
 	if (*handle == hnbufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("hnbufd", i__1, "dasrwr_", (ftnlen)4014)]) {
+		s_rnge("hnbufd", i__1, "dasrwr_", (ftnlen)4200)]) {
 
 /*           This record belongs to the file of interest, so write the */
 /*           the record out. */
 
-	    dasiod_("WRITE", &lubufd[(i__1 = node - 1) < 10 && 0 <= i__1 ? 
-		    i__1 : s_rnge("lubufd", i__1, "dasrwr_", (ftnlen)4019)], &
-		    rnbufd[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : 
-		    s_rnge("rnbufd", i__2, "dasrwr_", (ftnlen)4019)], &rcbufd[
-		    (i__3 = (node << 7) - 128) < 1280 && 0 <= i__3 ? i__3 : 
-		    s_rnge("rcbufd", i__3, "dasrwr_", (ftnlen)4019)], (ftnlen)
-		    5);
+	    dasiod_("WRITE", &wrunit, &rnbufd[(i__1 = node - 1) < 10 && 0 <= 
+		    i__1 ? i__1 : s_rnge("rnbufd", i__1, "dasrwr_", (ftnlen)
+		    4205)], &rcbufd[(i__2 = (node << 7) - 128) < 1280 && 0 <= 
+		    i__2 ? i__2 : s_rnge("rcbufd", i__2, "dasrwr_", (ftnlen)
+		    4205)], (ftnlen)5);
 	    if (failed_()) {
 		chkout_("DASWBR", (ftnlen)6);
 		return 0;
@@ -3708,7 +3871,7 @@ L_daswbr:
 /*           buffer elements. */
 
 	    next = poold[(i__1 = (node << 1) + 10) < 32 && 0 <= i__1 ? i__1 : 
-		    s_rnge("poold", i__1, "dasrwr_", (ftnlen)4036)];
+		    s_rnge("poold", i__1, "dasrwr_", (ftnlen)4222)];
 	    if (node == headd) {
 		headd = next;
 	    }
@@ -3720,7 +3883,7 @@ L_daswbr:
 /*           Just get the next node. */
 
 	    node = poold[(i__1 = (node << 1) + 10) < 32 && 0 <= i__1 ? i__1 : 
-		    s_rnge("poold", i__1, "dasrwr_", (ftnlen)4051)];
+		    s_rnge("poold", i__1, "dasrwr_", (ftnlen)4237)];
 	}
     }
 
@@ -3729,18 +3892,16 @@ L_daswbr:
     node = headi;
     while(node > 0) {
 	if (*handle == hnbufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("hnbufi", i__1, "dasrwr_", (ftnlen)4066)]) {
+		s_rnge("hnbufi", i__1, "dasrwr_", (ftnlen)4252)]) {
 
 /*           This record belongs to the file of interest, so write the */
 /*           the record out. */
 
-	    dasioi_("WRITE", &lubufi[(i__1 = node - 1) < 10 && 0 <= i__1 ? 
-		    i__1 : s_rnge("lubufi", i__1, "dasrwr_", (ftnlen)4071)], &
-		    rnbufi[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : 
-		    s_rnge("rnbufi", i__2, "dasrwr_", (ftnlen)4071)], &rcbufi[
-		    (i__3 = (node << 8) - 256) < 2560 && 0 <= i__3 ? i__3 : 
-		    s_rnge("rcbufi", i__3, "dasrwr_", (ftnlen)4071)], (ftnlen)
-		    5);
+	    dasioi_("WRITE", &wrunit, &rnbufi[(i__1 = node - 1) < 10 && 0 <= 
+		    i__1 ? i__1 : s_rnge("rnbufi", i__1, "dasrwr_", (ftnlen)
+		    4257)], &rcbufi[(i__2 = (node << 8) - 256) < 2560 && 0 <= 
+		    i__2 ? i__2 : s_rnge("rcbufi", i__2, "dasrwr_", (ftnlen)
+		    4257)], (ftnlen)5);
 	    if (failed_()) {
 		chkout_("DASWBR", (ftnlen)6);
 		return 0;
@@ -3753,7 +3914,7 @@ L_daswbr:
 /*           buffer elements. */
 
 	    next = pooli[(i__1 = (node << 1) + 10) < 32 && 0 <= i__1 ? i__1 : 
-		    s_rnge("pooli", i__1, "dasrwr_", (ftnlen)4088)];
+		    s_rnge("pooli", i__1, "dasrwr_", (ftnlen)4274)];
 	    if (node == headi) {
 		headi = next;
 	    }
@@ -3765,7 +3926,7 @@ L_daswbr:
 /*           Just get the next node. */
 
 	    node = pooli[(i__1 = (node << 1) + 10) < 32 && 0 <= i__1 ? i__1 : 
-		    s_rnge("pooli", i__1, "dasrwr_", (ftnlen)4103)];
+		    s_rnge("pooli", i__1, "dasrwr_", (ftnlen)4289)];
 	}
     }
 
@@ -3774,18 +3935,16 @@ L_daswbr:
     node = headc;
     while(node > 0) {
 	if (*handle == hnbufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? i__1 : 
-		s_rnge("hnbufc", i__1, "dasrwr_", (ftnlen)4118)]) {
+		s_rnge("hnbufc", i__1, "dasrwr_", (ftnlen)4304)]) {
 
 /*           This record belongs to the file of interest, so write the */
 /*           the record out. */
 
-	    dasioc_("WRITE", &lubufc[(i__1 = node - 1) < 10 && 0 <= i__1 ? 
-		    i__1 : s_rnge("lubufc", i__1, "dasrwr_", (ftnlen)4123)], &
-		    rnbufc[(i__2 = node - 1) < 10 && 0 <= i__2 ? i__2 : 
-		    s_rnge("rnbufc", i__2, "dasrwr_", (ftnlen)4123)], rcbufc 
-		    + (((i__3 = node - 1) < 10 && 0 <= i__3 ? i__3 : s_rnge(
-		    "rcbufc", i__3, "dasrwr_", (ftnlen)4123)) << 10), (ftnlen)
-		    5, (ftnlen)1024);
+	    dasioc_("WRITE", &wrunit, &rnbufc[(i__1 = node - 1) < 10 && 0 <= 
+		    i__1 ? i__1 : s_rnge("rnbufc", i__1, "dasrwr_", (ftnlen)
+		    4309)], rcbufc + (((i__2 = node - 1) < 10 && 0 <= i__2 ? 
+		    i__2 : s_rnge("rcbufc", i__2, "dasrwr_", (ftnlen)4309)) <<
+		     10), (ftnlen)5, (ftnlen)1024);
 	    if (failed_()) {
 		chkout_("DASWBR", (ftnlen)6);
 		return 0;
@@ -3798,7 +3957,7 @@ L_daswbr:
 /*           buffer elements. */
 
 	    next = poolc[(i__1 = (node << 1) + 10) < 32 && 0 <= i__1 ? i__1 : 
-		    s_rnge("poolc", i__1, "dasrwr_", (ftnlen)4140)];
+		    s_rnge("poolc", i__1, "dasrwr_", (ftnlen)4326)];
 	    if (node == headc) {
 		headc = next;
 	    }
@@ -3810,7 +3969,7 @@ L_daswbr:
 /*           Just get the next node. */
 
 	    node = poolc[(i__1 = (node << 1) + 10) < 32 && 0 <= i__1 ? i__1 : 
-		    s_rnge("poolc", i__1, "dasrwr_", (ftnlen)4155)];
+		    s_rnge("poolc", i__1, "dasrwr_", (ftnlen)4341)];
 	}
     }
     chkout_("DASWBR", (ftnlen)6);

@@ -71,29 +71,30 @@ static doublereal c_b40 = 1.;
     extern logical return_(void);
     doublereal corxfi[36]	/* was [6][6] */, corxfm[36]	/* was [6][6] 
 	    */, fxosta[6], fxpsta[6], fxpvel[3], fxtsta[6], obspnt[6], obssta[
-	    12]	/* was [6][2] */, obstrg[6], pntsta[6], acc[3], raysta[6], 
+	    12]	/* was [6][2] */, obstrg[6], acc[3], pntsta[6], raysta[6], 
 	    sastat[6], spoint[3], srfvec[3], ssbobs[6], ssbtrg[6], trgepc;
     integer center, clssid, frclss;
     logical attblk[6], usestl;
-    extern /* Subroutine */ int setmsg_(char *, ftnlen), sigerr_(char *, 
-	    ftnlen);
+    extern /* Subroutine */ int setmsg_(char *, ftnlen);
     logical fnd;
-    extern /* Subroutine */ int chkout_(char *, ftnlen), namfrm_(char *, 
-	    integer *, ftnlen), frinfo_(integer *, integer *, integer *, 
-	    integer *, logical *), errint_(char *, integer *, ftnlen), 
-	    spkgeo_(integer *, doublereal *, char *, integer *, doublereal *, 
-	    doublereal *, ftnlen), vminug_(doublereal *, integer *, 
-	    doublereal *), dnearp_(doublereal *, doublereal *, doublereal *, 
-	    doublereal *, doublereal *, doublereal *, logical *), surfpv_(
+    extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
+	    ftnlen), namfrm_(char *, integer *, ftnlen), frinfo_(integer *, 
+	    integer *, integer *, integer *, logical *), errint_(char *, 
+	    integer *, ftnlen), spkgeo_(integer *, doublereal *, char *, 
+	    integer *, doublereal *, doublereal *, ftnlen), vminug_(
+	    doublereal *, integer *, doublereal *), dnearp_(doublereal *, 
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
-	    doublereal *, doublereal *, logical *), subpnt_(char *, char *, 
-	    doublereal *, char *, char *, char *, doublereal *, doublereal *, 
-	    doublereal *, ftnlen, ftnlen, ftnlen, ftnlen, ftnlen), spkssb_(
-	    integer *, doublereal *, char *, doublereal *, ftnlen), sxform_(
-	    char *, char *, doublereal *, doublereal *, ftnlen, ftnlen);
+	    doublereal *, logical *), surfpv_(doublereal *, doublereal *, 
+	    doublereal *, doublereal *, doublereal *, doublereal *, logical *)
+	    , subpnt_(char *, char *, doublereal *, char *, char *, char *, 
+	    doublereal *, doublereal *, doublereal *, ftnlen, ftnlen, ftnlen, 
+	    ftnlen, ftnlen), spkssb_(integer *, doublereal *, char *, 
+	    doublereal *, ftnlen);
     doublereal dlt;
-    extern /* Subroutine */ int qderiv_(integer *, doublereal *, doublereal *,
-	     doublereal *, doublereal *), invstm_(doublereal *, doublereal *);
+    extern /* Subroutine */ int sxform_(char *, char *, doublereal *, 
+	    doublereal *, ftnlen, ftnlen), qderiv_(integer *, doublereal *, 
+	    doublereal *, doublereal *, doublereal *), invstm_(doublereal *, 
+	    doublereal *);
 
 /* $ Abstract */
 
@@ -199,7 +200,21 @@ static doublereal c_b40 = 1.;
 
 /* $ Version */
 
-/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+/* -    SPICELIB Version 2.0.0  29-NOV-2016 (NJB) */
+
+/*        Upgraded to support surfaces represented by DSKs. */
+
+/*        Bug fix: removed declaration of NVRMAX parameter. */
+
+/* -    SPICELIB Version 1.3.0, 01-OCT-2011 (NJB) */
+
+/*       Added NWILUM parameter. */
+
+/* -    SPICELIB Version 1.2.0, 14-SEP-2010 (EDW) */
+
+/*       Added NWPA parameter. */
+
+/* -    SPICELIB Version 1.1.0, 08-SEP-2009 (EDW) */
 
 /*       Added NWRR parameter. */
 /*       Added NWUDS parameter. */
@@ -249,6 +264,14 @@ static doublereal c_b40 = 1.;
 /*     count using NWUDS. */
 
 
+/*     Callers of GFPA should declare their workspace window */
+/*     count using NWPA. */
+
+
+/*     Callers of GFILUM should declare their workspace window */
+/*     count using NWILUM. */
+
+
 /*     ADDWIN is a parameter used to expand each interval of the search */
 /*     (confinement) window by a small amount at both ends in order to */
 /*     accommodate searches using equality constraints. The loaded */
@@ -256,9 +279,6 @@ static doublereal c_b40 = 1.;
 
 
 /*     FRMNLN is a string length for frame names. */
-
-
-/*     NVRMAX is the maximum number of vertices if FOV type is "POLYGON" */
 
 
 /*     FOVTLN -- maximum length for FOV string. */

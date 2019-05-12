@@ -147,25 +147,31 @@
                              the sun state is corrected for stellar 
                              aberration as seen from the target.  
  
-                  "CN"       Converged Newtonian light time 
-                             corrections.  This is the same as LT 
-                             corrections but with further iterations 
-                             to a converged Newtonian light time 
-                             solution.  Given that relativistic 
-                             effects may be as large as the higher 
-                             accuracy achieved by this computation, 
-                             this is correction is seldom worth the 
-                             additional computations required unless 
-                             the user incorporates additional 
-                             relativistic corrections.  Light 
-                             time corrections are applied as in the 
-                             "LT" case. 
+                  "CN"       Converged Newtonian light time
+                             correction. In solving the light time
+                             equation, the "CN" correction iterates
+                             until the solution converges (three
+                             iterations on all supported platforms).
+                             Whether the "CN+S" solution is
+                             substantially more accurate than the
+                             "LT" solution depends on the geometry
+                             of the participating objects and on the
+                             accuracy of the input data. In all
+                             cases this routine will execute more
+                             slowly when a converged solution is
+                             computed. See the Particulars section
+                             below for a discussion of precision of
+                             light time corrections.
+ 
+                             Light time corrections are applied as in
+                             the "LT" case.
                      
-                  "CN+S"     Converged Newtonian light time 
-                             corrections and stellar aberration. 
-                             Light time and stellar aberration  
-                             corrections are applied as in the 
-                             "LT+S" case. 
+                  "CN+S"     Converged Newtonian light time correction
+                             and stellar aberration correction.
+ 
+                             Light time and stellar aberration
+                             corrections are applied as in the "LT+S"
+                             case.
  
  
    obsrvr      is the name of the observing body.  This is typically 
@@ -419,6 +425,12 @@
  
 -Version
  
+   -CSPICE Version 1.0.5, 10-JUL-2014 (NJB)
+
+       Discussion of light time corrections was updated. Assertions
+       that converged light time corrections are unlikely to be
+       useful were removed.
+
    -CSPICE Version 1.0.4, 19-MAY-2010 (BVS)
 
         Index line now states that this routine is deprecated.

@@ -8,7 +8,7 @@
 /* Table of constant values */
 
 static integer c__3 = 3;
-static doublereal c_b3 = 1.;
+static doublereal c_b7 = 1.;
 
 /* $Procedure ZZSTELAB ( Private --- stellar aberration correction ) */
 /* Subroutine */ int zzstelab_(logical *xmit, doublereal *accobs, doublereal *
@@ -31,7 +31,9 @@ static doublereal c_b3 = 1.;
     extern /* Subroutine */ int vequ_(doublereal *, doublereal *);
     doublereal term1[3], term2[3], term3[3], c__, lcacc[3];
     integer i__;
-    doublereal s, saoff[6]	/* was [3][2] */, drhat[3];
+    doublereal s;
+    extern /* Subroutine */ int chkin_(char *, ftnlen);
+    doublereal saoff[6]	/* was [3][2] */, drhat[3];
     extern /* Subroutine */ int dvhat_(doublereal *, doublereal *);
     doublereal ptarg[3], evobs[3], srhat[6], vphat[3], vtarg[3];
     extern /* Subroutine */ int vlcom_(doublereal *, doublereal *, doublereal 
@@ -46,8 +48,10 @@ static doublereal c_b3 = 1.;
     extern doublereal clight_(void);
     doublereal dptmag, ptgmag, eptarg[3], dvphat[3], lcvobs[3];
     extern /* Subroutine */ int qderiv_(integer *, doublereal *, doublereal *,
-	     doublereal *, doublereal *);
+	     doublereal *, doublereal *), sigerr_(char *, ftnlen), chkout_(
+	    char *, ftnlen), setmsg_(char *, ftnlen);
     doublereal svphat[6];
+    extern logical return_(void);
     extern /* Subroutine */ int vminus_(doublereal *, doublereal *);
     doublereal sgn, dvp[3], svp[6];
 
@@ -170,9 +174,11 @@ static doublereal c_b3 = 1.;
 
 /* $ Exceptions */
 
-/*     Error free. */
+/*     1) If attempt to divide by zero occurs, the error */
+/*        SPICE(DIVIDEBYZERO) will be signaled. This case may occur */
+/*        due to uninitialized inputs. */
 
-/*     1) Loss of precision will occur for geometric cases in which */
+/*     2) Loss of precision will occur for geometric cases in which */
 /*        VOBS is nearly parallel to the position component of STARG. */
 
 /* $ Files */
@@ -209,6 +215,12 @@ static doublereal c_b3 = 1.;
 /*     N.J. Bachman    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 15-APR-2014 (NJB) */
+
+/*        Added RETURN test and discovery check-in. */
+/*        Check for division by zero was added. This */
+/*        case might occur due to uninitialized inputs. */
 
 /* -    SPICELIB Version 1.0.1, 12-FEB-2009 (NJB) */
 
@@ -248,6 +260,12 @@ static doublereal c_b3 = 1.;
 
 /*     Local variables */
 
+
+/*     Use discovery check-in. */
+
+    if (return_()) {
+	return 0;
+    }
 
 /*     In the discussion below, the dot product of vectors X and Y */
 /*     is denoted by */
@@ -390,6 +408,21 @@ static doublereal c_b3 = 1.;
 /* Computing MAX */
     d__1 = 0., d__2 = 1 - s * s;
     c__ = sqrt((max(d__1,d__2)));
+    if (c__ == 0.) {
+
+/*        C will be used as a divisor later (in the computation */
+/*        of DPHI), so we'll put a stop to the problem here. */
+
+	chkin_("ZZSTELAB", (ftnlen)8);
+	setmsg_("Cosine of the aberration angle is 0; this cannot occur for "
+		"realistic observer velocities. This case can arise due to un"
+		"initialized inputs. This cosine value is used as a divisor i"
+		"n a later computation, so it must not be equal to zero.", (
+		ftnlen)234);
+	sigerr_("SPICE(DIVIDEBYZERO)", (ftnlen)19);
+	chkout_("ZZSTELAB", (ftnlen)8);
+	return 0;
+    }
 
 /*     Compute the unit vector VPHAT and the stellar */
 /*     aberration correction. We avoid relying on */
@@ -435,7 +468,7 @@ static doublereal c_b3 = 1.;
 
 	d__1 = -vdot_(lcvobs, drhat) - vdot_(lcacc, rhat);
 	d__2 = -vdot_(lcvobs, rhat);
-	vlcom3_(&c_b3, lcacc, &d__1, rhat, &d__2, drhat, dvp);
+	vlcom3_(&c_b7, lcacc, &d__1, rhat, &d__2, drhat, dvp);
 	vhat_(vp, vphat);
 
 /*        Now we can compute DVPHAT, the derivative of VPHAT: */
@@ -499,13 +532,13 @@ static doublereal c_b3 = 1.;
 /*           to make a linear estimate. */
 
 	    d__1 = sgn * 1.;
-	    vlcom_(&c_b3, lcvobs, &d__1, lcacc, evobs);
+	    vlcom_(&c_b7, lcvobs, &d__1, lcacc, evobs);
 
 /*           Estimate the observer-target vector. We use the */
 /*           observer-target state velocity to make a linear estimate. */
 
 	    d__1 = sgn * 1.;
-	    vlcom_(&c_b3, starg, &d__1, &starg[3], eptarg);
+	    vlcom_(&c_b7, starg, &d__1, &starg[3], eptarg);
 
 /*           Let RHAT be the unit observer-target position. */
 /*           Compute the component of the observer's velocity */
@@ -536,12 +569,12 @@ static doublereal c_b3 = 1.;
 	    d__2 = ptgmag * (c__ - 1.);
 	    vlcom_(&d__1, vphat, &d__2, rhat, &saoff[(i__1 = i__ * 3 - 3) < 6 
 		    && 0 <= i__1 ? i__1 : s_rnge("saoff", i__1, "zzstelab_", (
-		    ftnlen)562)]);
+		    ftnlen)597)]);
 	}
 
 /*        Now compute the derivative. */
 
-	qderiv_(&c__3, saoff, &saoff[3], &c_b3, dscorr);
+	qderiv_(&c__3, saoff, &saoff[3], &c_b7, dscorr);
     }
 
 /*     At this point the correction offset SCORR and its derivative */

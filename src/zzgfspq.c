@@ -176,12 +176,12 @@ static doublereal c_b12 = 1e-12;
 
 /* $ Exceptions */
 
-/*     1) The error SPICE(BADRADIUS) will signal if either R1 or R2 */
-/*        have a nagative value. */
+/*     1) SPICE(BADRADIUS) signals if either R1 or R2 have a negative */
+/*        value. */
 
-/*     2)  If the ephemeris data required to perform the needed state */
-/*         look-ups are not loaded, routines called by this routine */
-/*         will signal the error SPICE(SPKINSUFFDATA). */
+/*     2) If the ephemeris data required to perform the needed state */
+/*        look-ups are not loaded, routines called by this routine */
+/*        will signal the error SPICE(SPKINSUFFDATA). */
 
 /* $ Files */
 
@@ -214,6 +214,15 @@ static doublereal c_b12 = 1e-12;
 /*     L.S. Elson     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1, 28-JUN-2012 (EDW) */
+
+/*        Minor edits to header, correcting spelling error and improving */
+/*        syntax of Exceptions. */
+
+/*        Corrected a typo in SETMSG error message where TARG1 was quoted */
+/*        twice instead of quoting TARG1 and TARG2. This edit does change */
+/*        the error message output. */
 
 /* -    SPICELIB Version 1.0.0, 03-MAR-2009 (EDW) */
 
@@ -248,7 +257,7 @@ static doublereal c_b12 = 1e-12;
 		". ", (ftnlen)121);
 	errint_("#", targ1, (ftnlen)1);
 	errdp_("#", r1, (ftnlen)1);
-	errint_("#", targ1, (ftnlen)1);
+	errint_("#", targ2, (ftnlen)1);
 	errdp_("#", r2, (ftnlen)1);
 	sigerr_("SPICE(BADRADIUS)", (ftnlen)16);
 	chkout_("ZZGFSPQ", (ftnlen)7);

@@ -74,6 +74,14 @@
          <A HREF="#Type 4 functions">Type 4 functions</A>
       <A HREF="#Data Type 5">Data Type 5</A>
          <A HREF="#Type 5 functions">Type 5 functions</A>
+      <A HREF="#Type 6: ESOC/DDID Piecewise Interpolation">Type 6: ESOC/DDID Piecewise Interpolation</A>
+         <A HREF="#Terminology">Terminology</A>
+         <A HREF="#Mini-segments">Mini-segments</A>
+         <A HREF="#Type 6 subtypes">Type 6 subtypes</A>
+         <A HREF="#Restrictions on type 6 data">Restrictions on type 6 data</A>
+         <A HREF="#Type 6 segment structure">Type 6 segment structure</A>
+         <A HREF="#Use of non-zero tolerance">Use of non-zero tolerance</A>
+         <A HREF="#Type 6 functions">Type 6 functions</A>
    <A HREF="#Appendix A --- Summary of C-kernel Functions">Appendix A --- Summary of C-kernel Functions</A>
       <A HREF="#Summary of Mnemonics">Summary of Mnemonics</A>
       <A HREF="#Summary of Calling Sequences">Summary of Calling Sequences</A>
@@ -82,6 +90,7 @@
    <A HREF="#Appendix D --- An Example of Writing a Type 2 CK Segment">Appendix D --- An Example of Writing a Type 2 CK Segment</A>
    <A HREF="#Appendix E --- An Example of Writing a Type 3 CK Segment">Appendix E --- An Example of Writing a Type 3 CK Segment</A>
    <A HREF="#Appendix G: Document Revision History">Appendix G: Document Revision History</A>
+         <A HREF="#February 13, 2014">February 13, 2014</A>
          <A HREF="#April 1, 2009">April 1, 2009</A>
          <A HREF="#November 17, 2005">November 17, 2005</A>
          <A HREF="#December 21, 2004">December 21, 2004</A>
@@ -100,7 +109,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> C-Kernel Required Reading
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2010 JUN 03 by B. V. Semenov.
+   Last revised on 2014 FEB 13 by N. J. Bachman.
 <P>
  
 <BR><BR>
@@ -2706,7 +2715,15 @@ component.
    nominal window size is dictated by the degree and type (Hermite vs
    Lagrange) of the interpolating polynomials. Normally the window of time
    tags has even size, and the window is selected so that the request time
-   is located between the two central time tags in the window.
+   is located on or between the two central time tags in the window.
+<P>
+ 
+   If the request time coincides with a time tag, the window may be
+   positioned so that either of the central time tags of the window matches
+   the request time. The Lagrange and Hermite interpolation algorithms will
+   produce only round-off level differences between the results obtained
+   from either choice, provided the input data are suitable for
+   interpolation.
 <P>
  
    When the request time is near a segment or interpolation interval
@@ -3001,6 +3018,678 @@ for pointing at a given time.<BR>
  gets the Ith pointing instance from a type 5 segment.<BR>
 </DL>
 <BR><BR>
+<A NAME="Type 6: ESOC/DDID Piecewise Interpolation"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> Type 6: ESOC/DDID Piecewise Interpolation
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   CK type 6 has been provided to support accurate duplication by the SPICE
+   CK subsystem of spacecraft attitude data used by the European Space
+   Agency (ESA) on the Mars Express, Rosetta, SMART-1 and Venus Express
+   missions.
+<P>
+ 
+   CK type 6 is an enhanced version of CK type 5. Type 6 enables creation
+   of CK files representing the same attitude data that can be represented
+   using type 5, but containing far fewer segments. Data from multiple type
+   5 segments can be stored in a single type 6 segment, as long as the type
+   5 segments satisfy certain restrictions:
+<P>
+ 
+<UL>
+<TT>--</TT> The type 5 segments are for the same reference frame (for an instrument or
+spacecraft structure) and have the same base frame.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> All of the type 5 segments contain angular velocity data, or none do.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> The type 5 segments' descriptor coverage intervals, when arranged in
+increasing time order, overlap at, and only at, their endpoints.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Each type 5 segment contains no gaps, or has a single gap to the right of
+its last pointing instance.
+<BR><BR></UL>
+<BR><BR>
+<A NAME="Terminology"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Terminology
+</H3><P><BR><BR>
+   In this section of the document, ``pointing'' is a synonym for
+   ``attitude'' or ``orientation.''
+<P>
+ 
+   A ``packet'' is a set of data representing pointing for a given time.
+   Such a set is also referred to as a ``pointing instance.''
+<P>
+ 
+   Times associated with packets are variously called ``times,''
+   ``epochs,'' or ``time tags.'' Time tags represent the independent
+   variable of attitude data: they are times at which the associated data
+   are applicable.
+<P>
+ 
+   All times, unless otherwise indicated, are encoded spacecraft clock
+   values, also called ``ticks.''
+<P>
+ 
+   Mini-segment time coverage bounds are also called ``boundaries.''
+<P>
+ 
+<BR><BR>
+<A NAME="Mini-segments"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Mini-segments
+</H3><P><BR><BR>
+   Within a type 6 segment, each set of data corresponding to a type 5
+   segment is called a ``mini-segment.'' A type 6 segment contains one or
+   more mini-segments.
+<P>
+ 
+   The mini-segments of a type 6 segment need not use the same packet
+   counts, subtypes, clock rates, or interpolation degrees.
+<P>
+ 
+   The time coverage of a mini-segment is called a ``mini-segment
+   interval.'' The mini-segment intervals of a type 6 segment have no
+   intervening gaps (gaps may occur only within mini-segment intervals) and
+   overlap only at single points. The stop time of each mini-segment
+   interval is the start time of the next. The start time of a type 6
+   segment is greater than (later than) or equal to the start time of the
+   first interval, and the segment's stop time is less than (earlier than)
+   or equal to the stop time of the last interval.
+<P>
+ 
+   Mini-segment intervals must have strictly positive length.
+<P>
+ 
+   An example of the relationship between the time coverage of a type 6
+   segment and that of its mini-segments is shown below:
+<P>
+ 
+<PRE>
+   mini-segment interval bounds:  |----------|----|--------|-|--|
+   segment bounds:                  [                           ]
+</PRE>
+   Each mini-segment contains a time ordered, strictly increasing sequence
+   of epochs (no two epochs of the same mini-segment may coincide) and an
+   associated sequence of attitude data sets called ``packets.'' The epoch
+   associated with a packet is also called a ``time tag.'' The composition
+   of a packet depends on the subtype of the mini-segment to which the
+   packet belongs; subtypes are discussed in more detail below.
+<P>
+ 
+   The start time of each mini-segment interval must be greater than or
+   equal to the first member of the corresponding time tag sequence. The
+   stop time of each mini-segment interval must be greater than the
+   interval's start time and is allowed to exceed the last member of the
+   mini-segment's time tag sequence. Thus a mini-segment interval can have
+   a coverage gap between its last time tag and its stop time. There cannot
+   be a gap between a mini-segment interval's stop time and the start time
+   of the next mini-segment interval.
+<P>
+ 
+   The interpolation interval associated with a mini-segment is the time
+   interval over which the mini-segment can satisfy a pointing request. The
+   interpolation interval extends from the start time of the corresponding
+   ``mini-segment interval'' to the minimum of the stop time of the
+   mini-segment interval and the last time tag of the mini-segment's time
+   tag sequence.
+<P>
+ 
+   Mini-segments may contain optional ``padding'' time tags and packets
+   beyond both ends of their coverage intervals. Padding time tags on the
+   left of a mini-segment interval are less than the interval start time;
+   padding time tags on the right exceed the interval stop time. Padding
+   enables control of interpolation behavior at and near mini-segment
+   interval boundaries. Within a mini-segment, padding cannot occur to the
+   right of a gap. Padding does not contribute to a mini-segment's time
+   coverage.
+<P>
+ 
+   The relationships between the time coverage of a mini-segment (the
+   ``mini-segment interval''), the time tags of the pointing instances it
+   contains, and the mini-segment's interpolation interval are shown below.
+<P>
+ 
+   In the following diagrams, zeros represent pointing instances, hyphens
+   represent time periods over which pointing data can be used as inputs
+   for interpolation (this includes padding), and blank areas represent
+   coverage gaps.
+<P>
+ 
+   Mini-segment interval without padding:
+<P>
+ 
+<PRE>
+   pointing instances:              0-0-0--0-0-0-0-0---0-0-0---0-0-0
+   mini-segment interval bounds:    |                              |
+   interpolation interval bounds:   ^                              ^
+ 
+</PRE>
+   Mini-segment interval with padding on both sides:
+<P>
+ 
+<PRE>
+   pointing instances:              0-0-0--0-0-0-0-0---0-0-0---0-0-0
+   mini-segment interval bounds:          |                    |
+   interpolation interval bounds:         ^                    ^
+</PRE>
+   Note that when padding is present, mini-segment interval bounds need not
+   coincide with time tags of pointing instances.
+<P>
+ 
+   Mini-segment interval with left-side padding and with a gap:
+<P>
+ 
+<PRE>
+   pointing instances:              0-0-0--0-0-0-0-0---0-0
+   mini-segment interval bounds:          |                    |
+   interpolation interval bounds:         ^              ^
+</PRE>
+   Padding within or beyond a gap is not supported:
+<P>
+ 
+<PRE>
+                                                         not allowed
+                                                            v v v
+   pointing instances:            0-0-0--0-0-0-0-0---0-0    0-0-0
+   mini-segment interval bounds:      |                     |
+   interpolation interval bounds:     ^                ^
+ 
+ 
+                   last "usable" time tag -------+
+                                                 | not allowed
+                                                   v v v
+   pointing instances:            0-0-0--0-0-0-0-0-0-0-0
+   mini-segment interval bounds:      |                     |
+   interpolation interval bounds:     ^          ^
+</PRE>
+   The use of padding is discussed in greater detail below.
+<P>
+ 
+   When type 6 data are interpolated to produce an attitude instance for a
+   given request time, if the look-up tolerance is zero, only data from a
+   single mini-segment whose interval contains the request time are used.
+<P>
+ 
+   When a request time coincides with the boundary between two mini-segment
+   intervals, there is a choice as to which interval will provide attitude
+   data. The creator of a type 6 segment can control this behavior via a
+   parameter passed to the type 6 segment writer ckw06_; this parameter is
+   called the interval selection flag. For a given type 6 segment,
+   depending on the value of this flag, either the earlier interval is
+   always selected, or the later interval is always selected:
+<P>
+ 
+<PRE>
+   Pointing request time:                       |
+ 
+ 
+   mini-segment interval n:       0-0-0-0-0-0-0-0-0-0-0
+   mini-segment interval n+1:                 @-@-@-@-@-@-@-@-@-@
+   mini-segment interval bounds:   |            |             |
+</PRE>
+   In the case depicted by the above diagram, if the interval selection
+   flag is set to "true," pointing will be selected from interval n+1; if
+   the flag is "false," pointing will be selected from interval n.
+<P>
+ 
+<BR><BR>
+<A NAME="Type 6 subtypes"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Type 6 subtypes
+</H3><P><BR><BR>
+   Because of the possibility of evolution of the mathematical
+   representations of attitude used by ESA, CK type 6 is designed to
+   accommodate multiple representations of attitude data, thereby avoiding
+   a proliferation of CK data types. CK type 6 refers to each supported
+   mathematical representation of attitude data as a ``subtype.''
+<P>
+ 
+   Currently CK type 6 supports four subtypes:
+<P>
+ 
+<UL>
+<TT>--</TT> Subtype 0:
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> Sliding-window Hermite interpolation of quaternions and quaternion
+derivatives. Attitude and angular velocity are represented by a sequence of
+8-element ``packets'' and associated time tags. The time tags may be
+unequally spaced. Each packet contains four quaternion components followed
+by four quaternion time derivative components. A quaternion representing
+attitude at a request time is derived by using Hermite interpolation on
+each quaternion component and the corresponding derivative, where the
+values to be interpolated are obtained for a consecutive sequence of time
+tags centered at the request time, and converting the result to unit
+length. Angular velocity is derived from the unit quaternion and its
+derivative with respect to time. The same interpolation degree is used for
+each quaternion component.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Subtype 1:
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> Sliding-window Lagrange interpolation of quaternions. Attitude is
+represented by a sequence of 4-element ``packets'' and associated time
+tags. The time tags may be unequally spaced. Each packet contains four
+quaternion components. A quaternion representing attitude at a request time
+is derived by using Lagrange interpolation on each quaternion component,
+where the values to be interpolated are obtained for a consecutive sequence
+of time tags centered at the request time. The interpolated quaternion is
+then unitized. The same interpolation degree is used for each quaternion
+component.
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> Angular velocity is computed from the unit-length quaternion and its time
+derivative. The derivative is computed using the derivatives of the
+interpolating polynomials.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Subtype 2:
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> Sliding-window Hermite interpolation of quaternions and angular velocity.
+Attitude and angular velocity are represented by a sequence of 14-element
+``packets'' and associated time tags. The time tags may be unequally
+spaced. Each packet contains four quaternion components, four quaternion
+derivative components, three angular velocity components, and three angular
+acceleration components. A quaternion representing attitude at a request
+time is derived by using Hermite interpolation on each quaternion component
+and the corresponding derivative, where the values to be interpolated are
+obtained for a consecutive sequence of time tags centered at the request
+time. The interpolated quaternion is then unitized. Angular velocity is
+obtained by using Hermite interpolation on each angular velocity component
+and the corresponding derivative. The attitude and angular velocity
+resulting from this interpolation method are in principle independent. The
+same interpolation degree is used for each quaternion and angular velocity
+component.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Subtype 3:
+<BR><BR></UL>
+<UL>
+<TT>&#32;&#32;</TT> Sliding-window Lagrange interpolation of quaternions and angular velocity.
+Attitude and angular velocity are represented by a sequence of 7-element
+``packets'' and associated time tags. The time tags may be unequally
+spaced. Each packet contains four quaternion components and three angular
+velocity components. A quaternion representing attitude at a request time
+is derived by using Lagrange interpolation on each quaternion component,
+where the values to be interpolated are obtained for a consecutive sequence
+of time tags centered at the request time. The interpolated quaternion is
+then unitized. Angular velocity is obtained by using Lagrange interpolation
+on each angular velocity component. The attitude and angular velocity
+resulting from this interpolation method are in principle independent. The
+same interpolation degree is used for each quaternion and angular velocity
+component.
+<BR><BR></UL>
+   The sliding-window interpolation techniques used by data type 6 work as
+   follows: for any request epoch, the interpolation algorithm computes a
+   component of a quaternion or angular velocity by interpolating a set of
+   values of that component defined on a set of consecutive time tags---a
+   "window"---centered as closely as possible to the request epoch. The
+   nominal window size is dictated by the degree and type (Hermite vs
+   Lagrange) of the interpolating polynomials. Normally the window of time
+   tags has even size, and the window is selected so that the request time
+   is located between the two central time tags in the window.
+<P>
+ 
+   If the request time coincides with a time tag, the window may be
+   positioned so that either of the central time tags of the window matches
+   the request time. The Lagrange and Hermite interpolation algorithms will
+   produce only round-off level differences between the results obtained
+   from either choice, provided the input data are suitable for
+   interpolation.
+<P>
+ 
+   In CK type 6, mini-segment interval boundaries affect interpolation in
+   the same way that segment boundaries affect type 5 interpolation. When
+   the request time is near a mini-segment boundary, the window is
+   truncated if necessary on the side closest to the boundary. If
+   mini-segment interval, including padding, contains too few packets to
+   form a window of nominal size, as many packets as are needed and
+   available are used to construct the window. In this case the window size
+   may be odd. In any case the window never includes more than WNDSIZ/2
+   time tags on either side of the request time, where WNDSIZ is the
+   nominal window size.
+<P>
+ 
+<BR><BR>
+<A NAME="Restrictions on type 6 data"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Restrictions on type 6 data
+</H3><P><BR><BR>
+   All data used in type 6 segments must be suitable for use by the
+   interpolation algorithms associated with the subtypes selected by the CK
+   creator. In general, adjacent pointing instances must represent
+   attitudes that do not differ greatly; otherwise polynomial interpolation
+   of quaternions will tend to yield invalid results.
+<P>
+ 
+   In addition, quaternion data for subtypes 0 and 2 must have signs chosen
+   so that large variations between successive values of any quaternion
+   element do not occur. For any attitude represented by a quaternion Q,
+   the quaternion -Q represents the same attitude. But only one of these
+   choices can be ``near'' the previous quaternion P in the mini-segment
+   containing Q, in the Euclidean norm sense.
+<P>
+ 
+   Quaternion signs must be selected so that the elements of adjacent
+   quaternions are always ``near'' each other, and quaternion derivatives
+   must be consistent with the selected quaternions.
+<P>
+ 
+   Subtypes 1 and 3 do not have quaternion sign restrictions; the
+   interpolation algorithms for these subtypes adjust quaternion signs at
+   run time if necessary. These subtypes do require that the attitudes
+   represented by adjacent quaternions be ``close'' to each other: if
+   adjacent quaternions are converted to rotation matrices, the matrices
+   must be close to each other.
+<P>
+ 
+<BR><BR>
+<A NAME="Type 6 segment structure"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Type 6 segment structure
+</H3><P><BR><BR>
+   Below we first describe the overall type 6 segment structure, then we
+   cover the mini-segment structure.
+<P>
+ 
+   Type 6 CK segments have the structure shown below:
+<P>
+ 
+<PRE>
+   +---------------------------------------+
+   | Mini-segment 1                        |
+   +---------------------------------------+
+         .
+         .
+         .
+   +---------------------------------------+
+   | Mini-segment N                        |
+   +---------------------------------------+
+   | Mini-segment interval 1 start time    |
+   +---------------------------------------+
+         .
+         .
+         .
+   +---------------------------------------+
+   | Mini-segment interval N start time    |
+   +---------------------------------------+
+   | Mini-segment interval N stop time     |
+   +---------------------------------------+
+   | Mini-seg. interval start time 100     | (First interval
+   +---------------------------------------+  directory)
+         .
+         .
+         .
+   +---------------------------------------+
+   | Mini-seg. ival. start time (N/100)*100| (Last interval
+   +---------------------------------------+  directory)
+   | Mini-segment 1 start pointer          |
+   +---------------------------------------+
+         .
+         .
+         .
+   +---------------------------------------+
+   | Mini-segment N start pointer          |
+   +---------------------------------------+
+   | Mini-segment N stop pointer + 1       |
+   +---------------------------------------+
+   | Interval selection flag               |
+   +---------------------------------------+
+   | Number of intervals                   |
+   +---------------------------------------+
+</PRE>
+   In the diagram above, each box labeled as a mini-segment represents a
+   data structure; the format of these data structures is described below.
+   The other boxes represent individual double precision numbers.
+<P>
+ 
+   The mini-segments themselves form the initial portion of the segment.
+<P>
+ 
+   The array of mini-segment interval time bounds contains the start time
+   of each mini-segment interval, plus the stop time of the final interval.
+<P>
+ 
+   The list of mini-segment interval time bounds has its own directory,
+   which has the same structure as the time tag directories of type 5
+   segments. As with time tag directories, the mini-segment interval
+   boundary directory contains boundary times whose indices are multiples
+   of 100, except that if N+1 is a multiple of 100, the last boundary time
+   is not included.
+<P>
+ 
+   The array of mini-segment pointers contains a pointer to the start of
+   each mini-segment, plus a final ``stop'' pointer for the final
+   mini-segment. The stop pointer points to the location immediately
+   following the last address of the final mini-segment.
+<P>
+ 
+   The mini-segment pointers are offsets relative to the start address of
+   the segment. Each start pointer, when added to the segment's start
+   address, yields the address of the first item in the corresponding
+   mini-segment.
+<P>
+ 
+   Following the mini-segment pointers is the interval selection flag. When
+   this flag has the value 1, the later interpolation interval is used when
+   a request time falls on the common boundary between two interpolation
+   intervals. If the selection flag is 0, the earlier interval is used.
+<P>
+ 
+   The structure of a type 6 CK mini-segment is similar to the structure of
+   a type 5 CK segment, except that a type 6 mini-segment contains no array
+   of interpolation interval start times, and hence no directory for
+   interpolation interval start times. The CK type 6 mini-segment structure
+   is as follows:
+<P>
+ 
+<PRE>
+   +--------------------------+
+   | Packet 1                 |
+   +--------------------------+
+               .
+               .
+               .
+   +--------------------------+
+   | Packet M                 |
+   +--------------------------+
+   | Time tag 1               |
+   +--------------------------+
+               .
+               .
+               .
+   +--------------------------+
+   | Time tag M               |
+   +--------------------------+
+   | Time tag 100             | (First time tag directory)
+   +--------------------------+
+               .
+               .
+               .
+   +--------------------------+
+   | Time tag ((M-1)/100)*100 | (Last time tag directory)
+   +--------------------------+
+   | Clock rate (sec/tick)    |
+   +--------------------------+
+   | Subtype code             |
+   +--------------------------+
+   | Window size              |
+   +--------------------------+
+   | Number of packets        |
+   +--------------------------+
+</PRE>
+   In the mini-segment diagram, each box representing a packet corresponds
+   to a set of PKTSIZ double precision numbers, where PKTSIZ depends on the
+   mini-segment's subtype; the other boxes represent individual double
+   precision numbers.
+<P>
+ 
+   The window size is related to the polynomial degree as shown:
+<P>
+ 
+<PRE>
+   Subtypes 0,2:     WINDOW_SIZE = ( DEGREE + 1 ) / 2
+   Subtypes 1,3:     WINDOW_SIZE =   DEGREE + 1
+</PRE>
+   Window sizes are required to be even; this imposes the interpolation
+   degree restrictions
+<P>
+ 
+<PRE>
+   Subtypes 0,2: the degree is equivalent to 3 mod 4, i.e.,
+                 the degree is in the set { 3, 7, 11, ... }
+ 
+   Subtypes 1,3: the degree is odd
+</PRE>
+   The number of packets normally should be greater than or equal to the
+   mini-segment's interpolation window size, but this is not a requirement.
+   The packet count may not be less than 2.
+<P>
+ 
+   The set of time tags is augmented by a sequence of directory entries;
+   these entries allow the type 6 reader to search for time tags more
+   efficiently. The directory entries contain time tags whose indices are
+   multiples of 100. The set of indices of time tags stored in the
+   directories ranges from 100 to
+<P>
+ 
+<PRE>
+   (  (M-1) / 100  ) * 100
+</PRE>
+   where M is the total number of time tags. Note that if M is
+<P>
+ 
+<PRE>
+   Q * 100
+</PRE>
+   then only
+<P>
+ 
+<PRE>
+   Q - 1
+</PRE>
+   directory entries are stored, and in particular, if there are only 100
+   packets in the segment, there are no directories.
+<P>
+ 
+   Following the time tag directory are four parameters associated with the
+   mini-segment: the rate of the associated spacecraft clock, in units of
+   seconds/tick, the subtype, the interpolation window size, and the packet
+   count.
+<P>
+ 
+   To facilitate the creation of type 6 segments, a segment writing
+   function called ckw06_c has been provided. This function takes as input
+   arguments the handle of an CK file that is open for writing, the
+   information needed to construct the segment descriptor, the
+   mini-segments' parameters, and the data to be stored in the segment. The
+   header of the function provides a complete description of the input
+   arguments and an example of its usage.
+<P>
+ 
+<BR><BR>
+<A NAME="Use of non-zero tolerance"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Use of non-zero tolerance
+</H3><P><BR><BR>
+   As with other CK types, type 6 segments can provide data for request
+   times outside of their interpolation intervals if a positive tolerance
+   value is used, and if the request time is within the tolerance from the
+   interpolation interval of some mini-segment. If the tolerance permits, a
+   request time that falls into a gap can be satisfied by the closest of
+   the last epoch of the mini-segment whose coverage interval includes the
+   request time, or by the coverage start time of the next mini-segment, if
+   there is one. Requests outside of the segment's coverage interval can be
+   satisfied by data at the nearest endpoint of some mini-segment's
+   interpolation interval, if the tolerance permits it.
+<P>
+ 
+   When a non-zero tolerance value is used to look up data from a type 6
+   segment, the algorithm for selecting data is not exactly the same as it
+   would be for a sequence of type 5 segments corresponding to the type 6
+   segment's mini-segments.
+<P>
+ 
+   As described in the earlier section titled "The General Search
+   Algorithm," if each mini-segment were replaced with a type 5 segment, it
+   would be possible for a later segment to take precedence over an earlier
+   one, even if the earlier segment had no coverage gap, if a request time
+   were outside of the coverage interval of the higher priority segment but
+   within the tolerance of the higher priority segment's coverage interval.
+<P>
+ 
+   This precedence effect cannot occur between two mini-segments of the
+   same type 6 segment. Specifically, it is not possible for a mini-segment
+   to provide data to satisfy a pointing request when the request time
+   outside of its coverage interval and is in the interpolation interval
+   (and hence not in a gap) of a different mini-segment of the same type 6
+   segment.
+<P>
+ 
+   This difference is highly unlikely to affect users of type 6 CK
+   segments.
+<P>
+ 
+<BR><BR>
+<A NAME="Type 6 functions"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Type 6 functions
+</H3><P><BR><BR>
+   There are several CK functions that support data type 6. Their names and
+   functions are:
+<P>
+ 
+<DL><DT>
+<B>
+ ckw06_c
+</B><BR><BR>
+<DD>
+ writes a type 6 segment to a file.<BR>
+</DL>
+<DL><DT>
+<B>
+ ckr06_
+</B><BR><BR>
+<DD>
+ reads a pointing record from a type 6 segment that satisfies a request
+for pointing at a given time.<BR>
+</DL>
+<DL><DT>
+<B>
+ cke06_
+</B><BR><BR>
+<DD>
+ evaluates the record supplied by CKR06.<BR>
+</DL>
+<DL><DT>
+<B>
+ cknm06_
+</B><BR><BR>
+<DD>
+ gives the number of mini-segments in a specified type 6 segment.<BR>
+</DL>
+<DL><DT>
+<B>
+ ckmp06_
+</B><BR><BR>
+<DD>
+ returns mini-segment parameters, including packet count, for specified
+mini-segment in a type 6 segment.<BR>
+</DL>
+<DL><DT>
+<B>
+ ckgr06_
+</B><BR><BR>
+<DD>
+ gets the Ith pointing instance from a specified mini-segment in a type
+6 segment.<BR>
+</DL>
+<BR><BR>
 <A NAME="Appendix A --- Summary of C-kernel Functions"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Appendix A --- Summary of C-kernel Functions
@@ -3029,48 +3718,52 @@ for pointing at a given time.<BR>
  
          Wrappers
  
-   <a href="../cspice/ckcls_c.html">ckcls_c</a>        ( C-kernel, close a pointing file                  )
-   <a href="../cspice/ckcov_c.html">ckcov_c</a>        ( C-kernel, coverage for an instrument             )
-   <a href="../cspice/ckgp_c.html">ckgp_c</a>         ( C-kernel, get pointing                           )
-   <a href="../cspice/ckgpav_c.html">ckgpav_c</a>       ( C-kernel, get pointing and angular velocity      )
-   <a href="../cspice/cklpf_c.html">cklpf_c</a>        ( C-kernel, load pointing file                     )
-   <a href="../cspice/ckobj_c.html">ckobj_c</a>        ( C-kernel, instruments in a file                  )
-   <a href="../cspice/ckopn_c.html">ckopn_c</a>        ( C-kernel, open a new pointing file               )
-   <a href="../cspice/ckupf_c.html">ckupf_c</a>        ( C-kernel, unload pointing file                   )
-   <a href="../cspice/ckw01_c.html">ckw01_c</a>        ( C-kernel, write segment to C-kernel, data type 1 )
-   <a href="../cspice/ckw02_c.html">ckw02_c</a>        ( C-kernel, write segment to C-kernel, data type 2 )
-   <a href="../cspice/ckw03_c.html">ckw03_c</a>        ( C-kernel, write segment to C-kernel, data type 3 )
-   <a href="../cspice/ckw05_c.html">ckw05_c</a>        ( C-kernel, write segment to C-kernel, data type 5 )
+   <a href="../cspice/ckcls_c.html">ckcls_c</a>   ( C-kernel, close a pointing file                  )
+   <a href="../cspice/ckcov_c.html">ckcov_c</a>   ( C-kernel, coverage for an instrument             )
+   <a href="../cspice/ckgp_c.html">ckgp_c</a>    ( C-kernel, get pointing                           )
+   <a href="../cspice/ckgpav_c.html">ckgpav_c</a>  ( C-kernel, get pointing and angular velocity      )
+   <a href="../cspice/cklpf_c.html">cklpf_c</a>   ( C-kernel, load pointing file                     )
+   <a href="../cspice/ckobj_c.html">ckobj_c</a>   ( C-kernel, instruments in a file                  )
+   <a href="../cspice/ckopn_c.html">ckopn_c</a>   ( C-kernel, open a new pointing file               )
+   <a href="../cspice/ckupf_c.html">ckupf_c</a>   ( C-kernel, unload pointing file                   )
+   <a href="../cspice/ckw01_c.html">ckw01_c</a>   ( C-kernel, write segment to C-kernel, data type 1 )
+   <a href="../cspice/ckw02_c.html">ckw02_c</a>   ( C-kernel, write segment to C-kernel, data type 2 )
+   <a href="../cspice/ckw03_c.html">ckw03_c</a>   ( C-kernel, write segment to C-kernel, data type 3 )
+   <a href="../cspice/ckw05_c.html">ckw05_c</a>   ( C-kernel, write segment to C-kernel, data type 5 )
  
          Lower-level functions
  
-   ckbss_         ( C-kernel, begin search for segment               )
-   cke01_         ( C-kernel, evaluate pointing record, data type 1  )
-   cke02_         ( C-kernel, evaluate pointing record, data type 2  )
-   cke03_         ( C-kernel, evaluate pointing record, data type 3  )
-   cke04_         ( C-kernel, evaluate pointing record, data type 4  )
-   cke05_         ( C-kernel, evaluate pointing record, data type 5  )
-   ckgr01_        ( C-kernel, get record, data type 1                )
-   ckgr02_        ( C-kernel, get record, data type 2                )
-   ckgr03_        ( C-kernel, get record, data type 3                )
-   ckgr04_        ( C-kernel, get record, data type 4                )
-   ckgr05_        ( C-kernel, get record, data type 5                )
-   cknr01_        ( C-kernel, number of records, data type 1         )
-   cknr02_        ( C-kernel, number of records, data type 2         )
-   cknr03_        ( C-kernel, number of records, data type 3         )
-   cknr04_        ( C-kernel, number of records, data type 4         )
-   cknr05_        ( C-kernel, number of records, data type 5         )
-   ckpfs_         ( C-kernel, pointing from segment                  )
-   ckr01_         ( C-kernel, read pointing record, data type 1      )
-   ckr02_         ( C-kernel, read pointing record, data type 2      )
-   ckr03_         ( C-kernel, read pointing record, data type 3      )
-   ckr04_         ( C-kernel, read pointing record, data type 4      )
-   ckr04_         ( C-kernel, read pointing record, data type 5      )
-   cksns_         ( C-kernel, select next segment                    )
-   ckw04a_        ( C-kernel, add to a Type 4 segment                )
-   ckw04b_        ( C-kernel, begin a Type 4 segment                 )
-   ckw04e_        ( C-kernel, end a Type 4 segment                   )
- 
+   ckbss_    ( C-kernel, begin search for segment               )
+   cke01_    ( C-kernel, evaluate pointing record, data type 1  )
+   cke02_    ( C-kernel, evaluate pointing record, data type 2  )
+   cke03_    ( C-kernel, evaluate pointing record, data type 3  )
+   cke04_    ( C-kernel, evaluate pointing record, data type 4  )
+   cke05_    ( C-kernel, evaluate pointing record, data type 5  )
+   cke06_    ( C-kernel, evaluate pointing record, data type 6  )
+   ckgr01_   ( C-kernel, get record, data type 1                )
+   ckgr02_   ( C-kernel, get record, data type 2                )
+   ckgr03_   ( C-kernel, get record, data type 3                )
+   ckgr04_   ( C-kernel, get record, data type 4                )
+   ckgr05_   ( C-kernel, get record, data type 5                )
+   ckgr06_   ( C-kernel, get record, data type 6                )
+   ckmp06_   ( C-kernel, get mini-segment params, data type 6   )
+   cknm06_   ( C-kernel, get mini-segment count, data type 6    )
+   cknr01_   ( C-kernel, number of records, data type 1         )
+   cknr02_   ( C-kernel, number of records, data type 2         )
+   cknr03_   ( C-kernel, number of records, data type 3         )
+   cknr04_   ( C-kernel, number of records, data type 4         )
+   cknr05_   ( C-kernel, number of records, data type 5         )
+   ckpfs_    ( C-kernel, pointing from segment                  )
+   ckr01_    ( C-kernel, read pointing record, data type 1      )
+   ckr02_    ( C-kernel, read pointing record, data type 2      )
+   ckr03_    ( C-kernel, read pointing record, data type 3      )
+   ckr04_    ( C-kernel, read pointing record, data type 4      )
+   ckr04_    ( C-kernel, read pointing record, data type 5      )
+   cksns_    ( C-kernel, select next segment                    )
+   ckw04a_   ( C-kernel, add to a Type 4 segment                )
+   ckw04b_   ( C-kernel, begin a Type 4 segment                 )
+   ckw04e_   ( C-kernel, end a Type 4 segment                   )
+   ckw06_    ( C-kernel, write segment to C-kernel, data type 6 )
  
       SCLK conversion functions
  
@@ -3164,6 +3857,16 @@ for pointing at a given time.<BR>
    cke05_  ( needav,  record, cmat,   av,     &amp;clkout              )
    cknr05_ ( handle,  descr,  &amp;nprec                               )
    ckgr05_ ( handle,  descr,  recno,  record                       )
+   ckmp06_ ( handle,  descr,  msno,   &amp;rate,  &amp;subtyp, &amp;winsiz,
+             &amp;nrec,   ivlbds, &amp;lstepc                              )
+   cknm06_ ( handle,  descr,  &amp;nmini                               )
+   ckgr06_ ( handle,  descr,  msno,   recno,  record               )
+   cke06_  ( needav,  record, cmat,   av,     &amp;clkout              )
+   ckr06_  ( handle,  descr,  sclkdp, tol,    needav, record,
+             &amp;found                                                )
+   ckw06_  ( handle,  inst,   ref,    avflag, first,  last,
+             segid,   nmini,  npkts,  subtps, degres, packts,
+             rates,   sclkdp, ivlbds, sellst, reflen, sidlen       )
  
           SCLK conversion functions
  
@@ -4302,6 +5005,14 @@ for pointing at a given time.<BR>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Appendix G: Document Revision History
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="February 13, 2014"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> February 13, 2014
+</H3><P><BR><BR>
+   Added documentation of CK type 6.
+<P>
+ 
 <BR><BR>
 <A NAME="April 1, 2009"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>

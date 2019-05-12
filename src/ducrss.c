@@ -5,11 +5,24 @@
 
 #include "f2c.h"
 
+/* Table of constant values */
+
+static integer c__6 = 6;
+
 /* $Procedure      DUCRSS ( Unit Normalized Cross Product and Derivative ) */
 /* Subroutine */ int ducrss_(doublereal *s1, doublereal *s2, doublereal *sout)
 {
-    extern /* Subroutine */ int dvhat_(doublereal *, doublereal *), dvcrss_(
-	    doublereal *, doublereal *, doublereal *);
+    /* System generated locals */
+    doublereal d__1, d__2;
+
+    /* Local variables */
+    doublereal scls1[6], scls2[6];
+    extern /* Subroutine */ int dvhat_(doublereal *, doublereal *), moved_(
+	    doublereal *, integer *, doublereal *), vsclg_(doublereal *, 
+	    doublereal *, integer *, doublereal *);
+    doublereal f1, f2;
+    extern /* Subroutine */ int dvcrss_(doublereal *, doublereal *, 
+	    doublereal *);
     doublereal tmpsta[6];
 
 /* $ Abstract */
@@ -153,6 +166,11 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.2.0, 08-APR-2014 (NJB) */
+
+/*        Now scales inputs to reduce chance of numeric */
+/*        overflow. */
+
 /* -    SPICELIB Version 1.1.1, 22-APR-2010 (NJB) */
 
 /*        Header correction: assertions that the output */
@@ -172,22 +190,40 @@
 /*     Compute a unit cross product and its derivative */
 
 /* -& */
-/* $ Revisions */
-
-/* -    SPICELIB Version 1.1.0, 30-AUG-2005 (NJB) */
-
-/*        Updated to remove non-standard use of duplicate arguments */
-/*        in DVHAT call. */
-
-/* -& */
 
 /*     Local variables */
 
 
+/*     Scale the components of the input states so the states have the */
+/*     same direction and angular rates, but their largest position */
+/*     components have absolute value equal to 1. Do not modify states */
+/*     that have all position components equal to zero. */
+
+/* Computing MAX */
+    d__1 = abs(s1[0]), d__2 = abs(s1[1]), d__1 = max(d__1,d__2), d__2 = abs(
+	    s1[2]);
+    f1 = max(d__1,d__2);
+/* Computing MAX */
+    d__1 = abs(s2[0]), d__2 = abs(s2[1]), d__1 = max(d__1,d__2), d__2 = abs(
+	    s2[2]);
+    f2 = max(d__1,d__2);
+    if (f1 > 0.) {
+	d__1 = 1. / f1;
+	vsclg_(&d__1, s1, &c__6, scls1);
+    } else {
+	moved_(s1, &c__6, scls1);
+    }
+    if (f2 > 0.) {
+	d__1 = 1. / f2;
+	vsclg_(&d__1, s2, &c__6, scls2);
+    } else {
+	moved_(s2, &c__6, scls2);
+    }
+
 /*     Not much to this.  Just get the cross product and its derivative. */
 /*     Using that, get the associated unit vector and its derivative. */
 
-    dvcrss_(s1, s2, tmpsta);
+    dvcrss_(scls1, scls2, tmpsta);
     dvhat_(tmpsta, sout);
     return 0;
 } /* ducrss_ */

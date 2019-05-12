@@ -10,7 +10,7 @@
 static integer c__2 = 2;
 static integer c__5 = 5;
 
-/* $Procedure      PCKR02 ( Read PCK record from segment, type 2 ) */
+/* $Procedure PCKR02 ( PCK, read record from type 2 segment ) */
 /* Subroutine */ int pckr02_(integer *handle, doublereal *descr, doublereal *
 	et, doublereal *record)
 {
@@ -156,6 +156,10 @@ static integer c__5 = 5;
 /*     K.S. Zukor  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.1, 03-JAN-2014 (EDW) */
+
+/*        Minor edits to Procedure; clean trailing whitespace. */
 
 /* -    SPICELIB Version 1.1.0, 07-SEP-2001 (EDW) */
 

@@ -10,9 +10,6 @@
 	case__, char *out, ftnlen in_len, ftnlen marker_len, ftnlen case_len, 
 	ftnlen out_len)
 {
-    /* System generated locals */
-    integer i__1;
-
     /* Builtin functions */
     integer s_cmp(char *, char *, ftnlen, ftnlen);
     /* Subroutine */ int s_copy(char *, char *, ftnlen, ftnlen);
@@ -23,15 +20,17 @@
 	    chkin_(char *, ftnlen), ucase_(char *, char *, ftnlen, ftnlen), 
 	    errch_(char *, char *, ftnlen, ftnlen), ljust_(char *, char *, 
 	    ftnlen, ftnlen);
+    integer mrknbf;
     extern integer lastnb_(char *, ftnlen);
+    integer mrknbl;
     char tmpcas[1];
     extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
 	    ftnlen);
     extern integer frstnb_(char *, ftnlen);
-    extern /* Subroutine */ int intord_(integer *, char *, ftnlen), repsub_(
-	    char *, integer *, integer *, char *, char *, ftnlen, ftnlen, 
-	    ftnlen), setmsg_(char *, ftnlen);
-    integer mrkpos;
+    integer mrkpsb, mrkpse;
+    extern /* Subroutine */ int setmsg_(char *, ftnlen), intord_(integer *, 
+	    char *, ftnlen), repsub_(char *, integer *, integer *, char *, 
+	    char *, ftnlen, ftnlen, ftnlen);
     extern logical return_(void);
     char ord[147];
 
@@ -134,10 +133,6 @@
 /*                    representation is of maximum length is */
 
 /*                       - 777 777 777 777 */
-/* $ Files */
-
-/*     None. */
-
 /* $ Exceptions */
 
 /*     1) If OUT does not have sufficient length to accommodate the */
@@ -149,6 +144,10 @@
 
 /*     3) If the value of CASE is not recognized, the error */
 /*        SPICE(INVALIDCASE) is signalled. OUT is not changed. */
+
+/* $ Files */
+
+/*     None. */
 
 /* $ Particulars */
 
@@ -253,9 +252,16 @@
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman   (JPL) */
+/*     B.V. Semenov   (JPL) */
+/*     W.L. Taber     (JPL) */
 /*     I.M. Underwood (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.2.0, 21-SEP-2013 (BVS) */
+
+/*        Minor efficiency update: the routine now looks up the first */
+/*        and last non-blank characters only once. */
 
 /* -    SPICELIB Version 1.0.1, 10-MAR-1992 (WLT) */
 
@@ -310,14 +316,15 @@
 /*     (ignoring leading and trailing blanks). If MARKER is not */
 /*     a substring of IN, no substitution can be performed. */
 
-    i__1 = frstnb_(marker, marker_len) - 1;
-    mrkpos = i_indx(in, marker + i__1, in_len, lastnb_(marker, marker_len) - 
-	    i__1);
-    if (mrkpos == 0) {
+    mrknbf = frstnb_(marker, marker_len);
+    mrknbl = lastnb_(marker, marker_len);
+    mrkpsb = i_indx(in, marker + (mrknbf - 1), in_len, mrknbl - (mrknbf - 1));
+    if (mrkpsb == 0) {
 	s_copy(out, in, out_len, in_len);
 	chkout_("REPMOT", (ftnlen)6);
 	return 0;
     }
+    mrkpse = mrkpsb + mrknbl - mrknbf;
 
 /*     Okay, CASE is recognized and MARKER has been found. */
 /*     Generate the ordinal text corresponding to VALUE. */
@@ -335,9 +342,8 @@
 
 /*     Replace MARKER with CARD. */
 
-    i__1 = mrkpos + lastnb_(marker, marker_len) - frstnb_(marker, marker_len);
-    repsub_(in, &mrkpos, &i__1, ord, out, in_len, lastnb_(ord, (ftnlen)147), 
-	    out_len);
+    repsub_(in, &mrkpsb, &mrkpse, ord, out, in_len, lastnb_(ord, (ftnlen)147),
+	     out_len);
     chkout_("REPMOT", (ftnlen)6);
     return 0;
 } /* repmot_ */

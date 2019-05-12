@@ -2,7 +2,7 @@
 FRMDIFF User's Guide
 ===========================================================================
  
-   Last revised on 2009 FEB 10 by B. V. Semenov.
+   Last revised on 2014 JAN 21 by B. V. Semenov.
  
  
 Abstract
@@ -125,7 +125,7 @@ To Sample Quaternions from a CK File
    also add ``-m to'', like this (the command line below is wrapped to fit
    the page width):
  
-      % frmdiff -k <lsk> <sclk> <fk> -t dumpqs -a yes -m to
+      % frmdiff -k <lsk> <sclk> <fk> -t dumpqo -a yes -m to
                 -s <step> <ck>
  
  
@@ -149,6 +149,13 @@ To Compute Transformation Between Two Frames
    be computed. For lengthy reports the program's output should be
    re-directed to a file using the ``>'' pipe.
  
+   Note that if the ``<to_frame>'' is a CK-based (Class 3) or PCK-based
+   (Class 2) frame, the list of kernels (``<kernels>'') includes CKs or
+   binary PCKs providing data for that frame, and ``-b <begintime> -e
+   <endtime>'' are omitted, the program will automatically determine the
+   ``<to_frame>''s data availability time window and will compute
+   transformations with specified step over that whole window.
+ 
  
 Usage
 --------------------------------------------------------
@@ -171,17 +178,19 @@ Usage
       -t2 <second ``to'' frame, name or ID>
       -c2 <second frame for coverage look up, name or ID>
       -k2 <additional supporting kernel(s) for second file>
-      -a  <compare angular velocities, yes|no>
-      -m  <frame for angular velocities, from|to>
+      -a  <compare angular velocities, yes|no (default: no)>
+      -m  <frame for angular velocities, from|to (default: from)
       -b  <interval start time>
       -e  <interval stop time>
       -n  <number of points: 1 to 1000000 (default: 1000)>
       -s  <time step in seconds>
       -f  <time format, et|sclk|sclkd|ticks|picture_for_TIMOUT>
+          (default: et)>
       -t  <report: basic|stats|dumpaa|dumpm|dumpqs|dumpqo|dumpea
           |dumpc|dumpg>
       -o  <rotation axes order (default: z y x)>
       -x  <units for output angles>
+      -d  <number of significant digits: 6 to 17 (default: 14)>
  
    The order of options and case of the option keys are not significant.
    The values provided after the option keys must be separated from keys by
@@ -231,13 +240,15 @@ Options
                              or class ID.
  
          -c1 <frame>         is used to specify the ``coverage'' frame to
-                             be used to look up coverage from the first (or
-                             only) primary kernel file. This frame must be
-                             known to SPICE and can be specified using the
-                             frame name, ID, or class ID. The first (or
-                             only) primary kernel file must be a CK or a
-                             binary PCK and must contain data for this
-                             frame.
+                             be used to look up the first coverage window.
+                             This frame must be known to SPICE and must be
+                             either a PCK-based (Class 2) or CK-based
+                             (Class 3) frame. It can be specified using the
+                             frame name, frame ID, or, if the first (or
+                             only) primary kernel is a CK or a binary PCK,
+                             class ID. If the first (or only) primary
+                             kernel file is a CK or a binary PCK, it must
+                             contain data for this frame.
  
          -k1 <kernels>       is used to specify the list of additional
                              kernels that should be used only for the first
@@ -258,13 +269,15 @@ Options
                              class ID.
  
          -c2 <frame>         is used to specify the ``coverage'' frame to
-                             be used to look up coverage from the second
-                             (or only) primary kernel file. This frame must
-                             be known to SPICE and can be specified using
-                             the name, ID, or class ID. The second (or
-                             only) primary kernel file must be a CK or a
-                             binary PCK and must contain data for this
-                             frame.
+                             be used to look up the second coverage window.
+                             This frame must be known to SPICE and must be
+                             either a PCK-based (Class 2) or CK-based
+                             (Class 3) frame. It can be specified using the
+                             frame name, frame ID, or, if the second (or
+                             only) primary kernel is a CK or a binary PCK,
+                             class ID. If the second (or only) primary
+                             kernel file is a CK or a binary PCK, it must
+                             contain data for this frame.
  
          -k2 <kernels>       is used to specify the list of additional
                              kernels that should be used only for the
@@ -274,19 +287,17 @@ Options
  
          -b <time>           is used to specify the coverage window begin
                              time. This option must be provided when no
-                             primary kernels are specified or neither of
-                             the specified primary kernels is a CK or a
-                             binary PCK. The time string provided using
-                             this option can be in any form accepted by
-                             SPICE's str2et_c function.
+                             primary kernels and ``coverage'' frames are
+                             specified. The time string provided using this
+                             option can be in any form accepted by SPICE's
+                             str2et_c function.
  
          -e <time>           is used to specify the coverage window end
                              time. This option must be provided when no
-                             primary kernels are specified or neither of
-                             the specified primary kernels is a CK or a
-                             binary PCK. The time string provided using
-                             this option can be in any form accepted by
-                             SPICE's str2et_c function.
+                             primary kernels and ``coverage'' frames are
+                             specified. The time string provided using this
+                             option can be in any form accepted by SPICE's
+                             str2et_c function.
  
          -n <number>         is used to specify the number of points within
                              the coverage window, for which the frame
@@ -393,6 +404,15 @@ Options
                                 minuteangle
                                 secondangle
  
+         -d <number>         is used to specify the number of significant
+                             digits in the output numeric times (TDB
+                             seconds past J2000, decimal SCLKs and encoded
+                             SCLK ticks) and rotation component values or
+                             rotation difference component values included
+                             in the dump, coverage and coverage gap
+                             reports. The number must be an integer between
+                             6 and 17. The default value is 14.
+ 
          -v                  causes the program to display only the version
                              line. This option overrides all other options.
  
@@ -426,13 +446,18 @@ Kernel Files
  
    Primary kernel files -- two, one, or none -- are provided at the end of
    the command line without any command line keys. Normally these kernel
-   files are the ones containing orientations that differ (for example,
-   predicted and reconstructed CKs for the same frame and time period, two
-   versions of an FK with different alignment data for the same frame,
-   etc.), or the orientation to be sampled. These kernel files are also
-   examined by the program to determine the default values for the
-   ``from'', ``to'', and ``cov'' frames, and to determine the coverage
-   window boundaries.
+   files contain orientations that differ (for example, predicted and
+   reconstructed CKs for the same frame and time period, two versions of an
+   FK with different alignment data for the same frame, etc.), or contain
+   orientation to be sampled. These kernel files are also examined by the
+   program to determine the default values for the ``from'', ``to'', and
+   ``cov'' frames, and to determine the coverage window boundaries. Note
+   that becasue the program slightly contracts coverage windows determined
+   from CK files to compensate for roundoff occuring in SCLK to ET time
+   conversions, in general FRMDIFF cannot be used to sample or compare CKs
+   with discrete data, e.g. Type 1 CKs or Type 3 CKs with singleton
+   intervals. For additional discussion of this limitation see the
+   ``Coverage Window'' section below.
  
    Additional kernel files -- none, or as many as needed -- are provided
    anywhere on the command line (except at the very end) using the ``-k'',
@@ -572,14 +597,15 @@ Comparison Runs vs. Sampling Runs
             automatically are the same and ``to'' frames provided using the
             ``-t1''/``-t2'' keys or determined automatically are the same.
  
-       --   When ran with one primary kernel or no primary kernel files but
-            with some orientation-specific additional kernels, program will
-            sample orientation only if additional kernel files provided
-            using the ``-k1''/``-k2'' keys are the same files listed the
-            same order and ``from'' frames provided using the
-            ``-f1''/``-f2'' keys or determined automatically are the same
-            and ``to'' frames provided using the ``-t1''/``-t2'' keys or
-            determined automatically are the same.
+       --   When run with one primary kernel file or no primary kernel
+            files but with some orientation-specific additional kernels,
+            the program will sample orientation only if additional kernel
+            files provided using the ``-k1''/``-k2'' keys are the same
+            files listed in the same order and the ``from'' frames provided
+            using the ``-f1''/``-f2'' keys or determined automatically are
+            the same frames and the ``to'' frames provided using the
+            ``-t1''/``-t2'' keys or determined automatically are the same
+            frames.
  
  
 Runs with Two, One, and No Primary Kernel File(s)
@@ -604,10 +630,12 @@ Runs with Two Primary Kernel Files
             options can be picked from the file(s).
  
        --   ``-f1'' or ``-f2'' or both, ``-t1'' or ``-t2'' or both, and
-            ``-b'' and ``-e'' must be specified if neither of the primary
-            files is a CK or binary PCK because the program has no way of
-            picking defaults for the ``from'' frame(s), ``to'' frame(s),
-            and time boundaries for any other types of kernels.
+            sufficient coverage information (e.g. a sufficient combination
+            of ``-b'', ``-e'', ``-c1'', and ``-c2'') must be specified if
+            neither of the primary files is a CK or binary PCK because the
+            program has no way of picking defaults for the ``from''
+            frame(s), ``to'' frame(s), and time boundaries for any other
+            types of primary kernels.
  
        --   If the program is run in comparison mode, the first primary
             file and the additional kernel files given using ``-k'' and
@@ -638,10 +666,12 @@ Runs with One Primary Kernel File
             which defaults for these options can be picked from the file.
  
        --   ``-f1'' or ``-f2'' or both, ``-t1'' or ``-t2'' or both, and
-            ``-b'' and ``-e'' must be specified if the primary file is not
-            a CK or a binary PCK because the program has no way of picking
-            defaults for the ``from'' frame(s), ``to'' frame(s) and time
-            boundaries for any other types of kernels.
+            sufficient coverage information (e.g. a sufficient combination
+            of ``-b'', ``-e'', ``-c1'', and ``-c2'') must be specified if
+            the primary file is not a CK or a binary PCK because the
+            program has no way of picking defaults for the ``from''
+            frame(s), ``to'' frame(s) and time boundaries for any other
+            types of primary kernels.
  
        --   If the program is run in comparison mode, the primary file and
             the additional kernel files given using ``-k'' and ``-k1'' are
@@ -666,10 +696,11 @@ Runs Without Primary Kernel Files
    When no primary kernel files are specified on the command line:
  
        --   ``-f1'' or ``-f2'' or both, ``-t1'' or ``-t2'' or both, and
-            ``-b'' and ``-e'' must be specified because the program has no
-            way of picking defaults for the ``from'' frame(s), ``to''
-            frame(s), and time boundaries when it is not given any primary
-            kernel(s) to examine.
+            sufficient coverage information (e.g. a sufficient combination
+            of ``-b'', ``-e'', ``-c1'', and ``-c2'') must be specified
+            because the program has no way of picking defaults for the
+            ``from'' frame(s), ``to'' frame(s), and time boundaries when it
+            is not given any primary kernel(s) to examine.
  
        --   If the program is run in comparison mode, the additional kernel
             files given using ``-k'' and ``-k1'' are loaded and
@@ -695,10 +726,10 @@ Runs Without Primary Kernel Files
    The program has six command line keys -- ``-f1'', ``-t1'', ``-c1'',
    ``-f2'', ``-t2'', and ``-c2'' -- to specify frames to be used to compute
    rotations (``-f*'' and ``-t*'' keys) and to determine coverage from
-   primary CK and binary PCK kernel files (``-c*'' keys). A single frame
-   can be specified using each of these keys using the frame name, frame
-   ID, or frame class ID (only for runs with primary kernel files that are
-   CKs or binary PCKs).
+   primary or additional CK or binary PCK files (``-c*'' keys). A single
+   frame can be specified using each of these keys using the frame name,
+   frame ID, or frame class ID (only for runs with primary kernel files
+   that are CKs or binary PCKs).
  
    Whether the frame is specified by the name, ID, or class ID, it must be
    known to SPICE, i.e. it must either be a built-in frame or one of the
@@ -773,36 +804,75 @@ Runs Without Primary Kernel Files
    The following rules apply to specifying and picking defaults for the
    ``coverage'' frames:
  
-       --   If ``-c1'' and ``-c2'' are specified, these frames are used to
-            look up coverage in the corresponding primary CK or PCK files
-            or file (if only one primary file is specified).
+       --   Only PCK-based (Class 2) or CK-based (Class 3) frames can be
+            specified using ``-c1'' and ``-c2''. Specifying frames of any
+            other class using these keys is an error.
  
-       --   If only ``-c1'' or only ``-c2'' is specified, the specified
-            frame is used to look up coverage from the corresponding
-            primary file.
+       --   If ``-c1'' is not specified and the first ``to'' frame is a
+            PCK-based (Class 2) or CK-based (Class 3) specified using
+            ``-t1'' or picked by default, the first ``coverage'' frame is
+            set to the first ``to'' frame. Similarly, if ``-c2'' is not
+            specified and the second ``to'' frame is a PCK-based (Class 2)
+            or CK-based (Class 3) specified using ``-t2'' or picked by
+            default, the second ``coverage'' frame is set to the second
+            ``to'' frame.
  
-       --   If neither ``-c1'' nor ``-c2'' is specified and the
-            corresponding primary file is a CK or binary PCK, the
-            specified/default ``from'' frame (``-f1''/``-f2'') is used to
-            look up coverage from the file.
+       --   If ``-c1'' is specified or set by default to the first ``to''
+            frame, and the first (or only) primary kernel is a CK or binary
+            PCK file containing data for this frame, then this frame is
+            used to look up the first coverage window from this primary
+            file. Similarly, if ``-c2'' is specified or set by default to
+            the second ``to'' frame, and the second (or only) primary
+            kernel is a CK or binary PCK file containing data for this
+            frame, then this frame is used to look up the second coverage
+            window from this primary file.
  
-       --   If a coverage look up frame is specified for primary kernel
-            file that is not a CK or a binary PCK, the program signals an
-            error.
+       --   If ``-c1'' is specified and the first (or only) primary kernel
+            is a CK or binary PCK file that does not contains data for this
+            frame, then the program signals an error. Similarly, if ``-c2''
+            is specified and the second (or only) primary kernel is a CK or
+            binary PCK file that does not contains data for this frame,
+            then the program signals an error.
  
-       --   If there is no coverage for the specified frame in the
-            corresponding CK or PCK primary file, the program signals an
-            error.
+       --   If ``-c1'' is set by default to the first ``to'' frame and the
+            first (or only) primary kernel is a CK or binary PCK file that
+            does not contains data for this frame, then the program does
+            not attempt to determine the first coverage window for this
+            frame based on the primary or additional kernels. Similarly, if
+            ``-c2'' is set by default to the second ``to'' frame and the
+            second (or only) primary kernel is a CK or binary PCK file that
+            does not contains data for this frame, then the program does
+            not attempt to determine the second coverage window for this
+            frame based on the primary or additional kernels.
+ 
+       --   If ``-c1'' is specified or set by default to the first ``to''
+            frame, and the first (or only) primary kernel is not a CK or
+            binary PCK file, then this frame is used to look up the first
+            coverage window from the kernels specified using ``-k'' and
+            ``-k1''. Similarly, if ``-c2'' is specified or set by default
+            to the second ``to'' frame, and the second (or only) primary
+            kernel is not a CK or binary PCK file, then this frame is used
+            to look up the second coverage window from the kernels
+            specified using ``-k'' and ``-k2''.
+ 
+       --   If ``-c1'' is specified or set by default to the first ``to''
+            frame and no primary kernels are given, then this frame is used
+            to look up the first coverage window from the kernels specified
+            using ``-k'' and ``-k1''. Similarly, if ``-c2'' is specified or
+            set by default to the second ``to'' frame, and no primary
+            kernels are given, then this frame is used to look up the
+            second coverage window from the kernels specified using ``-k''
+            and ``-k2''.
  
  
 Times for Comparison/Sampling
 --------------------------------------------------------
  
    The program picks times at which orientation(s) are computed based on
-   the coverage window determined by examining the primary files(s) and/or
-   specified using the ``-b'' and ``-e'' keys, and on either the number of
-   points within that window specified using the ``-n'' key or the time
-   step specified using the ``-s'' key''.
+   the coverage window determined by examining the primary or additional
+   files(s) and/or specified using the ``-b'' and ``-e'' keys, and on
+   either the number of points within that window specified using the
+   ``-n'' key or the time step specified using the ``-s'' key''.
  
    The coverage window begin and end times specified using the ``-b'' and
    ``-e'' options can be in any format accepted by SPICE's str2et_c
@@ -815,60 +885,99 @@ Times for Comparison/Sampling
    must be in seconds and be greater than 1.0E-8. If both ``-n'' and ``-s''
    are specified, ``-s'' takes precedence.
  
-   The coverage window determined by examining the primary kernels --
-   especially if one or both of these primary kernels is a CK file, which
-   frequently have gaps in coverage -- may consist of many intervals, some
-   of which may be singletons (with the interval begin time equal to the
-   interval end time). Whether the coverage window consists of only one
-   interval or of many intervals, the program computes times within the
-   window in such a way that the interval ends are always included in the
-   set of points. The rest of times are distributed within the intervals,
-   stepping from the beginning of each interval with the specified step. If
-   the number of points is given instead of the step, the step is computed
-   using the measure of the coverage window (the sum of the lengths of the
-   individual intervals) and the specified number of points.
+   The coverage window determined by examining the primary or additional
+   kernels -- especially if these kernels are CK files, which frequently
+   have gaps in coverage -- may consist of many intervals, some of which
+   may be singletons (with the interval begin time equal to the interval
+   end time). Whether the coverage window consists of only one interval or
+   of many intervals, the program computes times within the window in such
+   a way that the interval ends are always included in the set of points.
+   The rest of times are distributed within the intervals, stepping from
+   the beginning of each interval with the specified step. If the number of
+   points is given instead of the step, the step is computed using the
+   measure of the coverage window (the sum of the lengths of the individual
+   intervals) and the specified number of points.
  
    Not all of the keys controlling selection of points have to be specified
    for every program run. In some cases none of these options are required;
-   in the other cases ``-b'' and ``-e'' must be specified. The two
-   subsections below discuss specifics of providing and picking defaults
-   for the coverage window and step or number of points.
+   in the other cases ``-b'', ``-e'', ``-c1'', and/or ``-c2'' must be
+   specified. The two subsections below discuss specifics of providing and
+   picking defaults for the coverage window and step or number of points.
  
  
 Coverage Window
  
    The program determines the coverage window either by examining the
-   primary kernels (resulting in the ``default coverage window''), or by
-   using the begin and end times specified using the ``-b'' and ``-e''
-   keys, or as a combination of both.
+   primary or additional kernels (resulting in the ``default coverage
+   window''), or by using the begin and end times specified using the
+   ``-b'' and ``-e'' keys, or as a combination of both.
  
-   The default coverage window can be determined only from the primary
-   kernel files that are binary PCK files (using SPICE's pckcov_c function)
-   or CK files (using SPICE's ckcov_c function) and only if these kernels
-   contain data for the ``coverage'' frames either specified using the
-   ``-c1''/``-c2'' keys or set to default values as described earlier in
-   this document. When the two primary files are two CK files or two binary
-   PCK files or a binary PCK file and a CK file, the default coverage
-   window is set to the intersection of the coverage windows determined for
-   each of the two files.
+   The default coverage window can be determined only from the primary or
+   additional kernel files that are binary PCK files (using SPICE's
+   pckcov_c function) or CK files (using SPICE's ckcov_c function) and only
+   if these kernels contain data for the ``coverage'' frames either
+   specified using the ``-c1''/``-c2'' keys or set to default values as
+   described earlier in this document. When both ``coverage'' frames are
+   specified or set to default values, the program determines the
+   frame-specific coverage window for each of them using the corresponding
+   primary or additional kernels and sets the default coverage window to
+   the intersection of these two frame-specific coverage windows. When only
+   one ``coverage'' frame is specified or set to the default value, the
+   program determines the frame-specific coverage window for that frame
+   using corresponding primary or additional kernels and sets the default
+   coverage window to that frame-specific coverage window.
  
-   If the default coverage window was determined from the primary kernel
-   file(s) and either ``-b'' or ``-e'', or both ``-b'' and ``-e'' were
-   specified, the window is truncated according to these begin and end
-   times. If the time specified using ``-b'' is before the start of the
-   default window, this time is ignored. If the time specified using ``-b''
-   is after the end of the default coverage window, the program signals an
+   In cases when a frame-specific coverage window is obtained from the
+   corresponding primary kernel, the program examines only that primary
+   kernel to construct the desired frame-specific coverage window. In cases
+   when a frame-specific coverage window is obtained from additional
+   kernels, the program examines all kernels of a particular type -- all
+   CKs if the ``coverage'' frame is a CK-based frame or all binary PCKs if
+   the ``coverage'' frame is a PCK-based frame -- listed explicitly with
+   the ``-k''/``-k1'' or ``-k''/``-k2'' keys or included in meta-kernels
+   provided with these keys and constructs the frame-specific coverage
+   window as the union of coverages obtained from individual additional
+   kernels.
+ 
+   When the program determines the coverage window for a CK file it
+   slightly contracts the actual coverage window given by the CK data to
+   compensate for roundoff occuring in SCLK-ET time conversions. The
+   contraction is done by adjusting inward the window interval boundary
+   times by three times the amout of maximum roundoff that was determined
+   by converting all boundary times from SCLK to ET then back to SCLK. This
+   adjustment is done to ensure that the program is able to compute
+   orientation at any time within the comparison or sampling time domain
+   using the high level SPICE frames routines (pxform_c and sxform_c).
+   While this contraction does not have any noticable effect when the
+   program is run with CKs containing continuous data, it makes the program
+   unuseable with CKs containing disrete data -- Type 1 CKs and Type 3 CKs
+   with singleton intervals -- because such contraction eliminates all
+   singleton intervals corresponding to the discrete time point from the
+   comparison window. The error messages that the program would display in
+   such cases say that CK files do not provide any roundoff-adjusted
+   coverage for a particular CK-based frame. An exception to this
+   limitation is the rare ciscumstance when SCLK-ET time conversions have
+   no round off; in such cases the program will work on CKs containing
+   discrete data.
+ 
+   If the default coverage window was determined from primary or additional
+   kernel file(s) and either ``-b'' or ``-e'', or both ``-b'' and ``-e''
+   were specified, it is truncated according to these begin and end times.
+   If the time specified using ``-b'' is before the start of the default
+   window, this time is ignored. If the time specified using ``-b'' is
+   after the end of the default coverage window, the program signals an
    error. If the time specified using ``-e'' is after the end of the
    default window, this time is ignored. If the time specified using ``-e''
    is before the start of the default coverage window, the program signals
    an error.
  
-   If the program was given no primary kernel files, or if the primary
-   kernel files are not CKs or binary PCKs, both the coverage window begin
-   time and the coverage window end time must be specified using the ``-b''
-   and ``-e'' keys because the program has no way to determining the
-   default coverage window. If either ``-b'' or ``-e'' is not provided in
-   such cases, the program signals an error.
+   If no ``coverage'' frames are specified or set by default, or if one or
+   both ``coverage'' frames are given but corresponding primary or
+   additional kernels don't contain any data for them, both the coverage
+   window begin time and the coverage window end time must be specified
+   using the ``-b'' and ``-e'' keys because the program has no way to
+   determining the default coverage window. If either ``-b'' or ``-e'' is
+   not provided in such cases, the program signals an error.
  
  
 Times within Coverage Window
@@ -1063,6 +1172,12 @@ Overview of Report Types
        --   the format of time tags in all ``dump*'' reports; the time
             format is changed using the ``-f'' key
  
+       --   the number of significant digits in the output numeric times
+            (TDB seconds past J2000, decimal SCLKs and encoded SCLK ticks)
+            and rotation component values or rotation difference component
+            values included in all ``dump*'' reports; the number of
+            significant digits is changed using the ``-d'' key
+ 
        --   units for the angles in the dump reports that include angles
             (``dumpaa'' and ``dumpea''); the units are changed using the
             ``-x'' key
@@ -1117,9 +1232,41 @@ Time Tag Format for ``dump*'' Reports
    converted to this DP SCLK 883612839.996094. This conversion is supported
    only for type 1 clocks.
  
+   When one of the numeric formats (``et'', ``sclkd'', ``ticks'') is
+   specified, times are displayed in the scientific format with 14
+   significant digits (e.g. +1.2345678901234E+01), unless ``-d'' is used to
+   specify a different number of significant digits.
+ 
    ``-f'' does not apply to times in the report header and the statistics
    report, in which the times are always displayed as TDBs in calendar and
-   seconds past J2000 formats.
+   seconds past J2000 numeric (in scientific format with 14 significant
+   digits) formats.
+ 
+ 
+Numeric Format for ``dump*'' Reports
+ 
+   The default format of numeric time tags (TDB seconds past J2000, decimal
+   SCLKs and encoded SCLK ticks), rotation and angular velocity component
+   values, and rotation and angular velocity difference component values in
+   all ``dump*'' reports is the scientific format with 14 significant
+   digits (e.g. +1.2345678901234E+01). A different number of significant
+   digits can be specified using the ``-d'' option as an integer in the
+   range from 6 to 17. If specified, the number of significant digits is
+   used for all numeric items in the ``dump*'' report data part (table) but
+   is not used for any numbers in the table header or in the data part of
+   the non-``dump*'' (``basic'' and ``stats'') reports.
+ 
+   The default format, with 14 significant digits, is usually adequate for
+   output from all comparison runs and from all sampling runs that are
+   intended to produce tables of rotations or rotation differences for
+   plotting but, due to round off, it may not be adequate for sampling runs
+   that are intended to generate tables of quaternions, angles, or matrices
+   for subsequent interpolation or packaging into CK files. For such
+   outputs the number of significant digits should be increased to 16 -- if
+   output rotations are planned to be packaged into an CK file using the
+   MSOPCK program that employs a custom parser to ingest input numeric data
+   -- or 17 -- if output rotations will read by an application that uses
+   language-native means to parse input numeric data.
  
  
 Angle Units for ``dumpaa'' and ``dumpea'' Reports
@@ -1569,6 +1716,10 @@ Basic Report (no ``-t'' or ``-t basic'')
  
        --   All ``*RATE'' values are always printed in radians per second.
  
+       --   Neither the custom time format specified using ``-f'' nor the
+            number of significant digits specified using ``-d'' apply to
+            this report.
+ 
  
 Statistics Report (``-t stats'')
  
@@ -1649,6 +1800,10 @@ Statistics Report (``-t stats'')
        --   ``TDB_SECONDS'' are printed in the ``xxxxxxxxxx.xxxxxx''
             format.
  
+       --   Neither the custom time format specified using ``-f'' nor the
+            number of significant digits specified using ``-d'' apply to
+            this report.
+ 
  
 Angle and Axis Dump Report (``-t dumpaa'')
  
@@ -1678,8 +1833,10 @@ Angle and Axis Dump Report (``-t dumpaa'')
        --   Items on each data line are separated by spaces.
  
        --   All items except TIME are printed in the
-            ``x.xxxxxxxxxxxxxE+xx'' format. TIME is displayed in the format
-            specified using the ``-f'' key.
+            ``+x.xxxxxxxxxxxxxE+xx'' format, either with the default 14
+            significant digits or with the number of significant digits
+            specified using the ``-d'' option. TIME is displayed in the
+            format specified using the ``-f'' key.
  
        --   The ANGLE is displayed in units specified using the ``-x'' key.
             The AV components and magnitude are always displayed in radians
@@ -1715,8 +1872,10 @@ Matrix Dump Report (``-t dumpm'')
        --   Items on each data line are separated by spaces.
  
        --   All items except TIME are printed in the
-            ``x.xxxxxxxxxxxxxE+xx'' format. TIME is displayed in the format
-            specified using the ``-f'' key.
+            ``+x.xxxxxxxxxxxxxE+xx'' format, either with the default 14
+            significant digits or with the number of significant digits
+            specified using the ``-d'' option. TIME is displayed in the
+            format specified using the ``-f'' key.
  
        --   The AV components are always displayed in radians per second.
  
@@ -1748,8 +1907,10 @@ SPICE-Style Quaternion Dump Report (``-t dumpqs'')
        --   Items on each data line are separated by spaces.
  
        --   All items except TIME are printed in the
-            ``x.xxxxxxxxxxxxxE+xx'' format. TIME is displayed in the format
-            specified using the ``-f'' key.
+            ``+x.xxxxxxxxxxxxxE+xx'' format, either with the default 14
+            significant digits or with the number of significant digits
+            specified using the ``-d'' option. TIME is displayed in the
+            format specified using the ``-f'' key.
  
        --   The AV components are always displayed in radians per second.
  
@@ -1782,8 +1943,10 @@ SPICE-Style Quaternion Dump Report (``-t dumpqs'')
        --   Items on each data line are separated by spaces.
  
        --   All items except TIME are printed in the
-            ``x.xxxxxxxxxxxxxE+xx'' format. TIME is displayed in the format
-            specified using the ``-f'' key.
+            ``+x.xxxxxxxxxxxxxE+xx'' format, either with the default 14
+            significant digits or with the number of significant digits
+            specified using the ``-d'' option. TIME is displayed in the
+            format specified using the ``-f'' key.
  
        --   The AV components are always displayed in radians per second.
  
@@ -1824,8 +1987,10 @@ Euler Angles Dump Report (``-t dumpea'')
        --   Items on each data line are separated by spaces.
  
        --   All items except TIME are printed in the
-            ``x.xxxxxxxxxxxxxE+xx'' format. TIME is displayed in the format
-            specified using the ``-f'' key.
+            ``+x.xxxxxxxxxxxxxE+xx'' format, either with the default 14
+            significant digits or with the number of significant digits
+            specified using the ``-d'' option. TIME is displayed in the
+            format specified using the ``-f'' key.
  
        --   The ANGLEs are displayed in the units specified using the
             ``-x'' key. The AV components are always displayed in radians
@@ -1861,7 +2026,7 @@ Coverage Intervals Dump Report (``-t dumpc''):
        --   Items on each data line are separated by spaces.
  
        --   The interval durations are printed as seconds in the
-            ``x.xxxxxxxxxxxxxE+xx'' format (replaces SECONDS) and in days,
+            ``xxxxxxxxxxxx.xxxxxx'' format (replaces SECONDS) and in days,
             hours, minutes, seconds format (replaces DAYS:HR:MN:SC.MMMMMM).
             The STARTTIMEs and STOPTIMEs are displayed in the format
             specified using the ``-f'' key.
@@ -1884,7 +2049,7 @@ Coverage Gaps Dump Report (``-t dumpg'')
        --   Items on each data line are separated by spaces.
  
        --   The gap durations are printed as seconds in the
-            ``x.xxxxxxxxxxxxxE+xx'' format (replaces SECONDS) and in days,
+            ``xxxxxxxxxxxx.xxxxxx'' format (replaces SECONDS) and in days,
             hours, minutes, seconds format (replaces DAYS:HR:MN:SC.MMMMMM).
             The STARTTIMEs and STOPTIMEs are displayed in the format
             specified using the ``-f'' key.
@@ -2451,6 +2616,74 @@ Sampling Orientation of a Dynamic Frame
       ...
       2454831.500754400 -1.4039978657128E+00 +1.8387392674578E-06 +4.090...
       2454832.500766000 -1.3862038203964E+00 +1.8393010792771E-06 +4.090...
+ 
+ 
+Sampling Orientation With Two Different ``Coverage'' Frames
+--------------------------------------------------------
+ 
+   In this example the program is run to sample orientation of the MGS MAG
+   +Y sensor frame, ``MGS_MAG_+Y_SENSOR'', relative to the ``J2000''
+   inertial frame over two hour period from 2006-04-01 11:00 to 2006-04-01
+   13:00 (given using ``-b'' and ``-e'') and print this orientation as
+   Euler angles tagged with UTC in ISO-date format. The ``from'' and ``to''
+   frames are specified using ``-f1'' and ``-t1''. All kernels needed to
+   compute this transformation and convert times are listed in the
+   meta-kernel ``mgs_2006_v01.tm'' from the MGS SPICE PDS data set,
+   specified using the ``-k'' key. Because computing this orientation
+   requires data from MGS solar array CKs and spacecraft CKs, both of which
+   have gaps in coverage, ``-c1'' and ``-c2'' are used to tell the program
+   to look up available coverages for the frames ``MGS_LEFT_SOLAR_ARRAY''
+   and ``MGS_SPACECRAFT'' associated with data in these CKs and intersect
+   this available coverage with the requested two hour interval to
+   guarantee that the program won't stop from not being able to compute
+   orientation in one of the gaps. The step is set to 1 minute using ``-s
+   60''. The Euler angles dump report is requested using ``-t dumpea''. The
+   time format for output is set to be the UTC in ISO-date format using
+ 
+      -f  'YYYY-MM-DDTHR:MN:SC.### ::RND'
+ 
+   The program's output is re-directed to the file ``output.txt'' using the
+   ``>'' shell pipe, with the contents of the file shown using the UNIX
+   ``cat'' command.
+ 
+      % frmdiff -k  mgs_2006_v01.tm \
+                -f1 J2000 \
+                -t1 MGS_MAG_+Y_SENSOR \
+                -c1 MGS_LEFT_SOLAR_ARRAY \
+                -c2 MGS_SPACECRAFT \
+                -t  dumpea \
+                -f  'YYYY-MM-DDTHR:MN:SC.### ::RND' \
+                -b  2006-04-01 11:00 \
+                -e  2006-04-01 13:00 \
+                -s  60 \
+                > output.txt
+      % cat output.txt
+      #
+      # Sampling of 121 rotations
+      #
+      #    from 'J2000' (1) to 'MGS_MAG_+Y_SENSOR' (-94051)
+      #    computed using
+      #
+      #       mgs_2006_v01.tm
+      #
+      # with a 60.000000000000 second (0:00:01:00.000000) step size
+      # within the non-continuous (with 1 gaps) time period
+      #
+      #    from '2006 APR 01 11:01:05.185' TDB (197161265.18566 TDB seco...
+      #    to   '2006 APR 01 13:01:05.185' TDB (197168465.18566 TDB seco...
+      #
+      # Times were generated by TIMOUT using 'YYYY-MM-DDTHR:MN:SC.### ::...
+      #
+      # angles are shown in radians.
+      #
+      # time, ang3_about_Z, ang2_about_Y, ang1_about_X
+      2006-04-01T11:00:00.000 +1.1187945929621E+00 -1.7969108686644E-01 ...
+      2006-04-01T11:01:00.000 +1.1187852723628E+00 -1.7931962082645E-01 ...
+      2006-04-01T11:02:00.000 +1.1186582180859E+00 -1.7869508126719E-01 ...
+      ...
+      2006-04-01T12:57:55.804 +1.1175120633959E+00 -1.7734256227094E-01 ...
+      2006-04-01T12:58:55.804 +1.1174237423840E+00 -1.7692771707569E-01 ...
+      2006-04-01T13:00:00.000 +1.1173605546240E+00 -1.7633741045076E-01 ...
  
  
 Displaying Overlap in Coverage between Two CKs

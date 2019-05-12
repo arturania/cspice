@@ -41,9 +41,9 @@ static integer c__6 = 6;
 	    integer *, integer *, doublereal *, integer *);
     integer nidir;
     extern doublereal dpmax_(void);
-    extern /* Subroutine */ int moved_(doublereal *, integer *, doublereal *);
     integer npdir, nsrch;
-    extern /* Subroutine */ int errdp_(char *, doublereal *, ftnlen);
+    extern /* Subroutine */ int errdp_(char *, doublereal *, ftnlen), moved_(
+	    doublereal *, integer *, doublereal *);
     integer lsize, first, nints, rsize;
     doublereal start;
     extern /* Subroutine */ int dafgda_(integer *, integer *, integer *, 
@@ -259,6 +259,12 @@ static integer c__6 = 6;
 
 /* $ Version */
 
+/* -    SPICELIB Version 3.0.0, 27-JAN-2014 (NJB) */
+
+/*        Updated to support CK type 6. Maximum degree for */
+/*        type 5 was updated to be consistent with the */
+/*        maximum degree for type 6. */
+
 /* -    SPICELIB Version 2.0.0, 19-AUG-2002 (NJB) */
 
 /*        Updated to support CK type 5. */
@@ -345,10 +351,45 @@ static integer c__6 = 6;
 /*                 CK5RSZ = ( CK5MXD + 1 ) * CK5MXP + CK5MET */
 
 
+/*     CK Type 6 parameters: */
+
+
+/*     CK6DTP   CK data type 6 ID; */
+
+/*     CK6MXD   maximum polynomial degree allowed in type 6 */
+/*              records. */
+
+/*     CK6MET   number of additional DPs, which are not polynomial */
+/*              coefficients, located at the beginning of a type 6 */
+/*              CK record that passed between routines CKR06 and CKE06; */
+
+/*     CK6MXP   maximum packet size for any subtype.  Subtype 2 */
+/*              has the greatest packet size, since these packets */
+/*              contain a quaternion, its derivative, an angular */
+/*              velocity vector, and its derivative.  See ck06.inc */
+/*              for a description of the subtypes. */
+
+/*     CK6RSZ   maximum size of type 6 CK record passed between CKR06 */
+/*              and CKE06; CK6RSZ is computed as follows: */
+
+/*                 CK6RSZ = CK6MET + ( CK6MXD + 1 ) * ( CK6PS3 + 1 ) */
+
+/*              where CK6PS3 is equal to the parameter CK06PS3 defined */
+/*              in ck06.inc. Note that the subtype having the largest */
+/*              packet size (subtype 2) does not give rise to the */
+/*              largest record size, because that type is Hermite and */
+/*              requires half the window size used by subtype 3 for a */
+/*              given polynomial degree. */
+
+
+/*     The parameter CK6PS3 must be in sync with C06PS3 defined in */
+/*     ck06.inc. */
+
+
 
 /*     Maximum record size that can be handled by CKPFS. This value */
 /*     must be set to the maximum of all CKxRSZ parameters (currently */
-/*     CK4RSZ.) */
+/*     CK5RSZ.) */
 
 /* $ Brief_I/O */
 
@@ -520,6 +561,10 @@ static integer c__6 = 6;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.0.0, 27-JAN-2014 (NJB) */
+
+/*        Increased MAXDEG to 23 for compatibility with CK type 6. */
+
 /* -    SPICELIB Version 1.1.0, 06-SEP-2002 (NJB) */
 
 /* -& */
@@ -529,6 +574,8 @@ static integer c__6 = 6;
 
 /* -& */
 /* $ Revisions */
+
+/*     None. */
 
 /* -& */
 
@@ -675,7 +722,7 @@ static integer c__6 = 6;
 
 /*        These are the Hermite subtypes. */
 
-	maxwnd = 8;
+	maxwnd = 12;
 	if (wndsiz > maxwnd) {
 	    setmsg_("Window size in type 05 segment was #; max allowed value"
 		    " is # for subtypes 0 and 2 (Hermite, 8 or 14-element pac"
@@ -699,7 +746,7 @@ static integer c__6 = 6;
 
 /*        These are the Lagrange subtypes. */
 
-	maxwnd = 16;
+	maxwnd = 24;
 	if (wndsiz > maxwnd) {
 	    setmsg_("Window size in type 05 segment was #; max allowed value"
 		    " is # for subtypes 1 and 3 (Lagrange, 4 or 7-element pac"
@@ -767,7 +814,7 @@ static integer c__6 = 6;
 	dafgda_(handle, &i__1, &i__2, pbuffr);
 	remain = npdir - npread;
 	while(pbuffr[(i__1 = npread - 1) < 101 && 0 <= i__1 ? i__1 : s_rnge(
-		"pbuffr", i__1, "ckr05_", (ftnlen)633)] < t && remain > 0) {
+		"pbuffr", i__1, "ckr05_", (ftnlen)639)] < t && remain > 0) {
 	    bufbas += npread;
 	    npread = min(remain,100);
 
@@ -868,12 +915,12 @@ static integer c__6 = 6;
 
 	t = pbuffr[0];
     } else if (t > pbuffr[(i__1 = npread - 1) < 101 && 0 <= i__1 ? i__1 : 
-	    s_rnge("pbuffr", i__1, "ckr05_", (ftnlen)748)]) {
+	    s_rnge("pbuffr", i__1, "ckr05_", (ftnlen)754)]) {
 
 /*        This can happen only if T follows all epochs. */
 
 	if (*sclkdp - *tol > pbuffr[(i__1 = npread - 1) < 101 && 0 <= i__1 ? 
-		i__1 : s_rnge("pbuffr", i__1, "ckr05_", (ftnlen)752)]) {
+		i__1 : s_rnge("pbuffr", i__1, "ckr05_", (ftnlen)758)]) {
 	    chkout_("CKR05", (ftnlen)5);
 	    return 0;
 	}
@@ -881,7 +928,7 @@ static integer c__6 = 6;
 /*        Bracket T to move it within the range of buffered epochs. */
 
 	t = pbuffr[(i__1 = npread - 1) < 101 && 0 <= i__1 ? i__1 : s_rnge(
-		"pbuffr", i__1, "ckr05_", (ftnlen)762)];
+		"pbuffr", i__1, "ckr05_", (ftnlen)768)];
     }
 
 /*     At this point, */
@@ -920,14 +967,14 @@ static integer c__6 = 6;
 	    high = 2;
 	}
 	hepoch = pbuffr[(i__1 = high - 1) < 101 && 0 <= i__1 ? i__1 : s_rnge(
-		"pbuffr", i__1, "ckr05_", (ftnlen)805)];
+		"pbuffr", i__1, "ckr05_", (ftnlen)811)];
     } else {
 	low = pbegix + i__ - 1;
 	lepoch = pbuffr[(i__1 = i__ - 1) < 101 && 0 <= i__1 ? i__1 : s_rnge(
-		"pbuffr", i__1, "ckr05_", (ftnlen)810)];
+		"pbuffr", i__1, "ckr05_", (ftnlen)816)];
 	high = low + 1;
 	hepoch = pbuffr[(i__1 = i__) < 101 && 0 <= i__1 ? i__1 : s_rnge("pbu"
-		"ffr", i__1, "ckr05_", (ftnlen)813)];
+		"ffr", i__1, "ckr05_", (ftnlen)819)];
     }
 
 /*     We now need to find the interpolation interval containing */
@@ -990,7 +1037,7 @@ static integer c__6 = 6;
 	    i__2 = bufbas + nsread;
 	    dafgda_(handle, &i__1, &i__2, sbuffr);
 	    while(sbuffr[(i__1 = nsread - 1) < 103 && 0 <= i__1 ? i__1 : 
-		    s_rnge("sbuffr", i__1, "ckr05_", (ftnlen)885)] < t && 
+		    s_rnge("sbuffr", i__1, "ckr05_", (ftnlen)891)] < t && 
 		    remain > 0) {
 		bufbas += nsread;
 		nsread = min(remain,100);
@@ -1051,7 +1098,7 @@ static integer c__6 = 6;
 	nsrch = min(101,nsread);
 	i__ = lstled_(&t, &nsrch, sbuffr);
 	start = sbuffr[(i__1 = i__ - 1) < 103 && 0 <= i__1 ? i__1 : s_rnge(
-		"sbuffr", i__1, "ckr05_", (ftnlen)956)];
+		"sbuffr", i__1, "ckr05_", (ftnlen)962)];
 
 /*        Let NSTART ("next start") be the start time that follows */
 /*        START, if START is not the last start time.  If NSTART */
@@ -1059,10 +1106,10 @@ static integer c__6 = 6;
 
 	if (i__ < nsread) {
 	    nstart = sbuffr[(i__1 = i__) < 103 && 0 <= i__1 ? i__1 : s_rnge(
-		    "sbuffr", i__1, "ckr05_", (ftnlen)965)];
+		    "sbuffr", i__1, "ckr05_", (ftnlen)971)];
 	    if (i__ + 1 < nsread) {
 		nnstrt = sbuffr[(i__1 = i__ + 1) < 103 && 0 <= i__1 ? i__1 : 
-			s_rnge("sbuffr", i__1, "ckr05_", (ftnlen)969)];
+			s_rnge("sbuffr", i__1, "ckr05_", (ftnlen)975)];
 	    } else {
 		nnstrt = dpmax_();
 	    }
@@ -1230,7 +1277,7 @@ static integer c__6 = 6;
 
     i__2 = j - i__;
     moved_(&pbuffr[(i__1 = i__) < 101 && 0 <= i__1 ? i__1 : s_rnge("pbuffr", 
-	    i__1, "ckr05_", (ftnlen)1158)], &i__2, &record[wndsiz * packsz + 
+	    i__1, "ckr05_", (ftnlen)1164)], &i__2, &record[wndsiz * packsz + 
 	    4]);
 
 /*     Save the information about the interval and segment. */

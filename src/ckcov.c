@@ -66,7 +66,8 @@ static integer c__6 = 6;
 	    integer *, integer *, integer *, integer *, doublereal *, char *, 
 	    doublereal *, ftnlen), zzckcv05_(integer *, integer *, integer *, 
 	    integer *, doublereal *, doublereal *, char *, doublereal *, 
-	    ftnlen);
+	    ftnlen), zzckcv06_(integer *, integer *, integer *, integer *, 
+	    doublereal *, doublereal *, char *, doublereal *, ftnlen);
 
 /* $ Abstract */
 
@@ -634,8 +635,17 @@ static integer c__6 = 6;
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman   (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 05-JAN-2014 (NJB) (BVS) */
+
+/*        Updated index entries. */
+
+/*     Last update was 05-JAN-2014 (NJB) (BVS) */
+
+/*        Updated to support type 6. */
 
 /* -    SPICELIB Version 1.0.1, 30-NOV-2007 (NJB) */
 
@@ -649,7 +659,10 @@ static integer c__6 = 6;
 /* -& */
 /* $ Index_Entries */
 
-/*     get coverage window for ck object */
+/*     get coverage window for ck_object */
+/*     get coverage start and stop time for ck_object */
+/*     get coverage start and stop time for ck frame */
+/*     get coverage start and stop time for ck instrument */
 
 /* -& */
 
@@ -737,7 +750,7 @@ static integer c__6 = 6;
 	return 0;
     }
 
-/*     Set a logical flag indicating whether the time systm is SCLK. */
+/*     Set a logical flag indicating whether the time system is SCLK. */
 
     istdb = eqstr_(timsys, "TDB", timsys_len, (ftnlen)3);
 
@@ -831,9 +844,9 @@ static integer c__6 = 6;
 		    for (i__ = 1; i__ <= 2; ++i__) {
 			sct2e_(&clkid, &dctol[(i__1 = i__ - 1) < 2 && 0 <= 
 				i__1 ? i__1 : s_rnge("dctol", i__1, "ckcov_", 
-				(ftnlen)868)], &et);
+				(ftnlen)880)], &et);
 			dctol[(i__1 = i__ - 1) < 2 && 0 <= i__1 ? i__1 : 
-				s_rnge("dctol", i__1, "ckcov_", (ftnlen)869)] 
+				s_rnge("dctol", i__1, "ckcov_", (ftnlen)881)] 
 				= et;
 		    }
 		}
@@ -864,11 +877,10 @@ static integer c__6 = 6;
 		    zzckcv04_(&handle, &segbeg, &segend, &clkid, tol, timsys, 
 			    cover, timsys_len);
 		} else if (dtype == 5) {
-
-/*                 Note:  this calling sequence is exceptional; the */
-/*                 segment bounds are an input. */
-
 		    zzckcv05_(&handle, &segbeg, &segend, &clkid, dc, tol, 
+			    timsys, cover, timsys_len);
+		} else if (dtype == 6) {
+		    zzckcv06_(&handle, &segbeg, &segend, &clkid, dc, tol, 
 			    timsys, cover, timsys_len);
 		} else {
 		    setmsg_("Supported CK data types are 1, 2, 3, 4, 5.  Dat"

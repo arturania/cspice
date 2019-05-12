@@ -10,7 +10,7 @@
 static integer c__2 = 2;
 static integer c__6 = 6;
 static integer c__1 = 1;
-static integer c__129 = 129;
+static integer c__198 = 198;
 
 /* $Procedure SPKPVN ( S/P Kernel, position and velocity in native frame ) */
 /* Subroutine */ int spkpvn_(integer *handle, doublereal *descr, doublereal *
@@ -42,11 +42,16 @@ static integer c__129 = 129;
 	    doublereal *), spkr15_(integer *, doublereal *, doublereal *, 
 	    doublereal *), spkr17_(integer *, doublereal *, doublereal *, 
 	    doublereal *), spkr18_(integer *, doublereal *, doublereal *, 
-	    doublereal *);
+	    doublereal *), spkr19_(integer *, doublereal *, doublereal *, 
+	    doublereal *), spke19_(doublereal *, doublereal *, doublereal *), 
+	    spkr20_(integer *, doublereal *, doublereal *, doublereal *), 
+	    spke20_(doublereal *, doublereal *, doublereal *), spkr21_(
+	    integer *, doublereal *, doublereal *, doublereal *), spke21_(
+	    doublereal *, doublereal *, doublereal *);
     doublereal dc[2];
     integer ic[6];
     extern logical failed_(void);
-    doublereal record[129];
+    doublereal record[198];
     extern /* Subroutine */ int sgfcon_(integer *, doublereal *, integer *, 
 	    integer *, doublereal *), sigerr_(char *, ftnlen), chkout_(char *,
 	     ftnlen);
@@ -150,6 +155,12 @@ static integer c__129 = 129;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.0.0, 05-OCT-2012 (NJB) */
+
+/*        Updated to support increase of maximum degree to 27 for types */
+/*        2, 3, 8, 9, 12, 13, 18, and 19. See SPKPVN for a list */
+/*        of record size requirements as a function of data type. */
+
 /* -    SPICELIB Version 1.0.0, 16-AUG-2002 (NJB) */
 
 /* -& */
@@ -203,16 +214,16 @@ static integer c__129 = 129;
 /*                 data type-specific routines SPKRnn, which are called */
 /*                 by SPKPVN (see Particulars). */
 
-/* $ Files */
-
-/*     See argument HANDLE. */
-
 /* $ Exceptions */
 
 /*     1) If the segment type is not supported by the current */
 /*        version of SPKPVN, the error 'SPICE(SPKTYPENOTSUPP)' */
-/*        is signalled. */
+/*        is signaled. */
 
+
+/* $ Files */
+
+/*     See argument HANDLE. */
 
 /* $ Particulars */
 
@@ -233,7 +244,6 @@ static integer c__129 = 129;
 /*           1   Difference Lines */
 /*           2   Chebyshev (P) */
 /*           3   Chebyshev (P,V) */
-/*           4   Weighted elements ( not yet implemented ) */
 /*           5   Two body propagation between discrete states */
 /*           8   Lagrange interpolation, equally spaced discrete states */
 /*           9   Lagrange interpolation, unequally spaced discrete states */
@@ -242,6 +252,10 @@ static integer c__129 = 129;
 /*          14   Chebyshev Unequally spaced */
 /*          15   Precessing Ellipse */
 /*          17   Equinoctial Elements */
+/*          18   ESOC/DDID Hermite/Lagrange Interpolation */
+/*          19   ESOC/DDID Piecewise Interpolation */
+/*          20   Chebyshev (V) */
+/*          21   Extended Modified Difference Array */
 
 /*     SPKPVN is the only reader that needs to be changed in order to */
 /*     add a new segment type to the SPK format.  If a new data type is */
@@ -263,17 +277,20 @@ static integer c__129 = 129;
 /*                  Data type       Maximum record length */
 /*                  ---------       --------------------- */
 /*                      1                    71 */
-/*                      2                    66 */
-/*                      3                   129 */
+/*                      2                    87 */
+/*                      3                   171 */
 /*                      5                    15 */
-/*                      8                    99 */
-/*                      9                   113 */
-/*                     12                    51 */
-/*                     13                    57 */
+/*                      8                   171 */
+/*                      9                   197 */
+/*                     12                    87 */
+/*                     13                    99 */
 /*                     14                 Variable */
 /*                     15                    16 */
 /*                     17                    12 */
-/*                     18                   114 */
+/*                     18                   198 */
+/*                     19                   198 */
+/*                     20                   159 */
+/*                     21                   112 */
 
 /* $ Examples */
 
@@ -320,6 +337,12 @@ static integer c__129 = 129;
 /*     W.L. Taber      (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 4.0.0,  23-DEC-2013 (NJB) */
+
+/*        Added support for types 19, 20 and 21. Added header */
+/*        comments giving description for types 18, 19, */
+/*        and 21. Removed header reference to type 4. */
 
 /* -    SPICELIB Version 3.0.0,  16-AUG-2002 (NJB) */
 
@@ -435,13 +458,13 @@ static integer c__129 = 129;
 	    return 0;
 	}
 	recsiz = (integer) record[0] * 6 + 3;
-	if (recsiz > 129) {
+	if (recsiz > 198) {
 	    setmsg_("Storage for # double precision numbers is needed for an"
 		    " SPK data record and only # locations were available. Up"
 		    "date the parameter MAXREC in the subroutine SPKPVN and n"
 		    "otify the NAIF group of this problem.", (ftnlen)204);
 	    errint_("#", &recsiz, (ftnlen)1);
-	    errint_("#", &c__129, (ftnlen)1);
+	    errint_("#", &c__198, (ftnlen)1);
 	    sigerr_("SPICE(SPKRECTOOLARGE)", (ftnlen)21);
 	    chkout_("SPKPVN", (ftnlen)6);
 	    return 0;
@@ -457,6 +480,15 @@ static integer c__129 = 129;
     } else if (type__ == 18) {
 	spkr18_(handle, descr, et, record);
 	spke18_(et, record, state);
+    } else if (type__ == 19) {
+	spkr19_(handle, descr, et, record);
+	spke19_(et, record, state);
+    } else if (type__ == 20) {
+	spkr20_(handle, descr, et, record);
+	spke20_(et, record, state);
+    } else if (type__ == 21) {
+	spkr21_(handle, descr, et, record);
+	spke21_(et, record, state);
     } else {
 	setmsg_("SPK type # is not supported in your version of the SPICE li"
 		"brary.  You will need to upgrade your version of the library"

@@ -39,10 +39,9 @@
       <A HREF="#NAIF Text Kernel Format">NAIF Text Kernel Format</A>
       <A HREF="#Text PCK Contents">Text PCK Contents</A>
          <A HREF="#Text PCK Kernel Variable Names">Text PCK Kernel Variable Names</A>
-         <A HREF="#Restrictions on the Form of Orientation Models in Text PCK Kernels">Restrictions on the Form of Orientation Models in Text PCK Kernels</A>
-         <A HREF="#Models for the Sun, Planets, and Asteroids in Text PCK Kernels">Models for the Sun, Planets, and Asteroids in Text PCK Kernels</A>
+         <A HREF="#Restrictions on the Availability of Orientation Models in Text PCK Kernels">Restrictions on the Availability of Orientation Models in Text PCK Kernels</A>
+         <A HREF="#Models for the Sun, Planets, and some Minor Bodies in Text PCK Kernels">Models for the Sun, Planets, and some Minor Bodies in Text PCK Kernels</A>
          <A HREF="#Models for Satellites in Text PCK Kernels">Models for Satellites in Text PCK Kernels</A>
-         <A HREF="#Epoch and Frame Specifications in Text PCK Kernels">Epoch and Frame Specifications in Text PCK Kernels</A>
          <A HREF="#Shape models in Text PCK Kernels">Shape models in Text PCK Kernels</A>
          <A HREF="#Summary of PCK Variables used in Text PCK Kernels by CSPICE">Summary of PCK Variables used in Text PCK Kernels by CSPICE</A>
       <A HREF="#Creating and Modifying Text PCKs">Creating and Modifying Text PCKs</A>
@@ -52,7 +51,8 @@
          <A HREF="#Binary PCK Data Types">Binary PCK Data Types</A>
          <A HREF="#Supported Data Types">Supported Data Types</A>
          <A HREF="#Type 2: Chebyshev (Angles only)">Type 2: Chebyshev (Angles only)</A>
-         <A HREF="#Type 3: Chebyshev (Angles and derivatives)">Type 3: Chebyshev (Angles and derivatives)</A>
+         <A HREF="#Type 3: Chebyshev (Angles and their derivatives)">Type 3: Chebyshev (Angles and their derivatives)</A>
+         <A HREF="#Type 20: Chebyshev (Only angular derivatives)">Type 20: Chebyshev (Only angular derivatives)</A>
       <A HREF="#Creating Binary PCKs">Creating Binary PCKs</A>
    <A HREF="#PCK Software">PCK Software</A>
       <A HREF="#Getting PCK Data into Your Program">Getting PCK Data into Your Program</A>
@@ -63,11 +63,13 @@
       <A HREF="#Access Routines">Access Routines</A>
          <A HREF="#High-Level PCK Data Access">High-Level PCK Data Access</A>
          <A HREF="#Low-Level PCK Data Access">Low-Level PCK Data Access</A>
-      <A HREF="#Examples">Examples</A>
-         <A HREF="#Transforming a body-fixed state to the inertial J2000 frame">Transforming a body-fixed state to the inertial J2000 frame</A>
-      <A HREF="#Creating a binary PCK file, type 03.">Creating a binary PCK file, type 03.</A>
       <A HREF="#Summary of Calling Sequences">Summary of Calling Sequences</A>
-   <A HREF="#Appendix A: Sample Text PCK file">Appendix A: Sample Text PCK file</A>
+   <A HREF="#Appendix A --- Summary of PCK Routines">Appendix A --- Summary of PCK Routines</A>
+   <A HREF="#Appendix B --- Epoch and Frame Specifications in Text PCK Kernels">Appendix B --- Epoch and Frame Specifications in Text PCK Kernels</A>
+   <A HREF="#Appendix C --- Revision History">Appendix C --- Revision History</A>
+         <A HREF="#2013 JAN 22 by E. D. Wright, C. H. Acton">2013 JAN 22 by E. D. Wright, C. H. Acton</A>
+         <A HREF="#2010 JUN 03 by B. V. Semenov.">2010 JUN 03 by B. V. Semenov.</A>
+         <A HREF="#Original version K.R. Gehringer, K. S. Zukor">Original version K.R. Gehringer, K. S. Zukor</A>
 
 </PRE>
 
@@ -78,7 +80,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> PCK Required Reading
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2010 JUN 03 by B. V. Semenov.
+   Last revised on 2013 JAN 22 by E. D. Wright, C. H. Acton.
 <P>
  
 <BR><BR>
@@ -106,39 +108,43 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> References
 </H3><P><BR><BR>
-   All references are to NAIF documents. The notation [Dn] refers to NAIF
-   document numbers.
-<P>
- 
 <UL>
-<TT>1.</TT> [218] KERNEL Required Reading (<a href="../req/kernel.html">kernel.req</a>).
+<TT>1.</TT> KERNEL Required Reading (<a href="../req/kernel.html">kernel.req</a>).
 <BR><BR></UL>
 <UL>
-<TT>2.</TT> [219] NAIF IDS Required Reading (<a href="../req/naif_ids.html">naif_ids.req</a>).
+<TT>2.</TT> NAIF IDS Required Reading (<a href="../req/naif_ids.html">naif_ids.req</a>).
 <BR><BR></UL>
 <UL>
-<TT>3.</TT> [349] FRAMES Required Reading (<a href="../req/frames.html">frames.req</a>).
+<TT>3.</TT> FRAMES Required Reading (<a href="../req/frames.html">frames.req</a>).
 <BR><BR></UL>
 <UL>
-<TT>4.</TT> [168] SPK Required Reading (<a href="../req/spk.html">spk.req</a>).
+<TT>4.</TT> SPK Required Reading (<a href="../req/spk.html">spk.req</a>).
 <BR><BR></UL>
 <UL>
-<TT>5.</TT> [225] TIME Required Reading (<a href="../req/time.html">time.req</a>).
+<TT>5.</TT> TIME Required Reading (<a href="../req/time.html">time.req</a>).
 <BR><BR></UL>
 <UL>
-<TT>6.</TT> [214] ROTATIONS Required Reading (<a href="../req/rotation.html">rotation.req</a>).
+<TT>6.</TT> ROTATIONS Required Reading (<a href="../req/rotation.html">rotation.req</a>).
 <BR><BR></UL>
 <UL>
-<TT>7.</TT> [167] Double Precision Array Files (DAF) Required Reading (<a href="../req/daf.html">daf.req</a>).
+<TT>7.</TT> Double Precision Array Files Required Reading (<a href="../req/daf.html">daf.req</a>).
 <BR><BR></UL>
 <UL>
-<TT>8.</TT> [195] ``Planetary Geodetic Control Using Satellite Imaging,'' Journal of
+<TT>8.</TT> ``Planetary Geodetic Control Using Satellite Imaging,'' Journal of
 Geophysical Research, Vol. 84, No. B3, March 10, 1979, by Thomas C.
 Duxbury.
 <BR><BR></UL>
 <UL>
 <TT>9.</TT> ``Report of the IAU/IAG Working Group on Cartographic Coordinates and
 Rotational Elements of the Planets and Satellites: 2000.''
+<BR><BR></UL>
+<UL>
+<TT>10.</TT> ``Report of the IAU/IAG Working Group on Cartographic Coordinates and
+Rotational Elements: 2006.''
+<BR><BR></UL>
+<UL>
+<TT>11.</TT> ``Report of the IAU Working Group on Cartographic Coordinates and
+Rotational Elements: 2009.''
 <BR><BR></UL>
 <BR><BR>
 <A NAME="Introduction"></A>
@@ -150,13 +156,14 @@ Rotational Elements of the Planets and Satellites: 2000.''
    interpret the data in these files.
 <P>
  
-   Historically, only one type of PCK existed, the text PCK file (called
-   the "P_constants kernel.") These ASCII files can be easily viewed and
-   modified via text editor. The current SPICE system also supports a
+   Historically, only one type of PCK existed, the text PCK (called the "P
+   constants kernel.") These ASCII files can be easily viewed and modified
+   via text editor. The current SPICE system also supports a non-ascii
    binary PCK. These files contain more precise body orientation
-   information in binary format, this format permits large amounts of data
-   to be stored and quickly accessed. Binary PCK files exists only for the
-   moon, earth, and the asteroid Eros.
+   information in binary format (no size and shape data). This format
+   permits large amounts of data to be stored and quickly accessed. As of
+   the date of this document, binary PCK files exists only for the moon,
+   earth, and the asteroid Eros.
 <P>
  
    The purpose of the PCK and associated software is to provide SPICE users
@@ -172,8 +179,9 @@ Rotational Elements of the Planets and Satellites: 2000.''
 <H3> Body Codes
 </H3><P><BR><BR>
    NAIF software uses a system of integer codes to conveniently represent
-   both celestial bodies and spacecraft. The document ``NAIF IDS Required
-   Reading'', <a href="../req/naif_ids.html">naif_ids.req</a>, [219] describes this system in detail.
+   celestial bodies, locations such as barycenters, Lagrange points, and
+   spacecraft. The NAIF IDS Required Reading document, <a href="../req/naif_ids.html">naif_ids.req</a>,
+   describes this system in detail.
 <P>
  
    In this document, the following features of the code system will be
@@ -182,15 +190,16 @@ Rotational Elements of the Planets and Satellites: 2000.''
  
 <UL>
 <TT>--</TT> The code for the barycenter of the nth planetary system is n. The count
-starts at 1, which stands for Mercury. (The code for the Sun is 10.)
+starts at 1, which stands for Mercury; e.g. the code for Jupiter's
+barycenter is 5. The code for the Sun is 10. SPICE maintains Pluto as the
+9th planet.
 <BR><BR></UL>
 <UL>
-<TT>--</TT> The code for the nth planet's barycenter is n; e.g., the code for Jupiter's
-barycenter is 5.
+<TT>--</TT> The code for the nth planet's barycenter is n
 <BR><BR></UL>
 <UL>
 <TT>--</TT> The code for the nth planet's mass center is n99; e.g, the code for the
-Earth is 399.
+Earth (Earth barycenter is 3) is 399.
 <BR><BR></UL>
 <UL>
 <TT>--</TT> Natural satellites have ID codes of the form
@@ -214,8 +223,8 @@ Earth is 399.
               Codes with X = 5 are provisional.
 </PRE>
 <UL>
-<TT>&#32;&#32;</TT> For example, the code for the Earth's moon is 301, and the code for the
-Ganymede is 503.
+<TT>&#32;&#32;</TT> For example, the code for the Earth's moon (moon 1 of body 399) is 301, and
+the code for Ganymede (moon 3 of body 599) is 503.
 <BR><BR></UL>
 <BR><BR>
 <A NAME="Epochs and Reference Frames"></A>
@@ -231,13 +240,8 @@ Ganymede is 503.
    to a specified reference epoch.
 <P>
  
-   Typical choices of reference frames associated with PCK constants would
-   be J2000 or B1950. Typical choices of reference epochs would be the
-   J2000 epoch (JED 24515145.0) or the J1950 epoch (JED 2433282.5).
-<P>
- 
-   Within CSPICE, reference frames are usually indicated by short character
-   strings, such as 'J2000'. The names of the body-fixed reference frames
+   Within CSPICE, reference frames are identified by short character
+   strings such as 'J2000'. The names of the body-fixed reference frames
    are usually constructed by adding the prefix ``IAU_'' to the name of the
    body, for example ``IAU_MARS'' for Mars. The exception from this rule
    are body-fixed reference frames associated with high-precision
@@ -246,17 +250,10 @@ Ganymede is 503.
 <P>
  
    However, CSPICE also has a system of integer codes used by some routines
-   to name reference frames. This coding system is described in detail in
-   <a href="../req/frames.html">frames.req</a>. An example of the correspondence of codes and names is shown
-   below:
+   to specify reference frames. This coding system is also described in
+   detail in <a href="../req/frames.html">frames.req</a>.
 <P>
  
-<PRE>
-   Code    Name       Description
-   -----   --------   -------------------------------------------
-     1     J2000      Earth mean equator, dynamical equinox of J2000
-     2     B1950      Earth mean equator, dynamical equinox of B1950
-</PRE>
 <BR><BR>
 <A NAME="Planetocentric Coordinates"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
@@ -314,13 +311,12 @@ order. Thus, the frame is right-handed.
  
    Step 2 is referred to as ``loading'' a PCK file. Text PCK files are
    loaded by calling the CSPICE subroutine <a href="../cspice/furnsh_c.html">furnsh_c</a> and supplying the name
-   of the PCK file to load as the input argument. All of the data in a text
-   PCK file is read into memory when the file is loaded by an application
-   program at run-time. Binary PCK files are also loaded by calling the
-   CSPICE subroutine <a href="../cspice/furnsh_c.html">furnsh_c</a>. This data will be accessible throughout the
-   rest of the program run, unless it is deliberately overwritten or
-   unloaded. Multiple text and multiple binary PCKs can be used
-   simultaneously.
+   of the PCK file to load as the input argument or by loading a meta
+   kernel that lists the PCK. All data in a text PCK file is read into
+   memory when the file is loaded by an application program at run-time.
+   Load binary PCKs in the same way. The program can access all loaded data
+   during the program run, unless deliberately overwritten or unloaded.
+   Multiple text and multiple binary PCKs can be used simultaneously.
 <P>
  
    The data available from binary PCKs take precedence over that from text
@@ -334,19 +330,11 @@ order. Thus, the frame is right-handed.
    loads overwrite the assignments defined by earlier loads.
 <P>
  
-   Step 3, accessing loaded PCK data, is accomplished via calls to CSPICE
+   Step 3, using loaded PCK data, is accomplished via calls to CSPICE
    routines. At the lowest level, these access routines allow the calling
    program to retrieve specified data that has been read from one or more
    PCK files. Higher-level access routines can return quantities derived
-   from PCK data that has been loaded; the most commonly used such quantity
-   is a matrix that transforms state vectors or position vectors between
-   inertial and body-fixed planetocentric coordinates. The CSPICE
-   subroutines <a href="../cspice/sxform_c.html">sxform_c</a> and <a href="../cspice/pxform_c.html">pxform_c</a> can calculate this transformation. The
-   names of the body-fixed reference frames used as inputs to these
-   routines are usually constructed by adding the prefix ``IAU_'' to the
-   name of the body, for example ``IAU_MARS'' for Mars (for more details
-   see FRAMES Required Reading, <a href="../req/frames.html">frames.req</a>). The subroutine <a href="../cspice/bodvrd_c.html">bodvrd_c</a>
-   retrieves information on body orientation and body shape.
+   from loaded PCK data.
 <P>
  
    For text PCK files, the PCK software can be thought of as ``buffering''
@@ -396,8 +384,9 @@ order. Thus, the frame is right-handed.
    [ W ]
         i
 </PRE>
-   denotes the matrix that rotates vectors by -W about the ith coordinate
-   axis, using the right hand rule. (This notation is explained in detail
+   denotes the matrix that rotates a coordinate system by W radians about
+   the ith coordinate axis (or rotates vectors by -W radians about the same
+   axis), using the right hand rule. (This notation is explained in detail
    in <a href="../req/rotation.html">rotation.req</a>).
 <P>
  
@@ -419,9 +408,11 @@ order. Thus, the frame is right-handed.
    Therefore, they are easily changed and read. Binary files are created
    via CSPICE programs and have a particular format and architecture. They
    cannot be examined or changed with an editor. These files require CSPICE
-   software for their manipulation. Binary files can contain more data and
+   software for their manipulation. Binary PCKs can contain more data and
    are faster to use. In the PCK case, the binary files contain higher
-   precision data than the text files.
+   precision data than the text files. Binary PCKs contain only orientation
+   data, while text PCKs usually include orientation, size, and shape data,
+   and may include other physical data associated with a body.
 <P>
  
 <BR><BR>
@@ -434,18 +425,11 @@ order. Thus, the frame is right-handed.
 <P>
  
 <PRE>
- 
    Environment                  Native End-Of-Line
                                 Indicator
    ___________                  _____________________
- 
-   PC DOS/Windows                &lt;CR&gt;&lt;LF&gt;
-   Unix                          &lt;LF&gt;
-   Linux                         &lt;LF&gt;
-   Alpha  Digital Unix           &lt;LF&gt;
-   Mac OS X                      &lt;LF&gt;
-   Macintosh Classic (OS9)       &lt;CR&gt;
- 
+   PC DOS/Windows               &lt;CR&gt;&lt;LF&gt;
+   Mac OS X, Linux, Unix        &lt;LF&gt;
 </PRE>
    As of CSPICE N0059, the CSPICE text kernel loaders, <a href="../cspice/furnsh_c.html">furnsh_c</a> and
    <a href="../cspice/ldpool_c.html">ldpool_c</a>, can read and parse non-native text files. The FORTRAN SPICELIB
@@ -461,13 +445,13 @@ order. Thus, the frame is right-handed.
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> DAF Run-Time Binary File Format Translation
 </H3><P><BR><BR>
-   As of the CSPICE N0052 release (January, 2002), certain supported
-   platforms are able to read DAF-based binary files (SPK, CK and binary
-   PCK) written in a non-native, binary representation. This access is
-   read-only; any operations requiring writing to the file (adding
-   information to the comment area, or appending additional ephemeris data,
-   for example) require prior conversion of the file to the native binary
-   file format. See the Convert User's Guide, <a href="../ug/convert.html">convert.ug</a>, for details.
+   As of the CSPICE N0052 release (January, 2002), supported platforms are
+   able to read DAF-based binary files (SPK, CK and binary PCK) written in
+   a non-native, binary representation. This access is read-only; any
+   operations requiring writing to the file (adding information to the
+   comment area, or appending additional ephemeris data, for example)
+   require prior conversion of the file to the native binary file format.
+   See the Convert User's Guide, <a href="../ug/convert.html">convert.ug</a>, for details.
 <P>
  
 <BR><BR>
@@ -550,24 +534,33 @@ order. Thus, the frame is right-handed.
 <P>
  
 <PRE>
+   NAME = VALUE
+</PRE>
+   or
+<P>
+ 
+<PRE>
    NAME = ( VALUE1, VALUE2, ... )
 </PRE>
-   where name is a string no longer than 32 characters, and the values on
-   the right hand side are double precision numbers. A specific example is
-   shown below:
+   where "NAME" is a string no longer than 32 characters, and one or more
+   values appear on the right hand. A specific example is shown below:
 <P>
  
 <PRE>
    BODY399_RADII     = (  6378.140  6378.140  6356.75  )
 </PRE>
+   The "VALUES" may be integer, double precision or string values.
+<P>
+ 
    Some variations on the form shown here are allowed: commas between data
    values are optional, the right hand side of the assignment can be
-   continued over multiple lines, and the numbers can be expressed as
-   integers or reals without causing the PCK software to fail. Assignments
-   of scalars do not require the value on the right hand side to be
-   enclosed in parentheses, but that notation is frequently used as a
-   visual cue. Blank lines within or between assignments are ignored by the
-   CSPICE software that reads text kernels.
+   continued over multiple lines, and the data values can be expressed as
+   integers or reals without causing the PCK software to fail. Either an
+   "E" or "D" can be used to set off an exponent. Assignments of scalars do
+   not require the value on the right hand side to be enclosed in
+   parentheses, but that notation is frequently used as a visual cue. Blank
+   lines within or between assignments are ignored by the CSPICE software
+   that reads text kernels.
 <P>
  
    In addition to numbers, UTC strings can be assigned to variables. The
@@ -597,10 +590,10 @@ order. Thus, the frame is right-handed.
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
    Other than the limitations imposed by the PCK file formats, no absolute
    restrictions exist on the names or values of the variables used in PCK
-   files. However, the CSPICE kernel concept calls for the contents of PCK
+   files. However, the SPICE kernel concept calls for the contents of PCK
    files to be limited to physical and cartographic constants describing
    extended solar system bodies: radii of bodies, constants defining
-   orientation models, masses or values of GM are examples of data
+   orientation models, and masses or values of GM are examples of data
    appropriate for inclusion in PCKs.
 <P>
  
@@ -636,7 +629,7 @@ order. Thus, the frame is right-handed.
 <PRE>
    RA,  DEC,  W
 </PRE>
-   for the Earth are represented by the names
+   for the Earth (Earth ID = 399) are represented by the names
 <P>
  
 <PRE>
@@ -653,10 +646,6 @@ order. Thus, the frame is right-handed.
    BODY399_POLE_DEC       = (  +90.      -0.557         0. )
    BODY399_PM             = (  190.16  +360.9856235     0. )
 </PRE>
-   Note that the string ``PM'' is used in place of ``W'' for the kernel
-   variable associated with the prime meridian.
-<P>
- 
    If you examine a PCK file produced by NAIF, you'll see an additional
    symbol grouped with the ones listed here; it is
 <P>
@@ -664,9 +653,9 @@ order. Thus, the frame is right-handed.
 <PRE>
    BODY399_LONG_AXIS
 </PRE>
-   This term is currently zero for all bodies except Mars. It represents
-   the offset between the longest axis of the triaxial ellipsoid used to
-   model a body and the prime meridian of the body.
+   It represents the offset between the longest axis of the triaxial
+   ellipsoid used to model a body and the prime meridian of the body. This
+   term is currently zero for all bodies except Mars.
 <P>
  
 <BR><BR>
@@ -697,18 +686,14 @@ order. Thus, the frame is right-handed.
 <PRE>
    BODY399_POLE_RA
 </PRE>
-   Note the number ``399'' appearing in the kernel variable names; this is
-   the NAIF integer code for the Earth.
-<P>
- 
    The following sections specify the specific item names recognized by PCK
    access routines.
 <P>
  
 <BR><BR>
-<A NAME="Restrictions on the Form of Orientation Models in Text PCK Kernels"></A>
+<A NAME="Restrictions on the Availability of Orientation Models in Text PCK Kernels"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Restrictions on the Form of Orientation Models in Text PCK Kernels
+<H3> Restrictions on the Availability of Orientation Models in Text PCK Kernels
 </H3><P><BR><BR>
    Orientation models usable by CSPICE's text PCK access routines are not
    available for all solar system bodies. For example, Saturn's moon
@@ -716,31 +701,23 @@ order. Thus, the frame is right-handed.
    by the sort of models used in text PCKs.
 <P>
  
-   To date, no PCK files containing models for the rotation of comets have
-   been produced or collected by NAIF. Models for the rotation of comets,
-   as well as for the rotation of asteroids and the natural satellites of
-   planets, can be accommodated by the PCK system only if the models have
-   the form described in the section ``Models for the Sun, Planets, and
-   Asteroids'' or in ``Models for Satellites'' or if binary PCK data is
-   available.
-<P>
- 
 <BR><BR>
-<A NAME="Models for the Sun, Planets, and Asteroids in Text PCK Kernels"></A>
+<A NAME="Models for the Sun, Planets, and some Minor Bodies in Text PCK Kernels"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Models for the Sun, Planets, and Asteroids in Text PCK Kernels
+<H3> Models for the Sun, Planets, and some Minor Bodies in Text PCK Kernels
 </H3><P><BR><BR>
-   For the Sun, planets, and asteroids, the expressions used in text PCK
+   For the Sun, planets, and minor bodies, the expressions used in text PCK
    files for the north pole direction and prime meridian location are
    always quadratic polynomials, where the independent variable is time.
    Some coefficients may be zero.
 <P>
  
    Let RA and DEC represent the right ascension and declination of a body's
-   north pole, and let W be the prime meridian location, measured in the
-   counterclockwise direction, from the cross product of the Earth's
-   ``mean'' North pole at the J2000 epoch (as used in defining the J2000
-   frame) and BODY's North pole at et, to BODY's prime meridian at et.
+   north pole as expressed in the J2000 frame, and let W be the prime
+   meridian location, measured in the counterclockwise direction, from the
+   direction defined by the cross product of the Z direction in the J2000
+   frame (the Earth's ``mean'' North pole at the J2000 epoch) and BODY's
+   North pole at ET, to BODY's prime meridian at ET.
 <P>
  
    The variables RA, DEC, and W constitute sufficient information to
@@ -770,7 +747,6 @@ order. Thus, the frame is right-handed.
    W   =  W0   + W1*t/d    +  -----
                                  2
                                 d
- 
 </PRE>
    where
 <P>
@@ -780,40 +756,6 @@ order. Thus, the frame is right-handed.
    T = seconds/Julian century
    t = ephemeris time, expressed as seconds past the reference epoch
        for this body or planetary system
-</PRE>
-   Below is an example showing actual values of the parameters used to
-   define the latest IAU model for orientation of the Earth. Here, the
-   motions of both the pole and the prime meridian are given by linear
-   polynomials; the quadratic terms are all zero. The values shown here are
-   taken from the IAU/IAG 2000 report. In that document, the names
-<P>
- 
-<PRE>
-   alpha
-        0
-</PRE>
-   and
-<P>
- 
-<PRE>
-   delta
-        0
-</PRE>
-   are used in place of the names RA and DEC used here.
-<P>
- 
-<PRE>
-   alpha   =   0.00 - 0.641 T
-        0
- 
-   delta   =  90.0  - 0.557 T
-        0
- 
-   W       =  190.16 + 360.9856235 d
- 
-   T represents centuries past J2000 (TDB),
- 
-   d represents days past J2000 (TDB).
 </PRE>
 <BR><BR>
 <A NAME="Models for Satellites in Text PCK Kernels"></A>
@@ -838,20 +780,20 @@ order. Thus, the frame is right-handed.
 <PRE>
                                 2      ____
                            RA2*t       \
-   RA  = RA0  + RA1*t/T  + ------   +  /     a  sin theta
-                              2        ----   i          i
+   RA  = RA0  + RA1*t/T  + ------   +  /     a  * sin * theta
+                              2        ----   i              i
                              T           i
  
                                  2     ____
                            DEC2*t      \
-   DEC = DEC0 + DEC1*t/T + -------  +  /    d  cos theta
-                               2       ----  i          i
+   DEC = DEC0 + DEC1*t/T + -------  +  /    d  * cos * theta
+                               2       ----  i              i
                               T          i
  
                                2       ____
                            W2*t        \
-   W   = W0   + W1*t/d   + -----    +  /     w  sin theta
-                              2        ----   i          i
+   W   = W0   + W1*t/d   + -----    +  /     w  * sin * theta
+                              2        ----   i              i
                              d           i
 </PRE>
    where
@@ -883,104 +825,6 @@ order. Thus, the frame is right-handed.
    are specific to each satellite.
 <P>
  
-   As an example, the nutation precession angles for Earth given by [252]
-   are shown below. That document uses the variable names E1---E5 in place
-   of
-<P>
- 
-<PRE>
-   theta  --- theta
-        1          5
-</PRE>
-   in the equations above.
-<P>
- 
-<PRE>
-   E1 = 125.045 -  0.052992 d
-   E2 = 250.090 -  0.105984 d
-   E3 = 260.008 + 13.012001 d
-   E4 = 176.625 + 13.340716 d
-   E5 = 357.529 +  0.985600 d
- 
-   Here d represents days past J2000 (TDB)
-</PRE>
-   Because the NAIF Toolkit software expects the time units for the angles
-   to be centuries (as in the IAU models for most bodies---the Earth is an
-   exception), the linear coefficients are scaled by 36525.0 for use in the
-   kernel variable assignments:
-<P>
- 
-<PRE>
-   BODY3_NUT_PREC_ANGLES  = (  125.045    -1935.5328
-                               250.090    -3871.0656
-                               260.008   475263.3
-                               176.625   487269.6519
-                               357.529    35999.04     )
-</PRE>
-   In this assignment, the constant and linear polynomial coefficients for
-   each nutation precession angle are listed together: the numbers 125.045
-   and -1935.5328 are the constant and linear terms for the angle ``E1,''
-   and so on.
-<P>
- 
-   Note the body number 3 in the kernel variable name above; this number
-   designates the Earth-Moon barycenter. The PCK access routines expect
-   nutation precession angles to be associated with the barycenters of
-   planetary systems.
-<P>
- 
-   Here are the expressions for the right ascension and declination of the
-   moon, also taken from [252]:
-<P>
- 
-<PRE>
-   alpha   =  270.000 +  0.003 T -  3.878 sin(E1)  -  0.120 sin(E2)
-        0
-                          +  0.070 sin(E3)  -  0.017 sin(E4)
- 
- 
-   delta   =  66.541  + 0.013 T  +  1.543 cos(E1)  +  0.024 cos(E2)
-        0
-                       -  0.028 cos(E3)  +  0.007 cos(E4)
- 
- 
-   W       =  38.317   + 13.1763582 d    +  3.558 sin(E1)
- 
-                       +  0.121 sin(E2)
- 
-                       -  0.064 sin(E3)
- 
-                       +  0.016 sin(E4)
- 
-                       +  0.025 sin(E5)
- 
-   Here d represents days past J2000 (TDB),
-   and T represents Julian centuries past J2000 (TDB).
-   E1--E5 are the nutation precession angles.
-</PRE>
-   The polynomial terms are assigned to symbols by the statements
-<P>
- 
-<PRE>
-   BODY301_POLE_RA        = (  270.000    0.003        0. )
-   BODY301_POLE_DEC       = (  +66.541    0.013        0. )
-   BODY301_PM             = (   38.317  +13.1763582    0. )
-</PRE>
-   The coefficients of the trigonometric terms are assigned to symbols by
-   the statements
-<P>
- 
-<PRE>
-   BODY301_NUT_PREC_RA  = (  -3.878  -0.120  +0.070  -0.017   0.    )
-   BODY301_NUT_PREC_DEC = (  +1.543  +0.024  -0.028  +0.007   0.    )
-   BODY301_NUT_PREC_PM  = (  +3.558  +0.121  -0.064  +0.016  +0.025 )
-</PRE>
-   Note that for the RA and PM (prime meridian) assignments, the ith term
-   is the coefficient of sin(Ei) in the expression used in the IAU model,
-   while for the DEC assignment, the ith term is the coefficient of cos(Ei)
-   in the expression used in the IAU model.
-<P>
- 
    CSPICE software for text PCKs expects the models for satellite
    orientation to follow the form of the model shown here: the polynomial
    terms in the RA, DEC, and W expressions are expected to be quadratic,
@@ -999,135 +843,6 @@ order. Thus, the frame is right-handed.
 <P>
  
 <BR><BR>
-<A NAME="Epoch and Frame Specifications in Text PCK Kernels"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Epoch and Frame Specifications in Text PCK Kernels
-</H3><P><BR><BR>
-   The constants used in PCK files to define an orientation model for a
-   specified body are assumed by default to define a time-dependent
-   rotation R(t) that converts vectors from J2000 coordinates to
-   body-fixed, planetocentric coordinates at the epoch t seconds past
-   J2000, TDB (JED 2451545.0). We say that the constants are ``referenced
-   to the J2000 epoch and J2000 frame.'' However, these default values for
-   the epoch and frame of the constants may be overridden: it is possible
-   to use constants referenced to the B1950 frame and to the J1950 epoch,
-   for example.
-<P>
- 
-   The default constants and frame for a body are overridden by setting the
-   values of the kernel variables
-<P>
- 
-<PRE>
-   BODY&lt;id code&gt;_CONSTANTS_REF_FRAME
-</PRE>
-   and
-<P>
- 
-<PRE>
-   BODY&lt;id code&gt;_CONSTANTS_JED_EPOCH
-</PRE>
-   Here
-<P>
- 
-<PRE>
-   &lt;id code&gt;
-</PRE>
-   is:
-<P>
- 
-<UL>
-<TT>--</TT> for planets and their satellites: the NAIF integer code of the
-corresponding planetary system's barycenter.
-<BR><BR></UL>
-<UL>
-<TT>--</TT> for other bodies: the NAIF integer code of the body itself.
-<BR><BR></UL>
-   The values of the frame specifier variable
-<P>
- 
-<PRE>
-   BODY&lt;id code&gt;_CONSTANTS_REF_FRAME
-</PRE>
-   are the codes returned by the CSPICE routine IRFNUM. Some of the
-   commonly used codes and the corresponding frames are:
-<P>
- 
-<PRE>
-   Code        Frame
-   ----        -----
-     1         J2000
- 
-     2         B1950
- 
-     3         FK4 (used in CSPICE for `EME50')
-</PRE>
-   For example, to use constants referenced to the FK4 or EME50 frame for
-   the asteroid Gaspra (ID code = 9511010), the PCK file containing the
-   constants should include the assignment
-<P>
- 
-<PRE>
-   BODY9511010_CONSTANTS_REF_FRAME   =   (  3  )
-</PRE>
-   The values of the epoch specifier variable
-<P>
- 
-<PRE>
-   BODY&lt;id code&gt;_CONSTANTS_JED_EPOCH
-</PRE>
-   are Julian ephemeris dates. To use constants for Gaspra referenced to
-   the J1950 epoch, the PCK file containing the constants should include
-   the assignment
-<P>
- 
-<PRE>
-   BODY9511010_CONSTANTS_JED_EPOCH   =   (  2433282.5D0 )
-</PRE>
-   The creator of a PCK file can set the frame and epoch of the constants
-   on a body-by-body basis, except in the case of planets and their
-   (natural) satellites, where a single choice of frame and epoch must be
-   used for each planetary system. For example, to use constants referenced
-   to the B1950 frame and J1950 epoch for the Earth and Moon, you would
-   make the assignments
-<P>
- 
-<PRE>
-   BODY3_CONSTANTS_REF_FRAME   =   (  2           )
-   BODY3_CONSTANTS_JED_EPOCH   =   (  2433282.5D0 )
-</PRE>
-   The ID code `3' designates the Earth-Moon barycenter.
-<P>
- 
-   Note: the assignment
-<P>
- 
-<PRE>
-   BODY399_CONSTANTS_REF_FRAME   =   (  2           )
-   BODY399_CONSTANTS_JED_EPOCH   =   (  2433282.5D0 )
-</PRE>
-   would be ignored by the PCK reader routines; you cannot assign a frame
-   or epoch using the ID code of a planet or satellite.
-<P>
- 
-   Using constants referenced to frames or epochs other than J2000 does not
-   affect the definitions of the inputs or outputs of any of the PCK access
-   routines. These routines make the necessary transformations internally
-   to take into account the reference frame and epoch of the orientation
-   constants in the kernel pool. Thus the PCK access routine <a href="../cspice/sxform_c.html">sxform_c</a>,
-   which has the argument list
-<P>
- 
-<PRE>
-   <a href="../cspice/sxform_c.html">sxform_c</a> ( from, to, et, rotate )
-</PRE>
-   returns the transformation matrix mapping state vectors frame ```from'''
-   into frame ```to''' for ephemeris time expressed as ```et''' seconds
-   past the J2000 epoch (JED 2451545.0), regardless of the epoch or frame
-   of the orientation constants used to compute ```rotate'.''
-<P>
- 
-<BR><BR>
 <A NAME="Shape models in Text PCK Kernels"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Shape models in Text PCK Kernels
@@ -1142,25 +857,26 @@ corresponding planetary system's barycenter.
 <P>
  
    In text PCK files produced by NAIF, the radius values for body nnn are
-   assigned to the variable
+   assigned to the variable as:
 <P>
  
 <PRE>
-   BODYnnn_RADII
+   BODYnnn_RADII = ( a, b, c )
 </PRE>
+   where ``a,'' ``b,'' and ``c'' are the radius values for each axis.
+<P>
+ 
    Three radius values are always assigned for each instance of this
-   variable. The data are ordered as in the IAU/IAG 2000 report: the
-   equatorial radii are listed with the largest axis, often called the
-   ``a'' axis, appearing first; the polar radius is last. Spheroids and
-   spheres are obtained when two or all three radii are equal.
+   variable. The data are ordered as in the IAU/IAG report: the equatorial
+   radii are listed with the largest axis, normally called the ``a'' axis,
+   appearing first; the polar radius, normally called the ``c'' axis, is
+   last.
 <P>
  
-   Example: Radii of the Earth.
+   Spheroids and spheres are obtained when two or all three radii are
+   equal.
 <P>
  
-<PRE>
-   BODY399_RADII     = (     6378.140    6378.140     6356.75   )
-</PRE>
 <BR><BR>
 <A NAME="Summary of PCK Variables used in Text PCK Kernels by CSPICE"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
@@ -1208,7 +924,7 @@ corresponding planetary system's barycenter.
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Creating and Modifying Text PCKs
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-   The PCK file text format allows NAIF Toolkit users to easily modify
+   The text PCK file format allows NAIF Toolkit users to easily modify
    existing text PCKs and to create their own files containing values of
    their choosing. Any text editor capable of working with ASCII files can
    be used to edit text PCK files.
@@ -1230,9 +946,9 @@ corresponding planetary system's barycenter.
 <BR><BR></UL>
 <UL>
 <TT>--</TT> Document the changes by adding appropriate comments to the file. Each text
-PCK file should contain sufficient information to allow a human reader to
-find out who was responsible for creating the current version of the file
-and what the source was for each data value in the file. If the file is an
+PCK file should contain sufficient information to allow a reader to find
+out who was responsible for creating the current version of the file and
+what the source was for each data value in the file. If the file is an
 update, the reason for the update and a summary of the differences from the
 previous version should be included.
 <BR><BR></UL>
@@ -1264,7 +980,8 @@ far as speeding up kernel loading is concerned.
 <PRE>
    BODYnnn_
 </PRE>
-   where nnn is the NAIF integer code of the body the variable applies to.
+   where nnn is the NAIF integer code of the body corresponding to the
+   variable.
 <P>
  
    Kernel variables having names recognized by users' application software
@@ -1286,45 +1003,6 @@ far as speeding up kernel loading is concerned.
    satellite in the system. This is because the nutation precession angles
    are defined by linear polynomials; each polynomial has two defining
    coefficients.
-<P>
- 
-   For example, the 1991 IAU model for the Earth-Moon system uses the
-   following values to determine the Moon's orientation:
-<P>
- 
-<PRE>
-   BODY3_NUT_PREC_ANGLES  = (  125.045    -1935.5328
-                               250.090    -3871.0656
-                               260.008   475263.3
-                               176.625   487269.6519
-                               357.529    35999.04     )
- 
-   BODY301_POLE_RA        = (  270.000    0.003        0. )
-   BODY301_POLE_DEC       = (  +66.541    0.013        0. )
-   BODY301_PM             = (   38.317  +13.1763582    0. )
- 
-   BODY301_NUT_PREC_RA  = (  -3.878  -0.120  +0.070  -0.017   0.    )
-   BODY301_NUT_PREC_DEC = (  +1.543  +0.024  -0.028  +0.007   0.    )
-   BODY301_NUT_PREC_PM  = (  +3.558  +0.121  -0.064  +0.016  +0.025 )
-</PRE>
-   Note that there are five nutation precession angles, with two
-   coefficients defining each one. The trigonometric terms in the
-   expressions for the right ascension, declination, and prime meridian
-   location for the moon require five nutation precession angles.
-<P>
- 
-   If a NAIF Toolkit user were to update this model with a new one that
-   had, for example, only one nutation precession angle, then the variables
-<P>
- 
-<PRE>
-   BODY301_NUT_PREC_RA
-   BODY301_NUT_PREC_DEC
-   BODY301_NUT_PREC_PM
-</PRE>
-   would each have to be assigned only one value. Failure to make this
-   change would result in an error being signaled at run-time by any CSPICE
-   PCK access routine that uses these variables.
 <P>
  
 <BR><BR>
@@ -1371,17 +1049,17 @@ segment, in ephemeris seconds past Julian year 2000.
 <P>
  
 <UL>
-<TT>1.</TT> The NAIF integer code for the body;
+<TT>1.</TT> The NAIF integer code for the body.
 <BR><BR></UL>
 <UL>
-<TT>2.</TT> The NAIF integer code for the inertial reference frame;
+<TT>2.</TT> The NAIF integer code for the inertial reference frame.
 <BR><BR></UL>
 <UL>
-<TT>3.</TT> The integer code for the representation (type of PCK data). Only type 2 is
-presently supported;
+<TT>3.</TT> The integer code for the representation (type of PCK data). Currently types
+2, 3, and 20 are supported.
 <BR><BR></UL>
 <UL>
-<TT>4.</TT> The initial address of the array;
+<TT>4.</TT> The initial address of the array.
 <BR><BR></UL>
 <UL>
 <TT>5.</TT> The final address of the array.
@@ -1435,29 +1113,34 @@ presently supported;
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Supported Data Types
 </H3><P><BR><BR>
-   Two representations, or data types, are currently supported by the
-   binary PCK routines in CSPICE. They are Chebyshev polynomials (Euler
-   angles only), called "Type 2" and Chebyshev polynomials (Euler angles
-   and their derivatives) for intervals of possibly varying lengths, called
-   "Type 3".
+   Three representations, or data types, are currently supported by the
+   binary PCK routines in CSPICE. They are:
 <P>
  
+<UL>
+<TT>1.</TT> Type 2, Chebyshev polynomials (Euler angles only).
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> Type 3, Chebyshev polynomials (Euler angles and their derivatives) for
+intervals of possibly varying lengths.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> Type 20, Chebyshev polynomials (Derivatives of Euler angles).
+<BR><BR></UL>
 <BR><BR>
 <A NAME="Type 2: Chebyshev (Angles only)"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Type 2: Chebyshev (Angles only)
 </H3><P><BR><BR>
    These are sets of Chebyshev polynomial coefficients for the Euler
-   angles, defining as a function of time the right ascension and
-   declination of a body's north pole, and the prime meridian rotation. The
-   rates of the angles are obtained by differentiation.
+   angles, defining as a function of time the right ascension (RA) and
+   declination (DEC) of a body's north pole, and the prime meridian
+   rotation (W). The rates of the angles are obtained by differentiation.
 <P>
  
-   The segments contains an arbitrary number of logical records with each
+   The segments contain an arbitrary number of logical records with each
    record describing a set of Chebyshev coefficients valid across an
-   interval of fixed length. The subroutine pcke02_ contains the algorithm
-   used to construct a set of Euler angles from a particular record and
-   epoch.
+   interval of fixed length.
 <P>
  
    A segment consists of a set of records, ordered by increasing initial
@@ -1466,7 +1149,6 @@ presently supported;
 <P>
  
 <PRE>
- 
            +---------------+
            | Record 1      |
            +---------------+
@@ -1486,7 +1168,6 @@ presently supported;
            +---------------+
            | N             |
            +---------------+
- 
 </PRE>
    A four-number `directory' at the end of the segment contains the
    information needed to determine the location of the record corresponding
@@ -1506,24 +1187,33 @@ past 2000 Jan 01 12:00:00, also known as J2000.
 <UL>
 <TT>4.</TT> N is the number of records contained in the segment.
 <BR><BR></UL>
-   Each record is structured as follows:
+   Each component has the same number of coefficients, and all records are
+   the same size (RSIZE), so the degree of each polynomial is
 <P>
  
 <PRE>
- 
-           +------------------+
-           | MID              |
-           +------------------+
-           | RADIUS           |
-           +------------------+
-           | X  coefficients  |
-           +------------------+
-           | Y  coefficients  |
-           +------------------+
-           | Z  coefficients  |
-           +------------------+
- 
+    polynomial degree = ( RSIZE - 2 ) / 3 - 1
 </PRE>
+   The structure of each record:
+<P>
+ 
+<PRE>
+   ---------------------------------------------------------------
+   |  The midpoint of the approximation interval in TDB seconds  |
+   ---------------------------------------------------------------
+   |  The radius of the approximation interval in TDB seconds    |
+   ---------------------------------------------------------------
+   |  (polynomial degree + 1) coefficients for RA                |
+   ---------------------------------------------------------------
+   |  (polynomial degree + 1) coefficients for DEC               |
+   ---------------------------------------------------------------
+   |  (polynomial degree + 1) coefficients for W                 |
+   ---------------------------------------------------------------
+</PRE>
+   TDB seconds is time in ephemeris seconds past J2000, often called ET in
+   the SPICE system.
+<P>
+ 
    The first two elements in the record, MID and RADIUS, are the midpoint
    and radius of the time interval covered by coefficients in the record.
    These are used as parameters to perform transformations between the
@@ -1531,40 +1221,29 @@ past 2000 Jan 01 12:00:00, also known as J2000.
    of Chebyshev polynomials (from -1 to 1 ).
 <P>
  
-   The same number of coefficients is always used for each component, and
-   all records are the same size (RSIZE), so the degree of each polynomial
-   is
-<P>
- 
-   ( RSIZE - 2 ) / 3 - 1
-<P>
- 
 <BR><BR>
-<A NAME="Type 3: Chebyshev (Angles and derivatives)"></A>
+<A NAME="Type 3: Chebyshev (Angles and their derivatives)"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Type 3: Chebyshev (Angles and derivatives)
+<H3> Type 3: Chebyshev (Angles and their derivatives)
 </H3><P><BR><BR>
-   These are sets of Chebyshev polynomial coefficients for the Euler
-   angles, defining right ascension (RA) and declination (DEC) of the
-   body's north pole, and its prime meridian rotation (W) as a function of
-   time, and their derivatives. This data type was created for the attitude
-   of the asteroid Eros.
+   A type 03 PCK segment consists of coefficient sets for fixed order
+   Chebyshev polynomials over consecutive time intervals, where the time
+   intervals need not all be of the same length. The Chebyshev polynomials
+   represent the orientation of a body specified relative to an inertial
+   frame by the angles RA, DEC, W and body fixed angular rates for each
+   axis of the body fixed coordinate system defined by RA, DEC, and W. The
+   angles and the angular rates of the axes are given in degrees and
+   degrees/sec.
 <P>
  
-   Each segment contains an arbitrary number of logical records. Each
-   record contains a set of Chebyshev coefficients for angles and
-   derivatives valid throughout an interval defined in the record. The
-   lengths of these intervals may vary within a segment. The subroutine
-   pcke03_ contains the algorithm used to construct a set of Euler angles
-   from a particular record and epoch. All records contain the same number
-   of coefficients.
+   Each segment contains an arbitrary number of logical records. All
+   records contain the same number of coefficients.
 <P>
  
    A segment of this type is structured as follows:
 <P>
  
 <PRE>
- 
            +---------------+
            | Record 1      |
            +---------------+
@@ -1579,30 +1258,207 @@ past 2000 Jan 01 12:00:00, also known as J2000.
            | Record N      |
            +---------------+
 </PRE>
-   where each record has the following format:
+   The structure of each record:
 <P>
  
 <PRE>
-   ---------------------------------------------------
-   |  Midpoint of the approximation interval in TDB  |
-   ---------------------------------------------------
-   | Radius of the approximation interval in seconds |
-   ---------------------------------------------------
-   |        coefficients for the RA position         |
-   ---------------------------------------------------
-   |        coefficients for the DEC position        |
-   ---------------------------------------------------
-   |        coefficients for the W position          |
-   ---------------------------------------------------
-   |        coefficients for the RA velocity         |
-   ---------------------------------------------------
-   |        coefficients for the DEC velocity        |
-   ---------------------------------------------------
-   |        coefficients for the W velocity          |
-   ---------------------------------------------------
+   ---------------------------------------------------------------
+   |  The midpoint of the approximation interval in TDB seconds  |
+   ---------------------------------------------------------------
+   |  The radius of the approximation interval in TDB seconds    |
+   ---------------------------------------------------------------
+   |  (polynomial degree + 1) coefficients for RA                |
+   ---------------------------------------------------------------
+   |  (polynomial degree + 1) coefficients for DEC               |
+   ---------------------------------------------------------------
+   |  (polynomial degree + 1) coefficients for W                 |
+   ---------------------------------------------------------------
+   |  (polynomial degree + 1) coefficients for the body          |
+   |  fixed X-axis rate                                          |
+   ---------------------------------------------------------------
+   |  (polynomial degree + 1) coefficients for the body          |
+   |  fixed Y-axis rate                                          |
+   ---------------------------------------------------------------
+   |  (polynomial degree + 1) coefficients for the body          |
+   |  fixed Z-axis rate                                          |
+   ---------------------------------------------------------------
 </PRE>
-   TDB is time in ephemeris seconds past J2000, called et in the CSPICE
-   system.
+   TDB seconds is time in ephemeris seconds past J2000, called ET in the
+   SPICE system.
+<P>
+ 
+   The type 3 data type is seldom used.
+<P>
+ 
+<BR><BR>
+<A NAME="Type 20: Chebyshev (Only angular derivatives)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Type 20: Chebyshev (Only angular derivatives)
+</H3><P><BR><BR>
+   PCK data type 20 contains Chebyshev polynomial coefficients for a
+   specified set of Euler angle rates of a body-fixed, body-centered
+   reference frame as a function of time. Euler angles representing the
+   orientation of the frame are obtained by integrating the rates using a
+   specified integration constant.
+<P>
+ 
+   This data type is provided to accurately represent ``EPM'' orientation
+   data developed by the Institute of Applied Astronomy (IAA), Russian
+   Academy of Sciences (RAS).
+<P>
+ 
+   Each type 20 segment contains an arbitrary number of logical records.
+   Each record contains a set of Chebyshev coefficients valid throughout an
+   interval of fixed length. Each record also contains an Euler angle set
+   applicable at the midpoint of its coverage interval.
+<P>
+ 
+   The records within a segment are ordered by increasing initial epoch.
+   All records contain the same number of coefficients.
+<P>
+ 
+   A segment of this type is structured as follows:
+<P>
+ 
+<PRE>
+           +---------------+
+           | Record 1      |
+           +---------------+
+           | Record 2      |
+           +---------------+
+             .
+             .
+             .
+           +---------------+
+           | Record N      |
+           +---------------+
+           | ASCALE        |
+           +---------------+
+           | TSCALE        |
+           +---------------+
+           | INITJD        |
+           +---------------+
+           | INITFR        |
+           +---------------+
+           | INTLEN        |
+           +---------------+
+           | RSIZE         |
+           +---------------+
+           | N             |
+           +---------------+
+</PRE>
+   A seven-number `directory' at the end of the segment contains the
+   information needed to determine the location of the record and perform
+   an evaluation of the record corresponding to a particular epoch.
+<P>
+ 
+<UL>
+<TT>1.</TT> ASCALE is the angular scale used for both orientation and angular rates;
+ASCALE has units of radians. For example, if the angular units are degrees,
+then ASCALE is the number of radians in one degree.
+<BR><BR></UL>
+<UL>
+<TT>2.</TT> TSCALE is the time scale used for angular rates; TSCALE has units of TDB
+seconds. For example, if the time units of the rate data are TDB Julian
+days, then TSCALE is 86400.
+<BR><BR></UL>
+<UL>
+<TT>3.</TT> INITJD is the integer part of the TDB Julian date of the initial epoch of
+the first record. INITJD has units of Julian days. INITJD may be less than,
+equal to, or greater than the initial epoch.
+<BR><BR></UL>
+<UL>
+<TT>4.</TT> INITFR is the fractional part of the TDB Julian date of the initial epoch
+of the first record. INITFR has units of Julian days. INITFR has magnitude
+strictly less than 1 day. The sum INITJD + INITFR equals the TDB Julian
+date of the initial epoch of the first record.
+<BR><BR></UL>
+<UL>
+<TT>5.</TT> INTLEN is the length of the interval covered by each record, in TDB Julian
+days.
+<BR><BR></UL>
+<UL>
+<TT>6.</TT> RSIZE is the total size of (number of array elements in) each record. The
+same number of coefficients is always used for each component, and all
+records are the same size. RSIZE is 3 + 3*(DEGP+1), where DEGP is the
+common degree of the Chebyshev expansions for each Euler angle rate
+component.
+<BR><BR></UL>
+<UL>
+<TT>7.</TT> N is the number of records contained in the segment.
+<BR><BR></UL>
+   Each component has the same number of coefficients, and all records are
+   the same size (RSIZE), so the degree of each polynomial is (solve RSIZE
+   for DEGP)
+<P>
+ 
+<PRE>
+   polynomial degree = ( RSIZE/3 - 2 )
+</PRE>
+   Define the angles as:
+<P>
+ 
+<PRE>
+   angle  * ASCALE = ( RA   + pi/2 )
+        1
+ 
+   angle  * ASCALE = ( pi/2 - DEC )
+        2
+ 
+   angle  * ASCALE = ( W )
+        3
+</PRE>
+   The structure of each record:
+<P>
+ 
+<PRE>
+   ---------------------------------------------------------------
+   |  (polynomial degree + 1) coefficients for the rate of       |
+   |  angle 1                                                    |
+   ---------------------------------------------------------------
+   |  value of angle 1 at interval midpoint                      |
+   ---------------------------------------------------------------
+   |  (polynomial degree + 1) coefficients for the rate of       |
+   |  angle 2                                                    |
+   ---------------------------------------------------------------
+   |  value of angle 2 at interval midpoint                      |
+   ---------------------------------------------------------------
+   |  (polynomial degree + 1) coefficients for the rate of       |
+   |  angle 3                                                    |
+   ---------------------------------------------------------------
+   |  value of angle 3 at interval midpoint                      |
+   ---------------------------------------------------------------
+</PRE>
+   The rate coefficients have units of ASCALE radians/TSCALE seconds:
+   multiplying a Chebyshev expansion's value by ASCALE/TSCALE converts
+   angular rates to units of radians/s.
+<P>
+ 
+   Euler angles at a record's midpoint epoch are given in units of ASCALE
+   radians: multiplying the angles by ASCALE converts the angles to units
+   of radians.
+<P>
+ 
+   The Euler angles represent the orientation of the PCK reference frame
+   relative to its base frame. The angles, which are numbered according to
+   their ordinal position in the logical records, define a transformation
+   matrix R as follows:
+<P>
+ 
+<PRE>
+   R = [ angle  *A ]  [ angle  *A ]  [ angle  *A ]
+              3     3        2     1        1     3
+</PRE>
+   where A is the angular scale ASCALE. Here the notation
+<P>
+ 
+<PRE>
+      [ THETA ]
+               i
+</PRE>
+   denotes a reference frame rotation of THETA radians in the right-hand
+   sense about the ith coordinate axis. See the Rotation Required Reading
+   for further discussion of this notation.
 <P>
  
 <BR><BR>
@@ -1610,6 +1466,10 @@ past 2000 Jan 01 12:00:00, also known as J2000.
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Creating Binary PCKs
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   NAIF creates most binary PCKs. Normally, binary PCK files should be
+   obtained from NAIF.
+<P>
+ 
    Only very knowledgeable users who need to incorporate new
    planetary/satellite orientation information in binary format should
    consider writing binary PCK files. Users who write binary PCK files must
@@ -1618,7 +1478,7 @@ past 2000 Jan 01 12:00:00, also known as J2000.
    PCK files, and they must be sure to correctly package the data for the
    PCK writing subroutines provided in CSPICE. We also strongly recommend
    that the writer of a PCK file include descriptive comments in the
-   comment area. Normally, binary PCK files should be obtained from NAIF.
+   comment area.
 <P>
  
    The user should keep in mind that the PCK segments should be as large as
@@ -1638,37 +1498,34 @@ past 2000 Jan 01 12:00:00, also known as J2000.
 <TT>3.</TT> Close the file.
 <BR><BR></UL>
    The subroutine pckopn_ is used to open a new binary PCK file. Below is
-   an example for a call to pckopn_. ```name''' is the name of the file to
-   be opened, ```ifname''' is the internal file name, ```handle''' is the
-   handle of the opened SPK file. We use ```i''' for the number of record
-   to reserve for comments.
+   an example of a call to pckopn_. ``name'' is the name of the file to be
+   opened, ``ifname'' is the internal file name, ``handle'' is the handle
+   of the opened SPK file. We use ``i'' for the number of record to reserve
+   for comments.
 <P>
  
 <PRE>
-         pckopn_( file, ifname, &amp;i, &amp;handle, file_len, ifname_len)
- 
-         (file_len is the length of the name string,
-          ifname_len is the length of the ifname string )
+   pckopn_ ( file, ifname, &amp;i, &amp;handle, strlen(file), strlen(ifname) );
 </PRE>
    The method for beginning the segment, adding data to the segment and
    closing the segment differs with the PCK type.
 <P>
  
-   For segments of type 2, there is a segment writing routine called
-   pckw02_ in CSPICE. This routine takes as input arguments the handle of
-   an PCK file that is open for writing, the information needed to
-   construct the segment descriptor, and the data to be stored in the
-   segment. The header of the subroutine provides a complete description of
-   the input arguments and an example of its usage. Here's an example of a
-   call to pckw02_:
+   For type 2, CSPICE includes a segment writing routine called pckw02_.
+   This routine takes as input arguments the handle of an PCK file that is
+   open for writing, the information needed to construct the segment
+   descriptor, and the data to be stored in the segment. The header of the
+   subroutine provides a complete description of the input arguments and an
+   example of its usage.
+<P>
+ 
+   An example of a call to pckw02_:
 <P>
  
 <PRE>
- 
-         pckw02_ ( &amp;handle   , &amp;body  , frame  , &amp;first, &amp;last, segid,
-                   &amp;intlen   , &amp;n     , &amp;polydg,  cdata, &amp;btime,
-                   frame_len, segid_len);
- 
+   pckw02_ ( &amp;handle,   &amp;body,    frame,    &amp;first, &amp;last, segid,
+             &amp;intlen,   &amp;n,       &amp;polydg,  cdata,  &amp;btime,
+             strlen(frame), strlen(segid));
 </PRE>
    For type 3, there are three subroutines used in creating a binary PCK
    file. They are pck03b_, which begins a type 3 segment, PCK03A, which
@@ -1679,8 +1536,8 @@ past 2000 Jan 01 12:00:00, also known as J2000.
 <P>
  
 <PRE>
-      pck03b_( &amp;handle, segid    , &amp;body, frame, &amp;first, &amp;last,
-               chbdeg , segid_len, frame_len);
+      pck03b_ ( &amp;handle, segid, &amp;body, frame, &amp;first, &amp;last,
+               chbdeg , strlen(segid), strlen(frame));
  
       do
          {
@@ -1689,23 +1546,39 @@ past 2000 Jan 01 12:00:00, also known as J2000.
          ...
          } while ( &lt;a condition&gt; );
  
-      pck03e_( &amp;handle);
- 
+      pck03e_ ( &amp;handle);
 </PRE>
-   When a user is finished writing segments to an PCK file, the file must
-   be closed with the subroutine pckcls_.
+   For type 20, CSPICE includes a segment writing routine called pckw20_.
+   takes as input arguments the handle of a PCK file that is open for
+   writing, the information needed to construct the segment descriptor, and
+   the data to be stored in the segment. The header of the function
+   provides a complete description of the input arguments and an example of
+   its usage.
+<P>
+ 
+   An example of a call to pckw20_:
 <P>
  
 <PRE>
-      pckcls_ ( &amp;handle );
+      pckw20_ ( &amp;handle, &amp;clssid, frame,
+                &amp;first,  &amp;last,   segid,  &amp;intlen,
+                &amp;n,      &amp;polydg, &amp;cdata, &amp;ascale,
+                &amp;tscale, &amp;initjd, &amp;initfr,
+                strlen(frame), strlen(segid) );
+</PRE>
+   When a user finishes writing segments of any type to a binary PCK, the
+   PCK must be closed with the subroutine pckcls_.
+<P>
+ 
+<PRE>
+   pckcls_ ( &amp;handle );
 </PRE>
 <BR><BR>
 <A NAME="PCK Software"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> PCK Software
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   This section describes the specifications and proper use of the CSPICE
-   PCK software.
+   This section describes the proper use of the CSPICE PCK software.
 <P>
  
 <BR><BR>
@@ -1742,7 +1615,7 @@ past 2000 Jan 01 12:00:00, also known as J2000.
 <P>
  
 <PRE>
-   <a href="../cspice/furnsh_c.html">furnsh_c</a> ( "P_CONSTANTS.KER" );
+   <a href="../cspice/furnsh_c.html">furnsh_c</a> ( "example_pck.tcp" );
 </PRE>
    File names supplied to <a href="../cspice/furnsh_c.html">furnsh_c</a> will generally be system-dependent. It
    is good programming practice to not use hard-coded file names in calls
@@ -1751,9 +1624,9 @@ past 2000 Jan 01 12:00:00, also known as J2000.
 <P>
  
 <UL>
-<TT>--</TT> Reading the kernel file names from a file containing the names. (This
-allows users to change the kernel files without re-compiling and re-linking
-the application.)
+<TT>--</TT> Reading the kernel file names from a meta-kernel, a file containing the
+names. (This allows users to change the kernel files without re-compiling
+and re-linking the application.)
 <BR><BR></UL>
 <UL>
 <TT>--</TT> Prompting the user for the file names at run-time.
@@ -1785,7 +1658,7 @@ the application.)
 <P>
  
 <PRE>
-      <a href="../cspice/furnsh_c.html">furnsh_c</a> ( "example.pck" );
+   <a href="../cspice/furnsh_c.html">furnsh_c</a> ( "example_binary_pck.tcp" );
 </PRE>
    Once an PCK file has been loaded, it may be accessed by the PCK
    software. Each set of constants is computed from a distinct segment.
@@ -1815,14 +1688,14 @@ the application.)
 <P>
  
 <PRE>
-      <a href="../cspice/unload_c.html">unload_c</a> ( filename );     { Unload binary PCK file }
+   <a href="../cspice/unload_c.html">unload_c</a> ( "example_binary_pck.tcp" );
 </PRE>
 <BR><BR>
 <A NAME="Binary PCK Coverage Summary Routines"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Binary PCK Coverage Summary Routines
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-   The CSPICE includes two functions for obtaining information about the
+   CSPICE includes two functions for obtaining information about the
    contents of a binary PCK file from within an application.
 <P>
  
@@ -1909,42 +1782,17 @@ which the position transformation matrix `rotate' should be evaluated.<BR>
  is the matrix that transforms position vectors from the reference frame
 `from' to the frame `to' at epoch `et'.<BR>
 </DL>
-   For example, let V50 be a vector specified relative to the B1950
-   inertial reference frame. The call
-<P>
- 
-<PRE>
-   <a href="../cspice/pxform_c.html">pxform_c</a>( "B1950", "IAU_EARTH", &amp;et, rotate );
-</PRE>
-   returns a matrix ```rotate''' such that left-multiplying V50 by
-   ```rotate''' --- accomplished in CSPICE by the call
-<P>
- 
-<PRE>
-   <a href="../cspice/mxm_c.html">mxm_c</a> ( rotate, v50, vbodfx );
-</PRE>
-   will return the vector ```vbodfx''' specified relative to the Earth's
-   (``body-fixed'') planetocentric frame at time ```et'''.
-<P>
- 
-   Note that many practical applications of <a href="../cspice/pxform_c.html">pxform_c</a> require that a
-   light-time corrected value of et be supplied as an input. See
-   ``Computing the Sub-Observer Point'' in the ``Examples'' section below.
-<P>
- 
    The fundamental quantities defined by PCK orientation models are
    actually Euler angles, not matrices. These Euler angles, which we call
-   ``RA, DEC, and W,'' are related to the matrix ```rotate''' shown above
-   by the equation
+   ``RA, DEC, and W,'' are related to the transformation operator returned
+   from <a href="../cspice/pxform_c.html">pxform_c</a> by the equation
 <P>
  
 <PRE>
    rotate = [ W ]   [ Pi/2 - DEC ]   [ Pi/2 + RA ]
-               3                1               3
- 
+                 3                1               3
 </PRE>
-   The units of these angles are radians. To directly retrieve these
-   angles, use the call
+   To directly retrieve these angles, use the call:
 <P>
  
 <PRE>
@@ -1968,19 +1816,27 @@ vectors of the planetocentric frame is to be evaluated.<BR>
 </DL>
 <DL><DT>
 <B>
- `ra' and `dec'
+ `ra'
 </B><BR><BR>
 <DD>
- represent the right ascension and declination of the North pole of body
-at et with respect to the J2000 inertial reference frame.<BR>
+ is the right ascension of the North pole of body at et with respect to
+the J2000 inertial reference frame.<BR>
+</DL>
+<DL><DT>
+<B>
+ `dec'
+</B><BR><BR>
+<DD>
+ is the declination of the North pole of body at et with respect to the
+J2000 inertial reference frame.<BR>
 </DL>
 <DL><DT>
 <B>
  `w'
 </B><BR><BR>
 <DD>
- is the prime meridian location for ```body''' at ```et''', also
-measured with respect to the J2000 inertial reference frame.<BR>
+ is the prime meridian location for ``body'' at ``et'', also measured
+with respect to the J2000 inertial reference frame.<BR>
 </DL>
 <DL><DT>
 <B>
@@ -1992,23 +1848,24 @@ body, of the longest axis of the triaxial ellipsoidal model for body
 given in a PCK file.<BR>
 </DL>
    Currently, the only body having a non-zero value of LAMBDA is Mars (see
-   [195]). CSPICE software does not currently make use of ```lambda'''.
+   Duxbury 1979). CSPICE software does not currently make use of
+   ``lambda''.
 <P>
  
    CSPICE provides a routine analogous to <a href="../cspice/pxform_c.html">pxform_c</a> that returns the matrix
-   to transform state vectors between reference frames. This routine is
-   called <a href="../cspice/sxform_c.html">sxform_c</a>; the calling sequence being
+   to transform state vectors between reference frames for a particular
+   time. This routine is called <a href="../cspice/sxform_c.html">sxform_c</a>; the calling sequence being
 <P>
  
 <PRE>
-   <a href="../cspice/sxform_c.html">sxform_c</a> ( from, to,  et,  xform );
+   <a href="../cspice/sxform_c.html">sxform_c</a> ( from, to, et, rotate );
 </PRE>
-   The input arguments ```from''', ```to''', and ```et''' have the same
-   meanings as in the argument list of <a href="../cspice/pxform_c.html">pxform_c</a>. The output argument
-   ```xform''' is the 6x6 matrix required to transform state vectors from
-   inertial to body-fixed coordinates. Left multiplication of a state
-   vector by ``XFORM'' will transform it from the frame specified by
-   ```from''' to the frame specified by ```to''' at time ```et'''.
+   The input arguments ``from'', ``to'', and ``et'' have the same meanings
+   as in the argument list of <a href="../cspice/pxform_c.html">pxform_c</a>. The output argument ``rotate'' is
+   the 6x6 matrix required to transform state vectors from inertial to
+   body-fixed coordinates. Left multiplication of a state vector by
+   ``rotate'' will transform it from the frame specified by ``from'' to the
+   frame specified by ``to'' at time ``et''.
 <P>
  
 <BR><BR>
@@ -2019,7 +1876,7 @@ given in a PCK file.<BR>
    WARNING: These low-level access routines for text PCK files only search
    the text kernel pool for these values. Values found in loaded binary PCK
    files will NOT be found by these routines. The values retrieved from a
-   binary PCK file take precedence over the values found in the text PCK
+   binary PCK file take precedence over the values found in text PCK
    kernels. Therefore, if binary kernels have been loaded, values returned
    by these low level routines may not be the same values used by higher
    level routines like <a href="../cspice/sxform_c.html">sxform_c</a> and <a href="../cspice/pxform_c.html">pxform_c</a>. We recommend the user who
@@ -2035,8 +1892,8 @@ given in a PCK file.<BR>
  
 <PRE>
    <a href="../cspice/gcpool_c.html">gcpool_c</a> ( name, start, room, lenout, &amp;n, vals, &amp;found );
-   <a href="../cspice/gdpool_c.html">gdpool_c</a> ( name, start, room, &amp;n, vals, &amp;found );
-   <a href="../cspice/gipool_c.html">gipool_c</a> ( name, start, room, &amp;n, vals, &amp;found );
+   <a href="../cspice/gdpool_c.html">gdpool_c</a> ( name, start, room,         &amp;n, vals, &amp;found );
+   <a href="../cspice/gipool_c.html">gipool_c</a> ( name, start, room,         &amp;n, vals, &amp;found );
 </PRE>
    The meanings of the arguments are follows:
 <P>
@@ -2054,8 +1911,9 @@ the name used in a PCK file to make an assignment.<BR>
  `start'
 </B><BR><BR>
 <DD>
- is the index of the first component of NAME to return. If `start' is
-less than 1, it will be treated as 1.<BR>
+ is the index of the first component of NAME to return. The index
+follows the C convention of being 0 based. If `start' is less than 0,
+it will be treated as 0.<BR>
 </DL>
 <DL><DT>
 <B>
@@ -2098,12 +1956,11 @@ name was actually loaded.<BR>
 </DL>
    The <a href="../cspice/gipool_c.html">gipool_c</a>, <a href="../cspice/gdpool_c.html">gdpool_c</a>, and <a href="../cspice/gcpool_c.html">gcpool_c</a> set is frequently used by other
    CSPICE routines; however, CSPICE users will usually find it more
-   convenient to use the PCK access routines <a href="../cspice/bodvrd_c.html">bodvrd_c</a> or <a href="../cspice/bodvcd_c.html">bodvcd_c</a>, routines
-   that return double precision body constants, e.g radius, RA/DEC of the
-   spin axis, the GM value, etc.
+   convenient to use the PCK access routines that return double precision
+   body constants, e.g radius, RA/DEC of the spin axis, the GM value, etc.
 <P>
  
-   In text PCK's produced by NAIF, PCK variables will have names conforming
+   In text PCKs produced by NAIF, PCK variables will have names conforming
    to the naming convention used in CSPICE, that is, the kernel variable
    names have the form
 <P>
@@ -2120,40 +1977,12 @@ name was actually loaded.<BR>
    <a href="../cspice/bodvrd_c.html">bodvrd_c</a> ( bodynm, item, maxn, &amp;dim, values );
 </PRE>
    <a href="../cspice/bodvcd_c.html">bodvcd_c</a> functions in the same manner as <a href="../cspice/bodvrd_c.html">bodvrd_c</a> except bodvcd_c
-   accepts as inputs the body NAIF ID and the item string, ```item''', as
+   accepts as inputs the body NAIF ID and the string, ``item'', as
    described for <a href="../cspice/bodvrd_c.html">bodvrd_c</a>:
 <P>
  
 <PRE>
    <a href="../cspice/bodvcd_c.html">bodvcd_c</a> ( bodyid, item, maxn, &amp;dim, values );
-</PRE>
-   For example, to obtain the radii of the of Earth, a program could use
-   either the call
-<P>
- 
-<PRE>
-   <a href="../cspice/bodvrd_c.html">bodvrd_c</a> ( "EARTH", "RADII", 3 &amp;dim, values );
-</PRE>
-   or the call
-<P>
- 
-<PRE>
-   <a href="../cspice/bodvcd_c.html">bodvcd_c</a> ( 399, "RADII", 3 &amp;dim, values );
-</PRE>
-   Both calls return the dimension and values associated with the variable
-<P>
- 
-<PRE>
-   BODY399_RADII
-</PRE>
-   namely
-<P>
- 
-<PRE>
-   dim     = 3;
-   value[0] = 6378.140;
-   value[1] = 6378.140;
-   value[2] = 6356.755;
 </PRE>
    It is possible to test whether a kernel variable has been loaded by
    calling the CSPICE logical function <a href="../cspice/bodfnd_c.html">bodfnd_c</a>, as long as the variables
@@ -2163,385 +1992,43 @@ name was actually loaded.<BR>
 <PRE>
    found = <a href="../cspice/bodfnd_c.html">bodfnd_c</a> ( body, item );
 </PRE>
-   where body is the NAIF integer code of the body, and ```item''' is the
+   where body is the NAIF integer code of the body, and ``item'' is the
    string making up the portion of the item's name following the prefix
 <P>
  
 <PRE>
    BODYnnn_
 </PRE>
-   For example, to test whether values for Jupiter's radii have been
-   loaded, the test
-<P>
- 
-<PRE>
-   found = <a href="../cspice/bodfnd_c.html">bodfnd_c</a> ( 599, "RADII" )
-</PRE>
-   could be used. The variable ```found''' would be returned as SPICETRUE
-   if a PCK file had been loaded containing an assignment of the variable
-<P>
- 
-<PRE>
-   BODY599_RADII
-</PRE>
-<BR><BR>
-<A NAME="Examples"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H2> Examples
-</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-   This section illustrates some typical applications of CSPICE PCK
-   software.
-<P>
- 
-<BR><BR>
-<A NAME="Transforming a body-fixed state to the inertial J2000 frame"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Transforming a body-fixed state to the inertial J2000 frame
-</H3><P><BR><BR>
-   Occasionally, it may be useful to transform a state vector known in
-   body-fixed coordinates to inertial J2000. To perform the transformation
-   correctly, it is necessary to take into account the time derivative of
-   the inertial-to-body-fixed coordinate transformation. A discussion of
-   the error made by ignoring this derivative term is given in [214].
-<P>
- 
-   The following code fragment shows how to use the CSPICE routine <a href="../cspice/sxform_c.html">sxform_c</a>
-   to transform state vectors between coordinate frames.
-<P>
- 
-   The 6-vector ```state''' represents the body-fixed state (position and
-   velocity) of an object with respect to the center of the body at time
-   ```et'''. The matrix ```xform''' is declared as a 6x6 double-precision
-   matrix.
-<P>
- 
-   This program loads both a text and a binary PCK file. The question of
-   from which file is the data retrieved is answered by the coverage of the
-   files. If a particular requested time and body is covered by the loaded
-   binary file, the binary data will be used. If not, the text data will be
-   used.
-<P>
- 
-   In this example, we present a small program that solves a realistic
-   geometry problem: transform an earth station location given geodetic
-   coordinates to the corresponding state vector in the J2000 reference
-   frame.
-<P>
- 
-<PRE>
- 
-   #include "SpiceUsr.h"
-   #include &lt;stdlib.h&gt;
- 
-   SpiceDouble     lon;
-   SpiceDouble     lat;
-   SpiceDouble     alt;
-   SpiceDouble     f;
-   SpiceDouble     equatr;
-   SpiceDouble     polar;
-   SpiceDouble     et;
-   SpiceDouble     abc[3];
-   SpiceDouble     pos[3];
-   SpiceDouble     jstate[6];
-   SpiceDouble     xform[6][6];
-   SpiceDouble     state[] = { 0., 0., 0.,
-                               0., 0., 0. };
- 
-   SpiceInt        dim;
-   SpiceInt        i;
- 
-   int main()
-      {
- 
-      /*
- 
-      Suppose you have geodetic coordinates of a station on the
-      surface of Earth and that you need the inertial (J2000)
-      state of this station.  The following code fragment
-      illustrates how to transform the geodetic state of the
-      station to a J2000 state.
- 
-      Load the SPK, PCK and LSK kernels.
- 
-      */
-      <a href="../cspice/furnsh_c.html">furnsh_c</a>( "/kernels/gen/lsk/naif0008.tls");
-      <a href="../cspice/furnsh_c.html">furnsh_c</a>( "/kernels/gen/pck/pck00008.tpc");
-      <a href="../cspice/furnsh_c.html">furnsh_c</a>( "/kernels/gen/spk/de405_2000-2050.bsp");
- 
-      /*
-      Also load a high precision earth orientation kernel. This
-      returns orientation to milli-second accuracy.
-      */
-      <a href="../cspice/furnsh_c.html">furnsh_c</a>( "/kernels/gen/pck/earth_000101_050509_050215.bpc");
- 
-      /*
-      Define a geodetic longitude, latitude, altitude
-      coordinate set. These coordinates are defined in the
-      non-inertial, earth fixed frame "IAU_EARTH".
-      */
-      lon = 118.25 * <a href="../cspice/rpd_c.html">rpd_c</a>();
-      lat = 34.05  * <a href="../cspice/rpd_c.html">rpd_c</a>();
-      alt = 0.;
- 
-      /*
-      Define a UTC time of interest. Convert the 'utc' string
-      to ephemeris time J2000.
-      */
-      <a href="../cspice/str2et_c.html">str2et_c</a>( "March 1, 2005", &amp;et);
- 
-      /*
-      Retrieve the equatorial and polar axis of the earth.
-      */
-      <a href="../cspice/bodvrd_c.html">bodvrd_c</a>( "EARTH", "RADII", 3, &amp;dim, abc );
-      equatr =  abc[0];
-      polar  =  abc[2];
- 
-      /*
-      Calculate the flattening factor for earth.
-      */
-      f =  ( equatr - polar  ) / equatr;
- 
-      /*
-      Calculate the Cartesian coordinates on earth
-      in the ITRF93 frame for the location at
-      'lon', 'lat', 'alt'.
-      */
-      <a href="../cspice/georec_c.html">georec_c</a>( lon, lat, alt, equatr, f, pos );
- 
-      /*
-      <a href="../cspice/georec_c.html">georec_c</a> returned the position vector of the geodetic
-      coordinates, but we want the state vector. Since it is a fixed
-      location on the earth referenced in the high precision
-      "ITRF93" frame, the location has no velocity in that frame.
-      We need to extend 'pos' to a 6-vector, the final three elements
-      with value 0. Copy 'pos' to the first
-      three elements of 'state'.
-      */
-      state[0] = pos[0];
-      state[1] = pos[1];
-      state[2] = pos[2];
- 
-      /*
-      Retrieve the transformation matrix from "ITRF93"
-      to "J2000" at epoch 'et'.
-      */
-      <a href="../cspice/sxform_c.html">sxform_c</a>( "ITRF93", "J2000", et, xform );
- 
-      /*
-      Transform the Cartesian state vector from "IAU_EARTH"
-      to "J2000."
-      */
-      <a href="../cspice/mxvg_c.html">mxvg_c</a>( xform, state, 6,6, jstate );
- 
-      /*
-      Write out the results.
-      */
-      for( i=0; i&lt;6; i++ )
-         {
-         printf( " %24.8f\n", jstate[i] );
-         }
- 
-      /*
-      It's always good form to unload kernels after use.
-      */
-      <a href="../cspice/unload_c.html">unload_c</a>( "standard.ker" );
- 
-      return 0;
-      }
- 
-</PRE>
-<BR><BR>
-<A NAME="Creating a binary PCK file, type 03."></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H2> Creating a binary PCK file, type 03.
-</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-   We assume that we are creating a new file for this example. In addition,
-   we will make use of the fictitious subroutine GENREC to generate a type
-   03 PCK data record. This is for demonstrative purposes only, and is not
-   intended to be a complete program.
-<P>
- 
-   The following routines will be used in this example:
-<P>
- 
-<UL>
-<TT>--</TT> pckcls_ -- Close a PCK file.
-<BR><BR></UL>
-<UL>
-<TT>--</TT> pckopn_ -- Open a new PCK file.
-<BR><BR></UL>
-<UL>
-<TT>--</TT> pck03b_ -- Begin a type 03 PCK segment.
-<BR><BR></UL>
-<UL>
-<TT>--</TT> pck03a_ -- Add data to a type 03 PCK segment.
-<BR><BR></UL>
-<UL>
-<TT>--</TT> pck03e_ -- End a type 03 PCK segment.
-<BR><BR></UL>
-   For the complete details of these routines, please see the appropriate
-   source code files.
-<P>
- 
-   Variable declarations for the example code fragment.
-<P>
- 
-<PRE>
-      SpiceChar       *  filename;
-      SpiceChar       *  ifname;
-      SpiceChar       *  frame;
-      SpiceChar       *  segid;
- 
-      SpiceDouble        et;
-      SpiceDouble        etstrt;
-      SpiceDouble        etstop;
-      SpiceDouble     *  record;
-      SpiceDouble        step;
- 
-      SpiceInt           body;
-      SpiceInt           chbdeg;
-      SpiceInt           handle;
-</PRE>
-<PRE>
-      /*
-      THIS IS A CODE FRAGMENT, NOT A PROGRAM!
- 
-      Assign the name of the file to be created.
-      */
- 
-      filename   = "new_pck.bpc";
- 
-      /*  Assign an internal filename for the file. */
- 
-      ifname     = "THIS IS A NEW PCK filename";
- 
- 
-      /* Open the PCK file. */
- 
-      pckopn_( filename, ifname, 0L, &amp;handle, strlen(filename),
-                                             strlen(ifname)   );
- 
-      /*
-      Set the identifier for the segment. This is a character
-      string of at most 40 printing ASCII characters. It may
-      be blank.
-      */
- 
-      SEGID = "This is a test."
- 
-      /*
-      Set the body for the PCK segment. We will use the
-      Moon, ID code 301.
-      */
- 
-      body   = 301;
- 
- 
-      /* We will use the J2000 reference frame for the segment. */
- 
-      *frame = "J2000";
- 
-      /*
-      Set the degree of the Chebyshev polynomials used for the
-      segment.
-      */
- 
-      chbdeg = 10;
- 
- 
-      /* Begin the PCK segment. */
- 
-      pck03b_( &amp;handle, segid, &amp;body, frame, &amp;etstrt, &amp;etstop, chbdeg,
-               strlen(segid), strlen(frame_len) );
- 
-      /*
-      We have a start time and a stop time available, etstrt
-      and etstop, and we want to generate records for
-      sub-intervals of the interval (etstrt, etstop). For
-      simplicity, we will assume equal width intervals and
-      that (etstop-etstrt)/step is a positive integer. The
-      times are in et, ephemeris seconds past J2000.
-      */
- 
- 
-      /* The time step will be one day, 86400 seconds. */
- 
-      step = 86400.0;
- 
- 
-      /* Set the initial time. */
- 
-      et  = etstrt;
- 
- 
-      /*
-      Loop until we have processed all of the time intervals,
-      i.e., when et &gt;= etstop.
-      */
- 
-      do
-         {
- 
-         /*
-         Get a type 03 PCK record for the interval et,
-         et+step (getrec is not a CSPICE routine).
-         */
- 
-         getrec ( et, et+step, record );
- 
- 
-         /* Add the record to the segment. */
- 
-         pck03a_ ( &amp;handle, 1L, record, &amp;et );
- 
- 
-         /* Increment the time interval. */
- 
-         et = et + step;
- 
-         } while ( et &gt;= etstop );
- 
- 
- 
-      /* End the segment. */
- 
-      pck03e_ ( &amp;handle );
- 
- 
-      /* Close the PCK file. */
- 
-      pckcls_ ( &amp;handle );
- 
-</PRE>
 <BR><BR>
 <A NAME="Summary of Calling Sequences"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Summary of Calling Sequences
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-   Loading files:
+   Loading text and binary PCKs:
 <P>
  
 <PRE>
-   <a href="../cspice/furnsh_c.html">furnsh_c</a> ( filename );   for text and binary PCKs
+   <a href="../cspice/furnsh_c.html">furnsh_c</a> ( filename );
 </PRE>
-   Unloading binary PCK files:
+   Unloading text or binary PCKs:
 <P>
  
 <PRE>
-   <a href="../cspice/unload_c.html">unload_c</a> ( filename );   for text or binary PCKs
+   <a href="../cspice/unload_c.html">unload_c</a> ( filename );
 </PRE>
    Getting binary PCK coverage summary:
 <P>
  
 <PRE>
-   <a href="../cspice/pckfrm_c.html">pckfrm_c</a> ( filename, ids )
-   <a href="../cspice/pckcov_c.html">pckcov_c</a> ( filename, idcode, cover  )
+   <a href="../cspice/pckfrm_c.html">pckfrm_c</a> ( filename, ids );
+   <a href="../cspice/pckcov_c.html">pckcov_c</a> ( filename, idcode, cover );
 </PRE>
    Searching binary PCK files for appropriate information:
 <P>
  
 <PRE>
-   pcksfs_ ( &amp;body, &amp;et, &amp;handle, &amp;descr, ident, &amp;found, ident_len);
+   pcksfs_ ( &amp;body, &amp;et, &amp;handle, &amp;descr, ident, &amp;found,
+             strlen(ident) );
 </PRE>
    Testing for the presence of variables in the text kernel pool:
 <P>
@@ -2549,7 +2036,7 @@ name was actually loaded.<BR>
 <PRE>
    <a href="../cspice/bodfnd_c.html">bodfnd_c</a> ( body, item );
 </PRE>
-   Obtaining values assigned variables from the text kernel pool:
+   Obtaining values for assigned variables from the text kernel pool:
 <P>
  
 <PRE>
@@ -2557,14 +2044,14 @@ name was actually loaded.<BR>
    <a href="../cspice/bodvcd_c.html">bodvcd_c</a> ( bodyid, item, maxn, &amp;dim, values );
  
    <a href="../cspice/gcpool_c.html">gcpool_c</a> ( name, start, room, lenout, &amp;n, vals, &amp;found );
-   <a href="../cspice/gdpool_c.html">gdpool_c</a> ( name, start, room, &amp;n, vals, &amp;found );
-   <a href="../cspice/gipool_c.html">gipool_c</a> ( name, start, room, &amp;n, vals, &amp;found );
+   <a href="../cspice/gdpool_c.html">gdpool_c</a> ( name, start, room,         &amp;n, vals, &amp;found );
+   <a href="../cspice/gipool_c.html">gipool_c</a> ( name, start, room,         &amp;n, vals, &amp;found );
 </PRE>
    Obtaining Euler angles and their derivatives from a binary PCK file:
 <P>
  
 <PRE>
-   pckeul_ ( &amp;body, &amp;et, &amp;found, ref, eulang, ref_len);
+   pckeul_ ( &amp;body, &amp;et, &amp;found, ref, eulang, strlen(ref));
 </PRE>
    Obtaining position transformation matrices between reference frames:
 <P>
@@ -2583,35 +2070,49 @@ name was actually loaded.<BR>
 <P>
  
 <PRE>
-   <a href="../cspice/sxform_c.html">sxform_c</a> ( from, to, et, rotate )
+   <a href="../cspice/sxform_c.html">sxform_c</a> ( from, to, et, rotate );
 </PRE>
    Opening a binary PCK file for writing:
 <P>
  
 <PRE>
-   pckopn_( file, ifname, &amp;ncomch, &amp;handle, file_len, ifname_len)
+   pckopn_ ( file, ifname, &amp;ncomch, &amp;handle, strlen(file),
+             strlen(ifname));
 </PRE>
-   Writing type 2 segment to a binary PCK file:
+   Writing a type 2 segment to a binary PCK file:
 <P>
  
 <PRE>
-   pckw02_ ( &amp;handle   , &amp;body, frame  , &amp;first, &amp;last , segid,
-             &amp;intlen   , &amp;n   , &amp;polydg,  cdata, &amp;btime,
-             frame_len, segid_len);
+   pckw02_ ( &amp;handle,        &amp;body,         frame,   &amp;first,
+             &amp;last,          segid,         &amp;intlen, &amp;n,
+             &amp;polydg,        cdata,         &amp;btime,
+             strlen(frame),  strlen(segid));
 </PRE>
-   Writing type 3 segment to a binary PCK file:
+   Writing a type 3 segment to a binary PCK file:
 <P>
  
 <PRE>
    To begin a type 3 segment:
-   pck03b_ ( &amp;handle  , segid, &amp;body, frame, &amp;first, &amp;last, &amp;chbdeg,
-             segid_len, frame_len);
+   pck03b_ ( &amp;handle,       segid,         &amp;body,   frame,
+             &amp;first,        &amp;last,         &amp;chbdeg,
+             strlen(segid), strlen(frame));
  
    To add data to a type 3 segment:
-   pck03a_( &amp;handle, &amp;nrecs, recrds, epochs);
+   pck03a_ ( &amp;handle, &amp;nrecs, recrds, epochs);
  
    To end a type 3 segment:
    pck03e_ ( &amp;handle);
+</PRE>
+   Writing a type 20 segment to a binary PCK file:
+<P>
+ 
+<PRE>
+ 
+   pckw20_ ( &amp;handle, &amp;clssid, frame,
+             &amp;first,  &amp;last,   segid,  &amp;intlen,
+             &amp;n,      &amp;polydg, &amp;cdata, &amp;ascale,
+             &amp;tscale, &amp;initjd, &amp;initfr,
+             strlen(frame), strlen(segid) );
 </PRE>
    Close a binary PCK file after writing:
 <P>
@@ -2635,7 +2136,7 @@ name was actually loaded.<BR>
 <P>
  
 <PRE>
-   pckr03_  ( &amp;handle, descr, &amp;et, record );
+   pckr03_ ( &amp;handle, descr, &amp;et, record );
 </PRE>
    Evaluating a type 3 segment from a binary PCK file:
 <P>
@@ -2643,358 +2144,199 @@ name was actually loaded.<BR>
 <PRE>
    pcke03_ ( &amp;et, record, rotmat);
 </PRE>
-<BR><BR>
-<A NAME="Appendix A: Sample Text PCK file"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H1> Appendix A: Sample Text PCK file
-</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   The file shown here is an example of a text PCK file. This file is
-   intended only for use as an example; it should not be used as a source
-   of data.
+   Reading a type 20 segment from a binary PCK file:
 <P>
  
 <PRE>
- 
-   P_constants (PcK) SPICE kernel file
-   ===================================================================
- 
-   Update by: Karen Zukor (NAIF)    1994 March 30
- 
-        First draft of a PCK with internal labels included.
-        NOTE: some of the label keywords, values, syntax and overall
-        organization are likely to change. Do not write any code that
-        uses the above labels.
- 
- 
-   Organization
-   --------------------------------------------------------
- 
-        The sections of this file are as follows.
- 
-        Introductory Information:
- 
-            --   Version description
- 
-            --   Disclaimer
- 
-            --   Sources
- 
-            --   Explanation of the PcK contents
- 
-            --   Body numbers and names
- 
-        Pck Data:
- 
-            --   Orientation constants for the Sun and planets
- 
-            --   Orientation constants for satellites
- 
-            --   Radii for all bodies
- 
- 
-   Version description
-   --------------------------------------------------------
- 
-        This is a prototype PcK, for use in SPICE training and
-        constants evaluation only.
- 
-        This file is based on the 1991 IAU report,
-        NAIF document [306].
- 
- 
-   Disclaimer
-   --------------------------------------------------------
- 
-        This constants file may not contain the parameter values that
-        you prefer. Note that this file may be readily modified by
-        you or anyone else. NAIF suggests that you inspect this file
-        visually before proceeding with any critical or extended data
-        processing.
- 
-        NAIF requests that you update the `by line' and date if
-        you modify the file.
- 
- 
-   Sources
-   --------------------------------------------------------
- 
-        The sources for the constants listed in this file are:
- 
-            1.   ``Report of the IAU/IAG/COSPAR Working Group on
-                 Cartographic Coordinates and Rotational Elements of
-                 the Planets and Satellites: 1991,'' March 3, 1992.
- 
-            2.   ``The Astronomical Almanac,'' 1990.
- 
-            3.   ``Planetary Geodetic Control Using Satellite
-                 Imaging,'' Journal of Geophysical Research, Vol. 84,
-                 No. B3, March 10, 1979, by Thomas C. Duxbury. This
-                 paper is cataloged as NAIF document 190.0.
- 
-            4.   Letter from Thomas C. Duxbury to Dr. Ephraim
-                 Lazeryevich Akim, Keldish Institute of Applied
-                 Mathematics, USSR Academy of Sciences, Moscow,
-                 USSR. This letter is catalogued as NAIF document
-                 number 195.0.
- 
-            5.   Mars Observer Planetary Constants and Models,
-                 November 1990, Mars Observer Document No. 642-321,
-                 JPL Document No. D-3444.
- 
-        Most values are from [1], and these are generally taken from
-        [1].  All exceptions are commented where they occur in this
-        file. The exceptions are:
- 
-            --   The second nutation precession angle (M2) for Mars is
-                 represented by a quadratic polynomial in the 1991
-                 IAU report.   The SPICE subroutine BODEUL can not
-                 handle this term (which is extremely small), so we
-                 truncate the polynomial to a linear one.
- 
-            --   The expression for the prime meridian of Deimos (
-                 body 402 ) includes a cosine term, which BODEUL
-                 doesn't yet handle. The amplitude of the term is
-                 0.19 degrees. We simply ignore this term.
- 
- 
- 
-   Body numbers and names
-   (Contains only information pertinent to Mars Observer)
-   ----------------------------------------------------------
- 
-      Barycenters:
- 
-           3  Earth barycenter
-           4  Mars barycenter
- 
-           While not relevant to the P_constants kernel, we note here
-           for completeness that 0 is used to represent the solar
-           system barycenter.
- 
- 
-      Mass centers:
- 
-           399 Earth
- 
-           401 Phobos
-           402 Deimos
-           499 Mars
- 
-           10  Sun
- 
- 
-   Orientation constants for the Sun and planets
-   --------------------------------------------------------
- 
- 
-   Sun
- 
-           \begindata
- 
-           BODY10_POLE_RA         = (  286.13       0.          0. )
-           BODY10_POLE_DEC        = (   63.87       0.          0. )
-           BODY10_PM              = (   84.10     +14.18440     0. )
-           BODY10_LONG_AXIS       = (    0.                        )
- 
- 
-           \begintext
- 
-   Earth
- 
-           \begindata
- 
-           BODY399_POLE_RA        = (    0.      -0.641         0. )
-           BODY399_POLE_DEC       = (  +90.      -0.557         0. )
-           BODY399_PM             = (  190.16  +360.9856235     0. )
-           BODY399_LONG_AXIS      = (    0.                        )
- 
-           \begintext
- 
-           The linear terms before and after scaling:
- 
-              -.052992   --&gt;     -1935.5328
-              -.105984   --&gt;     -3871.0656
-            -13.012      --&gt;   -475263.3
-             13.340716   --&gt;   +487269.6519
-              -.9856     --&gt;    -35999.04
- 
-           \begindata
- 
-           BODY3_NUT_PREC_ANGLES  = (  125.045    -1935.5328
-                                       250.090    -3871.0656
-                                       260.008   475263.3
-                                       176.625   487269.6519
-                                       357.529    35999.04     )
- 
- 
-           \begintext
- 
-   Mars
- 
- 
-           \begindata
- 
-           BODY499_POLE_RA          = (  317.681     -0.108       0. )
-           BODY499_POLE_DEC         = (  +52.886     -0.061       0. )
-           BODY499_PM               = (  176.868   +350.8919830   0. )
- 
-           \begintext
- 
-        Source [3] specifies the following value for the lambda_a
-        term ( BODY4_LONG_AXIS ) for Mars.
- 
-        This term is the POSITIVE WEST LONGITUDE, measured from the
-        prime meridian, of the longest axis of the ellipsoid
-        representing the `mean planet surface', as the article states.
- 
-              body499_long_axis        = (  110.  )
- 
-        Source [4] specifies the lambda_a value
- 
-              body499_long_axis        = (  104.9194  )
- 
-        We list these lambda_a values for completeness. [5] gives
-        equal values for both equatorial radii, so the lambda_a
-        offset does not apply.
- 
-        The 1991 IAU report defines M2, the second nutation
-        precession angle, by:
- 
-                                                   2
-           192.93  +  1128.4096700 d  +  8.864 T
- 
-        We truncate the M2 series to a linear expression.
- 
-        Again, the linear terms are scaled by 36525.0:
- 
-            -0.4357640000000000      --&gt;     -15916.28010000000
-              1128.409670000000      --&gt;   41215163.19675000
-            -1.8151000000000000E-02  --&gt;       -662.9652750000000
- 
-           \begindata
-           BODY4_NUT_PREC_ANGLES  = (  169.51     -15916.2801
-                                       192.93  +41215163.19675
-                                        53.47       -662.965275  )
- 
- 
- 
-           \begintext
- 
- 
-   Orientation constants for the satellites
-   --------------------------------------------------------
- 
- 
-   Satellites of Mars
- 
-        Phobos:
- 
-        The quadratic prime meridian term is scaled by 1/36525**2:
- 
-           8.864000000000000   ---&gt;   6.6443009930565219E-09
- 
-           \begindata
- 
- 
-           BODY401_POLE_RA      = (317.68    -0.108     0.           )
-           BODY401_POLE_DEC     = (+52.90    -0.061     0.           )
-           BODY401_PM           = ( 35.06 +1128.8445850 8.864        )
-           BODY401_LONG_AXIS    = (  0.                              )
- 
-           BODY401_NUT_PREC_RA  = ( +1.79   0.    0.  )
-           BODY401_NUT_PREC_DEC = ( -1.08   0.    0.  )
-           BODY401_NUT_PREC_PM  = ( -1.42  -0.78  0.  )
- 
- 
-           \begintext
- 
-        Deimos:
- 
-        There's a new wrinkle in the Deimos prime meridian
-        expression, which is:
-                                                     2
-              W = 79.41  +  285.1618970 d  -  0.520 T  -  2.58 sin M
-                                                                    3
- 
-                                                       +  0.19 cos M .
-                                                                    3
- 
-                                                              ^
-                                                        (new wrinkle)
- 
- 
-        At the present time, the constants kernel software (the
-        routine bodeul_ in particular) cannot handle the cosine term;
-        we omit this term for the time being. The maximum error we
-        can make is 0.19 degrees.
- 
-        The quadratic prime meridian term is scaled by 1/36525**2:
- 
-            -0.5200000000000000  ---&gt;   -3.8978300049519307E-10
- 
-           \begindata
- 
-           BODY402_POLE_RA      = (316.65   -0.108      0.           )
-           BODY402_POLE_DEC     = (+53.52   -0.061      0.           )
-           BODY402_PM           = ( 79.41 +285.1618970 -3.897830D-10 )
-           BODY402_LONG_AXIS    = (  0.                              )
- 
-           BODY402_NUT_PREC_RA  = (  0.   0.   +2.98  )
-           BODY402_NUT_PREC_DEC = (  0.   0.   -1.78  )
-           BODY402_NUT_PREC_PM  = (  0.   0.   -2.58  )
- 
- 
-           \begintext
- 
- 
-   Radii of bodies
-   --------------------------------------------------------
- 
- 
-   Sun
- 
-        Value for the Sun is from the 1990 Almanac (page K7).
- 
-           \begindata
- 
-           BODY10_RADII      = (   696000.   696000.   696000.   )
- 
-           \begintext
- 
- 
-   Earth
- 
-        Values for the Earth are unchanged in the 1991 IAU report.
- 
-           \begindata
- 
-           BODY399_RADII     = (   6378.140   6378.140    6356.75   )
- 
-           \begintext
- 
- 
-   Mars
- 
- 
-        Current values taken from [5]:
- 
-           \begindata
- 
-           BODY499_RADII       = (   3393.4     3393.4     3375.7   )
- 
-           \begintext
- 
- 
- 
-   Satellites of Mars
- 
- 
-           \begindata
- 
-           BODY401_RADII     = (       13.4        11.2        9.2   )
-           BODY402_RADII     = (        7.5         6.1        5.2   )
- 
+   pckr20_ ( &amp;handle, descr, &amp;et, record );
 </PRE>
+   The function pcke20_ contains the algorithm used to construct an Euler
+   angle state from a particular logical record.
+<P>
+ 
+<PRE>
+   pcke20_ ( &amp;et, record, eulang)'
+</PRE>
+<BR><BR>
+<A NAME="Appendix A --- Summary of PCK Routines"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Appendix A --- Summary of PCK Routines
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<PRE>
+   bodeul_  ( Return Euler angles for a body )
+   <a href="../cspice/bodfnd_c.html">bodfnd_c</a> ( Find values from the kernel pool )
+   <a href="../cspice/bodvcd_c.html">bodvcd_c</a> ( Return d.p. values from the kernel pool )
+   <a href="../cspice/bodvrd_c.html">bodvrd_c</a> ( Return d.p. values from the kernel pool )
+   <a href="../cspice/furnsh_c.html">furnsh_c</a> ( Furnish a program with SPICE kernels )
+   <a href="../cspice/gcpool_c.html">gcpool_c</a> ( Get character data from the kernel pool )
+   <a href="../cspice/gdpool_c.html">gdpool_c</a> ( Get d.p. values from the kernel pool )
+   <a href="../cspice/gipool_c.html">gipool_c</a> ( Get integers from the kernel pool )
+   pck03a_  ( PCK, add data to a type 3 segment )
+   pck03b_  ( PCK, begin a type 3 segment )
+   pck03e_  ( PCK, end a type 3 segment )
+   pckcls_  ( PCK, close file )
+   <a href="../cspice/pckcov_c.html">pckcov_c</a> ( PCK, coverage )
+   pcke02_  ( PCK, evaluate data record from type 2 segment )
+   pcke03_  ( PCK, evaluate data record from type 3 segment )
+   pcke20_  ( PCK, evaluate data record from type 20 segment )
+   pckeul_  ( PCK, get Euler angles at time from PCK file )
+   <a href="../cspice/pckfrm_c.html">pckfrm_c</a> ( PCK, get reference frame class ID set )
+   pckopn_  ( PCK, open new file )
+   pckr02_  ( PCK, read record from type 2 segment )
+   pckr03_  ( PCK, read record from type 3 segment )
+   pckr20_  ( PCK, read record from type 20 segment )
+   pcksfs_  ( PCK, select file and segment )
+   pckw02_  ( PCK, write type 2 segment )
+   pckw20_  ( PCK, write type 20 segment )
+   <a href="../cspice/pxform_c.html">pxform_c</a> ( Position Transformation Matrix )
+   <a href="../cspice/sxform_c.html">sxform_c</a> ( State Transformation Matrix )
+   <a href="../cspice/unload_c.html">unload_c</a> ( Unload a kernel )
+</PRE>
+<BR><BR>
+<A NAME="Appendix B --- Epoch and Frame Specifications in Text PCK Kernels"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Appendix B --- Epoch and Frame Specifications in Text PCK Kernels
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+   The constants used in PCK files to define an orientation model for a
+   specified body are assumed by default to define a time-dependent
+   rotation R(t) that converts vectors from J2000 coordinates to
+   body-fixed, planetocentric coordinates at the epoch t seconds past
+   J2000, TDB (JED 2451545.0). We say that the constants are ``referenced
+   to the J2000 epoch and J2000 frame.'' However, these default values for
+   the epoch and frame of the constants may be overridden: it is possible
+   to use constants referenced to the B1950 frame and to the J1950 epoch,
+   for example.
+<P>
+ 
+   The default constants and frame for a body are overridden by setting the
+   values of the kernel variables
+<P>
+ 
+<PRE>
+   BODY&lt;id code&gt;_CONSTANTS_REF_FRAME
+</PRE>
+   and
+<P>
+ 
+<PRE>
+   BODY&lt;id code&gt;_CONSTANTS_JED_EPOCH
+</PRE>
+   Here
+<P>
+ 
+<PRE>
+   &lt;id code&gt;
+</PRE>
+   is:
+<P>
+ 
+<UL>
+<TT>--</TT> for planets and their satellites: the NAIF integer code of the
+corresponding planetary system's barycenter.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> for other bodies: the NAIF integer code of the body itself.
+<BR><BR></UL>
+   The values of the frame specifier variable
+<P>
+ 
+<PRE>
+   BODY&lt;id code&gt;_CONSTANTS_REF_FRAME
+</PRE>
+   are the frames IDs for the inertial reference frames coded into the
+   Frames subsystem. Refer to the Frames Required Reading document,
+   <a href="../req/frames.html">frames.req</a>, for a list of the inertial reference frames and the
+   corresponding frame IDs.
+<P>
+ 
+   For example, to use constants referenced to the FK4 frame (frame ID 3)
+   for the asteroid Gaspra (ID code = 9511010), the PCK file containing the
+   constants should include the assignment
+<P>
+ 
+<PRE>
+   BODY9511010_CONSTANTS_REF_FRAME   =   (  3  )
+</PRE>
+   The values of the epoch specifier variable
+<P>
+ 
+<PRE>
+   BODY&lt;id code&gt;_CONSTANTS_JED_EPOCH
+</PRE>
+   are Julian ephemeris dates. To use constants for Gaspra referenced to
+   the J1950 epoch, the PCK file containing the constants should include
+   the assignment
+<P>
+ 
+<PRE>
+   BODY9511010_CONSTANTS_JED_EPOCH   =   (  2433282.5 )
+</PRE>
+   The creator of a PCK file can set the frame and epoch of the constants
+   on a body-by-body basis, except in the case of planets and their
+   (natural) satellites, where a single choice of frame and epoch must be
+   used for each planetary system. For example, to use constants referenced
+   to the B1950 frame (frame ID 2) and J1950 epoch for the Earth and Moon,
+   use the assignments
+<P>
+ 
+<PRE>
+   BODY3_CONSTANTS_REF_FRAME   =   (  2           )
+   BODY3_CONSTANTS_JED_EPOCH   =   (  2433282.5 )
+</PRE>
+   The ID code `3' designates the Earth-Moon barycenter.
+<P>
+ 
+   Note: the assignment
+<P>
+ 
+<PRE>
+   BODY399_CONSTANTS_REF_FRAME   =   (  2           )
+   BODY399_CONSTANTS_JED_EPOCH   =   (  2433282.5 )
+</PRE>
+   would be ignored by the PCK reader routines; you cannot assign a frame
+   or epoch using the ID code of a planet or satellite.
+<P>
+ 
+<BR><BR>
+<A NAME="Appendix C --- Revision History"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Appendix C --- Revision History
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="2013 JAN 22 by E. D. Wright, C. H. Acton"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> 2013 JAN 22 by E. D. Wright, C. H. Acton
+</H3><P><BR><BR>
+   Corrections and updates to properly describe PCK binary Type 2 and PCK
+   binary Type 3 data segments. Added information concerning PCK binary
+   type 20 data segments.
+<P>
+ 
+   Eliminated Examples section.
+<P>
+ 
+   Corrections to text eliminating typos in the code call examples.
+<P>
+ 
+   Update to document structure to include Revision History.
+<P>
+ 
+   The document now includes description of Icy, and Mice PCK APIs.
+<P>
+ 
+<BR><BR>
+<A NAME="2010 JUN 03 by B. V. Semenov."></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> 2010 JUN 03 by B. V. Semenov.
+</H3><P><BR><BR>
+   Previous edits.
+<P>
+ 
+<BR><BR>
+<A NAME="Original version K.R. Gehringer, K. S. Zukor"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Original version K.R. Gehringer, K. S. Zukor
+</H3><P><BR><BR>
 
 </TD>
 </TR>

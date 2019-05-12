@@ -85,9 +85,9 @@
 /*     ET       is the time in ephemeris seconds past J2000 TDB at */
 /*              which the range rate is to be measured. */
 
-/*     TARG     the SPICE interger ID for the target body. */
+/*     TARG     the SPICE integer ID for the target body. */
 
-/*     OBS      the SPICE interger ID for the observer. */
+/*     OBS      the SPICE integer ID for the observer. */
 
 /*     ABCORR   the string description of the aberration corrections to */
 /*              apply to the state evaluations to account for one-way */
@@ -178,6 +178,10 @@
 
 /* $ Version */
 
+/* -    SPICELIB version 1.0.1 08-JUL-2010 (EDW) */
+
+/*        Minor typo correction to comments. */
+
 /* -    SPICELIB version 1.0.0 09-JUN-2009 (NJB)(EDW) */
 
 /* -& */
@@ -202,7 +206,7 @@
     }
 
 /*     We just want the range rate of TARG relative to OBS. */
-/*     This calculation is invariant with repect to reference */
+/*     This calculation is invariant with respect to reference */
 /*     frame; we use 'J2000'. */
 
     s_copy(ref, "J2000", (ftnlen)5, (ftnlen)5);

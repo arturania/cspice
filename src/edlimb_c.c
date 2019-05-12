@@ -193,6 +193,10 @@
    N.J. Bachman   (JPL) 
  
 -Version
+
+   -CSPICE Version 1.1.0, 24-JUN-2014 (NJB)
+ 
+       Edit to correct chkout_c call passing the wrong routine name.
  
    -CSPICE Version 1.0.1, 24-OCT-2005 (NJB)
 
@@ -247,7 +251,7 @@
       errdp_c   ( "#", b                                       );
       errdp_c   ( "#", c                                       );
       sigerr_c  ( "SPICE(DEGENERATECASE)"                      );
-      chkout_c  ( "inedpl_c"                                   );
+      chkout_c  ( "edlimb_c"                                   );
       return;
    }
 

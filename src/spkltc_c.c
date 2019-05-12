@@ -128,22 +128,22 @@
                              The solution invoked by the "LT" option 
                              uses one iteration. 
  
-                  "CN"       Converged Newtonian light time 
-                             correction. In solving the light time 
-                             equation, the "CN" correction iterates 
-                             until the solution converges (three 
-                             iterations on all supported platforms). 
- 
-                             The "CN" correction typically does not 
-                             substantially improve accuracy because 
-                             the errors made by ignoring 
-                             relativistic effects may be larger than 
-                             the improvement afforded by obtaining 
-                             convergence of the light time solution. 
-                             The "CN" correction computation also  
-                             requires a significantly greater number 
-                             of CPU cycles than does the  
-                             one-iteration light time correction. 
+                  "CN"       Converged Newtonian light time
+                             correction. In solving the light time
+                             equation, the "CN" correction iterates
+                             until the solution converges (three
+                             iterations on all supported platforms).
+                             Whether the "CN+S" solution is
+                             substantially more accurate than the
+                             "LT" solution depends on the geometry
+                             of the participating objects and on the
+                             accuracy of the input data. In all
+                             cases this routine will execute more
+                             slowly when a converged solution is
+                             computed. See the Particulars section of
+                             spkezr_c for a discussion of precision of
+                             light time corrections.
+
  
                The following values of `abcorr' apply to the 
                "transmission" case in which photons *depart* from 
@@ -482,6 +482,12 @@
  
 -Version
  
+   -CSPICE Version 1.0.1, 07-JUL-2014 (NJB)
+
+       Discussion of light time corrections was updated. Assertions
+       that converged light time corrections are unlikely to be
+       useful were removed.
+
    -CSPICE Version 1.0.0, 11-JAN-2008 (NJB)
 
 -Index_Entries

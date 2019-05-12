@@ -55,7 +55,7 @@
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 33%; text-align: center;">
             <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
@@ -66,7 +66,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
@@ -76,7 +76,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
@@ -147,13 +147,12 @@
 <h4><a name="Detailed_Output">Detailed_Output</a></h4>
 <PRE>
  
-   state       contains the position and velocity of the target 
-               body, relative to the observing body, corrected 
-               for the specified aberrations, at epoch 'et'. 'state' 
-               has six elements:  the first three contain the 
-               target's position; the last three contain the target's 
-               velocity.  These vectors are rotated into the 
-               specified reference frame. 
+   state       contains the geometric position and velocity of the
+               target body, relative to the observing body, at epoch
+               'et'. 'state' has six elements: the first three contain
+               the target's position; the last three contain the
+               target's velocity. These vectors are transformed into
+               the specified reference frame.
 
                Units are always km and km/sec. 
  
@@ -246,22 +245,26 @@
       #define   EARTH         399
       #define   MOON          301
       #define   N             100
+      #define   UTCLEN        35
+
 
       SpiceChar               utc [ 20 ];
  
       SpiceInt                handle;
+      SpiceInt                i;
 
       SpiceDouble             begin;
       SpiceDouble             delta;
       SpiceDouble             end;
       SpiceDouble             et;
+      SpiceDouble             lt;
       SpiceDouble             state [6];
 
  
       /.
       Load the binary SPK ephemeris file. 
       ./
-      <a href="spklef_c.html">spklef_c</a> ( &quot;sample.bsp&quot;, &amp;handle ); 
+      <a href="furnsh_c.html">furnsh_c</a> ( &quot;sample.bsp&quot; ); 
  
           . 
           . 
@@ -273,13 +276,13 @@
       print out the epoch in UTC time and position norm. 
       ./
       
-      delta = ( end - begin ) / n;
+      delta = ( end - begin ) / N;
 
-      for ( i = 0;  i &lt; n;  i++ ) 
+      for ( i = 0;  i &lt; N;  i++ ) 
       {
          et = begin + i*delta;
 
-         <b>spkgeo_c</b> ( moon, et, &quot;j2000&quot;, earth, state, &amp;lt ); 
+         <b>spkgeo_c</b> ( MOON, et, &quot;J2000&quot;, EARTH, state, &amp;lt ); 
 
          <a href="et2utc_c.html">et2utc_c</a> ( et, &quot;c&quot;, 0, UTCLEN, utc ); 
 
@@ -309,6 +312,11 @@
 <h4><a name="Version">Version</a></h4>
 <PRE>
  
+   -CSPICE Version 1.1.2, 08-JAN-2014 (BVS)
+
+       Fixed description of 'state' in Detailed Output. Replaced 
+       <a href="spklef_c.html">spklef_c</a> with <a href="furnsh_c.html">furnsh_c</a> and fixed errors in Examples.
+
    -CSPICE Version 1.1.1, 13-OCT-2003 (EDW)
 
        Various minor header changes were made to improve clarity.
@@ -336,7 +344,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Jun  9 13:05:30 2010</pre>
+   <pre>Wed Apr  5 17:54:43 2017</pre>
 
 </body>
 </html>

@@ -7,9 +7,10 @@
 
 /* Table of constant values */
 
+static integer c__36 = 36;
 static integer c__1 = 1;
 
-/* $Procedure      FRMGET (Frame get transformation) */
+/* $Procedure      FRMGET ( Frame get transformation ) */
 /* Subroutine */ int frmget_(integer *infrm, doublereal *et, doublereal *
 	xform, integer *outfrm, logical *found)
 {
@@ -21,7 +22,7 @@ static integer c__1 = 1;
     integer s_rnge(char *, integer, char *, integer);
 
     /* Local variables */
-    integer cent, type__;
+    integer type__;
     extern /* Subroutine */ int zzdynfrm_(integer *, integer *, doublereal *, 
 	    doublereal *, integer *);
     integer i__, j;
@@ -30,19 +31,20 @@ static integer c__1 = 1;
     doublereal tsipm[36]	/* was [6][6] */;
     char versn[6];
     extern logical failed_(void);
-    extern /* Subroutine */ int ckfxfm_(integer *, doublereal *, doublereal *,
-	     integer *, logical *), namfrm_(char *, integer *, ftnlen), 
-	    frinfo_(integer *, integer *, integer *, integer *, logical *), 
-	    tisbod_(char *, integer *, doublereal *, doublereal *, ftnlen), 
-	    tkfram_(integer *, doublereal *, integer *, logical *), sigerr_(
-	    char *, ftnlen);
+    extern /* Subroutine */ int cleard_(integer *, doublereal *), ckfxfm_(
+	    integer *, doublereal *, doublereal *, integer *, logical *);
+    integer center;
+    extern /* Subroutine */ int frinfo_(integer *, integer *, integer *, 
+	    integer *, logical *), tisbod_(char *, integer *, doublereal *, 
+	    doublereal *, ftnlen), tkfram_(integer *, doublereal *, integer *,
+	     logical *), sigerr_(char *, ftnlen);
     integer typeid;
+    doublereal rotate[9]	/* was [3][3] */;
     extern /* Subroutine */ int chkout_(char *, ftnlen), setmsg_(char *, 
 	    ftnlen), errint_(char *, integer *, ftnlen), irfrot_(integer *, 
 	    integer *, doublereal *);
     extern logical return_(void);
     extern /* Subroutine */ int invstm_(doublereal *, doublereal *);
-    doublereal rot[9]	/* was [3][3] */;
 
 /* $ Abstract */
 
@@ -76,7 +78,7 @@ static integer c__1 = 1;
 
 /* $ Required_Reading */
 
-/*     None. */
+/*     FRAMES */
 
 /* $ Keywords */
 
@@ -137,6 +139,11 @@ static integer c__1 = 1;
 /*                 definition depends on parameters supplied via a */
 /*                 frame kernel. */
 
+/*     ALL         indicates any of the above classes. This parameter */
+/*                 is used in APIs that fetch information about frames */
+/*                 of a specified class. */
+
+
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
@@ -147,6 +154,10 @@ static integer c__1 = 1;
 /*     None. */
 
 /* $ Version */
+
+/* -    SPICELIB Version 4.0.0, 08-MAY-2012 (NJB) */
+
+/*       The parameter ALL was added to support frame fetch APIs. */
 
 /* -    SPICELIB Version 3.0.0, 28-MAY-2004 (NJB) */
 
@@ -160,6 +171,9 @@ static integer c__1 = 1;
 /* -    SPICELIB Version 1.0.0, 10-DEC-1995 (WLT) */
 
 /* -& */
+
+/*     End of INCLUDE file frmtyp.inc */
+
 /* $ Brief_I/O */
 
 /*     VARIABLE  I/O  DESCRIPTION */
@@ -172,7 +186,7 @@ static integer c__1 = 1;
 
 /* $ Detailed_Input */
 
-/*     INFRM       is the SPICE id-code for some reference frame. */
+/*     INFRM       is the SPICE ID-code for some reference frame. */
 
 /*     ET          is an epoch in ephemeris seconds past J2000 at */
 /*                 which the user wishes to retrieve a state */
@@ -181,46 +195,47 @@ static integer c__1 = 1;
 /* $ Detailed_Output */
 
 /*     XFORM       is a 6x6 matrix that transforms states relative to */
-/*                 INFRM to states relative to OUTFRM.  (Assuming such */
-/*                 a transformation can be found.) */
+/*                 INFRM to states relative to OUTFRM. (Assuming such a */
+/*                 transformation can be found.) */
 
-/*     OUTFRM      is a reference frame.  The 6x6 matrix XFORM transforms */
-/*                 states relative to INFRM to states relative to OUTFRM. */
-/*                 The state transformation is achieved by multiplying */
-/*                 XFORM on the right by a state relative to INFRM.  This */
-/*                 is easily accomplished via the subroutine call */
-/*                 shown below. */
+/*     OUTFRM      is the SPICE ID-code of a reference frame. The 6x6 */
+/*                 matrix XFORM transforms states relative to INFRM to */
+/*                 states relative to OUTFRM. The state transformation */
+/*                 is achieved by multiplying XFORM on the right by a */
+/*                 state relative to INFRM.  This is easily accomplished */
+/*                 via the subroutine call shown below. */
 
 /*                    CALL MXVG ( XFORM, STATE, 6, 6, OSTATE ) */
 
 /*     FOUND       is a logical flag indicating whether or not a */
-/*                 transformation matrix could be found from INFRM */
-/*                 to some other frame.  If a transformation matrix */
-/*                 cannot be found OUTFRM will be set to zero, FOUND */
-/*                 will be set to FALSE and XFORM will be returned */
-/*                 as the zero matrix. */
+/*                 transformation matrix could be found from INFRM to */
+/*                 some other frame. If a transformation matrix cannot */
+/*                 be found OUTFRM will be set to zero, FOUND will be */
+/*                 set to FALSE and XFORM will be returned as the zero */
+/*                 matrix. */
 
 /* $ Parameters */
 
-/*     None. */
-
-/* $ Files */
-
-/*     None. */
+/*     See include file. */
 
 /* $ Exceptions */
 
-/*     1) If a transformation matrix cannot be located, then */
-/*        FOUND will be set to FALSE, OUTFRM will be set to zero */
-/*        and XFORM will be set to the zero 6x6 matrix. */
+/*     1) If a transformation matrix cannot be located, then FOUND will */
+/*        be set to FALSE, OUTFRM will be set to zero and XFORM will be */
+/*        set to the zero 6x6 matrix. */
 
 /*     2) If the class of the requested frame is not recognized the */
-/*        exception 'SPICE(UNKNOWNFRAMETYPE)' will be signalled. */
+/*        exception 'SPICE(UNKNOWNFRAMETYPE)' will be signaled. */
+
+/* $ Files */
+
+/*     LSK, SCLK, PCK, FK, SPK, and/or CK kernels may need to be loaded */
+/*     to provide the needed frame definition and transformation data. */
 
 /* $ Particulars */
 
-/*     This is a low level routine used for determining a chain */
-/*     of state transformation matrices from one frame to another. */
+/*     This is a low level routine used for determining a chain of state */
+/*     transformation matrices from one frame to another. */
 
 /* $ Examples */
 
@@ -230,16 +245,27 @@ static integer c__1 = 1;
 
 /*     None. */
 
-/* $ Author_and_Institution */
-
-/*     N.J. Bachman    (JPL) */
-/*     W.L. Taber      (JPL) */
-
 /* $ Literature_References */
 
 /*     None. */
 
+/* $ Author_and_Institution */
+
+/*     N.J. Bachman    (JPL) */
+/*     B.V. Semenov    (JPL) */
+/*     W.L. Taber      (JPL) */
+
 /* $ Version */
+
+/* -    SPICELIB Version 4.0.0, 05-JAN-2014 (BVS) */
+
+/*        To prevent operations with un-initialized DP numbers, wrapped */
+/*        IF ( .NOT. FAILED() ) ... END IF around output matrix */
+/*        transposition/re-assignment operations in all branches where */
+/*        the routine returning the matrix might fail. */
+
+/*        Added zero-ing out the output matrix in cases of a failed or */
+/*        .NOT. FOUND transformation look ups. */
 
 /* -    SPICELIB Version 3.0.0, 18-DEC-2004 (NJB) */
 
@@ -262,12 +288,15 @@ static integer c__1 = 1;
 
 /* -& */
 
-/*     Spicelib Functions */
+/*     SPICELIB Functions */
 
 
 /*     Local Variables */
 
-    s_copy(versn, "3.0.0", (ftnlen)6, (ftnlen)5);
+
+/*     Set version and output flag. */
+
+    s_copy(versn, "4.0.0", (ftnlen)6, (ftnlen)5);
     *found = FALSE_;
 
 /*     Standard SPICE error handling. */
@@ -279,52 +308,72 @@ static integer c__1 = 1;
 
 /*     Get all the needed information about this frame. */
 
-    frinfo_(infrm, &cent, &type__, &typeid, found);
+    frinfo_(infrm, &center, &type__, &typeid, found);
     if (! (*found)) {
+	cleard_(&c__36, xform);
+	*outfrm = 0;
 	chkout_("FRMGET", (ftnlen)6);
 	return 0;
     }
-    if (type__ == 2) {
-	tisbod_("J2000", &typeid, et, tsipm, (ftnlen)5);
-	invstm_(tsipm, xform);
-	namfrm_("J2000", outfrm, (ftnlen)5);
-    } else if (type__ == 1) {
-	irfrot_(infrm, &c__1, rot);
-	for (i__ = 1; i__ <= 3; ++i__) {
-	    for (j = 1; j <= 3; ++j) {
-		xform[(i__1 = i__ + j * 6 - 7) < 36 && 0 <= i__1 ? i__1 : 
-			s_rnge("xform", i__1, "frmget_", (ftnlen)218)] = rot[(
-			i__2 = i__ + j * 3 - 4) < 9 && 0 <= i__2 ? i__2 : 
-			s_rnge("rot", i__2, "frmget_", (ftnlen)218)];
-		xform[(i__1 = i__ + 3 + (j + 3) * 6 - 7) < 36 && 0 <= i__1 ? 
-			i__1 : s_rnge("xform", i__1, "frmget_", (ftnlen)219)] 
-			= rot[(i__2 = i__ + j * 3 - 4) < 9 && 0 <= i__2 ? 
-			i__2 : s_rnge("rot", i__2, "frmget_", (ftnlen)219)];
-		xform[(i__1 = i__ + 3 + j * 6 - 7) < 36 && 0 <= i__1 ? i__1 : 
-			s_rnge("xform", i__1, "frmget_", (ftnlen)220)] = 0.;
-		xform[(i__1 = i__ + (j + 3) * 6 - 7) < 36 && 0 <= i__1 ? i__1 
-			: s_rnge("xform", i__1, "frmget_", (ftnlen)221)] = 0.;
+
+/*     FOUND was set to true by the FRINFO call. Compute transformation */
+/*     based on the frame class. */
+
+    if (type__ == 1) {
+	irfrot_(infrm, &c__1, rotate);
+	if (! failed_()) {
+	    for (i__ = 1; i__ <= 3; ++i__) {
+		for (j = 1; j <= 3; ++j) {
+		    xform[(i__1 = i__ + j * 6 - 7) < 36 && 0 <= i__1 ? i__1 : 
+			    s_rnge("xform", i__1, "frmget_", (ftnlen)233)] = 
+			    rotate[(i__2 = i__ + j * 3 - 4) < 9 && 0 <= i__2 ?
+			     i__2 : s_rnge("rotate", i__2, "frmget_", (ftnlen)
+			    233)];
+		    xform[(i__1 = i__ + 3 + (j + 3) * 6 - 7) < 36 && 0 <= 
+			    i__1 ? i__1 : s_rnge("xform", i__1, "frmget_", (
+			    ftnlen)234)] = rotate[(i__2 = i__ + j * 3 - 4) < 
+			    9 && 0 <= i__2 ? i__2 : s_rnge("rotate", i__2, 
+			    "frmget_", (ftnlen)234)];
+		    xform[(i__1 = i__ + 3 + j * 6 - 7) < 36 && 0 <= i__1 ? 
+			    i__1 : s_rnge("xform", i__1, "frmget_", (ftnlen)
+			    235)] = 0.;
+		    xform[(i__1 = i__ + (j + 3) * 6 - 7) < 36 && 0 <= i__1 ? 
+			    i__1 : s_rnge("xform", i__1, "frmget_", (ftnlen)
+			    236)] = 0.;
+		}
 	    }
+	    *outfrm = 1;
 	}
-	*outfrm = 1;
+    } else if (type__ == 2) {
+	tisbod_("J2000", &typeid, et, tsipm, (ftnlen)5);
+	if (! failed_()) {
+	    invstm_(tsipm, xform);
+	    *outfrm = 1;
+	}
     } else if (type__ == 3) {
 	ckfxfm_(&typeid, et, xform, outfrm, found);
     } else if (type__ == 4) {
-	tkfram_(&typeid, rot, outfrm, found);
-	for (i__ = 1; i__ <= 3; ++i__) {
-	    for (j = 1; j <= 3; ++j) {
-		xform[(i__1 = i__ + j * 6 - 7) < 36 && 0 <= i__1 ? i__1 : 
-			s_rnge("xform", i__1, "frmget_", (ftnlen)238)] = rot[(
-			i__2 = i__ + j * 3 - 4) < 9 && 0 <= i__2 ? i__2 : 
-			s_rnge("rot", i__2, "frmget_", (ftnlen)238)];
-		xform[(i__1 = i__ + 3 + (j + 3) * 6 - 7) < 36 && 0 <= i__1 ? 
-			i__1 : s_rnge("xform", i__1, "frmget_", (ftnlen)239)] 
-			= rot[(i__2 = i__ + j * 3 - 4) < 9 && 0 <= i__2 ? 
-			i__2 : s_rnge("rot", i__2, "frmget_", (ftnlen)239)];
-		xform[(i__1 = i__ + 3 + j * 6 - 7) < 36 && 0 <= i__1 ? i__1 : 
-			s_rnge("xform", i__1, "frmget_", (ftnlen)240)] = 0.;
-		xform[(i__1 = i__ + (j + 3) * 6 - 7) < 36 && 0 <= i__1 ? i__1 
-			: s_rnge("xform", i__1, "frmget_", (ftnlen)241)] = 0.;
+	tkfram_(&typeid, rotate, outfrm, found);
+	if (! failed_()) {
+	    for (i__ = 1; i__ <= 3; ++i__) {
+		for (j = 1; j <= 3; ++j) {
+		    xform[(i__1 = i__ + j * 6 - 7) < 36 && 0 <= i__1 ? i__1 : 
+			    s_rnge("xform", i__1, "frmget_", (ftnlen)271)] = 
+			    rotate[(i__2 = i__ + j * 3 - 4) < 9 && 0 <= i__2 ?
+			     i__2 : s_rnge("rotate", i__2, "frmget_", (ftnlen)
+			    271)];
+		    xform[(i__1 = i__ + 3 + (j + 3) * 6 - 7) < 36 && 0 <= 
+			    i__1 ? i__1 : s_rnge("xform", i__1, "frmget_", (
+			    ftnlen)272)] = rotate[(i__2 = i__ + j * 3 - 4) < 
+			    9 && 0 <= i__2 ? i__2 : s_rnge("rotate", i__2, 
+			    "frmget_", (ftnlen)272)];
+		    xform[(i__1 = i__ + 3 + j * 6 - 7) < 36 && 0 <= i__1 ? 
+			    i__1 : s_rnge("xform", i__1, "frmget_", (ftnlen)
+			    273)] = 0.;
+		    xform[(i__1 = i__ + (j + 3) * 6 - 7) < 36 && 0 <= i__1 ? 
+			    i__1 : s_rnge("xform", i__1, "frmget_", (ftnlen)
+			    274)] = 0.;
+		}
 	    }
 	}
     } else if (type__ == 5) {
@@ -333,13 +382,16 @@ static integer c__1 = 1;
 /*        routine ZZDYNFRM requires the input frame ID rather than the */
 /*        dynamic frame class ID. ZZDYNFRM also requires the center ID */
 /*        we found via the FRINFO call. */
-	zzdynfrm_(infrm, &cent, et, xform, outfrm);
+	zzdynfrm_(infrm, &center, et, xform, outfrm);
 
 /*        The FOUND flag was set by FRINFO earlier; we don't touch */
-/*        it here.  If ZZDYNFRM signaled an error, FOUND will be set */
+/*        it here. If ZZDYNFRM signaled an error, FOUND will be set */
 /*        to .FALSE. at end of this routine. */
 
     } else {
+	cleard_(&c__36, xform);
+	*outfrm = 0;
+	*found = FALSE_;
 	setmsg_("The reference frame # has class id-code #. This form of ref"
 		"erence frame is not supported in version # of FRMGET. You ne"
 		"ed to update your version of SPICELIB to the latest version "
@@ -351,7 +403,13 @@ static integer c__1 = 1;
 	chkout_("FRMGET", (ftnlen)6);
 	return 0;
     }
-    if (failed_()) {
+
+/*     Make sure to clear outputs in case of a failure as defined in */
+/*     in the header. */
+
+    if (failed_() || ! (*found)) {
+	cleard_(&c__36, xform);
+	*outfrm = 0;
 	*found = FALSE_;
     }
     chkout_("FRMGET", (ftnlen)6);

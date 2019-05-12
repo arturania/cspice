@@ -96,6 +96,7 @@
       <A HREF="#Last Resort Production Rules">Last Resort Production Rules</A>
       <A HREF="#Conclusion">Conclusion</A>
       <A HREF="#Appendix C: Document Revision History">Appendix C: Document Revision History</A>
+         <A HREF="#September 9, 2015">September 9, 2015</A>
          <A HREF="#April 9, 2009">April 9, 2009</A>
          <A HREF="#December 23, 2004">December 23, 2004</A>
          <A HREF="#February 2, 2004">February 2, 2004</A>
@@ -103,6 +104,8 @@
          <A HREF="#CSPICE naming conventions">CSPICE naming conventions</A>
          <A HREF="#22 July 1997">22 July 1997</A>
          <A HREF="#15 October 1996">15 October 1996</A>
+         <A HREF="#2012 JUN 14, EDW (JPL)">2012 JUN 14, EDW (JPL)</A>
+         <A HREF="#2009 APR 09, BVS (JPL)">2009 APR 09, BVS (JPL)</A>
          <A HREF="#30 June 1994">30 June 1994</A>
          <A HREF="#13 April 1992">13 April 1992</A>
 
@@ -115,7 +118,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Time Routines in CSPICE
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2009 APR 09 by B. V. Semenov.
+   Last revised on 2015 SEP 09 by N. J. Bachman
 <P>
  
 <BR><BR>
@@ -1229,7 +1232,7 @@ day of the year '45.
    simply Greenwich Mean Time (UTC+00:00). To change the default behavior
    of <a href="../cspice/str2et_c.html">str2et_c</a> so that unlabeled strings are assumed to be referenced to a
    particular time zone (for example Pacific Standard Time) issue the
-   subroutine call below.
+   subroutine call below:
 <P>
  
 <PRE>
@@ -1264,7 +1267,7 @@ day of the year '45.
    backward in time indefinitely. The default behavior of <a href="../cspice/str2et_c.html">str2et_c</a> is to
    use the Gregorian calendar for all epochs. However, using <a href="../cspice/timdef_c.html">timdef_c</a> you
    can set the default calendar to one of three: GREGORIAN, JULIAN, or
-   MIXED.
+   MIXED:
 <P>
  
 <PRE>
@@ -1273,11 +1276,11 @@ day of the year '45.
     <a href="../cspice/timdef_c.html">timdef_c</a> ( "SET", "CALENDAR", lenout, "MIXED"     );
 </PRE>
    The ``MIXED'' calendar assumes that calendar strings for epochs prior to
-   October 6, 1582 belong to the Julian Calendar; strings for later epochs
+   October 5, 1582 belong to the Julian Calendar; strings for later epochs
    are assumed to belong to the Gregorian Calendar. The specification of a
    calendar, does not affect a previous setting of a time system or time
    zone. You can change the calendar used by <a href="../cspice/str2et_c.html">str2et_c</a> only through the
-   routine <a href="../cspice/timdef_c.html">timdef_c</a>, there are no labels recognized by <a href="../cspice/str2et_c.html">str2et_c</a> for the
+   routine <a href="../cspice/timdef_c.html">timdef_c</a>; there are no labels recognized by <a href="../cspice/str2et_c.html">str2et_c</a> for the
    various calendars.
 <P>
  
@@ -1858,7 +1861,7 @@ number of seconds from one spring equinox to the next)<BR>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Leapseconds
 </H3><P><BR><BR>
-   When Greenwich UT1 midnight lags behind UTC midnight by more than 0.7
+   When Greenwich UT1 midnight lags behind UTC midnight by more than 0.9
    seconds the IERS will announce that a leap second will be added to the
    collection of UTC names. This leap second has traditionally been added
    after the last ``normal'' UTC name of December 31 or June 30. Thus when
@@ -1882,7 +1885,7 @@ number of seconds from one spring equinox to the next)<BR>
    ... DECEMBER 31 23:59:59
    ... JANUARY   1 00:00:00
 </PRE>
-   Should Greenwich UT1 midnight run ahead of UTC midnight by more than 0.7
+   Should Greenwich UT1 midnight run ahead of UTC midnight by more than 0.9
    seconds the IERS will announce a negative leap second. In this case one
    of the usual UTC hours-minutes-seconds triples will be missing from the
    list of UTC names. In this case the progression will be:
@@ -3051,6 +3054,25 @@ unambiguously determine the epoch.
 <H2> Appendix C: Document Revision History
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
 <BR><BR>
+<A NAME="September 9, 2015"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> September 9, 2015
+</H3><P><BR><BR>
+   For Mice, added mention of Mice routines cspice_timdef_set and
+   cspice_timdef_get.
+<P>
+ 
+   Corrected typo in the start date for the applicable period of the
+   Gregorian calendar when the MIXED calendar option is selected. The date
+   was changed to October 5, 1582.
+<P>
+ 
+   Corrected formatting of the Utility Routines section: the ASCII versions
+   of this document for Mice and Icy displayed function names truncated to
+   8 characters (the problem did not occur in the HTML versions).
+<P>
+ 
+<BR><BR>
 <A NAME="April 9, 2009"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> April 9, 2009
@@ -3152,6 +3174,24 @@ of particular strings in the argument list.
     <a href="../cspice/timout_c.html">timout_c</a>      <a href="../cspice/timdef_c.html">timdef_c</a>      tpartv_      gr2jul_
     <a href="../cspice/tpictr_c.html">tpictr_c</a>      tchckd_       tcheck_      texpyr_
 </PRE>
+<BR><BR>
+<A NAME="2012 JUN 14, EDW (JPL)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> 2012 JUN 14, EDW (JPL)
+</H3><P><BR><BR>
+   Edit to leapseconds description of the UT1 to UTC deviation. The correct
+   IERS value is 0.9 seconds, the previous version of the document quoted
+   0.7 seconds.
+<P>
+ 
+<BR><BR>
+<A NAME="2009 APR 09, BVS (JPL)"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> 2009 APR 09, BVS (JPL)
+</H3><P><BR><BR>
+   Previous edits.
+<P>
+ 
 <BR><BR>
 <A NAME="30 June 1994"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>

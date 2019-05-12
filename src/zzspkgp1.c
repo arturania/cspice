@@ -15,6 +15,10 @@ static integer c__0 = 0;
 /* Subroutine */ int zzspkgp1_(integer *targ, doublereal *et, char *ref, 
 	integer *obs, doublereal *pos, doublereal *lt, ftnlen ref_len)
 {
+    /* Initialized data */
+
+    static logical first = TRUE_;
+
     /* System generated locals */
     integer i__1, i__2, i__3;
 
@@ -28,7 +32,9 @@ static integer c__0 = 0;
     integer cobs, legs;
     doublereal sobs[6];
     extern /* Subroutine */ int vsub_(doublereal *, doublereal *, doublereal *
-	    ), vequ_(doublereal *, doublereal *);
+	    ), vequ_(doublereal *, doublereal *), zznamfrm_(integer *, char *,
+	     integer *, char *, integer *, ftnlen, ftnlen), zzctruin_(integer 
+	    *);
     integer i__;
     extern /* Subroutine */ int etcal_(doublereal *, char *, ftnlen);
     integer refid;
@@ -44,22 +50,25 @@ static integer c__0 = 0;
 	    ftnlen, ftnlen, ftnlen);
     doublereal starg[120]	/* was [6][20] */;
     logical nofrm;
+    static char svref[32];
     doublereal stemp[6];
     integer ctpos;
     doublereal vtemp[6];
     extern doublereal vnorm_(doublereal *);
     extern /* Subroutine */ int bodc2n_(integer *, char *, logical *, ftnlen);
+    static integer svctr1[2];
     extern logical failed_(void);
     extern /* Subroutine */ int cleard_(integer *, doublereal *);
     integer handle, cframe;
     extern doublereal clight_(void);
     integer tframe[20];
-    extern /* Subroutine */ int namfrm_(char *, integer *, ftnlen);
     extern integer isrchi_(integer *, integer *, integer *);
     extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
-	    ftnlen), prefix_(char *, integer *, char *, ftnlen, ftnlen), 
-	    irfnum_(char *, integer *, ftnlen), setmsg_(char *, ftnlen), 
-	    suffix_(char *, integer *, char *, ftnlen, ftnlen);
+	    ftnlen);
+    static integer svrefi;
+    extern /* Subroutine */ int irfnum_(char *, integer *, ftnlen), prefix_(
+	    char *, integer *, char *, ftnlen, ftnlen), setmsg_(char *, 
+	    ftnlen), suffix_(char *, integer *, char *, ftnlen, ftnlen);
     integer tmpfrm;
     extern /* Subroutine */ int irfrot_(integer *, integer *, doublereal *), 
 	    spksfs_(integer *, doublereal *, integer *, doublereal *, char *, 
@@ -184,6 +193,59 @@ static integer c__0 = 0;
 /* -    SPICELIB Version 1.0.0, 10-OCT-1996 (WLT) */
 
 /* -& */
+/* $ Abstract */
+
+/*     This include file defines the dimension of the counter */
+/*     array used by various SPICE subsystems to uniquely identify */
+/*     changes in their states. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 29-JUL-2013 (BVS) */
+
+/* -& */
+
+/*     End of include file. */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
@@ -301,18 +363,21 @@ static integer c__0 = 0;
 /*            INTEGER               N */
 /*            PARAMETER           ( N     = 100 ) */
 
-/*            INTEGER               HANDLE */
+/*            INTEGER               I */
 /*            CHARACTER*(20)        UTC */
 /*            DOUBLE PRECISION      BEGIN */
 /*            DOUBLE PRECISION      DELTA */
 /*            DOUBLE PRECISION      END */
 /*            DOUBLE PRECISION      ET */
 /*            DOUBLE PRECISION      POS ( 3 ) */
+/*            DOUBLE PRECISION      LT */
+
+/*            DOUBLE PRECISION      VNORM */
 
 /*     C */
 /*     C      Load the binary SPK ephemeris file. */
 /*     C */
-/*            CALL SPKLEF ( 'SAMPLE.BSP', HANDLE ) */
+/*            CALL FURNSH ( 'SAMPLE.BSP' ) */
 
 /*            . */
 /*            . */
@@ -350,10 +415,27 @@ static integer c__0 = 0;
 
 /* $ Author_and_Institution */
 
-/*     J.E. McLean (JPL) */
-/*     W.L. Taber  (JPL) */
+/*     N.J. Bachman  (JPL) */
+/*     B.V. Semenov  (JPL) */
+/*     W.L. Taber    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 08-JAN-2014 (BVS) */
+
+/*        Updated to save the input frame name and POOL state counter */
+/*        and to do frame name-ID conversion only if the counter has */
+/*        changed. */
+
+/*        Updated to map the input frame name to its ID by first calling */
+/*        ZZNAMFRM, and then calling IRFNUM. The side effect of this */
+/*        change is that now the frame with the fixed name 'DEFAULT' */
+/*        that can be associated with any code via CHGIRF's entry point */
+/*        IRFDEF will be fully masked by a frame with indentical name */
+/*        defined via a text kernel. Previously the CHGIRF's 'DEFAULT' */
+/*        frame masked the text kernel frame with the same name. */
+
+/*        Replaced SPKLEF with FURNSH and fixed errors in Examples. */
 
 /* -    SPICELIB Version 1.1.0, 09-NOV-2005 (NJB) */
 
@@ -438,12 +520,25 @@ static integer c__0 = 0;
 
 /*     Local parameters */
 
+
 /*     CHLEN is the maximum length of a chain.  That is, */
 /*     it is the maximum number of bodies in the chain from */
 /*     the target or observer to the SSB. */
 
 
+/*     Saved frame name length. */
+
+
 /*     Local variables */
+
+
+/*     Saved frame name/ID item declarations. */
+
+
+/*     Saved frame name/ID items. */
+
+
+/*     Initial values. */
 
 
 /*     In-line Function Definitions */
@@ -455,6 +550,16 @@ static integer c__0 = 0;
 	return 0;
     } else {
 	chkin_("ZZSPKGP1", (ftnlen)8);
+    }
+
+/*     Initialization. */
+
+    if (first) {
+
+/*        Initialize counter. */
+
+	zzctruin_(svctr1);
+	first = FALSE_;
     }
 
 /*     We take care of the obvious case first.  It TARG and OBS are the */
@@ -512,15 +617,28 @@ static integer c__0 = 0;
 
 /*     CTPOS is the position in CTARG of the common node. */
 
+/*     Since the upgrade to use hashes and counter bypass ZZNAMFRM */
+/*     became more efficient in looking up frame IDs than IRFNUM. So the */
+/*     original order of calls "IRFNUM first, NAMFRM second" was */
+/*     switched to "ZZNAMFRM first, IRFNUM second". */
 
-/*     Since Inertial frames are the most extensively used frames */
-/*     we use the more restrictive routine IRFNUM to attempt to */
-/*     look up the id-code for REF.  If IRFNUM comes up empty handed */
-/*     we then call the more general routine NAMFRM. */
+/*     The call to IRFNUM, now redundant for built-in inertial frames, */
+/*     was preserved to for a sole reason -- to still support the */
+/*     ancient and barely documented ability for the users to associate */
+/*     a frame with the fixed name 'DEFAULT' with any CHGIRF inertial */
+/*     frame code via CHGIRF's entry point IRFDEF. */
 
-    irfnum_(ref, &refid, ref_len);
+/*     Note that in the case of ZZNAMFRM's failure to resolve name and */
+/*     IRFNUM's success to do so, the code returned by IRFNUM for */
+/*     'DEFAULT' frame is *not* copied to the saved code SVREFI (which */
+/*     would be set to 0 by ZZNAMFRM) to make sure that on subsequent */
+/*     calls ZZNAMFRM does not do a bypass (as SVREFI always forced look */
+/*     up) and calls IRFNUM again to reset the 'DEFAULT's frame ID */
+/*     should it change between the calls. */
+
+    zznamfrm_(svctr1, svref, &svrefi, ref, &refid, (ftnlen)32, ref_len);
     if (refid == 0) {
-	namfrm_(ref, &refid, ref_len);
+	irfnum_(ref, &refid, ref_len);
     }
     if (refid == 0) {
 	if (frstnp_(ref, ref_len) > 0) {
@@ -567,20 +685,20 @@ static integer c__0 = 0;
 
     i__ = 1;
     ctarg[(i__1 = i__ - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge("ctarg", i__1, 
-	    "zzspkgp1_", (ftnlen)527)] = *targ;
+	    "zzspkgp1_", (ftnlen)610)] = *targ;
     found = TRUE_;
     cleard_(&c__6, &starg[(i__1 = i__ * 6 - 6) < 120 && 0 <= i__1 ? i__1 : 
-	    s_rnge("starg", i__1, "zzspkgp1_", (ftnlen)530)]);
+	    s_rnge("starg", i__1, "zzspkgp1_", (ftnlen)613)]);
     while(found && i__ < 20 && ctarg[(i__1 = i__ - 1) < 20 && 0 <= i__1 ? 
-	    i__1 : s_rnge("ctarg", i__1, "zzspkgp1_", (ftnlen)532)] != *obs &&
+	    i__1 : s_rnge("ctarg", i__1, "zzspkgp1_", (ftnlen)615)] != *obs &&
 	     ctarg[(i__2 = i__ - 1) < 20 && 0 <= i__2 ? i__2 : s_rnge("ctarg",
-	     i__2, "zzspkgp1_", (ftnlen)532)] != 0) {
+	     i__2, "zzspkgp1_", (ftnlen)615)] != 0) {
 
 /*        Find a file and segment that has position */
 /*        data for CTARG(I). */
 
 	spksfs_(&ctarg[(i__1 = i__ - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge(
-		"ctarg", i__1, "zzspkgp1_", (ftnlen)541)], et, &handle, descr,
+		"ctarg", i__1, "zzspkgp1_", (ftnlen)624)], et, &handle, descr,
 		 ident, &found, (ftnlen)40);
 	if (found) {
 
@@ -591,10 +709,10 @@ static integer c__0 = 0;
 	    ++i__;
 	    spkpvn_(&handle, descr, et, &tframe[(i__1 = i__ - 1) < 20 && 0 <= 
 		    i__1 ? i__1 : s_rnge("tframe", i__1, "zzspkgp1_", (ftnlen)
-		    551)], &starg[(i__2 = i__ * 6 - 6) < 120 && 0 <= i__2 ? 
-		    i__2 : s_rnge("starg", i__2, "zzspkgp1_", (ftnlen)551)], &
+		    634)], &starg[(i__2 = i__ * 6 - 6) < 120 && 0 <= i__2 ? 
+		    i__2 : s_rnge("starg", i__2, "zzspkgp1_", (ftnlen)634)], &
 		    ctarg[(i__3 = i__ - 1) < 20 && 0 <= i__3 ? i__3 : s_rnge(
-		    "ctarg", i__3, "zzspkgp1_", (ftnlen)551)]);
+		    "ctarg", i__3, "zzspkgp1_", (ftnlen)634)]);
 
 /*           Here's what we have.  STARG is the position of CTARG(I-1) */
 /*           relative to CTARG(I) in reference frame TFRAME(I) */
@@ -702,10 +820,10 @@ static integer c__0 = 0;
 /*     be zero if COBS is not found in CTARG. */
 
     if (ctarg[(i__1 = nct - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge("ctarg", 
-	    i__1, "zzspkgp1_", (ftnlen)686)] == cobs) {
+	    i__1, "zzspkgp1_", (ftnlen)769)] == cobs) {
 	ctpos = nct;
 	cframe = tframe[(i__1 = ctpos - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge(
-		"tframe", i__1, "zzspkgp1_", (ftnlen)688)];
+		"tframe", i__1, "zzspkgp1_", (ftnlen)771)];
     } else {
 	ctpos = 0;
     }
@@ -873,54 +991,54 @@ static integer c__0 = 0;
     i__1 = ctpos - 1;
     for (i__ = 2; i__ <= i__1; ++i__) {
 	if (tframe[(i__2 = i__ - 1) < 20 && 0 <= i__2 ? i__2 : s_rnge("tframe"
-		, i__2, "zzspkgp1_", (ftnlen)884)] == tframe[(i__3 = i__) < 
+		, i__2, "zzspkgp1_", (ftnlen)967)] == tframe[(i__3 = i__) < 
 		20 && 0 <= i__3 ? i__3 : s_rnge("tframe", i__3, "zzspkgp1_", (
-		ftnlen)884)]) {
+		ftnlen)967)]) {
 	    vadd_(&starg[(i__2 = i__ * 6 - 6) < 120 && 0 <= i__2 ? i__2 : 
-		    s_rnge("starg", i__2, "zzspkgp1_", (ftnlen)886)], &starg[(
+		    s_rnge("starg", i__2, "zzspkgp1_", (ftnlen)969)], &starg[(
 		    i__3 = (i__ + 1) * 6 - 6) < 120 && 0 <= i__3 ? i__3 : 
-		    s_rnge("starg", i__3, "zzspkgp1_", (ftnlen)886)], stemp);
+		    s_rnge("starg", i__3, "zzspkgp1_", (ftnlen)969)], stemp);
 	    moved_(stemp, &c__3, &starg[(i__2 = (i__ + 1) * 6 - 6) < 120 && 0 
 		    <= i__2 ? i__2 : s_rnge("starg", i__2, "zzspkgp1_", (
-		    ftnlen)887)]);
+		    ftnlen)970)]);
 	} else if (tframe[(i__3 = i__) < 20 && 0 <= i__3 ? i__3 : s_rnge(
-		"tframe", i__3, "zzspkgp1_", (ftnlen)889)] > 0 && tframe[(
+		"tframe", i__3, "zzspkgp1_", (ftnlen)972)] > 0 && tframe[(
 		i__3 = i__) < 20 && 0 <= i__3 ? i__3 : s_rnge("tframe", i__3, 
-		"zzspkgp1_", (ftnlen)889)] <= 21 && tframe[(i__2 = i__ - 1) < 
+		"zzspkgp1_", (ftnlen)972)] <= 21 && tframe[(i__2 = i__ - 1) < 
 		20 && 0 <= i__2 ? i__2 : s_rnge("tframe", i__2, "zzspkgp1_", (
-		ftnlen)889)] > 0 && tframe[(i__2 = i__ - 1) < 20 && 0 <= i__2 
-		? i__2 : s_rnge("tframe", i__2, "zzspkgp1_", (ftnlen)889)] <= 
+		ftnlen)972)] > 0 && tframe[(i__2 = i__ - 1) < 20 && 0 <= i__2 
+		? i__2 : s_rnge("tframe", i__2, "zzspkgp1_", (ftnlen)972)] <= 
 		21) {
 	    irfrot_(&tframe[(i__2 = i__ - 1) < 20 && 0 <= i__2 ? i__2 : 
-		    s_rnge("tframe", i__2, "zzspkgp1_", (ftnlen)891)], &
+		    s_rnge("tframe", i__2, "zzspkgp1_", (ftnlen)974)], &
 		    tframe[(i__3 = i__) < 20 && 0 <= i__3 ? i__3 : s_rnge(
-		    "tframe", i__3, "zzspkgp1_", (ftnlen)891)], rot);
+		    "tframe", i__3, "zzspkgp1_", (ftnlen)974)], rot);
 	    mxv_(rot, &starg[(i__2 = i__ * 6 - 6) < 120 && 0 <= i__2 ? i__2 : 
-		    s_rnge("starg", i__2, "zzspkgp1_", (ftnlen)892)], stemp);
+		    s_rnge("starg", i__2, "zzspkgp1_", (ftnlen)975)], stemp);
 	    vadd_(stemp, &starg[(i__2 = (i__ + 1) * 6 - 6) < 120 && 0 <= i__2 
-		    ? i__2 : s_rnge("starg", i__2, "zzspkgp1_", (ftnlen)893)],
+		    ? i__2 : s_rnge("starg", i__2, "zzspkgp1_", (ftnlen)976)],
 		     vtemp);
 	    moved_(vtemp, &c__3, &starg[(i__2 = (i__ + 1) * 6 - 6) < 120 && 0 
 		    <= i__2 ? i__2 : s_rnge("starg", i__2, "zzspkgp1_", (
-		    ftnlen)894)]);
+		    ftnlen)977)]);
 	} else {
 	    zzrefch1_(&tframe[(i__2 = i__ - 1) < 20 && 0 <= i__2 ? i__2 : 
-		    s_rnge("tframe", i__2, "zzspkgp1_", (ftnlen)898)], &
+		    s_rnge("tframe", i__2, "zzspkgp1_", (ftnlen)981)], &
 		    tframe[(i__3 = i__) < 20 && 0 <= i__3 ? i__3 : s_rnge(
-		    "tframe", i__3, "zzspkgp1_", (ftnlen)898)], et, psxfrm);
+		    "tframe", i__3, "zzspkgp1_", (ftnlen)981)], et, psxfrm);
 	    if (failed_()) {
 		chkout_("ZZSPKGP1", (ftnlen)8);
 		return 0;
 	    }
 	    mxv_(psxfrm, &starg[(i__2 = i__ * 6 - 6) < 120 && 0 <= i__2 ? 
-		    i__2 : s_rnge("starg", i__2, "zzspkgp1_", (ftnlen)905)], 
+		    i__2 : s_rnge("starg", i__2, "zzspkgp1_", (ftnlen)988)], 
 		    stemp);
 	    vadd_(stemp, &starg[(i__2 = (i__ + 1) * 6 - 6) < 120 && 0 <= i__2 
-		    ? i__2 : s_rnge("starg", i__2, "zzspkgp1_", (ftnlen)906)],
+		    ? i__2 : s_rnge("starg", i__2, "zzspkgp1_", (ftnlen)989)],
 		     vtemp);
 	    moved_(vtemp, &c__3, &starg[(i__2 = (i__ + 1) * 6 - 6) < 120 && 0 
 		    <= i__2 ? i__2 : s_rnge("starg", i__2, "zzspkgp1_", (
-		    ftnlen)907)]);
+		    ftnlen)990)]);
 	}
     }
 
@@ -930,11 +1048,11 @@ static integer c__0 = 0;
 /*     frame transformations. */
 
     if (tframe[(i__1 = ctpos - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge("tframe", 
-	    i__1, "zzspkgp1_", (ftnlen)920)] == cframe) {
+	    i__1, "zzspkgp1_", (ftnlen)1003)] == cframe) {
 	vsub_(&starg[(i__1 = ctpos * 6 - 6) < 120 && 0 <= i__1 ? i__1 : 
-		s_rnge("starg", i__1, "zzspkgp1_", (ftnlen)922)], sobs, pos);
+		s_rnge("starg", i__1, "zzspkgp1_", (ftnlen)1005)], sobs, pos);
     } else if (tframe[(i__1 = ctpos - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge(
-	    "tframe", i__1, "zzspkgp1_", (ftnlen)924)] == refid) {
+	    "tframe", i__1, "zzspkgp1_", (ftnlen)1007)] == refid) {
 
 /*        If the last frame associated with the target is already */
 /*        in the requested output frame, we convert the position of */
@@ -958,19 +1076,20 @@ static integer c__0 = 0;
 
 	cframe = refid;
 	vsub_(&starg[(i__1 = ctpos * 6 - 6) < 120 && 0 <= i__1 ? i__1 : 
-		s_rnge("starg", i__1, "zzspkgp1_", (ftnlen)955)], stemp, pos);
+		s_rnge("starg", i__1, "zzspkgp1_", (ftnlen)1038)], stemp, pos)
+		;
     } else if (cframe > 0 && cframe <= 21 && tframe[(i__1 = ctpos - 1) < 20 &&
 	     0 <= i__1 ? i__1 : s_rnge("tframe", i__1, "zzspkgp1_", (ftnlen)
-	    958)] > 0 && tframe[(i__1 = ctpos - 1) < 20 && 0 <= i__1 ? i__1 : 
-	    s_rnge("tframe", i__1, "zzspkgp1_", (ftnlen)958)] <= 21) {
+	    1041)] > 0 && tframe[(i__1 = ctpos - 1) < 20 && 0 <= i__1 ? i__1 :
+	     s_rnge("tframe", i__1, "zzspkgp1_", (ftnlen)1041)] <= 21) {
 
 /*        If both frames are inertial we use IRFROT instead of */
 /*        ZZREFCH1 to get things into a common frame. */
 
 	irfrot_(&tframe[(i__1 = ctpos - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge(
-		"tframe", i__1, "zzspkgp1_", (ftnlen)964)], &cframe, rot);
+		"tframe", i__1, "zzspkgp1_", (ftnlen)1047)], &cframe, rot);
 	mxv_(rot, &starg[(i__1 = ctpos * 6 - 6) < 120 && 0 <= i__1 ? i__1 : 
-		s_rnge("starg", i__1, "zzspkgp1_", (ftnlen)965)], stemp);
+		s_rnge("starg", i__1, "zzspkgp1_", (ftnlen)1048)], stemp);
 	vsub_(stemp, sobs, pos);
     } else {
 
@@ -978,14 +1097,14 @@ static integer c__0 = 0;
 /*        transformation. */
 
 	zzrefch1_(&tframe[(i__1 = ctpos - 1) < 20 && 0 <= i__1 ? i__1 : 
-		s_rnge("tframe", i__1, "zzspkgp1_", (ftnlen)973)], &cframe, 
+		s_rnge("tframe", i__1, "zzspkgp1_", (ftnlen)1056)], &cframe, 
 		et, psxfrm);
-	mxv_(psxfrm, &starg[(i__1 = ctpos * 6 - 6) < 120 && 0 <= i__1 ? i__1 :
-		 s_rnge("starg", i__1, "zzspkgp1_", (ftnlen)974)], stemp);
 	if (failed_()) {
 	    chkout_("ZZSPKGP1", (ftnlen)8);
 	    return 0;
 	}
+	mxv_(psxfrm, &starg[(i__1 = ctpos * 6 - 6) < 120 && 0 <= i__1 ? i__1 :
+		 s_rnge("starg", i__1, "zzspkgp1_", (ftnlen)1063)], stemp);
 	vsub_(stemp, sobs, pos);
     }
 

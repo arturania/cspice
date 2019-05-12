@@ -137,26 +137,25 @@
                              position of the target---the position 
                              as seen by the observer. 
  
-                  "CN"       Converged Newtonian light time 
-                             correction.  In solving the light time 
-                             equation, the "CN" correction iterates 
-                             until the solution converges (three 
-                             iterations on all supported platforms). 
- 
-                             The "CN" correction typically does not 
-                             substantially improve accuracy because 
-                             the errors made by ignoring 
-                             relativistic effects may be larger than 
-                             the improvement afforded by obtaining 
-                             convergence of the light time solution. 
-                             The "CN" correction computation also 
-                             requires a significantly greater number 
-                             of CPU cycles than does the 
-                             one-iteration light time correction. 
- 
-                  "CN+S"     Converged Newtonian light time 
-                             and stellar aberration corrections. 
- 
+                  "CN"       Converged Newtonian light time
+                             correction. In solving the light time
+                             equation, the "CN" correction iterates
+                             until the solution converges (three
+                             iterations on all supported platforms).
+                             Whether the "CN+S" solution is
+                             substantially more accurate than the
+                             "LT" solution depends on the geometry
+                             of the participating objects and on the
+                             accuracy of the input data. In all
+                             cases this routine will execute more
+                             slowly when a converged solution is
+                             computed. See the Particulars section
+                             below for a discussion of precision of
+                             light time corrections.
+
+                  "CN+S"     Converged Newtonian light time
+                             correction and stellar aberration
+                             correction.
  
                The following values of abcorr apply to the 
                "transmission" case in which photons *depart* from 
@@ -185,9 +184,9 @@
                   "XCN"      "Transmission" case:  converged  
                              Newtonian light time correction. 
  
-                  "XCN+S"    "Transmission" case:  converged  
-                             Newtonian light time and stellar  
-                             aberration corrections. 
+                  "XCN+S"    "Transmission" case: converged Newtonian
+                             light time correction and stellar
+                             aberration correction.
  
  
                Neither special nor general relativistic effects are 
@@ -362,11 +361,11 @@
    Below, we indicate the aberration corrections to use for some 
    common applications: 
  
-      1) Find the apparent direction of a target.  This is 
+      1) Find the apparent direction of a target. This is 
          the most common case for a remote-sensing observation.
  
-            Use "LT+S":  apply both light time and stellar  
-            aberration corrections. 
+            Use "LT+S" or "CN+S": apply both light time and stellar
+            aberration corrections.
  
          Note that using light time corrections alone ("LT") is 
          generally not a good way to obtain an approximation to an 
@@ -377,24 +376,24 @@
  
  
       2) Find the corrected pointing direction to radiate a signal 
-         to a target.  This computation is often applicable for 
+         to a target. This computation is often applicable for 
          implementing communications sessions.
  
-            Use "XLT+S":  apply both light time and stellar  
-            aberration corrections for transmission. 
+            Use "XLT+S" or "XCN+S": apply both light time and stellar
+            aberration corrections for transmission.
  
   
       3) Compute the apparent position of a target body relative 
          to a star or other distant object.
  
-            Use "LT" or "LT+S" as needed to match the correction 
-            applied to the position of the distant object.  For 
-            example, if a star position is obtained from a catalog, 
-            the position vector may not be corrected for stellar 
-            aberration.  In this case, to find the angular 
-            separation of the star and the limb of a planet, the 
-            vector from the observer to the planet should be 
-            corrected for light time but not stellar aberration. 
+            Use one of "LT", "CN", "LT+S", or "CN+S" as needed to match
+            the correction applied to the position of the distant
+            object. For example, if a star position is obtained from a
+            catalog, the position vector may not be corrected for
+            stellar aberration. In this case, to find the angular
+            separation of the star and the limb of a planet, the vector
+            from the observer to the planet should be corrected for
+            light time but not stellar aberration.
  
 
       4) Obtain an uncorrected position vector derived directly from  
@@ -574,52 +573,67 @@
       velocity of the target relative to an inertial frame and C is 
       the speed of light. 
  
-      For nearly all objects in the solar system V is less than 60 
-      km/sec.  The value of C is 300000 km/sec.  Thus the one 
-      iteration solution for 'lt' has a potential relative error of 
-      not more than 4*10**-8.  This is a potential light time error 
-      of approximately 2*10**-5 seconds per astronomical unit of 
-      distance separating the observer and target.  Given the bound 
-      on V cited above: 
- 
-         As long as the observer and target are 
-         separated by less than 50 astronomical units, 
-         the error in the light time returned using 
-         the one-iteration light time corrections 
-         is less than 1 millisecond. 
- 
- 
-      Converged corrections  
-      --------------------- 
- 
-      When the requested aberration correction is "CN", "CN+S", 
-      "XCN", or "XCN+S", three iterations are performed in the 
-      computation of 'lt'.  The relative error present in this 
-      solution is at most 
- 
-          (V/C)**4 
-         ---------- 
-          1 - (V/C) 
- 
-      which is well approximated by (V/C)**4.  Mathematically the 
-      precision of this computation is better than a nanosecond for 
-      any pair of objects in the solar system. 
- 
-      However, to model the actual light time between target and 
-      observer one must take into account effects due to general 
-      relativity.  These may be as high as a few hundredths of a 
-      millisecond for some objects. 
- 
-      When one considers the extra time required to compute the
-      converged Newtonian light time (the state of the target relative
-      to the solar system barycenter is looked up three times instead
-      of once) together with the real gain in accuracy, it seems
-      unlikely that you will want to request either the "CN" or "CN+S"
-      light time corrections.  However, these corrections can be useful
-      for testing situations where high precision (as opposed to
-      accuracy) is required.
- 
- 
+      For nearly all objects in the solar system V is less than 60
+      km/sec. The value of C is ~300000 km/sec. Thus the
+      one-iteration solution for LT has a potential relative error
+      of not more than 4e-8. This is a potential light time error of
+      approximately 2e-5 seconds per astronomical unit of distance
+      separating the observer and target. Given the bound on V cited
+      above:
+
+         As long as the observer and target are separated by less
+         than 50 astronomical units, the error in the light time
+         returned using the one-iteration light time corrections is
+         less than 1 millisecond.
+
+         The magnitude of the corresponding position error, given
+         the above assumptions, may be as large as (V/C)**2 * the
+         distance between the observer and the uncorrected target
+         position: 300 km or equivalently 6 km/AU.
+
+      In practice, the difference between positions obtained using
+      one-iteration and converged light time is usually much smaller
+      than the value computed above and can be insignificant. For
+      example, for the spacecraft Mars Reconnaissance Orbiter and
+      Mars Express, the position error for the one-iteration light
+      time correction, applied to the spacecraft-to-Mars center
+      vector, is at the 1 cm level.
+
+      Comparison of results obtained using the one-iteration and
+      converged light time solutions is recommended when adequacy of
+      the one-iteration solution is in doubt.
+
+
+      Converged corrections
+      ---------------------
+
+      When the requested aberration correction is "CN", "CN+S",
+      "XCN", or "XCN+S", as many iterations as are required for
+      convergence are performed in the computation of LT. Usually
+      the solution is found after three iterations. The relative
+      error present in this case is at most
+
+          (V/C)**4
+         ----------
+          1 - (V/C)
+
+      which is well approximated by (V/C)**4.
+
+         The precision of this computation (ignoring round-off
+         error) is better than 4e-11 seconds for any pair of objects
+         less than 50 AU apart, and having speed relative to the
+         solar system barycenter less than 60 km/s.
+
+         The magnitude of the corresponding position error, given
+         the above assumptions, may be as large as (V/C)**4 * the
+         distance between the observer and the uncorrected target
+         position: 1.2 cm at 50 AU or equivalently 0.24 mm/AU.
+
+      However, to very accurately model the light time between
+      target and observer one must take into account effects due to
+      general relativity. These may be as high as a few hundredths
+      of a millisecond for some objects.
+
    Relativistic Corrections 
    ========================= 
  
@@ -722,6 +736,12 @@
  
 -Version
  
+   -CSPICE Version 2.0.6, 07-JUL-2014 (NJB)
+
+       Discussion of light time corrections was updated. Assertions
+       that converged light time corrections are unlikely to be
+       useful were removed.
+
    -CSPICE Version 2.0.5, 04-APR-2008 (NJB)
 
        Corrected minor error in description of XLT+S aberration

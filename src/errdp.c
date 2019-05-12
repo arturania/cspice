@@ -200,7 +200,7 @@ static integer c__2 = 2;
 /*           After the call, */
 
 
-/*              CALL ERRDP ( '#',  5.0  ) */
+/*              CALL ERRDP ( '#',  5.D0  ) */
 
 /*           The long error message becomes: */
 
@@ -220,7 +220,7 @@ static integer c__2 = 2;
 
 /*           After the call, */
 
-/*              CALL ERRDP ( 'XX',  5.0  ) */
+/*              CALL ERRDP ( 'XX',  5.D0  ) */
 
 /*           The long error message becomes: */
 
@@ -242,6 +242,10 @@ static integer c__2 = 2;
 /*     N.J. Bachman    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.2.1, 08-JAN-2014 (BVS) */
+
+/*        Fixed header example (5.0 -> 5.D0). */
 
 /* -    SPICELIB Version 2.2.0, 29-JUL-2005 (NJB) */
 

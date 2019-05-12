@@ -17,10 +17,13 @@
 
     /* Local variables */
     integer degp, ncof, i__;
-    extern /* Subroutine */ int chkin_(char *, ftnlen), chbval_(doublereal *, 
-	    integer *, doublereal *, doublereal *, doublereal *);
+    extern /* Subroutine */ int chkin_(char *, ftnlen), errdp_(char *, 
+	    doublereal *, ftnlen), chbval_(doublereal *, integer *, 
+	    doublereal *, doublereal *, doublereal *);
     integer cofloc;
-    extern /* Subroutine */ int chkout_(char *, ftnlen);
+    extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
+	    ftnlen), setmsg_(char *, ftnlen), errint_(char *, integer *, 
+	    ftnlen);
     extern logical return_(void);
 
 /* $ Abstract */
@@ -66,19 +69,51 @@
 
 /*     Variable  I/O  Description */
 /*     --------  ---  -------------------------------------------------- */
-/*     ET         I   Target epoch. */
+/*     ET         I   Evaluation epoch. */
 /*     RECORD     I   Data record. */
 /*     STATE      O   State (position and velocity). */
 
 /* $ Detailed_Input */
 
-/*     ET          is a target epoch, at which a state vector is to */
-/*                 be computed. */
+/*     ET          is the epoch at which a state vector or Euler angle */
+/*                 state is to be computed. The epoch is represented as */
+/*                 seconds past J2000 TDB. */
 
 /*     RECORD      is a data record which, when evaluated at epoch ET, */
-/*                 will give the state (position and velocity) of some */
-/*                 body, relative to some center, in some inertial */
-/*                 reference frame. */
+/*                 will yield three function components and their */
+/*                 derivatives with respect to time. The record */
+/*                 structure for SPK type 3 data is: */
+
+/*                    +--------------------------------------+ */
+/*                    | record size (excluding this element) | */
+/*                    +--------------------------------------+ */
+/*                    | Coverage interval midpoint           | */
+/*                    +--------------------------------------+ */
+/*                    | Coverage interval radius             | */
+/*                    +--------------------------------------+ */
+/*                    | Coeffs for X position component      | */
+/*                    +--------------------------------------+ */
+/*                    | Coeffs for Y position component      | */
+/*                    +--------------------------------------+ */
+/*                    | Coeffs for Z position component      | */
+/*                    +--------------------------------------+ */
+/*                    | Coeffs for X velocity component      | */
+/*                    +--------------------------------------+ */
+/*                    | Coeffs for Y velocity component      | */
+/*                    +--------------------------------------+ */
+/*                    | Coeffs for Z velocity component      | */
+/*                    +--------------------------------------+ */
+
+/*                 In the above record */
+
+/*                    - Times are expressed as seconds past J2000 TDB. */
+/*                    - Position components have units of km. */
+/*                    - Velocity components have units of km/s. */
+
+/*                 RECORD must be declared by the caller with size large */
+/*                 enough to accommodate the largest record that can be */
+/*                 returned by this routine. See the INCLUDE file */
+/*                 spkrec.inc for the correct record length. */
 
 /* $ Detailed_Output */
 
@@ -91,7 +126,12 @@
 
 /* $ Exceptions */
 
-/*     None. */
+/*     1) If the input record contains an invalid coefficient count, */
+/*        the error SPICE(INVALIDCOUNT) will be signaled. */
+
+/*     2) If the input record contains invalid domain transformation */
+/*        parameters, the error will be diagnosed by a routine in the */
+/*        call tree of this routine. */
 
 /* $ Files */
 
@@ -106,7 +146,7 @@
 /*     A type 3 segment contains six sets of Chebyshev coefficients, */
 /*     one set each for the position coordinates X, Y, and Z, and one */
 /*     set each for the velocity coordinates X', Y', and Z'.  SPKE03 */
-/*     calls the routine CHBVAL to evalute each polynomial, and arrive */
+/*     calls the routine CHBVAL to evaluate each polynomial, and arrive */
 /*     at the complete state. */
 
 /* $ Examples */
@@ -163,6 +203,12 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.0.0, 31-DEC-2013 (NJB) */
+
+/*        Added error checks for invalid coefficient counts */
+/*        and invalid interval radius. Changed error handling */
+/*        style to "discovery." Enhanced header documentation. */
+
 /* -    SPICELIB Version 1.0.3, 10-MAR-1992 (WLT) */
 
 /*        Comment section for permuted index source lines was added */
@@ -193,12 +239,10 @@
 /*     Local variables */
 
 
-/*     Standard SPICE error handling. */
+/*     Use discovery check-in. */
 
     if (return_()) {
 	return 0;
-    } else {
-	chkin_("SPKE03", (ftnlen)6);
     }
 
 /*     The first number in the record is the record size.  Following it */
@@ -208,6 +252,26 @@
 /*     number of coefficients for each quantity. */
 
     ncof = ((integer) record[0] - 2) / 6;
+    if (ncof < 1) {
+	chkin_("SPKE03", (ftnlen)6);
+	setmsg_("The input record's coefficient count NCOF should be positiv"
+		"e but was #.", (ftnlen)71);
+	errint_("#", &ncof, (ftnlen)1);
+	sigerr_("SPICE(INVALIDCOUNT)", (ftnlen)19);
+	chkout_("SPKE03", (ftnlen)6);
+	return 0;
+    }
+
+/*     Check the radius of the domain interval. */
+
+    if (record[2] <= 0.) {
+	chkin_("SPKE03", (ftnlen)6);
+	setmsg_("Interval radius must be positive but was #.", (ftnlen)43);
+	errdp_("#", &record[2], (ftnlen)1);
+	sigerr_("SPICE(INVALIDRADIUS)", (ftnlen)20);
+	chkout_("SPKE03", (ftnlen)6);
+	return 0;
+    }
 
 /*     The degree of each polynomial is one less than the number of */
 /*     coefficients. */
@@ -231,9 +295,8 @@
 
 	chbval_(&record[cofloc - 1], &degp, &record[1], et, &state[(i__1 = 
 		i__ - 1) < 6 && 0 <= i__1 ? i__1 : s_rnge("state", i__1, 
-		"spke03_", (ftnlen)236)]);
+		"spke03_", (ftnlen)297)]);
     }
-    chkout_("SPKE03", (ftnlen)6);
     return 0;
 } /* spke03_ */
 

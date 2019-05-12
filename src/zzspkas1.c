@@ -282,21 +282,20 @@
 /*                               equation, the 'CN' correction iterates */
 /*                               until the solution converges (three */
 /*                               iterations on all supported platforms). */
-
-/*                               The 'CN' correction typically does not */
-/*                               substantially improve accuracy because */
-/*                               the errors made by ignoring */
-/*                               relativistic effects may be larger than */
-/*                               the improvement afforded by obtaining */
-/*                               convergence of the light time solution. */
-/*                               The 'CN' correction computation also */
-/*                               requires a significantly greater number */
-/*                               of CPU cycles than does the */
-/*                               one-iteration light time correction. */
+/*                               Whether the 'CN+S' solution is */
+/*                               substantially more accurate than the */
+/*                               'LT' solution depends on the geometry */
+/*                               of the participating objects and on the */
+/*                               accuracy of the input data. In all */
+/*                               cases this routine will execute more */
+/*                               slowly when a converged solution is */
+/*                               computed. See the Particulars section of */
+/*                               SPKEZR for a discussion of precision of */
+/*                               light time corrections. */
 
 /*                    'CN+S'     Converged Newtonian light time */
-/*                               and stellar aberration corrections. */
-
+/*                               correction and stellar aberration */
+/*                               correction. */
 
 /*                 The following values of ABCORR apply to the */
 /*                 "transmission" case in which photons *depart* from */
@@ -328,8 +327,8 @@
 /*                               Newtonian light time correction. */
 
 /*                    'XCN+S'    "Transmission" case:  converged */
-/*                               Newtonian light time and stellar */
-/*                               aberration corrections. */
+/*                               Newtonian light time correction and */
+/*                               stellar aberration correction. */
 
 
 /*                 Neither special nor general relativistic effects are */
@@ -693,6 +692,17 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.1.0, 04-JUL-2014 (NJB) */
+
+/*        Discussion of light time corrections was updated. Assertions */
+/*        that converged light time corrections are unlikely to be */
+/*        useful were removed. */
+
+/*     Last update was 15-APR-2014 (NJB) */
+
+/*        Added a FAILED() call to prevent numeric problems */
+/*        resulting from uninitialized values. */
+
 /* -    SPICELIB Version 1.0.0, 11-JAN-2008 (NJB) */
 
 /* -& */
@@ -727,9 +737,8 @@
 
     if (return_()) {
 	return 0;
-    } else {
-	chkin_("ZZSPKAS1", (ftnlen)8);
     }
+    chkin_("ZZSPKAS1", (ftnlen)8);
     if (first || s_cmp(abcorr, prvcor, abcorr_len, (ftnlen)5) != 0) {
 
 /*        The aberration correction flag differs from the value it */
@@ -798,6 +807,10 @@
 
     zzspklt1_(targ, et, ref, abcorr, stobs, starg, lt, dlt, ref_len, 
 	    abcorr_len);
+    if (failed_()) {
+	chkout_("ZZSPKAS1", (ftnlen)8);
+	return 0;
+    }
 
 /*     If stellar aberration corrections are not needed, we're */
 /*     already done. */

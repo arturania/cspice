@@ -58,6 +58,14 @@
  
 -Version
  
+   -CSPICE Version 2.1.0, 10-MAR-2014 (BVS)
+ 
+      Updated for the:
+ 
+         PC-CYGWIN-64BIT-GCC_C
+ 
+      environment.
+ 
    -CSPICE Version 2.2.0, 14-MAY-2010 (EDW)(BVS)
  
       Updated for the:
@@ -103,7 +111,7 @@
 #define HAVE_PLATFORM_MACROS_H
  
  
-   #define   CSPICE_PC_MS
+   #define   CSPICE_MAC_OSX_INTEL_64BIT_GCC
  
 #endif
  

@@ -2,7 +2,7 @@
 E-Kernel Required Reading
 ===========================================================================
  
-   Last revised on 2010 APR 07 by E. D. Wright.
+   Last revised on 2016 MAR 23 by N. J. Bachman.
  
  
 Abstract
@@ -1381,26 +1381,29 @@ Column entry readers
  
    With the arguments:
  
-         `handle'   is the file handle of the sequence EK to be read.
+         `handle'      is the file handle of the sequence EK to be read.
  
-         `segno'    is the ordinal position in the EK of the segment
-                    containing the desired column entry.
+         `segno'       is the ordinal position in the EK of the segment
+                       containing the desired column entry.
  
-         `segno'    is the ordinal position in the segment of the record
-                    containing the desired column entry.
+         `segno'       is the ordinal position in the segment of the record
+                       containing the desired column entry.
  
-         `column'   is the name of the column containing the desired entry.
+         `column'      is the name of the column containing the desired
+                       entry.
  
-         `lenout'   is the string length of the elements of the array
-                    `cvals'.
+         `lenout'      is the string length of the elements of the array
+                       `cvals'.
  
-         `nvals'    is the number of array elements in the column entry.
+         `nvals'       is the number of array elements in the column entry.
  
-         `cvals'    is the column entry itself. Note that CVALS must have
-                    sufficient size to accommodate the entire column entry.
-                    CVALS is defined only if the column entry is non-null.
+         `cvals'       is the column entry itself. Note that CVALS must
+                       have sufficient size to accommodate the entire
+                       column entry. CVALS is defined only if the column
+                       entry is non-null.
  
-         `isnull'   is a flag indicating whether the column entry is null.
+         `isnull'      is a flag indicating whether the column entry is
+                       null.
  
    To read a double precision or TIME column entry, call ekrced_c:
  
@@ -1437,8 +1440,8 @@ Summarizing EK files
    The summary of the segment at ordinal position `segno' is returned by
    ekssum_c:
  
-      n = ekssum_c ( <handle>, <segno>, &segsum );       {Summarize
-                                                          segment}
+      ekssum_c ( <handle>, <segno>, &segsum );       {Summarize
+                                                      segment}
  
    With the arguments:
  
@@ -1831,33 +1834,31 @@ Adding records to a segment
  
    With the arguments:
  
-         `handle'   is the DAS file handle obtained from ekopn_c.
+         `handle'      is the DAS file handle obtained from ekopn_c.
  
-         `segno'    is the number of the segment to write to. `segno' must
-                    be a segment number obtained from ekbseg_c.
+         `segno'       is the number of the segment to write to. `segno'
+                       must be a segment number obtained from ekbseg_c.
  
-         `recno'    is the number of the new record; `recno' is an output
-                    argument.
+         `recno'       is the number of the new record; `recno' is an
+                       output argument.
  
-         `column'   is the name of the column to which data is to be
-                    written.
+         `column'      is the name of the column to which data is to be
+                       written.
  
-         `nvals'    is the number of elements in the column entry. For
-                    scalar entries, `nvals' is 1. For null-valued entries,
-                    NVALS is ignored.
+         `nvals'       is the number of elements in the column entry. For
+                       scalar entries, `nvals' is 1. For null-valued
+                       entries, NVALS is ignored.
  
-         `vallen'   is the string length of the elements of `cvals'.
+         `vallen'      is the string length of the elements of `cvals'.
  
-         `cvals_l   is the string length of the elements of `cvals'.
+         `cvals'       is the string or array of strings comprising the
+                       column entry. `cvals' is ignored if the entry being
+                       added is null.
  
-         `cvals'    is the string or array of strings comprising the column
-                    entry. `cvals' is ignored if the entry being added is
-                    null.
- 
-         `isnull'   is a boolean flag indicating whether the entry being
-                    added is null. If the column has fixed-length,
-                    variable-size entries, and the entry being added is
-                    null, the size of the entry is considered to be 1.
+         `isnull'      is a boolean flag indicating whether the entry being
+                       added is null. If the column has fixed-length,
+                       variable-size entries, and the entry being added is
+                       null, the size of the entry is considered to be 1.
  
    Double precision column entries are written by ekaced_c:
  
@@ -2032,6 +2033,14 @@ Adding columns to the segment
                     array are ignored. In all cases, `nlflgs' must have
                     dimension at least equal to the number of rows in the
                     segment.
+ 
+         `rcptrs'   This is an integer work space array the caller must not
+                    modify. `rcptrs' is an output argument of ekifld_c.
+                    `rcptrs' must have dimension at least equal to the
+                    number of rows in the segment.
+ 
+         `wkindx'   is an integer workspace array used to build an index
+                    for the column.
  
    To add a double precision column to a segment, call ekacld_c:
  
@@ -2317,6 +2326,11 @@ Summary of Calling Sequences
  
 Revisions
 --------------------------------------------------------
+ 
+ 
+March 23, 2016 NJB (JPL)
+ 
+   Corrected documentation of some calling sequences.
  
  
 February 24, 2010 EDW (JPL)

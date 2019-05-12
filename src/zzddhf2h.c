@@ -8,9 +8,10 @@
 /* $Procedure ZZDDHF2H ( Private --- DDH Filename to Handle ) */
 /* Subroutine */ int zzddhf2h_(char *fname, integer *ftabs, integer *ftamh, 
 	integer *ftarc, integer *ftbff, integer *fthan, char *ftnam, integer *
-	ftrtm, integer *nft, integer *utcst, integer *uthan, logical *utlck, 
-	integer *utlun, integer *nut, logical *exists, logical *opened, 
-	integer *handle, logical *found, ftnlen fname_len, ftnlen ftnam_len)
+	ftrtm, doublereal *ftmnm, integer *nft, integer *utcst, integer *
+	uthan, logical *utlck, integer *utlun, integer *nut, logical *exists, 
+	logical *opened, integer *handle, logical *found, doublereal *mnm, 
+	ftnlen fname_len, ftnlen ftnam_len)
 {
     /* System generated locals */
     olist o__1;
@@ -23,6 +24,7 @@
 
     /* Local variables */
     integer unit;
+    extern doublereal zzddhmnm_(integer *);
     extern /* Subroutine */ int zzddhgtu_(integer *, integer *, logical *, 
 	    integer *, integer *, integer *), zzddhrmu_(integer *, integer *, 
 	    integer *, integer *, logical *, integer *, integer *);
@@ -142,6 +144,30 @@
 /*     None. */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.5.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-INTEL. */
+
+/* -    SPICELIB Version 2.4.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 2.3.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-GFORTRAN. */
+
+/* -    SPICELIB Version 2.2.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 2.1.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GCC_C. */
+
+/* -    SPICELIB Version 2.0.0, 12-APR-2012 (BVS) */
+
+/*        Increased FTSIZE (from 1000 to 5000). */
 
 /* -    SPICELIB Version 1.20.0, 13-MAY-2010 (BVS) */
 
@@ -338,7 +364,8 @@
 /*     FTBFF, */
 /*     FTHAN, */
 /*     FTNAM, */
-/*     FTRTM      I   File table. */
+/*     FTRTM, */
+/*     FTMNM      I   File table. */
 /*     NFT        I   Number of entries in the file table. */
 /*     UTCST, */
 /*     UTHAN, */
@@ -349,6 +376,7 @@
 /*     OPENED     O   Logical indicating if FNAME is opened. */
 /*     HANDLE     O   Handle associated with FNAME. */
 /*     FOUND      O   Logical indicating if FNAME's HANDLE was found. */
+/*     MNM        O   Unique DP (Magic NuMber) associated with FNAME. */
 
 /* $ Detailed_Input */
 
@@ -360,10 +388,11 @@
 /*     FTBFF, */
 /*     FTHAN, */
 /*     FTNAM, */
-/*     FTRTM      are the arrays respectively containing the absolute */
+/*     FTRTM, */
+/*     FTMNM      are the arrays respectively containing the absolute */
 /*                value of the handle, access method, architecture, */
-/*                binary file format, handle, name, and RTRIM columns of */
-/*                the file table. */
+/*                binary file format, handle, name, RTRIM and */
+/*                magic number columns of the file table. */
 
 /*     NFT        is the number of entries in the file table. */
 
@@ -436,15 +465,13 @@
 /*                in the file table.  If FALSE indicates that it was not */
 /*                located. */
 
+/*     MNM        is a unique (enough) DP number -- the Magic NuMber -- */
+/*                associated with FNAME computed by this examining the */
+/*                file contents. */
+
 /* $ Parameters */
 
 /*     None. */
-
-/* $ Files */
-
-/*     If the file named by FNAME is not connected to a logical unit, */
-/*     this routine will open it for direct access to complete its */
-/*     examination. */
 
 /* $ Exceptions */
 
@@ -457,6 +484,12 @@
 
 /*     3) If FNAME is determined not to be loaded into the file table */
 /*        then FOUND is set to FALSE and HANDLE is set to 0. */
+
+/* $ Files */
+
+/*     If the file named by FNAME is not connected to a logical unit, */
+/*     this routine will open it for direct access to complete its */
+/*     examination. */
 
 /* $ Particulars */
 
@@ -473,15 +506,23 @@
 
 /*     None. */
 
-/* $ Author_and_Institution */
-
-/*     F.S. Turner     (JPL) */
-
 /* $ Literature_References */
 
 /*     None. */
 
+/* $ Author_and_Institution */
+
+/*     F.S. Turner     (JPL) */
+/*     E.D. Wright     (JPL) */
+/*     B.V. Semenov    (JPL) */
+
 /* $ Version */
+
+/* -    SPICELIB Version 3.0.0, 26-APR-2012 (BVS) */
+
+/*        Changed calling sequence to include FTMNM and MNM. Change */
+/*        algorithm to compute MNM and use it to bypass n^2 INQUIREs */
+/*        for files opened for READ access, if possible. */
 
 /* -    SPICELIB Version 2.0.1, 24-APR-2003 (EDW) */
 
@@ -513,7 +554,7 @@
 
 /* -& */
 
-/*     SPICELIB Functionsx */
+/*     SPICELIB Functions */
 
 
 /*     Local Variables */
@@ -685,6 +726,11 @@
 	return 0;
     }
 
+/*     Get a unique enough DP number -- the Magic NuMber (MNM) ;) -- for */
+/*     this file. */
+
+    *mnm = zzddhmnm_(&utlun[uindex - 1]);
+
 /*     Now loop through all the files in the file table. Unfortunately */
 /*     we have no other choice. */
 
@@ -692,26 +738,42 @@
     *found = FALSE_;
     while(i__ <= *nft && ! (*found)) {
 
-/*        Do the INQUIRE. */
+/*        If this file's magic number is non-zero and is different from */
+/*        the magic number of the currently checked, opened-for-READ */
+/*        file, we will declare that these files are not the same file */
+/*        and will skip INQUIRE. In all other cases we will do INQUIRE */
+/*        and check UNITs. */
 
-	ioin__1.inerr = 1;
-	ioin__1.infilen = ftrtm[i__ - 1];
-	ioin__1.infile = ftnam + (i__ - 1) * ftnam_len;
-	ioin__1.inex = &locexs;
-	ioin__1.inopen = &locopn;
-	ioin__1.innum = &unit;
-	ioin__1.innamed = 0;
-	ioin__1.inname = 0;
-	ioin__1.inacc = 0;
-	ioin__1.inseq = 0;
-	ioin__1.indir = 0;
-	ioin__1.infmt = 0;
-	ioin__1.inform = 0;
-	ioin__1.inunf = 0;
-	ioin__1.inrecl = 0;
-	ioin__1.innrec = 0;
-	ioin__1.inblank = 0;
-	iostat = f_inqu(&ioin__1);
+	if (*mnm != 0. && (*mnm != ftmnm[i__ - 1] && ftamh[i__ - 1] == 1)) {
+
+/*           These files are not the same file. Clear IOSTAT and set */
+/*           UNIT to not match the UNIT of the input file. */
+
+	    iostat = 0;
+	    unit = utlun[uindex - 1] + 1;
+	} else {
+
+/*           Do the INQUIRE. ;( */
+
+	    ioin__1.inerr = 1;
+	    ioin__1.infilen = ftrtm[i__ - 1];
+	    ioin__1.infile = ftnam + (i__ - 1) * ftnam_len;
+	    ioin__1.inex = &locexs;
+	    ioin__1.inopen = &locopn;
+	    ioin__1.innum = &unit;
+	    ioin__1.innamed = 0;
+	    ioin__1.inname = 0;
+	    ioin__1.inacc = 0;
+	    ioin__1.inseq = 0;
+	    ioin__1.indir = 0;
+	    ioin__1.infmt = 0;
+	    ioin__1.inform = 0;
+	    ioin__1.inunf = 0;
+	    ioin__1.inrecl = 0;
+	    ioin__1.innrec = 0;
+	    ioin__1.inblank = 0;
+	    iostat = f_inqu(&ioin__1);
+	}
 
 /*        Check IOSTAT. */
 
@@ -741,7 +803,7 @@
 	}
 
 /*        Now check to see if FILE exists, is currently open. and */
-/*        its UNIT matche UTLUN(UINDEX). */
+/*        its UNIT matches UTLUN(UINDEX). */
 
 	if (locexs && locopn && unit == utlun[uindex - 1]) {
 	    *handle = fthan[i__ - 1];

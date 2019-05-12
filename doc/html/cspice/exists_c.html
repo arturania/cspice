@@ -55,7 +55,7 @@
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 33%; text-align: center;">
             <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
@@ -66,7 +66,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
@@ -76,7 +76,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
@@ -118,16 +118,15 @@
 </PRE>
 <h4><a name="Detailed_Input">Detailed_Input</a></h4>
 <PRE>
-   fname        is the name of the file in question. This may be
-                a system name, e.g.
+   fname        is the name of the file in question.This may be
+                any unambigous file name valid on the user's
+                computer, for example
 
-                      &quot;DISK:[USER.SUB1.SUB2]DATA.DAT&quot;
-                      &quot;\usr\dir1\dir2\data.dat&quot;
+                   '/usr/dir1/dir2/DATA.DAT'
+                   './DATA.DAT'
+                   'c:\usr\dir1\dir2\data.dat'
 
-                or a logical name, e.g.
-
-                      &quot;EPHEMERIS&quot;
-                      &quot;DATA$DIR:SAMPLE.DAT&quot;
+                Environment or shell variables may not be used.
 </PRE>
 <h4><a name="Detailed_Output">Detailed_Output</a></h4>
 <PRE>
@@ -141,10 +140,10 @@
 <h4><a name="Exceptions">Exceptions</a></h4>
 <PRE>
    1) If the input name is blank, the error SPICE(BLANKFILENAME) will
-      be signalled. (This test is currently unimplemented.)
+      be signaled. (This test is currently unimplemented.)
 
    2) If an error occurs during the execution existence test,
-      the error SPICE(INQUIREFAILED) is signalled.
+      the error SPICE(INQUIREFAILED) is signaled.
 </PRE>
 <h4><a name="Files">Files</a></h4>
 <PRE>
@@ -185,6 +184,10 @@
 </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
+   -CSPICE Version 1.1.1, 01-JUL-2014 (NJB)
+
+       VAX examples were deleted from the header.
+
    -CSPICE Version 1.1.0, 08-FEB-1998 (NJB)
 
        References to C2F_CreateStr_Sig were removed; code was
@@ -206,7 +209,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Jun  9 13:05:23 2010</pre>
+   <pre>Wed Apr  5 17:54:35 2017</pre>
 
 </body>
 </html>

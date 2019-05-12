@@ -91,9 +91,12 @@ static integer c__5 = 5;
 
 /* $ Abstract */
 
+/*     Deprecated. The routine DAFBT supersedes this routine. */
+/*     NAIF supports this routine only to provide backward */
+/*     compatibility. */
+
 /*     Write the contents of a binary DAF to a text file opened by */
-/*     the calling program. (Obsolete, maintained for backward */
-/*     compatibility only.) */
+/*     the calling program. */
 
 /* $ Disclaimer */
 
@@ -154,10 +157,6 @@ static integer c__5 = 5;
 
 /*      None. */
 
-/* $ Files */
-
-/*     See arguments BINARY, TEXT. */
-
 /* $ Exceptions */
 
 /*     1) If for some reason the text file cannot be written, */
@@ -165,6 +164,10 @@ static integer c__5 = 5;
 
 /*     2) If for some reason the ID word cannot be read from the DAF */
 /*        file, the error SPICE(DAFREADFAIL) will be signalled. */
+
+/* $ Files */
+
+/*     See arguments BINARY, TEXT. */
 
 /* $ Particulars */
 
@@ -254,63 +257,12 @@ static integer c__5 = 5;
 
 /* $ Version */
 
-/* -    SPICELIB Version 3.0.0, 16-NOV-2001 (FST) */
+/* -    SPICELIB Version 3.0.1, 26-JUL-2012 (EDW) */
 
-/*        Updated this routine to utilize the new handle manager */
-/*        interfaces. */
+/*        Edited Abstract section to use "Deprecated" keyword */
+/*        and state replacement routine. */
 
-/* -    SPICELIB Version 2.0.0, 04-OCT-1993 (KRG) */
-
-/*        Added the variable IDWORD to the routine for storing the ID */
-/*        word from the file being converted. This replaces a hard coded */
-/*        value of 'NAIF/DAF', and supports the new interpretation of the */
-/*        ID word. */
-
-/*        Removed the error SPICE(DAFNOIDWORD) as it was no longer */
-/*        relevant. */
-
-/*        There were no checks of the IOSTAT variable after attempting to */
-/*        write to the text file, a single test of the IOSTAT variable */
-/*        was made at the end of the routine. This was not adequate to */
-/*        detect errors when writing to the text file. So after all of */
-/*        these write statements, an IF ... END IF block was added to */
-/*        signal an error if IOSTAT .NE. 0. */
-
-/*        Added the following error message to the routine: */
-
-/*           C     2) If for some reason the ID word cannot be read from */
-/*           C        the DAF file, the error SPICE(DAFREADFAIL) will be */
-/*           C        signalled. */
-
-/*        because the file ID word is now read from the binary DAF file */
-/*        rather than being hard coded as 'NAIF/DAF' in this routine. */
-
-/*        Added a statement to the $ Particulars section to the effect */
-/*        that this routine has been made obsolete by the introduction of */
-/*        the routine DAFBT, and that we strongly recommend the use of */
-/*        the new routine. */
-
-/*        Modified the $ Abstract section to reflect the fact that this */
-/*        routine is obsolete. */
-
-/* -    SPICELIB Version 1.0.2, 10-MAR-1992 (WLT) */
-
-/*        Comment section for permuted index source lines was added */
-/*        following the header. */
-
-/* -    SPICELIB Version 1.0.1, 22-MAR-1990 (HAN) */
-
-/*        Literature references added to the header. */
-
-/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (IMU) */
-
-/* -& */
-/* $ Index_Entries */
-
-/*     binary daf to text */
-
-/* -& */
-/* $ Revisions */
+/*        Eliminated unneeded Revisions section. */
 
 /* -    SPICELIB Version 3.0.0, 16-NOV-2001 (FST) */
 
@@ -391,6 +343,22 @@ static integer c__5 = 5;
 
 /*        Modified the $ Abstract section to reflect the fact that this */
 /*        routine is obsolete. */
+
+/* -    SPICELIB Version 1.0.2, 10-MAR-1992 (WLT) */
+
+/*        Comment section for permuted index source lines was added */
+/*        following the header. */
+
+/* -    SPICELIB Version 1.0.1, 22-MAR-1990 (HAN) */
+
+/*        Literature references added to the header. */
+
+/* -    SPICELIB Version 1.0.0, 31-JAN-1990 (IMU) */
+
+/* -& */
+/* $ Index_Entries */
+
+/*     binary daf to text */
 
 /* -& */
 
@@ -643,7 +611,7 @@ L100007:
 	for (i__ = 1; i__ <= i__2; ++i__) {
 	    iostat = do_lio(&c__5, &c__1, (char *)&dc[(i__3 = i__ - 1) < 125 
 		    && 0 <= i__3 ? i__3 : s_rnge("dc", i__3, "dafb2t_", (
-		    ftnlen)558)], (ftnlen)sizeof(doublereal));
+		    ftnlen)524)], (ftnlen)sizeof(doublereal));
 	    if (iostat != 0) {
 		goto L100008;
 	    }
@@ -669,7 +637,7 @@ L100008:
 	for (i__ = 1; i__ <= i__3; ++i__) {
 	    iostat = do_lio(&c__3, &c__1, (char *)&ic[(i__2 = i__ - 1) < 250 
 		    && 0 <= i__2 ? i__2 : s_rnge("ic", i__2, "dafb2t_", (
-		    ftnlen)573)], (ftnlen)sizeof(integer));
+		    ftnlen)539)], (ftnlen)sizeof(integer));
 	    if (iostat != 0) {
 		goto L100009;
 	    }
@@ -687,9 +655,9 @@ L100009:
 	    return 0;
 	}
 	begin = ic[(i__2 = ni - 2) < 250 && 0 <= i__2 ? i__2 : s_rnge("ic", 
-		i__2, "dafb2t_", (ftnlen)588)];
+		i__2, "dafb2t_", (ftnlen)554)];
 	end = ic[(i__2 = ni - 1) < 250 && 0 <= i__2 ? i__2 : s_rnge("ic", 
-		i__2, "dafb2t_", (ftnlen)589)];
+		i__2, "dafb2t_", (ftnlen)555)];
 	while(begin <= end) {
 /* Computing MIN */
 	    i__2 = begin + 99;
@@ -731,7 +699,7 @@ L100010:
 	    for (i__ = 1; i__ <= i__2; ++i__) {
 		iostat = do_lio(&c__5, &c__1, (char *)&buffer[(i__3 = i__ - 1)
 			 < 100 && 0 <= i__3 ? i__3 : s_rnge("buffer", i__3, 
-			"dafb2t_", (ftnlen)620)], (ftnlen)sizeof(doublereal));
+			"dafb2t_", (ftnlen)586)], (ftnlen)sizeof(doublereal));
 		if (iostat != 0) {
 		    goto L100011;
 		}

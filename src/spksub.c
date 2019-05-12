@@ -36,7 +36,11 @@ static integer c__6 = 6;
 	    doublereal *, char *, ftnlen), spks15_(integer *, integer *, 
 	    integer *, doublereal *, doublereal *), spks17_(integer *, 
 	    integer *, integer *, doublereal *, doublereal *), spks18_(
-	    integer *, integer *, integer *, doublereal *, doublereal *);
+	    integer *, integer *, integer *, doublereal *, doublereal *), 
+	    spks19_(integer *, integer *, integer *, doublereal *, doublereal 
+	    *), spks20_(integer *, integer *, integer *, doublereal *, 
+	    doublereal *), spks21_(integer *, integer *, integer *, 
+	    doublereal *, doublereal *);
     doublereal dc[2];
     extern /* Subroutine */ int dafbna_(integer *, doublereal *, char *, 
 	    ftnlen);
@@ -133,11 +137,11 @@ static integer c__6 = 6;
 
 /*        is not satisfied (where ALPHA and OMEGA are the initial */
 /*        and final epochs of the segment respectively), the error */
-/*        'SPICE(SPKNOTASUBSET)' is signalled. */
+/*        'SPICE(SPKNOTASUBSET)' is signaled. */
 
 /*     2) If the segment type is not supported by the current */
 /*        version of SPKSUB, the error 'SPICE(SPKTYPENOTSUPP)' */
-/*        is signalled. */
+/*        is signaled. */
 
 /* $ Files */
 
@@ -162,15 +166,15 @@ static integer c__6 = 6;
 /*         specified by BEGIN and END. */
 
 /*     2)  The beginning and ending segment addresses (ICD(5) and ICD(6)) */
-/*         are, of course, changed to reflect the location of the new */
-/*         segment. */
+/*         are changed to reflect the location of the new segment. */
 
 /* $ Examples */
 
 /*     In the following code fragment, the descriptor for each segment */
-/*     in a source SPK file is examined. For each segment that covers */
-/*     a target interval, the smallest possible subset is extracted into */
-/*     a custom SPK file. */
+/*     in a source SPK file is examined. For each segment that covers a */
+/*     specified time interval, the smallest possible subset of data */
+/*     from that segment, sufficient to cover the interval, is extracted */
+/*     into a custom SPK file. */
 
 /*     Assume that the source and custom files have been opened, for */
 /*     read and write access, with handles SRC and CUST respectively. */
@@ -214,6 +218,11 @@ static integer c__6 = 6;
 /*     I.M. Underwood  (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 9.0.0, 23-DEC-2013 (NJB) */
+
+/*        The routine was updated to handle types 19, 20 and 21. Some */
+/*        minor changes were made to comments. */
 
 /* -    SPICELIB Version 8.0.0, 12-AUG-2002 (NJB) */
 
@@ -261,6 +270,11 @@ static integer c__6 = 6;
 
 /* -& */
 /* $ Revisions */
+
+/* -    SPICELIB Version 9.0.0, 23-DEC-2013 (NJB) */
+
+/*        The routine was updated to handle types 19, 20 and 21. Some */
+/*        minor changes were made to comments. */
 
 /* -    SPICELIB Version 8.0.0, 12-AUG-2002 (NJB) */
 
@@ -394,6 +408,18 @@ static integer c__6 = 6;
     } else if (type__ == 18) {
 	dafbna_(newh, ndscr, ident, ident_len);
 	spks18_(handle, &baddr, &eaddr, begin, end);
+	dafena_();
+    } else if (type__ == 19) {
+	dafbna_(newh, ndscr, ident, ident_len);
+	spks19_(handle, &baddr, &eaddr, begin, end);
+	dafena_();
+    } else if (type__ == 20) {
+	dafbna_(newh, ndscr, ident, ident_len);
+	spks20_(handle, &baddr, &eaddr, begin, end);
+	dafena_();
+    } else if (type__ == 21) {
+	dafbna_(newh, ndscr, ident, ident_len);
+	spks21_(handle, &baddr, &eaddr, begin, end);
 	dafena_();
     } else {
 	setmsg_("SPK data type # is not supported.", (ftnlen)33);

@@ -7,9 +7,10 @@
 
 /* Table of constant values */
 
+static integer c_n1 = -1;
+static integer c__3 = 3;
 static integer c__0 = 0;
 static integer c__10 = 10;
-static doublereal c_b29 = 1e-6;
 static logical c_false = FALSE_;
 
 /* $Procedure GFSNTC (GF, surface intercept vector coordinate search) */
@@ -30,10 +31,10 @@ static logical c_false = FALSE_;
 
     /* Local variables */
     extern logical even_(integer *);
-    extern /* Subroutine */ int chkin_(char *, ftnlen), errdp_(char *, 
-	    doublereal *, ftnlen);
+    extern /* Subroutine */ int chkin_(char *, ftnlen);
     extern integer sized_(doublereal *);
     extern logical gfbail_();
+    logical ok;
     extern /* Subroutine */ int scardd_(integer *, doublereal *);
     extern logical return_(void);
     extern /* Subroutine */ int gfrefn_(), gfrepi_(), gfrepu_(), gfrepf_(), 
@@ -49,6 +50,9 @@ static logical c_false = FALSE_;
 	    char *, doublereal *, doublereal *, doublereal *, doublereal *, 
 	    logical *, U_fp, U_fp, U_fp, integer *, integer *, doublereal *, 
 	    logical *, L_fp, doublereal *, ftnlen, ftnlen, ftnlen, ftnlen);
+    doublereal tol;
+    extern /* Subroutine */ int zzholdd_(integer *, integer *, logical *, 
+	    doublereal *);
 
 /* $ Abstract */
 
@@ -152,7 +156,21 @@ static logical c_false = FALSE_;
 
 /* $ Version */
 
-/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+/* -    SPICELIB Version 2.0.0  29-NOV-2016 (NJB) */
+
+/*        Upgraded to support surfaces represented by DSKs. */
+
+/*        Bug fix: removed declaration of NVRMAX parameter. */
+
+/* -    SPICELIB Version 1.3.0, 01-OCT-2011 (NJB) */
+
+/*       Added NWILUM parameter. */
+
+/* -    SPICELIB Version 1.2.0, 14-SEP-2010 (EDW) */
+
+/*       Added NWPA parameter. */
+
+/* -    SPICELIB Version 1.1.0, 08-SEP-2009 (EDW) */
 
 /*       Added NWRR parameter. */
 /*       Added NWUDS parameter. */
@@ -202,6 +220,14 @@ static logical c_false = FALSE_;
 /*     count using NWUDS. */
 
 
+/*     Callers of GFPA should declare their workspace window */
+/*     count using NWPA. */
+
+
+/*     Callers of GFILUM should declare their workspace window */
+/*     count using NWILUM. */
+
+
 /*     ADDWIN is a parameter used to expand each interval of the search */
 /*     (confinement) window by a small amount at both ends in order to */
 /*     accommodate searches using equality constraints. The loaded */
@@ -209,9 +235,6 @@ static logical c_false = FALSE_;
 
 
 /*     FRMNLN is a string length for frame names. */
-
-
-/*     NVRMAX is the maximum number of vertices if FOV type is "POLYGON" */
 
 
 /*     FOVTLN -- maximum length for FOV string. */
@@ -385,32 +408,166 @@ static logical c_false = FALSE_;
 
 /*     End of file zzgf.inc. */
 
+/* $ Abstract */
+
+/*     SPICE private routine intended solely for the support of SPICE */
+/*     routines. Users should not call this routine directly due to the */
+/*     volatile nature of this routine. */
+
+/*     This file contains parameter declarations for the ZZHOLDD */
+/*     routine. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Required_Reading */
+
+/*     None. */
+
+/* $ Keywords */
+
+/*     None. */
+
+/* $ Declarations */
+
+/*     None. */
+
+/* $ Brief_I/O */
+
+/*     None. */
+
+/* $ Detailed_Input */
+
+/*     None. */
+
+/* $ Detailed_Output */
+
+/*     None. */
+
+/* $ Parameters */
+
+/*     GEN       general value, primarily for testing. */
+
+/*     GF_REF    user defined GF reference value. */
+
+/*     GF_TOL    user defined GF convergence tolerance. */
+
+/*     GF_DT     user defined GF step for numeric differentiation. */
+
+/* $ Exceptions */
+
+/*     None. */
+
+/* $ Files */
+
+/*     None. */
+
+/* $ Particulars */
+
+/*     None. */
+
+/* $ Examples */
+
+/*     None. */
+
+/* $ Restrictions */
+
+/*     None. */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     E.D. Wright    (JPL) */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0  03-DEC-2013 (EDW) */
+
+/* -& */
+
+/*     OP codes. The values exist in the integer domain */
+/*     [ -ZZNOP, -1], */
+
+
+/*     Current number of OP codes. */
+
+
+/*     ID codes. The values exist in the integer domain */
+/*     [ 1, NID], */
+
+
+/*     General use, primarily testing. */
+
+
+/*     The user defined GF reference value. */
+
+
+/*     The user defined GF convergence tolerance. */
+
+
+/*     The user defined GF step for numeric differentiation. */
+
+
+/*     Current number of ID codes, dimension of array */
+/*     in ZZHOLDD. Bad things can happen if this parameter */
+/*     does not have the proper value. */
+
+
+/*     End of file zzholdd.inc. */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
 /*     --------  ---  -------------------------------------------------- */
-/*     LBCELL     P   SPICE Cell lower bound */
-/*     CNVTOL     P   Convergence tolerance */
-/*     TARGET     I   Name of the target body */
-/*     FIXREF     I   Body fixed frame associated with TARGET */
+/*     LBCELL     P   SPICE Cell lower bound. */
+/*     CNVTOL     P   Convergence tolerance. */
+/*     ZZGET      P   ZZHOLDD retrieves a stored DP value. */
+/*     GF_TOL     P   ZZHOLDD acts on the GF subsystem tolerance. */
+/*     TARGET     I   Name of the target body. */
+/*     FIXREF     I   Body fixed frame associated with TARGET . */
 /*     METHOD     I   Name of method type for surface intercept */
-/*                    calculation */
-/*     ABCORR     I   Aberration correction flag */
-/*     OBSRVR     I   Name of the observing body */
+/*                    calculation. */
+/*     ABCORR     I   Aberration correction flag. */
+/*     OBSRVR     I   Name of the observing body. */
 /*     DREF       I   Reference frame of direction vector DVEC. */
 /*     DVEC       I   Pointing direction vector from OBSRVR. */
-/*     CRDSYS     I   Name of the coordinate system containing COORD */
-/*     COORD      I   Name of the coordinate of interest */
-/*     RELATE     I   Relational operator */
-/*     REFVAL     I   Reference value */
-/*     ADJUST     I   Adjustment value for absolute extrema searches */
-/*     STEP       I   Step size used for locating extrema and roots */
-/*     CNFINE     I   SPICE window to which the search is confined */
-/*     MW         I   Workspace window size */
+/*     CRDSYS     I   Name of the coordinate system containing COORD. */
+/*     COORD      I   Name of the coordinate of interest. */
+/*     RELATE     I   Relational operator. */
+/*     REFVAL     I   Reference value. */
+/*     ADJUST     I   Adjustment value for absolute extrema searches. */
+/*     STEP       I   Step size used for locating extrema and roots. */
+/*     CNFINE     I   SPICE window to which the search is confined. */
+/*     MW         I   Workspace window size. */
 /*     NW         I   The number of workspace windows needed for the */
-/*                    search */
+/*                    search. */
 /*     WORK      I-O   Array of workspace windows */
-/*     RESULT    I-O   SPICE window containing results */
+/*     RESULT    I-O   SPICE window containing results. */
 
 /* $ Detailed_Input */
 
@@ -904,10 +1061,14 @@ static logical c_false = FALSE_;
 
 /*     Within any interval of these "monotone" windows, there will be at */
 /*     most one solution of any equality constraint. Since the boundary */
-/*     of the solution set for any inequality constraint is the set */
-/*     of points where an equality constraint is met, the solutions of */
-/*     both equality and inequality constraints can be found easily */
-/*     once the monotone windows have been found. */
+/*     of the solution set for any inequality constraint is contained in */
+/*     the union of */
+
+/*        - the set of points where an equality constraint is met */
+/*        - the boundary points of the confinement window */
+
+/*     the solutions of both equality and inequality constraints can be */
+/*     found easily once the monotone windows have been found. */
 
 
 /*     Step Size */
@@ -938,7 +1099,7 @@ static logical c_false = FALSE_;
 /*     monotone windows yields a dramatic efficiency improvement over a */
 /*     state-based search that simply tests at each step whether the */
 /*     specified constraint is satisfied. The latter type of search can */
-/*     miss solution intervals if the step size is shorter than the */
+/*     miss solution intervals if the step size is longer than the */
 /*     shortest solution interval. */
 
 /*     Having some knowledge of the relative geometry of the target and */
@@ -955,34 +1116,33 @@ static logical c_false = FALSE_;
 /*     Convergence Tolerance */
 /*     ===================== */
 
-/*     As described above, the root-finding process used by this routine */
-/*     involves first bracketing roots and then using a search process */
-/*     to locate them. "Roots" are both times when local extrema are */
-/*     attained and times when the coordinate function is equal to a */
-/*     reference value. All endpoints of the intervals comprising the */
-/*     result window are either endpoints of intervals of the */
-/*     confinement window or roots. */
-
 /*     Once a root has been bracketed, a refinement process is used to */
 /*     narrow down the time interval within which the root must lie. */
 /*     This refinement process terminates when the location of the root */
 /*     has been determined to within an error margin called the */
-/*     "convergence tolerance." The convergence tolerance used by this */
-/*     routine is set by the parameter CNVTOL. */
+/*     "convergence tolerance." The default convergence tolerance */
+/*     used by this routine is set by the parameter CNVTOL (defined */
+/*     in gf.inc). */
 
 /*     The value of CNVTOL is set to a "tight" value so that the */
 /*     tolerance doesn't become the limiting factor in the accuracy of */
 /*     solutions found by this routine. In general the accuracy of input */
 /*     data will be the limiting factor. */
 
-/*     To use a different tolerance value, a lower-level GF routine such */
-/*     as GFEVNT  must be called. Making the tolerance tighter than */
-/*     CNVTOL is unlikely to be useful, since the results are unlikely */
-/*     to be more accurate. Making the tolerance looser will speed up */
-/*     searches somewhat, since a few convergence steps will be omitted. */
-/*     However, in most cases, the step size is likely to have a much */
-/*     greater effect on processing time than would the convergence */
-/*     tolerance. */
+/*     The user may change the convergence tolerance from the default */
+/*     CNVTOL value by calling the routine GFSTOL, e.g. */
+
+/*        CALL GFSTOL( tolerance value ) */
+
+/*     Call GFSTOL prior to calling this routine. All subsequent */
+/*     searches will use the updated tolerance value. */
+
+/*     Setting the tolerance tighter than CNVTOL is unlikely to be */
+/*     useful, since the results are unlikely to be more accurate. */
+/*     Making the tolerance looser will speed up searches somewhat, */
+/*     since a few convergence steps will be omitted. However, in most */
+/*     cases, the step size is likely to have a much greater effect */
+/*     on processing time than would the convergence tolerance. */
 
 
 /*     The Confinement Window */
@@ -1587,6 +1747,16 @@ static logical c_false = FALSE_;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.1.0, 05-SEP-2012 (EDW) */
+
+/*        Edit to comments to correct search description. */
+
+/*        Implemented use of ZZHOLDD to allow user to alter convergence */
+/*        tolerance. */
+
+/*        Removed the STEP > 0 error check. The GFSSTP call includes */
+/*        the check. */
+
 /* -    SPICELIB Version 1.0.1, 16-FEB-2010 (NJB) (EDW) */
 
 /*        Edits to and corrections of argument descriptions and */
@@ -1680,14 +1850,17 @@ static logical c_false = FALSE_;
 
 /*     Set the step size. */
 
-    if (*step <= 0.) {
-	setmsg_("Step size was #; step size must be positive.", (ftnlen)44);
-	errdp_("#", step, (ftnlen)1);
-	sigerr_("SPICE(INVALIDSTEP)", (ftnlen)18);
-	chkout_("GFSNTC", (ftnlen)6);
-	return 0;
-    }
     gfsstp_(step);
+
+/*     Retrieve the convergence tolerance, if set. */
+
+    zzholdd_(&c_n1, &c__3, &ok, &tol);
+
+/*     Use the default value CNVTOL if no stored tolerance value. */
+
+    if (! ok) {
+	tol = 1e-6;
+    }
 
 /*     Initialize the RESULT window to empty. */
 
@@ -1698,7 +1871,7 @@ static logical c_false = FALSE_;
 /*     Progress report and interrupt options are set to .FALSE. */
 
     gfevnt_((U_fp)gfstep_, (U_fp)gfrefn_, "COORDINATE", &c__10, qpnams, 
-	    qcpars, qdpars, qipars, qlpars, relate, refval, &c_b29, adjust, 
+	    qcpars, qdpars, qipars, qlpars, relate, refval, &tol, adjust, 
 	    cnfine, &c_false, (U_fp)gfrepi_, (U_fp)gfrepu_, (U_fp)gfrepf_, mw,
 	     nw, work, &c_false, (L_fp)gfbail_, result, (ftnlen)10, (ftnlen)
 	    80, (ftnlen)80, relate_len);

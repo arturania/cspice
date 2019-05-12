@@ -83,13 +83,12 @@
  
 -Detailed_Output
  
-   state       contains the position and velocity of the target 
-               body, relative to the observing body, corrected 
-               for the specified aberrations, at epoch 'et'. 'state' 
-               has six elements:  the first three contain the 
-               target's position; the last three contain the target's 
-               velocity.  These vectors are rotated into the 
-               specified reference frame. 
+   state       contains the geometric position and velocity of the
+               target body, relative to the observing body, at epoch
+               'et'. 'state' has six elements: the first three contain
+               the target's position; the last three contain the
+               target's velocity. These vectors are transformed into
+               the specified reference frame.
 
                Units are always km and km/sec. 
  
@@ -177,22 +176,26 @@
       #define   EARTH         399
       #define   MOON          301
       #define   N             100
+      #define   UTCLEN        35
+
 
       SpiceChar               utc [ 20 ];
  
       SpiceInt                handle;
+      SpiceInt                i;
 
       SpiceDouble             begin;
       SpiceDouble             delta;
       SpiceDouble             end;
       SpiceDouble             et;
+      SpiceDouble             lt;
       SpiceDouble             state [6];
 
  
       /.
       Load the binary SPK ephemeris file. 
       ./
-      spklef_c ( "sample.bsp", &handle ); 
+      furnsh_c ( "sample.bsp" ); 
  
           . 
           . 
@@ -204,13 +207,13 @@
       print out the epoch in UTC time and position norm. 
       ./
       
-      delta = ( end - begin ) / n;
+      delta = ( end - begin ) / N;
 
-      for ( i = 0;  i < n;  i++ ) 
+      for ( i = 0;  i < N;  i++ ) 
       {
          et = begin + i*delta;
 
-         spkgeo_c ( moon, et, "j2000", earth, state, &lt ); 
+         spkgeo_c ( MOON, et, "J2000", EARTH, state, &lt ); 
 
          et2utc_c ( et, "c", 0, UTCLEN, utc ); 
 
@@ -236,6 +239,11 @@
  
 -Version
  
+   -CSPICE Version 1.1.2, 08-JAN-2014 (BVS)
+
+       Fixed description of 'state' in Detailed Output. Replaced 
+       spklef_c with furnsh_c and fixed errors in Examples.
+
    -CSPICE Version 1.1.1, 13-OCT-2003 (EDW)
 
        Various minor header changes were made to improve clarity.

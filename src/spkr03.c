@@ -10,7 +10,7 @@
 static integer c__2 = 2;
 static integer c__6 = 6;
 
-/* $Procedure      SPKR03 ( Read SPK record from segment, type 3 ) */
+/* $Procedure      SPKR03 ( SPK, read record from segment, type 3 ) */
 /* Subroutine */ int spkr03_(integer *handle, doublereal *descr, doublereal *
 	et, doublereal *record)
 {
@@ -79,7 +79,7 @@ static integer c__6 = 6;
 /*     --------  ---  -------------------------------------------------- */
 /*     HANDLE     I   File handle. */
 /*     DESCR      I   Segment descriptor. */
-/*     ET         I   Target epoch. */
+/*     ET         I   Evaluation epoch. */
 /*     RECORD     O   Data record. */
 
 /* $ Detailed_Input */
@@ -88,15 +88,52 @@ static integer c__6 = 6;
 /*     DESCR       are the file handle and segment descriptor for */
 /*                 a SPK segment of type 3. */
 
-/*     ET          is a target epoch, for which a data record from */
-/*                 a specific segment is required. */
+/*     ET          is an epoch for which a data record from the */
+/*                 specified segment is required. ET is expressed as */
+/*                 seconds past J2000 TDB. */
 
 /* $ Detailed_Output */
 
-/*     RECORD      is the record from the specified segment which, */
+
+/*     RECORD      is an array of data from the specified segment which, */
 /*                 when evaluated at epoch ET, will give the state */
-/*                 (position and velocity) of some body, relative */
-/*                 to some center, in some inertial reference frame. */
+/*                 (position and velocity) of the target body identified */
+/*                 by the input segment descriptor. The descriptor */
+/*                 specifies the center of motion and reference frame of */
+/*                 the state. */
+
+/*                 The structure of the record is as follows: */
+
+/*                    +--------------------------------------+ */
+/*                    | record size (excluding this element) | */
+/*                    +--------------------------------------+ */
+/*                    | Coverage interval midpoint           | */
+/*                    +--------------------------------------+ */
+/*                    | Coverage interval radius             | */
+/*                    +--------------------------------------+ */
+/*                    | Coeffs for X position component      | */
+/*                    +--------------------------------------+ */
+/*                    | Coeffs for Y position component      | */
+/*                    +--------------------------------------+ */
+/*                    | Coeffs for Z position component      | */
+/*                    +--------------------------------------+ */
+/*                    | Coeffs for X velocity component      | */
+/*                    +--------------------------------------+ */
+/*                    | Coeffs for Y velocity component      | */
+/*                    +--------------------------------------+ */
+/*                    | Coeffs for Z velocity component      | */
+/*                    +--------------------------------------+ */
+
+/*                 In the above record */
+
+/*                    - Times are expressed as seconds past J2000 TDB. */
+/*                    - Position components have units of km. */
+/*                    - Velocity components have units of km/s. */
+
+/*                 RECORD must be declared by the caller with size large */
+/*                 enough to accommodate the largest record that can be */
+/*                 returned by this routine. See the INCLUDE file */
+/*                 spkrec.inc for the correct record length. */
 
 /* $ Parameters */
 
@@ -104,7 +141,8 @@ static integer c__6 = 6;
 
 /* $ Exceptions */
 
-/*     None. */
+/*     1) Any errors that occur while looking up SPK data will be */
+/*        diagnosed by routines in the call tree of this routine. */
 
 /* $ Files */
 
@@ -116,9 +154,9 @@ static integer c__6 = 6;
 /*     structure of a data type 3 (Chebyshev polynomials, position */
 /*     and velocity) segment. */
 
-/*     On not so close inspection, you will see that this routine is */
-/*     identical to SPKR02, which reads a type 2 (Chebyshev polynomials, */
-/*     position only) segment. */
+/*     On not so close inspection, you will see that the implementation */
+/*     of this routine is identical to SPKR02, which reads a type 2 */
+/*     (Chebyshev polynomials, position only) segment. */
 
 /* $ Examples */
 
@@ -164,6 +202,10 @@ static integer c__6 = 6;
 /*     R.E. Thurman    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.1, 18-JAN-2014 (NJB) */
+
+/*        Enhanced header and in-line documentation. */
 
 /* -    SPICELIB Version 1.1.0, 07-SEP-2001 (EDW) */
 
@@ -217,11 +259,11 @@ static integer c__6 = 6;
 /*     The segment is made up of a number of logical records, each */
 /*     having the same size, and covering the same length of time. */
 
-/*     We can determine which record to return by comparing the input */
-/*     epoch with the initial time of the segment and the length of the */
-/*     interval covered by each record.  These final two constants are */
-/*     located at the end of the segment, along with the size of each */
-/*     logical record and the total number of records. */
+/*     We can determine which record to return using the input epoch, */
+/*     the initial time of the first record's coverage interval, and the */
+/*     length of the interval covered by each record. These constants */
+/*     are located at the end of the segment, along with the size of */
+/*     each logical record and the total number of records. */
 
     i__1 = end - 3;
     dafgda_(handle, &i__1, &end, record);

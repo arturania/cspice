@@ -163,6 +163,30 @@ static integer c__4 = 4;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.5.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-INTEL. */
+
+/* -    SPICELIB Version 2.4.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 2.3.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-GFORTRAN. */
+
+/* -    SPICELIB Version 2.2.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 2.1.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GCC_C. */
+
+/* -    SPICELIB Version 2.0.0, 12-APR-2012 (BVS) */
+
+/*        Increased FTSIZE (from 1000 to 5000). */
+
 /* -    SPICELIB Version 1.20.0, 13-MAY-2010 (BVS) */
 
 /*        Updated for SUN-SOLARIS-INTEL. */
@@ -546,6 +570,26 @@ static integer c__4 = 4;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.25.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-INTEL. */
+
+/* -    SPICELIB Version 2.24.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 2.23.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-GFORTRAN. */
+
+/* -    SPICELIB Version 2.22.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 2.21.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GCC_C. */
+
 /* -    SPICELIB Version 2.20.0, 13-MAY-2010 (BVS) */
 
 /*        Updated for SUN-SOLARIS-INTEL. */
@@ -754,12 +798,12 @@ static integer c__4 = 4;
 	for (i__ = 1; i__ <= 4; ++i__) {
 	    zzddhgsd_("BFF", &i__, strbff + (((i__1 = i__ - 1) < 5 && 0 <= 
 		    i__1 ? i__1 : s_rnge("strbff", i__1, "zzddhppf_", (ftnlen)
-		    484)) << 3), (ftnlen)3, (ftnlen)8);
+		    504)) << 3), (ftnlen)3, (ftnlen)8);
 	}
 	for (i__ = 1; i__ <= 2; ++i__) {
 	    zzddhgsd_("ARCH", &i__, strarc + (((i__1 = i__ - 1) < 2 && 0 <= 
 		    i__1 ? i__1 : s_rnge("strarc", i__1, "zzddhppf_", (ftnlen)
-		    488)) << 3), (ftnlen)4, (ftnlen)8);
+		    508)) << 3), (ftnlen)4, (ftnlen)8);
 	}
 
 /*        Extend STRBFF to include the null BFFID.  This addresses */
@@ -848,11 +892,11 @@ L100001:
 	setmsg_("A request to load the # file, $, has been made by the % sys"
 		"tem.  This operation is not permitted.", (ftnlen)97);
 	errch_("#", strarc + (((i__1 = tstarc - 1) < 2 && 0 <= i__1 ? i__1 : 
-		s_rnge("strarc", i__1, "zzddhppf_", (ftnlen)588)) << 3), (
+		s_rnge("strarc", i__1, "zzddhppf_", (ftnlen)608)) << 3), (
 		ftnlen)1, (ftnlen)8);
 	errfnm_("$", unit, (ftnlen)1);
 	errch_("%", strarc + (((i__1 = *arch - 1) < 2 && 0 <= i__1 ? i__1 : 
-		s_rnge("strarc", i__1, "zzddhppf_", (ftnlen)590)) << 3), (
+		s_rnge("strarc", i__1, "zzddhppf_", (ftnlen)610)) << 3), (
 		ftnlen)1, (ftnlen)8);
 	sigerr_("SPICE(FILARCHMISMATCH)", (ftnlen)22);
 	chkout_("ZZDDHPPF", (ftnlen)8);
@@ -869,7 +913,7 @@ L100001:
 		"the file using IMAGE or BINARY transfer mode from the source."
 		, (ftnlen)180);
 	errch_("$", strarc + (((i__1 = tstarc - 1) < 2 && 0 <= i__1 ? i__1 : 
-		s_rnge("strarc", i__1, "zzddhppf_", (ftnlen)611)) << 3), (
+		s_rnge("strarc", i__1, "zzddhppf_", (ftnlen)631)) << 3), (
 		ftnlen)1, (ftnlen)8);
 	errfnm_("#", unit, (ftnlen)1);
 	sigerr_("SPICE(FTPXFERERROR)", (ftnlen)19);

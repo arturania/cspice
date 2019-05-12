@@ -2,7 +2,7 @@
 Reference Frames
 ===========================================================================
  
-   Last revised on 2010 JUN 03 by B. V. Semenov.
+   Last revised on 2017 FEB 01 by B. V. Semenov.
  
  
 Abstract
@@ -49,6 +49,9 @@ Frame Functions in CSPICE
    details of on how to get position or state vectors in the frame of
    interest.
  
+ 
+Frame Transformation Functions
+ 
    Several user-level CSPICE functions require that the user supply the
    name of a reference frame as one of the inputs to the function. The most
    important of these is the function spkezr_c. This function returns the
@@ -64,7 +67,7 @@ Frame Functions in CSPICE
    transformations of Cartesian state vectors (6 components) between
    reference frames while pxform_c supports transformations of Cartesian
    position vectors (3 components). pxform_c may be used when only position
-   information is needed , or when the derivatives required for a state
+   information is needed, or when the derivatives required for a state
    transformation are unavailable, for example when one frame is defined by
    a C-kernel that lacks angular velocity data.
  
@@ -82,6 +85,49 @@ Frame Functions in CSPICE
    The output of pxform_c, `rotate', is a 3 by 3 transformation matrix
    equivalent to the upper left 3x3 block of `xform'. This matrix
    transforms position as opposed to state vectors.
+ 
+ 
+Frame Information Functions
+ 
+   The CSPICE frame subsystem contains a set of functions that enable
+   applications to retrieve information about frames known to CSPICE,
+   whether they are built-in or specified by means of frame kernels:
+ 
+         frmnam_c        Convert frame ID code to frame name.
+ 
+         namfrm_c        Convert frame name to frame ID code.
+ 
+         frinfo_c        Return frame specification parameters: frame
+                         center, frame class, and frame class ID.
+ 
+         cidfrm_c        Map body ID code to the default frame centered on
+                         the specified body. Both frame name and ID are
+                         returned.
+ 
+         cnmfrm_c        Map body name to the default frame centered on the
+                         specified body. Both frame name and ID are
+                         returned.
+ 
+         ccifrm_c        Map frame class and class ID to frame
+                         specification parameters: frame ID code, frame
+                         name and frame center are returned.
+ 
+                         This function provides a way to identify frames
+                         referenced in CK and PCK files: in these files,
+                         segment descriptors contain class IDs of frames.
+ 
+   The calling sequences for the frame information functions are
+ 
+      frmnam_c ( frcode, lenout, frname  )
+      namfrm_c ( frname, &frcode )
+      frinfo_c ( frcode, &cent,  &class,  &clssid, &found )
+      cidfrm_c ( cent,   lenout, &frcode, frname,  &found )
+      cnmfrm_c ( cname,  lenout, &frcode, frname,  &found )
+      ccifrm_c ( class,  clssid, lenout,  &frcode, frname,
+                 &cent,  &found )
+ 
+   See the section ``Specifying a New Frame'' below for more information on
+   frame specification parameters.
  
  
 Frames Supported in SPICE
@@ -150,7 +196,7 @@ Frames Supported in SPICE
          furnsh_c ( "myframe.tf" );
  
    Note that the SPICE data loading mechanism detects and prohibits loading
-   text kernel files containing lines terminated with EOF character(s)
+   text kernel files containing lines terminated with EOL character(s)
    non-native to the platform on which the Toolkit was compiled. If a
    non-native EOL terminator is detected in the first 132 characters of a
    text kernel, the execution is stopped and an error message is displayed.
@@ -183,7 +229,7 @@ Kernels Needed For Computing Frame Transformations
    using data provided in CK files and cannot be computed without loading
    these. In addition to the CKs, an SCLK kernel establishing time
    correlation for the on-board clock that is used to tag data in the CKs
-   must be loaded to support time time conversion between that clock and
+   must be loaded to support time conversion between that clock and
    ephemeris time.
  
    Because the fixed offset frame definitions stored in text kernels
@@ -315,10 +361,10 @@ Selecting a Name
    to specify. If you try to use a ``built in'' name, the frame subsystem
    will ignore your frame specification. In the example given above, we
    chose the name 'WALDO' for the name of our reference frame. If ``Waldo''
-   would be a lander and would would need to specify a local level frame at
-   its landing site, we could have named that frame 'WALDO_LOCAL_LEVEL'. A
-   good name for for a frame associated with the camera flown on ``Waldo''
-   would be 'WALDO_CAMERA'.
+   would be a lander and would need to specify a local level frame at its
+   landing site, we could have named that frame 'WALDO_LOCAL_LEVEL'. A good
+   name for a frame associated with the camera flown on ``Waldo'' would be
+   'WALDO_CAMERA'.
  
  
 Selecting a Frame ID
@@ -491,9 +537,9 @@ Connecting an Object to its Body-fixed Frame
    object's name or ID code. For example, we have already mentioned that
    there are two ``built in'' reference frames that describe the
    orientation of the Earth: 'IAU_EARTH' and 'ITRF93'. For other objects,
-   such as the asteroid Ceres, there is no ``built in'' frame associated
-   with the object. The body-fixed frame of Ceres must be defined through a
-   text kernel. In both cases, the connection between the object and its
+   such as the asteroid Simbad, there is no ``built in'' frame associated
+   with the object. The body-fixed frame of Simbad must be defined through
+   a text kernel. In both cases, the connection between the object and its
    body-fixed frame needs to be supplied via a kernel pool variable. There
    are two ways to do this.
  
@@ -691,15 +737,15 @@ Defining a TK Frame Using a Matrix
    If you've chosen to define the rotation using a matrix, supply the
    matrix using the kernel pool variable assignment below:
  
-      TFRAME_<frame>_MATRIX = ( matrix_value[0][0],
-                                matrix_value[1][0],
-                                matrix_value[2][0],
-                                matrix_value[0][1],
-                                matrix_value[1][1],
-                                matrix_value[2][1],
-                                matrix_value[0][2],
-                                matrix_value[1][2],
-                                matrix_value[2][2]  )
+      TKFRAME_<frame>_MATRIX = ( matrix_value[0][0],
+                                 matrix_value[1][0],
+                                 matrix_value[2][0],
+                                 matrix_value[0][1],
+                                 matrix_value[1][1],
+                                 matrix_value[2][1],
+                                 matrix_value[0][2],
+                                 matrix_value[1][2],
+                                 matrix_value[2][2]  )
  
    For example, if the matrix defining your TK frame is
  
@@ -2580,16 +2626,19 @@ Appendix. ``Built in'' PCK-Based IAU Body-Fixed Reference Frames
       IAU_ARIEL
       IAU_ATLAS
       IAU_BELINDA
+      IAU_BENNU
       IAU_BIANCA
       IAU_BORRELLY
       IAU_CALLIRRHOE
       IAU_CALLISTO
       IAU_CALYPSO
       IAU_CARME
+      IAU_CERES
       IAU_CHALDENE
       IAU_CHARON
       IAU_CORDELIA
       IAU_CRESSIDA
+      IAU_DAVIDA
       IAU_DEIMOS
       IAU_DESDEMONA
       IAU_DESPINA
@@ -2620,6 +2669,7 @@ Appendix. ``Built in'' PCK-Based IAU Body-Fixed Reference Frames
       IAU_KALYKE
       IAU_LARISSA
       IAU_LEDA
+      IAU_LUTETIA
       IAU_LYSITHEA
       IAU_MAGACLITE
       IAU_MARS
@@ -2633,6 +2683,7 @@ Appendix. ``Built in'' PCK-Based IAU Body-Fixed Reference Frames
       IAU_NEREID
       IAU_OBERON
       IAU_OPHELIA
+      IAU_PALLAS
       IAU_PAN
       IAU_PANDORA
       IAU_PASIPHAE
@@ -2648,6 +2699,7 @@ Appendix. ``Built in'' PCK-Based IAU Body-Fixed Reference Frames
       IAU_ROSALIND
       IAU_SATURN
       IAU_SINOPE
+      IAU_STEINS
       IAU_SUN
       IAU_TAYGETE
       IAU_TELESTO

@@ -32,6 +32,7 @@ static integer c__9999 = 9999;
     integer pnter;
     char error[25];
     doublereal pstop[9999];
+    extern logical failed_(void);
     extern /* Subroutine */ int sigerr_(char *, ftnlen), scpart_(integer *, 
 	    integer *, doublereal *, doublereal *), chkout_(char *, ftnlen), 
 	    nparsi_(char *, integer *, char *, integer *, ftnlen, ftnlen), 
@@ -337,7 +338,7 @@ static integer c__9999 = 9999;
 /* $ Exceptions */
 
 /*     1) If the number of partitions in the kernel file for spacecraft */
-/*        SC excceds the parameter MXPART, the error */
+/*        SC exceeds the parameter MXPART, the error */
 /*        'SPICE(TOOMANYPARTS)' is signaled. */
 
 
@@ -373,7 +374,7 @@ static integer c__9999 = 9999;
 /* $ Files */
 
 /*     A kernel file containing spacecraft clock partition information */
-/*     for the desired spaceraft must be loaded, using the routines */
+/*     for the desired spacecraft must be loaded, using the routines */
 /*     CLPOOL and FURNSH, before calling this routine. */
 
 /* $ Particulars */
@@ -508,6 +509,12 @@ static integer c__9999 = 9999;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.2.0, 28-FEB-2014 (BVS) */
+
+/*        Added FAILED checks to prevent passing uninitialized values to */
+/*        ANINT, which can causing numeric exceptions on some */
+/*        environments. */
+
 /* -    SPICELIB Version 1.1.0, 05-FEB-2008 (NJB) */
 
 /*        The values of the parameter MXPART is now */
@@ -551,12 +558,20 @@ static integer c__9999 = 9999;
     pos = cpos_(sclkch, "/", &c__1, sclkch_len, (ftnlen)1);
     i__1 = pos;
     sctiks_(sc, sclkch + i__1, &ticks, sclkch_len - i__1);
+    if (failed_()) {
+	chkout_("SCENCD", (ftnlen)6);
+	return 0;
+    }
     ticks = d_nint(&ticks);
 
 /*     Read the partition start and stop times (in ticks) for this */
 /*     mission. Error if there are too many of them. */
 
     scpart_(sc, &nparts, pstart, pstop);
+    if (failed_()) {
+	chkout_("SCENCD", (ftnlen)6);
+	return 0;
+    }
     if (nparts > 9999) {
 	setmsg_("The number of partitions, #, for spacecraft # exceeds the v"
 		"alue for parameter MXPART, #.", (ftnlen)88);
@@ -575,13 +590,13 @@ static integer c__9999 = 9999;
     i__1 = nparts;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	pstop[(i__2 = i__ - 1) < 9999 && 0 <= i__2 ? i__2 : s_rnge("pstop", 
-		i__2, "scencd_", (ftnlen)483)] = d_nint(&pstop[(i__3 = i__ - 
+		i__2, "scencd_", (ftnlen)500)] = d_nint(&pstop[(i__3 = i__ - 
 		1) < 9999 && 0 <= i__3 ? i__3 : s_rnge("pstop", i__3, "scenc"
-		"d_", (ftnlen)483)]);
+		"d_", (ftnlen)500)]);
 	pstart[(i__2 = i__ - 1) < 9999 && 0 <= i__2 ? i__2 : s_rnge("pstart", 
-		i__2, "scencd_", (ftnlen)484)] = d_nint(&pstart[(i__3 = i__ - 
+		i__2, "scencd_", (ftnlen)501)] = d_nint(&pstart[(i__3 = i__ - 
 		1) < 9999 && 0 <= i__3 ? i__3 : s_rnge("pstart", i__3, "scen"
-		"cd_", (ftnlen)484)]);
+		"cd_", (ftnlen)501)]);
     }
 /*     For each partition, compute the total number of ticks in that */
 /*     partition plus all preceding partitions. */
@@ -591,12 +606,12 @@ static integer c__9999 = 9999;
     i__1 = nparts;
     for (i__ = 2; i__ <= i__1; ++i__) {
 	d__1 = ptotls[(i__3 = i__ - 2) < 9999 && 0 <= i__3 ? i__3 : s_rnge(
-		"ptotls", i__3, "scencd_", (ftnlen)495)] + pstop[(i__4 = i__ 
+		"ptotls", i__3, "scencd_", (ftnlen)512)] + pstop[(i__4 = i__ 
 		- 1) < 9999 && 0 <= i__4 ? i__4 : s_rnge("pstop", i__4, "sce"
-		"ncd_", (ftnlen)495)] - pstart[(i__5 = i__ - 1) < 9999 && 0 <= 
-		i__5 ? i__5 : s_rnge("pstart", i__5, "scencd_", (ftnlen)495)];
+		"ncd_", (ftnlen)512)] - pstart[(i__5 = i__ - 1) < 9999 && 0 <= 
+		i__5 ? i__5 : s_rnge("pstart", i__5, "scencd_", (ftnlen)512)];
 	ptotls[(i__2 = i__ - 1) < 9999 && 0 <= i__2 ? i__2 : s_rnge("ptotls", 
-		i__2, "scencd_", (ftnlen)495)] = d_nint(&d__1);
+		i__2, "scencd_", (ftnlen)512)] = d_nint(&d__1);
     }
 
 /*     Determine the partition number for the input clock string: */
@@ -649,9 +664,9 @@ static integer c__9999 = 9999;
 	    chkout_("SCENCD", (ftnlen)6);
 	    return 0;
 	} else if (ticks < pstart[(i__1 = part - 1) < 9999 && 0 <= i__1 ? 
-		i__1 : s_rnge("pstart", i__1, "scencd_", (ftnlen)558)] || 
+		i__1 : s_rnge("pstart", i__1, "scencd_", (ftnlen)575)] || 
 		ticks > pstop[(i__2 = part - 1) < 9999 && 0 <= i__2 ? i__2 : 
-		s_rnge("pstop", i__2, "scencd_", (ftnlen)558)]) {
+		s_rnge("pstop", i__2, "scencd_", (ftnlen)575)]) {
 	    setmsg_("SCLK count # does not fall in the boundaries of partiti"
 		    "on number #.", (ftnlen)67);
 	    errch_("#", sclkch, (ftnlen)1, sclkch_len);
@@ -664,8 +679,8 @@ static integer c__9999 = 9999;
 	part = 1;
 	while(part <= nparts && (ticks < pstart[(i__1 = part - 1) < 9999 && 0 
 		<= i__1 ? i__1 : s_rnge("pstart", i__1, "scencd_", (ftnlen)
-		575)] || ticks > pstop[(i__2 = part - 1) < 9999 && 0 <= i__2 ?
-		 i__2 : s_rnge("pstop", i__2, "scencd_", (ftnlen)575)])) {
+		592)] || ticks > pstop[(i__2 = part - 1) < 9999 && 0 <= i__2 ?
+		 i__2 : s_rnge("pstop", i__2, "scencd_", (ftnlen)592)])) {
 	    ++part;
 	}
 	if (part > nparts) {
@@ -686,12 +701,12 @@ static integer c__9999 = 9999;
 
     if (part > 1) {
 	*sclkdp = ticks - pstart[(i__1 = part - 1) < 9999 && 0 <= i__1 ? i__1 
-		: s_rnge("pstart", i__1, "scencd_", (ftnlen)605)] + ptotls[(
+		: s_rnge("pstart", i__1, "scencd_", (ftnlen)622)] + ptotls[(
 		i__2 = part - 2) < 9999 && 0 <= i__2 ? i__2 : s_rnge("ptotls",
-		 i__2, "scencd_", (ftnlen)605)];
+		 i__2, "scencd_", (ftnlen)622)];
     } else {
 	*sclkdp = ticks - pstart[(i__1 = part - 1) < 9999 && 0 <= i__1 ? i__1 
-		: s_rnge("pstart", i__1, "scencd_", (ftnlen)607)];
+		: s_rnge("pstart", i__1, "scencd_", (ftnlen)624)];
     }
     chkout_("SCENCD", (ftnlen)6);
     return 0;

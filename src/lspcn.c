@@ -15,6 +15,10 @@ static integer c__2 = 2;
 doublereal lspcn_(char *body, doublereal *et, char *abcorr, ftnlen body_len, 
 	ftnlen abcorr_len)
 {
+    /* Initialized data */
+
+    static logical first = TRUE_;
+
     /* System generated locals */
     integer i__1, i__2;
     doublereal ret_val;
@@ -23,30 +27,39 @@ doublereal lspcn_(char *body, doublereal *et, char *abcorr, ftnlen body_len,
     integer s_rnge(char *, integer, char *, integer);
 
     /* Local variables */
+    extern /* Subroutine */ int zzbods2c_(integer *, char *, integer *, 
+	    logical *, char *, integer *, logical *, ftnlen, ftnlen);
     doublereal tipm[9]	/* was [3][3] */;
+    extern /* Subroutine */ int zzctruin_(integer *);
     integer i__;
     extern /* Subroutine */ int chkin_(char *, ftnlen), errch_(char *, char *,
 	     ftnlen, ftnlen);
     logical found;
     doublereal uavel[3], npole[3], trans[9]	/* was [3][3] */;
     extern /* Subroutine */ int ucrss_(doublereal *, doublereal *, doublereal 
-	    *), bods2c_(char *, integer *, logical *, ftnlen);
+	    *);
+    static logical svfnd1;
+    static integer svctr1[2];
     extern logical failed_(void);
     integer idcode;
     doublereal lt;
     extern /* Subroutine */ int recrad_(doublereal *, doublereal *, 
-	    doublereal *, doublereal *), tipbod_(char *, integer *, 
-	    doublereal *, doublereal *, ftnlen);
+	    doublereal *, doublereal *);
+    static integer svidcd;
+    extern /* Subroutine */ int tipbod_(char *, integer *, doublereal *, 
+	    doublereal *, ftnlen);
     doublereal bstate[6], radius;
     extern /* Subroutine */ int spkgeo_(integer *, doublereal *, char *, 
 	    integer *, doublereal *, doublereal *, ftnlen), sigerr_(char *, 
 	    ftnlen), chkout_(char *, ftnlen), setmsg_(char *, ftnlen);
     doublereal sstate[6];
+    static char svbody[36];
     extern /* Subroutine */ int twovec_(doublereal *, integer *, doublereal *,
-	     integer *, doublereal *), spkezr_(char *, doublereal *, char *, 
-	    char *, char *, doublereal *, doublereal *, ftnlen, ftnlen, 
-	    ftnlen, ftnlen);
+	     integer *, doublereal *);
     extern logical return_(void);
+    extern /* Subroutine */ int spkezr_(char *, doublereal *, char *, char *, 
+	    char *, doublereal *, doublereal *, ftnlen, ftnlen, ftnlen, 
+	    ftnlen);
     doublereal lat, pos[3];
     extern /* Subroutine */ int mxv_(doublereal *, doublereal *, doublereal *)
 	    ;
@@ -94,6 +107,59 @@ doublereal lspcn_(char *body, doublereal *et, char *abcorr, ftnlen body_len,
 /*     TIME */
 
 /* $ Declarations */
+/* $ Abstract */
+
+/*     This include file defines the dimension of the counter */
+/*     array used by various SPICE subsystems to uniquely identify */
+/*     changes in their states. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 29-JUL-2013 (BVS) */
+
+/* -& */
+
+/*     End of include file. */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
@@ -290,8 +356,15 @@ doublereal lspcn_(char *body, doublereal *et, char *abcorr, ftnlen body_len,
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman       (JPL) */
+/*     B.V. Semenov       (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.0, 19-SEP-2013 (BVS) */
+
+/*        Updated to save the input body name and ZZBODTRN state */
+/*        counter and to do name-ID conversion only if the counter */
+/*        has changed. */
 
 /* -    SPICELIB Version 1.0.0, 07-JAN-2005 (NJB) */
 
@@ -311,7 +384,19 @@ doublereal lspcn_(char *body, doublereal *et, char *abcorr, ftnlen body_len,
 /*     Local parameters */
 
 
+/*     Saved body name length. */
+
+
 /*     Local variables */
+
+
+/*     Saved name/ID item declarations. */
+
+
+/*     Saved name/ID items. */
+
+
+/*     Initial values. */
 
 
 /*     Give the function an initial value. */
@@ -325,9 +410,20 @@ doublereal lspcn_(char *body, doublereal *et, char *abcorr, ftnlen body_len,
     }
     chkin_("LSPCN", (ftnlen)5);
 
+/*     Initialization. */
+
+    if (first) {
+
+/*        Initialize counters */
+
+	zzctruin_(svctr1);
+	first = FALSE_;
+    }
+
 /*     Map the body name to an ID code. */
 
-    bods2c_(body, &idcode, &found, body_len);
+    zzbods2c_(svctr1, svbody, &svidcd, &svfnd1, body, &idcode, &found, (
+	    ftnlen)36, body_len);
     if (! found) {
 	setmsg_("The body name # could not be translated to a NAIF ID code. "
 		" The cause of this problem may be that you need an updated v"
@@ -344,8 +440,8 @@ doublereal lspcn_(char *body, doublereal *et, char *abcorr, ftnlen body_len,
     tipbod_("J2000", &idcode, et, tipm, (ftnlen)5);
     for (i__ = 1; i__ <= 3; ++i__) {
 	npole[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("npole", i__1,
-		 "lspcn_", (ftnlen)339)] = tipm[(i__2 = i__ * 3 - 1) < 9 && 0 
-		<= i__2 ? i__2 : s_rnge("tipm", i__2, "lspcn_", (ftnlen)339)];
+		 "lspcn_", (ftnlen)397)] = tipm[(i__2 = i__ * 3 - 1) < 9 && 0 
+		<= i__2 ? i__2 : s_rnge("tipm", i__2, "lspcn_", (ftnlen)397)];
     }
 
 /*     Get the geometric state of the body relative to the sun. */

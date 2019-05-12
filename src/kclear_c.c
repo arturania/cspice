@@ -4,8 +4,9 @@
 
 -Abstract
  
-   Clear the KEEPER system:  unload all kernels, clear the kernel 
-   pool, and re-initialize the system. 
+   Clear the KEEPER subsystem: unload all kernels, clear the kernel
+   pool, and re-initialize the subsystem. Existing watches on kernel
+   variables are retained.
  
 -Disclaimer
  
@@ -68,15 +69,15 @@
  
    None. 
  
--Files
- 
-   See Particulars. 
- 
 -Exceptions
  
    1) Any errors that occur when setting a kernel pool watch 
       or checking watched variables will be diagnosed by 
       routines in the call tree of this routine. 
+ 
+-Files
+ 
+   See Particulars. 
  
 -Particulars
  
@@ -95,7 +96,9 @@
    kernel management subsystems (SPKBSR, CKBSR, etc.), clears the 
    kernel pool, clears KEEPER's internal file database, and re-sets 
    the watch status for the kernel variables used to load kernels 
-   via meta-kernels. 
+   via meta-kernels. As a side effect of clearing the kernel pool,
+   all watched variables are marked as updated. Note that clearing
+   the kernel pool does not delete watchers.
  
    This capability, though implemented in Fortran, is particularly 
    relevant to SPICE implementations such as Icy, for which the 
@@ -125,16 +128,22 @@
    Calling this routine will wipe out any kernel pool data 
    inserted via the p*pool_c API routines. 
  
--Author_and_Institution
- 
-   N.J. Bachman    (JPL) 
- 
 -Literature_References
  
    None. 
  
+-Author_and_Institution
+ 
+   N.J. Bachman    (JPL) 
+ 
 -Version
  
+   -CSPICE Version 1.0.1, 01-JUL-2014 (NJB)
+
+      The header Particulars section was updated to more
+      completely describe the effect of this routine on
+      kernel pool watchers. Header section order was corrected.
+
    -CSPICE Version 1.0.0, 15-NOV-2006 (NJB)
 
 -Index_Entries

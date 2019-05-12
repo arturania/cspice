@@ -40,6 +40,9 @@
          <A HREF="#COMMNT Option: R -- Read the comments in a binary file.">COMMNT Option: R -- Read the comments in a binary file.</A>
          <A HREF="#COMMNT Option: E -- Extract comments from a binary file.">COMMNT Option: E -- Extract comments from a binary file.</A>
          <A HREF="#COMMNT Option: D -- Delete the comments in a binary file.">COMMNT Option: D -- Delete the comments in a binary file.</A>
+   <A HREF="#Appendix A --- Revision History">Appendix A --- Revision History</A>
+         <A HREF="#2017 MAR 23 by N. J. Bachman">2017 MAR 23 by N. J. Bachman</A>
+         <A HREF="#2008 JAN 17 by B. V. Semenov.">2008 JAN 17 by B. V. Semenov.</A>
 
 </PRE>
 
@@ -50,7 +53,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> COMMNT User's Guide
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2008 JAN 17 by B. V. Semenov.
+   Last revised on 2017 MAR 23 by N. J. Bachman
 <P>
  
 <BR><BR>
@@ -151,14 +154,15 @@
    file would be difficult.
 <P>
  
-   The COMMNT program supports the CK, EK, PCK, and SPK SPICE binary kernel
-   file formats. CK files contain orientation information, commonly called
-   ``pointing,'' for various spacecraft structures or instruments. EK files
-   contain time tagged event information for a spacecraft. Binary PCK files
-   contain body orientation models. Binary PCK files are currently only
-   available for the Earth and the Moon with limited time coverage. SPK
-   files contain ephemeris information for solar system objects: planets,
-   satellites, comets, asteroids, and spacecraft.
+   The COMMNT program supports the CK, DSK, EK, PCK, and SPK SPICE binary
+   kernel file formats. CK files contain orientation information, commonly
+   called ``pointing,'' for various spacecraft structures or instruments.
+   DSK files contain shape models for extended objects. EK files contain
+   time tagged event information for a spacecraft. Binary PCK files contain
+   body orientation models. Binary PCK files are currently only available
+   for the Earth and the Moon with limited time coverage. SPK files contain
+   ephemeris information for solar system objects: planets, satellites,
+   comets, asteroids, and spacecraft.
 <P>
  
    The comments are stored in a ``what you put in is what you get out''
@@ -171,21 +175,24 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> References
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-   Detailed descriptions of the CK, EK, PCK, and SPK SPICE binary kernel
-   file formats may be found in the NAIF documents:
+   Detailed descriptions of the CK, DSK, EK, PCK, and SPK SPICE binary
+   kernel file formats may be found in the NAIF documents:
 <P>
  
 <UL>
 <TT>1.</TT> CK Required Reading (<a href="../req/ck.html">ck.req</a>).
 <BR><BR></UL>
 <UL>
-<TT>2.</TT> EK Required Reading (<a href="../req/ek.html">ek.req</a>).
+<TT>2.</TT> DSK Required Reading (<a href="../req/dsk.html">dsk.req</a>).
 <BR><BR></UL>
 <UL>
-<TT>3.</TT> PCK Required Reading (<a href="../req/pck.html">pck.req</a>).
+<TT>3.</TT> EK Required Reading (<a href="../req/ek.html">ek.req</a>).
 <BR><BR></UL>
 <UL>
-<TT>4.</TT> SPK Required Reading (<a href="../req/spk.html">spk.req</a>).
+<TT>4.</TT> PCK Required Reading (<a href="../req/pck.html">pck.req</a>).
+<BR><BR></UL>
+<UL>
+<TT>5.</TT> SPK Required Reading (<a href="../req/spk.html">spk.req</a>).
 <BR><BR></UL>
    Information related to other aspects of the COMMNT program and its
    options may be found in the NAIF document:
@@ -519,6 +526,24 @@ placed into the comment area of a specified SPICE binary kernel file.
    file.
 <P>
  
+<BR><BR>
+<A NAME="Appendix A --- Revision History"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Appendix A --- Revision History
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="2017 MAR 23 by N. J. Bachman"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> 2017 MAR 23 by N. J. Bachman
+</H3><P><BR><BR>
+   Updated to mention that COMMNT works with DSK files.
+<P>
+ 
+<BR><BR>
+<A NAME="2008 JAN 17 by B. V. Semenov."></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> 2008 JAN 17 by B. V. Semenov.
+</H3><P><BR><BR>
 
 </TD>
 </TR>

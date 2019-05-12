@@ -25,7 +25,6 @@
 <PRE>
    <A HREF="#Cells">Cells</A>
       <A HREF="#Abstract">Abstract</A>
-         <A HREF="#Revisions">Revisions</A>
       <A HREF="#Introduction">Introduction</A>
       <A HREF="#Naming Conventions">Naming Conventions</A>
       <A HREF="#Declaring and Initializing Cells">Declaring and Initializing Cells</A>
@@ -33,6 +32,9 @@
       <A HREF="#Character Cells">Character Cells</A>
       <A HREF="#Cell-based data types">Cell-based data types</A>
    <A HREF="#Summary">Summary</A>
+   <A HREF="#Appendix A --- Revision History">Appendix A --- Revision History</A>
+         <A HREF="#2017 MAR 13 by N. J. Bachman">2017 MAR 13 by N. J. Bachman</A>
+         <A HREF="#2002 SEP 04 by N. J. Bachman">2002 SEP 04 by N. J. Bachman</A>
 
 </PRE>
 
@@ -43,7 +45,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Cells
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2002 SEP 04 by N. J. Bachman.
+   Last revised on 2017 MAR 13 by N. J. Bachman.
 <P>
  
 <BR><BR>
@@ -56,17 +58,6 @@
    dimension and knowledge of how many components have been used.
 <P>
  
-<BR><BR>
-<A NAME="Revisions"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Revisions
-</H3><P><BR><BR>
-   September 04, 2002
-<P>
- 
-<UL>
-<TT>&#32;&#32;</TT> Initial release for CSPICE.
-<BR><BR></UL>
 <BR><BR>
 <A NAME="Introduction"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
@@ -265,8 +256,9 @@
    intended to act upon.
 <P>
  
-   The CSPICE element reference macros return a pointer to a specified data
-   array element. The macros's calling sequences are:
+   The CSPICE character element reference macro returns a pointer to a
+   specified data array element. The numeric element reference macros
+   return a dereferenced array element. The macros' calling sequences are:
 <P>
  
 <PRE>
@@ -274,8 +266,20 @@
    SPICE_CELL_ELEM_D ( &amp;cell, i );
    SPICE_CELL_ELEM_I ( &amp;cell, i );
 </PRE>
-   Note the character macro returns a pointer of type (SpiceChar *), not
-   (SpiceChar (*)[cell.length]).
+   The character macro call
+<P>
+ 
+<PRE>
+   SPICE_CELL_ELEM_C ( &amp;cell, i );
+</PRE>
+   returns a pointer to the ith string of length
+<P>
+ 
+<PRE>
+   cell.length
+</PRE>
+   in the cell's data array. However the type of the returned pointer is
+   (SpiceChar *), not (SpiceChar (*)[cell.length]).
 <P>
  
    The cell assignment macros have the calling sequences
@@ -495,11 +499,59 @@
 </DL>
 <DL><DT>
 <B>
- appndx_c ( item, cell )
+ <a href="../cspice/appndc_c.html">appndc_c</a> ( item, cell )
 </B><BR><BR>
 <DD>
- Append an item to a cell.<BR>
+ Append a SpiceChar item to a cell.<BR>
 </DL>
+<DL><DT>
+<B>
+ <a href="../cspice/appndd_c.html">appndd_c</a> ( item, cell )
+</B><BR><BR>
+<DD>
+ Append a SpiceDouble item to a cell.<BR>
+</DL>
+<DL><DT>
+<B>
+ <a href="../cspice/appndi_c.html">appndi_c</a> ( item, cell )
+</B><BR><BR>
+<DD>
+ Append a SpiceInt item to a cell.<BR>
+</DL>
+<BR><BR>
+<A NAME="Appendix A --- Revision History"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H1> Appendix A --- Revision History
+</H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="2017 MAR 13 by N. J. Bachman"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> 2017 MAR 13 by N. J. Bachman
+</H3><P><BR><BR>
+   Moved revision history to this appendix.
+<P>
+ 
+   Updated description of the element reference macros.
+<P>
+ 
+   Updated references to CSPICE cell ``append'' functions to name
+   individual functions rather than to refer to them using the notation
+<P>
+ 
+<PRE>
+   appndx_c
+</PRE>
+   Fixed typos.
+<P>
+ 
+<BR><BR>
+<A NAME="2002 SEP 04 by N. J. Bachman"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> 2002 SEP 04 by N. J. Bachman
+</H3><P><BR><BR>
+   Initial release for CSPICE.
+<P>
+ 
 
 </TD>
 </TR>

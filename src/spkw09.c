@@ -7,7 +7,7 @@
 
 /* Table of constant values */
 
-static integer c__15 = 15;
+static integer c__27 = 27;
 static integer c__2 = 2;
 static integer c__6 = 6;
 static integer c__1 = 1;
@@ -165,32 +165,32 @@ static integer c__1 = 1;
 /*     without creating a new segment. */
 
 /*     1) If FRAME is not a recognized name, the error */
-/*        SPICE(INVALIDREFFRAME) is signalled. */
+/*        SPICE(INVALIDREFFRAME) is signaled. */
 
 /*     2) If the last non-blank character of SEGID occurs past index 40, */
-/*        the error SPICE(SEGIDTOOLONG) is signalled. */
+/*        the error SPICE(SEGIDTOOLONG) is signaled. */
 
 /*     3) If SEGID contains any nonprintable characters, the error */
-/*        SPICE(NONPRINTABLECHARS) is signalled. */
+/*        SPICE(NONPRINTABLECHARS) is signaled. */
 
 /*     4) If DEGREE is not at least 1 or is greater than MAXDEG, the */
-/*        error SPICE(INVALIDDEGREE) is signalled. */
+/*        error SPICE(INVALIDDEGREE) is signaled. */
 
 /*     5) If the number of states N is not at least DEGREE+1, the error */
-/*        SPICE(TOOFEWSTATES) will be signalled. */
+/*        SPICE(TOOFEWSTATES) will be signaled. */
 
 /*     6) If FIRST is greater than or equal to LAST then the error */
-/*        SPICE(BADDESCRTIMES) will be signalled. */
+/*        SPICE(BADDESCRTIMES) will be signaled. */
 
 /*     7) If the elements of the array EPOCHS are not in strictly */
 /*        increasing order, the error SPICE(TIMESOUTOFORDER) will be */
-/*        signalled. */
+/*        signaled. */
 
 /*     8) If the first epoch EPOCHS(1) is greater than FIRST, the error */
-/*        SPICE(BADDESCRTIMES) will be signalled. */
+/*        SPICE(BADDESCRTIMES) will be signaled. */
 
 /*     9) If the last epoch EPOCHS(N) is less than LAST, the error */
-/*        SPICE(BADDESCRTIMES) will be signalled. */
+/*        SPICE(BADDESCRTIMES) will be signaled. */
 
 
 /* $ Files */
@@ -242,6 +242,11 @@ static integer c__1 = 1;
 /*     W.L. Taber     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 3.0.0, 24-DEC-2013 (NJB) */
+
+/*        Increased MAXDEG to 27 for compatibility */
+/*        with SPK type 21. */
 
 /* -    SPICELIB Version 2.0.0, 19-SEP-1995 (WLT) */
 
@@ -371,11 +376,11 @@ static integer c__1 = 1;
 /*     Make sure that the degree of the interpolating polynomials is */
 /*     in range. */
 
-    if (*degree < 1 || *degree > 15) {
+    if (*degree < 1 || *degree > 27) {
 	setmsg_("The interpolating polynomials have degree #; the valid degr"
 		"ee range is [1, #]", (ftnlen)77);
 	errint_("#", degree, (ftnlen)1);
-	errint_("#", &c__15, (ftnlen)1);
+	errint_("#", &c__27, (ftnlen)1);
 	sigerr_("SPICE(INVALIDDEGREE)", (ftnlen)20);
 	chkout_("SPKW09", (ftnlen)6);
 	return 0;

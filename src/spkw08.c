@@ -7,7 +7,7 @@
 
 /* Table of constant values */
 
-static integer c__15 = 15;
+static integer c__27 = 27;
 static integer c__2 = 2;
 static integer c__6 = 6;
 static integer c__1 = 1;
@@ -20,17 +20,20 @@ static integer c__1 = 1;
 {
     /* System generated locals */
     integer i__1;
-    doublereal d__1;
+    doublereal d__1, d__2;
 
     /* Local variables */
     integer i__;
-    extern /* Subroutine */ int chkin_(char *, ftnlen), dafps_(integer *, 
-	    integer *, doublereal *, integer *, doublereal *);
+    extern /* Subroutine */ int etcal_(doublereal *, char *, ftnlen), chkin_(
+	    char *, ftnlen), dafps_(integer *, integer *, doublereal *, 
+	    integer *, doublereal *);
     doublereal descr[5];
-    extern /* Subroutine */ int errch_(char *, char *, ftnlen, ftnlen), 
-	    errdp_(char *, doublereal *, ftnlen), dafada_(doublereal *, 
-	    integer *), dafbna_(integer *, doublereal *, char *, ftnlen), 
-	    dafena_(void);
+    extern /* Subroutine */ int errch_(char *, char *, ftnlen, ftnlen);
+    doublereal ltime;
+    extern /* Subroutine */ int errdp_(char *, doublereal *, ftnlen);
+    char etstr[40];
+    extern /* Subroutine */ int dafada_(doublereal *, integer *), dafbna_(
+	    integer *, doublereal *, char *, ftnlen), dafena_(void);
     extern logical failed_(void);
     integer chrcod, refcod;
     extern /* Subroutine */ int namfrm_(char *, integer *, ftnlen);
@@ -41,6 +44,7 @@ static integer c__1 = 1;
     extern logical return_(void);
     doublereal dcd[2];
     integer icd[6];
+    doublereal tol;
 
 /* $ Abstract */
 
@@ -84,10 +88,108 @@ static integer c__1 = 1;
 /*     FILES */
 
 /* $ Declarations */
+/* $ Abstract */
+
+/*     Declare parameters specific to SPK type 8. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Required_Reading */
+
+/*     SPK */
+
+/* $ Keywords */
+
+/*     SPK */
+
+/* $ Restrictions */
+
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     N.J. Bachman      (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 11-JAN-2014 (NJB) */
+
+/* -& */
+
+/*     MAXDEG         is the maximum allowed degree of type 8 */
+/*                    interpolating polynomials. If the value of MAXDEG */
+/*                    is increased, the SPICELIB routine SPKPVN must be */
+/*                    changed accordingly. In particular, the size of */
+/*                    the record passed to SPKRnn and SPKEnn must be */
+/*                    increased, and comments describing the record size */
+/*                    must be changed. */
+
+/*                    The record size requirement is */
+
+/*                       MAXREC = ( 3 * ( MAXDEG + 1 ) )  +  3 */
+
+
+
+/*     TOLSCL         is a tolerance scale factor (also called a */
+/*                    "relative tolerance") used for time coverage */
+/*                    bound checking. TOLSCL is unitless. TOLSCL */
+/*                    produces a tolerance value via the formula */
+
+/*                       TOL = TOLSCL * MAX( ABS(FIRST), ABS(LAST) ) */
+
+/*                    where FIRST and LAST are the coverage time bounds */
+/*                    of a type 2 segment, expressed as seconds past */
+/*                    J2000 TDB. */
+
+/*                    The resulting parameter TOL is used as a tolerance */
+/*                    for comparing the input segment descriptor time */
+/*                    bounds to the first and last epoch covered by the */
+/*                    sequence of time intervals defined by the inputs */
+/*                    to SPKW08: */
+
+/*                       EPOCH1 */
+/*                       STEP */
+/*                       N */
+
+/*     Tolerance scale for coverage gap at the endpoints */
+/*     of the segment coverage interval: */
+
+
+/*     End of include file spk08.inc. */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
 /*     --------  ---  -------------------------------------------------- */
+/*     MAXDEG     P   Maximum degree of interpolating polynomials. */
+/*     TOLSCL     P   Scale factor used to compute time bound tolerance. */
 /*     HANDLE     I   Handle of an SPK file open for writing. */
 /*     BODY       I   NAIF code for an ephemeris object. */
 /*     CENTER     I   NAIF code for center of motion of BODY. */
@@ -156,13 +258,33 @@ static integer c__1 = 1;
 
 /* $ Parameters */
 
-/*     MAXDEG         is the maximum allowed degree of the interpolating */
-/*                    polynomial.  If the value of MAXDEG is increased, */
-/*                    the SPICELIB routine SPKPV must be changed */
-/*                    accordingly.  In particular, the size of the */
-/*                    record passed to SPKRnn and SPKEnn must be */
-/*                    increased, and comments describing the record size */
-/*                    must be changed. */
+/*     See the include file spk08.inc for declarations of the */
+/*     parameters described below. */
+
+/*     MAXDEG         is the maximum degree of Lagrange polynomials that */
+/*                    can be used to interpolate states from the segment */
+/*                    written by this routine. */
+
+/*     TOLSCL         is a tolerance scale factor (also called a */
+/*                    "relative tolerance") used for time coverage */
+/*                    bound checking. TOLSCL is unitless. TOLSCL */
+/*                    produces a tolerance value via the formula */
+
+/*                       TOL = TOLSCL * MAX( ABS(FIRST), ABS(LAST) ) */
+
+/*                    where FIRST and LAST are the coverage time bounds */
+/*                    of a type 8 segment, expressed as seconds past */
+/*                    J2000 TDB. */
+
+/*                    The resulting parameter TOL is used as a tolerance */
+/*                    for comparing the input segment descriptor time */
+/*                    bounds to the first and last epoch covered by the */
+/*                    sequence of time intervals defined by the inputs */
+/*                    to SPKW08: */
+
+/*                       EPOCH1 */
+/*                       STEP */
+/*                       N */
 
 /* $ Exceptions */
 
@@ -170,35 +292,32 @@ static integer c__1 = 1;
 /*     without creating a new segment. */
 
 /*     1) If FRAME is not a recognized name, the error */
-/*        SPICE(INVALIDREFFRAME) is signalled. */
+/*        SPICE(INVALIDREFFRAME) is signaled. */
 
 /*     2) If the last non-blank character of SEGID occurs past index 40, */
-/*        the error SPICE(SEGIDTOOLONG) is signalled. */
+/*        the error SPICE(SEGIDTOOLONG) is signaled. */
 
 /*     3) If SEGID contains any nonprintable characters, the error */
-/*        SPICE(NONPRINTABLECHARS) is signalled. */
+/*        SPICE(NONPRINTABLECHARS) is signaled. */
 
 /*     4) If DEGREE is not at least 1 or is greater than MAXDEG, the */
-/*        error SPICE(INVALIDDEGREE) is signalled. */
+/*        error SPICE(INVALIDDEGREE) is signaled. */
 
 /*     5) If the number of states N is not at least DEGREE+1, the error */
-/*        SPICE(TOOFEWSTATES) will be signalled. */
+/*        SPICE(TOOFEWSTATES) will be signaled. */
 
 /*     6) If FIRST is greater than LAST then the error */
-/*        SPICE(BADDESCRTIMES) will be signalled. */
+/*        SPICE(BADDESCRTIMES) will be signaled. */
 
 /*     7) If STEP is non-positive, the error SPICE(INVALIDSTEPSIZE) will */
-/*        be signalled. */
+/*        be signaled. */
 
-/*     8) If the first epoch EPOCH1 is greater than FIRST, the error */
-/*        SPICE(BADDESCRTIMES) will be signalled. */
-
-/*     9) If the last epoch */
-
-/*           FIRST + (N-1)*STEP */
-
-/*        is less than LAST, the error SPICE(BADDESCRTIMES) will be */
-/*        signalled. */
+/*     8) If the start time of the first record exceeds the descriptor */
+/*        begin time by more than a computed tolerance, or if the end */
+/*        time of the last record precedes the descriptor end time by */
+/*        more than a computed tolerance, the error SPICE(COVERAGEGAP) */
+/*        is signaled. See the Parameters section above for a */
+/*        description of the tolerance. */
 
 /* $ Files */
 
@@ -249,6 +368,15 @@ static integer c__1 = 1;
 /*     W.L. Taber     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 3.0.0, 11-JAN-2013 (NJB) */
+
+/*        Relaxed test on relationship between the time bounds of the */
+/*        input record set (determined by EPOCH1, STEP, and N) and the */
+/*        descriptor bounds FIRST and LAST. Now the descriptor bounds */
+/*        may extend beyond the time bounds of the record set by a ratio */
+/*        computed using the parameter TOLSCL (see Parameters above for */
+/*        details). MAXDEG was increased to 27. */
 
 /* -    SPICELIB Version 2.0.0, 19-SEP-1995 (WLT) */
 
@@ -323,9 +451,8 @@ static integer c__1 = 1;
 
     if (return_()) {
 	return 0;
-    } else {
-	chkin_("SPKW08", (ftnlen)6);
     }
+    chkin_("SPKW08", (ftnlen)6);
 
 /*     Get the NAIF integer code for the reference frame. */
 
@@ -369,11 +496,11 @@ static integer c__1 = 1;
 /*     Make sure that the degree of the interpolating polynomials is */
 /*     in range. */
 
-    if (*degree < 1 || *degree > 15) {
+    if (*degree < 1 || *degree > 27) {
 	setmsg_("The interpolating polynomials have degree #; the valid degr"
 		"ee range is [1, #].", (ftnlen)78);
 	errint_("#", degree, (ftnlen)1);
-	errint_("#", &c__15, (ftnlen)1);
+	errint_("#", &c__27, (ftnlen)1);
 	sigerr_("SPICE(INVALIDDEGREE)", (ftnlen)20);
 	chkout_("SPKW08", (ftnlen)6);
 	return 0;
@@ -416,22 +543,47 @@ static integer c__1 = 1;
 	return 0;
     }
 
-/*     Make sure that the span of the input epochs includes the interval */
-/*     defined by the segment descriptor. */
+/*     Compute the tolerance to use for descriptor time bound checks. */
 
-    if (*epoch1 > *first) {
-	setmsg_("Segment start time # precedes first epoch #.", (ftnlen)44);
+/* Computing MAX */
+    d__1 = abs(*first), d__2 = abs(*last);
+    tol = max(d__1,d__2) * 1e-13;
+    if (*first < *epoch1 - tol) {
+	setmsg_("The segment descriptor start time # is too much less than t"
+		"he beginning time of the  segment data # (in seconds past J2"
+		"000: #). The difference is # seconds; the  tolerance is # se"
+		"conds.", (ftnlen)185);
+	etcal_(first, etstr, (ftnlen)40);
+	errch_("#", etstr, (ftnlen)1, (ftnlen)40);
+	etcal_(epoch1, etstr, (ftnlen)40);
+	errch_("#", etstr, (ftnlen)1, (ftnlen)40);
 	errdp_("#", first, (ftnlen)1);
-	errdp_("#", epoch1, (ftnlen)1);
-	sigerr_("SPICE(BADDESCRTIMES)", (ftnlen)20);
+	d__1 = *epoch1 - *first;
+	errdp_("#", &d__1, (ftnlen)1);
+	errdp_("#", &tol, (ftnlen)1);
+	sigerr_("SPICE(COVERAGEGAP)", (ftnlen)18);
 	chkout_("SPKW08", (ftnlen)6);
 	return 0;
-    } else if (*epoch1 + (*n - 1) * *step < *last) {
-	setmsg_("Segment end time # follows last epoch #.", (ftnlen)40);
+    }
+
+/*     The end time of the final record must be greater than or */
+/*     equal to the end time of the segment. */
+
+    ltime = *epoch1 + (*n - 1) * *step;
+    if (*last > ltime + tol) {
+	setmsg_("The segment descriptor end time # is too much greater than "
+		"the end time of the segment data # (in seconds past J2000: #"
+		"). The difference is # seconds; the tolerance is # seconds.", 
+		(ftnlen)178);
+	etcal_(last, etstr, (ftnlen)40);
+	errch_("#", etstr, (ftnlen)1, (ftnlen)40);
+	etcal_(&ltime, etstr, (ftnlen)40);
+	errch_("#", etstr, (ftnlen)1, (ftnlen)40);
 	errdp_("#", last, (ftnlen)1);
-	d__1 = *epoch1 + (*n - 1) * *step;
+	d__1 = *last - ltime;
 	errdp_("#", &d__1, (ftnlen)1);
-	sigerr_("SPICE(BADDESCRTIMES)", (ftnlen)20);
+	errdp_("#", &tol, (ftnlen)1);
+	sigerr_("SPICE(COVERAGEGAP)", (ftnlen)18);
 	chkout_("SPKW08", (ftnlen)6);
 	return 0;
     }

@@ -57,9 +57,8 @@ static integer c__12 = 12;
 
 /* $ Required_Reading */
 
-/*     CK.REQ */
-/*     DAF.REQ */
-/*     GS.REQ */
+/*     CK */
+/*     DAF */
 
 /* $ Keywords */
 
@@ -123,6 +122,12 @@ static integer c__12 = 12;
 /*     CK Required Reading. */
 
 /* $ Version */
+
+/* -    SPICELIB Version 3.0.0, 27-JAN-2014 (NJB) */
+
+/*        Updated to support CK type 6. Maximum degree for */
+/*        type 5 was updated to be consistent with the */
+/*        maximum degree for type 6. */
 
 /* -    SPICELIB Version 2.0.0, 19-AUG-2002 (NJB) */
 
@@ -210,10 +215,45 @@ static integer c__12 = 12;
 /*                 CK5RSZ = ( CK5MXD + 1 ) * CK5MXP + CK5MET */
 
 
+/*     CK Type 6 parameters: */
+
+
+/*     CK6DTP   CK data type 6 ID; */
+
+/*     CK6MXD   maximum polynomial degree allowed in type 6 */
+/*              records. */
+
+/*     CK6MET   number of additional DPs, which are not polynomial */
+/*              coefficients, located at the beginning of a type 6 */
+/*              CK record that passed between routines CKR06 and CKE06; */
+
+/*     CK6MXP   maximum packet size for any subtype.  Subtype 2 */
+/*              has the greatest packet size, since these packets */
+/*              contain a quaternion, its derivative, an angular */
+/*              velocity vector, and its derivative.  See ck06.inc */
+/*              for a description of the subtypes. */
+
+/*     CK6RSZ   maximum size of type 6 CK record passed between CKR06 */
+/*              and CKE06; CK6RSZ is computed as follows: */
+
+/*                 CK6RSZ = CK6MET + ( CK6MXD + 1 ) * ( CK6PS3 + 1 ) */
+
+/*              where CK6PS3 is equal to the parameter CK06PS3 defined */
+/*              in ck06.inc. Note that the subtype having the largest */
+/*              packet size (subtype 2) does not give rise to the */
+/*              largest record size, because that type is Hermite and */
+/*              requires half the window size used by subtype 3 for a */
+/*              given polynomial degree. */
+
+
+/*     The parameter CK6PS3 must be in sync with C06PS3 defined in */
+/*     ck06.inc. */
+
+
 
 /*     Maximum record size that can be handled by CKPFS. This value */
 /*     must be set to the maximum of all CKxRSZ parameters (currently */
-/*     CK4RSZ.) */
+/*     CK5RSZ.) */
 
 /* $ Brief_I/O */
 
@@ -240,11 +280,6 @@ static integer c__12 = 12;
 
 /*     See 'ckparam.inc'. */
 
-/* $ Files */
-
-/*     The file specified by HANDLE should be open for read or */
-/*     write access. */
-
 /* $ Exceptions */
 
 /*     1)  If the segment indicated by DESCR is not a type 4 segment, */
@@ -257,6 +292,11 @@ static integer c__12 = 12;
 /*     3)  If DESCR is not a valid descriptor of a segment in the CK */
 /*         file specified by HANDLE, the results of this routine are */
 /*         unpredictable. */
+
+/* $ Files */
+
+/*     The file specified by HANDLE should be open for read or */
+/*     write access. */
 
 /* $ Particulars */
 
@@ -379,6 +419,10 @@ static integer c__12 = 12;
 /*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1, 18-APR-2014 (BVS) */
+
+/*        Minor header edits. */
 
 /* -    SPICELIB Version 1.0.0, 05-MAY-1999 (YKZ) (BVS) */
 

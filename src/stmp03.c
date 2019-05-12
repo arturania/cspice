@@ -18,15 +18,16 @@
 
     /* Builtin functions */
     integer s_rnge(char *, integer, char *, integer);
-    double log(doublereal);
+    double log(doublereal), sqrt(doublereal), cosh(doublereal), sinh(
+	    doublereal), cos(doublereal), sin(doublereal);
 
     /* Local variables */
-    integer divs, i__;
-    doublereal w, y, z__;
+    integer i__;
+    doublereal y, z__;
     extern /* Subroutine */ int chkin_(char *, ftnlen);
     extern doublereal dpmax_(void);
     extern /* Subroutine */ int errdp_(char *, doublereal *, ftnlen);
-    static doublereal pairs[18], lbound;
+    static doublereal pairs[20], lbound;
     extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
 	    ftnlen), setmsg_(char *, ftnlen);
 
@@ -261,10 +262,42 @@
 
 /* $ Author_and_Institution */
 
+/*     N.J. Bachman   (JPL) */
 /*     H.A. Neilan    (JPL) */
 /*     W.L. Taber     (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 3.27.0, 08-APR-2014 (NJB) */
+
+/*        Updated in-line documentation and cleaned up */
+/*        code following changes made in version 3.21.0. */
+
+/* -    SPICELIB Version 3.26.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-INTEL. */
+
+/* -    SPICELIB Version 3.25.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 3.24.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-GFORTRAN. */
+
+/* -    SPICELIB Version 3.23.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 3.22.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GCC_C. */
+
+/* -    SPICELIB Version 3.21.0, 09-APR-2012 (WLT) */
+
+/*        Code was updated to correct execessive round-off */
+/*        errors in the case where |X| > 1. */
 
 /* -    SPICELIB Version 3.20.0, 13-MAY-2010 (BVS) */
 
@@ -393,6 +426,23 @@
 /* -& */
 /* $ Revisions */
 
+/* -    SPICELIB Version 3.27.0, 08-APR-2014 (NJB) (WLT) */
+
+/*        In version 3.21.0, the routine was re-written to use the */
+/*        standard trigonometric and hyperbolic trigonometric formulas */
+/*        for the Stumpff functions for input arguments having magnitude */
+/*        greater than or equal to 1. This was done to prevent loss of */
+/*        accuracy for some input values. */
+
+/*        In version 3.27.0, the code was cleaned up: unreachable code */
+/*        was deleted, and comments were changed to match the updated */
+/*        code. */
+
+/*        The derivation of the argument mapping formulas has been */
+/*        retained as an appendix in a comment section at the end of */
+/*        this source file. These formulas may be used a future revision */
+/*        of this routine. */
+
 /* -    SPICELIB Version 3.0.0, 08-APR-1998 (NJB) */
 
 /*        Module was updated for the PC-LINUX platform. */
@@ -513,9 +563,9 @@
 
     if (first) {
 	first = FALSE_;
-	for (i__ = 1; i__ <= 18; ++i__) {
-	    pairs[(i__1 = i__ - 1) < 18 && 0 <= i__1 ? i__1 : s_rnge("pairs", 
-		    i__1, "stmp03_", (ftnlen)564)] = 1. / ((doublereal) i__ * 
+	for (i__ = 1; i__ <= 20; ++i__) {
+	    pairs[(i__1 = i__ - 1) < 20 && 0 <= i__1 ? i__1 : s_rnge("pairs", 
+		    i__1, "stmp03_", (ftnlen)589)] = 1. / ((doublereal) i__ * 
 		    (doublereal) (i__ + 1));
 	}
 	y = log(2.) + log(dpmax_());
@@ -601,32 +651,37 @@
 /*                                                  8 */
 
 
-
-/*     First we divide X by 16 until we reach a value for which */
-/*     convergence of the Taylor Series is relatively rapid. */
-
-    y = *x;
-    divs = 0;
-    if (*x < 0.) {
-	while(y < -1.) {
-	    y /= 16.;
-	    ++divs;
-	}
-    } else {
-	while(y > 1.) {
-	    y /= 16.;
-	    ++divs;
-	}
+    if (*x < -1.) {
+	z__ = sqrt(-(*x));
+	*c0 = cosh(z__);
+	*c1 = sinh(z__) / z__;
+	*c2 = (1 - *c0) / *x;
+	*c3 = (1 - *c1) / *x;
+	return 0;
+    }
+    if (*x > 1.) {
+	z__ = sqrt(*x);
+	*c0 = cos(z__);
+	*c1 = sin(z__) / z__;
+	*c2 = (1 - *c0) / *x;
+	*c3 = (1 - *c1) / *x;
+	return 0;
     }
 
-/*     Compute C_3 of y : */
+/*     If the magnitude of X is less than or equal to 1, we compute */
+/*     the function values directly from their power series */
+/*     representations. */
 
-/*              .    1      y       y             y       y */
-/*       C_3(y) =   --- -  ---  +  ---  +  ... - ---  +  --- */
+
+/*     Compute C_3 of x : */
+
+/*                                   2             7       8 */
+/*              .    1      x       x             x       x */
+/*       C_3(x) =   --- -  ---  +  ---  +  ... - ---  +  --- */
 /*                   3!     5!      7!           17!     19! */
 
 
-/*                 1        y         y            y           y */
+/*                 1        x         x            x           x */
 /*              = ---( 1 - --- ( 1 - --- (...( 1- ----- ( 1 - ----- )...) */
 /*                2*3      4*5       6*7          16*17       18*19 */
 
@@ -639,22 +694,22 @@
 /*     LPAIR3 will be 18. */
 
     *c3 = 1.;
-    for (i__ = 18; i__ >= 4; i__ += -2) {
-	*c3 = 1. - y * pairs[(i__1 = i__ - 1) < 18 && 0 <= i__1 ? i__1 : 
-		s_rnge("pairs", i__1, "stmp03_", (ftnlen)701)] * *c3;
+    for (i__ = 20; i__ >= 4; i__ += -2) {
+	*c3 = 1. - *x * pairs[(i__1 = i__ - 1) < 20 && 0 <= i__1 ? i__1 : 
+		s_rnge("pairs", i__1, "stmp03_", (ftnlen)733)] * *c3;
     }
     *c3 = pairs[1] * *c3;
 
-/*     Compute C_2 of y  : */
+/*     Compute C_2 of x  : */
 
 /*        Here's how we do it. */
 /*                                   2             7       8 */
-/*              .    1      y       y             y       y */
-/*       C_2(y) =   --- -  ---  +  ---  +  ... + ---  -  --- */
+/*              .    1      x       x             x       x */
+/*       C_2(x) =   --- -  ---  +  ---  +  ... + ---  -  --- */
 /*                   2!     4!      6!           16!     18! */
 
 
-/*                 1        y         y            y           y */
+/*                 1        x         x            x           x */
 /*              = ---( 1 - --- ( 1 - --- (...( 1- ----- ( 1 - ----- )...) */
 /*                1*2      3*4       5*6          15*16       17*18 */
 
@@ -667,32 +722,20 @@
 /*     LPAIR2 will be 17. */
 
     *c2 = 1.;
-    for (i__ = 17; i__ >= 3; i__ += -2) {
-	*c2 = 1. - y * pairs[(i__1 = i__ - 1) < 18 && 0 <= i__1 ? i__1 : 
-		s_rnge("pairs", i__1, "stmp03_", (ftnlen)732)] * *c2;
+    for (i__ = 19; i__ >= 3; i__ += -2) {
+	*c2 = 1. - *x * pairs[(i__1 = i__ - 1) < 20 && 0 <= i__1 ? i__1 : 
+		s_rnge("pairs", i__1, "stmp03_", (ftnlen)764)] * *c2;
     }
     *c2 = pairs[0] * *c2;
 
 /*     Get C1 and C0 via the recursion formula: */
 
 /*                         1 */
-/*          y*C_k+2(y) =  ---  -  C_k(y) */
+/*          x*C_k+2(y) =  ---  -  C_k(x) */
 /*                         k! */
 
-    *c1 = 1. - y * *c3;
-    *c0 = 1. - y * *c2;
-
-/*     Now using the 16th angle formulae, compute C0 through C3 at X. */
-
-    i__1 = divs;
-    for (i__ = 1; i__ <= i__1; ++i__) {
-	z__ = *c0 * *c0 - .5;
-	w = *c0 * *c1 * 2.;
-	*c3 = (*c1 * *c1 + z__ * (*c2 + *c0 * *c3)) * .125;
-	*c2 = w * .125 * w;
-	*c1 = z__ * w;
-	*c0 = z__ * 8. * z__ - 1.;
-    }
+    *c1 = 1. - *x * *c3;
+    *c0 = 1. - *x * *c2;
     return 0;
 } /* stmp03_ */
 

@@ -5,7 +5,7 @@
 
 #include "f2c.h"
 
-/* $Procedure      PCK03A ( PCK type 03: Add data to a segment ) */
+/* $Procedure PCK03A ( PCK, add data to a type 3 segment ) */
 /* Subroutine */ int pck03a_(integer *handle, integer *ncsets, doublereal *
 	coeffs, doublereal *epochs)
 {
@@ -97,6 +97,15 @@
 /* $ Parameters */
 
 /*     None. */
+
+/* $ Exceptions */
+
+/*     1) If the number of coefficient sets and epochs is not positive, */
+/*        the error SPICE(INVALIDARGUMENT) will be signalled. */
+
+/* $ Files */
+
+/*     See argument HANDLE. */
 
 /* $ Particulars */
 
@@ -304,24 +313,21 @@
 /*        been started by the routine PCK03B, the routine which begins a */
 /*        type 03 PCK segment. */
 
-/* $ Exceptions */
+/* $ Literature_References */
 
-/*     1) If the number of coefficient sets and epochs is not positive, */
-/*        the error SPICE(INVALIDARGUMENT) will be signalled. */
-
-/* $ Files */
-
-/*     See argument HANDLE. */
+/*     None. */
 
 /* $ Author_and_Institution */
 
 /*     K.R. Gehringer      (JPL) */
 
-/* $ Literature_References */
-
-/*     None. */
-
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.1, 03-JAN-2014 (EDW) */
+
+/*        Minor edits to Procedure; clean trailing whitespace. */
+/*        Corrected order of header sections to conform to NAIF */
+/*        standard. */
 
 /* -    SPICELIB Version 1.1.0, 07-SEP-2001 (EDW) */
 

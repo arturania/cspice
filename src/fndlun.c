@@ -23,7 +23,7 @@
 
     /* Local variables */
     static integer i__;
-    static logical resvd[99], opened;
+    static logical resvd[63], opened;
     static integer iostat;
 
 /* $ Abstract */
@@ -249,6 +249,26 @@
 /*     M.J. Spencer    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 6.26.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for SUN-SOLARIS-64BIT-INTEL. */
+
+/* -    SPICELIB Version 6.25.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-LINUX-64BIT-IFORT. */
+
+/* -    SPICELIB Version 6.24.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-GFORTRAN. */
+
+/* -    SPICELIB Version 6.23.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GFORTRAN. */
+
+/* -    SPICELIB Version 6.22.0, 10-MAR-2014 (BVS) */
+
+/*        Updated for PC-CYGWIN-64BIT-GCC_C. */
 
 /* -    SPICELIB Version 6.21.0, 13-MAY-2010 (BVS) */
 
@@ -501,15 +521,15 @@
 /*     Initialize RESVD if it hasn't already been done. */
 
     if (first) {
-	for (i__ = 1; i__ <= 99; ++i__) {
-	    resvd[(i__1 = i__ - 1) < 99 && 0 <= i__1 ? i__1 : s_rnge("resvd", 
-		    i__1, "fndlun_", (ftnlen)513)] = FALSE_;
+	for (i__ = 1; i__ <= 63; ++i__) {
+	    resvd[(i__1 = i__ - 1) < 63 && 0 <= i__1 ? i__1 : s_rnge("resvd", 
+		    i__1, "fndlun_", (ftnlen)533)] = FALSE_;
 	}
 	for (i__ = 1; i__ <= 3; ++i__) {
 	    resvd[(i__2 = resnum[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : 
-		    s_rnge("resnum", i__1, "fndlun_", (ftnlen)517)] - 1) < 99 
+		    s_rnge("resnum", i__1, "fndlun_", (ftnlen)537)] - 1) < 63 
 		    && 0 <= i__2 ? i__2 : s_rnge("resvd", i__2, "fndlun_", (
-		    ftnlen)517)] = TRUE_;
+		    ftnlen)537)] = TRUE_;
 	}
 	first = FALSE_;
     }
@@ -518,9 +538,9 @@
 /*     Cycle through the available units. Skip reserved units, */
 /*     INQUIRE about others. */
 
-    for (i__ = last + 1; i__ <= 99; ++i__) {
-	if (resvd[(i__1 = i__ - 1) < 99 && 0 <= i__1 ? i__1 : s_rnge("resvd", 
-		i__1, "fndlun_", (ftnlen)531)]) {
+    for (i__ = last + 1; i__ <= 63; ++i__) {
+	if (resvd[(i__1 = i__ - 1) < 63 && 0 <= i__1 ? i__1 : s_rnge("resvd", 
+		i__1, "fndlun_", (ftnlen)551)]) {
 	    opened = TRUE_;
 	} else {
 	    ioin__1.inerr = 1;
@@ -559,8 +579,8 @@
 
     i__1 = last;
     for (i__ = 1; i__ <= i__1; ++i__) {
-	if (resvd[(i__2 = i__ - 1) < 99 && 0 <= i__2 ? i__2 : s_rnge("resvd", 
-		i__2, "fndlun_", (ftnlen)558)]) {
+	if (resvd[(i__2 = i__ - 1) < 63 && 0 <= i__2 ? i__2 : s_rnge("resvd", 
+		i__2, "fndlun_", (ftnlen)578)]) {
 	    opened = TRUE_;
 	} else {
 	    ioin__1.inerr = 1;
@@ -781,15 +801,15 @@ L_reslun:
 /*     Initialize RESVD if it hasn't already been done. */
 
     if (first) {
-	for (i__ = 1; i__ <= 99; ++i__) {
-	    resvd[(i__1 = i__ - 1) < 99 && 0 <= i__1 ? i__1 : s_rnge("resvd", 
-		    i__1, "fndlun_", (ftnlen)781)] = FALSE_;
+	for (i__ = 1; i__ <= 63; ++i__) {
+	    resvd[(i__1 = i__ - 1) < 63 && 0 <= i__1 ? i__1 : s_rnge("resvd", 
+		    i__1, "fndlun_", (ftnlen)801)] = FALSE_;
 	}
 	for (i__ = 1; i__ <= 3; ++i__) {
 	    resvd[(i__2 = resnum[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : 
-		    s_rnge("resnum", i__1, "fndlun_", (ftnlen)785)] - 1) < 99 
+		    s_rnge("resnum", i__1, "fndlun_", (ftnlen)805)] - 1) < 63 
 		    && 0 <= i__2 ? i__2 : s_rnge("resvd", i__2, "fndlun_", (
-		    ftnlen)785)] = TRUE_;
+		    ftnlen)805)] = TRUE_;
 	}
 	first = FALSE_;
     }
@@ -797,9 +817,9 @@ L_reslun:
 /*     If UNIT is in the proper range, set the corresponding flag */
 /*     to TRUE. */
 
-    if (*unit >= 1 && *unit <= 99) {
-	resvd[(i__1 = *unit - 1) < 99 && 0 <= i__1 ? i__1 : s_rnge("resvd", 
-		i__1, "fndlun_", (ftnlen)797)] = TRUE_;
+    if (*unit >= 1 && *unit <= 63) {
+	resvd[(i__1 = *unit - 1) < 63 && 0 <= i__1 ? i__1 : s_rnge("resvd", 
+		i__1, "fndlun_", (ftnlen)817)] = TRUE_;
     }
     return 0;
 /* $Procedure FRELUN ( Free a reserved logical unit ) */
@@ -991,15 +1011,15 @@ L_frelun:
 /*     Initialize RESVD if it hasn't already been done. */
 
     if (first) {
-	for (i__ = 1; i__ <= 99; ++i__) {
-	    resvd[(i__1 = i__ - 1) < 99 && 0 <= i__1 ? i__1 : s_rnge("resvd", 
-		    i__1, "fndlun_", (ftnlen)1002)] = FALSE_;
+	for (i__ = 1; i__ <= 63; ++i__) {
+	    resvd[(i__1 = i__ - 1) < 63 && 0 <= i__1 ? i__1 : s_rnge("resvd", 
+		    i__1, "fndlun_", (ftnlen)1022)] = FALSE_;
 	}
 	for (i__ = 1; i__ <= 3; ++i__) {
 	    resvd[(i__2 = resnum[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : 
-		    s_rnge("resnum", i__1, "fndlun_", (ftnlen)1006)] - 1) < 
-		    99 && 0 <= i__2 ? i__2 : s_rnge("resvd", i__2, "fndlun_", 
-		    (ftnlen)1006)] = TRUE_;
+		    s_rnge("resnum", i__1, "fndlun_", (ftnlen)1026)] - 1) < 
+		    63 && 0 <= i__2 ? i__2 : s_rnge("resvd", i__2, "fndlun_", 
+		    (ftnlen)1026)] = TRUE_;
 	}
 	first = FALSE_;
     }
@@ -1007,15 +1027,15 @@ L_frelun:
 /*     If UNIT is in the proper range and it has not been reserved by */
 /*     default, set the corresponding flag to FALSE. */
 
-    if (*unit >= 1 && *unit <= 99) {
+    if (*unit >= 1 && *unit <= 63) {
 	for (i__ = 1; i__ <= 3; ++i__) {
 	    if (*unit == resnum[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : 
-		    s_rnge("resnum", i__1, "fndlun_", (ftnlen)1020)]) {
+		    s_rnge("resnum", i__1, "fndlun_", (ftnlen)1040)]) {
 		return 0;
 	    }
 	}
-	resvd[(i__1 = *unit - 1) < 99 && 0 <= i__1 ? i__1 : s_rnge("resvd", 
-		i__1, "fndlun_", (ftnlen)1025)] = FALSE_;
+	resvd[(i__1 = *unit - 1) < 63 && 0 <= i__1 ? i__1 : s_rnge("resvd", 
+		i__1, "fndlun_", (ftnlen)1045)] = FALSE_;
     }
     return 0;
 } /* fndlun_ */

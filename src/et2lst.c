@@ -89,8 +89,8 @@ static integer c__7 = 7;
 
 /* $ Abstract */
 
-/*    Given an ephemeris epoch ET, compute the local solar time for */
-/*    an object on the surface of a body at a specified longitude. */
+/*     Given an ephemeris epoch ET, compute the local solar time for */
+/*     an object on the surface of a body at a specified longitude. */
 
 /* $ Disclaimer */
 
@@ -345,6 +345,10 @@ static integer c__7 = 7;
 
 /* $ Version */
 
+/* -    SPICELIB Version 3.0.2, 18-APR-2014 (BVS) */
+
+/*        Minor edits to long error messages. */
+
 /* -    SPICELIB Version 3.0.1, 09-SEP-2009 (EDW) */
 
 /*        Header edits: deleted a spurious C$ marker from the */
@@ -475,7 +479,7 @@ static integer c__7 = 7;
     if (! found) {
 	setmsg_("The body-fixed frame associated with body # could not be de"
 		"termined.  This information needs to be \"loaded\" via a fra"
-		"mes definition kernel.  See FRAMES.REQ for more details. ", (
+		"mes definition kernel.  See frames.req for more details. ", (
 		ftnlen)174);
 	errint_("#", body, (ftnlen)1);
 	sigerr_("SPICE(CANTFINDFRAME)", (ftnlen)20);
@@ -508,7 +512,7 @@ static integer c__7 = 7;
 		"cause the # keyword was either not found in the POOL or or i"
 		"t was not of the expected type and/or dimension. This keywor"
 		"d is usually provided via a planetary constants kernel. See "
-		"PCK.REQ for more details. ", (ftnlen)265);
+		"pck.req for more details. ", (ftnlen)265);
 	errint_("#", body, (ftnlen)1);
 	errch_("#", bpmkwd, (ftnlen)1, (ftnlen)32);
 	sigerr_("SPICE(CANTGETROTATIONTYPE)", (ftnlen)26);

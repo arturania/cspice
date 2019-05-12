@@ -22,7 +22,7 @@ static integer c__6 = 6;
     /* Local variables */
     integer i__, n;
     extern /* Subroutine */ int moved_(doublereal *, integer *, doublereal *);
-    doublereal locrec[129];
+    doublereal locrec[198];
     extern doublereal lgrint_(integer *, doublereal *, doublereal *, 
 	    doublereal *, doublereal *);
     extern /* Subroutine */ int xposeg_(doublereal *, integer *, integer *, 
@@ -124,6 +124,12 @@ static integer c__6 = 6;
 /*     None. */
 
 /* $ Version */
+
+/* -    SPICELIB Version 2.0.0, 05-OCT-2012 (NJB) */
+
+/*        Updated to support increase of maximum degree to 27 for types */
+/*        2, 3, 8, 9, 12, 13, 18, and 19. See SPKPVN for a list */
+/*        of record size requirements as a function of data type. */
 
 /* -    SPICELIB Version 1.0.0, 16-AUG-2002 (NJB) */
 

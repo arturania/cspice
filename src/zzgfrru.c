@@ -9,11 +9,12 @@
 
 static integer c__0 = 0;
 
-/* $Procedure ZZGFRRU ( Private - GF, range rate utility routine ) */
+/* $Procedure ZZGFRRU ( Private --- GF, range rate utility routine ) */
 /* Subroutine */ int zzgfrru_0_(int n__, char *target, char *abcorr, char *
-	obsrvr, doublereal *refval, doublereal *et, doublereal *dt, logical *
-	decres, logical *lssthn, doublereal *rvl, ftnlen target_len, ftnlen 
-	abcorr_len, ftnlen obsrvr_len)
+	obsrvr, doublereal *dt, U_fp udfunc, doublereal *et, logical *decres, 
+	doublereal *rvl, integer *xtarg, char *xabcor, integer *xobs, 
+	doublereal *xdt, ftnlen target_len, ftnlen abcorr_len, ftnlen 
+	obsrvr_len, ftnlen xabcor_len)
 {
     /* System generated locals */
     doublereal d__1;
@@ -23,32 +24,29 @@ static integer c__0 = 0;
 
     /* Local variables */
     doublereal dfdt[6];
-    static doublereal s_dt__;
-    doublereal rvel;
     extern doublereal vdot_(doublereal *, doublereal *);
+    static doublereal svdt;
     extern /* Subroutine */ int zzvalcor_(char *, logical *, ftnlen);
     integer n;
-    extern /* Subroutine */ int chkin_(char *, ftnlen);
-    static char s_ref__[32];
-    extern /* Subroutine */ int ucase_(char *, char *, ftnlen, ftnlen), 
-	    errch_(char *, char *, ftnlen, ftnlen);
-    static integer s_obs__;
-    extern /* Subroutine */ int dvhat_(doublereal *, doublereal *);
+    extern /* Subroutine */ int chkin_(char *, ftnlen), ucase_(char *, char *,
+	     ftnlen, ftnlen), errch_(char *, char *, ftnlen, ftnlen), dvhat_(
+	    doublereal *, doublereal *);
     logical found;
     doublereal drvel, state[6], srhat[6];
+    static char svref[32];
+    static integer svobs;
     extern /* Subroutine */ int spkez_(integer *, doublereal *, char *, char *
 	    , integer *, doublereal *, doublereal *, ftnlen, ftnlen), bods2c_(
 	    char *, integer *, logical *, ftnlen);
     extern logical failed_(void);
-    static char s_abco__[5];
     doublereal lt;
+    static char svabco[5];
     logical attblk[15];
-    static integer s_targ__;
-    static doublereal s_vref__;
     extern /* Subroutine */ int qderiv_(integer *, doublereal *, doublereal *,
 	     doublereal *, doublereal *), sigerr_(char *, ftnlen), chkout_(
 	    char *, ftnlen), setmsg_(char *, ftnlen);
     doublereal states[12]	/* was [6][2] */;
+    static integer svtarg;
     extern /* Subroutine */ int cmprss_(char *, integer *, char *, char *, 
 	    ftnlen, ftnlen, ftnlen);
     extern logical return_(void);
@@ -214,19 +212,20 @@ static integer c__0 = 0;
 
 /* $ Brief_I/O */
 
-/*     VARIABLE  I/O  DESCRIPTION */
+/*     VARIABLE  I/O  Entry points */
 /*     --------  ---  -------------------------------------------------- */
-/*     TARGET     I   Name of the target body */
-/*     ABCORR     I   Aberration correction flag */
-/*     OBSRVR     I   Name of the observing body */
-/*     REFVAL     I   Reference value */
-/*     ET         I   Ephemeris seconds past J2000 TDB. */
-/*     DT         I   Interval from ET for derivative calculation. */
-/*     DECRES     O   .TRUE. if range rate is decreasing, .FALSE. */
-/*                    otherwise. */
-/*     LSSTHN     O   .TRUE. if range rate is less than REFVAL, */
-/*                    .FALSE. otherwise. */
-/*     RVL        O   Range rate at time ET. */
+/*     TARGET     I   ZZGFRRIN */
+/*     ABCORR     I   ZZGFRRIN */
+/*     OBSRVR     I   ZZGFRRIN */
+/*     ET         I   ZZGFRRDC, ZZGFRRGQ */
+/*     DT         I   ZZGFRRIN */
+/*     UDFUNC     I   ZZGFRRDC */
+/*     DECRES     O   ZZGFRRDC */
+/*     RVL        O   ZZGFRRGQ */
+/*     XTARG      O   ZZGFRRX */
+/*     XABCOR     O   ZZGFRRX */
+/*     XOBS       O   ZZGFRRX */
+/*     XDT        O   ZZGFRRX */
 
 /* $ Detailed_Input */
 
@@ -292,10 +291,6 @@ static integer c__0 = 0;
 /*              string. For example, both 'EARTH' and '399' are */
 /*              legitimate strings to indicate the observer as Earth. */
 
-/*     REFVAL   the reference range rate (in km/sec) value against */
-/*              which to compare the range rate of the oberrver-target */
-/*              vector. */
-
 /*     ET       time in TDB seconds past J2000 at which to calculate */
 /*              the value of or characteristic of the range rate of */
 /*              the observer-target vector. */
@@ -307,13 +302,22 @@ static integer c__0 = 0;
 
 /*              DT may be negative but must be non-zero. */
 
+/*     XTARG    SPICE ID value for the target body initialized */
+/*              via ZZGFRRIN. */
+
+/*     XABCOR   String value for the aberration correction initialized */
+/*              via ZZGFRRIN. */
+
+/*     XOBS     SPICE ID value for the observing body initialized */
+/*              via ZZGFRRIN. */
+
+/*     XDT      Saved value for DT. */
+
 /*     For more information, see individual entry points. */
 
 /* $ Detailed_Output */
 
-/*     LSSTHN   is .TRUE. if the range rate between the two bodies is */
-/*              less than the reference range rate value REFVAL at */
-/*              time ET. Otherwise it is .FALSE.. */
+/*     None. */
 
 /* $ Parameters */
 
@@ -329,25 +333,20 @@ static integer c__0 = 0;
 
 /* $ Particulars */
 
-/*     This routine serves as the umbrella routine for 4 entry points */
+/*     This routine serves as the umbrella routine for three entry points */
 /*     needed by GFEVNT in solving for range rate conditions. */
 
-/*     The 4 entry points are */
+/*     The three entry points are */
 
 /*        ZZGFRRIN --- an initialization routine that must be called */
 /*                     prior to attempting to solve for any range */
 /*                     rate event. */
-
-/*        ZZGFRRUR --- updates reference value, REFVAL. */
 
 /*        ZZGFRRDC --- determines whether or not range rate is */
 /*                     decreasing at some time. */
 
 /*        ZZGFRRGQ --- returns the range rate of the two objects */
 /*                     of concern as a function of ET. */
-
-/*        ZZGFRRLT --- determines whether or not range rate is */
-/*                     less than REFVAL */
 
 /* $ Examples */
 
@@ -370,6 +369,27 @@ static integer c__0 = 0;
 
 /* $ Version */
 
+/* -    SPICELIB version 2.0.0 21-APR-2014 (EDW) */
+
+/*        Added BOGUSENTRY error check to call ZZGFRRU. */
+
+/*        Additioned ZZGFRRX entry point for test family */
+/*        retrieval of values saved by ZZGFRRIN. */
+
+/*        Code edits to implement use of ZZGFRELX. */
+/*        These edits include removal of unneeded routines: */
+
+/*           ZZGFRRUR */
+/*           ZZGFRRLT */
+
+/*        and corresponding unused variables. */
+
+/*        Update to header entries. */
+
+/* -    SPICELIB version 1.0.1 08-JUL-2010 (EDW) */
+
+/*        Minor typo corrections to headers. */
+
 /* -    SPICELIB version 1.0.0 09-OCT-2009 (LSE)(EDW) */
 
 /* -& */
@@ -389,14 +409,16 @@ static integer c__0 = 0;
 
     switch(n__) {
 	case 1: goto L_zzgfrrin;
-	case 2: goto L_zzgfrrur;
-	case 3: goto L_zzgfrrdc;
-	case 4: goto L_zzgfrrgq;
-	case 5: goto L_zzgfrrlt;
+	case 2: goto L_zzgfrrdc;
+	case 3: goto L_zzgfrrgq;
+	case 4: goto L_zzgfrrx;
 	}
 
+    chkin_("ZZGFRRU", (ftnlen)7);
+    sigerr_("SPICE(BOGUSENTRY)", (ftnlen)17);
+    chkout_("ZZGFRRU", (ftnlen)7);
     return 0;
-/* $Procedure ZZGFRRIN ( Private - GF, range rate initialization routine ) */
+/* $Procedure ZZGFRRIN ( Private --- GF, range rate initialization ) */
 
 L_zzgfrrin:
 /* $ Abstract */
@@ -445,7 +467,7 @@ L_zzgfrrin:
 /*      CHARACTER*(*)         TARGET */
 /*      CHARACTER*(*)         ABCORR */
 /*      CHARACTER*(*)         OBSRVR */
-/*      DOUBLE PRECISION      REFVAL */
+/*      DOUBLE PRECISION      DT */
 
 /* $ Brief_I/O */
 
@@ -454,7 +476,6 @@ L_zzgfrrin:
 /*     TARGET     I   Name of the target body */
 /*     ABCORR     I   Aberration correction flag */
 /*     OBSRVR     I   Name of the observing body */
-/*     REFVAL     I   Reference value */
 /*     DT         I   Interval from ET for derivative calculation. */
 
 /* $ Detailed_Input */
@@ -521,10 +542,6 @@ L_zzgfrrin:
 /*              string. For example, both 'EARTH' and '399' are */
 /*              legitimate strings to indicate the observer as Earth. */
 
-/*     REFVAL   the reference range rate (in km/sec) value against */
-/*              which to compare the range rate of the oberrver-target */
-/*              vector. */
-
 /*     DT         a scalar double precision value representing half the */
 /*                interval in TDB seconds separating the evaluation */
 /*                epochs; the evaluations occur at epochs */
@@ -542,7 +559,16 @@ L_zzgfrrin:
 
 /* $ Exceptions */
 
-/*     None. */
+/*     1) SPICE(IDCODENOTFOUND) signals if the object name for the */
+/*        target, TARGET, is not a recognized name. */
+
+/*     2) SPICE(IDCODENOTFOUND) signals if the object name for the */
+/*        observer, OBSRVR, is not a recognized name. */
+
+/*     3) SPICE(BODIESNOTDISTINCT) signals if the two objects */
+/*        associated with a range rate search are not distinct. */
+
+/*     4) SPICE(INVALIDVALUE) signals for the delta, DT, equal to zero. */
 
 /* $ Files */
 
@@ -571,6 +597,17 @@ L_zzgfrrin:
 /*     L.S. Elson     (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB version 2.0.0 18-SEP-2012 (EDW) */
+
+/*        Added proper Exceptions section. */
+
+/*        Added error check on value of DT to ensure non-zero value. */
+
+/*        REFVAL removed from routine argument list due to the use */
+/*        of ZZGFRELX to calculate the events. */
+
+/*        Minor typo correction to header. */
 
 /* -    SPICELIB version 1.0.0 09-OCT-2009 (LSE)(EDW) */
 
@@ -587,7 +624,7 @@ L_zzgfrrin:
 
 /*     Find NAIF IDs for TARGET and OBSRVR. */
 
-    bods2c_(target, &s_targ__, &found, target_len);
+    bods2c_(target, &svtarg, &found, target_len);
     if (! found) {
 	setmsg_("The target object, '#', is not a recognized name for an eph"
 		"emeris object. The cause of this problem may be that you nee"
@@ -597,7 +634,7 @@ L_zzgfrrin:
 	chkout_("ZZGFRRIN", (ftnlen)8);
 	return 0;
     }
-    bods2c_(obsrvr, &s_obs__, &found, obsrvr_len);
+    bods2c_(obsrvr, &svobs, &found, obsrvr_len);
     if (! found) {
 	setmsg_("The observer, '#', is not a recognized name for an ephemeri"
 		"s object. The cause of this problem may be that you need an "
@@ -610,7 +647,7 @@ L_zzgfrrin:
 
 /*     Make sure the observer and target are distinct. */
 
-    if (s_targ__ == s_obs__) {
+    if (svtarg == svobs) {
 	setmsg_("The observer and target must be distinct objects, but are n"
 		"ot: OBSRVR = #; TARGET = #.", (ftnlen)86);
 	errch_("#", obsrvr, (ftnlen)1, obsrvr_len);
@@ -623,136 +660,35 @@ L_zzgfrrin:
 /*     Squeeze all blanks out of the aberration correction */
 /*     string; ensure the string is in upper case. */
 
-    cmprss_(" ", &c__0, abcorr, s_abco__, (ftnlen)1, abcorr_len, (ftnlen)5);
-    ucase_(s_abco__, s_abco__, (ftnlen)5, (ftnlen)5);
+    cmprss_(" ", &c__0, abcorr, svabco, (ftnlen)1, abcorr_len, (ftnlen)5);
+    ucase_(svabco, svabco, (ftnlen)5, (ftnlen)5);
 
 /*     Check the aberration correction. If SPKEZR can't handle it, */
 /*     neither can we. */
 
-    zzvalcor_(s_abco__, attblk, (ftnlen)5);
+    zzvalcor_(svabco, attblk, (ftnlen)5);
     if (failed_()) {
 	chkout_("ZZGFRRIN", (ftnlen)8);
 	return 0;
     }
 
-/*     Save the reference value. */
+/*     The "delta" argument for QDERIV, DT, must have a non-zero value. */
 
-    s_vref__ = *refval;
-    s_copy(s_ref__, "J2000", (ftnlen)32, (ftnlen)5);
-    s_dt__ = *dt;
+    if (*dt == 0.) {
+	setmsg_("Delta value for QDERIV is zero; a non-zero value is require"
+		"d.", (ftnlen)61);
+	sigerr_("SPICE(INVALIDVALUE)", (ftnlen)19);
+	chkout_("ZZGFRRIN", (ftnlen)8);
+	return 0;
+    }
+
+/*     Save the DT value. */
+
+    s_copy(svref, "J2000", (ftnlen)32, (ftnlen)5);
+    svdt = *dt;
     chkout_("ZZGFRRIN", (ftnlen)8);
     return 0;
-/* $Procedure ZZGFRRUR ( Private - GF, range rate update reference value ) */
-
-L_zzgfrrur:
-/* $ Abstract */
-
-/*     This is the entry point used for updating the reference */
-/*     value. */
-
-/* $ Disclaimer */
-
-/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
-/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
-/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
-/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
-/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
-/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
-/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
-/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
-/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
-/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
-
-/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
-/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
-/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
-/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
-/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
-/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
-
-/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
-/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
-/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
-/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
-
-/* $ Required_Reading */
-
-/*     None. */
-
-/* $ Keywords */
-
-/*     RANGE RATE */
-/*     EPHEMERIS */
-/*     GEOMETRY */
-/*     SEARCH */
-
-/* $ Declarations */
-
-/*      DOUBLE PRECISION      REFVAL */
-
-/* $ Brief_I/O */
-
-/*     VARIABLE  I/O  DESCRIPTION */
-/*     --------  ---  -------------------------------------------------- */
-/*     REFVAL     I   Reference value */
-
-/* $ Detailed_Input */
-
-/*     REFVAL     the reference range rate (in km/sec) value against */
-/*                which to compare the range rate of the oberrver-target */
-/*                vector. */
-
-/* $ Detailed_Output */
-
-/*     None. */
-
-/* $ Parameters */
-
-/*     None. */
-
-/* $ Exceptions */
-
-/*     None. */
-
-/* $ Files */
-
-/*     None. */
-
-/* $ Particulars */
-
-/*     None. */
-
-/* $ Examples */
-
-/*     None. */
-
-/* $ Restrictions */
-
-/*     None. */
-
-/* $ Literature_References */
-
-/*     None. */
-
-/* $ Author_and_Institution */
-
-/*     W.L. Taber     (JPL) */
-/*     I.M. Underwood (JPL) */
-/*     L.S. Elson     (JPL) */
-
-/* $ Version */
-
-/* -    SPICELIB version 1.0.0 09-JUN-2009 (LSE)(EDW) */
-
-/* -& */
-/* $ Index_Entries */
-
-/*     range rate update reference value. */
-
-/* -& */
-    s_vref__ = *refval;
-    return 0;
-/* $Procedure ZZGFRRDC (  Private - GF, when range rate is decreasing ) */
+/* $Procedure ZZGFRRDC (  Private --- GF, when range rate is decreasing ) */
 
 L_zzgfrrdc:
 /* $ Abstract */
@@ -806,7 +742,7 @@ L_zzgfrrdc:
 /*     VARIABLE  I/O  DESCRIPTION */
 /*     --------  ---  -------------------------------------------------- */
 /*     ET         I   Ephemeris seconds past J2000 TDB. */
-/*     DECRES     O   .TRUE. if range rate is decreasing, .FALSE. */
+/*     DECRES     O   true if range rate is decreasing, false */
 /*                    otherwise. */
 
 /* $ Detailed_Input */
@@ -817,8 +753,8 @@ L_zzgfrrdc:
 
 /* $ Detailed_Output */
 
-/*     DECRES     is .TRUE. if the range rate between the objects */
-/*                is decreasing.  Otherwise it is .FALSE. */
+/*     DECRES     is true if the range rate between the objects */
+/*                is decreasing, false otherwise. */
 
 
 /* $ Parameters */
@@ -835,7 +771,22 @@ L_zzgfrrdc:
 
 /* $ Particulars */
 
-/*     None. */
+/*     A function f(x) is strictly decreasing at x0 if and only if there */
+/*     exists some delta > 0 such that for all dx satisfying */
+
+/*        0  <  dx  < delta */
+
+/*     we have */
+
+/*        f(x0)       <  f(x0 + dx) */
+
+/*     and */
+
+/*        f(x0 - dx)  <  f(x) */
+
+/*     Note that a strictly decreasing function need not be */
+/*     differentiable in a neighborhood of x0; it can have jump */
+/*     discontinuities in any neighborhood of x0 and even at x0. */
 
 /* $ Examples */
 
@@ -857,6 +808,13 @@ L_zzgfrrdc:
 
 /* $ Version */
 
+/* -    SPICELIB version 2.0.0 18-FEB-2011 (EDW) */
+
+/*        Added UDFUNC to argument list for use of ZZGFRELX when */
+/*        calculating the events. */
+
+/*        Minor typo correction to comments. */
+
 /* -    SPICELIB version 1.0.0 09-OCT-2009 (LSE)(EDW) */
 
 /* -& */
@@ -870,23 +828,22 @@ L_zzgfrrdc:
 
     if (return_()) {
 	return 0;
-    } else {
-	chkin_("ZZGFRRDC", (ftnlen)8);
     }
+    chkin_("ZZGFRRDC", (ftnlen)8);
     n = 6;
 
-/*     The range rate of interest is of S_TARG relative to the S_OBS. */
-/*     The function requires the acceleration of S_TARG relative */
-/*     to S_OBS. */
+/*     The range rate of interest is of SVTARG relative to the SVOBS. */
+/*     The function requires the acceleration of SVTARG relative */
+/*     to SVOBS. */
 
-    d__1 = *et - s_dt__;
-    spkez_(&s_targ__, &d__1, s_ref__, s_abco__, &s_obs__, states, &lt, (
-	    ftnlen)32, (ftnlen)5);
-    d__1 = *et + s_dt__;
-    spkez_(&s_targ__, &d__1, s_ref__, s_abco__, &s_obs__, &states[6], &lt, (
-	    ftnlen)32, (ftnlen)5);
+    d__1 = *et - svdt;
+    spkez_(&svtarg, &d__1, svref, svabco, &svobs, states, &lt, (ftnlen)32, (
+	    ftnlen)5);
+    d__1 = *et + svdt;
+    spkez_(&svtarg, &d__1, svref, svabco, &svobs, &states[6], &lt, (ftnlen)32,
+	     (ftnlen)5);
 
-/*     Approximate the derivative of the position and valocity by */
+/*     Approximate the derivative of the position and velocity by */
 /*     finding the derivative of a quadratic approximating function. */
 
 /*        DFDT(1) = Vx */
@@ -896,9 +853,9 @@ L_zzgfrrdc:
 /*        DFDT(5) = Ay */
 /*        DFDT(6) = Az */
 
-    qderiv_(&n, states, &states[6], &s_dt__, dfdt);
-    spkez_(&s_targ__, et, s_ref__, s_abco__, &s_obs__, state, &lt, (ftnlen)32,
-	     (ftnlen)5);
+    qderiv_(&n, states, &states[6], &svdt, dfdt);
+    spkez_(&svtarg, et, svref, svabco, &svobs, state, &lt, (ftnlen)32, (
+	    ftnlen)5);
     if (failed_()) {
 	chkout_("ZZGFRRDC", (ftnlen)8);
 	return 0;
@@ -908,18 +865,18 @@ L_zzgfrrdc:
 /*        ------- = < r, v > */
 /*        dt */
 
-/*         2            ^          ^ */
-/*        d ||r||   < d r, v > + < r, d v > */
-/*        ------- =   ---             --- */
+/*         2           ^          ^ */
+/*        d ||r||   < dr, v > + < r, dv > */
+/*        ------- =   --             -- */
 /*          2 */
-/*        dt          dt              dt */
+/*        dt          dt             dt */
 
     dvhat_(state, srhat);
     drvel = vdot_(&dfdt[3], srhat) + vdot_(&state[3], &srhat[3]);
     *decres = drvel < 0.;
     chkout_("ZZGFRRDC", (ftnlen)8);
     return 0;
-/* $Procedure ZZGFRRGQ ( Private - GF, get range rate between two bodies ) */
+/* $Procedure ZZGFRRGQ ( Private --- GF, get range rate between bodies ) */
 
 L_zzgfrrgq:
 /* $ Abstract */
@@ -982,7 +939,7 @@ L_zzgfrrgq:
 
 /* $ Detailed_Output */
 
-/*     RVL        is the range rate of S_TARG as seen from S_OBS at */
+/*     RVL        is the range rate of SVTARG as seen from SVOBS at */
 /*                time ET. */
 
 /* $ Parameters */
@@ -1029,15 +986,14 @@ L_zzgfrrgq:
 /*     get range rate between two bodies */
 
 /* -& */
-    zzgfrrq_(et, &s_targ__, &s_obs__, s_abco__, rvl, (ftnlen)5);
+    zzgfrrq_(et, &svtarg, &svobs, svabco, rvl, (ftnlen)5);
     return 0;
-/* $Procedure ZZGFRRLT ( Private - GF, range rate < reference ) */
+/* $Procedure ZZGFRRX ( Private -- GF, retrieve ZZGFRRIN values ) */
 
-L_zzgfrrlt:
+L_zzgfrrx:
 /* $ Abstract */
 
-/*     Determine whether or not the range rate between the two */
-/*     bodies is less than the reference value. */
+/*     Retrieve values set in ZZGFRRIN. */
 
 /* $ Disclaimer */
 
@@ -1070,35 +1026,37 @@ L_zzgfrrlt:
 
 /* $ Keywords */
 
-/*     RANGE RATE */
-/*     EPHEMERIS */
-/*     GEOMETRY */
-/*     SEARCH */
+/*     None. */
 
 /* $ Declarations */
 
-/*      DOUBLE PRECISION      ET */
-/*      LOGICAL               LSSTHN */
+/*     None. */
 
 /* $ Brief_I/O */
 
 /*     VARIABLE  I/O  DESCRIPTION */
 /*     --------  ---  -------------------------------------------------- */
-/*     ET         I   Ephemeris seconds past J2000 TDB. */
-/*     LSSTHN     O   .TRUE. if the range rate is less than */
-/*                    REFVAL, .FALSE. otherwise. */
+/*     XTARG      O   Saved value for the target body. */
+/*     XABCOR     O   Saved value for the aberration correction. */
+/*     XOBS       O   Saved value for the observing body. */
+/*     XDT        O   Saved value for DT. */
 
 /* $ Detailed_Input */
 
-/*     ET       is the time in second past J2000 at which one wants */
-/*              to determine if the range rate between the */
-/*              two bodies is less than the reference value. */
+/*     None. */
 
 /* $ Detailed_Output */
 
-/*     LSSTHN   is .TRUE. if the range rate between the two bodies is */
-/*              less than the reference range rate value S_VREF at */
-/*              time ET. Otherwise it is .FALSE.. */
+/*     XTARG    SPICE ID value for the target body initialized */
+/*              via ZZGFRRIN. */
+
+/*     XABCOR   String value for the aberration correction initialized */
+/*              via ZZGFRRIN. */
+
+/*     XOBS     SPICE ID value for the observing body initialized */
+/*              via ZZGFRRIN. */
+
+/*     XDT      Saved value for DT. */
 
 /* $ Parameters */
 
@@ -1130,72 +1088,67 @@ L_zzgfrrlt:
 
 /* $ Author_and_Institution */
 
-/*     W.L. Taber     (JPL) */
-/*     I.M. Underwood (JPL) */
-/*     L.S. Elson     (JPL) */
+/*     N.J. Bachman   (JPL) */
+/*     E.D. Wright    (JPL) */
 
 /* $ Version */
 
-/* -    SPICELIB version 1.0.0 09-JUN-2009 (LSE)(EDW) */
+/* -    SPICELIB version 1.0.0 16-SEP-2012 (EDW) */
 
 /* -& */
 /* $ Index_Entries */
 
-/*     range rate less than a value */
+/*     get saved range rate parameters */
 
 /* -& */
-    zzgfrrq_(et, &s_targ__, &s_obs__, s_abco__, &rvel, (ftnlen)5);
-    if (rvel < s_vref__) {
-	*lssthn = TRUE_;
-    } else {
-	*lssthn = FALSE_;
-    }
+    *xtarg = svtarg;
+    s_copy(xabcor, svabco, xabcor_len, (ftnlen)5);
+    *xobs = svobs;
+    *xdt = svdt;
     return 0;
 } /* zzgfrru_ */
 
 /* Subroutine */ int zzgfrru_(char *target, char *abcorr, char *obsrvr, 
-	doublereal *refval, doublereal *et, doublereal *dt, logical *decres, 
-	logical *lssthn, doublereal *rvl, ftnlen target_len, ftnlen 
-	abcorr_len, ftnlen obsrvr_len)
+	doublereal *dt, U_fp udfunc, doublereal *et, logical *decres, 
+	doublereal *rvl, integer *xtarg, char *xabcor, integer *xobs, 
+	doublereal *xdt, ftnlen target_len, ftnlen abcorr_len, ftnlen 
+	obsrvr_len, ftnlen xabcor_len)
 {
-    return zzgfrru_0_(0, target, abcorr, obsrvr, refval, et, dt, decres, 
-	    lssthn, rvl, target_len, abcorr_len, obsrvr_len);
+    return zzgfrru_0_(0, target, abcorr, obsrvr, dt, udfunc, et, decres, rvl, 
+	    xtarg, xabcor, xobs, xdt, target_len, abcorr_len, obsrvr_len, 
+	    xabcor_len);
     }
 
 /* Subroutine */ int zzgfrrin_(char *target, char *abcorr, char *obsrvr, 
-	doublereal *refval, doublereal *dt, ftnlen target_len, ftnlen 
-	abcorr_len, ftnlen obsrvr_len)
+	doublereal *dt, ftnlen target_len, ftnlen abcorr_len, ftnlen 
+	obsrvr_len)
 {
-    return zzgfrru_0_(1, target, abcorr, obsrvr, refval, (doublereal *)0, dt, 
-	    (logical *)0, (logical *)0, (doublereal *)0, target_len, 
-	    abcorr_len, obsrvr_len);
+    return zzgfrru_0_(1, target, abcorr, obsrvr, dt, (U_fp)0, (doublereal *)0,
+	     (logical *)0, (doublereal *)0, (integer *)0, (char *)0, (integer 
+	    *)0, (doublereal *)0, target_len, abcorr_len, obsrvr_len, (ftnint)
+	    0);
     }
 
-/* Subroutine */ int zzgfrrur_(doublereal *refval)
+/* Subroutine */ int zzgfrrdc_(U_fp udfunc, doublereal *et, logical *decres)
 {
-    return zzgfrru_0_(2, (char *)0, (char *)0, (char *)0, refval, (doublereal 
-	    *)0, (doublereal *)0, (logical *)0, (logical *)0, (doublereal *)0,
-	     (ftnint)0, (ftnint)0, (ftnint)0);
-    }
-
-/* Subroutine */ int zzgfrrdc_(doublereal *et, logical *decres)
-{
-    return zzgfrru_0_(3, (char *)0, (char *)0, (char *)0, (doublereal *)0, et,
-	     (doublereal *)0, decres, (logical *)0, (doublereal *)0, (ftnint)
-	    0, (ftnint)0, (ftnint)0);
+    return zzgfrru_0_(2, (char *)0, (char *)0, (char *)0, (doublereal *)0, 
+	    udfunc, et, decres, (doublereal *)0, (integer *)0, (char *)0, (
+	    integer *)0, (doublereal *)0, (ftnint)0, (ftnint)0, (ftnint)0, (
+	    ftnint)0);
     }
 
 /* Subroutine */ int zzgfrrgq_(doublereal *et, doublereal *rvl)
 {
-    return zzgfrru_0_(4, (char *)0, (char *)0, (char *)0, (doublereal *)0, et,
-	     (doublereal *)0, (logical *)0, (logical *)0, rvl, (ftnint)0, (
-	    ftnint)0, (ftnint)0);
+    return zzgfrru_0_(3, (char *)0, (char *)0, (char *)0, (doublereal *)0, (
+	    U_fp)0, et, (logical *)0, rvl, (integer *)0, (char *)0, (integer *
+	    )0, (doublereal *)0, (ftnint)0, (ftnint)0, (ftnint)0, (ftnint)0);
     }
 
-/* Subroutine */ int zzgfrrlt_(doublereal *et, logical *lssthn)
+/* Subroutine */ int zzgfrrx_(integer *xtarg, char *xabcor, integer *xobs, 
+	doublereal *xdt, ftnlen xabcor_len)
 {
-    return zzgfrru_0_(5, (char *)0, (char *)0, (char *)0, (doublereal *)0, et,
-	     (doublereal *)0, (logical *)0, lssthn, (doublereal *)0, (ftnint)
-	    0, (ftnint)0, (ftnint)0);
+    return zzgfrru_0_(4, (char *)0, (char *)0, (char *)0, (doublereal *)0, (
+	    U_fp)0, (doublereal *)0, (logical *)0, (doublereal *)0, xtarg, 
+	    xabcor, xobs, xdt, (ftnint)0, (ftnint)0, (ftnint)0, xabcor_len);
     }
 

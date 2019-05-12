@@ -2,7 +2,7 @@
 Cells
 ===========================================================================
  
-   Last revised on 2002 SEP 04 by N. J. Bachman.
+   Last revised on 2017 MAR 13 by N. J. Bachman.
  
  
 Abstract
@@ -11,13 +11,6 @@ Abstract
    Cells are SPICE data structures that are vectors of type double
    precision, integer, or character type carrying with them their own
    dimension and knowledge of how many components have been used.
- 
- 
-Revisions
- 
-   September 04, 2002
- 
-            Initial release for CSPICE.
  
  
 Introduction
@@ -188,15 +181,24 @@ Using Cells
    a letter (C, D, or I) indicating the data type of cells the macro is
    intended to act upon.
  
-   The CSPICE element reference macros return a pointer to a specified data
-   array element. The macros's calling sequences are:
+   The CSPICE character element reference macro returns a pointer to a
+   specified data array element. The numeric element reference macros
+   return a dereferenced array element. The macros' calling sequences are:
  
       SPICE_CELL_ELEM_C ( &cell, i );
       SPICE_CELL_ELEM_D ( &cell, i );
       SPICE_CELL_ELEM_I ( &cell, i );
  
-   Note the character macro returns a pointer of type (SpiceChar *), not
-   (SpiceChar (*)[cell.length]).
+   The character macro call
+ 
+      SPICE_CELL_ELEM_C ( &cell, i );
+ 
+   returns a pointer to the ith string of length
+ 
+      cell.length
+ 
+   in the cell's data array. However the type of the returned pointer is
+   (SpiceChar *), not (SpiceChar (*)[cell.length]).
  
    The cell assignment macros have the calling sequences
  
@@ -360,5 +362,32 @@ Summary
  
          copy_c ( orig, copy )     Copy the contents of a cell.
  
-         appndx_c ( item, cell )   Append an item to a cell.
+         appndc_c ( item, cell )   Append a SpiceChar item to a cell.
+ 
+         appndd_c ( item, cell )   Append a SpiceDouble item to a cell.
+ 
+         appndi_c ( item, cell )   Append a SpiceInt item to a cell.
+ 
+ 
+Appendix A --- Revision History
+===========================================================================
+ 
+ 
+2017 MAR 13 by N. J. Bachman
+ 
+   Moved revision history to this appendix.
+ 
+   Updated description of the element reference macros.
+ 
+   Updated references to CSPICE cell ``append'' functions to name
+   individual functions rather than to refer to them using the notation
+ 
+      appndx_c
+ 
+   Fixed typos.
+ 
+ 
+2002 SEP 04 by N. J. Bachman
+ 
+   Initial release for CSPICE.
  

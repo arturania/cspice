@@ -8,11 +8,13 @@
 /* Table of constant values */
 
 static integer c__5 = 5;
+static integer c_n1 = -1;
+static integer c__3 = 3;
 static integer c__0 = 0;
 static logical c_false = FALSE_;
 
 /* $Procedure GFUDS ( GF, user defined scalar ) */
-/* Subroutine */ int gfuds_(U_fp udfunc, U_fp udqdec, char *relate, 
+/* Subroutine */ int gfuds_(U_fp udfuns, U_fp udqdec, char *relate, 
 	doublereal *refval, doublereal *adjust, doublereal *step, doublereal *
 	cnfine, integer *mw, integer *nw, doublereal *work, doublereal *
 	result, ftnlen relate_len)
@@ -22,24 +24,26 @@ static logical c_false = FALSE_;
 
     /* Local variables */
     extern /* Subroutine */ int zzgfudlt_();
-    extern /* Subroutine */ int zzgfrelx_(U_fp, U_fp, U_fp, U_fp, U_fp, S_fp, 
-	    char *, doublereal *, doublereal *, doublereal *, doublereal *, 
-	    integer *, integer *, doublereal *, logical *, U_fp, U_fp, U_fp, 
-	    char *, char *, logical *, L_fp, doublereal *, ftnlen, ftnlen, 
-	    ftnlen), chkin_(char *, ftnlen), errdp_(char *, doublereal *, 
-	    ftnlen);
+    extern /* Subroutine */ int zzgfrelx_(U_fp, U_fp, U_fp, U_fp, U_fp, char *
+	    , doublereal *, doublereal *, doublereal *, doublereal *, integer 
+	    *, integer *, doublereal *, logical *, U_fp, U_fp, U_fp, char *, 
+	    char *, logical *, L_fp, doublereal *, ftnlen, ftnlen, ftnlen), 
+	    chkin_(char *, ftnlen);
     extern integer sized_(doublereal *);
     extern logical gfbail_();
+    logical ok;
     extern /* Subroutine */ int scardd_(integer *, doublereal *);
-    extern /* Subroutine */ int gfrefn_(), gfrepf_(), gfrepi_(), gfrepu_(), 
-	    gfstep_();
+    extern /* Subroutine */ int gfrefn_(), gfrepf_();
+    extern logical return_(void);
+    extern /* Subroutine */ int gfrepi_(), gfrepu_(), gfstep_();
     char rptpre[1*2], rptsuf[1*2];
-    extern /* Subroutine */ int setmsg_(char *, ftnlen), sigerr_(char *, 
-	    ftnlen), chkout_(char *, ftnlen), errint_(char *, integer *, 
+    extern /* Subroutine */ int setmsg_(char *, ftnlen), errint_(char *, 
+	    integer *, ftnlen), sigerr_(char *, ftnlen), chkout_(char *, 
 	    ftnlen), gfsstp_(doublereal *);
     extern logical odd_(integer *);
     doublereal tol;
-    extern /* Subroutine */ int zzgfref_(doublereal *);
+    extern /* Subroutine */ int zzholdd_(integer *, integer *, logical *, 
+	    doublereal *);
 
 /* $ Abstract */
 
@@ -140,7 +144,21 @@ static logical c_false = FALSE_;
 
 /* $ Version */
 
-/* -    SPICELIB Version 1.0.0, 08-SEP-2009 (EDW) */
+/* -    SPICELIB Version 2.0.0  29-NOV-2016 (NJB) */
+
+/*        Upgraded to support surfaces represented by DSKs. */
+
+/*        Bug fix: removed declaration of NVRMAX parameter. */
+
+/* -    SPICELIB Version 1.3.0, 01-OCT-2011 (NJB) */
+
+/*       Added NWILUM parameter. */
+
+/* -    SPICELIB Version 1.2.0, 14-SEP-2010 (EDW) */
+
+/*       Added NWPA parameter. */
+
+/* -    SPICELIB Version 1.1.0, 08-SEP-2009 (EDW) */
 
 /*       Added NWRR parameter. */
 /*       Added NWUDS parameter. */
@@ -190,6 +208,14 @@ static logical c_false = FALSE_;
 /*     count using NWUDS. */
 
 
+/*     Callers of GFPA should declare their workspace window */
+/*     count using NWPA. */
+
+
+/*     Callers of GFILUM should declare their workspace window */
+/*     count using NWILUM. */
+
+
 /*     ADDWIN is a parameter used to expand each interval of the search */
 /*     (confinement) window by a small amount at both ends in order to */
 /*     accommodate searches using equality constraints. The loaded */
@@ -197,9 +223,6 @@ static logical c_false = FALSE_;
 
 
 /*     FRMNLN is a string length for frame names. */
-
-
-/*     NVRMAX is the maximum number of vertices if FOV type is "POLYGON" */
 
 
 /*     FOVTLN -- maximum length for FOV string. */
@@ -373,20 +396,152 @@ static logical c_false = FALSE_;
 
 /*     End of file zzgf.inc. */
 
+/* $ Abstract */
+
+/*     SPICE private routine intended solely for the support of SPICE */
+/*     routines. Users should not call this routine directly due to the */
+/*     volatile nature of this routine. */
+
+/*     This file contains parameter declarations for the ZZHOLDD */
+/*     routine. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Required_Reading */
+
+/*     None. */
+
+/* $ Keywords */
+
+/*     None. */
+
+/* $ Declarations */
+
+/*     None. */
+
+/* $ Brief_I/O */
+
+/*     None. */
+
+/* $ Detailed_Input */
+
+/*     None. */
+
+/* $ Detailed_Output */
+
+/*     None. */
+
+/* $ Parameters */
+
+/*     GEN       general value, primarily for testing. */
+
+/*     GF_REF    user defined GF reference value. */
+
+/*     GF_TOL    user defined GF convergence tolerance. */
+
+/*     GF_DT     user defined GF step for numeric differentiation. */
+
+/* $ Exceptions */
+
+/*     None. */
+
+/* $ Files */
+
+/*     None. */
+
+/* $ Particulars */
+
+/*     None. */
+
+/* $ Examples */
+
+/*     None. */
+
+/* $ Restrictions */
+
+/*     None. */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     E.D. Wright    (JPL) */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0  03-DEC-2013 (EDW) */
+
+/* -& */
+
+/*     OP codes. The values exist in the integer domain */
+/*     [ -ZZNOP, -1], */
+
+
+/*     Current number of OP codes. */
+
+
+/*     ID codes. The values exist in the integer domain */
+/*     [ 1, NID], */
+
+
+/*     General use, primarily testing. */
+
+
+/*     The user defined GF reference value. */
+
+
+/*     The user defined GF convergence tolerance. */
+
+
+/*     The user defined GF step for numeric differentiation. */
+
+
+/*     Current number of ID codes, dimension of array */
+/*     in ZZHOLDD. Bad things can happen if this parameter */
+/*     does not have the proper value. */
+
+
+/*     End of file zzholdd.inc. */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
 /*     --------  ---  -------------------------------------------------- */
 /*     LBCELL     P   SPICE Cell lower bound. */
 /*     CNVTOL     P   Convergence tolerance. */
-/*     UDFUNC     I   Name of the routine that computes the scalar value */
-/*                    of interest at some time. */
+/*     UDFUNS     I   Name of the routine that computes a scalar */
+/*                    quantity corresponding to an ET. */
 /*     UDQDEC     I   Name of the routine that computes whether the */
-/*                    current state is decreasing. */
+/*                    scalar quantity is decreasing. */
 /*     RELATE     I   Operator that either looks for an extreme value */
 /*                    (max, min, local, absolute) or compares the */
 /*                    geometric quantity value and a number. */
-/*     REFVAL     I   Value used as reference for geometric quantity */
+/*     REFVAL     I   Value used as reference for scalar quantity */
 /*                    condition. */
 /*     ADJUST     I   Allowed variation for absolute extremal */
 /*                    geometric conditions. */
@@ -399,11 +554,11 @@ static logical c_false = FALSE_;
 
 /* $ Detailed_Input */
 
-/*     UDFUNC     the routine that returns the value of the scalar */
+/*     UDFUNS     the routine that returns the value of the scalar */
 /*                quantity of interest at time ET. The calling sequence */
-/*                for UDFUNC is: */
+/*                for UDFUNS is: */
 
-/*                   CALL UDFUNC ( ET, VALUE ) */
+/*                   CALL UDFUNS ( ET, VALUE ) */
 
 /*                where: */
 
@@ -416,23 +571,25 @@ static logical c_false = FALSE_;
 /*                           at ET. */
 
 /*     UDQDEC     the name of the routine that determines if the scalar */
-/*                 quantity calculated by UDFUNC is decreasing. */
+/*                quantity calculated by UDFUNS is decreasing. */
+/*                The calling sequence of UDQDEC is: */
 
-/*                The calling sequence: */
-
-/*                   CALL UDQDEC ( UDFUNC, ET, ISDECR ) */
+/*                   CALL UDQDEC ( UDFUNS, ET, ISDECR ) */
 
 /*                where: */
+
+/*                   UDFUNS   the name of the scalar function as */
+/*                            defined above. */
 
 /*                   ET       a double precision value representing */
 /*                            ephemeris time, expressed as seconds past */
 /*                            J2000 TDB, at which to determine the time */
-/*                            derivative of UDFUNC. */
+/*                            derivative of UDFUNS. */
 
 /*                   ISDECR   a logical return indicating whether */
-/*                            or not the scalar value returned by UDFUNC */
+/*                            or not the scalar value returned by UDFUNS */
 /*                            is decreasing. ISDECR returns true if the */
-/*                            time derivative of UDFUNC at ET is */
+/*                            time derivative of UDFUNS at ET is */
 /*                            negative. */
 
 /*     RELATE     the scalar string comparison operator indicating */
@@ -659,7 +816,7 @@ static logical c_false = FALSE_;
 /*     4)  If the size of the SPICE window RESULT is less than 2 or */
 /*         not an even value, the error SPICE(INVALIDDIMENSION) will */
 /*         signal. If RESULT has insufficient capacity to contain the */
-/*         number of intervals on which the specified distance condition */
+/*         number of intervals on which the specified condition */
 /*         is met, the error will be diagnosed by a routine in the call */
 /*         tree of this routine. */
 
@@ -718,23 +875,23 @@ static logical c_false = FALSE_;
 /*     ======================= */
 
 /*     The user must supply a routine to determine whether sign of the */
-/*     time derivative of UDFUNC is positive or negative at ET. For */
-/*     cases where UDFUNC is numerically well behaved, the user */
+/*     time derivative of UDFUNS is positive or negative at ET. For */
+/*     cases where UDFUNS is numerically well behaved, the user */
 /*     may find it convenient to use a routine based on the below */
 /*     template. UDDC determines the truth of the expression */
 
-/*        d (UDFUNC) */
+/*        d (UDFUNS) */
 /*        --         < 0 */
 /*        dt */
 
 /*     using the library routine UDDF to numerically calculate the */
-/*     derivative of UDFUNC using a three-point estimation. */
+/*     derivative of UDFUNS using a three-point estimation. */
 /*     Please see the Examples section for an example of GFDECR use. */
 
-/*           SUBROUTINE GFDECR ( UDFUNC, ET, ISDECR ) */
+/*           SUBROUTINE GFDECR ( UDFUNS, ET, ISDECR ) */
 /*           IMPLICIT NONE */
 
-/*           EXTERNAL              UDFUNC */
+/*           EXTERNAL              UDFUNS */
 /*           EXTERNAL              UDDF */
 
 /*           DOUBLE PRECISION      ET */
@@ -744,7 +901,7 @@ static logical c_false = FALSE_;
 
 /*           DT =  h, double precision interval size */
 
-/*           CALL UDDC ( UDFUNC, ET, DT, ISDECR ) */
+/*           CALL UDDC ( UDFUNS, ET, DT, ISDECR ) */
 
 /*           END */
 
@@ -762,10 +919,14 @@ static logical c_false = FALSE_;
 
 /*     Within any interval of these "monotone" windows, there will be at */
 /*     most one solution of any equality constraint. Since the boundary */
-/*     of the solution set for any inequality constraint is the set */
-/*     of points where an equality constraint is met, the solutions of */
-/*     both equality and inequality constraints can be found easily */
-/*     once the monotone windows have been found. */
+/*     of the solution set for any inequality constraint is contained in */
+/*     the union of */
+
+/*        - the set of points where an equality constraint is met */
+/*        - the boundary points of the confinement window */
+
+/*     the solutions of both equality and inequality constraints can be */
+/*     found easily once the monotone windows have been found. */
 
 
 /*     Step Size */
@@ -796,7 +957,7 @@ static logical c_false = FALSE_;
 /*     monotone windows yields a dramatic efficiency improvement over a */
 /*     state-based search that simply tests at each step whether the */
 /*     specified constraint is satisfied. The latter type of search can */
-/*     miss solution intervals if the step size is shorter than the */
+/*     miss solution intervals if the step size is longer than the */
 /*     shortest solution interval. */
 
 /*     Having some knowledge of the relative geometry of the targets and */
@@ -817,19 +978,28 @@ static logical c_false = FALSE_;
 /*     narrow down the time interval within which the root must lie. */
 /*     This refinement process terminates when the location of the root */
 /*     has been determined to within an error margin called the */
-/*     "convergence tolerance." */
+/*     "convergence tolerance." The default convergence tolerance */
+/*     used by this routine is set by the parameter CNVTOL (defined */
+/*     in gf.inc). */
 
-/*     The GF subsystem defines a parameter, CNVTOL (from gf.inc), as a */
-/*     default tolerance. This represents a "tight" tolerance value */
-/*     so that the tolerance doesn't become the limiting factor in the */
-/*     accuracy of solutions found by this routine. In general the */
-/*     accuracy of input data will be the limiting factor. */
+/*     The value of CNVTOL is set to a "tight" value so that the */
+/*     tolerance doesn't become the limiting factor in the accuracy of */
+/*     solutions found by this routine. In general the accuracy of input */
+/*     data will be the limiting factor. */
 
-/*     Making the tolerance tighter than CNVTOL is unlikely to */
-/*     be useful, since the results are unlikely to be more accurate. */
+/*     The user may change the convergence tolerance from the default */
+/*     CNVTOL value by calling the routine GFSTOL, e.g. */
+
+/*        CALL GFSTOL( tolerance value ) */
+
+/*     Call GFSTOL prior to calling this routine. All subsequent */
+/*     searches will use the updated tolerance value. */
+
+/*     Setting the tolerance tighter than CNVTOL is unlikely to be */
+/*     useful, since the results are unlikely to be more accurate. */
 /*     Making the tolerance looser will speed up searches somewhat, */
 /*     since a few convergence steps will be omitted. However, in most */
-/*     cases, the step size is likely to have a much greater affect */
+/*     cases, the step size is likely to have a much greater effect */
 /*     on processing time than would the convergence tolerance. */
 
 
@@ -849,9 +1019,6 @@ static logical c_false = FALSE_;
 /*     platforms. The results depend on the SPICE kernels used as */
 /*     input, the compiler and supporting libraries, and the machine */
 /*     specific arithmetic implementation. */
-
-/*     Conduct a search on the range-rate of the vector from the Sun */
-/*     to the Moon. Define a function to calculate the value. */
 
 /*     Use the meta-kernel shown below to load the required SPICE */
 /*     kernels. */
@@ -878,8 +1045,10 @@ static logical c_false = FALSE_;
 
 /*           \begintext */
 
+/*     Conduct a search on the range-rate of the vector from the Sun */
+/*     to the Moon. Define a function to calculate the value. */
 
-/*     Code: */
+/*        Code: */
 
 /*           PROGRAM GFUDS_T */
 /*           IMPLICIT NONE */
@@ -1097,7 +1266,7 @@ static logical c_false = FALSE_;
 
 /*     C-Procedure GFDECR */
 
-/*           SUBROUTINE GFDECR ( UDFUNC, ET, ISDECR ) */
+/*           SUBROUTINE GFDECR ( UDFUNS, ET, ISDECR ) */
 /*           IMPLICIT NONE */
 
 /*     C- Abstract */
@@ -1106,7 +1275,7 @@ static logical c_false = FALSE_;
 /*     C     is negative (the function is decreasing) at TDB time ET. */
 /*     C */
 
-/*           EXTERNAL              UDFUNC */
+/*           EXTERNAL              UDFUNS */
 /*           EXTERNAL              UDDF */
 
 /*           DOUBLE PRECISION      ET */
@@ -1123,9 +1292,9 @@ static logical c_false = FALSE_;
 /*     C                the derivative of the user defined */
 /*     C                function is negative at ET. */
 /*     C */
-/*     C     UDFUNC - the user defined scalar quantity function. */
+/*     C     UDFUNS - the user defined scalar quantity function. */
 /*     C */
-/*           CALL UDDC ( UDFUNC, ET, DT, ISDECR ) */
+/*           CALL UDDC ( UDFUNS, ET, DT, ISDECR ) */
 
 /*           END */
 
@@ -1204,6 +1373,25 @@ static logical c_false = FALSE_;
 
 /* $ Version */
 
+/* -   SPICELIB Version 1.1.0, 15-JUL-2014 (EDW) */
+
+/*       Correction to description of UDQDEC to show UDFUNS as */
+/*       an argument. */
+
+/*       Edit to comments to correct search description. */
+
+/*       Implemented use of ZZHOLDD to allow user to alter convergence */
+/*       tolerance. */
+
+/*       Removed the STEP > 0 error check. The GFSSTP call includes */
+/*       the check. */
+
+/*       Removed ZZGFREF call. That call now occurs in ZZGFRELX. Update */
+/*       to ZZGFRELX argument list to reflect this change in */
+/*       functionality. */
+
+/*       Added RETURN() check. */
+
 /* -   SPICELIB Version 1.0.0  16-FEB-2010 (EDW) */
 
 /* -& */
@@ -1221,22 +1409,18 @@ static logical c_false = FALSE_;
 
 /*     Dummy variables. */
 
+
+/*     Standard SPICE error handling. */
+
     /* Parameter adjustments */
     work_dim1 = *mw + 6;
     work_offset = work_dim1 - 5;
 
     /* Function Body */
-    chkin_("GFUDS", (ftnlen)5);
-
-/*     Check the step size. */
-
-    if (*step <= 0.) {
-	setmsg_("Step size was #; step size must be positive.", (ftnlen)44);
-	errdp_("#", step, (ftnlen)1);
-	sigerr_("SPICE(INVALIDSTEP)", (ftnlen)18);
-	chkout_("GFUDS", (ftnlen)5);
+    if (return_()) {
 	return 0;
     }
+    chkin_("GFUDS", (ftnlen)5);
 
 /*     Confirm minimum number of windows. */
 
@@ -1278,13 +1462,15 @@ static logical c_false = FALSE_;
 
     gfsstp_(step);
 
-/*     Set the reference value. */
+/*     Retrieve the convergence tolerance, if set. */
 
-    zzgfref_(refval);
+    zzholdd_(&c_n1, &c__3, &ok, &tol);
 
-/*     Use the default GF convergence tolerance. */
+/*     Use the default value CNVTOL if no stored tolerance value. */
 
-    tol = 1e-6;
+    if (! ok) {
+	tol = 1e-6;
+    }
 
 /*     Initialize the RESULT window to empty. */
 
@@ -1293,10 +1479,10 @@ static logical c_false = FALSE_;
 /*     Call ZZGFRELX to do the event detection work. */
 
     zzgfrelx_((U_fp)gfstep_, (U_fp)gfrefn_, (U_fp)udqdec, (U_fp)zzgfudlt_, (
-	    U_fp)udfunc, (S_fp)zzgfref_, relate, refval, &tol, adjust, cnfine,
-	     mw, nw, work, &c_false, (U_fp)gfrepi_, (U_fp)gfrepu_, (U_fp)
-	    gfrepf_, rptpre, rptsuf, &c_false, (L_fp)gfbail_, result, 
-	    relate_len, (ftnlen)1, (ftnlen)1);
+	    U_fp)udfuns, relate, refval, &tol, adjust, cnfine, mw, nw, work, &
+	    c_false, (U_fp)gfrepi_, (U_fp)gfrepu_, (U_fp)gfrepf_, rptpre, 
+	    rptsuf, &c_false, (L_fp)gfbail_, result, relate_len, (ftnlen)1, (
+	    ftnlen)1);
     chkout_("GFUDS", (ftnlen)5);
     return 0;
 } /* gfuds_ */

@@ -103,7 +103,7 @@
 /*        NAIF_BODY_NAME += ( <name 1>, ... ) */
 /*        NAIF_BODY_CODE += ( <code 1>, ... ) */
 
-/*     See NAIF_ID.REQ for details. */
+/*     See naif_ids.req for details. */
 
 /* $ Particulars */
 
@@ -131,7 +131,7 @@
 /*     BODDEF assigns a body name to ID mapping. The mapping has */
 /*     priority in name-to-ID and ID-to-name translations. */
 
-/*     Refer to NAIF_ID.REQ for the list of name/code associations built */
+/*     Refer to naif_ids.req for the list of name/code associations built */
 /*     into SPICE, and for details concerning adding new name/code */
 /*     associations at run time by loading text kernels. */
 
@@ -201,7 +201,11 @@
 
 /* $ Version */
 
-/* -   SPICELIB Version 1.0.0, 10-APR-2010 (EDW) */
+/* -    SPICELIB Version 1.0.1, 18-APR-2014 (BVS) */
+
+/*        Minor header edits. */
+
+/* -    SPICELIB Version 1.0.0, 10-APR-2010 (EDW) */
 
 /* -& */
 /* $ Index_Entries */

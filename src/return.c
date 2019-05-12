@@ -108,8 +108,8 @@ logical return_(void)
 /*      when these conditions are met.  Non--toolkit routines */
 /*      can do the same. */
 
-/*      Additionally, when an error is signalled in 'RETURN' mode, */
-/*      no further errors can be signalled until the error condition */
+/*      Additionally, when an error is signaled in 'RETURN' mode, */
+/*      no further errors can be signaled until the error condition */
 /*      is reset by a call to RESET.  Calls to SIGERR simply have */
 /*      no effect.  Therefore, the error messages set in response */
 /*      to the FIRST error that was detected will be saved until */
@@ -209,6 +209,11 @@ logical return_(void)
 
 /* $ Version */
 
+/* -     SPICELIB Version 2.1.0, 04-APR-2014 (NJB) */
+
+/*         Re-organized code to improve efficiency in the non-error */
+/*         case. */
+
 /* -     SPICELIB Version 2.0.0, 22-APR-1996 (KRG) */
 
 /*         This subroutine has been modified in an attempt to improve */
@@ -267,8 +272,15 @@ logical return_(void)
 /*     Immediate return is indicated only in 'RETURN' mode, */
 /*     when an error condition is in effect: */
 
+    if (! failed_()) {
+	ret_val = FALSE_;
+	return ret_val;
+    }
+
+/*     At this point, we know a SPICE error condition exists. */
+
     getact_(&action);
-    ret_val = action == 3 && failed_();
+    ret_val = action == 3;
     return ret_val;
 } /* return_ */
 

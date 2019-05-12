@@ -55,6 +55,8 @@ static doublereal c_b189 = 60.;
     static char vars__[32*1];
     static integer qint;
     static char rest[32], myto[32];
+    extern /* Subroutine */ int zzcvpool_(char *, integer *, logical *, 
+	    ftnlen), zzctruin_(integer *);
     static integer i__;
     static doublereal halfd;
     extern logical elemc_(char *, char *, ftnlen, ftnlen);
@@ -101,14 +103,14 @@ static doublereal c_b189 = 60.;
     static char myfrom[32];
     extern /* Subroutine */ int reordl_(integer *, integer *, logical *);
     extern integer lstlti_(integer *, integer *, integer *);
-    extern /* Subroutine */ int cvpool_(char *, logical *, ftnlen);
     extern logical return_(void);
     extern /* Subroutine */ int gdpool_(char *, integer *, integer *, integer 
-	    *, doublereal *, logical *, ftnlen), setmsg_(char *, ftnlen), 
-	    sigerr_(char *, ftnlen), swpool_(char *, integer *, char *, 
-	    ftnlen, ftnlen), chkout_(char *, ftnlen), nextwd_(char *, char *, 
-	    char *, ftnlen, ftnlen, ftnlen), rmaini_(integer *, integer *, 
-	    integer *, integer *);
+	    *, doublereal *, logical *, ftnlen), setmsg_(char *, ftnlen);
+    static integer usrctr[2];
+    extern /* Subroutine */ int swpool_(char *, integer *, char *, ftnlen, 
+	    ftnlen), sigerr_(char *, ftnlen), chkout_(char *, ftnlen), 
+	    nextwd_(char *, char *, char *, ftnlen, ftnlen, ftnlen), rmaini_(
+	    integer *, integer *, integer *, integer *);
     static integer yr1, yr4;
     extern doublereal j2000_(void);
     extern logical odd_(integer *);
@@ -157,6 +159,59 @@ static doublereal c_b189 = 60.;
 /*     TIME */
 
 /* $ Declarations */
+/* $ Abstract */
+
+/*     This include file defines the dimension of the counter */
+/*     array used by various SPICE subsystems to uniquely identify */
+/*     changes in their states. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 29-JUL-2013 (BVS) */
+
+/* -& */
+
+/*     End of include file. */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
@@ -506,8 +561,13 @@ static doublereal c_b189 = 60.;
 
 /*     N.J. Bachman   (JPL) */
 /*     W.L. Taber     (JPL) */
+/*     B.V. Semenov   (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.5.0, 09-SEP-2013 (BVS) */
+
+/*        Updated to keep track of the POOL counter and call ZZCVPOOL. */
 
 /* -    SPICELIB Version 1.4.0, 05-MAR-2009 (NJB) */
 
@@ -690,8 +750,8 @@ static doublereal c_b189 = 60.;
 	dn2000 = (c__2000 - 1) * 365 + (c__2000 - 1) / 4 - (c__2000 - 1) / 
 		100 + (c__2000 - 1) / 400 + (dpjan0[(i__1 = c__1 - 1) < 12 && 
 		0 <= i__1 ? i__1 : s_rnge("dpjan0", i__1, "ttrans_", (ftnlen)
-		937)] + extra[(i__2 = c__1 - 1) < 12 && 0 <= i__2 ? i__2 : 
-		s_rnge("extra", i__2, "ttrans_", (ftnlen)937)] * (max(i__3,
+		946)] + extra[(i__2 = c__1 - 1) < 12 && 0 <= i__2 ? i__2 : 
+		s_rnge("extra", i__2, "ttrans_", (ftnlen)946)] * (max(i__3,
 		i__4) - max(i__5,i__6) + max(i__7,i__8)) + c__1) - 1;
 /* Computing MAX */
 	i__3 = 0, i__4 = abs(c__1991) / c__4 * c__4 + 1 - abs(c__1991);
@@ -702,8 +762,8 @@ static doublereal c_b189 = 60.;
 	sunday = (c__1991 - 1) * 365 + (c__1991 - 1) / 4 - (c__1991 - 1) / 
 		100 + (c__1991 - 1) / 400 + (dpjan0[(i__1 = c__1 - 1) < 12 && 
 		0 <= i__1 ? i__1 : s_rnge("dpjan0", i__1, "ttrans_", (ftnlen)
-		938)] + extra[(i__2 = c__1 - 1) < 12 && 0 <= i__2 ? i__2 : 
-		s_rnge("extra", i__2, "ttrans_", (ftnlen)938)] * (max(i__3,
+		947)] + extra[(i__2 = c__1 - 1) < 12 && 0 <= i__2 ? i__2 : 
+		s_rnge("extra", i__2, "ttrans_", (ftnlen)947)] * (max(i__3,
 		i__4) - max(i__5,i__6) + max(i__7,i__8)) + c__6) - 1;
 	jd1101 = j2000_() - (doublereal) dn2000 - .5;
 
@@ -838,6 +898,10 @@ static doublereal c_b189 = 60.;
 	reordl_(ordvec, &c__21, forml);
 	reordl_(ordvec, &c__21, needy);
 
+/*        Initialize the local POOL counter to user value. */
+
+	zzctruin_(usrctr);
+
 /*        Set up the kernel pool watchers */
 
 	s_copy(vars__, "DELTET/DELTA_AT", (ftnlen)32, (ftnlen)15);
@@ -848,7 +912,7 @@ static doublereal c_b189 = 60.;
 /*     routine have been updated since the last call to this */
 /*     entry point. */
 
-    cvpool_("TTRANS", &update, (ftnlen)6);
+    zzcvpool_("TTRANS", usrctr, &update, (ftnlen)6);
     if (update || nodata) {
 
 /*        We load the TAI-UTC offsets and formal leapsecond epochs */
@@ -907,19 +971,19 @@ static doublereal c_b189 = 60.;
 	    offset = i__;
 	    refptr = i__ + 1;
 	    dt = taitab[(i__2 = offset - 1) < 280 && 0 <= i__2 ? i__2 : 
-		    s_rnge("taitab", i__2, "ttrans_", (ftnlen)1185)];
+		    s_rnge("taitab", i__2, "ttrans_", (ftnlen)1199)];
 	    formal = taitab[(i__2 = refptr - 1) < 280 && 0 <= i__2 ? i__2 : 
-		    s_rnge("taitab", i__2, "ttrans_", (ftnlen)1186)];
+		    s_rnge("taitab", i__2, "ttrans_", (ftnlen)1200)];
 	    taitab[(i__2 = offset - 1) < 280 && 0 <= i__2 ? i__2 : s_rnge(
-		    "taitab", i__2, "ttrans_", (ftnlen)1187)] = formal - 
+		    "taitab", i__2, "ttrans_", (ftnlen)1201)] = formal - 
 		    secspd + lastdt;
 	    taitab[(i__2 = refptr - 1) < 280 && 0 <= i__2 ? i__2 : s_rnge(
-		    "taitab", i__2, "ttrans_", (ftnlen)1188)] = formal + dt;
+		    "taitab", i__2, "ttrans_", (ftnlen)1202)] = formal + dt;
 	    daynum = (integer) ((formal + halfd) / secspd) + dn2000;
 	    daytab[(i__2 = offset - 1) < 280 && 0 <= i__2 ? i__2 : s_rnge(
-		    "daytab", i__2, "ttrans_", (ftnlen)1193)] = daynum - 1;
+		    "daytab", i__2, "ttrans_", (ftnlen)1207)] = daynum - 1;
 	    daytab[(i__2 = refptr - 1) < 280 && 0 <= i__2 ? i__2 : s_rnge(
-		    "daytab", i__2, "ttrans_", (ftnlen)1194)] = daynum;
+		    "daytab", i__2, "ttrans_", (ftnlen)1208)] = daynum;
 	    lastdt = dt;
 	}
 
@@ -930,9 +994,9 @@ static doublereal c_b189 = 60.;
 	for (i__ = 2; i__ <= i__1; ++i__) {
 	    nodata = TRUE_;
 	    if (taitab[(i__2 = i__ - 2) < 280 && 0 <= i__2 ? i__2 : s_rnge(
-		    "taitab", i__2, "ttrans_", (ftnlen)1208)] >= taitab[(i__3 
+		    "taitab", i__2, "ttrans_", (ftnlen)1222)] >= taitab[(i__3 
 		    = i__ - 1) < 280 && 0 <= i__3 ? i__3 : s_rnge("taitab", 
-		    i__3, "ttrans_", (ftnlen)1208)]) {
+		    i__3, "ttrans_", (ftnlen)1222)]) {
 		setmsg_("Either the leapsecond epochs taken from the kernel "
 			"pool are not properly ordered or the UTC - TAI offse"
 			"ts are completely out of range. ", (ftnlen)135);
@@ -1059,9 +1123,9 @@ static doublereal c_b189 = 60.;
 	i__7 = 0, i__8 = abs(year) / c__400 * c__400 + 1 - abs(year);
 	daynum = (year - 1) * 365 + (year - 1) / 4 - (year - 1) / 100 + (year 
 		- 1) / 400 + (dpjan0[(i__1 = month - 1) < 12 && 0 <= i__1 ? 
-		i__1 : s_rnge("dpjan0", i__1, "ttrans_", (ftnlen)1347)] + 
+		i__1 : s_rnge("dpjan0", i__1, "ttrans_", (ftnlen)1361)] + 
 		extra[(i__2 = month - 1) < 12 && 0 <= i__2 ? i__2 : s_rnge(
-		"extra", i__2, "ttrans_", (ftnlen)1347)] * (max(i__3,i__4) - 
+		"extra", i__2, "ttrans_", (ftnlen)1361)] * (max(i__3,i__4) - 
 		max(i__5,i__6) + max(i__7,i__8)) + day) - 1 + doffst;
 	d__1 = d_int(&tvec[3]);
 	d__2 = d_int(&tvec[4]);
@@ -1088,9 +1152,9 @@ static doublereal c_b189 = 60.;
 	i__7 = 0, i__8 = abs(year) / c__400 * c__400 + 1 - abs(year);
 	daynum = (year - 1) * 365 + (year - 1) / 4 - (year - 1) / 100 + (year 
 		- 1) / 400 + (dpjan0[(i__1 = month - 1) < 12 && 0 <= i__1 ? 
-		i__1 : s_rnge("dpjan0", i__1, "ttrans_", (ftnlen)1374)] + 
+		i__1 : s_rnge("dpjan0", i__1, "ttrans_", (ftnlen)1388)] + 
 		extra[(i__2 = month - 1) < 12 && 0 <= i__2 ? i__2 : s_rnge(
-		"extra", i__2, "ttrans_", (ftnlen)1374)] * (max(i__3,i__4) - 
+		"extra", i__2, "ttrans_", (ftnlen)1388)] * (max(i__3,i__4) - 
 		max(i__5,i__6) + max(i__7,i__8)) + day) - 1 + doffst;
 	d__1 = d_int(&tvec[2]);
 	d__2 = d_int(&tvec[3]);
@@ -1118,9 +1182,9 @@ static doublereal c_b189 = 60.;
 	i__7 = 0, i__8 = abs(year) / c__400 * c__400 + 1 - abs(year);
 	daynum = (year - 1) * 365 + (year - 1) / 4 - (year - 1) / 100 + (year 
 		- 1) / 400 + (dpjan0[(i__1 = month - 1) < 12 && 0 <= i__1 ? 
-		i__1 : s_rnge("dpjan0", i__1, "ttrans_", (ftnlen)1402)] + 
+		i__1 : s_rnge("dpjan0", i__1, "ttrans_", (ftnlen)1416)] + 
 		extra[(i__2 = month - 1) < 12 && 0 <= i__2 ? i__2 : s_rnge(
-		"extra", i__2, "ttrans_", (ftnlen)1402)] * (max(i__3,i__4) - 
+		"extra", i__2, "ttrans_", (ftnlen)1416)] * (max(i__3,i__4) - 
 		max(i__5,i__6) + max(i__7,i__8)) + day) - 1 + doffst;
 
 /*        Normally the length of a day is 86400 seconds, but this day */
@@ -1134,9 +1198,9 @@ static doublereal c_b189 = 60.;
 	    dayptr = lstlei_(&daynum, &nref, daytab);
 	    if (odd_(&dayptr)) {
 		daylen = taitab[(i__1 = dayptr) < 280 && 0 <= i__1 ? i__1 : 
-			s_rnge("taitab", i__1, "ttrans_", (ftnlen)1417)] - 
+			s_rnge("taitab", i__1, "ttrans_", (ftnlen)1431)] - 
 			taitab[(i__2 = dayptr - 1) < 280 && 0 <= i__2 ? i__2 :
-			 s_rnge("taitab", i__2, "ttrans_", (ftnlen)1417)];
+			 s_rnge("taitab", i__2, "ttrans_", (ftnlen)1431)];
 	    }
 	    secs = frac * daylen;
 	}
@@ -1187,9 +1251,9 @@ static doublereal c_b189 = 60.;
 	i__7 = 0, i__8 = abs(year) / c__400 * c__400 + 1 - abs(year);
 	daynum = (year - 1) * 365 + (year - 1) / 4 - (year - 1) / 100 + (year 
 		- 1) / 400 + (dpjan0[(i__1 = month - 1) < 12 && 0 <= i__1 ? 
-		i__1 : s_rnge("dpjan0", i__1, "ttrans_", (ftnlen)1490)] + 
+		i__1 : s_rnge("dpjan0", i__1, "ttrans_", (ftnlen)1504)] + 
 		extra[(i__2 = month - 1) < 12 && 0 <= i__2 ? i__2 : s_rnge(
-		"extra", i__2, "ttrans_", (ftnlen)1490)] * (max(i__3,i__4) - 
+		"extra", i__2, "ttrans_", (ftnlen)1504)] * (max(i__3,i__4) - 
 		max(i__5,i__6) + max(i__7,i__8)) + c__1) - 1 + doffst;
 	i__1 = daynum - sunday;
 	rmaini_(&i__1, &c__7, &qint, &dpsun);
@@ -1223,9 +1287,9 @@ static doublereal c_b189 = 60.;
 	i__7 = 0, i__8 = abs(year) / c__400 * c__400 + 1 - abs(year);
 	daynum = (year - 1) * 365 + (year - 1) / 4 - (year - 1) / 100 + (year 
 		- 1) / 400 + (dpjan0[(i__1 = month - 1) < 12 && 0 <= i__1 ? 
-		i__1 : s_rnge("dpjan0", i__1, "ttrans_", (ftnlen)1527)] + 
+		i__1 : s_rnge("dpjan0", i__1, "ttrans_", (ftnlen)1541)] + 
 		extra[(i__2 = month - 1) < 12 && 0 <= i__2 ? i__2 : s_rnge(
-		"extra", i__2, "ttrans_", (ftnlen)1527)] * (max(i__3,i__4) - 
+		"extra", i__2, "ttrans_", (ftnlen)1541)] * (max(i__3,i__4) - 
 		max(i__5,i__6) + max(i__7,i__8)) + c__1) - 1 + doffst;
 	i__1 = daynum - sunday;
 	rmaini_(&i__1, &c__7, &qint, &dpsun);
@@ -1264,9 +1328,9 @@ static doublereal c_b189 = 60.;
 
 	if (odd_(&taiptr)) {
 	    daynum = daytab[(i__1 = taiptr - 1) < 280 && 0 <= i__1 ? i__1 : 
-		    s_rnge("daytab", i__1, "ttrans_", (ftnlen)1575)];
+		    s_rnge("daytab", i__1, "ttrans_", (ftnlen)1589)];
 	    secs = tai - taitab[(i__1 = taiptr - 1) < 280 && 0 <= i__1 ? i__1 
-		    : s_rnge("taitab", i__1, "ttrans_", (ftnlen)1576)];
+		    : s_rnge("taitab", i__1, "ttrans_", (ftnlen)1590)];
 
 /*        ...Otherwise, all days since the reference TAI time have */
 /*        the same number of seconds (SECSPD).  (This statement applies */
@@ -1282,15 +1346,15 @@ static doublereal c_b189 = 60.;
 
 	    taiptr = max(taiptr,1);
 	    d__1 = tai - taitab[(i__1 = taiptr - 1) < 280 && 0 <= i__1 ? i__1 
-		    : s_rnge("taitab", i__1, "ttrans_", (ftnlen)1595)];
+		    : s_rnge("taitab", i__1, "ttrans_", (ftnlen)1609)];
 	    rmaind_(&d__1, &secspd, &daydp, &secs);
 	    daynum = (integer) daydp + daytab[(i__1 = taiptr - 1) < 280 && 0 
 		    <= i__1 ? i__1 : s_rnge("daytab", i__1, "ttrans_", (
-		    ftnlen)1598)];
+		    ftnlen)1612)];
 	}
     }
     if (forml[(i__1 = pfrom - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("forml", 
-	    i__1, "ttrans_", (ftnlen)1605)]) {
+	    i__1, "ttrans_", (ftnlen)1619)]) {
 	rmaind_(&secs, &secspd, &daydp, &tsecs);
 	daynum += (integer) daydp;
 	secs = tsecs;
@@ -1302,9 +1366,9 @@ static doublereal c_b189 = 60.;
 /*     time system or not. */
 
     if (forml[(i__1 = pto - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("forml", 
-	    i__1, "ttrans_", (ftnlen)1620)] && forml[(i__2 = pfrom - 1) < 21 
+	    i__1, "ttrans_", (ftnlen)1634)] && forml[(i__2 = pfrom - 1) < 21 
 	    && 0 <= i__2 ? i__2 : s_rnge("forml", i__2, "ttrans_", (ftnlen)
-	    1620)]) {
+	    1634)]) {
 
 /*        We don't have to do anything here. */
 
@@ -1318,25 +1382,25 @@ static doublereal c_b189 = 60.;
 	    dayptr = max(i__1,i__2);
 	    secs += (doublereal) (daynum - daytab[(i__1 = dayptr - 1) < 280 &&
 		     0 <= i__1 ? i__1 : s_rnge("daytab", i__1, "ttrans_", (
-		    ftnlen)1633)]) * secspd;
+		    ftnlen)1647)]) * secspd;
 	    tai = taitab[(i__1 = dayptr - 1) < 280 && 0 <= i__1 ? i__1 : 
-		    s_rnge("taitab", i__1, "ttrans_", (ftnlen)1635)] + secs;
+		    s_rnge("taitab", i__1, "ttrans_", (ftnlen)1649)] + secs;
 
 /*           ...then back to DAYNUM and SECS */
 
 	    taiptr = lstled_(&tai, &nref, taitab);
 	    if (odd_(&taiptr)) {
 		daynum = daytab[(i__1 = taiptr - 1) < 280 && 0 <= i__1 ? i__1 
-			: s_rnge("daytab", i__1, "ttrans_", (ftnlen)1644)];
+			: s_rnge("daytab", i__1, "ttrans_", (ftnlen)1658)];
 		secs = tai - taitab[(i__1 = taiptr - 1) < 280 && 0 <= i__1 ? 
-			i__1 : s_rnge("taitab", i__1, "ttrans_", (ftnlen)1645)
+			i__1 : s_rnge("taitab", i__1, "ttrans_", (ftnlen)1659)
 			];
 	    } else {
 		taiptr = max(1,taiptr);
 		daynum = daytab[(i__1 = taiptr - 1) < 280 && 0 <= i__1 ? i__1 
-			: s_rnge("daytab", i__1, "ttrans_", (ftnlen)1651)];
+			: s_rnge("daytab", i__1, "ttrans_", (ftnlen)1665)];
 		d__1 = tai - taitab[(i__1 = taiptr - 1) < 280 && 0 <= i__1 ? 
-			i__1 : s_rnge("taitab", i__1, "ttrans_", (ftnlen)1653)
+			i__1 : s_rnge("taitab", i__1, "ttrans_", (ftnlen)1667)
 			];
 		rmaind_(&d__1, &secspd, &daydp, &secs);
 		daynum += (integer) daydp;
@@ -1358,7 +1422,7 @@ static doublereal c_b189 = 60.;
 /*     increment the day number by one and set SECS to zero. */
 
     if (forml[(i__1 = pto - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("forml", 
-	    i__1, "ttrans_", (ftnlen)1676)] && secs > secspd) {
+	    i__1, "ttrans_", (ftnlen)1690)] && secs > secspd) {
 	++daynum;
 	secs = 0.;
     }
@@ -1371,7 +1435,7 @@ static doublereal c_b189 = 60.;
 /*     it all out at the appropriate time later on. */
 
     if (needy[(i__1 = pto - 1) < 21 && 0 <= i__1 ? i__1 : s_rnge("needy", 
-	    i__1, "ttrans_", (ftnlen)1688)]) {
+	    i__1, "ttrans_", (ftnlen)1702)]) {
 	yr400 = daynum / 146097;
 	rem = daynum - yr400 * 146097;
 
@@ -1405,11 +1469,11 @@ static doublereal c_b189 = 60.;
 	if (max(i__1,i__2) - max(i__3,i__4) + max(i__5,i__6) == 0) {
 	    month = lstlti_(&dofyr, &c__12, dpjan0);
 	    day = dofyr - dpjan0[(i__1 = month - 1) < 12 && 0 <= i__1 ? i__1 :
-		     s_rnge("dpjan0", i__1, "ttrans_", (ftnlen)1716)];
+		     s_rnge("dpjan0", i__1, "ttrans_", (ftnlen)1730)];
 	} else {
 	    month = lstlti_(&dofyr, &c__12, dpbegl);
 	    day = dofyr - dpbegl[(i__1 = month - 1) < 12 && 0 <= i__1 ? i__1 :
-		     s_rnge("dpbegl", i__1, "ttrans_", (ftnlen)1719)];
+		     s_rnge("dpbegl", i__1, "ttrans_", (ftnlen)1733)];
 	}
 
 /*        We only want to convert that portion of seconds less than */
@@ -1448,9 +1512,9 @@ static doublereal c_b189 = 60.;
 	    daylen = secspd;
 	    if (odd_(&dayptr)) {
 		daylen = taitab[(i__1 = dayptr) < 280 && 0 <= i__1 ? i__1 : 
-			s_rnge("taitab", i__1, "ttrans_", (ftnlen)1768)] - 
+			s_rnge("taitab", i__1, "ttrans_", (ftnlen)1782)] - 
 			taitab[(i__2 = dayptr - 1) < 280 && 0 <= i__2 ? i__2 :
-			 s_rnge("taitab", i__2, "ttrans_", (ftnlen)1768)];
+			 s_rnge("taitab", i__2, "ttrans_", (ftnlen)1782)];
 	    }
 	    tvec[1] = (doublereal) dofyr + secs / daylen;
 	} else {
@@ -1507,8 +1571,8 @@ static doublereal c_b189 = 60.;
 	week = (daynum - ((year - 1) * 365 + (year - 1) / 4 - (year - 1) / 
 		100 + (year - 1) / 400 + (dpjan0[(i__1 = month - 1) < 12 && 0 
 		<= i__1 ? i__1 : s_rnge("dpjan0", i__1, "ttrans_", (ftnlen)
-		1837)] + extra[(i__2 = month - 1) < 12 && 0 <= i__2 ? i__2 : 
-		s_rnge("extra", i__2, "ttrans_", (ftnlen)1837)] * (max(i__3,
+		1851)] + extra[(i__2 = month - 1) < 12 && 0 <= i__2 ? i__2 : 
+		s_rnge("extra", i__2, "ttrans_", (ftnlen)1851)] * (max(i__3,
 		i__4) - max(i__5,i__6) + max(i__7,i__8)) + c__1) - 1) - 
 		doffst) / 7 + 1;
 	i__1 = daynum - sunday;
@@ -1534,9 +1598,9 @@ static doublereal c_b189 = 60.;
 	dayptr = max(i__1,i__2);
 	secs += (doublereal) (daynum - daytab[(i__1 = dayptr - 1) < 280 && 0 
 		<= i__1 ? i__1 : s_rnge("daytab", i__1, "ttrans_", (ftnlen)
-		1859)]) * secspd;
+		1873)]) * secspd;
 	tai = taitab[(i__1 = dayptr - 1) < 280 && 0 <= i__1 ? i__1 : s_rnge(
-		"taitab", i__1, "ttrans_", (ftnlen)1861)] + secs;
+		"taitab", i__1, "ttrans_", (ftnlen)1875)] + secs;
 	tvec[0] = unitim_(&tai, "TAI", myto, (ftnlen)3, (ftnlen)32);
     }
 

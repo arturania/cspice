@@ -10,7 +10,7 @@
 static integer c__3 = 3;
 static integer c__1 = 1;
 
-/* $Procedure      PCK03B ( PCK type 03: End a segment.) */
+/* $Procedure PCK03B ( PCK, begin a type 3 segment ) */
 /* Subroutine */ int pck03b_(integer *handle, char *segid, integer *body, 
 	char *frame, doublereal *first, doublereal *last, integer *chbdeg, 
 	ftnlen segid_len, ftnlen frame_len)
@@ -67,9 +67,6 @@ static integer c__1 = 1;
 /*     PCK */
 
 /* $ Declarations */
-
-/*     Include the mnemonics for the generic segments routines. */
-
 
 /* $ Abstract */
 
@@ -508,6 +505,23 @@ static integer c__1 = 1;
 /*     This subroutine makes use of parameters defined in the file */
 /*     'sgparam.inc'. */
 
+/* $ Exceptions */
+
+/*     1) If the degree of the Chebyshev Polynomial to be used for this */
+/*        segment is negative, the error SPICE(INVALIDARGUMENT) will */
+/*        be signalled. */
+
+/*     2) Errors in the structure or content of the inputs other than the */
+/*        degree of the Chebyshev Polynomial are diagnosed by routines */
+/*        called by this one. */
+
+/*     3) File access errors are diagnosed by routines in the call tree */
+/*        of this routine. */
+
+/* $ Files */
+
+/*      None. */
+
 /* $ Particulars */
 
 /*     This routine begins a type 03 segment in the binary PCK file that */
@@ -718,32 +732,25 @@ static integer c__1 = 1;
 /*     segment must be ended before another segment may be started in */
 /*     the file. */
 
-/* $ Exceptions */
-
-/*     1) If the degree of the Chebyshev Polynomial to be used for this */
-/*        segment is negative, the error SPICE(INVALIDARGUMENT) will */
-/*        be signalled. */
-
-/*     2) Errors in the structure or content of the inputs other than the */
-/*        degree of the Chebyshev Polynomial are diagnosed by routines */
-/*        called by this one. */
-
-/*     3) File access errors are diagnosed by routines in the call tree */
-/*        of this routine. */
-
-/* $ Files */
+/* $ Literature_References */
 
 /*      None. */
 
 /* $ Author_and_Institution */
 
 /*      K.R. Gehringer      (JPL) */
-
-/* $ Literature_References */
-
-/*      None. */
+/*      E.D. Wright         (JPL) */
+/*      B.V. Semenov        (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.0.1, 10-FEB-2014 (EDW) (BVS) */
+
+/*        Minor edits to Procedure; clean trailing whitespace. */
+/*        Corrected order of header sections to conform to NAIF */
+/*        standard. */
+
+/*        Removed comments from the Declarations section. */
 
 /* -    SPICELIB Version 1.0.0, 06-MAR-1995 (KRG) */
 

@@ -9,7 +9,7 @@
 
 static integer c__3 = 3;
 static doublereal c_b15 = 1.;
-static doublereal c_b38 = 0.;
+static doublereal c_b39 = 0.;
 
 /* $Procedure ZZGFCPRX ( GF, coordinate derivative proxy ) */
 /* Subroutine */ int zzgfcprx_(doublereal *state, char *corsys, doublereal *
@@ -34,7 +34,7 @@ static doublereal c_b38 = 0.;
     extern /* Subroutine */ int chkin_(char *, ftnlen), errch_(char *, char *,
 	     ftnlen, ftnlen), vpack_(doublereal *, doublereal *, doublereal *,
 	     doublereal *);
-    extern logical vzero_(doublereal *);
+    extern logical vzero_(doublereal *), failed_(void);
     doublereal dp;
     extern /* Subroutine */ int cleari_(integer *, integer *), recgeo_(
 	    doublereal *, doublereal *, doublereal *, doublereal *, 
@@ -461,6 +461,10 @@ static doublereal c_b38 = 0.;
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.1.0, 15-APR-2014 (NJB) */
+
+/*        Added FAILED() check to avoid numeric problems. */
+
 /* -    SPICELIB Version 1.0.0, 15-APR-2009 (NJB) */
 
 /* -& */
@@ -529,9 +533,9 @@ static doublereal c_b38 = 0.;
 
 	for (i__ = 1; i__ <= 3; ++i__) {
 	    if (vel[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("vel", 
-		    i__1, "zzgfcprx_", (ftnlen)398)] == 0.) {
+		    i__1, "zzgfcprx_", (ftnlen)403)] == 0.) {
 		cdsign[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge(
-			"cdsign", i__1, "zzgfcprx_", (ftnlen)400)] = 0;
+			"cdsign", i__1, "zzgfcprx_", (ftnlen)405)] = 0;
 	    } else {
 
 /*              Use the Fortran sign transfer intrinsic function */
@@ -541,10 +545,10 @@ static doublereal c_b38 = 0.;
 /*              discussion of this Fortran intrinsic function. */
 
 		d__1 = d_sign(&c_b15, &vel[(i__2 = i__ - 1) < 3 && 0 <= i__2 ?
-			 i__2 : s_rnge("vel", i__2, "zzgfcprx_", (ftnlen)410)]
+			 i__2 : s_rnge("vel", i__2, "zzgfcprx_", (ftnlen)415)]
 			);
 		cdsign[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge(
-			"cdsign", i__1, "zzgfcprx_", (ftnlen)410)] = i_dnnt(&
+			"cdsign", i__1, "zzgfcprx_", (ftnlen)415)] = i_dnnt(&
 			d__1);
 	    }
 	}
@@ -732,13 +736,17 @@ static doublereal c_b38 = 0.;
 /*        and longitude of the input position. */
 
 	recgeo_(state, re, f, &lon, &lat, &alt);
+	if (failed_()) {
+	    chkout_("ZZGFCPRX", (ftnlen)8);
+	    return 0;
+	}
 	latrec_(&c_b15, &lon, &lat, normal);
     } else if (s_cmp(corsys, "CYLINDRICAL", corsys_len, (ftnlen)11) == 0) {
 
 /*        The normal vector is aligned with the local radial */
 /*        direction; this vector is parallel to the X-Y plane. */
 
-	vpack_(state, &state[1], &c_b38, normal);
+	vpack_(state, &state[1], &c_b39, normal);
 	vhatip_(normal);
     } else {
 
@@ -758,14 +766,14 @@ static doublereal c_b38 = 0.;
 
     for (i__ = 1; i__ <= 3; ++i__) {
 	if (rtnvel[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("rtnvel",
-		 i__1, "zzgfcprx_", (ftnlen)649)] == 0.) {
+		 i__1, "zzgfcprx_", (ftnlen)659)] == 0.) {
 	    rtnsgn[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("rtnsgn",
-		     i__1, "zzgfcprx_", (ftnlen)651)] = 0;
+		     i__1, "zzgfcprx_", (ftnlen)661)] = 0;
 	} else {
 	    d__1 = d_sign(&c_b15, &rtnvel[(i__2 = i__ - 1) < 3 && 0 <= i__2 ? 
-		    i__2 : s_rnge("rtnvel", i__2, "zzgfcprx_", (ftnlen)653)]);
+		    i__2 : s_rnge("rtnvel", i__2, "zzgfcprx_", (ftnlen)663)]);
 	    rtnsgn[(i__1 = i__ - 1) < 3 && 0 <= i__1 ? i__1 : s_rnge("rtnsgn",
-		     i__1, "zzgfcprx_", (ftnlen)653)] = i_dnnt(&d__1);
+		     i__1, "zzgfcprx_", (ftnlen)663)] = i_dnnt(&d__1);
 	}
     }
 

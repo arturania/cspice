@@ -60,16 +60,15 @@
 
 -Detailed_Input
 
-   fname        is the name of the file in question. This may be
-                a system name, e.g.
+   fname        is the name of the file in question.This may be
+                any unambigous file name valid on the user's
+                computer, for example
 
-                      "DISK:[USER.SUB1.SUB2]DATA.DAT"
-                      "\usr\dir1\dir2\data.dat"
+                   '/usr/dir1/dir2/DATA.DAT'
+                   './DATA.DAT'
+                   'c:\usr\dir1\dir2\data.dat'
 
-                or a logical name, e.g.
-
-                      "EPHEMERIS"
-                      "DATA$DIR:SAMPLE.DAT"
+                Environment or shell variables may not be used.
 
 -Detailed_Output
 
@@ -83,10 +82,14 @@
 -Exceptions
 
    1) If the input name is blank, the error SPICE(BLANKFILENAME) will
-      be signalled. (This test is currently unimplemented.)
+      be signaled. (This test is currently unimplemented.)
 
    2) If an error occurs during the execution existence test,
-      the error SPICE(INQUIREFAILED) is signalled.
+      the error SPICE(INQUIREFAILED) is signaled.
+
+-Files
+
+   None.
 
 -Particulars
 
@@ -111,7 +114,7 @@
 
    None.
 
--Files
+-Literature_References
 
    None.
 
@@ -121,11 +124,11 @@
    H.A. Neilan     (JPL)
    I.M. Underwood  (JPL)
 
--Literature_References
-
-   None.
-
 -Version
+
+   -CSPICE Version 1.1.1, 01-JUL-2014 (NJB)
+
+       VAX examples were deleted from the header.
 
    -CSPICE Version 1.1.0, 08-FEB-1998 (NJB)
 

@@ -55,7 +55,7 @@
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
-            <td style="width: 50%; text-align: center;">
+            <td style="width: 33%; text-align: center;">
             <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
@@ -66,7 +66,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
@@ -76,7 +76,7 @@
 
               </small>
               </td>
-              <td style="vertical-align: top; width: 50%; text-align: center;">
+              <td style="vertical-align: top; width: 33%; text-align: center;">
               <small>               <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
@@ -210,6 +210,7 @@
  
    2)  If the SCLK kernel used with this routine does not map SCLK 
        directly to barycentric dynamical time, a leapseconds kernel 
+       must be loaded at the time this routine is called.
  </PRE>
 <h4><a name="Particulars">Particulars</a></h4>
 <PRE>
@@ -390,10 +391,16 @@
  
    C.H. Acton     (JPL)
    N.J. Bachman   (JPL) 
+   B.V. Semenov   (JPL)
  </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
  
+   -CSPICE Version 1.1.2, 21-JAN-2014 (BVS)
+
+      Fixed an incomplete sentence in the item 2) in the header 
+      section Files.
+
    -CSPICE Version 1.1.1, 29-JUL-2003 (NJB) (CHA)
 
       Various header changes were made to improve clarity and 
@@ -420,7 +427,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Jun  9 13:05:29 2010</pre>
+   <pre>Wed Apr  5 17:54:42 2017</pre>
 
 </body>
 </html>

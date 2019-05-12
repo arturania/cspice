@@ -16,14 +16,20 @@ static integer c__9 = 9;
 	tol, char *ref, doublereal *cmat, doublereal *av, doublereal *clkout, 
 	logical *found, ftnlen ref_len)
 {
+    /* Initialized data */
+
+    static logical first = TRUE_;
+
     extern /* Subroutine */ int vadd_(doublereal *, doublereal *, doublereal *
 	    );
     logical pfnd, sfnd;
     integer sclk;
     doublereal tmpv[3];
     extern /* Subroutine */ int mtxv_(doublereal *, doublereal *, doublereal *
-	    ), sct2e_(integer *, doublereal *, doublereal *);
+	    ), sct2e_(integer *, doublereal *, doublereal *), zznamfrm_(
+	    integer *, char *, integer *, char *, integer *, ftnlen, ftnlen);
     integer type1, type2;
+    extern /* Subroutine */ int zzctruin_(integer *);
     doublereal omega[3];
     char segid[40];
     extern /* Subroutine */ int chkin_(char *, ftnlen);
@@ -35,10 +41,12 @@ static integer c__9 = 9;
 	     doublereal *, logical *), moved_(doublereal *, integer *, 
 	    doublereal *), cksns_(integer *, doublereal *, char *, logical *, 
 	    ftnlen);
+    static char svref[32];
     logical gotit;
     doublereal xform[36]	/* was [6][6] */;
     extern /* Subroutine */ int xf2rav_(doublereal *, doublereal *, 
 	    doublereal *);
+    static integer svctr1[2];
     extern logical failed_(void);
     doublereal et;
     integer handle;
@@ -46,11 +54,12 @@ static integer c__9 = 9;
     extern /* Subroutine */ int ckmeta_(integer *, char *, integer *, ftnlen),
 	     frmchg_(integer *, integer *, doublereal *, doublereal *);
     integer refseg, center;
-    extern /* Subroutine */ int namfrm_(char *, integer *, ftnlen), frinfo_(
-	    integer *, integer *, integer *, integer *, logical *);
+    extern /* Subroutine */ int frinfo_(integer *, integer *, integer *, 
+	    integer *, logical *);
     integer refreq, typeid;
     extern /* Subroutine */ int chkout_(char *, ftnlen);
     doublereal tmpmat[9]	/* was [3][3] */;
+    static integer svrefr;
     extern logical return_(void);
     doublereal dcd[2];
     integer icd[6];
@@ -152,6 +161,11 @@ static integer c__9 = 9;
 /*                 definition depends on parameters supplied via a */
 /*                 frame kernel. */
 
+/*     ALL         indicates any of the above classes. This parameter */
+/*                 is used in APIs that fetch information about frames */
+/*                 of a specified class. */
+
+
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
@@ -162,6 +176,10 @@ static integer c__9 = 9;
 /*     None. */
 
 /* $ Version */
+
+/* -    SPICELIB Version 4.0.0, 08-MAY-2012 (NJB) */
+
+/*       The parameter ALL was added to support frame fetch APIs. */
 
 /* -    SPICELIB Version 3.0.0, 28-MAY-2004 (NJB) */
 
@@ -175,6 +193,62 @@ static integer c__9 = 9;
 /* -    SPICELIB Version 1.0.0, 10-DEC-1995 (WLT) */
 
 /* -& */
+
+/*     End of INCLUDE file frmtyp.inc */
+
+/* $ Abstract */
+
+/*     This include file defines the dimension of the counter */
+/*     array used by various SPICE subsystems to uniquely identify */
+/*     changes in their states. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 29-JUL-2013 (BVS) */
+
+/* -& */
+
+/*     End of include file. */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
@@ -791,6 +865,12 @@ static integer c__9 = 9;
 
 /* $ Version */
 
+/* -    SPICELIB Version 5.3.0, 23-SEP-2013 (BVS) */
+
+/*        Updated to save the input frame name and POOL state counter */
+/*        and to do frame name-ID conversion only if the counter has */
+/*        changed. */
+
 /* -    SPICELIB Version 5.2.1, 03-JUN-2010 (BVS) */
 
 /*        Header update: description of the tolerance and Particulars */
@@ -978,7 +1058,19 @@ static integer c__9 = 9;
 /*                   a name and a summary have the same length in bytes.) */
 
 
+/*     Saved frame name length. */
+
+
 /*     Local variables */
+
+
+/*     Saved frame name/ID item declarations. */
+
+
+/*     Saved frame name/ID items. */
+
+
+/*     Initial values. */
 
 
 /*     Standard SPICE error handling. */
@@ -987,6 +1079,16 @@ static integer c__9 = 9;
 	return 0;
     } else {
 	chkin_("CKGPAV", (ftnlen)6);
+    }
+
+/*     Initialization. */
+
+    if (first) {
+
+/*        Initialize counter. */
+
+	zzctruin_(svctr1);
+	first = FALSE_;
     }
 
 /*     Need angular velocity data. */
@@ -1027,7 +1129,8 @@ static integer c__9 = 9;
 
 /*           Look up the id code for the requested reference frame. */
 
-	    namfrm_(ref, &refreq, ref_len);
+	    zznamfrm_(svctr1, svref, &svrefr, ref, &refreq, (ftnlen)32, 
+		    ref_len);
 	    if (refreq != refseg) {
 
 /*              We may need to convert the output ticks CLKOUT to ET */

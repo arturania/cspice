@@ -11,43 +11,64 @@ static integer c__3 = 3;
 
 /* $Procedure EDTERM ( Ellipsoid terminator ) */
 /* Subroutine */ int edterm_(char *trmtyp, char *source, char *target, 
-	doublereal *et, char *fixfrm, char *abcorr, char *obsrvr, integer *
+	doublereal *et, char *fixref, char *abcorr, char *obsrvr, integer *
 	npts, doublereal *trgepc, doublereal *obspos, doublereal *trmpts, 
 	ftnlen trmtyp_len, ftnlen source_len, ftnlen target_len, ftnlen 
-	fixfrm_len, ftnlen abcorr_len, ftnlen obsrvr_len)
+	fixref_len, ftnlen abcorr_len, ftnlen obsrvr_len)
 {
+    /* Initialized data */
+
+    static logical first = TRUE_;
+
     /* System generated locals */
     doublereal d__1;
 
     /* Local variables */
-    extern /* Subroutine */ int zzcorepc_(char *, doublereal *, doublereal *, 
-	    doublereal *, ftnlen), zzedterm_(char *, doublereal *, doublereal 
-	    *, doublereal *, doublereal *, doublereal *, integer *, 
-	    doublereal *, ftnlen);
+    extern /* Subroutine */ int zzbods2c_(integer *, char *, integer *, 
+	    logical *, char *, integer *, logical *, ftnlen, ftnlen), 
+	    zzcorepc_(char *, doublereal *, doublereal *, doublereal *, 
+	    ftnlen), zznamfrm_(integer *, char *, integer *, char *, integer *
+	    , ftnlen, ftnlen), zzedterm_(char *, doublereal *, doublereal *, 
+	    doublereal *, doublereal *, doublereal *, integer *, doublereal *,
+	     ftnlen), zzctruin_(integer *);
     integer n;
     doublereal r__;
-    extern /* Subroutine */ int chkin_(char *, ftnlen), errch_(char *, char *,
-	     ftnlen, ftnlen);
-    integer trgid;
+    extern /* Subroutine */ int chkin_(char *, ftnlen);
+    integer obsid;
+    extern /* Subroutine */ int errch_(char *, char *, ftnlen, ftnlen);
+    integer srcid, trgid;
     logical found;
     doublereal ltsrc;
-    extern /* Subroutine */ int bods2c_(char *, integer *, logical *, ftnlen);
+    static logical svfnd1, svfnd2, svfnd3;
+    static integer svctr1[2], svctr2[2];
+    extern logical failed_(void);
+    static integer svctr3[2], svctr4[2];
+    extern /* Subroutine */ int bodvcd_(integer *, char *, integer *, integer 
+	    *, doublereal *, ftnlen);
     integer frcode, frclas;
     doublereal srcrad[3];
     integer center, clssid;
     doublereal trgrad[3];
-    extern /* Subroutine */ int namfrm_(char *, integer *, ftnlen), frinfo_(
-	    integer *, integer *, integer *, integer *, logical *), bodvrd_(
-	    char *, char *, integer *, integer *, doublereal *, ftnlen, 
-	    ftnlen), sigerr_(char *, ftnlen);
+    static integer svfrcd;
+    extern /* Subroutine */ int frinfo_(integer *, integer *, integer *, 
+	    integer *, logical *);
+    static char svfref[32];
     doublereal lttarg;
-    extern /* Subroutine */ int chkout_(char *, ftnlen), setmsg_(char *, 
-	    ftnlen), errint_(char *, integer *, ftnlen);
-    doublereal srcpos[3], trgpos[3];
+    extern /* Subroutine */ int sigerr_(char *, ftnlen), chkout_(char *, 
+	    ftnlen);
+    static integer svtgid;
+    extern /* Subroutine */ int setmsg_(char *, ftnlen), errint_(char *, 
+	    integer *, ftnlen);
+    static char svtarg[36], svscre[36];
+    static integer svobsi;
+    doublereal srcpos[3];
+    static integer svsrci;
+    extern /* Subroutine */ int spkezp_(integer *, doublereal *, char *, char 
+	    *, integer *, doublereal *, doublereal *, ftnlen, ftnlen);
     extern logical return_(void);
-    extern /* Subroutine */ int spkpos_(char *, doublereal *, char *, char *, 
-	    char *, doublereal *, doublereal *, ftnlen, ftnlen, ftnlen, 
-	    ftnlen), vminus_(doublereal *, doublereal *);
+    doublereal trgpos[3];
+    static char svobsr[36];
+    extern /* Subroutine */ int vminus_(doublereal *, doublereal *);
 
 /* $ Abstract */
 
@@ -82,7 +103,10 @@ static integer c__3 = 3;
 
 /* $ Required_Reading */
 
-/*     ELLIPSES */
+/*     FRAMES */
+/*     PCK */
+/*     SPK */
+/*     TIME */
 
 /* $ Keywords */
 
@@ -91,6 +115,59 @@ static integer c__3 = 3;
 /*     MATH */
 
 /* $ Declarations */
+/* $ Abstract */
+
+/*     This include file defines the dimension of the counter */
+/*     array used by various SPICE subsystems to uniquely identify */
+/*     changes in their states. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Parameters */
+
+/*     CTRSIZ      is the dimension of the counter array used by */
+/*                 various SPICE subsystems to uniquely identify */
+/*                 changes in their states. */
+
+/* $ Author_and_Institution */
+
+/*     B.V. Semenov    (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 29-JUL-2013 (BVS) */
+
+/* -& */
+
+/*     End of include file. */
+
 /* $ Brief_I/O */
 
 /*     Variable  I/O  Description */
@@ -99,7 +176,7 @@ static integer c__3 = 3;
 /*     SOURCE     I   Light source. */
 /*     TARGET     I   Target body. */
 /*     ET         I   Observation epoch. */
-/*     FIXFRM     I   Body-fixed frame associated with target. */
+/*     FIXREF     I   Body-fixed frame associated with target. */
 /*     ABCORR     I   Aberration correction. */
 /*     OBSRVR     I   Observer. */
 /*     NPTS       I   Number of points in terminator set. */
@@ -110,13 +187,13 @@ static integer c__3 = 3;
 /* $ Detailed_Input */
 
 /*     TRMTYP      is a string indicating the type of terminator to */
-/*                 compute:  umbral or penumbral.  The umbral terminator */
+/*                 compute: umbral or penumbral. The umbral terminator */
 /*                 is the boundary of the portion of the ellipsoid */
 /*                 surface in total shadow. The penumbral terminator is */
 /*                 the boundary of the portion of the surface that is */
-/*                 completely illuminated.  Note that in astronomy */
+/*                 completely illuminated. Note that in astronomy */
 /*                 references, the unqualified word "terminator" refers */
-/*                 to the umbral terminator.  Here, the unqualified */
+/*                 to the umbral terminator. Here, the unqualified */
 /*                 word refers to either type of terminator. */
 
 /*                 Possible values of TRMTYP are */
@@ -132,33 +209,33 @@ static integer c__3 = 3;
 /*                 SOURCE is case-insensitive, and leading and trailing */
 /*                 blanks in TARGET are not significant. Optionally, you */
 /*                 may supply a string containing the integer ID code */
-/*                 for the object.  For example both 'SUN' and '10' are */
+/*                 for the object. For example both 'SUN' and '10' are */
 /*                 legitimate strings that indicate the Sun is the light */
 /*                 source. */
 
 /*                 This routine assumes that a kernel variable */
 /*                 representing the light source's radii is present in */
-/*                 the kernel pool.  Normally the kernel variable would */
+/*                 the kernel pool. Normally the kernel variable would */
 /*                 be defined by loading a PCK file. */
 
 /*                 The shape of the light source is always modeled as a */
 /*                 sphere, regardless of whether radii defining a */
 /*                 triaxial ellipsoidal shape model are available in the */
-/*                 kernel pool.  The maximum radius of the body is used */
+/*                 kernel pool. The maximum radius of the body is used */
 /*                 as the radius of the sphere. */
 
 
-/*     TARGET      is the name of the target body.  TARGET is */
+/*     TARGET      is the name of the target body. TARGET is */
 /*                 case-insensitive, and leading and trailing blanks in */
 /*                 TARGET are not significant. Optionally, you may */
 /*                 supply a string containing the integer ID code for */
-/*                 the object.  For example both 'MOON' and '301' are */
+/*                 the object. For example both 'MOON' and '301' are */
 /*                 legitimate strings that indicate the moon is the */
 /*                 target body. */
 
 /*                 This routine assumes that a kernel variable */
 /*                 representing the target's radii is present in the */
-/*                 kernel pool.  Normally the kernel variable would be */
+/*                 kernel pool. Normally the kernel variable would be */
 /*                 defined by loading a PCK file. */
 
 
@@ -173,43 +250,41 @@ static integer c__3 = 3;
 /*                 computed. */
 
 /*                 When aberration corrections are used, ET is the epoch */
-/*                 at which the observer's position relative to the solar */
-/*                 system barycenter is computed; in this case the */
+/*                 at which the observer's position relative to the */
+/*                 solar system barycenter is computed; in this case the */
 /*                 position and orientation of the target body are */
-/*                 computed at ET-LT or ET+LT, where LT is the one-way */
-/*                 light time between the target body's center and the */
-/*                 observer, and the sign applied to LT depends on the */
-/*                 selected correction. See the description of ABCORR */
-/*                 below for details. */
+/*                 computed at ET-LT, where LT is the one-way light time */
+/*                 between the target body's center and the observer. */
+/*                 See the description of ABCORR below for details. */
 
 
-/*     FIXFRM      is the name of the reference frame relative to which */
+/*     FIXREF      is the name of the reference frame relative to which */
 /*                 the output terminator points are expressed. This must */
-/*                 a body-centered, body-fixed frame associated with the */
-/*                 target.  The frame's axes must be compatible with the */
-/*                 triaxial ellipsoidal shape model associated with the */
-/*                 target body (normally provide via a PCK): this */
+/*                 be a body-centered, body-fixed frame associated with */
+/*                 the target. The frame's axes must be compatible with */
+/*                 the triaxial ellipsoidal shape model associated with */
+/*                 the target body (normally provide via a PCK): this */
 /*                 routine assumes that the first, second, and third */
 /*                 axis lengths correspond, respectively, to the x, y, */
-/*                 and z-axes of the frame designated by FIXFRM. */
+/*                 and z-axes of the frame designated by FIXREF. */
 
-/*                 FIXFRM may refer to a built-in frame (documented in */
+/*                 FIXREF may refer to a built-in frame (documented in */
 /*                 the Frames Required Reading) or a frame defined by a */
 /*                 loaded frame kernel (FK). */
 
-/*                 The orientation of the frame designated by FIXFRM is */
+/*                 The orientation of the frame designated by FIXREF is */
 /*                 evaluated at epoch of participation of the target */
-/*                 body.  See the descriptions of ET and ABCORR for */
+/*                 body. See the descriptions of ET and ABCORR for */
 /*                 details. */
 
 
 /*     ABCORR      indicates the aberration correction to be applied */
 /*                 when computing the observer-target position, the */
 /*                 orientation of the target body, and the target- */
-/*                 source position vector.  ABCORR may be any of */
+/*                 source position vector. ABCORR may be any of */
 /*                 the following. */
 
-/*                    'NONE'     Apply no correction.  Compute the */
+/*                    'NONE'     Apply no correction. Compute the */
 /*                               terminator points using the position */
 /*                               of the light source and target, and */
 /*                               the orientation of the target, at ET. */
@@ -250,16 +325,16 @@ static integer c__3 = 3;
 /*                               positions obtained with the 'LT' option */
 /*                               to account for the observer's velocity */
 /*                               relative to the solar system */
-/*                               barycenter.  This correction also */
+/*                               barycenter. This correction also */
 /*                               applies to the position of the light */
-/*                               source relative to the target.  The */
+/*                               source relative to the target. The */
 /*                               result is the apparent terminator as */
 /*                               seen by the observer. */
 
 /*                    'CN'       Converged Newtonian light time */
-/*                               correction.  In solving the light time */
+/*                               correction. In solving the light time */
 /*                               equation, the 'CN' correction iterates */
-/*                               until the solution converges.  The */
+/*                               until the solution converges. The */
 /*                               position and rotation of the target */
 /*                               body and the position of the light */
 /*                               source relative to the target are */
@@ -269,12 +344,12 @@ static integer c__3 = 3;
 /*                               and stellar aberration corrections. */
 
 
-/*     OBSRVR      is the name of the observing body.  This is typically */
+/*     OBSRVR      is the name of the observing body. This is typically */
 /*                 a spacecraft, the Earth, or a surface point on the */
-/*                 Earth.  OBSRVR is case-insensitive, and leading and */
+/*                 Earth. OBSRVR is case-insensitive, and leading and */
 /*                 trailing blanks in OBSRVR are not significant. */
 /*                 Optionally, you may supply a string containing the */
-/*                 integer ID code for the object.  For example both */
+/*                 integer ID code for the object. For example both */
 /*                 'EARTH' and '399' are legitimate strings that indicate */
 /*                 the Earth is the observer. */
 
@@ -289,30 +364,40 @@ static integer c__3 = 3;
 /*                 target center and observer, TRGEPC is either the */
 /*                 epoch ET-LT or ET depending on whether the requested */
 /*                 aberration correction is, respectively, for received */
-/*                 radiation or omitted.  LT is computed using the */
+/*                 radiation or omitted. LT is computed using the */
 /*                 method indicated by ABCORR. */
 
 /*                 TRGEPC is expressed as seconds past J2000 TDB. */
 
 
 /*     OBSPOS      is the vector from the center of the target body at */
-/*                 epoch TRGEPC to the observer at epoch ET.  OBSPOS is */
+/*                 epoch TRGEPC to the observer at epoch ET. OBSPOS is */
 /*                 expressed in the target body-fixed reference frame */
-/*                 FIXFRM, which is evaluated at TRGEPC. */
+/*                 FIXREF, which is evaluated at TRGEPC. */
 
 /*                 OBSPOS is returned to simplify various related */
-/*                 computations that would otherwise be cumbersome.  For */
+/*                 computations that would otherwise be cumbersome. For */
 /*                 example, the vector XVEC from the observer to the */
 /*                 Ith terminator point can be calculated via the call */
 
-/*                    CALL VMINUS ( TRMPTS(1,I), OBSPOS, XVEC ) */
+/*                    CALL VSUB ( TRMPTS(1,I), OBSPOS, XVEC ) */
 
-/*                 The components of OBSPOS are given in units of km. */
+/*                 To transform the vector OBSPOS from a reference frame */
+/*                 FIXREF at time TRGEPC to a time-dependent reference */
+/*                 frame REF at time ET, the routine PXFRM2 should be */
+/*                 called. Let XFORM be the 3x3 matrix representing the */
+/*                 rotation from the reference frame FIXREF at time */
+/*                 TRGEPC to the reference frame REF at time ET. Then */
+/*                 OBSPOS can be transformed to the result REFVEC as */
+/*                 follows: */
+
+/*                     CALL PXFRM2 ( FIXREF, REF,    TRGEPC, ET, XFORM ) */
+/*                     CALL MXV    ( XFORM,  OBSPOS, REFVEC ) */
 
 
 /*     TRMPTS      is an array of points on the umbral or penumbral */
 /*                 terminator of the ellipsoid, as specified by the */
-/*                 input argument TRMTYP.  The Ith point is contained in */
+/*                 input argument TRMTYP. The Ith point is contained in */
 /*                 the array elements */
 
 /*                     TRMPTS(J,I),  J = 1, 2, 3 */
@@ -322,19 +407,20 @@ static integer c__3 = 3;
 /*                 associated points of tangency on the light source */
 /*                 have uniform distribution in longitude when expressed */
 /*                 in a cylindrical coordinate system whose Z-axis is */
-/*                 OBSPOS.  The magnitude of the separation in longitude */
-/*                 between the tangency points on the light source is */
+/*                 the target center to source center vector. The */
+/*                 magnitude of the separation in longitude between the */
+/*                 tangency points on the light source is */
 
 /*                    2*Pi / NPTS */
 
 /*                 If the target is spherical, the terminator points */
 /*                 also are uniformly distributed in longitude in the */
-/*                 cylindrical system described above.  If the target is */
+/*                 cylindrical system described above. If the target is */
 /*                 non-spherical, the longitude distribution of the */
 /*                 points generally is not uniform. */
 
 /*                 The terminator points are expressed in the body-fixed */
-/*                 reference frame designated by FIXFRM.  Units are km. */
+/*                 reference frame designated by FIXREF. Units are km. */
 
 /* $ Parameters */
 
@@ -342,7 +428,7 @@ static integer c__3 = 3;
 
 /* $ Exceptions */
 
-/*     1)  If the input frame name FIXFRM cannot be mapped */
+/*     1)  If the input frame name FIXREF cannot be mapped */
 /*         to a frame ID code, the error SPICE(NOTRANSLATION) is */
 /*         signaled. */
 
@@ -350,19 +436,19 @@ static integer c__3 = 3;
 /*         to a body ID code, the error SPICE(NOTRANSLATION) is */
 /*         signaled. */
 
-/*     3)  If the frame designated by FIXFRM is not centered */
-/*         on the target, the error SPICE(INVALIDFIXFRM) is */
+/*     3)  If the frame designated by FIXREF is not centered */
+/*         on the target, the error SPICE(INVALIDFIXREF) is */
 /*         signaled. */
 
 /*     4)  If the terminator type is not recognized, the error */
 /*         will be diagnosed by a routine in the call tree of */
 /*         this routine. */
 
-/*     5)  If the set size NPTS is not at least 1, the error */
-/*         will be diagnosed by a routine in the call tree of */
-/*         this routine. */
+/*     5)  If the terminator point count NPTS is not at least 1, the */
+/*         error will be diagnosed by a routine in the call tree of this */
+/*         routine. */
 
-/*     6)  If any of the ellipsoid's semi-axis lengths is non-positive, */
+/*     6)  If any of the ellipsoid's semi-axis lengths are non-positive, */
 /*         the error will be diagnosed by a routine in the call tree of */
 /*         this routine. */
 
@@ -377,7 +463,7 @@ static integer c__3 = 3;
 
 /*     9)  If radii for the target body or light source are not */
 /*         available in the kernel pool, the error will be diagnosed by */
-/*         a routine in the call tree of this routine.  If radii are */
+/*         a routine in the call tree of this routine. If radii are */
 /*         available but either body does not have three radii, the */
 /*         error SPICE(INVALIDCOUNT) will be signaled. */
 
@@ -391,7 +477,7 @@ static integer c__3 = 3;
 
 /*     The following data are required: */
 
-/*        - SPK data: ephemeris data for target, observer, and light */
+/*        - SPK data: ephemeris data for the target, observer, and light */
 /*          source must be loaded. If aberration corrections are used, */
 /*          the states of all three objects relative to the solar system */
 /*          barycenter must be calculable from the available ephemeris */
@@ -403,14 +489,14 @@ static integer c__3 = 3;
 /*          Typically this is done by loading a text PCK file via */
 /*          FURNSH. */
 
-/*        - Further PCK data:  rotation data for the target body must */
-/*          be loaded.  These may be provided in a text or binary PCK */
+/*        - Further PCK data: rotation data for the target body must */
+/*          be loaded. These may be provided in a text or binary PCK */
 /*          file. */
 
-/*        - Frame data:  if a frame definition is required to convert */
+/*        - Frame data: if a frame definition is required to convert */
 /*          the observer and target states to the target body-fixed */
-/*          frame designated by FIXFRM, that definition must be */
-/*          available in the kernel pool.  Typically the definitions of */
+/*          frame designated by FIXREF, that definition must be */
+/*          available in the kernel pool. Typically the definitions of */
 /*          frames not already built-in to SPICE are supplied by loading */
 /*          a frame kernel. */
 
@@ -421,214 +507,326 @@ static integer c__3 = 3;
 
 /*     This routine models the boundaries of shadow regions on an */
 /*     ellipsoidal target body "illuminated" by a spherical light */
-/*     source.  Light rays are assumed to travel along straight lines; */
+/*     source. Light rays are assumed to travel along straight lines; */
 /*     refraction is not modeled. */
 
-/*     Points on the target body's surface at which the entire cap of */
-/*     the light source is visible are considered to be completely */
-/*     illuminated. Points on the target's surface at which some portion */
-/*     (or all) of the cap of the light source are blocked are */
-/*     considered to be in partial (or total) shadow. */
+/*     Points on the target body's surface are classified according to */
+/*     their illumination as follows: */
+
+/*        -  A target surface point X for which no vector from X to any */
+/*           point in the light source intersects the target, except at */
+/*           X, is considered to be "completely illuminated." */
+
+/*        -  A target surface point X for which each vector from X to a */
+/*           point in the light source intersects the target at points */
+/*           other than X is considered to be "in total shadow." */
+
+/*        -  All other target points are considered to be in partial */
+/*           shadow. */
 
 /*     In this routine, we use the term "umbral terminator" to denote */
-/*     the curve ususally called the "terminator":  this curve is the */
+/*     the curve usually called the "terminator": this curve is the */
 /*     boundary of the portion of the target body's surface that lies in */
 /*     total shadow. We use the term "penumbral terminator" to denote */
 /*     the boundary of the completely illuminated portion of the */
 /*     surface. */
 
 /*     In general, the terminator on an ellipsoid is a more complicated */
-/*     curve than the limb (which is always an ellipse).  Aside from */
+/*     curve than the limb (which is always an ellipse). Aside from */
 /*     various special cases, the terminator does not lie in a plane. */
 
 /*     However, the condition for a point X on the ellipsoid to lie on */
-/*     the terminator is simple:  a plane tangent to the ellipsoid at X */
-/*     must also be tangent to the light source.  If this tangent plane */
+/*     the terminator is simple: a plane tangent to the ellipsoid at X */
+/*     must also be tangent to the light source. If this tangent plane */
 /*     does not intersect the vector from the center of the ellipsoid to */
 /*     the center of the light source, then X lies on the umbral */
 /*     terminator; otherwise X lies on the penumbral terminator. */
 
 /* $ Examples */
 
-/*     1)  Compute a set of umbral terminator points on the Moon. */
-/*         Perform a consistency check using the solar incidence angle */
-/*         at each point.  We expect to see a solar incidence angle of */
-/*         approximately 90 degrees.  Since the solar incidence angle is */
-/*         measured between the local outward normal and the direction */
-/*         to the Sun, the solar incidence angle at an umbral terminator */
-/*         point should exceed 90 degrees by approximately the angular */
-/*         radius of the Sun. */
+/*     The numerical results shown for these examples may differ across */
+/*     platforms. The results depend on the SPICE kernels used as */
+/*     input, the compiler and supporting libraries, and the machine */
+/*     specific arithmetic implementation. */
 
-/*         This program loads SPICE kernels via a meta-kernel.  The ' */
-/*         contents of the meta-kernel used to produce the results shown */
-/*         below */
 
-/*               \begindata */
+/*     1)  Compute sets of umbral and penumbral terminator points on the */
+/*         Moon. Perform a consistency check using the solar incidence */
+/*         angle at each point. We expect to see a solar incidence angle */
+/*         of approximately 90 degrees. Since the solar incidence angle */
+/*         is measured between the local outward normal and the */
+/*         direction to the center of the Sun, the solar incidence angle */
+/*         at an umbral terminator point should exceed 90 degrees by */
+/*         approximately the angular radius of the Sun, while the angle */
+/*         at a penumbral terminator point should be less than 90 */
+/*         degrees by that amount. */
 
-/*                  KERNELS_TO_LOAD = ( 'naif0008.tls' */
-/*                                      'pck00008.tpc' */
-/*                                      'de405s.bsp'  ) */
-/*               \begintext */
+/*         This program loads SPICE kernels via a meta-kernel. The */
+/*         meta-kernel used to produce the results shown below is */
+
+/*            KPL/MK */
+
+/*            This meta-kernel is intended to support operation of SPICE */
+/*            example programs. The kernels shown here should not be */
+/*            assumed to contain adequate or correct versions of data */
+/*            required by SPICE-based user applications. */
+
+/*            In order for an application to use this meta-kernel, the */
+/*            kernels referenced here must be present in the user's */
+/*            current working directory. */
+
+
+/*            \begindata */
+
+/*               KERNELS_TO_LOAD = ( 'de421.bsp', */
+/*                                   'pck00010.tpc', */
+/*                                   'naif0010.tls'  ) */
+
+/*            \begintext */
 
 
 /*         Program source code: */
 
-/*            PROGRAM EX1 */
-/*            IMPLICIT NONE */
 
-/*            DOUBLE PRECISION      DPR */
-/*            DOUBLE PRECISION      VDIST */
+/*               PROGRAM EX1 */
+/*               IMPLICIT NONE */
+/*         C */
+/*         C     SPICELIB functions */
+/*         C */
+/*               DOUBLE PRECISION      DPR */
+/*               DOUBLE PRECISION      VDIST */
+/*         C */
+/*         C     Local parameters */
+/*         C */
+/*               CHARACTER*(*)         FMT0 */
+/*               PARAMETER           ( FMT0   = '(1X,A,I2,A)' ) */
 
-/*            CHARACTER*(*)         META */
-/*            PARAMETER           ( META   = 'ex1_meta.ker' ) */
+/*               CHARACTER*(*)         FMT1 */
+/*               PARAMETER           ( FMT1   = '(1X,A,F18.9)' ) */
 
-/*            INTEGER               NPTS */
-/*            PARAMETER           ( NPTS   = 3 ) */
+/*               CHARACTER*(*)         META */
+/*               PARAMETER           ( META   = 'edterm.tm' ) */
 
-/*            INTEGER               CORLEN */
-/*            PARAMETER           ( CORLEN = 5 ) */
+/*               INTEGER               NPTS */
+/*               PARAMETER           ( NPTS   = 3 ) */
 
-/*            INTEGER               BDNMLN */
-/*            PARAMETER           ( BDNMLN = 36 ) */
+/*               INTEGER               CORLEN */
+/*               PARAMETER           ( CORLEN = 5 ) */
 
-/*            INTEGER               FRNMLN */
-/*            PARAMETER           ( FRNMLN = 32 ) */
+/*               INTEGER               BDNMLN */
+/*               PARAMETER           ( BDNMLN = 36 ) */
 
-/*            INTEGER               TIMLEN */
-/*            PARAMETER           ( TIMLEN = 50 ) */
+/*               INTEGER               FRNMLN */
+/*               PARAMETER           ( FRNMLN = 32 ) */
 
-/*            CHARACTER*(CORLEN)    ABCORR */
-/*            CHARACTER*(FRNMLN)    FRAME */
-/*            CHARACTER*(BDNMLN)    SOURCE */
-/*            CHARACTER*(BDNMLN)    TARGET */
-/*            CHARACTER*(BDNMLN)    OBSRVR */
-/*            CHARACTER*(TIMLEN)    UTC */
+/*               INTEGER               TIMLEN */
+/*               PARAMETER           ( TIMLEN = 50 ) */
 
-/*            DOUBLE PRECISION      ANGRAD */
-/*            DOUBLE PRECISION      EMISSN */
-/*            DOUBLE PRECISION      ET */
-/*            DOUBLE PRECISION      LAT */
-/*            DOUBLE PRECISION      LON */
-/*            DOUBLE PRECISION      LT */
-/*            DOUBLE PRECISION      OBSPOS ( 3 ) */
-/*            DOUBLE PRECISION      PHASE */
-/*            DOUBLE PRECISION      RADIUS */
-/*            DOUBLE PRECISION      SOLAR */
-/*            DOUBLE PRECISION      SRCPOS ( 3 ) */
-/*            DOUBLE PRECISION      SRCRAD ( 3 ) */
-/*            DOUBLE PRECISION      TRGEPC */
-/*            DOUBLE PRECISION      TRMPTS ( 3, NPTS ) */
+/*               INTEGER               TYPLEN */
+/*               PARAMETER           ( TYPLEN = 10 ) */
 
-/*            INTEGER               I */
-/*            INTEGER               N */
+/*               INTEGER               NTYPES */
+/*               PARAMETER           ( NTYPES = 2 ) */
+/*         C */
+/*         C     Local variables */
+/*         C */
+/*               CHARACTER*(CORLEN)    ABCORR */
+/*               CHARACTER*(FRNMLN)    FIXREF */
+/*               CHARACTER*(BDNMLN)    OBSRVR */
+/*               CHARACTER*(BDNMLN)    SOURCE */
+/*               CHARACTER*(BDNMLN)    TARGET */
+/*               CHARACTER*(TYPLEN)    TRMTPS ( NTYPES ) */
+/*               CHARACTER*(TIMLEN)    UTC */
 
+/*               DOUBLE PRECISION      ANGRAD */
+/*               DOUBLE PRECISION      EMISSN */
+/*               DOUBLE PRECISION      ET */
+/*               DOUBLE PRECISION      LAT */
+/*               DOUBLE PRECISION      LON */
+/*               DOUBLE PRECISION      LT */
+/*               DOUBLE PRECISION      OBSPOS ( 3 ) */
+/*               DOUBLE PRECISION      PHASE */
+/*               DOUBLE PRECISION      RADIUS */
+/*               DOUBLE PRECISION      S      ( NTYPES ) */
+/*               DOUBLE PRECISION      SOLAR */
+/*               DOUBLE PRECISION      SRCPOS ( 3 ) */
+/*               DOUBLE PRECISION      SRCRAD ( 3 ) */
+/*               DOUBLE PRECISION      SRFVEC ( 3 ) */
+/*               DOUBLE PRECISION      TRGEPC */
+/*               DOUBLE PRECISION      TRMPTS ( 3, NPTS ) */
 
-/*            CALL FURNSH ( META ) */
+/*               INTEGER               I */
+/*               INTEGER               N */
+/*               INTEGER               TRMIDX */
 
-/*            UTC    = '2007 FEB 3 00:00:00.000' */
+/*               LOGICAL               FIRST */
 
-/*            CALL STR2ET ( UTC, ET ) */
+/*         C */
+/*         C     Initial values */
+/*         C */
+/*               DATA                  FIRST  / .TRUE.               / */
+/*               DATA                  TRMTPS / 'UMBRAL', 'PENUMBRAL'/ */
+/*               DATA                  S      / -1.D0,    1.D0       / */
 
-/*            OBSRVR = 'EARTH' */
-/*            TARGET = 'MOON' */
-/*            SOURCE = 'SUN' */
-/*            FRAME  = 'IAU_MOON' */
-/*            ABCORR = 'LT+S' */
+/*         C */
+/*         C     Load the meta-kernel. */
+/*         C */
+/*               CALL FURNSH ( META ) */
 
-/*            CALL EDTERM ( 'UMBRAL', SOURCE, TARGET, */
-/*           .              ET,       FRAME,  ABCORR, */
-/*           .              OBSRVR,   NPTS,   TRGEPC, */
-/*           .              OBSPOS,   TRMPTS         ) */
+/*         C */
+/*         C     Set the observation time. */
+/*         C */
+/*               UTC    = '2007 FEB 3 00:00:00.000' */
 
-/*      C */
-/*      C     Find the angular radius of the Sun as */
-/*      C     seen from the target.  First, look up */
-/*      C     the target-sun vector. */
-/*      C */
-/*            CALL SPKPOS ( SOURCE, TRGEPC, FRAME, */
-/*           .              ABCORR, TARGET, SRCPOS, LT ) */
+/*               CALL STR2ET ( UTC, ET ) */
 
-/*      C */
-/*      C     Look up the radii of the Sun. */
-/*      C */
-/*            CALL BODVRD ( SOURCE, 'RADII', 3, N, SRCRAD ) */
+/*         C */
+/*         C     Set the participating objects, the reference */
+/*         C     frame, and the aberration correction. */
+/*         C */
+/*               OBSRVR = 'EARTH' */
+/*               TARGET = 'MOON' */
+/*               SOURCE = 'SUN' */
+/*               FIXREF = 'IAU_MOON' */
+/*               ABCORR = 'LT+S' */
+/*         C */
+/*         C     Look up the radii of the Sun. */
+/*         C */
+/*               CALL BODVRD ( SOURCE, 'RADII', 3, N, SRCRAD ) */
 
-/*            DO I = 1, NPTS */
+/*         C */
+/*         C     Compute terminator points. */
+/*         C */
+/*               DO TRMIDX = 1, 2 */
 
-/*               WRITE (*,*) ' ' */
+/*                  CALL EDTERM ( TRMTPS(TRMIDX), SOURCE, TARGET, */
+/*              .                 ET,             FIXREF, ABCORR, */
+/*              .                 OBSRVR,         NPTS,   TRGEPC, */
+/*              .                 OBSPOS,         TRMPTS          ) */
+/*         C */
+/*         C        Validate terminator points. */
+/*         C */
+/*         C        Look up the target-sun vector at the light-time */
+/*         C        corrected target epoch. */
+/*         C */
+/*                  IF ( FIRST ) THEN */
 
-/*               CALL RECLAT ( TRMPTS(1,I), RADIUS, LON, LAT ) */
+/*                     CALL SPKPOS ( SOURCE, TRGEPC, FIXREF, */
+/*              .                    ABCORR, TARGET, SRCPOS, LT ) */
+/*                     FIRST = .FALSE. */
 
-/*               WRITE (*,*) 'Terminator point ', I, ':' */
-/*               WRITE (*,*) '   Radius                     (km):  ', */
-/*           .                   RADIUS */
-/*               WRITE (*,*) '   Planetocentric longitude   (deg): ', */
-/*           .                   LON*DPR() */
-/*               WRITE (*,*) '   Planetocentric latitude    (deg): ', */
-/*           .                   LAT*DPR() */
-
-/*      C */
-/*      C        Find the illumination angles at the */
-/*      C        Ith terminator point. */
-/*      C */
-/*               CALL ILLUM  ( TARGET, ET,         ABCORR, */
-/*           .                 OBSRVR, TRMPTS(1,I), PHASE, */
-/*           .                 SOLAR,  EMISSN              ) */
-
-/*               WRITE (*,*) */
-/*           .               '   Solar incidence angle      (deg): ', */
-/*           .                   SOLAR*DPR() */
-
-/*      C */
-/*      C        Find the angular radius of the Sun as seen from */
-/*      C        the terminator point. */
-/*      C */
-/*               ANGRAD = ASIN (   SRCRAD(1) */
-/*           .                   / VDIST ( SRCPOS,TRMPTS(1,I) )  ) */
-
-/*      C */
-/*      C        Display the solar incidence angle after */
-/*      C        subtracting the angular radius of the Sun */
-/*      C        as seen from the terminator point.  The */
-/*      C        result should be approximately 90 degrees. */
-/*      C */
-/*               WRITE (*, '(1X,A,2PE22.14)') */
-/*           .               '   Minus Sun''s ' // */
-/*           .               'angular radius (deg): ', */
-/*           .               (SOLAR-ANGRAD) * DPR() */
-
-/*            END DO */
-
-/*            END */
-
-
-/*         When executed, this program produces the output shown */
-/*         below.  Note that the results may vary slightly from one */
-/*         computing platform to another.  Results are dependent on */
-/*         the kernels used as well as the hardware and system software */
-/*         running on the host system. */
+/*                  END IF */
 
 
-/*            Terminator point  1: */
-/*               Radius                     (km):    1737.4 */
-/*               Planetocentric longitude   (deg):  -95.0845526 */
-/*               Planetocentric latitude    (deg):   0.00405276211 */
-/*               Solar incidence angle      (deg):   90.2697657 */
-/*               Minus Sun's angular radius (deg):   90.0000000000000E+00 */
+/*                  WRITE (*,*) ' ' */
+/*                  WRITE (*,*) 'Terminator type: '//TRMTPS(TRMIDX) */
 
-/*            Terminator point  2: */
-/*               Radius                     (km):    1737.4 */
-/*               Planetocentric longitude   (deg):   84.2280921 */
-/*               Planetocentric latitude    (deg):   59.9957555 */
-/*               Solar incidence angle      (deg):   90.2697657 */
-/*               Minus Sun's angular radius (deg):   90.0000000000000E+00 */
+/*                  DO I = 1, NPTS */
 
-/*            Terminator point  3: */
-/*               Radius                     (km):    1737.4 */
-/*               Planetocentric longitude   (deg):   87.2164179 */
-/*               Planetocentric latitude    (deg):  -59.9795505 */
-/*               Solar incidence angle      (deg):   90.2697657 */
-/*               Minus Sun's angular radius (deg):   90.0000000000000E+00 */
+/*                     WRITE (*,*) ' ' */
+
+/*                     CALL RECLAT ( TRMPTS(1,I), RADIUS, LON, LAT ) */
+
+/*                     WRITE (*,FMT0) '  Terminator point ', I, ':' */
+/*                     WRITE (*,FMT1) */
+/*              .            '    Radius                     (km):  ', */
+/*              .            RADIUS */
+/*                     WRITE (*,FMT1) */
+/*              .            '    Planetocentric longitude   (deg): ', */
+/*              .            LON*DPR() */
+/*                     WRITE (*,FMT1) */
+/*              .            '    Planetocentric latitude    (deg): ', */
+/*              .            LAT*DPR() */
+
+/*         C */
+/*         C           Find the illumination angles at the */
+/*         C           Ith terminator point. */
+/*         C */
+/*                     CALL ILUMIN ( 'Ellipsoid',  TARGET, ET, */
+/*              .                     FIXREF,      ABCORR, OBSRVR, */
+/*              .                     TRMPTS(1,I), TRGEPC, SRFVEC, */
+/*              .                     PHASE,       SOLAR,  EMISSN ) */
+
+/*                     WRITE (*,FMT1) */
+/*              .            '    Solar incidence angle      (deg): ', */
+/*              .            SOLAR*DPR() */
+/*         C */
+/*         C           Display the solar incidence angle after */
+/*         C           adjusting the angle for the angular radius */
+/*         C           of the Sun as seen from the Ith terminator */
+/*         C           point. The result should be approximately */
+/*         C           90 degrees. */
+/*         C */
+/*                     ANGRAD = ASIN(   SRCRAD(1) */
+/*              .                     / VDIST( SRCPOS, TRMPTS(1,I) ) ) */
+
+/*                     WRITE (*, '(1X,A)' ) */
+/*              .            '    Solar incidence angle adjusted for' */
+/*                     WRITE (*,FMT1) */
+/*              .            '    sun''s angular radius (deg):       ', */
+/*              .            (SOLAR + S(TRMIDX)*ANGRAD) * DPR() */
+/*                  END DO */
+
+/*               END DO */
+
+/*               END */
+
+
+/*        When this program was executed on a PC/Linux/gfortan platform, */
+/*        the output was: */
+
+
+/*           Terminator type: UMBRAL */
+
+/*             Terminator point  1: */
+/*               Radius                     (km):      1737.400000000 */
+/*               Planetocentric longitude   (deg):      -95.084552819 */
+/*               Planetocentric latitude    (deg):        0.004052763 */
+/*               Solar incidence angle      (deg):       90.269765819 */
+/*               Solar incidence angle adjusted for */
+/*               sun's angular radius (deg):             90.000000129 */
+
+/*             Terminator point  2: */
+/*               Radius                     (km):      1737.400000000 */
+/*               Planetocentric longitude   (deg):       84.228091534 */
+/*               Planetocentric latitude    (deg):       59.995755519 */
+/*               Solar incidence angle      (deg):       90.269765706 */
+/*               Solar incidence angle adjusted for */
+/*               sun's angular radius (deg):             90.000000016 */
+
+/*             Terminator point  3: */
+/*               Radius                     (km):      1737.400000000 */
+/*               Planetocentric longitude   (deg):       87.216417974 */
+/*               Planetocentric latitude    (deg):      -59.979550515 */
+/*               Solar incidence angle      (deg):       90.269765730 */
+/*               Solar incidence angle adjusted for */
+/*               sun's angular radius (deg):             90.000000040 */
+
+/*           Terminator type: PENUMBRAL */
+
+/*             Terminator point  1: */
+/*               Radius                     (km):      1737.400000000 */
+/*               Planetocentric longitude   (deg):       84.914100511 */
+/*               Planetocentric latitude    (deg):       -0.004073047 */
+/*               Solar incidence angle      (deg):       89.730234406 */
+/*               Solar incidence angle adjusted for */
+/*               sun's angular radius (deg):             90.000000126 */
+
+/*             Terminator point  2: */
+/*               Radius                     (km):      1737.400000000 */
+/*               Planetocentric longitude   (deg):      -95.769215814 */
+/*               Planetocentric latitude    (deg):      -59.995785101 */
+/*               Solar incidence angle      (deg):       89.730234298 */
+/*               Solar incidence angle adjusted for */
+/*               sun's angular radius (deg):             90.000000018 */
+
+/*             Terminator point  3: */
+/*               Radius                     (km):      1737.400000000 */
+/*               Planetocentric longitude   (deg):      -92.780892017 */
+/*               Planetocentric latitude    (deg):       59.979498997 */
+/*               Solar incidence angle      (deg):       89.730234322 */
+/*               Solar incidence angle adjusted for */
+/*               sun's angular radius (deg):             90.000000042 */
 
 
 /* $ Restrictions */
@@ -642,8 +840,28 @@ static integer c__3 = 3;
 /* $ Author_and_Institution */
 
 /*     N.J. Bachman    (JPL) */
+/*     B.V. Semenov    (JPL) */
 
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.0, 31-MAR-2014 (NJB) (BVS) */
+
+/*        A correction was made to the Detailed_Output section of */
+/*        the header: the subroutine name VMINUS was changed to VSUB. */
+
+/*        The header example program was re-written. The metakernel for */
+/*        the example program has been updated, as was the program's */
+/*        output. */
+
+/*        Various portions of the header were re-written. */
+
+/*        Updated to save the input body names and ZZBODTRN state */
+/*        counters and to do name-ID conversions only if the counters */
+/*        have changed. */
+
+/*        Updated to save the input frame name and POOL state counter */
+/*        and to do frame name-ID conversion only if the counter has */
+/*        changed. */
 
 /* -    SPICELIB Version 1.0.0, 03-FEB-2007 (NJB) */
 
@@ -659,10 +877,28 @@ static integer c__3 = 3;
 /*     SPICELIB functions */
 
 
-/*     Local parameters */
+/*     Saved body name length. */
+
+
+/*     Saved frame name length. */
 
 
 /*     Local variables */
+
+
+/*     Saved name/ID item declarations. */
+
+
+/*     Saved frame name/ID item declarations. */
+
+
+/*     Saved name/ID items. */
+
+
+/*     Saved frame name/ID items. */
+
+
+/*     Initial values. */
 
 
 /*     Standard SPICELIB error handling. */
@@ -672,12 +908,26 @@ static integer c__3 = 3;
     }
     chkin_("EDTERM", (ftnlen)6);
 
+/*     Initialization. */
+
+    if (first) {
+
+/*        Initialize counters. */
+
+	zzctruin_(svctr1);
+	zzctruin_(svctr2);
+	zzctruin_(svctr3);
+	zzctruin_(svctr4);
+	first = FALSE_;
+    }
+
 /*     Get the input frame code and frame info. */
 
-    namfrm_(fixfrm, &frcode, fixfrm_len);
+    zznamfrm_(svctr4, svfref, &svfrcd, fixref, &frcode, (ftnlen)32, 
+	    fixref_len);
     if (frcode == 0) {
 	setmsg_("Input frame # has no associated frame ID code.", (ftnlen)46);
-	errch_("#", fixfrm, (ftnlen)1, fixfrm_len);
+	errch_("#", fixref, (ftnlen)1, fixref_len);
 	sigerr_("SPICE(NOTRANSLATION)", (ftnlen)20);
 	chkout_("EDTERM", (ftnlen)6);
 	return 0;
@@ -686,19 +936,39 @@ static integer c__3 = 3;
     if (! found) {
 	setmsg_("Input frame # has associated frame ID code #, but no info w"
 		"as found by FRINFO for this frame.", (ftnlen)93);
-	errch_("#", fixfrm, (ftnlen)1, fixfrm_len);
+	errch_("#", fixref, (ftnlen)1, fixref_len);
 	errint_("#", &frcode, (ftnlen)1);
 	sigerr_("SPICE(BUG)", (ftnlen)10);
 	chkout_("EDTERM", (ftnlen)6);
 	return 0;
     }
 
-/*     Get the ID code of the target. */
+/*     Get the ID codes of the target, source, and observer. */
 
-    bods2c_(target, &trgid, &found, target_len);
+    zzbods2c_(svctr1, svtarg, &svtgid, &svfnd1, target, &trgid, &found, (
+	    ftnlen)36, target_len);
     if (! found) {
 	setmsg_("Input target # has no associated body ID code.", (ftnlen)46);
 	errch_("#", target, (ftnlen)1, target_len);
+	sigerr_("SPICE(NOTRANSLATION)", (ftnlen)20);
+	chkout_("EDTERM", (ftnlen)6);
+	return 0;
+    }
+    zzbods2c_(svctr2, svscre, &svsrci, &svfnd2, source, &srcid, &found, (
+	    ftnlen)36, source_len);
+    if (! found) {
+	setmsg_("Input source # has no associated body ID code.", (ftnlen)46);
+	errch_("#", source, (ftnlen)1, source_len);
+	sigerr_("SPICE(NOTRANSLATION)", (ftnlen)20);
+	chkout_("EDTERM", (ftnlen)6);
+	return 0;
+    }
+    zzbods2c_(svctr3, svobsr, &svobsi, &svfnd3, obsrvr, &obsid, &found, (
+	    ftnlen)36, obsrvr_len);
+    if (! found) {
+	setmsg_("Input observer # has no associated body ID code.", (ftnlen)
+		48);
+	errch_("#", obsrvr, (ftnlen)1, obsrvr_len);
 	sigerr_("SPICE(NOTRANSLATION)", (ftnlen)20);
 	chkout_("EDTERM", (ftnlen)6);
 	return 0;
@@ -710,16 +980,16 @@ static integer c__3 = 3;
 	setmsg_("Input frame # is not centered on target body #. This frame "
 		"must be a body-fixed frame associated with the target.", (
 		ftnlen)113);
-	errch_("#", fixfrm, (ftnlen)1, fixfrm_len);
+	errch_("#", fixref, (ftnlen)1, fixref_len);
 	errch_("#", target, (ftnlen)1, target_len);
-	sigerr_("SPICE(INVALIDFIXFRM)", (ftnlen)20);
+	sigerr_("SPICE(INVALIDFIXREF)", (ftnlen)20);
 	chkout_("EDTERM", (ftnlen)6);
 	return 0;
     }
 
 /*     Look up the radii associated with the target body. */
 
-    bodvrd_(target, "RADII", &c__3, &n, trgrad, target_len, (ftnlen)5);
+    bodvcd_(&trgid, "RADII", &c__3, &n, trgrad, (ftnlen)5);
     if (n != 3) {
 	setmsg_("Three radii are required for the target body's (#) shape mo"
 		"del, but # were found.", (ftnlen)81);
@@ -732,7 +1002,7 @@ static integer c__3 = 3;
 
 /*     Look up the radii associated with the light source. */
 
-    bodvrd_(source, "RADII", &c__3, &n, srcrad, source_len, (ftnlen)5);
+    bodvcd_(&srcid, "RADII", &c__3, &n, srcrad, (ftnlen)5);
     if (n != 3) {
 	setmsg_("Three radii are required for the light source's (#) shape m"
 		"odel, but # were found.", (ftnlen)82);
@@ -749,12 +1019,16 @@ static integer c__3 = 3;
 /*     Look up the observer-target vector and the target-source vector. */
 /*     Also set the output OBSPOS. */
 
-    spkpos_(target, et, fixfrm, abcorr, obsrvr, trgpos, &lttarg, target_len, 
-	    fixfrm_len, abcorr_len, obsrvr_len);
+    spkezp_(&trgid, et, fixref, abcorr, &obsid, trgpos, &lttarg, fixref_len, 
+	    abcorr_len);
+    if (failed_()) {
+	chkout_("EDTERM", (ftnlen)6);
+	return 0;
+    }
     zzcorepc_(abcorr, et, &lttarg, trgepc, abcorr_len);
     vminus_(trgpos, obspos);
-    spkpos_(source, trgepc, fixfrm, abcorr, target, srcpos, &ltsrc, 
-	    source_len, fixfrm_len, abcorr_len, target_len);
+    spkezp_(&srcid, trgepc, fixref, abcorr, &trgid, srcpos, &ltsrc, 
+	    fixref_len, abcorr_len);
 
 /*     We're ready to compute the terminator. */
 

@@ -30,7 +30,7 @@
 /* $ Abstract */
 
 /*     Evaluate a Lagrange interpolating polynomial for a specified */
-/*     set of coordinate pairs, at a specified abcissisa value. */
+/*     set of coordinate pairs, at a specified abscissa value. */
 /*     Return the value of both polynomial and derivative. */
 
 /* $ Disclaimer */
@@ -100,8 +100,7 @@
 /*     WORK           is an N x 2 work space array, where N is the same */
 /*                    dimension as that of XVALS and YVALS.  It is used */
 /*                    by this routine as a scratch area to hold */
-/*                    intermediate results.  WORK is permitted to */
-/*                    coincide with YVALS. */
+/*                    intermediate results. */
 
 
 /*     X              is the abscissa value at which the interpolating */
@@ -242,6 +241,14 @@
 
 /* $ Version */
 
+/* -    SPICELIB Version 1.0.1, 10-JAN-2014 (NJB) */
+
+/*        Updated description of the workspace array: now the array WORK */
+/*        is not described as being allowed to coincide with the input */
+/*        YVALS. Such overlap would be a violation of the ANSI Fortran */
+/*        77 standard. Corrected a spelling error in header */
+/*        documentation. */
+
 /* -    SPICELIB Version 1.0.0, 20-AUG-2002 (NJB) */
 
 /* -& */
@@ -376,12 +383,12 @@
     i__1 = *n;
     for (i__ = 1; i__ <= i__1; ++i__) {
 	work[(i__2 = i__ + work_dim1 - work_offset) < work_dim1 << 1 && 0 <= 
-		i__2 ? i__2 : s_rnge("work", i__2, "lgrind_", (ftnlen)374)] = 
+		i__2 ? i__2 : s_rnge("work", i__2, "lgrind_", (ftnlen)381)] = 
 		yvals[(i__3 = i__ - 1) < yvals_dim1 && 0 <= i__3 ? i__3 : 
-		s_rnge("yvals", i__3, "lgrind_", (ftnlen)374)];
+		s_rnge("yvals", i__3, "lgrind_", (ftnlen)381)];
 	work[(i__2 = i__ + (work_dim1 << 1) - work_offset) < work_dim1 << 1 &&
 		 0 <= i__2 ? i__2 : s_rnge("work", i__2, "lgrind_", (ftnlen)
-		375)] = 0.;
+		382)] = 0.;
     }
 
 /*     Compute columns 2 through N of the table.  Note that DENOM must */
@@ -392,9 +399,9 @@
 	i__2 = *n - j;
 	for (i__ = 1; i__ <= i__2; ++i__) {
 	    denom = xvals[(i__3 = i__ - 1) < xvals_dim1 && 0 <= i__3 ? i__3 : 
-		    s_rnge("xvals", i__3, "lgrind_", (ftnlen)387)] - xvals[(
+		    s_rnge("xvals", i__3, "lgrind_", (ftnlen)394)] - xvals[(
 		    i__4 = i__ + j - 1) < xvals_dim1 && 0 <= i__4 ? i__4 : 
-		    s_rnge("xvals", i__4, "lgrind_", (ftnlen)387)];
+		    s_rnge("xvals", i__4, "lgrind_", (ftnlen)394)];
 	    if (denom == 0.) {
 		chkin_("LGRIND", (ftnlen)6);
 		setmsg_("XVALS(#) = XVALS(#) = #", (ftnlen)23);
@@ -402,16 +409,16 @@
 		i__3 = i__ + j;
 		errint_("#", &i__3, (ftnlen)1);
 		errdp_("#", &xvals[(i__3 = i__ - 1) < xvals_dim1 && 0 <= i__3 
-			? i__3 : s_rnge("xvals", i__3, "lgrind_", (ftnlen)395)
+			? i__3 : s_rnge("xvals", i__3, "lgrind_", (ftnlen)402)
 			], (ftnlen)1);
 		sigerr_("SPICE(DIVIDEBYZERO)", (ftnlen)19);
 		chkout_("LGRIND", (ftnlen)6);
 		return 0;
 	    }
 	    c1 = *x - xvals[(i__3 = i__ + j - 1) < xvals_dim1 && 0 <= i__3 ? 
-		    i__3 : s_rnge("xvals", i__3, "lgrind_", (ftnlen)402)];
+		    i__3 : s_rnge("xvals", i__3, "lgrind_", (ftnlen)409)];
 	    c2 = xvals[(i__3 = i__ - 1) < xvals_dim1 && 0 <= i__3 ? i__3 : 
-		    s_rnge("xvals", i__3, "lgrind_", (ftnlen)403)] - *x;
+		    s_rnge("xvals", i__3, "lgrind_", (ftnlen)410)] - *x;
 
 /*           Use the chain rule to compute the derivatives.  Do this */
 /*           before computing the function value, because the latter */
@@ -419,27 +426,27 @@
 
 	    work[(i__3 = i__ + (work_dim1 << 1) - work_offset) < work_dim1 << 
 		    1 && 0 <= i__3 ? i__3 : s_rnge("work", i__3, "lgrind_", (
-		    ftnlen)410)] = (c1 * work[(i__4 = i__ + (work_dim1 << 1) 
+		    ftnlen)417)] = (c1 * work[(i__4 = i__ + (work_dim1 << 1) 
 		    - work_offset) < work_dim1 << 1 && 0 <= i__4 ? i__4 : 
-		    s_rnge("work", i__4, "lgrind_", (ftnlen)410)] + c2 * work[
+		    s_rnge("work", i__4, "lgrind_", (ftnlen)417)] + c2 * work[
 		    (i__5 = i__ + 1 + (work_dim1 << 1) - work_offset) < 
 		    work_dim1 << 1 && 0 <= i__5 ? i__5 : s_rnge("work", i__5, 
-		    "lgrind_", (ftnlen)410)] + (work[(i__6 = i__ + work_dim1 
+		    "lgrind_", (ftnlen)417)] + (work[(i__6 = i__ + work_dim1 
 		    - work_offset) < work_dim1 << 1 && 0 <= i__6 ? i__6 : 
-		    s_rnge("work", i__6, "lgrind_", (ftnlen)410)] - work[(
+		    s_rnge("work", i__6, "lgrind_", (ftnlen)417)] - work[(
 		    i__7 = i__ + 1 + work_dim1 - work_offset) < work_dim1 << 
 		    1 && 0 <= i__7 ? i__7 : s_rnge("work", i__7, "lgrind_", (
-		    ftnlen)410)])) / denom;
+		    ftnlen)417)])) / denom;
 
 /*           Compute the Ith entry in the Jth column. */
 
 	    work[(i__3 = i__ + work_dim1 - work_offset) < work_dim1 << 1 && 0 
 		    <= i__3 ? i__3 : s_rnge("work", i__3, "lgrind_", (ftnlen)
-		    416)] = (c1 * work[(i__4 = i__ + work_dim1 - work_offset) 
+		    423)] = (c1 * work[(i__4 = i__ + work_dim1 - work_offset) 
 		    < work_dim1 << 1 && 0 <= i__4 ? i__4 : s_rnge("work", 
-		    i__4, "lgrind_", (ftnlen)416)] + c2 * work[(i__5 = i__ + 
+		    i__4, "lgrind_", (ftnlen)423)] + c2 * work[(i__5 = i__ + 
 		    1 + work_dim1 - work_offset) < work_dim1 << 1 && 0 <= 
-		    i__5 ? i__5 : s_rnge("work", i__5, "lgrind_", (ftnlen)416)
+		    i__5 ? i__5 : s_rnge("work", i__5, "lgrind_", (ftnlen)423)
 		    ]) / denom;
 	}
     }
@@ -447,9 +454,9 @@
 /*     Our results are sitting in WORK(1,1) and WORK(1,2) at this point. */
 
     *p = work[(i__1 = work_dim1 + 1 - work_offset) < work_dim1 << 1 && 0 <= 
-	    i__1 ? i__1 : s_rnge("work", i__1, "lgrind_", (ftnlen)425)];
+	    i__1 ? i__1 : s_rnge("work", i__1, "lgrind_", (ftnlen)432)];
     *dp = work[(i__1 = (work_dim1 << 1) + 1 - work_offset) < work_dim1 << 1 &&
-	     0 <= i__1 ? i__1 : s_rnge("work", i__1, "lgrind_", (ftnlen)426)];
+	     0 <= i__1 ? i__1 : s_rnge("work", i__1, "lgrind_", (ftnlen)433)];
     return 0;
 } /* lgrind_ */
 

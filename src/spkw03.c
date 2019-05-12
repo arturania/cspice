@@ -7,12 +7,13 @@
 
 /* Table of constant values */
 
+static integer c__27 = 27;
 static integer c__40 = 40;
 static integer c__2 = 2;
 static integer c__6 = 6;
 static integer c__1 = 1;
 
-/* $Procedure SPKW03 ( Write SPK segment, type 3 ) */
+/* $Procedure SPKW03 ( SPK, write segment, type 3 ) */
 /* Subroutine */ int spkw03_(integer *handle, integer *body, integer *center, 
 	char *frame, doublereal *first, doublereal *last, char *segid, 
 	doublereal *intlen, integer *n, integer *polydg, doublereal *cdata, 
@@ -20,6 +21,7 @@ static integer c__1 = 1;
 {
     /* System generated locals */
     integer i__1;
+    doublereal d__1, d__2;
 
     /* Local variables */
     integer i__, k;
@@ -47,11 +49,11 @@ static integer c__1 = 1;
     char netstr[40];
     doublereal dcd[2];
     integer icd[6];
-    doublereal mid;
+    doublereal mid, tol;
 
 /* $ Abstract */
 
-/*    Write a type 3 segment to an SPK file. */
+/*     Write a type 3 segment to an SPK file. */
 
 /* $ Disclaimer */
 
@@ -89,10 +91,107 @@ static integer c__1 = 1;
 /*     EPHEMERIS */
 
 /* $ Declarations */
+/* $ Abstract */
+
+/*     Declare parameters specific to SPK type 3. */
+
+/* $ Disclaimer */
+
+/*     THIS SOFTWARE AND ANY RELATED MATERIALS WERE CREATED BY THE */
+/*     CALIFORNIA INSTITUTE OF TECHNOLOGY (CALTECH) UNDER A U.S. */
+/*     GOVERNMENT CONTRACT WITH THE NATIONAL AERONAUTICS AND SPACE */
+/*     ADMINISTRATION (NASA). THE SOFTWARE IS TECHNOLOGY AND SOFTWARE */
+/*     PUBLICLY AVAILABLE UNDER U.S. EXPORT LAWS AND IS PROVIDED "AS-IS" */
+/*     TO THE RECIPIENT WITHOUT WARRANTY OF ANY KIND, INCLUDING ANY */
+/*     WARRANTIES OF PERFORMANCE OR MERCHANTABILITY OR FITNESS FOR A */
+/*     PARTICULAR USE OR PURPOSE (AS SET FORTH IN UNITED STATES UCC */
+/*     SECTIONS 2312-2313) OR FOR ANY PURPOSE WHATSOEVER, FOR THE */
+/*     SOFTWARE AND RELATED MATERIALS, HOWEVER USED. */
+
+/*     IN NO EVENT SHALL CALTECH, ITS JET PROPULSION LABORATORY, OR NASA */
+/*     BE LIABLE FOR ANY DAMAGES AND/OR COSTS, INCLUDING, BUT NOT */
+/*     LIMITED TO, INCIDENTAL OR CONSEQUENTIAL DAMAGES OF ANY KIND, */
+/*     INCLUDING ECONOMIC DAMAGE OR INJURY TO PROPERTY AND LOST PROFITS, */
+/*     REGARDLESS OF WHETHER CALTECH, JPL, OR NASA BE ADVISED, HAVE */
+/*     REASON TO KNOW, OR, IN FACT, SHALL KNOW OF THE POSSIBILITY. */
+
+/*     RECIPIENT BEARS ALL RISK RELATING TO QUALITY AND PERFORMANCE OF */
+/*     THE SOFTWARE AND ANY RELATED MATERIALS, AND AGREES TO INDEMNIFY */
+/*     CALTECH AND NASA FOR ALL THIRD-PARTY CLAIMS RESULTING FROM THE */
+/*     ACTIONS OF RECIPIENT IN THE USE OF THE SOFTWARE. */
+
+/* $ Required_Reading */
+
+/*     SPK */
+
+/* $ Keywords */
+
+/*     SPK */
+
+/* $ Restrictions */
+
+/*     None. */
+
+/* $ Author_and_Institution */
+
+/*     N.J. Bachman      (JPL) */
+
+/* $ Literature_References */
+
+/*     None. */
+
+/* $ Version */
+
+/* -    SPICELIB Version 1.0.0, 30-DEC-2013 (NJB) */
+
+/* -& */
+/*     MAXDEG         is the maximum allowed degree of the input */
+/*                    Chebyshev expansions. If the value of MAXDEG is */
+/*                    increased, the SPICELIB routine SPKPVN must be */
+/*                    changed accordingly. In particular, the size of */
+/*                    the record passed to SPKRnn and SPKEnn must be */
+/*                    increased, and comments describing the record size */
+/*                    must be changed. */
+
+/*                    The record size requirement is */
+
+/*                       MAXREC = ( 6 * (MAXDEG+1) ) + 3 */
+
+
+
+/*     TOLSCL         is a tolerance scale factor (also called a */
+/*                    "relative tolerance") used for time coverage */
+/*                    bound checking. TOLSCL is unitless. TOLSCL */
+/*                    produces a tolerance value via the formula */
+
+/*                       TOL = TOLSCL * MAX( ABS(FIRST), ABS(LAST) ) */
+
+/*                    where FIRST and LAST are the coverage time bounds */
+/*                    of a type 3 segment, expressed as seconds past */
+/*                    J2000 TDB. */
+
+/*                    The resulting parameter TOL is used as a tolerance */
+/*                    for comparing the input segment descriptor time */
+/*                    bounds to the first and last epoch covered by the */
+/*                    sequence of time intervals defined by the inputs */
+/*                    to SPKW03: */
+
+/*                       BTIME */
+/*                       INTLEN */
+/*                       N */
+
+/*     Tolerance scale for coverage gap at the endpoints */
+/*     of the segment coverage interval: */
+
+
+/*     End of include file spk03.inc. */
+
 /* $ Brief_I/O */
 
-/*   Variable  I/O  Description */
+/*     Variable  I/O  Description */
 /*     --------  ---  -------------------------------------------------- */
+/*     MAXDEG     P   Maximum degree of Chebyshev expansions. */
+/*     TOLSCL     P   Scale factor used to compute time bound tolerance. */
 /*     HANDLE     I   Handle of SPK file open for writing. */
 /*     BODY       I   NAIF code for ephemeris object. */
 /*     CENTER     I   NAIF code for the center of motion of the body. */
@@ -140,11 +239,12 @@ static integer c__1 = 1;
 /*                    There is one set of Chebyshev coefficients for each */
 /*                    time period. */
 
-/*     POLYDG         Degree of each set of Chebyshev polynomials. */
+/*     POLYDG         Degree of each set of Chebyshev polynomials. POLYDG */
+/*                    must not exceed MAXDEG (see Parameters below). */
 
 /*     CDATA          Array containing all the sets of Chebyshev */
 /*                    polynomial coefficients to be placed in the */
-/*                    segment of the SPK file.  The coefficients are */
+/*                    segment of the SPK file. The coefficients are */
 /*                    stored in CDATA in order as follows: */
 
 /*                       the (degree + 1) coefficients for the first */
@@ -154,19 +254,62 @@ static integer c__1 = 1;
 
 /*                       the coefficients for the third coordinate */
 
-/*                       the coefficients for the derivative of the first */
-/*                       coordinate */
+/*                       the coefficients for the derivative with respect */
+/*                       to time of the first coordinate */
 
-/*                       the coefficients for the derivative of the */
-/*                       second coordinate */
+/*                       the coefficients for the derivative with respect */
+/*                       to time of the second coordinate */
 
-/*                       the coefficients for the derivative of the third */
-/*                       coordinate */
+/*                       the coefficients for the derivative with respect */
+/*                       to time of the third coordinate */
 
 /*                       the coefficients for the first coordinate for */
 /*                       the second logical record, ... */
 
 /*                       and so on. */
+
+/*                    The logical data records are stored contiguously: */
+
+/*                       +----------+ */
+/*                       | Record 1 | */
+/*                       +----------+ */
+/*                       | Record 2 | */
+/*                       +----------+ */
+/*                           ... */
+/*                       +----------+ */
+/*                       | Record N | */
+/*                       +----------+ */
+
+/*                    The contents of an individual record are: */
+
+/*                       +--------------------------------------+ */
+/*                       | Coeff set for X position component   | */
+/*                       +--------------------------------------+ */
+/*                       | Coeff set for Y position component   | */
+/*                       +--------------------------------------+ */
+/*                       | Coeff set for Z position component   | */
+/*                       +--------------------------------------+ */
+/*                       | Coeff set for X velocity component   | */
+/*                       +--------------------------------------+ */
+/*                       | Coeff set for Y velocity component   | */
+/*                       +--------------------------------------+ */
+/*                       | Coeff set for Z velocity component   | */
+/*                       +--------------------------------------+ */
+
+/*                   Each coefficient set has the structure: */
+
+/*                       +--------------------------------------+ */
+/*                       | Coefficient of T_0                   | */
+/*                       +--------------------------------------+ */
+/*                       | Coefficient of T_1                   | */
+/*                       +--------------------------------------+ */
+/*                                         ... */
+/*                       +--------------------------------------+ */
+/*                       | Coefficient of T_POLYDG              | */
+/*                       +--------------------------------------+ */
+
+/*                    Where T_n represents the Chebyshev polynomial */
+/*                    of the first kind of degree n. */
 
 
 /*     BTIME          Begin time (seconds past J2000 TDB) of first set */
@@ -179,29 +322,43 @@ static integer c__1 = 1;
 
 /* $ Parameters */
 
-/*     None. */
+/*     See the include file spk03.inc for declarations of the */
+/*     parameters described below. */
+
+/*     TOLSCL         is a tolerance scale for coverage gap at endpoints */
+/*                    of the segment coverage interval. */
+
+/*     MAXDEG         is the maximum allowed degree of the input */
+/*                    Chebyshev expansions. */
 
 /* $ Exceptions */
 
-/*     1) If the number of sets of coefficients is not positive */
-/*        'SPICE(NUMCOEFFSNOTPOS)' is signalled. */
+/*     1)  If the number of sets of coefficients is not positive */
+/*         SPICE(NUMCOEFFSNOTPOS) is signaled. */
 
-/*     2) If the interval length is not positive, 'SPICE(INTLENNOTPOS)' */
-/*        is signalled. */
+/*     2)  If the interval length is not positive, SPICE(INTLENNOTPOS) */
+/*         is signaled. */
 
-/*     3) If the name of the reference frame is not recognized, */
-/*        'SPICE(INVALIDREFFRAME)' is signalled. */
+/*     3)  If the name of the reference frame is not recognized, */
+/*         SPICE(INVALIDREFFRAME) is signaled. */
 
-/*     4) If segment stop time is not greater then the begin time, */
-/*        'SPICE(BADDESCRTIMES)' is signalled. */
+/*     4)  If segment stop time is not greater then the begin time, */
+/*         SPICE(BADDESCRTIMES) is signaled. */
 
-/*     5) If the start time of the first record is not less than */
-/*        or equal to the descriptor begin time, 'SPICE(BADDESCRTIMES)' */
-/*        is signalled. */
+/*     5)  If the start time of the first record exceeds the descriptor */
+/*         begin time by more than a computed tolerance, or if the end */
+/*         time of the last record precedes the descriptor end time by */
+/*         more than a computed tolerance, the error SPICE(COVERAGEGAP) */
+/*         is signaled. See the Parameters section above for a */
+/*         description of the tolerance. */
 
-/*     6) If the end time of the last record is not greater than */
-/*        or equal to the descriptor end time, 'SPICE(BADDESCRTIMES)' is */
-/*        signalled. */
+/*     6)  If the input degree POLYDG is less than 0 or greater than */
+/*         MAXDEG, the error SPICE(INVALIDDEGREE) is signaled. */
+
+/*     7)  If the last non-blank character of SEGID occurs past index */
+/*         40, or if SEGID contains any nonprintable characters, the */
+/*         error will be diagnosed by a routine in the call tree of this */
+/*         routine. */
 
 /* $ Files */
 
@@ -218,7 +375,7 @@ static integer c__1 = 1;
 /*     and reference frame.  The Chebyshev polynomial degree and length */
 /*     of time covered by each logical record are also fixed.  However, */
 /*     an arbitrary number of logical records of Chebyshev polynomial */
-/*     coefficients can be written in each segment.  Minimizing the */
+/*     coefficients can be written in each segment. Minimizing the */
 /*     number of segments in an SPK file will help optimize how the SPICE */
 /*     system accesses the file. */
 
@@ -268,10 +425,19 @@ static integer c__1 = 1;
 
 /* $ Version */
 
+/* -    SPICELIB Version 2.0.0, 18-JAN-2014 (NJB) */
+
+/*        Relaxed test on relationship between the time bounds of the */
+/*        input record set (determined by BTIME, INTLEN, and N) and the */
+/*        descriptor bounds FIRST and LAST. Now the descriptor bounds */
+/*        may extend beyond the time bounds of the record set by a ratio */
+/*        computed using the parameter TOLSCL (see Parameters above for */
+/*        details). Added checks on input polynomial degree. */
+
 /* -    SPICELIB Version 1.1.0, 30-OCT-2006 (BVS) */
 
 /*        Removed restriction that the input reference frame should be */
-/*        inertial by changing the routine that determins the frame ID */
+/*        inertial by changing the routine that determines the frame ID */
 /*        from the name from IRFNUM to NAMFRM. */
 
 /* -    SPICELIB Version 1.0.1, 19-SEP-2006 (EDW) */
@@ -313,22 +479,33 @@ static integer c__1 = 1;
 /*     Local variables */
 
 
-
 /*     Standard SPICE error handling. */
 
     if (return_()) {
 	return 0;
-    } else {
-	chkin_("SPKW03", (ftnlen)6);
     }
+    chkin_("SPKW03", (ftnlen)6);
 
 /*     The number of sets of coefficients must be positive. */
 
     if (*n <= 0) {
-	setmsg_("The number of sets of coordinatecoeffcients is not positive"
-		". N = #", (ftnlen)66);
+	setmsg_("The number of sets of coordinatecoefficients is not positiv"
+		"e. N = #.", (ftnlen)68);
 	errint_("#", n, (ftnlen)1);
 	sigerr_("SPICE(NUMCOEFFSNOTPOS)", (ftnlen)22);
+	chkout_("SPKW03", (ftnlen)6);
+	return 0;
+    }
+
+/*     Make sure that the degree of the interpolating polynomials is */
+/*     in range. */
+
+    if (*polydg < 0 || *polydg > 27) {
+	setmsg_("The interpolating polynomials have degree #; the valid degr"
+		"ee range is [0, #].", (ftnlen)78);
+	errint_("#", polydg, (ftnlen)1);
+	errint_("#", &c__27, (ftnlen)1);
+	sigerr_("SPICE(INVALIDDEGREE)", (ftnlen)20);
 	chkout_("SPKW03", (ftnlen)6);
 	return 0;
     }
@@ -368,17 +545,25 @@ static integer c__1 = 1;
 	return 0;
     }
 
-/*     The begin time of the first record must be less than or equal */
-/*     to the begin time of the segment. */
+/*     Compute the tolerance to use for descriptor time bound checks. */
 
-    if (*first < *btime) {
-	setmsg_("The segment descriptor start time: # is less than the begin"
-		"ning time of the segment data: #", (ftnlen)91);
+/* Computing MAX */
+    d__1 = abs(*first), d__2 = abs(*last);
+    tol = max(d__1,d__2) * 1e-13;
+    if (*first < *btime - tol) {
+	setmsg_("The segment descriptor start time # is too much less than t"
+		"he beginning time of the  segment data # (in seconds past J2"
+		"000: #). The difference is # seconds; the  tolerance is # se"
+		"conds.", (ftnlen)185);
 	etcal_(first, etstr, (ftnlen)40);
 	errch_("#", etstr, (ftnlen)1, (ftnlen)40);
 	etcal_(btime, etstr, (ftnlen)40);
 	errch_("#", etstr, (ftnlen)1, (ftnlen)40);
-	sigerr_("SPICE(BADDESCRTIMES)", (ftnlen)20);
+	errdp_("#", first, (ftnlen)1);
+	d__1 = *btime - *first;
+	errdp_("#", &d__1, (ftnlen)1);
+	errdp_("#", &tol, (ftnlen)1);
+	sigerr_("SPICE(COVERAGEGAP)", (ftnlen)18);
 	chkout_("SPKW03", (ftnlen)6);
 	return 0;
     }
@@ -387,14 +572,20 @@ static integer c__1 = 1;
 /*     equal to the end time of the segment. */
 
     ltime = *btime + *n * *intlen;
-    if (*last > ltime) {
-	setmsg_("The segment descriptor end time: # is greater than the end "
-		"time of the segmentdata: #", (ftnlen)85);
+    if (*last > ltime + tol) {
+	setmsg_("The segment descriptor end time # is too much greater than "
+		"the end time of the segment data # (in seconds past J2000: #"
+		"). The difference is # seconds; the tolerance is # seconds.", 
+		(ftnlen)178);
 	etcal_(last, etstr, (ftnlen)40);
 	errch_("#", etstr, (ftnlen)1, (ftnlen)40);
 	etcal_(&ltime, etstr, (ftnlen)40);
 	errch_("#", etstr, (ftnlen)1, (ftnlen)40);
-	sigerr_("SPICE(BADDESCRTIMES)", (ftnlen)20);
+	errdp_("#", last, (ftnlen)1);
+	d__1 = *last - ltime;
+	errdp_("#", &d__1, (ftnlen)1);
+	errdp_("#", &tol, (ftnlen)1);
+	sigerr_("SPICE(COVERAGEGAP)", (ftnlen)18);
 	chkout_("SPKW03", (ftnlen)6);
 	return 0;
     }

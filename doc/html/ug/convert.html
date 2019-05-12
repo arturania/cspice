@@ -45,7 +45,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Converting and Porting SPICE Binary Data Files
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2002 JAN 13 by F. S. Turner.
+   Last revised on 2017 MAR 10 by N. J. Bachman.
 <P>
  
 <BR><BR>
@@ -62,6 +62,9 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Revisions
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   March 10, 2017
+<P>
+ 
    January 13, 2002
 <P>
  
@@ -213,10 +216,9 @@ into the SPICE toolkit.
 <P>
  
 <UL>
-<TT>--</TT> As of Toolkit Version N0052 this capability is implemented only for DAF
-based files (SPK, CK, and binary PCK). Users of E-kernels and other DAS
-based kernels will need to await a future release of the toolkit before
-this capability is extended to these files.
+<TT>--</TT> As of Toolkit Version N0066 this capability is implemented both for
+DAF-based files (SPK, CK, and binary PCK) and DAS-based files (DSK, EK,
+DBK, type 1 star catalogs).
 <BR><BR></UL>
 <UL>
 <TT>--</TT> The binary translation capability provides ``read-only'' access to
@@ -228,9 +230,10 @@ MKSPK or other mission specific tools) will also fail.
 <UL>
 <TT>--</TT> Using non-native files may impact the performance of SPICE based
 applications. The impact is highly dependent on the particular computing
-environment and the usage scenario. Typically the decrease is somewhere
-between 5 and 10 percent, but may be as large as a factor of 2 or 3 for
-highly read intensive scenarios.
+environment and the usage scenario. Typically for SPK files the speed
+decrease is somewhere between 5 and 10 percent, but may be as large as a
+factor of 2 or 3 for highly read intensive scenarios. For DSK files a
+factor of 3 is to be expected.
 <BR><BR></UL>
    If the ``read-only'' nature of access or the performance degradation are
    issues, then converting the non-native binary files into native format
@@ -321,7 +324,7 @@ later in this document provide this capability.
    as in ``convert to transfer.''
 <P>
  
-   TOBIN converts a SPICE transfer format file into it's binary format for
+   TOBIN converts a SPICE transfer format file into its binary format for
    use in a particular computing environment. TOBIN requires at least the
    name of the input transfer file, which is the first argument on the
    command line. Optionally, a name for the output binary file may be

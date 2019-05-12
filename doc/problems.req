@@ -6,7 +6,7 @@ Common Problems
  
        -- "Apollo 13"
  
-   Last revised on 2007 FEB 11 by E. D. Wright
+   Last revised on 2017 MAR 14 by E. D. Wright
  
  
 Abstract
@@ -551,8 +551,7 @@ Problem: A text kernel causes a SPICE(INCOMPATIBLEEOL) error
  
    Most (if not all) modern Microsoft compilers perform an internal
    conversion from DOS terminators to Unix terminators, explaining why one
-   seldom saw this problem on Windows. The implementation of the error
-   check may cause the error signal on Windows when
+   seldom saw this problem on Windows.
  
    As of Toolkit version N59, CSPICE/Icy text kernel loaders perform the
    conversion between text line terminators on Windows and Unix platforms;
@@ -675,7 +674,7 @@ Problem: SPICE-based application is too slow
    opportunity to use either library, using CSPICE may result in a
    considerable speed-up.
  
-   CSPICE applications can be speed up somewhat by disabling the function
+   CSPICE applications can be somewhat sped up by disabling the function
    call tracing done internally by CSPICE. This is done by calling trcoff_c
    once during program initialization:
  
@@ -1028,4 +1027,22 @@ Problem: IDL segmentation fault
    Then save and close icy.dlm.
  
    NAIF corrected the problem for Icy 1.3, the N61 distribution.
+ 
+ 
+Appendix A: Revisions
+===========================================================================
+ 
+ 
+2017 MAR 14 by E. D. Wright
+--------------------------------------------------------
+ 
+   Edits to correct several minor typos.
+ 
+ 
+2007 FEB 11 by E. D. Wright
+--------------------------------------------------------
+ 
+ 
+2006 NOV 22 by B. V. Semenov.
+--------------------------------------------------------
  

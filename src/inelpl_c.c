@@ -219,7 +219,14 @@
    N.J. Bachman   (JPL) 
  
 -Version
+
+   -CSPICE Version 2.1.0, 07-OCT-2011 (NJB)
  
+      Relaxed ellipse semi-axes orthogonality test limit
+      SEPLIM from 1.D-12 TO 1.D-9 radians. The angular
+      separation of the axes of the input ellipse must not
+      differ from pi/2 radians by more than this limit.
+
    -CSPICE Version 2.0.0, 14-JAN-2008 (NJB)
  
       Bug fix: the routine's specification and behavior have been
@@ -275,7 +282,7 @@
    /*
    Local constants
    */
-   #define SEPLIM          ( 1.0e-12 )
+   #define SEPLIM          ( 1.0e-9 )
 
    /*
    Local variables

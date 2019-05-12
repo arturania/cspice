@@ -40,19 +40,16 @@ static integer c__0 = 0;
     integer s_rnge(char *, integer, char *, integer);
 
     /* Local variables */
-    extern /* Subroutine */ int chkin_(char *, ftnlen), ucase_(char *, char *,
-	     ftnlen, ftnlen), errch_(char *, char *, ftnlen, ftnlen);
+    extern /* Subroutine */ int chkin_(char *, ftnlen), errch_(char *, char *,
+	     ftnlen, ftnlen);
     extern integer bsrchc_(char *, integer *, char *, ftnlen, ftnlen);
     extern /* Subroutine */ int orderc_(char *, integer *, integer *, ftnlen),
 	     reordc_(integer *, integer *, char *, ftnlen);
     integer ordvec[15];
     extern /* Subroutine */ int reordl_(integer *, integer *, logical *), 
-	    sigerr_(char *, ftnlen), chkout_(char *, ftnlen), setmsg_(char *, 
-	    ftnlen);
+	    sigerr_(char *, ftnlen), chkout_(char *, ftnlen), ljucrs_(integer 
+	    *, char *, char *, ftnlen, ftnlen), setmsg_(char *, ftnlen);
     char tmpcor[5];
-    extern /* Subroutine */ int cmprss_(char *, integer *, char *, char *, 
-	    ftnlen, ftnlen, ftnlen);
-    char tc2[5];
     extern logical return_(void);
     integer loc;
 
@@ -211,15 +208,21 @@ static integer c__0 = 0;
 /*        their own checking to ensure the parsed correction is */
 /*        acceptable. */
 
-/* $ Author_and_Institution */
-
-/*     N.J. Bachman    (JPL) */
-
 /* $ Literature_References */
 
 /*     None. */
 
+/* $ Author_and_Institution */
+
+/*     N.J. Bachman    (JPL) */
+/*     B.V. Semenov    (JPL) */
+
 /* $ Version */
+
+/* -    SPICELIB Version 1.1.0, 21-SEP-2013 (BVS) */
+
+/*        Efficiency updates: moved CHKIN inside the exception block; */
+/*        replaced CMPRSS/UCASE with LJUCRS. */
 
 /* -    SPICELIB Version 1.0.0, 13-DEC-2004 (NJB) */
 
@@ -357,7 +360,6 @@ static integer c__0 = 0;
     if (return_()) {
 	return 0;
     }
-    chkin_("ZZPRSCOR", (ftnlen)8);
     if (first) {
 
 /*        The first time this routine is called, we sort the */
@@ -385,13 +387,13 @@ static integer c__0 = 0;
 /*     Obtain a blank-free, upper-case copy of the aberration */
 /*     correction string. */
 
-    cmprss_(" ", &c__0, abcorr, tc2, (ftnlen)1, abcorr_len, (ftnlen)5);
-    ucase_(tc2, tmpcor, (ftnlen)5, (ftnlen)5);
+    ljucrs_(&c__0, abcorr, tmpcor, abcorr_len, (ftnlen)5);
 
 /*     Search the list for the aberration correction string. */
 
     loc = bsrchc_(tmpcor, &c__15, corlst, (ftnlen)5, (ftnlen)5);
     if (loc == 0) {
+	chkin_("ZZPRSCOR", (ftnlen)8);
 	setmsg_("Aberration correction specification # is not recognized.", (
 		ftnlen)56);
 	errch_("#", abcorr, (ftnlen)1, abcorr_len);
@@ -403,18 +405,17 @@ static integer c__0 = 0;
 /*     Set the output flags. */
 
     attblk[0] = geo[(i__1 = loc - 1) < 15 && 0 <= i__1 ? i__1 : s_rnge("geo", 
-	    i__1, "zzprscor_", (ftnlen)316)];
-    attblk[1] = lt[(i__1 = loc - 1) < 15 && 0 <= i__1 ? i__1 : s_rnge("lt", 
-	    i__1, "zzprscor_", (ftnlen)317)];
-    attblk[2] = stl[(i__1 = loc - 1) < 15 && 0 <= i__1 ? i__1 : s_rnge("stl", 
 	    i__1, "zzprscor_", (ftnlen)318)];
+    attblk[1] = lt[(i__1 = loc - 1) < 15 && 0 <= i__1 ? i__1 : s_rnge("lt", 
+	    i__1, "zzprscor_", (ftnlen)319)];
+    attblk[2] = stl[(i__1 = loc - 1) < 15 && 0 <= i__1 ? i__1 : s_rnge("stl", 
+	    i__1, "zzprscor_", (ftnlen)320)];
     attblk[3] = conv[(i__1 = loc - 1) < 15 && 0 <= i__1 ? i__1 : s_rnge("conv"
-	    , i__1, "zzprscor_", (ftnlen)319)];
+	    , i__1, "zzprscor_", (ftnlen)321)];
     attblk[4] = xmit[(i__1 = loc - 1) < 15 && 0 <= i__1 ? i__1 : s_rnge("xmit"
-	    , i__1, "zzprscor_", (ftnlen)320)];
+	    , i__1, "zzprscor_", (ftnlen)322)];
     attblk[5] = rel[(i__1 = loc - 1) < 15 && 0 <= i__1 ? i__1 : s_rnge("rel", 
-	    i__1, "zzprscor_", (ftnlen)321)];
-    chkout_("ZZPRSCOR", (ftnlen)8);
+	    i__1, "zzprscor_", (ftnlen)323)];
     return 0;
 } /* zzprscor_ */
 
