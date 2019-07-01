@@ -734,6 +734,10 @@ Include Files:
 #include "SpiceSPK.h"
 #endif
 
+#ifndef HAVE_SPICE_CK_H
+#include "SpiceCK.h"
+#endif
+
 #ifndef HAVE_SPICEWRAPPERS_H
 #define HAVE_SPICEWRAPPERS_H
 
@@ -751,24 +755,24 @@ Include Files:
    The list below should be maintained in alphabetical order.
 */
 
-   void              appndc_c ( ConstSpiceChar     * item,
+extern void          appndc_c ( ConstSpiceChar     * item,
                                 SpiceCell          * cell  );
 
 
-   void              appndd_c ( SpiceDouble          item,
+extern void          appndd_c ( SpiceDouble          item,
                                 SpiceCell          * cell  );
 
 
-   void              appndi_c ( SpiceInt             item,
+extern void          appndi_c ( SpiceInt             item,
                                 SpiceCell          * cell  );
 
 
-   void              axisar_c ( ConstSpiceDouble     axis   [3],
+extern void          axisar_c ( ConstSpiceDouble     axis   [3],
                                 SpiceDouble          angle,
                                 SpiceDouble          r      [3][3]  );
 
 
-   SpiceBoolean      badkpv_c ( ConstSpiceChar      *caller,
+extern SpiceBoolean  badkpv_c ( ConstSpiceChar      *caller,
                                 ConstSpiceChar      *name,
                                 ConstSpiceChar      *comp,
                                 SpiceInt             size,
@@ -776,107 +780,107 @@ Include Files:
                                 SpiceChar            type   );
 
 
-   void              bltfrm_c ( SpiceInt             frmcls,
+extern void          bltfrm_c ( SpiceInt             frmcls,
                                 SpiceCell          * idset  );
 
 
-   void              bodc2n_c ( SpiceInt             code,
+extern void          bodc2n_c ( SpiceInt             code,
                                 SpiceInt             namelen,
                                 SpiceChar          * name,
                                 SpiceBoolean       * found   );
 
 
-   void              bodc2s_c ( SpiceInt             code,
+extern void          bodc2s_c ( SpiceInt             code,
                                 SpiceInt             lenout,
                                 SpiceChar          * name );
 
-   void              boddef_c ( ConstSpiceChar     * name,
+extern void          boddef_c ( ConstSpiceChar     * name,
                                 SpiceInt             code );
 
 
-   SpiceBoolean      bodfnd_c ( SpiceInt             body,
+extern SpiceBoolean  bodfnd_c ( SpiceInt             body,
                                 ConstSpiceChar     * item );
 
 
-   void              bodn2c_c ( ConstSpiceChar     * name,
+extern void          bodn2c_c ( ConstSpiceChar     * name,
                                 SpiceInt           * code,
                                 SpiceBoolean       * found );
 
 
-   void              bods2c_c ( ConstSpiceChar     * name,
+extern void          bods2c_c ( ConstSpiceChar     * name,
                                 SpiceInt           * code,
                                 SpiceBoolean       * found );
 
 
-   void              bodvar_c ( SpiceInt             body,
+extern void          bodvar_c ( SpiceInt             body,
                                 ConstSpiceChar     * item,
                                 SpiceInt           * dim ,
                                 SpiceDouble        * values );
 
 
-   void              bodvcd_c ( SpiceInt             body,
+extern void          bodvcd_c ( SpiceInt             body,
                                 ConstSpiceChar     * item,
                                 SpiceInt             maxn,
                                 SpiceInt           * dim ,
                                 SpiceDouble        * values );
 
 
-   void              bodvrd_c ( ConstSpiceChar     * body,
+extern void          bodvrd_c ( ConstSpiceChar     * body,
                                 ConstSpiceChar     * item,
                                 SpiceInt             maxn,
                                 SpiceInt           * dim ,
                                 SpiceDouble        * values );
 
 
-   SpiceDouble       brcktd_c ( SpiceDouble          number,
+extern SpiceDouble   brcktd_c ( SpiceDouble          number,
                                 SpiceDouble          end1,
                                 SpiceDouble          end2    );
 
 
-   SpiceInt          brckti_c ( SpiceInt             number,
+extern SpiceInt      brckti_c ( SpiceInt             number,
                                 SpiceInt             end1,
                                 SpiceInt             end2    );
 
 
-   SpiceInt          bschoc_c ( ConstSpiceChar     * value,
+extern SpiceInt      bschoc_c ( ConstSpiceChar     * value,
                                 SpiceInt             ndim,
                                 SpiceInt             lenvals,
                                 const void         * array,
                                 ConstSpiceInt      * order  );
 
 
-   SpiceInt          bschoi_c ( SpiceInt             value,
+extern SpiceInt      bschoi_c ( SpiceInt             value,
                                 SpiceInt             ndim,
                                 ConstSpiceInt      * array,
                                 ConstSpiceInt      * order  );
 
 
-   SpiceInt          bsrchc_c ( ConstSpiceChar     * value,
+extern SpiceInt      bsrchc_c ( ConstSpiceChar     * value,
                                 SpiceInt             ndim,
                                 SpiceInt             lenvals,
                                 const void         * array   );
 
 
-   SpiceInt          bsrchd_c ( SpiceDouble          value,
+extern SpiceInt      bsrchd_c ( SpiceDouble          value,
                                 SpiceInt             ndim,
                                 ConstSpiceDouble   * array );
 
 
-   SpiceInt          bsrchi_c ( SpiceInt             value,
+extern SpiceInt      bsrchi_c ( SpiceInt             value,
                                 SpiceInt             ndim,
                                 ConstSpiceInt      * array );
 
 
-   SpiceDouble       b1900_c  ( void );
+extern SpiceDouble   b1900_c  ( void );
 
 
-   SpiceDouble       b1950_c  ( void );
+extern SpiceDouble   b1950_c  ( void );
 
 
-   SpiceInt          card_c   ( SpiceCell         * cell );
+extern SpiceInt      card_c   ( SpiceCell         * cell );
 
 
-   void              ccifrm_c ( SpiceInt            frclss,
+extern void          ccifrm_c ( SpiceInt            frclss,
                                 SpiceInt            clssid,
                                 SpiceInt            lenout,
                                 SpiceInt          * frcode,
@@ -885,13 +889,13 @@ Include Files:
                                 SpiceBoolean      * found   );
 
 
-   void              cgv2el_c ( ConstSpiceDouble    center[3],
+extern void          cgv2el_c ( ConstSpiceDouble    center[3],
                                 ConstSpiceDouble    vec1  [3],
                                 ConstSpiceDouble    vec2  [3],
                                 SpiceEllipse      * ellipse   );
 
 
-   void              chbder_c ( ConstSpiceDouble * cp,
+extern void          chbder_c ( ConstSpiceDouble * cp,
                                 SpiceInt           degp,
                                 SpiceDouble        x2s[2],
                                 SpiceDouble        x,
@@ -900,23 +904,23 @@ Include Files:
                                 SpiceDouble      * dpdxs );
 
 
-   void              chkin_c  ( ConstSpiceChar    * module );
+extern void          chkin_c  ( ConstSpiceChar    * module );
 
 
-   void              chkout_c ( ConstSpiceChar    * module );
+extern void          chkout_c ( ConstSpiceChar    * module );
 
 
-   void              cidfrm_c ( SpiceInt            cent,
+extern void          cidfrm_c ( SpiceInt            cent,
                                 SpiceInt            lenout,
                                 SpiceInt          * frcode,
                                 SpiceChar         * frname,
                                 SpiceBoolean      * found  );
 
 
-   void              ckcls_c  ( SpiceInt            handle );
+extern void          ckcls_c  ( SpiceInt            handle );
 
 
-   void              ckcov_c  ( ConstSpiceChar    * ck,
+extern void          ckcov_c  ( ConstSpiceChar    * ck,
                                 SpiceInt            idcode,
                                 SpiceBoolean        needav,
                                 ConstSpiceChar    * level,
@@ -925,11 +929,11 @@ Include Files:
                                 SpiceCell         * cover   );
 
 
-   void              ckobj_c  ( ConstSpiceChar    * ck,
+extern void          ckobj_c  ( ConstSpiceChar    * ck,
                                 SpiceCell         * ids );
 
 
-   void              ckgp_c   ( SpiceInt            inst,
+extern void          ckgp_c   ( SpiceInt            inst,
                                 SpiceDouble         sclkdp,
                                 SpiceDouble         tol,
                                 ConstSpiceChar    * ref,
@@ -938,7 +942,7 @@ Include Files:
                                 SpiceBoolean      * found      );
 
 
-   void              ckgpav_c ( SpiceInt            inst,
+extern void          ckgpav_c ( SpiceInt            inst,
                                 SpiceDouble         sclkdp,
                                 SpiceDouble         tol,
                                 ConstSpiceChar    * ref,
@@ -948,20 +952,20 @@ Include Files:
                                 SpiceBoolean      * found      );
 
 
-   void              cklpf_c  ( ConstSpiceChar    * fname,
+extern void          cklpf_c  ( ConstSpiceChar    * fname,
                                 SpiceInt          * handle    );
 
 
-   void              ckopn_c  ( ConstSpiceChar    * name,
+extern void          ckopn_c  ( ConstSpiceChar    * name,
                                 ConstSpiceChar    * ifname,
                                 SpiceInt            ncomch,
                                 SpiceInt          * handle  );
 
 
-   void              ckupf_c  ( SpiceInt            handle );
+extern void          ckupf_c  ( SpiceInt            handle );
 
 
-   void              ckw01_c  ( SpiceInt            handle,
+extern void          ckw01_c  ( SpiceInt            handle,
                                 SpiceDouble         begtime,
                                 SpiceDouble         endtime,
                                 SpiceInt            inst,
@@ -974,7 +978,7 @@ Include Files:
                                 ConstSpiceDouble    avvs   [][3]  );
 
 
-   void              ckw02_c  ( SpiceInt            handle,
+extern void          ckw02_c  ( SpiceInt            handle,
                                 SpiceDouble         begtim,
                                 SpiceDouble         endtim,
                                 SpiceInt            inst,
@@ -988,7 +992,7 @@ Include Files:
                                 ConstSpiceDouble    rates  []    );
 
 
-   void              ckw03_c  ( SpiceInt            handle,
+extern void          ckw03_c  ( SpiceInt            handle,
                                 SpiceDouble         begtim,
                                 SpiceDouble         endtim,
                                 SpiceInt            inst,
@@ -1003,7 +1007,7 @@ Include Files:
                                 ConstSpiceDouble    starts []     );
 
 
-   void              ckw05_c  ( SpiceInt             handle,
+extern void          ckw05_c  ( SpiceInt             handle,
                                 SpiceCK05Subtype     subtyp,
                                 SpiceInt             degree,
                                 SpiceDouble          begtim,
@@ -1020,61 +1024,61 @@ Include Files:
                                 ConstSpiceDouble     starts[]     );
 
 
-   void              cleard_c ( SpiceInt             ndim,
+extern void          cleard_c ( SpiceInt             ndim,
                                 SpiceDouble        * array );
 
 
-   SpiceDouble       clight_c ( void );
+extern SpiceDouble   clight_c ( void );
 
 
-   void              clpool_c ( void );
+extern void          clpool_c ( void );
 
 
-   void              cmprss_c ( SpiceChar           delim,
+extern void          cmprss_c ( SpiceChar           delim,
                                 SpiceInt            n,
                                 ConstSpiceChar    * input,
                                 SpiceInt            lenout,
                                 SpiceChar         * output  );
 
 
-   void              cnmfrm_c ( ConstSpiceChar    * cname,
+extern void          cnmfrm_c ( ConstSpiceChar    * cname,
                                 SpiceInt            lenout,
                                 SpiceInt          * frcode,
                                 SpiceChar         * frname,
                                 SpiceBoolean      * found   );
 
 
-   void              conics_c ( ConstSpiceDouble    elts[8],
+extern void          conics_c ( ConstSpiceDouble    elts[8],
                                 SpiceDouble         et,
                                 SpiceDouble         state[6] );
 
 
-   void              convrt_c ( SpiceDouble         x,
+extern void          convrt_c ( SpiceDouble         x,
                                 ConstSpiceChar    * in,
                                 ConstSpiceChar    * out,
                                 SpiceDouble       * y    );
 
 
-   void              copy_c   ( SpiceCell         * a,
+extern void          copy_c   ( SpiceCell         * a,
                                 SpiceCell         * b     );
 
 
 
-   SpiceInt          cpos_c   ( ConstSpiceChar    * str,
+extern SpiceInt      cpos_c   ( ConstSpiceChar    * str,
                                 ConstSpiceChar    * chars,
                                 SpiceInt            start  );
 
 
-   SpiceInt          cposr_c  ( ConstSpiceChar    * str,
+extern SpiceInt      cposr_c  ( ConstSpiceChar    * str,
                                 ConstSpiceChar    * chars,
                                 SpiceInt            start  );
 
 
-   void              cvpool_c ( ConstSpiceChar    * agent,
+extern void          cvpool_c ( ConstSpiceChar    * agent,
                                 SpiceBoolean      * update );
 
 
-   void              cyllat_c ( SpiceDouble         r,
+extern void          cyllat_c ( SpiceDouble         r,
                                 SpiceDouble         lonc,
                                 SpiceDouble         z,
                                 SpiceDouble       * radius,
@@ -1082,13 +1086,13 @@ Include Files:
                                 SpiceDouble       * lat );
 
 
-   void              cylrec_c ( SpiceDouble         r,
+extern void          cylrec_c ( SpiceDouble         r,
                                 SpiceDouble         lon,
                                 SpiceDouble         z,
                                 SpiceDouble         rectan[3] );
 
 
-   void              cylsph_c ( SpiceDouble         r,
+extern void          cylsph_c ( SpiceDouble         r,
                                 SpiceDouble         lonc,
                                 SpiceDouble         z,
                                 SpiceDouble       * radius,
@@ -1096,28 +1100,28 @@ Include Files:
                                 SpiceDouble       * lon );
 
 
-   void              dafac_c  ( SpiceInt            handle,
+extern void          dafac_c  ( SpiceInt            handle,
                                 SpiceInt            n,
                                 SpiceInt            lenvals,
                                 const void        * buffer  );
 
 
-   void              dafbbs_c ( SpiceInt            handle );
+extern void          dafbbs_c ( SpiceInt            handle );
 
 
-   void              dafbfs_c ( SpiceInt            handle );
+extern void          dafbfs_c ( SpiceInt            handle );
 
 
-   void              dafcls_c ( SpiceInt            handle );
+extern void          dafcls_c ( SpiceInt            handle );
 
 
-   void              dafcs_c  ( SpiceInt            handle );
+extern void          dafcs_c  ( SpiceInt            handle );
 
 
-   void              dafdc_c  ( SpiceInt            handle );
+extern void          dafdc_c  ( SpiceInt            handle );
 
 
-   void              dafec_c  ( SpiceInt            handle,
+extern void          dafec_c  ( SpiceInt            handle,
                                 SpiceInt            bufsiz,
                                 SpiceInt            lenout,
                                 SpiceInt          * n,
@@ -1125,29 +1129,29 @@ Include Files:
                                 SpiceBoolean      * done    );
 
 
-   void              daffna_c ( SpiceBoolean      * found );
+extern void          daffna_c ( SpiceBoolean      * found );
 
 
-   void              daffpa_c ( SpiceBoolean      * found );
+extern void          daffpa_c ( SpiceBoolean      * found );
 
 
-   void              dafgda_c ( SpiceInt            handle,
+extern void          dafgda_c ( SpiceInt            handle,
                                 SpiceInt            begin,
                                 SpiceInt            end,
                                 SpiceDouble       * data );
 
 
-   void              dafgh_c  ( SpiceInt          * handle );
+extern void          dafgh_c  ( SpiceInt          * handle );
 
 
-   void              dafgn_c  ( SpiceInt            lenout,
+extern void          dafgn_c  ( SpiceInt            lenout,
                                 SpiceChar         * name   );
 
 
-   void              dafgs_c  ( SpiceDouble         sum[] );
+extern void          dafgs_c  ( SpiceDouble         sum[] );
 
 
-   void              dafgsr_c ( SpiceInt            handle,
+extern void          dafgsr_c ( SpiceInt            handle,
                                 SpiceInt            recno,
                                 SpiceInt            begin,
                                 SpiceInt            end,
@@ -1155,29 +1159,29 @@ Include Files:
                                 SpiceBoolean      * found  );
 
 
-   void              dafopr_c ( ConstSpiceChar    * fname,
+extern void          dafopr_c ( ConstSpiceChar    * fname,
                                 SpiceInt          * handle  );
 
 
-   void              dafopw_c ( ConstSpiceChar    * fname,
+extern void          dafopw_c ( ConstSpiceChar    * fname,
                                 SpiceInt          * handle );
 
 
-   void              dafps_c  ( SpiceInt            nd,
+extern void          dafps_c  ( SpiceInt            nd,
                                 SpiceInt            ni,
                                 ConstSpiceDouble    dc  [],
                                 ConstSpiceInt       ic  [],
                                 SpiceDouble         sum []  );
 
 
-   void              dafrda_c ( SpiceInt            handle,
+extern void          dafrda_c ( SpiceInt            handle,
                                 SpiceInt            begin,
                                 SpiceInt            end,
                                 SpiceDouble       * data );
 
 
 
-   void              dafrfr_c ( SpiceInt            handle,
+extern void          dafrfr_c ( SpiceInt            handle,
                                 SpiceInt            lenout,
                                 SpiceInt          * nd,
                                 SpiceInt          * ni,
@@ -1188,29 +1192,29 @@ Include Files:
 
 
 
-   void              dafrs_c  ( ConstSpiceDouble  * sum );
+extern void          dafrs_c  ( ConstSpiceDouble  * sum );
 
 
-   void              dafus_c  ( ConstSpiceDouble    sum [],
+extern void          dafus_c  ( ConstSpiceDouble    sum [],
                                 SpiceInt            nd,
                                 SpiceInt            ni,
                                 SpiceDouble         dc  [],
                                 SpiceInt            ic  []  );
 
 
-   void              dasac_c  ( SpiceInt            handle,
+extern void          dasac_c  ( SpiceInt            handle,
                                 SpiceInt            n,
                                 SpiceInt            buflen,
                                 const void        * buffer  );
 
 
-   void              dascls_c ( SpiceInt            handle );
+extern void          dascls_c ( SpiceInt            handle );
 
 
-   void              dasdc_c  ( SpiceInt            handle );
+extern void          dasdc_c  ( SpiceInt            handle );
 
 
-   void              dasec_c  ( SpiceInt            handle,
+extern void          dasec_c  ( SpiceInt            handle,
                                 SpiceInt            bufsiz,
                                 SpiceInt            buflen,
                                 SpiceInt          * n,
@@ -1218,21 +1222,21 @@ Include Files:
                                 SpiceBoolean      * done   );
 
 
-   void              dashfn_c ( SpiceInt            handle,
+extern void          dashfn_c ( SpiceInt            handle,
                                 SpiceInt            namlen,
                                 SpiceChar         * fname  );
 
 
-   void              dasopr_c ( ConstSpiceChar    * fname,
+extern void          dasopr_c ( ConstSpiceChar    * fname,
                                 SpiceInt          * handle  );
 
 
-   void              dasopw_c ( ConstSpiceChar    * fname,
+extern void          dasopw_c ( ConstSpiceChar    * fname,
                                 SpiceInt          * handle  );
 
 
 
-   void              dasrfr_c ( SpiceInt            handle,
+extern void          dasrfr_c ( SpiceInt            handle,
                                 SpiceInt            idwlen,
                                 SpiceInt            ifnlen,
                                 SpiceChar         * idword,
@@ -1243,31 +1247,31 @@ Include Files:
                                 SpiceInt          * ncomc   );
 
 
-   void              dcyldr_c ( SpiceDouble         x,
+extern void          dcyldr_c ( SpiceDouble         x,
                                 SpiceDouble         y,
                                 SpiceDouble         z,
                                 SpiceDouble         jacobi[3][3] );
 
 
-   void              deltet_c ( SpiceDouble         epoch,
+extern void          deltet_c ( SpiceDouble         epoch,
                                 ConstSpiceChar    * eptype,
                                 SpiceDouble       * delta   );
 
 
-   SpiceDouble       det_c    ( ConstSpiceDouble    m1[3][3] );
+extern SpiceDouble   det_c    ( ConstSpiceDouble    m1[3][3] );
 
 
-   void              diags2_c ( ConstSpiceDouble    symmat [2][2],
+extern void          diags2_c ( ConstSpiceDouble    symmat [2][2],
                                 SpiceDouble         diag   [2][2],
                                 SpiceDouble         rotate [2][2]  );
 
 
-   void              diff_c   ( SpiceCell         * a,
+extern void          diff_c   ( SpiceCell         * a,
                                 SpiceCell         * b,
                                 SpiceCell         * c  );
 
 
-   void              dgeodr_c ( SpiceDouble         x,
+extern void          dgeodr_c ( SpiceDouble         x,
                                 SpiceDouble         y,
                                 SpiceDouble         z,
                                 SpiceDouble         re,
@@ -1275,41 +1279,41 @@ Include Files:
                                 SpiceDouble         jacobi[3][3] );
 
 
-   void              dlabbs_c ( SpiceInt            handle,
+extern void          dlabbs_c ( SpiceInt            handle,
                                 SpiceDLADescr     * descr,
                                 SpiceBoolean      * found  );
 
 
-   void              dlabfs_c ( SpiceInt          handle,
+extern void          dlabfs_c ( SpiceInt          handle,
                                 SpiceDLADescr   * descr,
                                 SpiceBoolean    * found  );
 
 
-   void              dlafns_c ( SpiceInt               handle,
+extern void          dlafns_c ( SpiceInt               handle,
                                 ConstSpiceDLADescr   * descr,
                                 SpiceDLADescr        * nxtdsc,
                                 SpiceBoolean         * found    );
 
 
-   void              dlafps_c ( SpiceInt               handle,
+extern void          dlafps_c ( SpiceInt               handle,
                                 ConstSpiceDLADescr   * descr,
                                 SpiceDLADescr        * prvdsc,
                                 SpiceBoolean         * found   );
 
 
-   void              dlatdr_c ( SpiceDouble         x,
+extern void          dlatdr_c ( SpiceDouble         x,
                                 SpiceDouble         y,
                                 SpiceDouble         z,
                                 SpiceDouble         jacobi[3][3] );
 
 
-   void              dp2hx_c  ( SpiceDouble   number,
+extern void          dp2hx_c  ( SpiceDouble   number,
                                 SpiceInt      lenout,
                                 SpiceChar   * string,
                                 SpiceInt    * length  );
 
 
-   void              dpgrdr_c ( ConstSpiceChar    * body,
+extern void          dpgrdr_c ( ConstSpiceChar    * body,
                                 SpiceDouble         x,
                                 SpiceDouble         y,
                                 SpiceDouble         z,
@@ -1318,28 +1322,28 @@ Include Files:
                                 SpiceDouble         jacobi[3][3] );
 
 
-   SpiceDouble       dpmax_c  ( void );
+extern SpiceDouble   dpmax_c  ( void );
 
 
-   SpiceDouble       dpmax_   ( void );
+extern SpiceDouble   dpmax_   ( void );
 
 
-   SpiceDouble       dpmin_c  ( void );
+extern SpiceDouble   dpmin_c  ( void );
 
 
-   SpiceDouble       dpmin_   ( void );
+extern SpiceDouble   dpmin_   ( void );
 
 
-   SpiceDouble       dpr_c    ( void );
+extern SpiceDouble   dpr_c    ( void );
 
 
-   void              drdcyl_c ( SpiceDouble         r,
+extern void          drdcyl_c ( SpiceDouble         r,
                                 SpiceDouble         lon,
                                 SpiceDouble         z,
                                 SpiceDouble         jacobi[3][3] );
 
 
-   void              drdgeo_c ( SpiceDouble         lon,
+extern void          drdgeo_c ( SpiceDouble         lon,
                                 SpiceDouble         lat,
                                 SpiceDouble         alt,
                                 SpiceDouble         re,
@@ -1347,13 +1351,13 @@ Include Files:
                                 SpiceDouble         jacobi[3][3] );
 
 
-   void              drdlat_c ( SpiceDouble         r,
+extern void          drdlat_c ( SpiceDouble         r,
                                 SpiceDouble         lon,
                                 SpiceDouble         lat,
                                 SpiceDouble         jacobi[3][3] );
 
 
-   void              drdpgr_c ( ConstSpiceChar    * body,
+extern void          drdpgr_c ( ConstSpiceChar    * body,
                                 SpiceDouble         lon,
                                 SpiceDouble         lat,
                                 SpiceDouble         alt,
@@ -1362,13 +1366,13 @@ Include Files:
                                 SpiceDouble         jacobi[3][3] );
 
 
-   void              drdsph_c ( SpiceDouble         r,
+extern void          drdsph_c ( SpiceDouble         r,
                                 SpiceDouble         colat,
                                 SpiceDouble         lon,
                                 SpiceDouble         jacobi[3][3] );
 
 
-   void              dskb02_c ( SpiceInt               handle,
+extern void          dskb02_c ( SpiceInt               handle,
                                 ConstSpiceDLADescr   * dladsc,
                                 SpiceInt             * nv,
                                 SpiceInt             * np,
@@ -1383,11 +1387,11 @@ Include Files:
                                 SpiceInt             * voxnpl          );
 
 
-   void              dskcls_c ( SpiceInt               handle,
+extern void          dskcls_c ( SpiceInt               handle,
                                 SpiceBoolean           optmiz );
 
 
-   void              dskd02_c ( SpiceInt               handle,
+extern void          dskd02_c ( SpiceInt               handle,
                                 ConstSpiceDLADescr   * dladsc,
                                 SpiceInt               item,
                                 SpiceInt               start,
@@ -1396,16 +1400,16 @@ Include Files:
                                 SpiceDouble          * values );
 
 
-   void              dskgd_c  ( SpiceInt               handle,
+extern void          dskgd_c  ( SpiceInt               handle,
                                 ConstSpiceDLADescr   * dladsc,
                                 SpiceDSKDescr        * dskdsc );
 
 
-   void              dskgtl_c ( SpiceInt               keywrd,
+extern void          dskgtl_c ( SpiceInt               keywrd,
                                 SpiceDouble          * dpval  );
 
 
-   void              dski02_c ( SpiceInt              handle,
+extern void          dski02_c ( SpiceInt              handle,
                                 ConstSpiceDLADescr  * dladsc,
                                 SpiceInt              item,
                                 SpiceInt              start,
@@ -1413,22 +1417,22 @@ Include Files:
                                 SpiceInt            * n,
                                 SpiceInt            * values   );
 
-   void              dskobj_c ( ConstSpiceChar      * dsk,
+extern void          dskobj_c ( ConstSpiceChar      * dsk,
                                 SpiceCell           * bodids );
 
-   void              dskopn_c ( ConstSpiceChar      * fname,
+extern void          dskopn_c ( ConstSpiceChar      * fname,
                                 ConstSpiceChar      * ifname,
                                 SpiceInt              ncomch,
                                 SpiceInt           *  handle );
 
 
-   void              dskn02_c ( SpiceInt              handle,
+extern void          dskn02_c ( SpiceInt              handle,
                                 ConstSpiceDLADescr  * dladsc,
                                 SpiceInt              plid,
                                 SpiceDouble           normal[3] );
 
 
-   void              dskmi2_c ( SpiceInt              nv,
+extern void          dskmi2_c ( SpiceInt              nv,
                                 ConstSpiceDouble      vrtces[][3],
                                 SpiceInt              np,
                                 ConstSpiceInt         plates[][3],
@@ -1444,7 +1448,7 @@ Include Files:
                                 SpiceInt              spaixi []    );
 
                     
-   void              dskp02_c ( SpiceInt              handle,
+extern void          dskp02_c ( SpiceInt              handle,
                                 ConstSpiceDLADescr  * dladsc,
                                 SpiceInt              start,
                                 SpiceInt              room,
@@ -1452,7 +1456,7 @@ Include Files:
                                 SpiceInt              plates[][3] );
 
 
-   void              dskrb2_c ( SpiceInt              nv,
+extern void          dskrb2_c ( SpiceInt              nv,
                                 ConstSpiceDouble      vrtces[][3],
                                 SpiceInt              np,
                                 ConstSpiceInt         plates[][3],
@@ -1462,16 +1466,16 @@ Include Files:
                                 SpiceDouble         * mxcor3       );
 
 
-   void              dsksrf_c ( ConstSpiceChar      * dsk,
+extern void          dsksrf_c ( ConstSpiceChar      * dsk,
                                 SpiceInt              bodyid,
                                 SpiceCell           * srfids ); 
 
 
-   void              dskstl_c ( SpiceInt               keywrd,
+extern void          dskstl_c ( SpiceInt               keywrd,
                                 SpiceDouble            dpval  );
 
 
-   void              dskv02_c ( SpiceInt               handle,
+extern void          dskv02_c ( SpiceInt               handle,
                                 ConstSpiceDLADescr   * dladsc,
                                 SpiceInt               start,
                                 SpiceInt               room,
@@ -1479,7 +1483,7 @@ Include Files:
                                 SpiceDouble            vrtces[][3] );
 
 
-   void              dskw02_c ( SpiceInt               handle,
+extern void          dskw02_c ( SpiceInt               handle,
                                 SpiceInt               center,
                                 SpiceInt               surfce,
                                 SpiceInt               dclass,
@@ -1502,7 +1506,7 @@ Include Files:
                                 ConstSpiceInt          spaixi[]    );
 
 
-   void              dskx02_c ( SpiceInt               handle,
+extern void          dskx02_c ( SpiceInt               handle,
                                 ConstSpiceDLADescr   * dladsc,
                                 ConstSpiceDouble       vertex  [3],
                                 ConstSpiceDouble       raydir  [3],
@@ -1511,7 +1515,7 @@ Include Files:
                                 SpiceBoolean         * found        );
 
 
-   void              dskxsi_c ( SpiceBoolean           pri,
+extern void          dskxsi_c ( SpiceBoolean           pri,
                                 ConstSpiceChar       * target,
                                 SpiceInt               nsurf,
                                 ConstSpiceInt          srflst [],
@@ -1530,7 +1534,7 @@ Include Files:
                                 SpiceBoolean         * found      );
 
 
-   void               dskxv_c ( SpiceBoolean           pri,
+extern void           dskxv_c ( SpiceBoolean           pri,
                                 ConstSpiceChar       * target,
                                 SpiceInt               nsurf,
                                 ConstSpiceInt          srflst[],
@@ -1543,58 +1547,58 @@ Include Files:
                                 SpiceBoolean           fndarr[]     );
 
 
-   void              dskz02_c ( SpiceInt               handle,
+extern void          dskz02_c ( SpiceInt               handle,
                                 ConstSpiceDLADescr   * dladsc,
                                 SpiceInt             * nv,
                                 SpiceInt             * np     );
 
 
-   void              dsphdr_c ( SpiceDouble         x,
+extern void          dsphdr_c ( SpiceDouble         x,
                                 SpiceDouble         y,
                                 SpiceDouble         z,
                                 SpiceDouble         jacobi[3][3] );
 
 
-   void              dtpool_c ( ConstSpiceChar      * name,
+extern void          dtpool_c ( ConstSpiceChar      * name,
                                 SpiceBoolean        * found,
                                 SpiceInt            * n,
                                 SpiceChar             type [1] );
 
 
-   void              ducrss_c ( ConstSpiceDouble      s1  [6],
+extern void          ducrss_c ( ConstSpiceDouble      s1  [6],
                                 ConstSpiceDouble      s2  [6],
                                 SpiceDouble           sout[6] );
 
 
-   void              dvcrss_c ( ConstSpiceDouble      s1  [6],
+extern void          dvcrss_c ( ConstSpiceDouble      s1  [6],
                                 ConstSpiceDouble      s2  [6],
                                 SpiceDouble           sout[6] );
 
 
-   SpiceDouble       dvdot_c  ( ConstSpiceDouble      s1 [6],
+extern SpiceDouble   dvdot_c  ( ConstSpiceDouble      s1 [6],
                                 ConstSpiceDouble      s2 [6] );
 
 
-   void              dvhat_c  ( ConstSpiceDouble      s1  [6],
+extern void          dvhat_c  ( ConstSpiceDouble      s1  [6],
                                 SpiceDouble           sout[6] );
 
-   SpiceDouble       dvnorm_c ( ConstSpiceDouble      state[6] );
+extern SpiceDouble   dvnorm_c ( ConstSpiceDouble      state[6] );
 
-   void              dvpool_c ( ConstSpiceChar      * name );
+extern void          dvpool_c ( ConstSpiceChar      * name );
 
 
-   SpiceDouble       dvsep_c  ( ConstSpiceDouble    * s1,
+extern SpiceDouble   dvsep_c  ( ConstSpiceDouble    * s1,
                                 ConstSpiceDouble    * s2 );
 
 
-   void              edlimb_c ( SpiceDouble           a,
+extern void          edlimb_c ( SpiceDouble           a,
                                 SpiceDouble           b,
                                 SpiceDouble           c,
                                 ConstSpiceDouble      viewpt[3],
                                 SpiceEllipse        * limb      );
 
 
-   void              edterm_c ( ConstSpiceChar      * trmtyp,
+extern void          edterm_c ( ConstSpiceChar      * trmtyp,
                                 ConstSpiceChar      * source,
                                 ConstSpiceChar      * target,
                                 SpiceDouble           et,
@@ -1607,7 +1611,7 @@ Include Files:
                                 SpiceDouble           termpts [ ][3] );
 
 
-   void              ekacec_c ( SpiceInt              handle,
+extern void          ekacec_c ( SpiceInt              handle,
                                 SpiceInt              segno,
                                 SpiceInt              recno,
                                 ConstSpiceChar      * column,
@@ -1617,7 +1621,7 @@ Include Files:
                                 SpiceBoolean          isnull );
 
 
-   void              ekaced_c ( SpiceInt              handle,
+extern void          ekaced_c ( SpiceInt              handle,
                                 SpiceInt              segno,
                                 SpiceInt              recno,
                                 ConstSpiceChar      * column,
@@ -1626,7 +1630,7 @@ Include Files:
                                 SpiceBoolean          isnull );
 
 
-   void              ekacei_c ( SpiceInt              handle,
+extern void          ekacei_c ( SpiceInt              handle,
                                 SpiceInt              segno,
                                 SpiceInt              recno,
                                 ConstSpiceChar      * column,
@@ -1635,7 +1639,7 @@ Include Files:
                                 SpiceBoolean          isnull );
 
 
-   void              ekaclc_c ( SpiceInt              handle,
+extern void          ekaclc_c ( SpiceInt              handle,
                                 SpiceInt              segno,
                                 ConstSpiceChar      * column,
                                 SpiceInt              vallen,
@@ -1646,7 +1650,7 @@ Include Files:
                                 SpiceInt            * wkindx  );
 
 
-   void              ekacld_c ( SpiceInt              handle,
+extern void          ekacld_c ( SpiceInt              handle,
                                 SpiceInt              segno,
                                 ConstSpiceChar      * column,
                                 ConstSpiceDouble    * dvals,
@@ -1656,7 +1660,7 @@ Include Files:
                                 SpiceInt            * wkindx  );
 
 
-   void              ekacli_c ( SpiceInt              handle,
+extern void          ekacli_c ( SpiceInt              handle,
                                 SpiceInt              segno,
                                 ConstSpiceChar      * column,
                                 ConstSpiceInt       * ivals,
@@ -1666,12 +1670,12 @@ Include Files:
                                 SpiceInt            * wkindx  );
 
 
-   void              ekappr_c ( SpiceInt              handle,
+extern void          ekappr_c ( SpiceInt              handle,
                                 SpiceInt              segno,
                                 SpiceInt            * recno  );
 
 
-   void              ekbseg_c ( SpiceInt              handle,
+extern void          ekbseg_c ( SpiceInt              handle,
                                 ConstSpiceChar      * tabnam,
                                 SpiceInt              ncols,
                                 SpiceInt              cnmlen,
@@ -1681,38 +1685,38 @@ Include Files:
                                 SpiceInt            * segno  );
 
 
-   void              ekccnt_c ( ConstSpiceChar      * table,
+extern void          ekccnt_c ( ConstSpiceChar      * table,
                                 SpiceInt            * ccount );
 
 
-   void              ekcii_c  ( ConstSpiceChar      * table,
+extern void          ekcii_c  ( ConstSpiceChar      * table,
                                 SpiceInt              cindex,
                                 SpiceInt              lenout,
                                 SpiceChar           * column,
                                 SpiceEKAttDsc       * attdsc  );
 
 
-   void              ekcls_c  ( SpiceInt              handle );
+extern void          ekcls_c  ( SpiceInt              handle );
 
 
-   void              ekdelr_c ( SpiceInt              handle,
+extern void          ekdelr_c ( SpiceInt              handle,
                                 SpiceInt              segno,
                                 SpiceInt              recno );
 
 
-   void              ekffld_c ( SpiceInt            handle,
+extern void          ekffld_c ( SpiceInt            handle,
                                 SpiceInt            segno,
                                 SpiceInt          * rcptrs );
 
 
-   void              ekfind_c ( ConstSpiceChar    * query,
+extern void          ekfind_c ( ConstSpiceChar    * query,
                                 SpiceInt            lenout,
                                 SpiceInt          * nmrows,
                                 SpiceBoolean      * error,
                                 SpiceChar         * errmsg );
 
 
-   void              ekgc_c   ( SpiceInt            selidx,
+extern void          ekgc_c   ( SpiceInt            selidx,
                                 SpiceInt            row,
                                 SpiceInt            elment,
                                 SpiceInt            lenout,
@@ -1721,7 +1725,7 @@ Include Files:
                                 SpiceBoolean      * found  );
 
 
-   void              ekgd_c   ( SpiceInt            selidx,
+extern void          ekgd_c   ( SpiceInt            selidx,
                                 SpiceInt            row,
                                 SpiceInt            elment,
                                 SpiceDouble       * ddata,
@@ -1729,7 +1733,7 @@ Include Files:
                                 SpiceBoolean      * found  );
 
 
-   void              ekgi_c   ( SpiceInt            selidx,
+extern void          ekgi_c   ( SpiceInt            selidx,
                                 SpiceInt            row,
                                 SpiceInt            elment,
                                 SpiceInt          * idata,
@@ -1737,7 +1741,7 @@ Include Files:
                                 SpiceBoolean      * found  );
 
 
-   void              ekifld_c ( SpiceInt            handle,
+extern void          ekifld_c ( SpiceInt            handle,
                                 ConstSpiceChar    * tabnam,
                                 SpiceInt            ncols,
                                 SpiceInt            nrows,
@@ -1749,43 +1753,43 @@ Include Files:
                                 SpiceInt          * rcptrs );
 
 
-   void              ekinsr_c ( SpiceInt            handle,
+extern void          ekinsr_c ( SpiceInt            handle,
                                 SpiceInt            segno,
                                 SpiceInt            recno );
 
 
-   void              eklef_c  ( ConstSpiceChar    * fname,
+extern void          eklef_c  ( ConstSpiceChar    * fname,
                                 SpiceInt          * handle );
 
 
-   SpiceInt          eknelt_c ( SpiceInt            selidx,
+extern SpiceInt      eknelt_c ( SpiceInt            selidx,
                                 SpiceInt            row     );
 
 
-   SpiceInt          eknseg_c ( SpiceInt            handle );
+extern SpiceInt      eknseg_c ( SpiceInt            handle );
 
 
-   void              ekntab_c ( SpiceInt            * n );
+extern void          ekntab_c ( SpiceInt            * n );
 
 
-   void              ekopn_c  ( ConstSpiceChar    * fname,
+extern void          ekopn_c  ( ConstSpiceChar    * fname,
                                 ConstSpiceChar    * ifname,
                                 SpiceInt            ncomch,
                                 SpiceInt          * handle );
 
 
-   void              ekopr_c  ( ConstSpiceChar    * fname,
+extern void          ekopr_c  ( ConstSpiceChar    * fname,
                                 SpiceInt          * handle );
 
 
-   void              ekops_c  ( SpiceInt          * handle );
+extern void          ekops_c  ( SpiceInt          * handle );
 
 
-   void              ekopw_c  ( ConstSpiceChar    * fname,
+extern void          ekopw_c  ( ConstSpiceChar    * fname,
                                 SpiceInt          * handle );
 
 
-   void              ekpsel_c ( ConstSpiceChar    * query,
+extern void          ekpsel_c ( ConstSpiceChar    * query,
                                 SpiceInt            msglen,
                                 SpiceInt            tablen,
                                 SpiceInt            collen,
@@ -1800,7 +1804,7 @@ Include Files:
                                 SpiceChar         * errmsg );
 
 
-   void              ekrcec_c ( SpiceInt           handle,
+extern void          ekrcec_c ( SpiceInt           handle,
                                 SpiceInt           segno,
                                 SpiceInt           recno,
                                 ConstSpiceChar   * column,
@@ -1810,7 +1814,7 @@ Include Files:
                                 SpiceBoolean     * isnull );
 
 
-   void              ekrced_c ( SpiceInt           handle,
+extern void          ekrced_c ( SpiceInt           handle,
                                 SpiceInt           segno,
                                 SpiceInt           recno,
                                 ConstSpiceChar   * column,
@@ -1819,7 +1823,7 @@ Include Files:
                                 SpiceBoolean     * isnull );
 
 
-   void              ekrcei_c ( SpiceInt           handle,
+extern void          ekrcei_c ( SpiceInt           handle,
                                 SpiceInt           segno,
                                 SpiceInt           recno,
                                 ConstSpiceChar   * column,
@@ -1828,17 +1832,17 @@ Include Files:
                                 SpiceBoolean     * isnull );
 
 
-   void              ekssum_c ( SpiceInt            handle,
+extern void          ekssum_c ( SpiceInt            handle,
                                 SpiceInt            segno,
                                 SpiceEKSegSum     * segsum );
 
 
-   void              ektnam_c ( SpiceInt            n,
+extern void          ektnam_c ( SpiceInt            n,
                                 SpiceInt            lenout,
                                 SpiceChar         * table  );
 
 
-   void              ekucec_c ( SpiceInt              handle,
+extern void          ekucec_c ( SpiceInt              handle,
                                 SpiceInt              segno,
                                 SpiceInt              recno,
                                 ConstSpiceChar      * column,
@@ -1848,7 +1852,7 @@ Include Files:
                                 SpiceBoolean          isnull );
 
 
-   void              ekuced_c ( SpiceInt              handle,
+extern void          ekuced_c ( SpiceInt              handle,
                                 SpiceInt              segno,
                                 SpiceInt              recno,
                                 ConstSpiceChar      * column,
@@ -1857,7 +1861,7 @@ Include Files:
                                 SpiceBoolean          isnull );
 
 
-   void              ekucei_c ( SpiceInt              handle,
+extern void          ekucei_c ( SpiceInt              handle,
                                 SpiceInt              segno,
                                 SpiceInt              recno,
                                 ConstSpiceChar      * column,
@@ -1866,22 +1870,22 @@ Include Files:
                                 SpiceBoolean          isnull );
 
 
-   void              ekuef_c  ( SpiceInt            handle );
+extern void          ekuef_c  ( SpiceInt            handle );
 
 
-   SpiceBoolean      elemc_c  ( ConstSpiceChar     * item,
+extern SpiceBoolean  elemc_c  ( ConstSpiceChar     * item,
                                 SpiceCell          * set   );
 
 
-   SpiceBoolean      elemd_c  ( SpiceDouble          item,
+extern SpiceBoolean  elemd_c  ( SpiceDouble          item,
                                 SpiceCell          * set   );
 
 
-   SpiceBoolean      elemi_c  ( SpiceInt             item,
+extern SpiceBoolean  elemi_c  ( SpiceInt             item,
                                 SpiceCell          * set   );
 
 
-   void              eqncpv_c ( SpiceDouble          et,
+extern void          eqncpv_c ( SpiceDouble          et,
                                 SpiceDouble          epoch,
                                 ConstSpiceDouble     eqel[9],
                                 SpiceDouble          rapol,
@@ -1889,55 +1893,55 @@ Include Files:
                                 SpiceDouble          state[6] );
 
 
-   SpiceBoolean      eqstr_c  ( ConstSpiceChar     * a,
+extern SpiceBoolean  eqstr_c  ( ConstSpiceChar     * a,
                                 ConstSpiceChar     * b  );
 
 
-   void              el2cgv_c ( ConstSpiceEllipse * ellipse,
+extern void          el2cgv_c ( ConstSpiceEllipse * ellipse,
                                 SpiceDouble         center[3],
                                 SpiceDouble         smajor[3],
                                 SpiceDouble         sminor[3]  );
 
 
-   void              erract_c ( ConstSpiceChar    * operation,
+extern void          erract_c ( ConstSpiceChar    * operation,
                                 SpiceInt            lenout,
                                 SpiceChar         * action    );
 
 
-   void              errch_c  ( ConstSpiceChar    * marker,
+extern void          errch_c  ( ConstSpiceChar    * marker,
                                 ConstSpiceChar    * string );
 
 
-   void              errdev_c ( ConstSpiceChar    * operation,
+extern void          errdev_c ( ConstSpiceChar    * operation,
                                 SpiceInt            lenout,
                                 SpiceChar         * device    );
 
 
-   void              errdp_c  ( ConstSpiceChar    * marker,
+extern void          errdp_c  ( ConstSpiceChar    * marker,
                                 SpiceDouble         number  );
 
 
-   void              errint_c ( ConstSpiceChar    * marker,
+extern void          errint_c ( ConstSpiceChar    * marker,
                                 SpiceInt            number );
 
 
-   void              errprt_c ( ConstSpiceChar    * operation,
+extern void          errprt_c ( ConstSpiceChar    * operation,
                                 SpiceInt            lenout,
                                 SpiceChar         * list     );
 
 
-   SpiceInt          esrchc_c ( ConstSpiceChar  * value,
+extern SpiceInt      esrchc_c ( ConstSpiceChar  * value,
                                 SpiceInt          ndim,
                                 SpiceInt          lenvals,
                                 const void      * array   );
 
 
-   void              etcal_c  ( SpiceDouble         et,
+extern void          etcal_c  ( SpiceDouble         et,
                                 SpiceInt            lenout,
                                 SpiceChar         * string  );
 
 
-   void              et2lst_c ( SpiceDouble         et,
+extern void          et2lst_c ( SpiceDouble         et,
                                 SpiceInt            body,
                                 SpiceDouble         lon,
                                 ConstSpiceChar    * type,
@@ -1950,14 +1954,14 @@ Include Files:
                                 SpiceChar         * ampm    );
 
 
-   void              et2utc_c ( SpiceDouble         et ,
+extern void          et2utc_c ( SpiceDouble         et ,
                                 ConstSpiceChar    * format,
                                 SpiceInt            prec,
                                 SpiceInt            lenout,
                                 SpiceChar         * utcstr );
 
 
-   void              eul2m_c  ( SpiceDouble         angle3,
+extern void          eul2m_c  ( SpiceDouble         angle3,
                                 SpiceDouble         angle2,
                                 SpiceDouble         angle1,
                                 SpiceInt            axis3,
@@ -1966,23 +1970,23 @@ Include Files:
                                 SpiceDouble         r [3][3] );
 
 
-   void              eul2xf_c ( ConstSpiceDouble    eulang[6],
+extern void          eul2xf_c ( ConstSpiceDouble    eulang[6],
                                 SpiceInt            axisa,
                                 SpiceInt            axisb,
                                 SpiceInt            axisc,
                                 SpiceDouble         xform [6][6] );
 
 
-   SpiceBoolean      exists_c ( ConstSpiceChar    * name );
+extern SpiceBoolean  exists_c ( ConstSpiceChar    * name );
 
 
-   void              expool_c ( ConstSpiceChar    * name,
+extern void          expool_c ( ConstSpiceChar    * name,
                                 SpiceBoolean      * found );
 
 
-   SpiceBoolean      failed_c ( void );
+extern SpiceBoolean  failed_c ( void );
 
-   void              fovray_c ( ConstSpiceChar   * inst,
+extern void          fovray_c ( ConstSpiceChar   * inst,
                                 ConstSpiceDouble   raydir [3],
                                 ConstSpiceChar   * rframe,
                                 ConstSpiceChar   * abcorr,
@@ -1990,7 +1994,7 @@ Include Files:
                                 SpiceDouble      * et,
                                 SpiceBoolean     * visible  );
 
-   void              fovtrg_c ( ConstSpiceChar   * inst,
+extern void          fovtrg_c ( ConstSpiceChar   * inst,
                                 ConstSpiceChar   * target,
                                 ConstSpiceChar   * tshape,
                                 ConstSpiceChar   * tframe,
@@ -2000,30 +2004,30 @@ Include Files:
                                 SpiceBoolean     * visible  );
 
 
-   void              frame_c  ( SpiceDouble         x[3],
+extern void          frame_c  ( SpiceDouble         x[3],
                                 SpiceDouble         y[3],
                                 SpiceDouble         z[3] );
 
 
-   void              frinfo_c ( SpiceInt            frcode,
+extern void          frinfo_c ( SpiceInt            frcode,
                                 SpiceInt          * cent,
                                 SpiceInt          * clss,
                                 SpiceInt          * clssid,
                                 SpiceBoolean      * found );
 
 
-   void              frmnam_c ( SpiceInt            frcode,
+extern void          frmnam_c ( SpiceInt            frcode,
                                 SpiceInt            lenout,
                                 SpiceChar         * frname  );
 
 
-   void              ftncls_c ( SpiceInt            unit );
+extern void          ftncls_c ( SpiceInt            unit );
 
 
-   void              furnsh_c ( ConstSpiceChar    * file );
+extern void          furnsh_c ( ConstSpiceChar    * file );
 
 
-   void              gcpool_c ( ConstSpiceChar    * name,
+extern void          gcpool_c ( ConstSpiceChar    * name,
                                 SpiceInt            start,
                                 SpiceInt            room,
                                 SpiceInt            lenout,
@@ -2032,7 +2036,7 @@ Include Files:
                                 SpiceBoolean      * found );
 
 
-   void              gdpool_c ( ConstSpiceChar    * name,
+extern void          gdpool_c ( ConstSpiceChar    * name,
                                 SpiceInt            start,
                                 SpiceInt            room,
                                 SpiceInt          * n,
@@ -2040,7 +2044,7 @@ Include Files:
                                 SpiceBoolean      * found );
 
 
-   void              georec_c ( SpiceDouble         lon,
+extern void          georec_c ( SpiceDouble         lon,
                                 SpiceDouble         lat,
                                 SpiceDouble         alt,
                                 SpiceDouble         re,
@@ -2048,25 +2052,25 @@ Include Files:
                                 SpiceDouble         rectan[3] );
 
 
-   void              getcml_c ( SpiceInt          * argc,
+extern void          getcml_c ( SpiceInt          * argc,
                                 SpiceChar       *** argv );
 
 
-   void              getelm_c ( SpiceInt            frstyr,
+extern void          getelm_c ( SpiceInt            frstyr,
                                 SpiceInt            lineln,
                                 const void        * lines,
                                 SpiceDouble       * epoch,
                                 SpiceDouble       * elems   );
 
 
-   void              getfat_c ( ConstSpiceChar    * file,
+extern void          getfat_c ( ConstSpiceChar    * file,
                                 SpiceInt            arclen,
                                 SpiceInt            typlen,
                                 SpiceChar         * arch,
                                 SpiceChar         * type   );
 
 
-   void              getfov_c ( SpiceInt            instid,
+extern void          getfov_c ( SpiceInt            instid,
                                 SpiceInt            room,
                                 SpiceInt            shapelen,
                                 SpiceInt            framelen,
@@ -2077,18 +2081,18 @@ Include Files:
                                 SpiceDouble         bounds [][3] );
 
 
-   void              getmsg_c ( ConstSpiceChar    * option,
+extern void          getmsg_c ( ConstSpiceChar    * option,
                                 SpiceInt            lenout,
                                 SpiceChar         * msg     );
 
 
-   SpiceBoolean      gfbail_c ( void );
+extern SpiceBoolean  gfbail_c ( void );
 
 
-   void              gfclrh_c ( void );
+extern void          gfclrh_c ( void );
 
 
-   void              gfdist_c ( ConstSpiceChar    * target,
+extern void          gfdist_c ( ConstSpiceChar    * target,
                                 ConstSpiceChar    * abcorr,
                                 ConstSpiceChar    * obsrvr,
                                 ConstSpiceChar    * relate,
@@ -2101,75 +2105,75 @@ Include Files:
 
 
 
-   void  gfevnt_c ( void             ( * udstep ) ( SpiceDouble       et,
-                                                    SpiceDouble     * step ),
+extern void  gfevnt_c ( void             ( * udstep ) ( SpiceDouble       et,
+                                                        SpiceDouble     * step ),
 
-                    void             ( * udrefn ) ( SpiceDouble       t1,
-                                                    SpiceDouble       t2,
-                                                    SpiceBoolean      s1,
-                                                    SpiceBoolean      s2,
-                                                    SpiceDouble     * t    ),
-                   ConstSpiceChar     * gquant,
-                   SpiceInt             qnpars,
-                   SpiceInt             lenvals,
-                   const void         * qpnams,
-                   const void         * qcpars,
-                   ConstSpiceDouble   * qdpars,
-                   ConstSpiceInt      * qipars,
-                   ConstSpiceBoolean  * qlpars,
-                   ConstSpiceChar     * op,
-                   SpiceDouble          refval,
-                   SpiceDouble          tol,
-                   SpiceDouble          adjust,
-                   SpiceBoolean         rpt,
+                        void             ( * udrefn ) ( SpiceDouble       t1,
+                                                        SpiceDouble       t2,
+                                                        SpiceBoolean      s1,
+                                                        SpiceBoolean      s2,
+                                                        SpiceDouble     * t    ),
+                      ConstSpiceChar     * gquant,
+                      SpiceInt             qnpars,
+                      SpiceInt             lenvals,
+                      const void         * qpnams,
+                      const void         * qcpars,
+                      ConstSpiceDouble   * qdpars,
+                      ConstSpiceInt      * qipars,
+                      ConstSpiceBoolean  * qlpars,
+                      ConstSpiceChar     * op,
+                      SpiceDouble          refval,
+                      SpiceDouble          tol,
+                      SpiceDouble          adjust,
+                      SpiceBoolean         rpt,
 
-                   void             ( * udrepi ) ( SpiceCell       * cnfine,
-                                                   ConstSpiceChar  * srcpre,
-                                                   ConstSpiceChar  * srcsuf ),
+                      void             ( * udrepi ) ( SpiceCell       * cnfine,
+                                                      ConstSpiceChar  * srcpre,
+                                                      ConstSpiceChar  * srcsuf ),
 
-                   void             ( * udrepu ) ( SpiceDouble       ivbeg,
-                                                   SpiceDouble       ivend,
-                                                   SpiceDouble       et      ),
+                      void             ( * udrepu ) ( SpiceDouble       ivbeg,
+                                                      SpiceDouble       ivend,
+                                                      SpiceDouble       et      ),
 
-                   void             ( * udrepf ) ( void ),
-                   SpiceInt             nintvls,
-                   SpiceBoolean         bail,
-                   SpiceBoolean     ( * udbail ) ( void ),
-                   SpiceCell          * cnfine,
-                   SpiceCell          * result );
-
-
-
-   void   gffove_c ( ConstSpiceChar    * inst,
-                     ConstSpiceChar    * tshape,
-                     ConstSpiceDouble    raydir [3],
-                     ConstSpiceChar    * target,
-                     ConstSpiceChar    * tframe,
-                     ConstSpiceChar    * abcorr,
-                     ConstSpiceChar    * obsrvr,
-                     SpiceDouble         tol,
-                     void            ( * udstep ) ( SpiceDouble       et,
-                                                    SpiceDouble     * step ),
-                     void            ( * udrefn ) ( SpiceDouble       t1,
-                                                    SpiceDouble       t2,
-                                                    SpiceBoolean      s1,
-                                                    SpiceBoolean      s2,
-                                                    SpiceDouble     * t    ),
-                     SpiceBoolean        rpt,
-                     void            ( * udrepi ) ( SpiceCell       * cnfine,
-                                                    ConstSpiceChar  * srcpre,
-                                                    ConstSpiceChar  * srcsuf ),
-                     void            ( * udrepu ) ( SpiceDouble       ivbeg,
-                                                    SpiceDouble       ivend,
-                                                    SpiceDouble       et      ),
-                     void            ( * udrepf ) ( void ),
-                     SpiceBoolean        bail,
-                     SpiceBoolean    ( * udbail ) ( void ),
-                     SpiceCell         * cnfine,
-                     SpiceCell         * result                               );
+                      void             ( * udrepf ) ( void ),
+                      SpiceInt             nintvls,
+                      SpiceBoolean         bail,
+                      SpiceBoolean     ( * udbail ) ( void ),
+                      SpiceCell          * cnfine,
+                      SpiceCell          * result );
 
 
-   void              gfilum_c ( ConstSpiceChar     * method,
+
+extern void  gffove_c ( ConstSpiceChar    * inst,
+                        ConstSpiceChar    * tshape,
+                        ConstSpiceDouble    raydir [3],
+                        ConstSpiceChar    * target,
+                        ConstSpiceChar    * tframe,
+                        ConstSpiceChar    * abcorr,
+                        ConstSpiceChar    * obsrvr,
+                        SpiceDouble         tol,
+                        void            ( * udstep ) ( SpiceDouble       et,
+                                                        SpiceDouble     * step ),
+                        void            ( * udrefn ) ( SpiceDouble       t1,
+                                                        SpiceDouble       t2,
+                                                        SpiceBoolean      s1,
+                                                        SpiceBoolean      s2,
+                                                        SpiceDouble     * t    ),
+                        SpiceBoolean        rpt,
+                        void            ( * udrepi ) ( SpiceCell       * cnfine,
+                                                        ConstSpiceChar  * srcpre,
+                                                        ConstSpiceChar  * srcsuf ),
+                        void            ( * udrepu ) ( SpiceDouble       ivbeg,
+                                                        SpiceDouble       ivend,
+                                                        SpiceDouble       et      ),
+                        void            ( * udrepf ) ( void ),
+                        SpiceBoolean        bail,
+                        SpiceBoolean    ( * udbail ) ( void ),
+                        SpiceCell         * cnfine,
+                        SpiceCell         * result                               );
+
+
+extern void          gfilum_c ( ConstSpiceChar     * method,
                                 ConstSpiceChar     * angtyp,
                                 ConstSpiceChar     * target,
                                 ConstSpiceChar     * illum,
@@ -2186,42 +2190,42 @@ Include Files:
                                 SpiceCell          * result     );
 
 
-   void              gfinth_c ( int sigcode );
+extern void          gfinth_c ( int sigcode );
 
 
-   void   gfocce_c ( ConstSpiceChar    * occtyp,
-                     ConstSpiceChar    * front,
-                     ConstSpiceChar    * fshape,
-                     ConstSpiceChar    * fframe,
-                     ConstSpiceChar    * back,
-                     ConstSpiceChar    * bshape,
-                     ConstSpiceChar    * bframe,
-                     ConstSpiceChar    * obsrvr,
-                     ConstSpiceChar    * abcorr,
-                     SpiceDouble         tol,
-                     void            ( * udstep ) ( SpiceDouble      et,
-                                                    SpiceDouble    * step ),
-                     void            ( * udrefn ) ( SpiceDouble      t1,
-                                                    SpiceDouble      t2,
-                                                    SpiceBoolean     s1,
-                                                    SpiceBoolean     s2,
-                                                    SpiceDouble    * t    ),
-                     SpiceBoolean        rpt,
-                     void            ( * udrepi ) ( SpiceCell      * cnfine,
-                                                    ConstSpiceChar * srcpre,
-                                                    ConstSpiceChar * srcsuf ),
-                     void            ( * udrepu ) ( SpiceDouble      ivbeg,
-                                                    SpiceDouble      ivend,
-                                                    SpiceDouble      et     ),
-                     void            ( * udrepf ) ( void ),
-                     SpiceBoolean        bail,
-                     SpiceBoolean    ( * udbail ) ( void ),
-                     SpiceCell         * cnfine,
-                     SpiceCell         * result                               );
+extern void  gfocce_c ( ConstSpiceChar    * occtyp,
+                        ConstSpiceChar    * front,
+                        ConstSpiceChar    * fshape,
+                        ConstSpiceChar    * fframe,
+                        ConstSpiceChar    * back,
+                        ConstSpiceChar    * bshape,
+                        ConstSpiceChar    * bframe,
+                        ConstSpiceChar    * obsrvr,
+                        ConstSpiceChar    * abcorr,
+                        SpiceDouble         tol,
+                        void            ( * udstep ) ( SpiceDouble      et,
+                                                        SpiceDouble    * step ),
+                        void            ( * udrefn ) ( SpiceDouble      t1,
+                                                        SpiceDouble      t2,
+                                                        SpiceBoolean     s1,
+                                                        SpiceBoolean     s2,
+                                                        SpiceDouble    * t    ),
+                        SpiceBoolean        rpt,
+                        void            ( * udrepi ) ( SpiceCell      * cnfine,
+                                                        ConstSpiceChar * srcpre,
+                                                        ConstSpiceChar * srcsuf ),
+                        void            ( * udrepu ) ( SpiceDouble      ivbeg,
+                                                        SpiceDouble      ivend,
+                                                        SpiceDouble      et     ),
+                        void            ( * udrepf ) ( void ),
+                        SpiceBoolean        bail,
+                        SpiceBoolean    ( * udbail ) ( void ),
+                        SpiceCell         * cnfine,
+                        SpiceCell         * result                               );
 
 
 
-   void              gfoclt_c ( ConstSpiceChar    * occtyp,
+extern void          gfoclt_c ( ConstSpiceChar    * occtyp,
                                 ConstSpiceChar    * front,
                                 ConstSpiceChar    * fshape,
                                 ConstSpiceChar    * fframe,
@@ -2236,7 +2240,7 @@ Include Files:
 
 
 
-   void              gfpa_c ( ConstSpiceChar     * target,
+extern void          gfpa_c ( ConstSpiceChar     * target,
                               ConstSpiceChar     * illum,
                               ConstSpiceChar     * abcorr,
                               ConstSpiceChar     * obsrvr,
@@ -2250,7 +2254,7 @@ Include Files:
 
 
 
-   void              gfposc_c ( ConstSpiceChar    * target,
+extern void          gfposc_c ( ConstSpiceChar    * target,
                                 ConstSpiceChar    * frame,
                                 ConstSpiceChar    * abcorr,
                                 ConstSpiceChar    * obsrvr,
@@ -2265,27 +2269,27 @@ Include Files:
                                 SpiceCell         * result  );
 
 
-   void              gfrefn_c ( SpiceDouble         t1,
+extern void          gfrefn_c ( SpiceDouble         t1,
                                 SpiceDouble         t2,
                                 SpiceBoolean        s1,
                                 SpiceBoolean        s2,
                                 SpiceDouble       * t      );
 
 
-   void              gfrepf_c ( void );
+extern void          gfrepf_c ( void );
 
 
-   void              gfrepi_c ( SpiceCell         * window,
+extern void          gfrepi_c ( SpiceCell         * window,
                                 ConstSpiceChar    * begmss,
                                 ConstSpiceChar    * endmss );
 
 
-   void              gfrepu_c ( SpiceDouble         ivbeg,
+extern void          gfrepu_c ( SpiceDouble         ivbeg,
                                 SpiceDouble         ivend,
                                 SpiceDouble         time    );
 
 
-   void              gfrfov_c ( ConstSpiceChar    * inst,
+extern void          gfrfov_c ( ConstSpiceChar    * inst,
                                 ConstSpiceDouble    raydir [3],
                                 ConstSpiceChar    * rframe,
                                 ConstSpiceChar    * abcorr,
@@ -2295,7 +2299,7 @@ Include Files:
                                 SpiceCell         * result     );
 
 
-   void               gfrr_c ( ConstSpiceChar      * target,
+extern void           gfrr_c ( ConstSpiceChar      * target,
                                ConstSpiceChar     * abcorr,
                                ConstSpiceChar     * obsrvr,
                                ConstSpiceChar     * relate,
@@ -2307,7 +2311,7 @@ Include Files:
                                SpiceCell          * result  );
 
 
-   void              gfsep_c  (  ConstSpiceChar   * targ1,
+extern void          gfsep_c  (  ConstSpiceChar   * targ1,
                                  ConstSpiceChar   * shape1,
                                  ConstSpiceChar   * frame1,
                                  ConstSpiceChar   * targ2,
@@ -2324,7 +2328,7 @@ Include Files:
                                  SpiceCell        * result  );
 
 
-   void              gfsntc_c ( ConstSpiceChar    * target,
+extern void          gfsntc_c ( ConstSpiceChar    * target,
                                 ConstSpiceChar    * fixref,
                                 ConstSpiceChar    * method,
                                 ConstSpiceChar    * abcorr,
@@ -2342,17 +2346,17 @@ Include Files:
                                 SpiceCell         * result  );
 
 
-   void              gfsstp_c ( SpiceDouble         step   );
+extern void          gfsstp_c ( SpiceDouble         step   );
 
 
-   void              gfstep_c ( SpiceDouble         time,
+extern void          gfstep_c ( SpiceDouble         time,
                                 SpiceDouble       * step   );
 
 
-   void              gfstol_c ( SpiceDouble         value );
+extern void          gfstol_c ( SpiceDouble         value );
 
 
-   void              gfsubc_c ( ConstSpiceChar    * target,
+extern void          gfsubc_c ( ConstSpiceChar    * target,
                                 ConstSpiceChar    * fixref,
                                 ConstSpiceChar    * method,
                                 ConstSpiceChar    * abcorr,
@@ -2368,7 +2372,7 @@ Include Files:
                                 SpiceCell         * result  );
 
 
-   void              gftfov_c ( ConstSpiceChar   * inst,
+extern void          gftfov_c ( ConstSpiceChar   * inst,
                                 ConstSpiceChar   * target,
                                 ConstSpiceChar   * tshape,
                                 ConstSpiceChar   * tframe,
@@ -2380,7 +2384,7 @@ Include Files:
 
 
 
-   void              gfudb_c (  void ( * udfuns ) ( SpiceDouble       et,
+extern void          gfudb_c (  void ( * udfuns ) ( SpiceDouble       et,
                                                     SpiceDouble     * value ),
 
                                 void  ( * udfunb ) ( void ( * udfuns )
@@ -2395,7 +2399,7 @@ Include Files:
                                 SpiceCell          * result );
 
 
-   void              gfuds_c (  void ( * udfuns ) ( SpiceDouble      et,
+extern void          gfuds_c (  void ( * udfuns ) ( SpiceDouble      et,
                                                     SpiceDouble    * value ),
 
                                 void ( * udfunb ) ( void ( * udfuns )
@@ -2414,7 +2418,7 @@ Include Files:
                                 SpiceCell          * result );
 
 
-   void              gipool_c ( ConstSpiceChar    * name,
+extern void          gipool_c ( ConstSpiceChar    * name,
                                 SpiceInt            start,
                                 SpiceInt            room,
                                 SpiceInt          * n,
@@ -2422,7 +2426,7 @@ Include Files:
                                 SpiceBoolean      * found );
 
 
-   void              gnpool_c ( ConstSpiceChar    * name,
+extern void          gnpool_c ( ConstSpiceChar    * name,
                                 SpiceInt            start,
                                 SpiceInt            room,
                                 SpiceInt            lenout,
@@ -2431,7 +2435,7 @@ Include Files:
                                 SpiceBoolean      * found  );
 
 
-  void               hrmint_c ( SpiceInt            n,
+extern void          hrmint_c ( SpiceInt            n,
                                 ConstSpiceDouble  * xvals,
                                 ConstSpiceDouble  * yvals,
                                 SpiceDouble         x,
@@ -2440,10 +2444,10 @@ Include Files:
                                 SpiceDouble       * df );
 
 
-   SpiceDouble       halfpi_c ( void );
+extern SpiceDouble   halfpi_c ( void );
 
 
-   void              hx2dp_c  ( ConstSpiceChar  * string,
+extern void          hx2dp_c  ( ConstSpiceChar  * string,
                                 SpiceInt          lenout,
                                 SpiceDouble     * number,
                                 SpiceBoolean    * error,
@@ -2451,10 +2455,10 @@ Include Files:
                               );
 
 
-   void              ident_c  ( SpiceDouble         matrix[3][3] );
+extern void          ident_c  ( SpiceDouble         matrix[3][3] );
 
 
-   void              ilumin_c ( ConstSpiceChar    * method,
+extern void          ilumin_c ( ConstSpiceChar    * method,
                                 ConstSpiceChar    * target,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * fixref,
@@ -2468,7 +2472,7 @@ Include Files:
                                 SpiceDouble       * emissn     );
 
 
-   void              illum_c  ( ConstSpiceChar    * target,
+extern void          illum_c  ( ConstSpiceChar    * target,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * abcorr,
                                 ConstSpiceChar    * obsrvr,
@@ -2478,7 +2482,7 @@ Include Files:
                                 SpiceDouble       * emissn     );
 
 
-   void              illum_pl02 ( SpiceInt               handle,
+extern void          illum_pl02 ( SpiceInt               handle,
                                   ConstSpiceDLADescr   * dladsc,
                                   ConstSpiceChar       * target,
                                   SpiceDouble            et,
@@ -2490,7 +2494,7 @@ Include Files:
                                   SpiceDouble          * emissn      );
 
 
-   void              illum_plid_pl02 ( SpiceInt               handle,
+extern void          illum_plid_pl02 ( SpiceInt               handle,
                                        ConstSpiceDLADescr   * dladsc,
                                        ConstSpiceChar       * target,
                                        SpiceDouble            et,
@@ -2507,7 +2511,7 @@ Include Files:
                                        SpiceBoolean         * lit       );
 
 
-   void              illumf_c ( ConstSpiceChar    * method,
+extern void          illumf_c ( ConstSpiceChar    * method,
                                 ConstSpiceChar    * target,
                                 ConstSpiceChar    * ilusrc,
                                 SpiceDouble         et,
@@ -2524,7 +2528,7 @@ Include Files:
                                 SpiceBoolean      * lit       );
 
 
-   void              illumg_c ( ConstSpiceChar    * method,
+extern void          illumg_c ( ConstSpiceChar    * method,
                                 ConstSpiceChar    * target,
                                 ConstSpiceChar    * illum,
                                 SpiceDouble         et,
@@ -2539,7 +2543,7 @@ Include Files:
                                 SpiceDouble       * emissn     );
 
 
-   void              inedpl_c ( SpiceDouble         a,
+extern void          inedpl_c ( SpiceDouble         a,
                                 SpiceDouble         b,
                                 SpiceDouble         c,
                                 ConstSpicePlane   * plane,
@@ -2547,105 +2551,105 @@ Include Files:
                                 SpiceBoolean      * found    );
 
 
-   void              inelpl_c ( ConstSpiceEllipse * ellips,
+extern void          inelpl_c ( ConstSpiceEllipse * ellips,
                                 ConstSpicePlane   * plane,
                                 SpiceInt          * nxpts,
                                 SpiceDouble         xpt1[3],
                                 SpiceDouble         xpt2[3] );
 
 
-   void              insrtc_c ( ConstSpiceChar     * item,
+extern void          insrtc_c ( ConstSpiceChar     * item,
                                 SpiceCell          * set   );
 
 
-   void              insrtd_c ( SpiceDouble          item,
+extern void          insrtd_c ( SpiceDouble          item,
                                 SpiceCell          * set  );
 
 
-   void              insrti_c ( SpiceInt             item,
+extern void          insrti_c ( SpiceInt             item,
                                 SpiceCell          * set  );
 
 
-   void              inter_c  (  SpiceCell        * a,
+extern void          inter_c  (  SpiceCell        * a,
                                  SpiceCell        * b,
                                  SpiceCell        * c  );
 
 
-   void              inrypl_c ( ConstSpiceDouble    vertex [3],
+extern void          inrypl_c ( ConstSpiceDouble    vertex [3],
                                 ConstSpiceDouble    dir    [3],
                                 ConstSpicePlane   * plane,
                                 SpiceInt          * nxpts,
                                 SpiceDouble         xpt    [3] );
 
 
-   SpiceInt          intmax_c ( void );
+extern SpiceInt      intmax_c ( void );
 
 
-   SpiceInt          intmax_  ( void );
+extern SpiceInt      intmax_  ( void );
 
 
-   SpiceInt          intmin_c ( void );
+extern SpiceInt      intmin_c ( void );
 
 
-   SpiceInt          intmin_  ( void );
+extern SpiceInt      intmin_  ( void );
 
 
-   void              invert_c ( ConstSpiceDouble    m1[3][3],
+extern void          invert_c ( ConstSpiceDouble    m1[3][3],
                                 SpiceDouble         m2[3][3]  );
 
 
-   void              invort_c ( ConstSpiceDouble    m  [3][3],
+extern void          invort_c ( ConstSpiceDouble    m  [3][3],
                                 SpiceDouble         mit[3][3] );
 
 
-   SpiceBoolean      isordv_c ( ConstSpiceInt     * array,
+extern SpiceBoolean  isordv_c ( ConstSpiceInt     * array,
                                 SpiceInt            n      );
 
 
-   SpiceBoolean      isrot_c  ( ConstSpiceDouble    m   [3][3],
+extern SpiceBoolean  isrot_c  ( ConstSpiceDouble    m   [3][3],
                                 SpiceDouble         ntol,
                                 SpiceDouble         dtol       );
 
 
 
-   SpiceInt          isrchc_c ( ConstSpiceChar  * value,
+extern SpiceInt      isrchc_c ( ConstSpiceChar  * value,
                                 SpiceInt          ndim,
                                 SpiceInt          lenvals,
                                 const void      * array   );
 
 
-   SpiceInt          isrchd_c ( SpiceDouble          value,
+extern SpiceInt      isrchd_c ( SpiceDouble          value,
                                 SpiceInt             ndim,
                                 ConstSpiceDouble   * array );
 
 
-   SpiceInt          isrchi_c ( SpiceInt             value,
+extern SpiceInt      isrchi_c ( SpiceInt             value,
                                 SpiceInt             ndim,
                                 ConstSpiceInt      * array );
 
 
-   SpiceBoolean      iswhsp_c ( ConstSpiceChar    * string );
+extern SpiceBoolean  iswhsp_c ( ConstSpiceChar    * string );
 
 
-   SpiceDouble       j1900_c  ( void );
+extern SpiceDouble   j1900_c  ( void );
 
 
-   SpiceDouble       j1950_c  ( void );
+extern SpiceDouble   j1950_c  ( void );
 
 
-   SpiceDouble       j2000_c  ( void );
+extern SpiceDouble   j2000_c  ( void );
 
 
-   SpiceDouble       j2100_c  ( void );
+extern SpiceDouble   j2100_c  ( void );
 
 
-   SpiceDouble       jyear_c  ( void );
+extern SpiceDouble   jyear_c  ( void );
 
 
-   void              kclear_c ( void );
+extern void          kclear_c ( void );
 
 
-   void              kdata_c  ( SpiceInt          which,
+extern void          kdata_c  ( SpiceInt          which,
                                 ConstSpiceChar  * kind,
                                 SpiceInt          fillen,
                                 SpiceInt          typlen,
@@ -2657,7 +2661,7 @@ Include Files:
                                 SpiceBoolean    * found   );
 
 
-   void              kinfo_c  ( ConstSpiceChar  * file,
+extern void          kinfo_c  ( ConstSpiceChar  * file,
                                 SpiceInt          typlen,
                                 SpiceInt          srclen,
                                 SpiceChar       * filtyp,
@@ -2666,15 +2670,15 @@ Include Files:
                                 SpiceBoolean    * found  );
 
 
-   void              kplfrm_c ( SpiceInt             frmcls,
+extern void          kplfrm_c ( SpiceInt             frmcls,
                                 SpiceCell          * idset  );
 
 
-   void              ktotal_c ( ConstSpiceChar   * kind,
+extern void          ktotal_c ( ConstSpiceChar   * kind,
                                 SpiceInt         * count );
 
 
-   void              kxtrct_c ( ConstSpiceChar       * keywd,
+extern void          kxtrct_c ( ConstSpiceChar       * keywd,
                                 SpiceInt               termlen,
                                 const void           * terms,
                                 SpiceInt               nterms,
@@ -2685,10 +2689,10 @@ Include Files:
                                 SpiceChar            * substr  );
 
 
-   SpiceInt          lastnb_c ( ConstSpiceChar    * string );
+extern SpiceInt      lastnb_c ( ConstSpiceChar    * string );
 
 
-   void              latcyl_c ( SpiceDouble         radius,
+extern void          latcyl_c ( SpiceDouble         radius,
                                 SpiceDouble         lon,
                                 SpiceDouble         lat,
                                 SpiceDouble       * r,
@@ -2696,13 +2700,13 @@ Include Files:
                                 SpiceDouble       * z      );
 
 
-   void              latrec_c ( SpiceDouble         radius,
+extern void          latrec_c ( SpiceDouble         radius,
                                 SpiceDouble         longitude,
                                 SpiceDouble         latitude,
                                 SpiceDouble         rectan [3] );
 
 
-   void              latsph_c ( SpiceDouble         radius,
+extern void          latsph_c ( SpiceDouble         radius,
                                 SpiceDouble         lon,
                                 SpiceDouble         lat,
                                 SpiceDouble       * rho,
@@ -2710,7 +2714,7 @@ Include Files:
                                 SpiceDouble       * lons   );
 
 
-   void              latsrf_c ( ConstSpiceChar    * method,
+extern void          latsrf_c ( ConstSpiceChar    * method,
                                 ConstSpiceChar    * target,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * fixref,
@@ -2719,15 +2723,15 @@ Include Files:
                                 SpiceDouble         srfpts[][3]  );
 
 
-   void              lcase_c  ( SpiceChar         * in,
+extern void          lcase_c  ( SpiceChar         * in,
                                 SpiceInt            lenout,
                                 SpiceChar         * out     );
 
 
-   void              ldpool_c ( ConstSpiceChar    * filename );
+extern void          ldpool_c ( ConstSpiceChar    * filename );
 
 
-   void              lgrind_c ( SpiceInt            n,
+extern void          lgrind_c ( SpiceInt            n,
                                 ConstSpiceDouble  * xvals,
                                 ConstSpiceDouble  * yvals,
                                 SpiceDouble       * work,
@@ -2736,7 +2740,7 @@ Include Files:
                                 SpiceDouble       * dp );
 
 
-   void              limb_pl02 ( SpiceInt              handle,
+extern void          limb_pl02 ( SpiceInt              handle,
                                  ConstSpiceDLADescr  * dladsc,
                                  ConstSpiceChar      * target,
                                  SpiceDouble           et,
@@ -2750,7 +2754,7 @@ Include Files:
                                  SpiceInt              plateIDs []     );
 
 
-   void              limbpt_c ( ConstSpiceChar    * method,
+extern void          limbpt_c ( ConstSpiceChar    * method,
                                 ConstSpiceChar    * target,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * fixref,
@@ -2769,7 +2773,7 @@ Include Files:
                                 SpiceDouble         tangts[][3]  );
 
 
-   void              llgrid_pl02 ( SpiceInt               handle,
+extern void          llgrid_pl02 ( SpiceInt               handle,
                                    ConstSpiceDLADescr   * dladsc,
                                    SpiceInt               npoints,
                                    ConstSpiceDouble       grid     [][2],
@@ -2777,12 +2781,12 @@ Include Files:
                                    SpiceInt               plateIDs []     );
 
 
-   void              lmpool_c ( const void        * cvals,
+extern void          lmpool_c ( const void        * cvals,
                                 SpiceInt            lenvals,
                                 SpiceInt             n       );
 
 
-   void              lparse_c ( ConstSpiceChar    * list,
+extern void          lparse_c ( ConstSpiceChar    * list,
                                 ConstSpiceChar    * delim,
                                 SpiceInt            nmax,
                                 SpiceInt            lenout,
@@ -2790,7 +2794,7 @@ Include Files:
                                 void              * items   );
 
 
-   void              lparsm_c ( ConstSpiceChar    * list,
+extern void          lparsm_c ( ConstSpiceChar    * list,
                                 ConstSpiceChar    * delims,
                                 SpiceInt            nmax,
                                 SpiceInt            lenout,
@@ -2798,49 +2802,49 @@ Include Files:
                                 void              * items   );
 
 
-   void              lparss_c ( ConstSpiceChar    * list,
+extern void          lparss_c ( ConstSpiceChar    * list,
                                 ConstSpiceChar    * delims,
                                 SpiceCell         * set     );
 
 
-   SpiceDouble       lspcn_c  ( ConstSpiceChar    * body,
+extern SpiceDouble   lspcn_c  ( ConstSpiceChar    * body,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * abcorr );
 
 
-   SpiceInt          lstlec_c ( ConstSpiceChar    * string,
+extern SpiceInt      lstlec_c ( ConstSpiceChar    * string,
                                 SpiceInt            n,
                                 SpiceInt            lenvals,
                                 const void        * array   );
 
 
-   SpiceInt          lstled_c ( SpiceDouble         x,
+extern SpiceInt      lstled_c ( SpiceDouble         x,
                                 SpiceInt            n,
                                 ConstSpiceDouble  * array );
 
 
-   SpiceInt          lstlei_c ( SpiceInt            x,
+extern SpiceInt      lstlei_c ( SpiceInt            x,
                                 SpiceInt            n,
                                 ConstSpiceInt     * array );
 
 
-   SpiceInt          lstltc_c ( ConstSpiceChar    * string,
+extern SpiceInt      lstltc_c ( ConstSpiceChar    * string,
                                 SpiceInt            n,
                                 SpiceInt            lenvals,
                                 const void        * array   );
 
 
-   SpiceInt          lstltd_c ( SpiceDouble         x,
+extern SpiceInt      lstltd_c ( SpiceDouble         x,
                                 SpiceInt            n,
                                 ConstSpiceDouble  * array );
 
 
-   SpiceInt          lstlti_c ( SpiceInt            x,
+extern SpiceInt      lstlti_c ( SpiceInt            x,
                                 SpiceInt            n,
                                 ConstSpiceInt     * array );
 
 
-   void              ltime_c  ( SpiceDouble         etobs,
+extern void          ltime_c  ( SpiceDouble         etobs,
                                 SpiceInt            obs,
                                 ConstSpiceChar    * dir,
                                 SpiceInt            targ,
@@ -2848,38 +2852,38 @@ Include Files:
                                 SpiceDouble       * elapsd  );
 
 
-   void              lx4dec_c ( ConstSpiceChar    * string,
+extern void          lx4dec_c ( ConstSpiceChar    * string,
                                 SpiceInt            first,
                                 SpiceInt          * last,
                                 SpiceInt          * nchar  );
 
 
-   void              lx4num_c ( ConstSpiceChar    * string,
+extern void          lx4num_c ( ConstSpiceChar    * string,
                                 SpiceInt            first,
                                 SpiceInt          * last,
                                 SpiceInt          * nchar  );
 
 
-   void              lx4sgn_c ( ConstSpiceChar    * string,
+extern void          lx4sgn_c ( ConstSpiceChar    * string,
                                 SpiceInt            first,
                                 SpiceInt          * last,
                                 SpiceInt          * nchar  );
 
 
-   void              lx4uns_c ( ConstSpiceChar    * string,
+extern void          lx4uns_c ( ConstSpiceChar    * string,
                                 SpiceInt            first,
                                 SpiceInt          * last,
                                 SpiceInt          * nchar  );
 
 
-   void              lxqstr_c ( ConstSpiceChar    * string,
+extern void          lxqstr_c ( ConstSpiceChar    * string,
                                 SpiceChar           qchar,
                                 SpiceInt            first,
                                 SpiceInt          * last,
                                 SpiceInt          * nchar  );
 
 
-   void              m2eul_c  ( ConstSpiceDouble    r[3][3],
+extern void          m2eul_c  ( ConstSpiceDouble    r[3][3],
                                 SpiceInt            axis3,
                                 SpiceInt            axis2,
                                 SpiceInt            axis1,
@@ -2888,60 +2892,60 @@ Include Files:
                                 SpiceDouble       * angle1  );
 
 
-   void              m2q_c    ( ConstSpiceDouble    r[3][3],
+extern void          m2q_c    ( ConstSpiceDouble    r[3][3],
                                 SpiceDouble         q[4]     );
 
 
 
-   SpiceBoolean      matchi_c ( ConstSpiceChar    * string,
+extern SpiceBoolean  matchi_c ( ConstSpiceChar    * string,
                                 ConstSpiceChar    * templ,
                                 SpiceChar           wstr,
                                 SpiceChar           wchr   );
 
 
-   SpiceBoolean      matchw_c ( ConstSpiceChar    * string,
+extern SpiceBoolean  matchw_c ( ConstSpiceChar    * string,
                                 ConstSpiceChar    * templ,
                                 SpiceChar           wstr,
                                 SpiceChar           wchr   );
 
 
-   SpiceDouble       maxd_c  ( SpiceInt             n,
+extern SpiceDouble   maxd_c  ( SpiceInt             n,
                                                     ... );
 
 
-   SpiceInt          maxi_c  ( SpiceInt             n,
+extern SpiceInt      maxi_c  ( SpiceInt             n,
                                                     ... );
 
 
-   void              mequ_c   ( ConstSpiceDouble    m1  [3][3],
+extern void          mequ_c   ( ConstSpiceDouble    m1  [3][3],
                                 SpiceDouble         mout[3][3] );
 
 
-   void              mequg_c  ( const void        * m1,
+extern void          mequg_c  ( const void        * m1,
                                 SpiceInt            nr,
                                 SpiceInt            nc,
                                 void              * mout );
 
 
-   SpiceDouble       mind_c   ( SpiceInt            n,
+extern SpiceDouble   mind_c   ( SpiceInt            n,
                                                     ... );
 
 
-   SpiceInt          mini_c   ( SpiceInt            n,
+extern SpiceInt      mini_c   ( SpiceInt            n,
                                                     ... );
 
 
-   int               moved_   ( SpiceDouble       * arrfrm,
+extern int           moved_   ( SpiceDouble       * arrfrm,
                                 SpiceInt          * ndim,
                                 SpiceDouble       * arrto  );
 
 
-   void              mtxm_c   ( ConstSpiceDouble    m1  [3][3],
+extern void          mtxm_c   ( ConstSpiceDouble    m1  [3][3],
                                 ConstSpiceDouble    m2  [3][3],
                                 SpiceDouble         mout[3][3] );
 
 
-   void              mtxmg_c  ( const void        * m1,
+extern void          mtxmg_c  ( const void        * m1,
                                 const void        * m2,
                                 SpiceInt            row1,
                                 SpiceInt            col1,
@@ -2949,24 +2953,24 @@ Include Files:
                                 void              * mout  );
 
 
-   void              mtxv_c   ( ConstSpiceDouble    m1  [3][3],
+extern void          mtxv_c   ( ConstSpiceDouble    m1  [3][3],
                                 ConstSpiceDouble    vin [3],
                                 SpiceDouble         vout[3]    );
 
 
-   void              mtxvg_c  ( const void        * m1,
+extern void          mtxvg_c  ( const void        * m1,
                                 const void        * v2,
                                 SpiceInt            ncol1,
                                 SpiceInt            nr1r2,
                                 void              * vout   );
 
 
-   void              mxm_c    ( ConstSpiceDouble    m1  [3][3],
+extern void          mxm_c    ( ConstSpiceDouble    m1  [3][3],
                                 ConstSpiceDouble    m2  [3][3],
                                 SpiceDouble         mout[3][3] );
 
 
-   void              mxmg_c   ( const void        * m1,
+extern void          mxmg_c   ( const void        * m1,
                                 const void        * m2,
                                 SpiceInt            row1,
                                 SpiceInt            col1,
@@ -2974,12 +2978,12 @@ Include Files:
                                 void              * mout  );
 
 
-   void              mxmt_c   ( ConstSpiceDouble    m1  [3][3],
+extern void          mxmt_c   ( ConstSpiceDouble    m1  [3][3],
                                 ConstSpiceDouble    m2  [3][3],
                                 SpiceDouble         mout[3][3] );
 
 
-   void              mxmtg_c  ( const void        * m1,
+extern void          mxmtg_c  ( const void        * m1,
                                 const void        * m2,
                                 SpiceInt            nrow1,
                                 SpiceInt            nc1c2,
@@ -2987,33 +2991,33 @@ Include Files:
                                 void              * mout  );
 
 
-   void              mxv_c    ( ConstSpiceDouble    m1[3][3],
+extern void          mxv_c    ( ConstSpiceDouble    m1[3][3],
                                 ConstSpiceDouble    vin[3],
                                 SpiceDouble         vout[3] );
 
 
-   void              mxvg_c   ( const void        * m1,
+extern void          mxvg_c   ( const void        * m1,
                                 const void        * v2,
                                 SpiceInt            nrow1,
                                 SpiceInt            nc1r2,
                                 void              * vout   );
 
 
-   void              namfrm_c ( ConstSpiceChar    * frname,
+extern void          namfrm_c ( ConstSpiceChar    * frname,
                                 SpiceInt          * frcode );
 
 
-   SpiceInt          ncpos_c  ( ConstSpiceChar    * str,
+extern SpiceInt      ncpos_c  ( ConstSpiceChar    * str,
                                 ConstSpiceChar    * chars,
                                 SpiceInt            start  );
 
 
-   SpiceInt          ncposr_c ( ConstSpiceChar    * str,
+extern SpiceInt      ncposr_c ( ConstSpiceChar    * str,
                                 ConstSpiceChar    * chars,
                                 SpiceInt            start  );
 
 
-   void              nearpt_c ( ConstSpiceDouble    positn[3],
+extern void          nearpt_c ( ConstSpiceDouble    positn[3],
                                 SpiceDouble         a,
                                 SpiceDouble         b,
                                 SpiceDouble         c,
@@ -3021,7 +3025,7 @@ Include Files:
                                 SpiceDouble       * alt        );
 
 
-   void              npedln_c ( SpiceDouble         a,
+extern void          npedln_c ( SpiceDouble         a,
                                 SpiceDouble         b,
                                 SpiceDouble         c,
                                 ConstSpiceDouble    linept[3],
@@ -3030,29 +3034,29 @@ Include Files:
                                 SpiceDouble       * dist      );
 
 
-   void              npelpt_c ( ConstSpiceDouble    point[3],
+extern void          npelpt_c ( ConstSpiceDouble    point[3],
                                 ConstSpiceEllipse * ellips,
                                 SpiceDouble         pnear[3],
                                 SpiceDouble       * dist      );
 
 
-   void              nplnpt_c ( ConstSpiceDouble    linpt  [3],
+extern void          nplnpt_c ( ConstSpiceDouble    linpt  [3],
                                 ConstSpiceDouble    lindir [3],
                                 ConstSpiceDouble    point  [3],
                                 SpiceDouble         pnear  [3],
                                 SpiceDouble       * dist       );
 
 
-   void              nvc2pl_c ( ConstSpiceDouble    normal[3],
+extern void          nvc2pl_c ( ConstSpiceDouble    normal[3],
                                 SpiceDouble         constant,
                                 SpicePlane        * plane     );
 
 
-   void              nvp2pl_c ( ConstSpiceDouble    normal[3],
+extern void          nvp2pl_c ( ConstSpiceDouble    normal[3],
                                 ConstSpiceDouble    point[3],
                                 SpicePlane        * plane     );
 
-   void              occult_c ( ConstSpiceChar    * target1,
+extern void          occult_c ( ConstSpiceChar    * target1,
                                 ConstSpiceChar    * shape1,
                                 ConstSpiceChar    * frame1,
                                 ConstSpiceChar    * target2,
@@ -3063,72 +3067,72 @@ Include Files:
                                 SpiceDouble         time,
                                 SpiceInt          * occult_code );
 
-   SpiceInt          ordc_c   ( ConstSpiceChar     * item,
+extern SpiceInt      ordc_c   ( ConstSpiceChar     * item,
                                 SpiceCell          * set   );
 
 
-   SpiceInt          ordd_c   ( SpiceDouble          item,
+extern SpiceInt      ordd_c   ( SpiceDouble          item,
                                 SpiceCell          * set   );
 
 
-   SpiceInt          ordi_c   ( SpiceInt             item,
+extern SpiceInt      ordi_c   ( SpiceInt             item,
                                 SpiceCell          * set   );
 
 
-   void              orderc_c ( SpiceInt            lenvals,
+extern void          orderc_c ( SpiceInt            lenvals,
                                 const void        * array,
                                 SpiceInt            ndim,
                                 SpiceInt          * iorder  );
 
 
-   void              orderd_c ( ConstSpiceDouble  * array,
+extern void          orderd_c ( ConstSpiceDouble  * array,
                                 SpiceInt            ndim,
                                 SpiceInt          * iorder );
 
 
-   void              orderi_c ( ConstSpiceInt     * array,
+extern void          orderi_c ( ConstSpiceInt     * array,
                                 SpiceInt            ndim,
                                 SpiceInt          * iorder );
 
 
-   void              oscelt_c ( ConstSpiceDouble    state[6],
+extern void          oscelt_c ( ConstSpiceDouble    state[6],
                                 SpiceDouble         et      ,
                                 SpiceDouble         mu      ,
                                 SpiceDouble         elts[8]  );
 
 
-   void              oscltx_c ( ConstSpiceDouble    state[6],
+extern void          oscltx_c ( ConstSpiceDouble    state[6],
                                 SpiceDouble         et      ,
                                 SpiceDouble         mu      ,
                                 SpiceDouble         elts[SPICE_OSCLTX_NELTS] );
 
 
-   void              pckcls_c ( SpiceInt            handle );
+extern void          pckcls_c ( SpiceInt            handle );
 
 
-   void              pckcov_c ( ConstSpiceChar    * pck,
+extern void          pckcov_c ( ConstSpiceChar    * pck,
                                 SpiceInt            idcode,
                                 SpiceCell         * cover   );
 
 
-   void              pckfrm_c ( ConstSpiceChar    * pck,
+extern void          pckfrm_c ( ConstSpiceChar    * pck,
                                 SpiceCell         * ids  );
 
 
-   void              pcklof_c ( ConstSpiceChar    * fname,
+extern void          pcklof_c ( ConstSpiceChar    * fname,
                                 SpiceInt          * handle );
 
 
-   void              pckopn_c ( ConstSpiceChar    * name,
+extern void          pckopn_c ( ConstSpiceChar    * name,
                                 ConstSpiceChar    * ifname,
                                 SpiceInt            ncomch,
                                 SpiceInt          * handle  );
 
 
-   void              pckuof_c ( SpiceInt            handle );
+extern void          pckuof_c ( SpiceInt            handle );
 
 
-   void              pckw02_c ( SpiceInt            handle,
+extern void          pckw02_c ( SpiceInt            handle,
                                 SpiceInt            clssid,
                                 ConstSpiceChar    * frame,
                                 SpiceDouble         first,
@@ -3141,18 +3145,18 @@ Include Files:
                                 SpiceDouble         btime      );
 
 
-   void              pcpool_c ( ConstSpiceChar   * name,
+extern void          pcpool_c ( ConstSpiceChar   * name,
                                 SpiceInt           n,
                                 SpiceInt           lenvals,
                                 const void        * cvals    );
 
 
-   void              pdpool_c ( ConstSpiceChar    * name,
+extern void          pdpool_c ( ConstSpiceChar    * name,
                                 SpiceInt            n,
                                 ConstSpiceDouble  * dvals );
 
 
-   void              pgrrec_c ( ConstSpiceChar    * body,
+extern void          pgrrec_c ( ConstSpiceChar    * body,
                                 SpiceDouble         lon,
                                 SpiceDouble         lat,
                                 SpiceDouble         alt,
@@ -3161,54 +3165,54 @@ Include Files:
                                 SpiceDouble         rectan[3] );
 
 
-   SpiceDouble       phaseq_c ( SpiceDouble       et,
+extern SpiceDouble   phaseq_c ( SpiceDouble       et,
                                 ConstSpiceChar  * target,
                                 ConstSpiceChar  * illumn,
                                 ConstSpiceChar  * obsrvr,
                                 ConstSpiceChar  * abcorr );
 
 
-   SpiceDouble       pi_c     ( void );
+extern SpiceDouble   pi_c     ( void );
 
 
-   void              pipool_c ( ConstSpiceChar    * name,
+extern void          pipool_c ( ConstSpiceChar    * name,
                                 SpiceInt            n,
                                 ConstSpiceInt     * ivals );
 
 
-   void              pjelpl_c ( ConstSpiceEllipse * elin,
+extern void          pjelpl_c ( ConstSpiceEllipse * elin,
                                 ConstSpicePlane   * plane,
                                 SpiceEllipse      * elout  );
 
 
-   void              pl2nvc_c ( ConstSpicePlane   * plane,
+extern void          pl2nvc_c ( ConstSpicePlane   * plane,
                                 SpiceDouble         normal[3],
                                 SpiceDouble       * constant  );
 
 
-   void              pl2nvp_c ( ConstSpicePlane   * plane,
+extern void          pl2nvp_c ( ConstSpicePlane   * plane,
                                 SpiceDouble         normal[3],
                                 SpiceDouble         point[3]  );
 
 
-   void              pl2psv_c ( ConstSpicePlane   * plane,
+extern void          pl2psv_c ( ConstSpicePlane   * plane,
                                 SpiceDouble         point[3],
                                 SpiceDouble         span1[3],
                                 SpiceDouble         span2[3]  );
 
 
-   SpiceDouble       pltar_c  ( SpiceInt            nv,
+extern SpiceDouble   pltar_c  ( SpiceInt            nv,
                                 ConstSpiceDouble    vrtces[][3],
                                 SpiceInt            np,
                                 ConstSpiceInt       plates[][3] );  
 
 
-   void              pltexp_c ( ConstSpiceDouble    iverts[3][3],
+extern void          pltexp_c ( ConstSpiceDouble    iverts[3][3],
                                 SpiceDouble         delta,
                                 SpiceDouble         overts[3][3] );
 
 
-   void              pltnp_c  ( ConstSpiceDouble    point[3],
+extern void          pltnp_c  ( ConstSpiceDouble    point[3],
                                 ConstSpiceDouble    v1   [3],
                                 ConstSpiceDouble    v2   [3],
                                 ConstSpiceDouble    v3   [3],
@@ -3216,131 +3220,131 @@ Include Files:
                                 SpiceDouble       * dist      );
 
 
-   void              pltnrm_c ( ConstSpiceDouble   v1[3],
+extern void          pltnrm_c ( ConstSpiceDouble   v1[3],
                                 ConstSpiceDouble   v2[3],
                                 ConstSpiceDouble   v3[3],
                                 SpiceDouble        normal[3] );
 
 
-   SpiceDouble       pltvol_c ( SpiceInt           nv,
+extern SpiceDouble   pltvol_c ( SpiceInt           nv,
                                 ConstSpiceDouble   vrtces[][3],
                                 SpiceInt           np,
                                 ConstSpiceInt      plates[][3] );  
 
 
-   void              polyds_c ( ConstSpiceDouble    * coeffs,
+extern void          polyds_c ( ConstSpiceDouble    * coeffs,
                                 SpiceInt              deg,
                                 SpiceInt              nderiv,
                                 SpiceDouble           t,
                                 SpiceDouble         * p );
 
 
-   SpiceInt          pos_c    ( ConstSpiceChar    * str,
+extern SpiceInt      pos_c    ( ConstSpiceChar    * str,
                                 ConstSpiceChar    * substr,
                                 SpiceInt            start   );
 
 
-   SpiceInt          posr_c   ( ConstSpiceChar    * str,
+extern SpiceInt      posr_c   ( ConstSpiceChar    * str,
                                 ConstSpiceChar    * substr,
                                 SpiceInt            start   );
 
 
-   void              prefix_c ( ConstSpiceChar    * pref,
-                                SpiceInt            spaces,
-                                SpiceInt            lenout,
-                                SpiceChar         * string  );
+// extern void          prefix_c ( ConstSpiceChar    * pref,
+//                                 SpiceInt            spaces,
+//                                 SpiceInt            lenout,
+//                                 SpiceChar         * string  );
 
 
-   SpiceChar       * prompt_c ( ConstSpiceChar    * prmptStr,
+extern SpiceChar   * prompt_c ( ConstSpiceChar    * prmptStr,
                                 SpiceInt            lenout,
                                 SpiceChar         * buffer   );
 
 
-   void              prop2b_c ( SpiceDouble         gm,
+extern void          prop2b_c ( SpiceDouble         gm,
                                 ConstSpiceDouble    pvinit[6],
                                 SpiceDouble         dt,
                                 SpiceDouble         pvprop[6] );
 
 
-   void              prsdp_c  ( ConstSpiceChar    * string,
+extern void          prsdp_c  ( ConstSpiceChar    * string,
                                 SpiceDouble       * dpval  );
 
 
-   void              prsint_c ( ConstSpiceChar    * string,
+extern void          prsint_c ( ConstSpiceChar    * string,
                                 SpiceInt          * intval );
 
 
-   void              psv2pl_c ( ConstSpiceDouble    point[3],
+extern void          psv2pl_c ( ConstSpiceDouble    point[3],
                                 ConstSpiceDouble    span1[3],
                                 ConstSpiceDouble    span2[3],
                                 SpicePlane        * plane     );
 
 
-   void              putcml_c ( SpiceInt            argc ,
+extern void          putcml_c ( SpiceInt            argc ,
                                 SpiceChar        ** argv  );
 
 
-   void              pxform_c ( ConstSpiceChar    * from,
+extern void          pxform_c ( ConstSpiceChar    * from,
                                 ConstSpiceChar    * to,
                                 SpiceDouble         et,
                                 SpiceDouble         rotate[3][3] );
 
 
-   void              pxfrm2_c ( ConstSpiceChar    * from,
+extern void          pxfrm2_c ( ConstSpiceChar    * from,
                                 ConstSpiceChar    * to,
                                 SpiceDouble         etfrom,
                                 SpiceDouble         etto,
                                 SpiceDouble         rotate[3][3] );
 
 
-   void              q2m_c    ( ConstSpiceDouble    q[4],
+extern void          q2m_c    ( ConstSpiceDouble    q[4],
                                 SpiceDouble         r[3][3] );
 
 
-   void              qcktrc_c ( SpiceInt            tracelen,
+extern void          qcktrc_c ( SpiceInt            tracelen,
                                 SpiceChar         * trace    );
 
 
-   void              qdq2av_c ( ConstSpiceDouble    q[4],
+extern void          qdq2av_c ( ConstSpiceDouble    q[4],
                                 ConstSpiceDouble    dq[4],
                                 SpiceDouble         av[3] );
 
 
-   void              qxq_c    ( ConstSpiceDouble    q1[4],
+extern void          qxq_c    ( ConstSpiceDouble    q1[4],
                                 ConstSpiceDouble    q2[4],
                                 SpiceDouble         qout[4] );
 
 
 
-   void              radrec_c ( SpiceDouble         range,
+extern void          radrec_c ( SpiceDouble         range,
                                 SpiceDouble         ra,
                                 SpiceDouble         dec,
                                 SpiceDouble         rectan[3] );
 
 
-   void              rav2xf_c ( ConstSpiceDouble     rot   [3][3],
+extern void          rav2xf_c ( ConstSpiceDouble     rot   [3][3],
                                 ConstSpiceDouble     av    [3],
                                 SpiceDouble          xform [6][6]  );
 
 
-   void              raxisa_c ( ConstSpiceDouble     matrix[3][3],
+extern void          raxisa_c ( ConstSpiceDouble     matrix[3][3],
                                 SpiceDouble          axis  [3],
                                 SpiceDouble        * angle       );
 
 
-   void              rdtext_c ( ConstSpiceChar     * file,
+extern void          rdtext_c ( ConstSpiceChar     * file,
                                 SpiceInt             lenout,
                                 SpiceChar          * line,
                                 SpiceBoolean       * eof    );
 
 
-   void              reccyl_c ( ConstSpiceDouble    rectan[3],
+extern void          reccyl_c ( ConstSpiceDouble    rectan[3],
                                 SpiceDouble       * r,
                                 SpiceDouble       * lon,
                                 SpiceDouble       * z         );
 
 
-   void              recgeo_c ( ConstSpiceDouble    rectan[3],
+extern void          recgeo_c ( ConstSpiceDouble    rectan[3],
                                 SpiceDouble         re,
                                 SpiceDouble         f,
                                 SpiceDouble       * lon,
@@ -3348,13 +3352,13 @@ Include Files:
                                 SpiceDouble       * alt );
 
 
-   void              reclat_c ( ConstSpiceDouble    rectan[3],
+extern void          reclat_c ( ConstSpiceDouble    rectan[3],
                                 SpiceDouble       * radius,
                                 SpiceDouble       * longitude,
                                 SpiceDouble       * latitude  );
 
 
-   void              recpgr_c ( ConstSpiceChar    * body,
+extern void          recpgr_c ( ConstSpiceChar    * body,
                                 SpiceDouble         rectan[3],
                                 SpiceDouble         re,
                                 SpiceDouble         f,
@@ -3363,54 +3367,54 @@ Include Files:
                                 SpiceDouble       * alt       );
 
 
-   void              recrad_c ( ConstSpiceDouble    rectan[3],
+extern void          recrad_c ( ConstSpiceDouble    rectan[3],
                                 SpiceDouble       * radius,
                                 SpiceDouble       * ra,
                                 SpiceDouble       * dec  );
 
 
 
-   void              reordc_c ( ConstSpiceInt     * iorder,
+extern void          reordc_c ( ConstSpiceInt     * iorder,
                                 SpiceInt            ndim,
                                 SpiceInt            lenvals,
                                 void              * array    );
 
 
-   void              reordd_c ( ConstSpiceInt     * iorder,
+extern void          reordd_c ( ConstSpiceInt     * iorder,
                                 SpiceInt            ndim,
                                 SpiceDouble       * array   );
 
 
-   void              reordi_c ( ConstSpiceInt     * iorder,
+extern void          reordi_c ( ConstSpiceInt     * iorder,
                                 SpiceInt            ndim,
                                 SpiceInt          * array   );
 
 
-   void              reordl_c ( ConstSpiceInt     * iorder,
+extern void          reordl_c ( ConstSpiceInt     * iorder,
                                 SpiceInt            ndim,
                                 SpiceBoolean      * array   );
 
 
-   void              removc_c ( ConstSpiceChar     * item,
+extern void          removc_c ( ConstSpiceChar     * item,
                                 SpiceCell          * set   );
 
 
-   void              removd_c ( SpiceDouble          item,
+extern void          removd_c ( SpiceDouble          item,
                                 SpiceCell          * set   );
 
 
-   void              removi_c ( SpiceInt             item,
+extern void          removi_c ( SpiceInt             item,
                                 SpiceCell          * set   );
 
 
-   void              repmc_c  ( ConstSpiceChar     * in,
+extern void          repmc_c  ( ConstSpiceChar     * in,
                                 ConstSpiceChar     * marker,
                                 ConstSpiceChar     * value,
                                 SpiceInt             lenout,
                                 SpiceChar          * out     );
 
 
-   void              repmct_c ( ConstSpiceChar     * in,
+extern void          repmct_c ( ConstSpiceChar     * in,
                                 ConstSpiceChar     * marker,
                                 SpiceInt             value,
                                 SpiceChar            strCase,
@@ -3418,7 +3422,7 @@ Include Files:
                                 SpiceChar          * out     );
 
 
-   void              repmd_c  ( ConstSpiceChar     * in,
+extern void          repmd_c  ( ConstSpiceChar     * in,
                                 ConstSpiceChar     * marker,
                                 SpiceDouble          value,
                                 SpiceInt             sigdig,
@@ -3426,7 +3430,7 @@ Include Files:
                                 SpiceChar          * out     );
 
 
-   void              repmf_c  ( ConstSpiceChar     * in,
+extern void          repmf_c  ( ConstSpiceChar     * in,
                                 ConstSpiceChar     * marker,
                                 SpiceDouble          value,
                                 SpiceInt             sigdig,
@@ -3435,14 +3439,14 @@ Include Files:
                                 SpiceChar          * out     );
 
 
-   void              repmi_c  ( ConstSpiceChar     * in,
+extern void          repmi_c  ( ConstSpiceChar     * in,
                                 ConstSpiceChar     * marker,
                                 SpiceInt             value,
                                 SpiceInt             lenout,
                                 SpiceChar          * out     );
 
 
-   void              repmot_c ( ConstSpiceChar     * in,
+extern void          repmot_c ( ConstSpiceChar     * in,
                                 ConstSpiceChar     * marker,
                                 SpiceInt             value,
                                 SpiceChar            strCase,
@@ -3450,139 +3454,139 @@ Include Files:
                                 SpiceChar          * out     );
 
 
-   void              reset_c  ( void );
+extern void          reset_c  ( void );
 
 
-   SpiceBoolean      return_c ( void );
+extern SpiceBoolean  return_c ( void );
 
 
-   void              recsph_c ( ConstSpiceDouble    rectan[3],
+extern void          recsph_c ( ConstSpiceDouble    rectan[3],
                                 SpiceDouble       * r,
                                 SpiceDouble       * colat,
                                 SpiceDouble       * lon );
 
 
-   void              rotate_c ( SpiceDouble         angle,
+extern void          rotate_c ( SpiceDouble         angle,
                                 SpiceInt            iaxis,
                                 SpiceDouble         mout[3][3] );
 
 
-   void              rotmat_c ( ConstSpiceDouble    m1[3][3],
+extern void          rotmat_c ( ConstSpiceDouble    m1[3][3],
                                 SpiceDouble         angle,
                                 SpiceInt            iaxis,
                                 SpiceDouble         mout[3][3] );
 
 
-   void              rotvec_c ( ConstSpiceDouble    v1[3],
+extern void          rotvec_c ( ConstSpiceDouble    v1[3],
                                 SpiceDouble         angle,
                                 SpiceInt            iaxis,
                                 SpiceDouble         vout[3] );
 
 
-   SpiceDouble       rpd_c    ( void );
+extern SpiceDouble   rpd_c    ( void );
 
 
-   void              rquad_c  ( SpiceDouble         a,
+extern void          rquad_c  ( SpiceDouble         a,
                                 SpiceDouble         b,
                                 SpiceDouble         c,
                                 SpiceDouble         root1[2],
                                 SpiceDouble         root2[2] );
 
 
-   void              saelgv_c ( ConstSpiceDouble    vec1  [3],
+extern void          saelgv_c ( ConstSpiceDouble    vec1  [3],
                                 ConstSpiceDouble    vec2  [3],
                                 SpiceDouble         smajor[3],
                                 SpiceDouble         sminor[3]  );
 
 
-   void              scard_c (  SpiceInt            card,
+extern void          scard_c (  SpiceInt            card,
                                 SpiceCell         * cell  );
 
 
-   void              scdecd_c ( SpiceInt            sc,
+extern void          scdecd_c ( SpiceInt            sc,
                                 SpiceDouble         sclkdp,
                                 SpiceInt            sclklen,
                                 SpiceChar         * sclkch   );
 
 
-   void              sce2s_c  ( SpiceInt            sc,
+extern void          sce2s_c  ( SpiceInt            sc,
                                 SpiceDouble         et,
                                 SpiceInt            sclklen,
                                 SpiceChar         * sclkch   );
 
 
-   void              sce2c_c  ( SpiceInt            sc,
+extern void          sce2c_c  ( SpiceInt            sc,
                                 SpiceDouble         et,
                                 SpiceDouble       * sclkdp   );
 
 
-   void              sce2t_c  ( SpiceInt            sc,
+extern void          sce2t_c  ( SpiceInt            sc,
                                 SpiceDouble         et,
                                 SpiceDouble       * sclkdp   );
 
 
-   void              scencd_c ( SpiceInt            sc,
+extern void          scencd_c ( SpiceInt            sc,
                                 ConstSpiceChar    * sclkch,
                                 SpiceDouble       * sclkdp   );
 
 
-   void              scfmt_c  ( SpiceInt            sc,
+extern void          scfmt_c  ( SpiceInt            sc,
                                 SpiceDouble         ticks,
                                 SpiceInt            clkstrlen,
                                 SpiceChar         * clkstr    );
 
 
-   void              scpart_c ( SpiceInt            sc,
+extern void          scpart_c ( SpiceInt            sc,
                                 SpiceInt          * nparts,
                                 SpiceDouble       * pstart,
                                 SpiceDouble       * pstop   );
 
 
-   void              scs2e_c  ( SpiceInt            sc,
+extern void          scs2e_c  ( SpiceInt            sc,
                                 ConstSpiceChar    * sclkch,
                                 SpiceDouble       * et      );
 
 
-   void              sct2e_c  ( SpiceInt            sc,
+extern void          sct2e_c  ( SpiceInt            sc,
                                 SpiceDouble         sclkdp,
                                 SpiceDouble       * et      );
 
 
-   void              sctiks_c ( SpiceInt            sc,
+extern void          sctiks_c ( SpiceInt            sc,
                                 ConstSpiceChar    * clkstr,
                                 SpiceDouble       * ticks   );
 
 
-   void              sdiff_c  ( SpiceCell         * a,
+extern void          sdiff_c  ( SpiceCell         * a,
                                 SpiceCell         * b,
                                 SpiceCell         * c  );
 
 
-   SpiceBoolean      set_c    ( SpiceCell          * a,
+extern SpiceBoolean  set_c    ( SpiceCell          * a,
                                 ConstSpiceChar     * op,
                                 SpiceCell          * b  );
 
 
-   void              setmsg_c ( ConstSpiceChar    * msg );
+extern void          setmsg_c ( ConstSpiceChar    * msg );
 
 
-   void              shellc_c ( SpiceInt            ndim,
+extern void          shellc_c ( SpiceInt            ndim,
                                 SpiceInt            lenvals,
                                 void              * array   );
 
 
-   void              shelld_c ( SpiceInt            ndim,
+extern void          shelld_c ( SpiceInt            ndim,
                                 SpiceDouble       * array   );
 
 
-   void              shelli_c ( SpiceInt            ndim,
+extern void          shelli_c ( SpiceInt            ndim,
                                 SpiceInt          * array   );
 
 
-   void              sigerr_c ( ConstSpiceChar    * message );
+extern void          sigerr_c ( ConstSpiceChar    * message );
 
 
-   void              sincpt_c ( ConstSpiceChar    * method,
+extern void          sincpt_c ( ConstSpiceChar    * method,
                                 ConstSpiceChar    * target,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * fixref,
@@ -3596,13 +3600,13 @@ Include Files:
                                 SpiceBoolean      * found         );
 
 
-   SpiceInt          size_c   ( SpiceCell         * size );
+extern SpiceInt      size_c   ( SpiceCell         * size );
 
 
-   SpiceDouble       spd_c    ( void );
+extern SpiceDouble   spd_c    ( void );
 
 
-   void              sphcyl_c ( SpiceDouble         radius,
+extern void          sphcyl_c ( SpiceDouble         radius,
                                 SpiceDouble         colat,
                                 SpiceDouble         slon,
                                 SpiceDouble       * r,
@@ -3610,7 +3614,7 @@ Include Files:
                                 SpiceDouble       * z );
 
 
-   void              sphlat_c ( SpiceDouble         r,
+extern void          sphlat_c ( SpiceDouble         r,
                                 SpiceDouble         colat,
                                 SpiceDouble         lons,
                                 SpiceDouble       * radius,
@@ -3618,19 +3622,19 @@ Include Files:
                                 SpiceDouble       * lat   );
 
 
-   void              sphrec_c ( SpiceDouble         r,
+extern void          sphrec_c ( SpiceDouble         r,
                                 SpiceDouble         colat,
                                 SpiceDouble         lon,
                                 SpiceDouble         rectan[3] );
 
 
-   void              spk14a_c ( SpiceInt            handle,
+extern void          spk14a_c ( SpiceInt            handle,
                                 SpiceInt            ncsets,
                                 ConstSpiceDouble    coeffs [],
                                 ConstSpiceDouble    epochs []  );
 
 
-   void              spk14b_c ( SpiceInt            handle,
+extern void          spk14b_c ( SpiceInt            handle,
                                 ConstSpiceChar    * segid,
                                 SpiceInt            body,
                                 SpiceInt            center,
@@ -3640,10 +3644,10 @@ Include Files:
                                 SpiceInt            chbdeg  );
 
 
-   void              spk14e_c ( SpiceInt            handle );
+extern void          spk14e_c ( SpiceInt            handle );
 
 
-   void              spkapo_c ( SpiceInt            targ,
+extern void          spkapo_c ( SpiceInt            targ,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * ref,
                                 ConstSpiceDouble    sobs[6],
@@ -3652,7 +3656,7 @@ Include Files:
                                 SpiceDouble       * lt        );
 
 
-   void              spkapp_c ( SpiceInt            targ,
+extern void          spkapp_c ( SpiceInt            targ,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * ref,
                                 ConstSpiceDouble    sobs   [6],
@@ -3661,7 +3665,7 @@ Include Files:
                                 SpiceDouble       * lt         );
 
 
-   void              spkacs_c ( SpiceInt            targ,
+extern void          spkacs_c ( SpiceInt            targ,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * ref,
                                 ConstSpiceChar    * abcorr,
@@ -3671,7 +3675,7 @@ Include Files:
                                 SpiceDouble       * dlt       );
 
 
-   void              spkaps_c ( SpiceInt            targ,
+extern void          spkaps_c ( SpiceInt            targ,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * ref,
                                 ConstSpiceChar    * abcorr,
@@ -3682,15 +3686,15 @@ Include Files:
                                 SpiceDouble       * dlt      );
 
 
-   void              spkcls_c ( SpiceInt            handle );
+extern void          spkcls_c ( SpiceInt            handle );
 
 
-   void              spkcov_c ( ConstSpiceChar    * spk,
+extern void          spkcov_c ( ConstSpiceChar    * spk,
                                 SpiceInt            idcode,
                                 SpiceCell         * cover   );
 
 
-   void              spkcpo_c ( ConstSpiceChar    * target,
+extern void          spkcpo_c ( ConstSpiceChar    * target,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * outref,
                                 ConstSpiceChar    * refloc,
@@ -3702,7 +3706,7 @@ Include Files:
                                 SpiceDouble       * lt          );
 
 
-   void              spkcpt_c ( ConstSpiceDouble    trgpos [3],
+extern void          spkcpt_c ( ConstSpiceDouble    trgpos [3],
                                 ConstSpiceChar    * trgctr,
                                 ConstSpiceChar    * trgref,
                                 SpiceDouble         et,
@@ -3714,7 +3718,7 @@ Include Files:
                                 SpiceDouble       * lt          );
 
 
-   void              spkcvo_c ( ConstSpiceChar    * target,
+extern void          spkcvo_c ( ConstSpiceChar    * target,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * outref,
                                 ConstSpiceChar    * refloc,
@@ -3727,7 +3731,7 @@ Include Files:
                                 SpiceDouble       * lt         );
 
 
-   void              spkcvt_c ( ConstSpiceDouble    trgsta [6],
+extern void          spkcvt_c ( ConstSpiceDouble    trgsta [6],
                                 SpiceDouble         trgepc,
                                 ConstSpiceChar    * trgctr,
                                 ConstSpiceChar    * trgref,
@@ -3740,7 +3744,7 @@ Include Files:
                                 SpiceDouble       * lt          );
 
 
-   void              spkez_c  ( SpiceInt            target,
+extern void          spkez_c  ( SpiceInt            target,
                                 SpiceDouble         epoch,
                                 ConstSpiceChar    * frame,
                                 ConstSpiceChar    * abcorr,
@@ -3749,7 +3753,7 @@ Include Files:
                                 SpiceDouble       * lt       );
 
 
-   void              spkezp_c ( SpiceInt            targ,
+extern void          spkezp_c ( SpiceInt            targ,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * ref,
                                 ConstSpiceChar    * abcorr,
@@ -3758,7 +3762,7 @@ Include Files:
                                 SpiceDouble       * lt        );
 
 
-   void              spkezr_c ( ConstSpiceChar    * target,
+extern void          spkezr_c ( ConstSpiceChar    * target,
                                 SpiceDouble         epoch,
                                 ConstSpiceChar    * frame,
                                 ConstSpiceChar    * abcorr,
@@ -3767,7 +3771,7 @@ Include Files:
                                 SpiceDouble       * lt       );
 
 
-   void              spkgeo_c ( SpiceInt            targ,
+extern void          spkgeo_c ( SpiceInt            targ,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * ref,
                                 SpiceInt            obs,
@@ -3775,7 +3779,7 @@ Include Files:
                                 SpiceDouble       * lt       );
 
 
-   void              spkgps_c ( SpiceInt            targ,
+extern void          spkgps_c ( SpiceInt            targ,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * ref,
                                 SpiceInt            obs,
@@ -3783,11 +3787,11 @@ Include Files:
                                 SpiceDouble       * lt     );
 
 
-   void              spklef_c ( ConstSpiceChar    * filename,
+extern void          spklef_c ( ConstSpiceChar    * filename,
                                 SpiceInt          * handle   );
 
 
-   void              spkltc_c ( SpiceInt            targ,
+extern void          spkltc_c ( SpiceInt            targ,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * ref,
                                 ConstSpiceChar    * abcorr,
@@ -3797,21 +3801,21 @@ Include Files:
                                 SpiceDouble       * dlt      );
 
 
-   void              spkobj_c ( ConstSpiceChar    * spk,
+extern void          spkobj_c ( ConstSpiceChar    * spk,
                                 SpiceCell         * ids );
 
 
-   void              spkopa_c ( ConstSpiceChar    * file,
+extern void          spkopa_c ( ConstSpiceChar    * file,
                                 SpiceInt          * handle );
 
 
-   void              spkopn_c ( ConstSpiceChar    * name,
+extern void          spkopn_c ( ConstSpiceChar    * name,
                                 ConstSpiceChar    * ifname,
                                 SpiceInt            ncomch,
                                 SpiceInt          * handle  );
 
 
-   void              spkpds_c ( SpiceInt            body,
+extern void          spkpds_c ( SpiceInt            body,
                                 SpiceInt            center,
                                 ConstSpiceChar    * frame,
                                 SpiceInt            type,
@@ -3820,7 +3824,7 @@ Include Files:
                                 SpiceDouble         descr[5] );
 
 
-   void              spkpos_c ( ConstSpiceChar    * targ,
+extern void          spkpos_c ( ConstSpiceChar    * targ,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * ref,
                                 ConstSpiceChar    * abcorr,
@@ -3829,7 +3833,7 @@ Include Files:
                                 SpiceDouble       * lt        );
 
 
-   void              spkpvn_c ( SpiceInt            handle,
+extern void          spkpvn_c ( SpiceInt            handle,
                                 ConstSpiceDouble    descr [5],
                                 SpiceDouble         et,
                                 SpiceInt          * ref,
@@ -3837,7 +3841,7 @@ Include Files:
                                 SpiceInt          * center    );
 
 
-   void              spksfs_c ( SpiceInt            body,
+extern void          spksfs_c ( SpiceInt            body,
                                 SpiceDouble         et,
                                 SpiceInt            idlen,
                                 SpiceInt          * handle,
@@ -3846,13 +3850,13 @@ Include Files:
                                 SpiceBoolean      * found  );
 
 
-   void              spkssb_c ( SpiceInt            targ,
+extern void          spkssb_c ( SpiceInt            targ,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * ref,
                                 SpiceDouble         starg[6] );
 
 
-   void              spksub_c ( SpiceInt            handle,
+extern void          spksub_c ( SpiceInt            handle,
                                 SpiceDouble         descr[5],
                                 ConstSpiceChar    * ident,
                                 SpiceDouble         begin,
@@ -3860,7 +3864,7 @@ Include Files:
                                 SpiceInt            newh    );
 
 
-   void              spkuds_c ( ConstSpiceDouble    descr [5],
+extern void          spkuds_c ( ConstSpiceDouble    descr [5],
                                 SpiceInt          * body,
                                 SpiceInt          * center,
                                 SpiceInt          * frame,
@@ -3871,10 +3875,10 @@ Include Files:
                                 SpiceInt          * end     );
 
 
-   void              spkuef_c ( SpiceInt             handle );
+extern void          spkuef_c ( SpiceInt             handle );
 
 
-   void              spkw02_c ( SpiceInt             handle,
+extern void          spkw02_c ( SpiceInt             handle,
                                 SpiceInt             body,
                                 SpiceInt             center,
                                 ConstSpiceChar     * frame,
@@ -3888,7 +3892,7 @@ Include Files:
                                 SpiceDouble          btime     );
 
 
-   void              spkw03_c ( SpiceInt             handle,
+extern void          spkw03_c ( SpiceInt             handle,
                                 SpiceInt             body,
                                 SpiceInt             center,
                                 ConstSpiceChar     * frame,
@@ -3902,7 +3906,7 @@ Include Files:
                                 SpiceDouble          btime     );
 
 
-   void              spkw05_c ( SpiceInt             handle,
+extern void          spkw05_c ( SpiceInt             handle,
                                 SpiceInt             body,
                                 SpiceInt             center,
                                 ConstSpiceChar     * frame,
@@ -3915,7 +3919,7 @@ Include Files:
                                 ConstSpiceDouble     epochs []     );
 
 
-   void              spkw08_c ( SpiceInt             handle,
+extern void          spkw08_c ( SpiceInt             handle,
                                 SpiceInt             body,
                                 SpiceInt             center,
                                 ConstSpiceChar     * frame,
@@ -3929,7 +3933,7 @@ Include Files:
                                 SpiceDouble          step         );
 
 
-   void              spkw09_c ( SpiceInt             handle,
+extern void          spkw09_c ( SpiceInt             handle,
                                 SpiceInt             body,
                                 SpiceInt             center,
                                 ConstSpiceChar     * frame,
@@ -3942,7 +3946,7 @@ Include Files:
                                 ConstSpiceDouble     epochs[]     );
 
 
-   void              spkw10_c ( SpiceInt             handle,
+extern void          spkw10_c ( SpiceInt             handle,
                                 SpiceInt             body,
                                 SpiceInt             center,
                                 ConstSpiceChar     * frame,
@@ -3955,7 +3959,7 @@ Include Files:
                                 ConstSpiceDouble     epochs []  );
 
 
-   void              spkw12_c ( SpiceInt             handle,
+extern void          spkw12_c ( SpiceInt             handle,
                                 SpiceInt             body,
                                 SpiceInt             center,
                                 ConstSpiceChar     * frame,
@@ -3969,7 +3973,7 @@ Include Files:
                                 SpiceDouble          step        );
 
 
-   void              spkw13_c ( SpiceInt             handle,
+extern void          spkw13_c ( SpiceInt             handle,
                                 SpiceInt             body,
                                 SpiceInt             center,
                                 ConstSpiceChar     * frame,
@@ -3982,7 +3986,7 @@ Include Files:
                                 ConstSpiceDouble     epochs[]     );
 
 
-   void              spkw15_c ( SpiceInt             handle,
+extern void          spkw15_c ( SpiceInt             handle,
                                 SpiceInt             body,
                                 SpiceInt             center,
                                 ConstSpiceChar     * frame,
@@ -4001,7 +4005,7 @@ Include Files:
                                 SpiceDouble          radius     );
 
 
-   void              spkw17_c ( SpiceInt             handle,
+extern void          spkw17_c ( SpiceInt             handle,
                                 SpiceInt             body,
                                 SpiceInt             center,
                                 ConstSpiceChar     * frame,
@@ -4014,7 +4018,7 @@ Include Files:
                                 SpiceDouble          decpol      );
 
 
-   void              spkw18_c ( SpiceInt             handle,
+extern void          spkw18_c ( SpiceInt             handle,
                                 SpiceSPK18Subtype    subtyp,
                                 SpiceInt             body,
                                 SpiceInt             center,
@@ -4028,7 +4032,7 @@ Include Files:
                                 ConstSpiceDouble     epochs[]     );
 
 
-   void             spkw20_c  ( SpiceInt             handle,
+extern void         spkw20_c  ( SpiceInt             handle,
                                 SpiceInt             body,
                                 SpiceInt             center,
                                 ConstSpiceChar     * frame,
@@ -4046,27 +4050,27 @@ Include Files:
 
 
 
-   void              srfrec_c ( SpiceInt            body,
+extern void          srfrec_c ( SpiceInt            body,
                                 SpiceDouble         lon,
                                 SpiceDouble         lat,
                                 SpiceDouble         rectan[3] );
 
 
-   void              srfc2s_c ( SpiceInt             code,
+extern void          srfc2s_c ( SpiceInt             code,
                                 SpiceInt             bodyid,
                                 SpiceInt             srflen,
                                 SpiceChar          * srfstr,
                                 SpiceBoolean       * isname  );
 
 
-   void              srfcss_c ( SpiceInt             code,
+extern void          srfcss_c ( SpiceInt             code,
                                 ConstSpiceChar     * bodstr,
                                 SpiceInt             srflen,
                                 SpiceChar          * srfstr,
                                 SpiceBoolean       * isname  );
 
 
-   void              srfnrm_c ( ConstSpiceChar     * method,
+extern void          srfnrm_c ( ConstSpiceChar     * method,
                                 ConstSpiceChar     * target,
                                 SpiceDouble          et,
                                 ConstSpiceChar     * fixref,
@@ -4075,19 +4079,19 @@ Include Files:
                                 SpiceDouble          normls[][3]  );
 
 
-   void              srfs2c_c ( ConstSpiceChar     * srfstr,
+extern void          srfs2c_c ( ConstSpiceChar     * srfstr,
                                 ConstSpiceChar     * bodstr,
                                 SpiceInt           * code,
                                 SpiceBoolean       * found  );
 
 
-   void              srfscc_c ( ConstSpiceChar     * surfce,
+extern void          srfscc_c ( ConstSpiceChar     * surfce,
                                 SpiceInt             bodyid,
                                 SpiceInt           * surfid,
                                 SpiceBoolean       * found  );
 
 
-   void              srfxpt_c ( ConstSpiceChar    * method,
+extern void          srfxpt_c ( ConstSpiceChar    * method,
                                 ConstSpiceChar    * target,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * abcorr,
@@ -4101,16 +4105,16 @@ Include Files:
                                 SpiceBoolean      * found         );
 
 
-   void              ssize_c  ( SpiceInt             size,
+extern void          ssize_c  ( SpiceInt             size,
                                 SpiceCell          * cell  );
 
 
-   void              stelab_c ( ConstSpiceDouble    pobj[3],
+extern void          stelab_c ( ConstSpiceDouble    pobj[3],
                                 ConstSpiceDouble    vobs[3],
                                 SpiceDouble         appobj[3] );
 
 
-   void              stpool_c ( ConstSpiceChar    * item,
+extern void          stpool_c ( ConstSpiceChar    * item,
                                 SpiceInt            nth,
                                 ConstSpiceChar    * contin,
                                 SpiceInt            lenout,
@@ -4119,11 +4123,11 @@ Include Files:
                                 SpiceBoolean      * found  );
 
 
-   void              str2et_c ( ConstSpiceChar    * date,
+extern void          str2et_c ( ConstSpiceChar    * date,
                                 SpiceDouble       * et   );
 
 
-   void              subpnt_c ( ConstSpiceChar    * method,
+extern void          subpnt_c ( ConstSpiceChar    * method,
                                 ConstSpiceChar    * target,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * fixref,
@@ -4134,7 +4138,7 @@ Include Files:
                                 SpiceDouble         srfvec [3] );
 
 
-   void              subpt_c  ( ConstSpiceChar    * method,
+extern void          subpt_c  ( ConstSpiceChar    * method,
                                 ConstSpiceChar    * target,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * abcorr,
@@ -4142,7 +4146,7 @@ Include Files:
                                 SpiceDouble         spoint [3],
                                 SpiceDouble       * alt         );
 
-   void              subpt_pl02( SpiceInt               handle,
+extern void          subpt_pl02( SpiceInt               handle,
                                  ConstSpiceDLADescr   * dladsc,
                                  ConstSpiceChar       * method,
                                  ConstSpiceChar       * target,
@@ -4154,7 +4158,7 @@ Include Files:
                                  SpiceInt             * plateID     );
 
 
-   void              subslr_c ( ConstSpiceChar    * method,
+extern void          subslr_c ( ConstSpiceChar    * method,
                                 ConstSpiceChar    * target,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * fixref,
@@ -4165,7 +4169,7 @@ Include Files:
                                 SpiceDouble         srfvec [3] );
 
 
-   void              subsol_c ( ConstSpiceChar    * method,
+extern void          subsol_c ( ConstSpiceChar    * method,
                                 ConstSpiceChar    * target,
                                 SpiceDouble         et,
                                 ConstSpiceChar    * abcorr,
@@ -4173,7 +4177,7 @@ Include Files:
                                 SpiceDouble         spoint[3] );
 
 
-   void              subsol_pl02 ( SpiceInt               handle,
+extern void          subsol_pl02 ( SpiceInt               handle,
                                    ConstSpiceDLADescr   * dladsc,
                                    ConstSpiceChar       * method,
                                    ConstSpiceChar       * target,
@@ -4185,22 +4189,22 @@ Include Files:
                                    SpiceInt             * plateID   );
 
 
-   SpiceDouble       sumad_c  ( ConstSpiceDouble    array[],
+extern SpiceDouble   sumad_c  ( ConstSpiceDouble    array[],
                                 SpiceInt            n        );
 
 
-   SpiceInt          sumai_c  ( ConstSpiceInt       array[],
+extern SpiceInt      sumai_c  ( ConstSpiceInt       array[],
                                 SpiceInt            n        );
 
 
-   void              surfnm_c ( SpiceDouble         a,
+extern void          surfnm_c ( SpiceDouble         a,
                                 SpiceDouble         b,
                                 SpiceDouble         c,
                                 ConstSpiceDouble    point[3],
                                 SpiceDouble         normal[3] );
 
 
-   void              surfpt_c ( ConstSpiceDouble    positn[3],
+extern void          surfpt_c ( ConstSpiceDouble    positn[3],
                                 ConstSpiceDouble    u[3],
                                 SpiceDouble         a,
                                 SpiceDouble         b,
@@ -4209,7 +4213,7 @@ Include Files:
                                 SpiceBoolean      * found     );
 
 
-   void              surfpv_c ( ConstSpiceDouble    stvrtx[6],
+extern void          surfpv_c ( ConstSpiceDouble    stvrtx[6],
                                 ConstSpiceDouble    stdir [6],
                                 SpiceDouble         a,
                                 SpiceDouble         b,
@@ -4218,24 +4222,24 @@ Include Files:
                                 SpiceBoolean      * found      );
 
 
-   void              swpool_c ( ConstSpiceChar    * agent,
+extern void          swpool_c ( ConstSpiceChar    * agent,
                                 SpiceInt            nnames,
                                 SpiceInt            lenvals,
                                 const void        * names   );
 
 
-   void              sxform_c ( ConstSpiceChar    * from,
+extern void          sxform_c ( ConstSpiceChar    * from,
                                 ConstSpiceChar    * to,
                                 SpiceDouble         et,
                                 SpiceDouble         xform[6][6] );
 
 
-   void              szpool_c ( ConstSpiceChar    * name,
+extern void          szpool_c ( ConstSpiceChar    * name,
                                 SpiceInt          * n,
                                 SpiceBoolean      * found );
 
 
-   void              term_pl02 ( SpiceInt              handle,
+extern void          term_pl02 ( SpiceInt              handle,
                                  ConstSpiceDLADescr  * dladsc,
                                  ConstSpiceChar      * trmtyp,
                                  ConstSpiceChar      * source,
@@ -4251,7 +4255,7 @@ Include Files:
                                  SpiceInt              plateIDs []     );
 
 
-   void              termpt_c ( ConstSpiceChar    * method,
+extern void          termpt_c ( ConstSpiceChar    * method,
                                 ConstSpiceChar    * ilusrc,
                                 ConstSpiceChar    * target,
                                 SpiceDouble         et,
@@ -4271,40 +4275,40 @@ Include Files:
                                 SpiceDouble         tangts[][3]  );
 
 
-   void              timdef_c ( ConstSpiceChar    * action,
+extern void          timdef_c ( ConstSpiceChar    * action,
                                 ConstSpiceChar    * item,
                                 SpiceInt            lenout,
                                 SpiceChar         * value );
 
 
-   void              timout_c ( SpiceDouble         et,
+extern void          timout_c ( SpiceDouble         et,
                                 ConstSpiceChar    * pictur,
                                 SpiceInt            lenout,
                                 SpiceChar         * output );
 
 
-   void              tipbod_c ( ConstSpiceChar    * ref,
+extern void          tipbod_c ( ConstSpiceChar    * ref,
                                 SpiceInt            body,
                                 SpiceDouble         et,
                                 SpiceDouble         tipm[3][3] );
 
 
-   void              tisbod_c ( ConstSpiceChar    * ref,
+extern void          tisbod_c ( ConstSpiceChar    * ref,
                                 SpiceInt            body,
                                 SpiceDouble         et,
                                 SpiceDouble         tsipm[6][6] );
 
 
-   ConstSpiceChar  * tkvrsn_c ( ConstSpiceChar    * item );
+extern ConstSpiceChar  * tkvrsn_c ( ConstSpiceChar    * item );
 
 
-   void              tparse_c ( ConstSpiceChar    * string,
+extern void          tparse_c ( ConstSpiceChar    * string,
                                 SpiceInt            lenout,
                                 SpiceDouble       * sp2000,
                                 SpiceChar         * errmsg  );
 
 
-   void              tpictr_c ( ConstSpiceChar    * sample,
+extern void          tpictr_c ( ConstSpiceChar    * sample,
                                 SpiceInt            lenpictur,
                                 SpiceInt            lenerror,
                                 SpiceChar         * pictur,
@@ -4312,47 +4316,47 @@ Include Files:
                                 SpiceChar         * error     );
 
 
-   SpiceDouble       trace_c  ( ConstSpiceDouble    matrix[3][3] );
+extern SpiceDouble   trace_c  ( ConstSpiceDouble    matrix[3][3] );
 
 
-   void              trcdep_c ( SpiceInt          * depth );
+extern void          trcdep_c ( SpiceInt          * depth );
 
 
-   void              trcnam_c ( SpiceInt            index,
+extern void          trcnam_c ( SpiceInt            index,
                                 SpiceInt            namelen,
                                 SpiceChar         * name     );
 
 
-   void              trcoff_c ( void );
+extern void          trcoff_c ( void );
 
 
-   void              tsetyr_c ( SpiceInt            year );
+extern void          tsetyr_c ( SpiceInt            year );
 
 
-   SpiceDouble       twopi_c  ( void );
+extern SpiceDouble   twopi_c  ( void );
 
 
-   void              twovec_c ( ConstSpiceDouble    axdef  [3],
+extern void          twovec_c ( ConstSpiceDouble    axdef  [3],
                                 SpiceInt            indexa,
                                 ConstSpiceDouble    plndef [3],
                                 SpiceInt            indexp,
                                 SpiceDouble         mout   [3][3] );
 
 
-   SpiceDouble       tyear_c  ( void );
+extern SpiceDouble   tyear_c  ( void );
 
 
-   void              ucase_c  ( SpiceChar         * in,
+extern void          ucase_c  ( SpiceChar         * in,
                                 SpiceInt            lenout,
                                 SpiceChar         * out    );
 
 
-   void              ucrss_c  ( ConstSpiceDouble    v1[3],
+extern void          ucrss_c  ( ConstSpiceDouble    v1[3],
                                 ConstSpiceDouble    v2[3],
                                 SpiceDouble         vout[3] );
 
 
-   void              uddc_c ( void       ( * udfunc ) ( SpiceDouble    x,
+extern void          uddc_c ( void       ( * udfunc ) ( SpiceDouble    x,
                                                         SpiceDouble  * value ),
 
                               SpiceDouble    x,
@@ -4360,108 +4364,108 @@ Include Files:
                               SpiceBoolean * isdecr );
 
 
-   void              uddf_c ( void       ( * udfunc ) ( SpiceDouble    x,
+extern void          uddf_c ( void       ( * udfunc ) ( SpiceDouble    x,
                                                         SpiceDouble  * value ),
                               SpiceDouble    x,
                               SpiceDouble    dx,
                               SpiceDouble  * deriv );
 
 
-   void              udf_c   ( SpiceDouble   x,
+extern void          udf_c   ( SpiceDouble   x,
                                SpiceDouble * value );
 
 
-   void              union_c  ( SpiceCell          * a,
+extern void          union_c  ( SpiceCell          * a,
                                 SpiceCell          * b,
                                 SpiceCell          * c  );
 
 
-   SpiceDouble       unitim_c ( SpiceDouble         epoch,
+extern SpiceDouble   unitim_c ( SpiceDouble         epoch,
                                 ConstSpiceChar    * insys,
                                 ConstSpiceChar    * outsys );
 
 
-   void              unload_c ( ConstSpiceChar   * file );
+extern void          unload_c ( ConstSpiceChar   * file );
 
 
-   void              unorm_c  ( ConstSpiceDouble    v1[3],
+extern void          unorm_c  ( ConstSpiceDouble    v1[3],
                                 SpiceDouble         vout[3],
                                 SpiceDouble       * vmag    );
 
 
-   void              unormg_c ( ConstSpiceDouble  * v1,
+extern void          unormg_c ( ConstSpiceDouble  * v1,
                                 SpiceInt            ndim,
                                 SpiceDouble       * vout,
                                 SpiceDouble       * vmag );
 
 
-   void              utc2et_c ( ConstSpiceChar    * utcstr,
+extern void          utc2et_c ( ConstSpiceChar    * utcstr,
                                 SpiceDouble       * et   );
 
 
-   void              vadd_c   ( ConstSpiceDouble    v1[3],
+extern void          vadd_c   ( ConstSpiceDouble    v1[3],
                                 ConstSpiceDouble    v2[3],
                                 SpiceDouble         vout[3] ) ;
 
 
-   void              vaddg_c  ( ConstSpiceDouble  * v1,
+extern void          vaddg_c  ( ConstSpiceDouble  * v1,
                                 ConstSpiceDouble  * v2,
                                 SpiceInt            ndim,
                                 SpiceDouble       * vout );
 
 
-   void              valid_c  ( SpiceInt             size,
+extern void          valid_c  ( SpiceInt             size,
                                 SpiceInt             n,
                                 SpiceCell          * a    );
 
 
-   void              vcrss_c  ( ConstSpiceDouble    v1[3],
+extern void          vcrss_c  ( ConstSpiceDouble    v1[3],
                                 ConstSpiceDouble    v2[3],
                                 SpiceDouble         vout[3] );
 
 
-   SpiceDouble       vdist_c  ( ConstSpiceDouble    v1[3],
+extern SpiceDouble   vdist_c  ( ConstSpiceDouble    v1[3],
                                 ConstSpiceDouble    v2[3] );
 
 
-   SpiceDouble       vdistg_c ( ConstSpiceDouble  * v1,
+extern SpiceDouble   vdistg_c ( ConstSpiceDouble  * v1,
                                 ConstSpiceDouble  * v2,
                                 SpiceInt            ndim );
 
 
-   SpiceDouble       vdot_c   ( ConstSpiceDouble    v1[3],
+extern SpiceDouble   vdot_c   ( ConstSpiceDouble    v1[3],
                                 ConstSpiceDouble    v2[3] );
 
-   SpiceDouble       vdotg_c  ( ConstSpiceDouble  * v1,
+extern SpiceDouble   vdotg_c  ( ConstSpiceDouble  * v1,
                                 ConstSpiceDouble  * v2,
                                 SpiceInt            ndim );
 
-   void              vequ_c   ( ConstSpiceDouble    vin[3],
+extern void          vequ_c   ( ConstSpiceDouble    vin[3],
                                 SpiceDouble         vout[3] );
 
 
-   void              vequg_c  ( ConstSpiceDouble  * vin,
+extern void          vequg_c  ( ConstSpiceDouble  * vin,
                                 SpiceInt            ndim,
                                 SpiceDouble       * vout );
 
 
-   void              vhat_c   ( ConstSpiceDouble    v1  [3],
+extern void          vhat_c   ( ConstSpiceDouble    v1  [3],
                                 SpiceDouble         vout[3] );
 
 
-   void              vhatg_c  ( ConstSpiceDouble  * v1,
+extern void          vhatg_c  ( ConstSpiceDouble  * v1,
                                 SpiceInt            ndim,
                                 SpiceDouble       * vout  );
 
 
-   void              vlcom_c  ( SpiceDouble         a,
+extern void          vlcom_c  ( SpiceDouble         a,
                                 ConstSpiceDouble    v1[3],
                                 SpiceDouble         b,
                                 ConstSpiceDouble    v2[3],
                                 SpiceDouble         sum[3] );
 
 
-   void              vlcom3_c ( SpiceDouble         a,
+extern void          vlcom3_c ( SpiceDouble         a,
                                 ConstSpiceDouble    v1[3],
                                 SpiceDouble         b,
                                 ConstSpiceDouble    v2[3],
@@ -4470,7 +4474,7 @@ Include Files:
                                 SpiceDouble         sum[3] );
 
 
-   void              vlcomg_c ( SpiceInt            n,
+extern void          vlcomg_c ( SpiceInt            n,
                                 SpiceDouble         a,
                                 ConstSpiceDouble  * v1,
                                 SpiceDouble         b,
@@ -4478,185 +4482,185 @@ Include Files:
                                 SpiceDouble       * sum );
 
 
-   void              vminug_c ( ConstSpiceDouble  * vin,
+extern void          vminug_c ( ConstSpiceDouble  * vin,
                                 SpiceInt            ndim,
                                 SpiceDouble       * vout );
 
 
-   void              vminus_c ( ConstSpiceDouble    v1[3],
+extern void          vminus_c ( ConstSpiceDouble    v1[3],
                                 SpiceDouble         vout[3] );
 
 
-   SpiceDouble       vnorm_c  ( ConstSpiceDouble    v1[3] );
+extern SpiceDouble   vnorm_c  ( ConstSpiceDouble    v1[3] );
 
 
-   SpiceDouble       vnormg_c ( ConstSpiceDouble  * v1,
+extern SpiceDouble   vnormg_c ( ConstSpiceDouble  * v1,
                                 SpiceInt            ndim );
 
 
-   void              vpack_c  ( SpiceDouble         x,
+extern void          vpack_c  ( SpiceDouble         x,
                                 SpiceDouble         y,
                                 SpiceDouble         z,
                                 SpiceDouble         v[3] );
 
 
-   void              vperp_c  ( ConstSpiceDouble    a[3],
+extern void          vperp_c  ( ConstSpiceDouble    a[3],
                                 ConstSpiceDouble    b[3],
                                 SpiceDouble         p[3] );
 
 
-   void              vprjp_c  ( ConstSpiceDouble    vin   [3],
+extern void          vprjp_c  ( ConstSpiceDouble    vin   [3],
                                 ConstSpicePlane   * plane,
                                 SpiceDouble         vout  [3] );
 
 
-   void              vprjpi_c ( ConstSpiceDouble    vin    [3],
+extern void          vprjpi_c ( ConstSpiceDouble    vin    [3],
                                 ConstSpicePlane   * projpl,
                                 ConstSpicePlane   * invpl,
                                 SpiceDouble         vout   [3],
                                 SpiceBoolean      * found       );
 
 
-   void              vproj_c  ( ConstSpiceDouble    a[3],
+extern void          vproj_c  ( ConstSpiceDouble    a[3],
                                 ConstSpiceDouble    b[3],
                                 SpiceDouble         p[3] );
 
 
-   SpiceDouble       vrel_c   ( ConstSpiceDouble    v1[3],
+extern SpiceDouble   vrel_c   ( ConstSpiceDouble    v1[3],
                                 ConstSpiceDouble    v2[3]  );
 
 
-   SpiceDouble       vrelg_c  ( ConstSpiceDouble  * v1,
+extern SpiceDouble   vrelg_c  ( ConstSpiceDouble  * v1,
                                 ConstSpiceDouble  * v2,
                                 SpiceInt            ndim  );
 
 
-   void              vrotv_c  ( ConstSpiceDouble    v[3],
+extern void          vrotv_c  ( ConstSpiceDouble    v[3],
                                 ConstSpiceDouble    axis[3],
                                 SpiceDouble         theta,
                                 SpiceDouble         r[3] );
 
 
-   void              vscl_c   ( SpiceDouble         s,
+extern void          vscl_c   ( SpiceDouble         s,
                                 ConstSpiceDouble    v1[3],
                                 SpiceDouble         vout[3] );
 
 
-   void              vsclg_c  ( SpiceDouble         s,
+extern void          vsclg_c  ( SpiceDouble         s,
                                 ConstSpiceDouble  * v1,
                                 SpiceInt            ndim,
                                 SpiceDouble       * vout  );
 
 
-   SpiceDouble       vsep_c   ( ConstSpiceDouble    v1[3],
+extern SpiceDouble   vsep_c   ( ConstSpiceDouble    v1[3],
                                 ConstSpiceDouble    v2[3] );
 
 
-   void              vsub_c   ( ConstSpiceDouble    v1[3],
+extern void          vsub_c   ( ConstSpiceDouble    v1[3],
                                 ConstSpiceDouble    v2[3],
                                 SpiceDouble         vout[3] );
 
 
-   void              vsubg_c  ( ConstSpiceDouble  * v1,
+extern void          vsubg_c  ( ConstSpiceDouble  * v1,
                                 ConstSpiceDouble  * v2,
                                 SpiceInt            ndim,
                                 SpiceDouble       * vout  );
 
 
-   SpiceDouble       vsepg_c  ( ConstSpiceDouble  * v1,
+extern SpiceDouble   vsepg_c  ( ConstSpiceDouble  * v1,
                                 ConstSpiceDouble  * v2,
                                 SpiceInt            ndim );
 
 
-   SpiceDouble       vtmv_c   ( ConstSpiceDouble    v1     [3],
+extern SpiceDouble   vtmv_c   ( ConstSpiceDouble    v1     [3],
                                 ConstSpiceDouble    matrix [3][3],
                                 ConstSpiceDouble    v2     [3]    );
 
 
-   SpiceDouble       vtmvg_c  ( const void        * v1,
+extern SpiceDouble   vtmvg_c  ( const void        * v1,
                                 const void        * matrix,
                                 const void        * v2,
                                 SpiceInt            nrow,
                                 SpiceInt            ncol          );
 
 
-   void              vupack_c ( ConstSpiceDouble    v[3],
+extern void          vupack_c ( ConstSpiceDouble    v[3],
                                 SpiceDouble       * x,
                                 SpiceDouble       * y,
                                 SpiceDouble       * z     );
 
-   SpiceBoolean      vzero_c  ( ConstSpiceDouble     v[3] );
+extern SpiceBoolean  vzero_c  ( ConstSpiceDouble     v[3] );
 
 
-   SpiceBoolean      vzerog_c ( ConstSpiceDouble  * v,
+extern SpiceBoolean  vzerog_c ( ConstSpiceDouble  * v,
                                 SpiceInt            ndim );
 
-   SpiceInt          wncard_c ( SpiceCell          * window );
+extern SpiceInt      wncard_c ( SpiceCell          * window );
 
-   void              wncomd_c ( SpiceDouble          left,
+extern void          wncomd_c ( SpiceDouble          left,
                                 SpiceDouble          right,
                                 SpiceCell          * window,
                                 SpiceCell          * result );
 
 
-   void              wncond_c ( SpiceDouble          left,
+extern void          wncond_c ( SpiceDouble          left,
                                 SpiceDouble          right,
                                 SpiceCell          * window );
 
 
-   void              wndifd_c ( SpiceCell          * a,
+extern void          wndifd_c ( SpiceCell          * a,
                                 SpiceCell          * b,
                                  SpiceCell         * c  );
 
 
-   SpiceBoolean      wnelmd_c ( SpiceDouble          point,
+extern SpiceBoolean  wnelmd_c ( SpiceDouble          point,
                                 SpiceCell          * window );
 
 
-   void              wnexpd_c ( SpiceDouble          left,
+extern void          wnexpd_c ( SpiceDouble          left,
                                 SpiceDouble          right,
                                 SpiceCell          * window );
 
 
-   void              wnextd_c ( SpiceChar            side,
+extern void          wnextd_c ( SpiceChar            side,
                                 SpiceCell          * window );
 
 
-   void              wnfetd_c ( SpiceCell          * window,
+extern void          wnfetd_c ( SpiceCell          * window,
                                 SpiceInt             n,
                                 SpiceDouble        * left,
                                 SpiceDouble        * right   );
 
 
-   void              wnfild_c ( SpiceDouble          sml,
+extern void          wnfild_c ( SpiceDouble          sml,
                                 SpiceCell          * window );
 
 
-   void              wnfltd_c ( SpiceDouble          sml,
+extern void          wnfltd_c ( SpiceDouble          sml,
                                 SpiceCell          * window );
 
 
-   SpiceBoolean      wnincd_c ( SpiceDouble          left,
+extern SpiceBoolean  wnincd_c ( SpiceDouble          left,
                                 SpiceDouble          right,
                                 SpiceCell          * window  );
 
 
-   void              wninsd_c ( SpiceDouble          left,
+extern void          wninsd_c ( SpiceDouble          left,
                                 SpiceDouble          right,
                                 SpiceCell          * window );
 
 
-   void              wnintd_c ( SpiceCell          * a,
+extern void          wnintd_c ( SpiceCell          * a,
                                 SpiceCell          * b,
                                 SpiceCell          * c  );
 
 
-   SpiceBoolean      wnreld_c ( SpiceCell          * a,
+extern SpiceBoolean  wnreld_c ( SpiceCell          * a,
                                 ConstSpiceChar     * op,
                                 SpiceCell          * b   );
 
 
-   void              wnsumd_c ( SpiceCell          * window,
+extern void          wnsumd_c ( SpiceCell          * window,
                                 SpiceDouble        * meas,
                                 SpiceDouble        * avg,
                                 SpiceDouble        * stddev,
@@ -4664,18 +4668,18 @@ Include Files:
                                 SpiceInt           * longest   );
 
 
-   void              wnunid_c ( SpiceCell          * a,
+extern void          wnunid_c ( SpiceCell          * a,
                                 SpiceCell          * b,
                                 SpiceCell          * c  );
 
 
-   void              wnvald_c ( SpiceInt             size,
+extern void          wnvald_c ( SpiceInt             size,
                                 SpiceInt             n,
                                 SpiceCell          * window );
 
 
 
-   void              xf2eul_c ( ConstSpiceDouble     xform  [6][6],
+extern void          xf2eul_c ( ConstSpiceDouble     xform  [6][6],
                                 SpiceInt             axisa,
                                 SpiceInt             axisb,
                                 SpiceInt             axisc,
@@ -4683,42 +4687,42 @@ Include Files:
                                 SpiceBoolean       * unique         );
 
 
-   void              xf2rav_c ( ConstSpiceDouble     xform [6][6],
+extern void          xf2rav_c ( ConstSpiceDouble     xform [6][6],
                                 SpiceDouble          rot   [3][3],
                                 SpiceDouble          av    [3]     );
 
-   void              xfmsta_c ( ConstSpiceDouble     input_state  [6],
+extern void          xfmsta_c ( ConstSpiceDouble     input_state  [6],
                                 ConstSpiceChar    *  input_coord_sys,
                                 ConstSpiceChar    *  output_coord_sys,
                                 ConstSpiceChar    *  body,
                                 SpiceDouble          output_state [6] );
 
-   void              xpose_c  ( ConstSpiceDouble    m1  [3][3],
+extern void          xpose_c  ( ConstSpiceDouble    m1  [3][3],
                                 SpiceDouble         mout[3][3] );
 
 
-   void              xpose6_c ( ConstSpiceDouble    m1  [6][6],
+extern void          xpose6_c ( ConstSpiceDouble    m1  [6][6],
                                 SpiceDouble         mout[6][6] );
 
 
-   void              xposeg_c ( const void        * matrix,
+extern void          xposeg_c ( const void        * matrix,
                                 SpiceInt            nrow,
                                 SpiceInt            ncol,
                                 void              * xposem );
 
 
-   void              zzgetcml_c( SpiceInt          * argc,
+extern void          zzgetcml_c( SpiceInt          * argc,
                                  SpiceChar       *** argv,
                                  SpiceBoolean        init );
 
 
-   SpiceBoolean      zzgfgeth_c ( void );
+extern SpiceBoolean  zzgfgeth_c ( void );
 
 
-   void              zzgfsavh_c( SpiceBoolean        status );
+extern void          zzgfsavh_c( SpiceBoolean        status );
 
 
-   void              zzsynccl_c( SpiceTransDir       xdir,
+extern void          zzsynccl_c( SpiceTransDir       xdir,
                                  SpiceCell         * cell );
 
 

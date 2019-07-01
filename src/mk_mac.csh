@@ -37,7 +37,7 @@
 #         them and add their objects to locallib.a.  Create a C main
 #         program file from the uniform CSPICE main program main.x.
 #         Compile this main program and link its object with locallib.a,
-#         ../../cspice.a and ../../csupport.a. The output
+#         ../cspice.a and ../csupport.a. The output
 #         executables have an empty extension.  The executables are
 #         placed in the "exe" directory in the tree above.
 #
@@ -77,41 +77,6 @@
 #
 
 
-#
-#   If there are any main programs in the directory, prepare them
-#   for use together with the "uniform" main.x routine.  We copy
-#   each main program to a file whose name terminates in _main.c.
-#   We then make a copy of main.x having its name made of the tail of
-#   the original .pgm file and an extension of .px.  When we compile
-#   the main programs, we'll look for this .px extension rather than
-#   the orginal .pgm.
-#
-
-\ls *.pgm >& /dev/null
-
-if ( $status == 0 ) then
-
-    echo " "
-
-    foreach MAIN ( *.pgm )
-
-#
-#   Copy the orginal source file for the main program into a regular
-#   source file which will be included in the local library.
-#
-#   Create a "main" source file having the name <product>.px
-#   from the generic main program source file main.x.
-#
-    set STEM    = $MAIN:r
-    set TARGET  = $STEM.px
-
-    \cp $MAIN  "$STEM"_main.c
-    \cp main.x  $TARGET
-
-endif
-
-
-#
 #  Choose your compiler.
 #
 if ( $?TKCOMPILER ) then
@@ -169,11 +134,9 @@ endif
 echo " "
 
 #
-#   Determine a provisional LIBRARY name.
+#   Set a provisional LIBRARY name.
 #
-foreach item ( `pwd` )
-    set LIBRARY = "../../lib/"$item:t
-end
+set LIBRARY = "../lib/libcspice"
 
 #
 #  Are there any *.c files that need to be compiled?
@@ -195,12 +158,6 @@ echo " "
 #  If object files exist, we need to create an object library.
 #
 
-\ls *.pgm >& /dev/null
-
-if ( $status == 0 ) then
-    set LIBRARY = "locallib"
-endif
-
 \ls *.o >& /dev/null
 
 if ( $status == 0 ) then
@@ -213,57 +170,6 @@ if ( $status == 0 ) then
 
 endif
 
-#
-#  If there are any main programs in the directory, compile
-#  them. If they have their own locallib.a link with it in addition
-#  to the default libraries.
-#
-
-\ls *.pgm >& /dev/null
-
-if ( $status == 0 ) then
-
-    echo " "
-
-    foreach MAIN ( *.px )
-
-       set STEM    = $MAIN:r
-       set TARGET  = $STEM.c
-       set MAINOBJ = $STEM.o
-       set EXECUT = ../../exe/$STEM
-
-       \cp $MAIN $TARGET
-
-       echo "      Compiling and linking: " $MAIN
-
-       if ( -e locallib.a ) then
-
-          $TKCOMPILER    $TKCOMPILEOPTIONS $TARGET
-          $TKCOMPILER -o $EXECUT           $MAINOBJ             \
-                                           locallib.a           \
-                                           ../../lib/csupport.a \
-                                           ../../lib/cspice.a   \
-                                           $TKLINKOPTIONS
-
-          \rm $TARGET
-          \rm $MAINOBJ
-
-       else
-
-          $TKCOMPILER    $TKCOMPILEOPTIONS $TARGET
-          $TKCOMPILER -o $EXECUT           $MAINOBJ             \
-                                           ../../lib/csupport.a \
-                                           ../../lib/cspice.a   \
-                                          $TKLINKOPTIONS
-
-          \rm $TARGET
-          \rm $MAINOBJ
-
-       endif
-
-    end
-
-endif
 
 #
 #  Cleanup.
@@ -275,24 +181,6 @@ echo " "
 
 if ( $status == 0 ) then
     \rm *.o
-endif
-
-\ls *.px >& /dev/null
-
-if ( $status == 0 ) then
-    \rm *.px
-endif
-
-\ls *_main.c >& /dev/null
-
-if ( $status == 0 ) then
-    \rm *_main.c
-endif
-
-\ls locallib.a* >& /dev/null
-
-if ( $status == 0 ) then
-   \rm locallib.a*
 endif
 
 

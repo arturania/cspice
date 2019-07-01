@@ -3245,10 +3245,10 @@ Include Files:
                                 SpiceInt            start   );
 
 
-   void              prefix_c ( ConstSpiceChar    * pref,
-                                SpiceInt            spaces,
-                                SpiceInt            lenout,
-                                SpiceChar         * string  );
+   // void              prefix_c ( ConstSpiceChar    * pref,
+   //                              SpiceInt            spaces,
+   //                              SpiceInt            lenout,
+   //                              SpiceChar         * string  );
 
 
    SpiceChar       * prompt_c ( ConstSpiceChar    * prmptStr,

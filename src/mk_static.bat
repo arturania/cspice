@@ -20,38 +20,43 @@ rem
 rem    Version 1.0.0  29-DEC-1998 (NJB) 
 rem
 
-set cl= /c /O2 -D_COMPLEX_DEFINED -DMSDOS -DOMIT_BLANK_CC -DNON_ANSI_STDIO
+set cl= /c /O2 /I..\include -D_COMPLEX_DEFINED -DMSDOS -DOMIT_BLANK_CC -DNON_ANSI_STDIO
 
 rem 
 rem  The optimization algorithm has a very tough time with zzsecptr.c,
 rem  so exempt this routine from optimization.
 rem 
 
+del mkcspice.log
+del *.obj
+
+rename cspice.c cspice.x
 rename zzsecprt.c zzsecprt.x
 
 rem
 rem  Compile everything else.
 rem
 
-for %%f in (*.c) do cl %%f 
+for %%f in (*.c) do cl %%f >> mkcspice.log
 
 rem
 rem  Set the cl variable to omit optimization.  Compile zzsecprt.c.
 rem 
 
-set cl= /c -D_COMPLEX_DEFINED -DMSDOS -DOMIT_BLANK_CC
+set cl= /c /I..\include -D_COMPLEX_DEFINED -DMSDOS -DOMIT_BLANK_CC
 
 rename zzsecprt.x zzsecprt.c
 
-cl zzsecprt.c 
+cl zzsecprt.c >> mkcspice.log
 
 dir /b *.obj > temp.lst
 
-link -lib /out:cspice.lib  @temp.lst
+link -lib /out:cspice.lib @temp.lst
 
-move cspice.lib  ..\..\lib
+move cspice.lib  ..\lib
 
 del *.obj
 
 del temp.lst
 
+rename cspice.x cspice.c
