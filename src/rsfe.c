@@ -57,7 +57,7 @@
 static logical read_non_native = 0;
 
 logical zzcheckeol ( int ch );
-void    zzsetnnread_( logical * on );
+int     zzsetnnread_( logical * on );
 
 /*
 
@@ -417,9 +417,10 @@ logical zzcheckeol ( int ch )
 -&
 */
 
-void zzsetnnread_( logical * on )
+int zzsetnnread_( logical * on )
    {
    read_non_native = *on;
+   return 0;
    }
 
 

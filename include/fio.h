@@ -5,6 +5,10 @@
 #include "stddef.h"
 #endif
 
+#ifdef __EMSCRIPTEN__
+#include <unistd.h>
+#endif
+
 #ifndef SEEK_SET
 #define SEEK_SET 0
 #define SEEK_CUR 1

@@ -1,6 +1,6 @@
 #! /bin/csh
 #
-#   Mac OS X cc version.
+#   PC-LINUX version.
 #
 #   This script is a more or less generic library/executable
 #   builder for CSPICE products.  It assumes that it is executed
@@ -11,7 +11,7 @@
 #                         |
 #                         |
 #       +------+------+------+------+------+
-#       |      |      |      |      |      |
+#       |      |      |      |      |      | 
 #     data    doc    etc    exe    lib    src
 #                                          |
 #                                          |
@@ -28,20 +28,20 @@
 #         of the library is the same as the name of the product.
 #         The library is placed in the "lib" directory in the tree
 #         above.  The script is then done.
-#
+# 
 #         If there are .pgm files and there were some .c
 #         files compiled the objects are gathered together in the
 #         current directory into a library called locallib.a.
 #
-#     3)  If any *.pgm files exist in the current directory, compile
+#     3)  If any *.pgm files exist in the current directory, compile 
 #         them and add their objects to locallib.a.  Create a C main
 #         program file from the uniform CSPICE main program main.x.
 #         Compile this main program and link its object with locallib.a,
-#         ../cspice.a and ../csupport.a. The output
+#         ../cspice.a and ../csupport.a. The output 
 #         executables have an empty extension.  The executables are
 #         placed in the "exe" directory in the tree above.
-#
-#   The environment variable TKCOMPILEOPTIONS containing compile options
+#         
+#   The environment variable TKCOMPILEOPTIONS containing compile options 
 #   is optionally set. If it is set prior to executing this script,
 #   those options are used. It it is not set, it is set within this
 #   script as a local variable.
@@ -49,9 +49,9 @@
 #   References:
 #   ===========
 #
-#   "Unix Power Tools", page 11.02
+#   "Unix Power Tools", page 11.02 
 #      Use the "\" character to unalias a command temporarily.
-#
+#        
 #   "A Practical Guide to the Unix System"
 #
 #   "The Unix C Shell Field Guide"
@@ -59,84 +59,105 @@
 #   Change History:
 #   ===============
 #
-#   Version 1.2.0  Nov. 14, 2006  Boris Semenov 
+#   Version 6.2.0  Nov. 14, 2006  Boris Semenov 
 #
-#      Added -fPIC compile option.
+#      Added -fPIC and -m32 compile options.
 #
-#   Version 1.1.1  Jul. 30, 2002  Boris Semenov 
+#   Version 6.1.0  October 6, 2005  Boris Semenov
 #
-#      Misc. cleanup: moved "rm locallib.a" to the end of the script, 
-#      eliminated duplicate "echo"s, etc. etc.
+#      Put -O2 optimization back in because the problem that it caused
+#      was solved in the N0059 toolkit.    
 #
-#   Version 1.1.0  Jan. 18, 2002  Ed Wright
+#   Version 6.0.0  April 20, 2000  Bill Taber
 #
-#      Updated GCC version for Mac OS X CC.
+#      Removed O2 optimization as it caused some loops to 
+#      not terminate.    
 #
-#   Version 1.0.0  Feb. 26, 1999  Nat Bachman
+#   Version 5.0.0  Feb. 09, 1999  Nat Bachman
 #
+#      Now uses O2 optimization.      
+#
+#   Version 4.0.0  Nov. 02, 1998  Nat Bachman
+#
+#      Updated to use an environment variable to designate the C
+#      compiler to use.
+#
+#   Version 3.0.0  Oct. 31, 1998  Nat Bachman
+#
+#      Updated to make use of uniform C main routine main.x.
+#
+#   Version 2.0.0  Feb. 04, 1998  Nat Bachman
+#
+#      Modified to handle C code.  Sun/Solaris/Native cc Version.
+#
+#   Version 1.0.0  Dec  8, 1995  Bill Taber
 #
 
 
+#
 #  Choose your compiler.
 #
 if ( $?TKCOMPILER ) then
 
-    echo " "
-    echo "      Using compiler: "
-    echo "      $TKCOMPILER"
+   echo " "
+   echo "      Using compiler: "
+   echo "      $TKCOMPILER"
 
 else
 
-    set TKCOMPILER  =  "cc"
-    echo " "
-    echo "      Setting default compiler:"
-    echo $TKCOMPILER
-
+   set TKCOMPILER  =  "emcc"
+   echo " "
+   echo "      Setting default compiler:"
+   echo $TKCOMPILER
+   
 endif
 
 
 #
-#  What compile options do we want to use? If they were
+#  What compile options do we want to use? If they were 
 #  set somewhere else, use those values.  The same goes
 #  for link options.
 #
 if ( $?TKCOMPILEOPTIONS ) then
-    echo " "
-    echo "      Using compile options: "
-    echo "      $TKCOMPILEOPTIONS"
+   echo " "
+   echo "      Using compile options: "
+   echo "      $TKCOMPILEOPTIONS"
 else
 #
 #  Options:
 #
-#     -O2                optimize
+#     -ansi              Compile source as ANSI C
 #
-#     -DNON_UNIX_STDIO   Don't assume standard Unix stdio.h
+#     -DNON_UNIX_STDIO   Don't assume standard Unix stdio.h 
 #                        implementation
 #
+#     -m32               generate 32-bit code
 #
-    set TKCOMPILEOPTIONS = "-m64 -c -ansi -O2 -fPIC -I../include -DNON_UNIX_STDIO -Wno-parentheses -Wno-shift-op-parentheses -Wno-logical-op-parentheses -Wno-bitwise-op-parentheses -Wno-dangling-else -Wno-format"
-    echo " "
-    echo "      Setting default compile options:"
-    echo "      $TKCOMPILEOPTIONS"
+   set TKCOMPILEOPTIONS = "-c -O2 -I../include -Wno-parentheses -Wno-shift-op-parentheses -Wno-logical-op-parentheses -Wno-bitwise-op-parentheses -Wno-dangling-else -Wno-format -Wno-implicit-int"
+   # -ansi -O2 -m32 -DNON_UNIX_STDIO -D_POSIX_C_SOURCE
+
+   echo " "
+   echo "      Setting default compile options:"
+   echo "      $TKCOMPILEOPTIONS"
 endif
 
 if ( $?TKLINKOPTIONS ) then
-    echo " "
-    echo "      Using link options: "
-    echo "      $TKLINKOPTIONS"
+   echo " "
+   echo "      Using link options: "
+   echo "      $TKLINKOPTIONS"
 else
-    set TKLINKOPTIONS = "-m64 -lm"
-    echo " "
-    echo "      Setting default link options:"
-    echo "      $TKLINKOPTIONS"
+   set TKLINKOPTIONS = "" # "-lm -m32"
+   echo " "
+   echo "      Setting default link options:"
+   echo "      $TKLINKOPTIONS"
 endif
 
 echo " "
 
 #
-#   Set a provisional LIBRARY name.
+#   Determine a provisional LIBRARY name.
 #
-set LIBRARY = "../lib/libcspice"
+set LIBRARY = "../lib/libcspice_wasm"
 
 #
 #  Are there any *.c files that need to be compiled?
@@ -145,12 +166,10 @@ set LIBRARY = "../lib/libcspice"
 
 if ( $status == 0 ) then
 
-    foreach SRCFILE ( *.c )
-       echo "      Compiling: "   $SRCFILE
-       $TKCOMPILER $TKCOMPILEOPTIONS $SRCFILE
-    end
+  $TKCOMPILER *.c $TKCOMPILEOPTIONS
 
 endif
+
 
 echo " "
 
@@ -162,11 +181,10 @@ echo " "
 
 if ( $status == 0 ) then
 
-    echo "      Inserting objects in the library $LIBRARY ..."
-    ar  crv $LIBRARY.a *.o
-    ranlib  $LIBRARY.a
-    \rm                *.o
-    echo " "
+   echo "      Inserting objects in the library $LIBRARY ..."
+   emar rcsv $LIBRARY.a *.o
+   \rm                *.o
+   echo " "
 
 endif
 
@@ -180,7 +198,7 @@ echo " "
 \ls *.o >& /dev/null
 
 if ( $status == 0 ) then
-    \rm *.o
+   \rm *.o
 endif
 
 exit 0

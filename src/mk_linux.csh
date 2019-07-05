@@ -136,7 +136,7 @@ else
 #                        implementation
 #
 #
-   set TKCOMPILEOPTIONS = "-c -ansi -m64 -O2 -fPIC -DNON_UNIX_STDIO"
+   set TKCOMPILEOPTIONS = "-c -ansi -m64 -O2 -fPIC -I../include -DNON_UNIX_STDIO"
    echo " "
    echo "      Setting default compile options:"
    echo "      $TKCOMPILEOPTIONS"
@@ -205,6 +205,5 @@ echo " "
 if ( $status == 0 ) then
    \rm *.o
 endif
-
 
 exit 0

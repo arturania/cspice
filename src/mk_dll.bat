@@ -31,7 +31,6 @@ rem
 del mkcspice.log
 del *.obj
 
-rename cspice.c cspice.x
 rename zzsecprt.c zzsecprt.x
 
 rem
@@ -61,5 +60,3 @@ move cspice.exp  ..\lib\cspice_dll.exp
 del *.obj
 
 del temp.lst
-
-rename cspice.x cspice.c

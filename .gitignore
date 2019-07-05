@@ -2,3 +2,5 @@
 src/*.obj
 src/*.o
 src/*.log
+wasm/cspice.js
+wasm/cspice.wasm

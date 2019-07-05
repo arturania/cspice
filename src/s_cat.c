@@ -20,7 +20,7 @@
 #include "string.h"
 #endif /* NO_OVERWRITE */
 
- VOID
+int
 #ifdef KR_headers
 s_cat(lp, rpp, rnp, np, ll) char *lp, *rpp[]; ftnlen rnp[], *np, ll;
 #else
@@ -72,4 +72,5 @@ s_cat(char *lp, char *rpp[], ftnlen rnp[], ftnlen *np, ftnlen ll)
 		free(lp1);
 		}
 #endif
+		return 0;
 	}
