@@ -2,8 +2,10 @@
 /src/*.obj
 /src/*.o
 /src/*.log
-/wasm/cspice.js
 /wasm/cspice.wasm
+/wasm/cspice.js
+/wasm/cspice.*.wasm
+/wasm/cspice.*.js
 /kernels/_extra
 /kernels/spk/de44?.bsp
 /kernels/spk/epm2017*.bsp
