@@ -1,6 +1,9 @@
-.vscode
-src/*.obj
-src/*.o
-src/*.log
-wasm/cspice.js
-wasm/cspice.wasm
+/.vscode
+/src/*.obj
+/src/*.o
+/src/*.log
+/wasm/cspice.js
+/wasm/cspice.wasm
+/kernels/_extra
+/kernels/spk/de44?.bsp
+/kernels/spk/epm2017*.bsp
