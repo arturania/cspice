@@ -1,23 +1,12 @@
 #!/bin/sh
 
-# Use in Create React App with `workerize-loader` and `jest.moduleNameMapper` option:
-# 1. Put WASM file info `/public/spice/cspice.wasm`
-# 2. Copy `cspice.worker.js` to `/src/[.../]cspice.js` folder
-# 3. Copy `cspice.node.js` to `/src/[.../]__mocks__/cspice.js` folder (use `jest.moduleNameMapper` to mock)
-# 4. In Web Worker import and instantiate:
-# ```
-# import cSpice from './cspice';
-# ...
-# const newInstance = await cSpice();
-# ```
-
 WASM_LOOKUP='var wasmBinaryFile="cspice.wasm";if(!isDataURI(wasmBinaryFile)){wasmBinaryFile=locateFile(wasmBinaryFile)}'
 WASM_LOOKUP_FIX='var wasmBinaryFile="/spice/cspice.wasm";'
 
-for platform in 'worker' 'node'
+for platform in 'node' 'worker'
 do
   JS="cspice.$platform.js"
-  # WASM="cspice.$platform.wasm"
+
   if [ $platform = "worker" ]; then
     filesystem='-lidbfs.js'
     methods='["FS","IDBFS","ccall","cwrap"]'
@@ -25,6 +14,7 @@ do
     filesystem=''
     methods='["FS","ccall","cwrap"]'
   fi
+
   emcc ../lib/libcspice_wasm.a -o cspice.js --pre-js ./pre.js \
     --embed-file ../kernels/wasm.tm@/wasm.tm \
     --embed-file ../kernels/fk/itrf93.tf@/itrf93.tf \
@@ -54,9 +44,8 @@ do
     ]'
 
   mv cspice.js $JS
-  # mv cspice.wasm $WASM
 
-  # disable eslint on the generated javascript
+  # disable eslint on the generated JavaScript
   sed -i.old '1s;^;\/* eslint-disable *\/;' $JS
 
   if [ $platform = "worker" ]; then
