@@ -4,6 +4,8 @@ This is unofficial copy of [NASA/JPL SPICE Toolkit for C](https://naif.jpl.nasa.
 
 Please refer to the [original SPICE Toolkit for C documentation](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/index.html).
 
+<div align="center"><img src="/doc/images/spice_logo.png" align="middle" width="512px" height="158px"/></div>
+
 ## Build
 
 ### Linux
