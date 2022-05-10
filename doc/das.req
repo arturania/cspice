@@ -2,7 +2,7 @@
 DAS Required Reading
 ===========================================================================
  
-   Last revised on 2017 MAR 23 by N. J. Bachman.
+   Last revised on 2021 DEC 31 by B. V. Semenov.
  
  
 Abstract
@@ -228,7 +228,7 @@ Access to Non-Native DAS Files
    Writing non-native DAS files is not supported. Non-native DAS files must
    be converted to native format in order to update or add to their data,
    or to modify their comment areas. See the Convert User's Guide
-   (convert.ug) or the BINGO users Guide (bingo.ug) for details.
+   (convert.ug) or the BINGO User's Guide for details.
  
  
 File Handles
@@ -955,9 +955,9 @@ The File Record
  
        --   The comment character count
  
-       --   The FTP error detection string
- 
        --   The binary file format identification string
+ 
+       --   The FTP error detection string
  
    The ID word is a character string that identifies the file as a DAS
    file, as opposed to a DAF or some other type of file. The ID word
@@ -967,9 +967,9 @@ The File Record
  
    The contents of the file record are organized as follows:
  
-      +-------------------------------------------------------+
-      |IDWORD|IFNAME|NRR|NRC|NCR|NCC|<unused>|FTP|<unused>|BFF|
-      +-------------------------------------------------------+
+      +-----------------------------------------------------+
+      |IDWORD|IFNAME|NRR|NRC|NCR|NCC|BFF|<nulls>|FTP|<nulls>|
+      +-----------------------------------------------------+
  
    where the abbreviations represent:
  
@@ -987,9 +987,9 @@ The File Record
          `ncc'      is the number of comment characters---the number of
                     characters in use in the comment area.
  
-         `ftp'      is the FTP error detection string.
- 
          `bff'      is the binary file format identifier.
+ 
+         `ftp'      is the FTP error detection string.
  
    The file record can be read and updated at run time using DASRFR and
    DASWFR. DASRFR is normally used to read the internal file name of a DAS
@@ -1753,6 +1753,19 @@ Storing a Symbol Table in a DAS File
  
 Appendix A --- Revision History
 ===========================================================================
+ 
+ 
+2021 DEC 31 by B. V. Semenov.
+ 
+   Removed bingo"dot"ug string which was causing broken links in HTML
+   documentation in CSPICE-based packages that did not include BINGO.
+ 
+ 
+2021 NOV 01 by N. J. Bachman.
+ 
+   Corrected the diagram showing the layout of DAS file records. Reordered
+   lists of file record elements to match the actual order of the elements
+   in the records.
  
  
 2017 MAR 23 by N. J. Bachman.

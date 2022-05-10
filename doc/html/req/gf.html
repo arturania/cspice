@@ -23,6 +23,7 @@
 </H2>
 
 <PRE>
+
    <A HREF="#Geometry Finder Required Reading">Geometry Finder Required Reading</A>
       <A HREF="#Abstract">Abstract</A>
          <A HREF="#Purpose">Purpose</A>
@@ -31,6 +32,7 @@
       <A HREF="#Introduction">Introduction</A>
       <A HREF="#Planned enhancements">Planned enhancements</A>
       <A HREF="#Terminology">Terminology</A>
+
    <A HREF="#GF Concepts">GF Concepts</A>
       <A HREF="#Time windows">Time windows</A>
          <A HREF="#Window manipulation and arithmetic">Window manipulation and arithmetic</A>
@@ -48,12 +50,14 @@
          <A HREF="#Workspace window counts">Workspace window counts</A>
          <A HREF="#Workspace window interval counts">Workspace window interval counts</A>
          <A HREF="#Estimating the workspace interval count requirement">Estimating the workspace interval count requirement</A>
+
    <A HREF="#GF API Routines">GF API Routines</A>
       <A HREF="#High-level GF search routines">High-level GF search routines</A>
       <A HREF="#Mid-level GF search routines">Mid-level GF search routines</A>
          <A HREF="#Rationale for calling mid-level GF search routines">Rationale for calling mid-level GF search routines</A>
          <A HREF="#Supporting utility routines">Supporting utility routines</A>
          <A HREF="#Overriding default behavior">Overriding default behavior</A>
+
    <A HREF="#GF Computational Recipes">GF Computational Recipes</A>
       <A HREF="#Required SPICE kernels">Required SPICE kernels</A>
       <A HREF="#A note about CK data availability">A note about CK data availability</A>
@@ -74,6 +78,7 @@
          <A HREF="#Orbital longitude of a satellite">Orbital longitude of a satellite</A>
          <A HREF="#Approximate times of Cassini Saturn ring occultations">Approximate times of Cassini Saturn ring occultations</A>
          <A HREF="#Angular offset between instrument boresight and velocity">Angular offset between instrument boresight and velocity</A>
+
    <A HREF="#Common GF Problems">Common GF Problems</A>
       <A HREF="#A challenge">A challenge</A>
       <A HREF="#Wrong SPICE kernels">Wrong SPICE kernels</A>
@@ -82,6 +87,7 @@
       <A HREF="#Slow performance">Slow performance</A>
       <A HREF="#Constraints not met on result window">Constraints not met on result window</A>
       <A HREF="#Result window intervals appear invalid">Result window intervals appear invalid</A>
+
    <A HREF="#GF Example Programs">GF Example Programs</A>
       <A HREF="#Program MEDLEY: Searches for Periapse, Occultation, Rise/Set">Program MEDLEY: Searches for Periapse, Occultation, Rise/Set</A>
          <A HREF="#Overview">Overview</A>
@@ -105,9 +111,12 @@
          <A HREF="#SPICE kernels1">SPICE kernels</A>
          <A HREF="#Source code1">Source code</A>
          <A HREF="#Results1">Results</A>
+
    <A HREF="#Appendix A --- Summary of GF Functions">Appendix A --- Summary of GF Functions</A>
       <A HREF="#Summary of Mnemonics">Summary of Mnemonics</A>
+
    <A HREF="#Appendix B --- Revision History">Appendix B --- Revision History</A>
+         <A HREF="#2017 JUN 19 by N. J. Bachman">2017 JUN 19 by N. J. Bachman</A>
          <A HREF="#2012 OCT 01 by E. D. Wright.">2012 OCT 01 by E. D. Wright.</A>
          <A HREF="#2010 MAY 13 by E. D. Wright.">2010 MAY 13 by E. D. Wright.</A>
          <A HREF="#2009 APR 15 by N. J. Bachman.">2009 APR 15 by N. J. Bachman.</A>
@@ -121,7 +130,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Geometry Finder Required Reading
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2012 OCT 01 by E. D. Wright.
+   Last revised on 2017 JUN 19 by N. J. Bachman.
 <P>
  
 <BR><BR>
@@ -214,7 +223,7 @@ meta-kernels, and program output
    Within the time interval January 1 2009 to January 1 2010,
    find the time periods when the light time corrected
    distance between the centers of the Earth and
-   Moon is less than 40000 kilometers.
+   Moon is less than 400000 kilometers.
 </PRE>
    The GF subsystem works with a small set of geometric quantities:
 <P>
@@ -4527,6 +4536,14 @@ rover to be visible.
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Appendix B --- Revision History
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="2017 JUN 19 by N. J. Bachman"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> 2017 JUN 19 by N. J. Bachman
+</H3><P><BR><BR>
+   Corrected typo.
+<P>
+ 
 <BR><BR>
 <A NAME="2012 OCT 01 by E. D. Wright."></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>

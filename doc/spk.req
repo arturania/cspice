@@ -2,7 +2,7 @@
 SPK Required Reading
 ===========================================================================
  
-   Last revised on 2017 MAR 29 by N. J. Bachman.
+   Last revised on 2021 AUG 31 by B. V. Semenov.
  
  
 Abstract
@@ -1841,7 +1841,7 @@ Supported Data Types
             epoch by finding a set of states `centered' at that epoch and
             using Lagrange interpolation on each component of the states.
  
-      10.   Space Command Two-line Elements (Short Period Orbits)
+      10.   Space Command Two-line Elements
  
             This data type contains Space Command two-line element
             representations for objects in Earth orbit (formally called
@@ -2558,7 +2558,7 @@ Type 10: Space Command Two-Line Elements
          +-------------------+
  
    The constants partition of the Type 10 segment contains the following
-   eight constants.
+   eight geophysical constants.
  
          +-------------------------------------------+
       1  |  J2 gravitational harmonic for Earth      |
@@ -2571,13 +2571,13 @@ Type 10: Space Command Two-Line Elements
       4  |  is expressed in Earth radii cubed per    |
          |  minutes squared                          |
          +-------------------------------------------+
-      5  |  Equatorial radius of the Earth in km     |
+      5  |  High altitude bound for atmospheric      |
+         |  model in km                              |
          +-------------------------------------------+
       6  |  Low altitude bound for atmospheric       |
          |  model in km                              |
          +-------------------------------------------+
-      7  |  High altitude bound for atmospheric      |
-         |  model in km                              |
+      7  |  Equatorial radius of the Earth in km     |
          +-------------------------------------------+
       8  |  Distance units/Earth radius (normally 1) |
          +-------------------------------------------+
@@ -4214,6 +4214,16 @@ Contacts
  
 Appendix C---Revision History
 ===========================================================================
+ 
+ 
+August 31, 2021
+ 
+   Corrected severe documentation error in SPK type 10 (TLE) listing of
+   geophysical constants. Table entries 5, "High altitude bound for
+   atmospheric model in km," and 7, "Equatorial radius of the Earth in km"
+   were switched.
+ 
+   Removed "(Short Period Orbits)" from TLE description.
  
  
 March 29, 2017

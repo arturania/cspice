@@ -2,7 +2,7 @@
 DSK Required Reading
 ===========================================================================
  
-   Last revised on 2017 APR 05 by N. J. Bachman.
+   Last revised on 2021 OCT 22 by N. J. Bachman.
  
  
 Abstract
@@ -469,6 +469,13 @@ Surface IDs
    ambiguity. For a given body, it's important for users to coordinate
    assignment of surface names and surface IDs.
  
+   For a given body, the surface name to surface ID mapping may be
+   many-to-one. If multiple surface names are associated with a surface ID
+   for a specified body, then the surface ID-to-name conversion routines
+   will map that surface ID to the last name associated with the ID. The
+   surface name-to-ID mapping routines will map any of the surface names to
+   that surface ID.
+ 
    The CSPICE functions for converting between surface IDs and surface
    names are listed in the section ``Surface Name and ID Conversion
    Functions'' above.
@@ -504,6 +511,22 @@ Defining Surface Name-ID Mappings
  
    operator; this operator appends to rather than overwrites the kernel
    variable named on the left hand side of the assignment.
+ 
+   Multiple surface names, also called ``surface aliases,'' can be mapped
+   to a surface ID for a given body as follows:
+ 
+      NAIF_SURFACE_NAME += <surface name 1>
+      NAIF_SURFACE_CODE += <surface code 1>
+      NAIF_SURFACE_BODY += <body code 1>
+ 
+      NAIF_SURFACE_NAME += <surface name 2>
+      NAIF_SURFACE_CODE += <surface code 1>
+      NAIF_SURFACE_BODY += <body code 1>
+ 
+   Using this mapping, body code 1 and either surface name will be mapped
+   by the surface name-to-ID conversion routines to surface code 1. Body
+   code 1 and surface code 1 will be mapped by the surface ID-to-name
+   routines to surface name 2.
  
  
 Segments

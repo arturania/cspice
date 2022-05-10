@@ -2,7 +2,7 @@
 PCK Required Reading
 ===========================================================================
  
-   Last revised on 2013 JAN 22 by E. D. Wright, C. H. Acton.
+   Last revised on 2021 DEC 24 by N.J. Bachman
  
  
 Abstract
@@ -316,11 +316,11 @@ NAIF Text Kernel Format
  
    Text PCK files conform to a flexible format called ``NAIF text kernel''
    format. The SPICE file identification word provided by itself on the
-   first line of the text PCK file is ``KPL/PCK''. Both the NAIF text
-   kernel format and SPICE file identification word are described in detail
-   in the Kernel Required Reading document, kernel.req. For the reader's
-   convenience, an overview of the NAIF text kernel format is provided
-   here.
+   first line of the text PCK file, starting in the leftmost column, is
+   ``KPL/PCK''. Both the NAIF text kernel format and SPICE file
+   identification word are described in detail in the Kernel Required
+   Reading document, kernel.req. For the reader's convenience, an overview
+   of the NAIF text kernel format is provided here.
  
    NAIF text kernels are, first of all, ASCII files. As such, they are
    human readable and can be easily modified by text editors. In addition,
@@ -453,14 +453,37 @@ Text PCK Contents
       BODY399_POLE_DEC       = (  +90.      -0.557         0. )
       BODY399_PM             = (  190.16  +360.9856235     0. )
  
+ 
+Reference Ellipsoid Orientation Offsets
+ 
    If you examine a PCK file produced by NAIF, you'll see an additional
-   symbol grouped with the ones listed here; it is
+   symbol grouped with the ones listed above; it is
  
       BODY399_LONG_AXIS
  
-   It represents the offset between the longest axis of the triaxial
-   ellipsoid used to model a body and the prime meridian of the body. This
-   term is currently zero for all bodies except Mars.
+   The CSPICE function bodeul_c returns the value of the kernel variable
+ 
+      BODY<id code>_LONG_AXIS
+ 
+   as an output argument, but CSPICE does not make use of this value.
+ 
+   This value represents the offset between the longest axis of the
+   triaxial ellipsoid used to model the shape of a body and the prime
+   meridian of the body. Historically, IAU orientation models have had only
+   zero offsets.
+ 
+   CSPICE high-level geometry software that makes use of reference
+   ellipsoids assumes that ellipsoid axes are aligned with those of the
+   corresponding PCK reference frame. When this is not the case, a new TK
+   reference frame can be defined that provides the correct reference
+   ellipsoid orientation relative to the PCK frame. See the Frames Required
+   Reading document frames.req for more information on TK frames.
+ 
+   Defining a TK frame for reference ellipsoid orientation relative to the
+   corresponding PCK frame is an effective way of representing such
+   offsets. It enables user applications to pass the TK frame name to
+   CSPICE APIs, so that those APIs will perform computations using the
+   desired ellipsoid orientation.
  
  
 Text PCK Kernel Variable Names
@@ -517,19 +540,19 @@ Models for the Sun, Planets, and some Minor Bodies in Text PCK Kernels
  
                                       2
                                  RA2*t
-      RA  =  RA0  +  RA1*t/T  +  ------
+      RA  =  RA0  +  RA1*t/T  +  ------  + [optional trig polynomials]
                                     2
                                    T
  
                                        2
                                  DEC2*t
-      DEC =  DEC0 + DEC1*t/T  +  -------
+      DEC =  DEC0 + DEC1*t/T  +  ------- + [optional trig polynomials]
                                     2
                                    T
  
                                      2
                                  W2*t
-      W   =  W0   + W1*t/d    +  -----
+      W   =  W0   + W1*t/d    +  -----   + [optional trig polynomials]
                                     2
                                    d
  
@@ -540,17 +563,21 @@ Models for the Sun, Planets, and some Minor Bodies in Text PCK Kernels
       t = ephemeris time, expressed as seconds past the reference epoch
           for this body or planetary system
  
+   Expressions for RA, Dec, and W for planets rarely include the
+   trigonometric polynomial terms shown above. If they are used, these
+   terms follow the form described below which is used for natural
+   satellites.
+ 
  
 Models for Satellites in Text PCK Kernels
  
    Orientation models for natural satellites of planets are a little more
    complicated; in addition to polynomial terms, the RA, DEC, and W
    expressions include trigonometric terms. The arguments of the
-   trigonometric terms are linear polynomials. These arguments are usually
-   called ``phase angles.'' However, within CSPICE internal documentation,
-   these quantities are called ``nutation precession angles''; for
-   consistency with the CSPICE software, we'll use this terminology in the
-   following discussion.
+   trigonometric terms are linear polynomials. These arguments are
+   sometimes called ``phase angles.'' However, within CSPICE internal
+   documentation, these quantities often are called ``nutation precession
+   angles.'' That terminology is used here.
  
    Expressions for the right ascension and declination of the north pole
    and the location of the prime meridian for any satellite of a given
@@ -601,8 +628,32 @@ Models for Satellites in Text PCK Kernels
    the trigonometric terms for RA and W (satellite prime meridian) are
    expected to be sums of sines of nutation precession angles, and the
    trigonometric terms for DEC are expected to be sums of cosines of
-   nutation precession angles. The nutation precession angles themselves
-   are defined by linear polynomial functions of time.
+   nutation precession angles.
+ 
+   The nutation precession angles themselves, by default, are defined by
+   linear polynomial functions of time. It is possible to use polynomials
+   of degree up to 3 to represent nutation precession angles for a
+   specified planetary system. This is done by adding to a text PCK file
+   the kernel variable assignment
+ 
+      BODY<id code>_MAX_PHASE_DEGREE = <degree>
+ 
+   where ``id'' is the code of the planetary system barycenter. For
+   example, quadratic nutation precession angle expressions can be used for
+   the Mars system if a text PCK contains the assignment
+ 
+      BODY4_MAX_PHASE_DEGREE = 2
+ 
+   For any planetary system, all nutation precession angles must have the
+   same number of coefficients.
+ 
+   Units of the polynomial coefficients of the nutation precession angles
+   are, in order of increasing degree,
+ 
+                    degrees            degrees
+      degrees,   --------------,   ---------------,  ...
+                 Julian century                  2
+                                   Julian century
  
    Note that the number of values defining the nutation precession angles
    for a planetary system must be consistent with the number of
@@ -732,16 +783,17 @@ Creating and Modifying Text PCKs
    the names of PCK variables already in use should also keep this problem
    in mind.
  
-   Modifying orientation models for satellites requires attention to the
+   Modifying orientation models for satellites requires attention to
    consistency between the number of nutation precession angles and the
    number of coefficients of trigonometric functions having the nutation
-   precession angles as arguments. For any planetary system, there should
-   be twice as many values for the nutation precession angles as the
-   maximum number of trigonometric terms in the expressions for prime
-   meridian location or right ascension or declination of the pole of any
-   satellite in the system. This is because the nutation precession angles
-   are defined by linear polynomials; each polynomial has two defining
-   coefficients.
+   precession angles as arguments. For any planetary system, if DEG is the
+   maximum nutation precession angle polynomial degree for that system,
+   there should be DEG+1 times as many values for the nutation precession
+   angles as the maximum number of trigonometric terms in the expressions
+   for prime meridian location or right ascension or declination of the
+   pole of any satellite in the system. This is because all nutation
+   precession angle polynomials for a given planetary system must have the
+   same degree.
  
  
 Binary PCK Kernel Format
@@ -777,7 +829,13 @@ Segments--The Fundamental PCK Building Blocks
  
    The descriptor has five integer components:
  
-       1.   The NAIF integer code for the body.
+       1.   The frame class ID of the PCK reference frame for which the
+            segment provides orientation data. See the Frames Required
+            Reading document frames.req for further information on frame
+            class IDs.
+ 
+            Some older SPICE documentation refers to this ID code as as a
+            ``body'' ID code.
  
        2.   The NAIF integer code for the inertial reference frame.
  
@@ -1150,29 +1208,28 @@ Creating Binary PCKs
  
        3.   Close the file.
  
-   The subroutine pckopn_ is used to open a new binary PCK file. Below is
-   an example of a call to pckopn_. ``name'' is the name of the file to be
+   The subroutine pckopn_c is used to open a new binary PCK file. Below is
+   an example of a call to pckopn_c. ``name'' is the name of the file to be
    opened, ``ifname'' is the internal file name, ``handle'' is the handle
-   of the opened SPK file. We use ``i'' for the number of record to reserve
-   for comments.
+   of the opened SPK file. We use ``i'' for the number of records to
+   reserve for comments.
  
-      pckopn_ ( file, ifname, &i, &handle, strlen(file), strlen(ifname) );
+      pckopn_c ( file, ifname, i, &handle );
  
    The method for beginning the segment, adding data to the segment and
    closing the segment differs with the PCK type.
  
-   For type 2, CSPICE includes a segment writing routine called pckw02_.
+   For type 2, CSPICE includes a segment writing routine called pckw02_c.
    This routine takes as input arguments the handle of an PCK file that is
    open for writing, the information needed to construct the segment
    descriptor, and the data to be stored in the segment. The header of the
    subroutine provides a complete description of the input arguments and an
    example of its usage.
  
-   An example of a call to pckw02_:
+   An example of a call to pckw02_c:
  
-      pckw02_ ( &handle,   &body,    frame,    &first, &last, segid,
-                &intlen,   &n,       &polydg,  cdata,  &btime,
-                strlen(frame), strlen(segid));
+      pckw02_c ( handle, clssid, frame,  first, last, segid,
+                 intlen, n,      polydg, cdata, btime       );
  
    For type 3, there are three subroutines used in creating a binary PCK
    file. They are pck03b_, which begins a type 3 segment, PCK03A, which
@@ -1209,9 +1266,9 @@ Creating Binary PCKs
                    strlen(frame), strlen(segid) );
  
    When a user finishes writing segments of any type to a binary PCK, the
-   PCK must be closed with the subroutine pckcls_.
+   PCK must be closed with the subroutine pckcls_c.
  
-      pckcls_ ( &handle );
+      pckcls_c( handle );
  
  
 PCK Software
@@ -1500,121 +1557,6 @@ Low-Level PCK Data Access
       BODYnnn_
  
  
-Summary of Calling Sequences
---------------------------------------------------------
- 
-   Loading text and binary PCKs:
- 
-      furnsh_c ( filename );
- 
-   Unloading text or binary PCKs:
- 
-      unload_c ( filename );
- 
-   Getting binary PCK coverage summary:
- 
-      pckfrm_c ( filename, ids );
-      pckcov_c ( filename, idcode, cover );
- 
-   Searching binary PCK files for appropriate information:
- 
-      pcksfs_ ( &body, &et, &handle, &descr, ident, &found,
-                strlen(ident) );
- 
-   Testing for the presence of variables in the text kernel pool:
- 
-      bodfnd_c ( body, item );
- 
-   Obtaining values for assigned variables from the text kernel pool:
- 
-      bodvrd_c ( bodynm, item, maxn, &dim, values );
-      bodvcd_c ( bodyid, item, maxn, &dim, values );
- 
-      gcpool_c ( name, start, room, lenout, &n, vals, &found );
-      gdpool_c ( name, start, room,         &n, vals, &found );
-      gipool_c ( name, start, room,         &n, vals, &found );
- 
-   Obtaining Euler angles and their derivatives from a binary PCK file:
- 
-      pckeul_ ( &body, &et, &found, ref, eulang, strlen(ref));
- 
-   Obtaining position transformation matrices between reference frames:
- 
-      pxform_c ( from, to,  et,  rotate );
- 
-   Obtaining Euler angles defining inertial-to-body-fixed coordinate
-   transformations:
- 
-      bodeul_ ( &body, &et, &ra, &dec, &w, &lambda );
- 
-   Obtaining state transformation matrices between reference frames:
- 
-      sxform_c ( from, to, et, rotate );
- 
-   Opening a binary PCK file for writing:
- 
-      pckopn_ ( file, ifname, &ncomch, &handle, strlen(file),
-                strlen(ifname));
- 
-   Writing a type 2 segment to a binary PCK file:
- 
-      pckw02_ ( &handle,        &body,         frame,   &first,
-                &last,          segid,         &intlen, &n,
-                &polydg,        cdata,         &btime,
-                strlen(frame),  strlen(segid));
- 
-   Writing a type 3 segment to a binary PCK file:
- 
-      To begin a type 3 segment:
-      pck03b_ ( &handle,       segid,         &body,   frame,
-                &first,        &last,         &chbdeg,
-                strlen(segid), strlen(frame));
- 
-      To add data to a type 3 segment:
-      pck03a_ ( &handle, &nrecs, recrds, epochs);
- 
-      To end a type 3 segment:
-      pck03e_ ( &handle);
- 
-   Writing a type 20 segment to a binary PCK file:
- 
- 
-      pckw20_ ( &handle, &clssid, frame,
-                &first,  &last,   segid,  &intlen,
-                &n,      &polydg, &cdata, &ascale,
-                &tscale, &initjd, &initfr,
-                strlen(frame), strlen(segid) );
- 
-   Close a binary PCK file after writing:
- 
-      pckcls_ ( &handle );
- 
-   Reading a type 2 segment from a binary PCK file:
- 
-      pckr02_ ( &handle, descr, &et, record);
- 
-   Evaluating a type 2 segment from a binary PCK file:
- 
-      pcke02_ ( &et, record, eulang);
- 
-   Reading a type 3 segment from a binary PCK file:
- 
-      pckr03_ ( &handle, descr, &et, record );
- 
-   Evaluating a type 3 segment from a binary PCK file:
- 
-      pcke03_ ( &et, record, rotmat);
- 
-   Reading a type 20 segment from a binary PCK file:
- 
-      pckr20_ ( &handle, descr, &et, record );
- 
-   The function pcke20_ contains the algorithm used to construct an Euler
-   angle state from a particular logical record.
- 
-      pcke20_ ( &et, record, eulang)'
- 
- 
 Appendix A --- Summary of PCK Routines
 ===========================================================================
  
@@ -1629,19 +1571,21 @@ Appendix A --- Summary of PCK Routines
       pck03a_  ( PCK, add data to a type 3 segment )
       pck03b_  ( PCK, begin a type 3 segment )
       pck03e_  ( PCK, end a type 3 segment )
-      pckcls_  ( PCK, close file )
+      pckcls_c ( PCK, close file )
       pckcov_c ( PCK, coverage )
       pcke02_  ( PCK, evaluate data record from type 2 segment )
       pcke03_  ( PCK, evaluate data record from type 3 segment )
       pcke20_  ( PCK, evaluate data record from type 20 segment )
       pckeul_  ( PCK, get Euler angles at time from PCK file )
       pckfrm_c ( PCK, get reference frame class ID set )
-      pckopn_  ( PCK, open new file )
+      pcklof_c ( PCK Kernel, Load binary file )
+      pckopn_c ( PCK, open new file )
       pckr02_  ( PCK, read record from type 2 segment )
       pckr03_  ( PCK, read record from type 3 segment )
       pckr20_  ( PCK, read record from type 20 segment )
       pcksfs_  ( PCK, select file and segment )
-      pckw02_  ( PCK, write type 2 segment )
+      pckuof_  ( PCK Kernel, Unload binary file )
+      pckw02_c ( PCK, write type 2 segment )
       pckw20_  ( PCK, write type 20 segment )
       pxform_c ( Position Transformation Matrix )
       sxform_c ( State Transformation Matrix )
@@ -1661,14 +1605,20 @@ Appendix B --- Epoch and Frame Specifications in Text PCK Kernels
    to use constants referenced to the B1950 frame and to the J1950 epoch,
    for example.
  
-   The default constants and frame for a body are overridden by setting the
-   values of the kernel variables
+   The default epoch and inertial base frame for a body are overridden by
+   setting the values of either of the kernel variables
  
       BODY<id code>_CONSTANTS_REF_FRAME
+      BODY<id code>_CONSTS_REF_FRAME
  
    and
  
       BODY<id code>_CONSTANTS_JED_EPOCH
+      BODY<id code>_CONSTS_JED_EPOCH
+ 
+   The shorter forms of the kernel variable names enable use of
+   11-character ID codes, which can represent any 32-bit signed integer,
+   while keeping the names within the 32-character limit imposed by CSPICE.
  
    Here
  
@@ -1681,9 +1631,10 @@ Appendix B --- Epoch and Frame Specifications in Text PCK Kernels
  
        --   for other bodies: the NAIF integer code of the body itself.
  
-   The values of the frame specifier variable
+   The values of the frame specifier variables
  
       BODY<id code>_CONSTANTS_REF_FRAME
+      BODY<id code>_CONSTS_REF_FRAME
  
    are the frames IDs for the inertial reference frames coded into the
    Frames subsystem. Refer to the Frames Required Reading document,
@@ -1692,19 +1643,22 @@ Appendix B --- Epoch and Frame Specifications in Text PCK Kernels
  
    For example, to use constants referenced to the FK4 frame (frame ID 3)
    for the asteroid Gaspra (ID code = 9511010), the PCK file containing the
-   constants should include the assignment
+   constants should include one of the assignments
  
-      BODY9511010_CONSTANTS_REF_FRAME   =   (  3  )
+      BODY9511010_CONSTANTS_REF_FRAME   =   3
+      BODY9511010_CONSTS_REF_FRAME      =   3
  
-   The values of the epoch specifier variable
+   The values of the epoch specifier variables
  
       BODY<id code>_CONSTANTS_JED_EPOCH
+      BODY<id code>_CONSTS_JED_EPOCH
  
    are Julian ephemeris dates. To use constants for Gaspra referenced to
    the J1950 epoch, the PCK file containing the constants should include
-   the assignment
+   one of the assignments
  
-      BODY9511010_CONSTANTS_JED_EPOCH   =   (  2433282.5 )
+      BODY9511010_CONSTANTS_JED_EPOCH   =   2433282.5
+      BODY9511010_CONSTS_JED_EPOCH      =   2433282.5
  
    The creator of a PCK file can set the frame and epoch of the constants
    on a body-by-body basis, except in the case of planets and their
@@ -1713,15 +1667,25 @@ Appendix B --- Epoch and Frame Specifications in Text PCK Kernels
    to the B1950 frame (frame ID 2) and J1950 epoch for the Earth and Moon,
    use the assignments
  
-      BODY3_CONSTANTS_REF_FRAME   =   (  2           )
-      BODY3_CONSTANTS_JED_EPOCH   =   (  2433282.5 )
+      BODY3_CONSTANTS_REF_FRAME   =   2
+      BODY3_CONSTANTS_JED_EPOCH   =   2433282.5
+ 
+         or
+ 
+      BODY3_CONSTS_REF_FRAME   =   2
+      BODY3_CONSTS_JED_EPOCH   =   2433282.5
  
    The ID code `3' designates the Earth-Moon barycenter.
  
-   Note: the assignment
+   Note: the assignments
  
-      BODY399_CONSTANTS_REF_FRAME   =   (  2           )
-      BODY399_CONSTANTS_JED_EPOCH   =   (  2433282.5 )
+      BODY399_CONSTANTS_REF_FRAME   =   2
+      BODY399_CONSTANTS_JED_EPOCH   =   2433282.5
+ 
+         or
+ 
+      BODY399_CONSTS_REF_FRAME   =   2
+      BODY399_CONSTS_JED_EPOCH   =   2433282.5
  
    would be ignored by the PCK reader routines; you cannot assign a frame
    or epoch using the ID code of a planet or satellite.
@@ -1729,6 +1693,35 @@ Appendix B --- Epoch and Frame Specifications in Text PCK Kernels
  
 Appendix C --- Revision History
 ===========================================================================
+ 
+ 
+2021 DEC 24 by N.J. Bachman
+ 
+   Added documentation of shortened kernel variable names for alternative
+   PCK base frames or JED epochs.
+ 
+   Added documentation of extended nutation precession angle polynomial
+   capability.
+ 
+   Deleted summary of calling sequences.
+ 
+   Updated summary of PCK routines.
+ 
+   Added subsection discussing possible offsets of reference ellipsoid axes
+   from the corresponding PCK frame, and handling this situation via TK
+   frames.
+ 
+   Added description of nutation precession angle coefficient units.
+ 
+   Changed description of segment descriptor ID from ``body ID'' to ``frame
+   class ID.'' Changed names of arguments in calling sequence documentation
+   to match.
+ 
+   Updated description of PCK ID word to say this string must start in the
+   leftmost column.
+ 
+   Removed unnecessary parentheses from kernel variable assignment
+   examples.
  
  
 2013 JAN 22 by E. D. Wright, C. H. Acton

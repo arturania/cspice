@@ -23,16 +23,18 @@
 </H2>
 
 <PRE>
+
    <A HREF="#Aberration Corrections Required Reading">Aberration Corrections Required Reading</A>
       <A HREF="#Abstract">Abstract</A>
          <A HREF="#Purpose">Purpose</A>
          <A HREF="#Intended Audience">Intended Audience</A>
          <A HREF="#References">References</A>
+
    <A HREF="#Introduction">Introduction</A>
       <A HREF="#Types of Corrections">Types of Corrections</A>
          <A HREF="#One-way Light Time">One-way Light Time</A>
          <A HREF="#Stellar Aberration">Stellar Aberration</A>
-         <A HREF="#SPICE Aberration Identifiers (also called Flags)">SPICE Aberration Identifiers (also called Flags)</A>
+         <A HREF="#SPICE Aberration Identifiers also called Flags">SPICE Aberration Identifiers (also called Flags)</A>
       <A HREF="#Common Correction Applications">Common Correction Applications</A>
       <A HREF="#Computation of Corrections">Computation of Corrections</A>
          <A HREF="#Geometric case">Geometric case</A>
@@ -43,9 +45,10 @@
          <A HREF="#Converged corrections">Converged corrections</A>
          <A HREF="#Corrections in Non-inertial Frames">Corrections in Non-inertial Frames</A>
       <A HREF="#Relativistic Corrections">Relativistic Corrections</A>
+
    <A HREF="#Appendix A --- Revision History">Appendix A --- Revision History</A>
+         <A HREF="#2020 MAY 26 by E. D. Wright.">2020 MAY 26 by E. D. Wright.</A>
          <A HREF="#2015 AUG 11 by E. D. Wright.">2015 AUG 11 by E. D. Wright.</A>
-         <A HREF="#Original version by N. J. Bachman">Original version by N. J. Bachman</A>
 
 </PRE>
 
@@ -56,7 +59,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Aberration Corrections Required Reading
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2015 AUG 11 by N. J. Bachman and E. D. Wright.
+   Last revised on 2020 MAY 26 by E. D. Wright.
 <P>
  
 <BR><BR>
@@ -191,7 +194,7 @@ Publications, New York, 1977.
 <P>
  
 <BR><BR>
-<A NAME="SPICE Aberration Identifiers (also called Flags)"></A>
+<A NAME="SPICE Aberration Identifiers also called Flags"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> SPICE Aberration Identifiers (also called Flags)
 </H3><P><BR><BR>
@@ -486,51 +489,10 @@ in the SPICE Toolkit).
 <P>
  
    If correction for stellar aberration is requested, the target position
-   is rotated toward the solar system barycenter-relative velocity vector
+   is rotated toward the solar system barycenter- relative velocity vector
    of the observer. The rotation is computed as follows:
 <P>
  
-   Note, the term
-<P>
- 
-<PRE>
-         d(lt)
-         -----
-         dt
-</PRE>
-   does not equal zero, nor approximate zero.
-<P>
- 
-   Given
-<P>
- 
-<PRE>
-              || r2(t) - r1(t) ||
-         lt = -------------------
-                      c
-</PRE>
-   with r2(t) the position of the target at some time, and r1(t) the
-   position of the observer at some time.
-<P>
- 
-   Let
-<P>
- 
-<PRE>
-         r(t)  = r2(t) - r1(t)
- 
-         range = || r2(t) - r1(t) ||
-               = || r(t) ||
-</PRE>
-   The derivative of light time (lt) with respect to time equals the
-   instantaneous range rate between the two bodies divided by light speed.
-<P>
- 
-<PRE>
-            d(lt)    d(range)   1
-            ----- =  -------- * -
-             dt        dt       c
-</PRE>
    Let r be the light time corrected vector from the observer to the
    object, and v be the velocity of the observer with respect to the solar
    system barycenter. Let w be the angle between them. The aberration angle
@@ -538,15 +500,15 @@ in the SPICE Toolkit).
 <P>
  
 <PRE>
-            sin(phi) = v sin(w)
-                       --------
-                           c
+               sin(phi) = v sin(w)
+                          --------
+                          c
 </PRE>
    Let h be the vector given by the cross product
 <P>
  
 <PRE>
-            h = r X v
+               h = r X v
 </PRE>
    Rotate r by phi radians about h to obtain the apparent position of the
    object.
@@ -794,24 +756,30 @@ in the SPICE Toolkit).
 <H1> Appendix A --- Revision History
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
 <BR><BR>
+<A NAME="2020 MAY 26 by E. D. Wright."></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> 2020 MAY 26 by E. D. Wright.
+</H3><P><BR><BR>
+   Removed block describing derivative of light-time in the geometric case.
+   Not needed, as well as the derivation shown in the wrong document
+   section.
+<P>
+ 
+<BR><BR>
 <A NAME="2015 AUG 11 by E. D. Wright."></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> 2015 AUG 11 by E. D. Wright.
 </H3><P><BR><BR>
    Created a Required Reading document from Nat Bachman's original
-   derivations and write-up. Edited as required only for fake TeX format,
-   corrections, and improvement of descriptions.
+   derivations and write-up as shown in SPICELIB routine SPKEZ. Edited as
+   required only for fake TeX format, corrections, and improvement of
+   descriptions.
 <P>
  
-   This document now serves as the primary reference for the implementation
-   of aberration corrections in all SPICE Toolkit distributions.
+   This document serves as a reference for the implementation of aberration
+   corrections in all SPICE Toolkit distributions.
 <P>
  
-<BR><BR>
-<A NAME="Original version by N. J. Bachman"></A>
-<p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Original version by N. J. Bachman
-</H3><P><BR><BR>
 
 </TD>
 </TR>

@@ -23,6 +23,7 @@
 </H2>
 
 <PRE>
+
    <A HREF="#NAIF Integer ID codes">NAIF Integer ID codes</A>
       <A HREF="#Revisions">Revisions</A>
       <A HREF="#Abstract">Abstract</A>
@@ -57,7 +58,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Revisions
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
-   Last revised on 2017 APR 04 by E. D. Wright.
+   Last revised on 2021 DEC 10 by E. D. Wright.
 <P>
  
    This version of the document supersedes all previous versions.
@@ -239,12 +240,16 @@ within SPICE.
 names MUST be listed in the kernel variable NAIF_BODY_NAME.
 <BR><BR></UL>
 <UL>
-<TT>2.</TT> The CSPICE system can access 2000 external name-ID pairs defined via a text
-kernel. CSPICE signals an error when the number of assignments exceeds
-2000.
+<TT>2.</TT> The CSPICE system can access 14983 external name-ID pairs defined via a
+text kernel. CSPICE signals an error when the number of assignments exceeds
+14983.
 <BR><BR></UL>
 <UL>
-<TT>3.</TT> You may assign an ID code to multiple names. A <a href="../cspice/bodc2n_c.html">bodc2n_c</a> call returns the
+<TT>3.</TT> Names must be no longer than 36 characters. SPICE truncates characters
+beyond 36th without signaling an error.
+<BR><BR></UL>
+<UL>
+<TT>4.</TT> You may assign an ID code to multiple names. A <a href="../cspice/bodc2n_c.html">bodc2n_c</a> call returns the
 last name assigned; a last in, first out situation.
 <BR><BR></UL>
    Since NAIF_BODY_CODE and NAIF_BODY_NAME are kernel variables, use of the
@@ -627,7 +632,7 @@ the integer code assigned to a body. This is not generally true for names.
       516         'METIS'                 JXVI
       517         'CALLIRRHOE'            JXVII
       518         'THEMISTO'              JXVIII
-      519         'MAGACLITE'             JXIX
+      519         'MEGACLITE'             JXIX
       520         'TAYGETE'               JXX
       521         'CHALDENE'              JXXI
       522         'HARPALYKE'             JXXII
@@ -826,11 +831,21 @@ the integer code assigned to a body. This is not generally true for names.
       -31         'VOYAGER 1'
       -32         'VG2'
       -32         'VOYAGER 2'
+      -33         'NEOS'
+      -33         'NEO SURVEYOR'
+      -37         'HYB2'
+      -37         'HAYABUSA 2'
+      -37         'HAYABUSA2'
+      -39         'LUNAR POLAR HYDROGEN MAPPER'
+      -39         'LUNAH-MAP'
       -40         'CLEMENTINE'
       -41         'MEX'
       -41         'MARS EXPRESS'
+      -43         'IMAP'
       -44         'BEAGLE2'
       -44         'BEAGLE 2'
+      -45         'JNSA'
+      -45         'JANUS_A'
       -46         'MS-T5'
       -46         'SAKIGAKE'
       -47         'PLANET-A'
@@ -844,9 +859,8 @@ the integer code assigned to a body. This is not generally true for names.
       -53         'MPF'
       -53         'MARS ODYSSEY'
       -53         'MARS SURVEYOR 01 ORBITER'
-      -54         'ARM'
-      -54         'ASTEROID RETRIEVAL MISSION'
       -55         'ULYSSES'
+      -57         'LUNAR ICECUBE'
       -58         'VSOP'
       -58         'HALCA'
       -59         'RADIOASTRON'
@@ -864,8 +878,9 @@ the integer code assigned to a body. This is not generally true for names.
       -68         'MERCURY MAGNETOSPHERIC ORBITER'
       -68         'MMO'
       -68         'BEPICOLOMBO MMO'
-      -69         'PSYC'
       -70         'DEEP IMPACT IMPACTOR SPACECRAFT'
+      -72         'JNSB'
+      -72         'JANUS_B'
       -74         'MRO'
       -74         'MARS RECON ORBITER'
       -76         'CURIOSITY'
@@ -894,6 +909,7 @@ the integer code assigned to a body. This is not generally true for names.
       -94         'MGS'
       -94         'MARS GLOBAL SURVEYOR'
       -95         'MGS SIMULATION'
+      -96         'PARKER SOLAR PROBE'
       -96         'SPP'
       -96         'SOLAR PROBE PLUS'
       -97         'TOPEX/POSEIDON'
@@ -906,6 +922,8 @@ the integer code assigned to a body. This is not generally true for names.
       -117        'EDL DEMONSTRATOR MODULE'
       -117        'EDM'
       -117        'EXOMARS 2016 EDM'
+      -119        'MARS_ORBITER_MISSION_2'
+      -119        'MOM2'
       -121        'MERCURY PLANETARY ORBITER'
       -121        'MPO'
       -121        'BEPICOLOMBO MPO'
@@ -915,7 +933,8 @@ the integer code assigned to a body. This is not generally true for names.
       -130        'HAYABUSA'
       -131        'SELENE'
       -131        'KAGUYA'
-      -135        'DRTS-W'
+      -135        'DART'
+      -135        'DOUBLE ASTEROID REDIRECTION TEST'
       -140        'EPOCH'
       -140        'DIXI'
       -140        'EPOXI'
@@ -928,22 +947,42 @@ the integer code assigned to a body. This is not generally true for names.
       -144        'SOLO'
       -144        'SOLAR ORBITER'
       -146        'LUNAR-A'
+      -148        'DFLY'
+      -148        'DRAGONFLY'
       -150        'CASSINI PROBE'
       -150        'HUYGENS PROBE'
       -150        'CASP'
       -151        'AXAF'
       -151        'CHANDRA'
-      -152        'CH2'
-      -152        'CHANDRAYAAN-2'
+      -152        'CH2O'
+      -152        'CHANDRAYAAN-2 ORBITER'
+      -153        'CH2L'
+      -153        'CHANDRAYAAN-2 LANDER'
       -154        'AQUA'
+      -155        'KPLO'
+      -155        'KOREAN PATHFINDER LUNAR ORBITER'
+      -156        'ADITYA'
+      -156        'ADIT'
       -159        'EURC'
       -159        'EUROPA CLIPPER'
-      -164        'YOHKOH'
-      -164        'SOLAR-A'
+      -164        'LUNAR FLASHLIGHT'
       -165        'MAP'
       -166        'IMAGE'
+      -168        'PERSEVERANCE'
+      -168        'MARS 2020'
+      -168        'MARS2020'
+      -168        'M2020'
       -170        'JWST'
       -170        'JAMES WEBB SPACE TELESCOPE'
+      -172        'EXM RSP SCC'
+      -172        'EXM SPACECRAFT COMPOSITE'
+      -172        'EXOMARS SCC'
+      -173        'EXM RSP SP'
+      -173        'EXM SURFACE PLATFORM'
+      -173        'EXOMARS SP'
+      -174        'EXM RSP RM'
+      -174        'EXM ROVER'
+      -174        'EXOMARS ROVER'
       -177        'GRAIL-A'
       -178        'PLANET-B'
       -178        'NOZOMI'
@@ -956,6 +995,8 @@ the integer code assigned to a body. This is not generally true for names.
       -190        'SIM'
       -194        'CLUSTER 3'
       -196        'CLUSTER 4'
+      -197        'EXOMARS_LARA'
+      -197        'LARA'
       -198        'INTEGRAL'
       -198        'NASA-ISRO SAR MISSION'
       -198        'NISAR'
@@ -964,6 +1005,8 @@ the integer code assigned to a body. This is not generally true for names.
       -203        'DAWN'
       -205        'SOIL MOISTURE ACTIVE AND PASSIVE'
       -205        'SMAP'
+      -210        'LICIA'
+      -210        'LICIACUBE'
       -212        'STV51'
       -213        'STV52'
       -214        'STV53'
@@ -978,12 +1021,19 @@ the integer code assigned to a body. This is not generally true for names.
       -238        'SM1'
       -238        'S1'
       -238        'SMART-1'
+      -239        'MARTIAN MOONS EXPLORATION'
+      -239        'MMX'
+      -240        'SMART LANDER FOR INVESTIGATING MOON'
+      -240        'SLIM'
+      -242        'LUNAR TRAILBLAZER'
+      -243        'VIPER'
       -248        'VEX'
       -248        'VENUS EXPRESS'
       -253        'OPPORTUNITY'
       -253        'MER-1'
       -254        'SPIRIT'
       -254        'MER-2'
+      -255        'PSYC'
       -301        'HELIOS 1'
       -302        'HELIOS 2'
       -362        'RADIATION BELT STORM PROBE A'
@@ -1003,6 +1053,9 @@ the integer code assigned to a body. This is not generally true for names.
       -550        'M96'
       -550        'MARS 96'
       -550        'MARS96'
+      -652        'MERCURY TRANSFER MODULE'
+      -652        'MTM'
+      -652        'BEPICOLOMBO MTM'
       -750        'SPRINT-A'
 </PRE>
 <BR><BR>
@@ -1249,15 +1302,82 @@ the integer code assigned to a body. This is not generally true for names.
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Asteroids
 </H3><P><BR><BR>
-   ID codes for numbered asteroids listed in the JPL Solar System Dynamics
-   Group catalog are determined via using the algorithm:
+   According to the original schema, NAIF ID codes for permanently numbered
+   asteroids registered in the JPL Solar System Dynamics (SSD) Group
+   database are 7-digit numbers determined using the algorithm
 <P>
  
 <PRE>
-      NAIF ID code = 2000000 + JPL Asteroid number
+      NAIF ID code = 2000000 + Permanent Asteroid Number
 </PRE>
-   For example, asteroid Yeomans (2956) has NAIF ID number 2002956. The
-   complete list of asteroids is far too numerous to include in this
+   limited to the 2000001 to 2999999 range and allowing up to 1 million
+   asteroids.
+<P>
+ 
+   For newly discovered asteroids with provisional numbers SSD internally
+   uses 7-digit numbers determined via the algorithm
+<P>
+ 
+<PRE>
+      NAIF ID code = 3000000 + Provisional Asteroid Number
+</PRE>
+   limited to the 3000001 to 3999999 range and also allowing up to 1
+   million asteroids.
+<P>
+ 
+   Given the need to accommodate many more asteroids expected to be
+   discovered by surveys coming on-line in the near future and the desire
+   to encode in the NAIF ID codes the roles of individual asteroids and
+   barycenters in binary and multi-body asteroid systems in a way similar
+   to planetary systems, in 2019 SSD and NAIF agreed to extend the original
+   schema.
+<P>
+ 
+   Under the extended schema all permanently numbered singular asteroids
+   have 8-digit NAIF ID codes with the original 7-digit IDs still allowed
+   to be used. Such asteroids are assigned NAIF ID codes using the
+   algorithm
+<P>
+ 
+<PRE>
+      NAIF ID code = 20000000 + Permanent Asteroid Number
+</PRE>
+   limited to the 20000001 to 49999999 range and allowing up to 30 million
+   asteroids.
+<P>
+ 
+   For asteroid systems with two or more bodies the 8-digit NAIF ID code
+   represents the barycenter. Individual satellites have a prepended number
+   1 through 8, while the primary body uses the ``last available'' prefix
+   9, resulting in 9-digit NAIF ID codes. This is analogous to the
+   planetary system approach except a single extra number is added as a
+   prefix rather than two numbers added as a suffix. In the case of ID
+   codes presented by strings, a 0 prefix could be added to the ID of the
+   barycenter, if printing out uniform 9 digits is desired.
+<P>
+ 
+   For newly discovered singular asteroids and asteroid system barycenters
+   with provisional numbers NAIF ID codes are also 8-digit numbers
+   determined via the algorithm:
+<P>
+ 
+<PRE>
+      NAIF ID code = 50000000 + Provisional Asteroid Number
+</PRE>
+   limited to the 50000001 to 99999999 range and allowing up to 50 million
+   asteroids, with the same prefix rule used to derive the 9-digit IDs for
+   the primary and satellite bodies in multi-body systems.
+<P>
+ 
+   For example, asteroid Yeomans (2956) has NAIF ID number 2002956
+   according to the original schema and NAIF ID number 20002956 according
+   to the extended schema, while asteroids Didymos (65803) and its
+   satellite Dimorphos can be accommodated only using the extended schema
+   with IDs 920065803 and 120065803, and Didymos system barycenter with ID
+   20065803.
+<P>
+ 
+   The complete list of asteroids is far too numerous to include in this
    document. However, below we include the NAIF ID codes for a few of the
    most commonly requested asteroids. One may look up the NAIF ID code for
    any named asteroid, or vice-versa, by using a webpage managed by JPL's
@@ -1270,36 +1390,50 @@ the integer code assigned to a body. This is not generally true for names.
 <PRE>
       NAIF ID     NAME
       ________    ____________________
-      9511010     'GASPRA'
-      2431010     'IDA'
-      2431011     'DACTYL'
       2000001     'CERES'
       2000002     'PALLAS'
       2000004     'VESTA'
       2000016     'PSYCHE'
       2000021     'LUTETIA'
+      2000052     '52_EUROPA'
+      2000052     '52 EUROPA'
       2000216     'KLEOPATRA'
+      2000253     'MATHILDE'
       2000433     'EROS'
       2000511     'DAVIDA'
-      2000253     'MATHILDE'
       2002867     'STEINS'
-      2009969     '1992KD'
-      2009969     'BRAILLE'
       2004015     'WILSON-HARRINGTON'
       2004179     'TOUTATIS'
+      2009969     '1992KD'
+      2009969     'BRAILLE'
       2025143     'ITOKAWA'
       2101955     'BENNU'
+      2162173     'RYUGU'
+      2431010     'IDA'
+      2431011     'DACTYL'
+      2486958     'ARROKOTH'
+      9511010     'GASPRA'
+     20000617     'PATROCLUS_BARYCENTER'
+     20000617     'PATROCLUS BARYCENTER'
+     20003548     'EURYBATES_BARYCENTER'
+     20003548     'EURYBATES BARYCENTER'
+     20011351     'LEUCUS'
+     20015094     'POLYMELE'
+     20021900     'ORUS'
+     20052246     'DONALDJOHANSON'
+     20065803     'DIDYMOS_BARYCENTER'
+     20065803     'DIDYMOS BARYCENTER'
+    120000617     'MENOETIUS'
+    120003548     'QUETA'
+    120065803     'DIMORPHOS'
+    920000617     'PATROCLUS'
+    920003548     'EURYBATES'
+    920065803     'DIDYMOS'
 </PRE>
    There are three exceptions to the rule---asteroids Gaspra, Ida and Ida's
    satellite Dactyl, visited by the Galileo spacecraft. The ID codes for
    these asteroids were determined using an older numbering convention now
    abandoned by the SPICE system.
-<P>
- 
-   Note that if more than 431010 asteroids are ever identified and
-   cataloged there will arise a conflict between the new numbering system
-   and the ID code for Ida. At that time NAIF (or its successor) will need
-   to add another exception to the asteroid numbering system.
 <P>
  
 <BR><BR>
@@ -1343,6 +1477,8 @@ the integer code assigned to a body. This is not generally true for names.
       399028      'DSS-28'
       399033      'DSS-33'
       399034      'DSS-34'
+      399035      'DSS-35'
+      399036      'DSS-36'
       399042      'DSS-42'
       399043      'DSS-43'
       399045      'DSS-45'
@@ -1351,11 +1487,13 @@ the integer code assigned to a body. This is not generally true for names.
       399053      'DSS-53'
       399054      'DSS-54'
       399055      'DSS-55'
+      399056      'DSS-56'
       399061      'DSS-61'
       399063      'DSS-63'
       399064      'DSS-64'
       399065      'DSS-65'
       399066      'DSS-66'
+      399069      'DSS-69'
 </PRE>
 <BR><BR>
 <A NAME="Inertial and Non-inertial Reference Frames"></A>

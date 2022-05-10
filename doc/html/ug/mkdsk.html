@@ -23,12 +23,14 @@
 </H2>
 
 <PRE>
+
    <A HREF="#MKDSK User's Guide">MKDSK User's Guide</A>
       <A HREF="#Abstract">Abstract</A>
       <A HREF="#Summary">Summary</A>
       <A HREF="#References">References</A>
       <A HREF="#Usage">Usage</A>
       <A HREF="#Running MKDSK">Running MKDSK</A>
+
    <A HREF="#MKDSK Setup File">MKDSK Setup File</A>
       <A HREF="#Setup File Format">Setup File Format</A>
       <A HREF="#Setup File Assignments">Setup File Assignments</A>
@@ -36,20 +38,22 @@
          <A HREF="#Conditional Assignments">Conditional Assignments</A>
          <A HREF="#Optional Assignments">Optional Assignments</A>
       <A HREF="#Detailed Description of Setup File Keywords">Detailed Description of Setup File Keywords</A>
+
    <A HREF="#Setup File Examples">Setup File Examples</A>
          <A HREF="#Input Using Latitudinal Coordinates and Plate Type 2">Input Using Latitudinal Coordinates and Plate Type 2</A>
          <A HREF="#Input Using Planetodetic Coordinates and Plate Type 1">Input Using Planetodetic Coordinates and Plate Type 1</A>
          <A HREF="#Input Using Planetocentric Coordinates and Plate Type 5">Input Using Planetocentric Coordinates and Plate Type 5</A>
+
    <A HREF="#Input Data File">Input Data File</A>
       <A HREF="#Units">Units</A>
       <A HREF="#Reference Frame">Reference Frame</A>
       <A HREF="#Vertex order">Vertex order</A>
          <A HREF="#Vertex IDs">Vertex IDs</A>
-      <A HREF="#Plate Data File Type 1 (Plate-Vertex Table)">Plate Data File Type 1 (Plate-Vertex Table)</A>
+      <A HREF="#Plate Data File Type 1 Plate-Vertex Table">Plate Data File Type 1 (Plate-Vertex Table)</A>
          <A HREF="#Sample Plate-Vertex Table Input File">Sample Plate-Vertex Table Input File</A>
-      <A HREF="#Plate Data File Type 2 (Gaskell Shape Model)">Plate Data File Type 2 (Gaskell Shape Model)</A>
+      <A HREF="#Plate Data File Type 2 Gaskell Shape Model">Plate Data File Type 2 (Gaskell Shape Model)</A>
          <A HREF="#Sample Gaskell Shape Model Input File">Sample Gaskell Shape Model Input File</A>
-      <A HREF="#Plate Data File Type 3 (Vertex-Facet Table)">Plate Data File Type 3 (Vertex-Facet Table)</A>
+      <A HREF="#Plate Data File Type 3 Vertex-Facet Table">Plate Data File Type 3 (Vertex-Facet Table)</A>
          <A HREF="#Sample Vertex-Facet Input File">Sample Vertex-Facet Input File</A>
       <A HREF="#Rosetta/OSIRIS ``ver'' File">Rosetta/OSIRIS ``ver'' File</A>
          <A HREF="#Sample Rosetta/OSIRIS ``ver'' File">Sample Rosetta/OSIRIS ``ver'' File</A>
@@ -57,10 +61,12 @@
          <A HREF="#Domain Coordinates">Domain Coordinates</A>
          <A HREF="#Heights">Heights</A>
          <A HREF="#Height Grid File Format">Height Grid File Format</A>
-         <A HREF="#Height Grid Data Order">Height Grid Data Order</A>
+         <A HREF="#Height Grid Data Mapping">Height Grid Data Mapping</A>
          <A HREF="#Polar Caps">Polar Caps</A>
          <A HREF="#Longitude Wrapping">Longitude Wrapping</A>
+
    <A HREF="#Output DSK File">Output DSK File</A>
+
    <A HREF="#Appendix A: Spatial Index and Voxels">Appendix A: Spatial Index and Voxels</A>
 
 </PRE>
@@ -72,7 +78,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> MKDSK User's Guide
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2017 APR 05 by N. J. Bachman.
+   Last revised on 2021 DEC 31 by N. J. Bachman.
 <P>
  
 <BR><BR>
@@ -603,8 +609,8 @@ This value is unitless.<BR>
 <DD>
  Array of two strings specifying the units of the input data. The right
 hand side of the assignment has the format ( 'ANGLES = angular unit'
-'DISTANCES = distance unit' ). The units accepted by the CSPICE routine
-<a href="../cspice/convrt_c.html">convrt_c</a> are accepted in this assignment. This assignment is required.<BR>
+'DISTANCES = distance unit' ). The units accepted by the SPICE routine
+CONVRT are accepted in this assignment. This assignment is required.<BR>
 </DL>
 <DL><DT>
 <B>
@@ -1187,7 +1193,7 @@ are separated by equal X increments and equal Y increments.<BR>
 <H2> Units
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
    The distance units of plate model vertex data may be any supported by
-   the SPICE unit conversion routine <a href="../cspice/convrt_c.html">convrt_c</a>. Distance units must be
+   the CSPICE unit conversion routine <a href="../cspice/convrt_c.html">convrt_c</a>. Distance units must be
    specified in the MKDSK setup file.
 <P>
  
@@ -1233,7 +1239,7 @@ are separated by equal X increments and equal Y increments.<BR>
 <P>
  
 <BR><BR>
-<A NAME="Plate Data File Type 1 (Plate-Vertex Table)"></A>
+<A NAME="Plate Data File Type 1 Plate-Vertex Table"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Plate Data File Type 1 (Plate-Vertex Table)
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -1352,7 +1358,7 @@ items on lines (N+3) through (N+M+2).<BR>
       20 11 12 7
 </PRE>
 <BR><BR>
-<A NAME="Plate Data File Type 2 (Gaskell Shape Model)"></A>
+<A NAME="Plate Data File Type 2 Gaskell Shape Model"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Plate Data File Type 2 (Gaskell Shape Model)
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -1420,7 +1426,7 @@ on lines 2 through Nvert+1.<BR>
          ...         ...         ...
 </PRE>
 <BR><BR>
-<A NAME="Plate Data File Type 3 (Vertex-Facet Table)"></A>
+<A NAME="Plate Data File Type 3 Vertex-Facet Table"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Plate Data File Type 3 (Vertex-Facet Table)
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -1666,7 +1672,7 @@ items on the data lines. Each vertex line has the prefix character 'f'.<BR>
 <PRE>
    TOPLAT to TOPLAT - ((NROWS-1) * LATSTP)
 </PRE>
-   For rectangular coordinates, X vaues are defined by a ``leftmost''
+   For rectangular coordinates, X values are defined by a ``leftmost''
    (minimum) X value LEFTX and an X step size XSTEP. These are the values
    assigned to the keywords LEFT_COLUMN_X and COLUMN_STEP_SIZE. The X
    values of the grid points increase from
@@ -1734,22 +1740,26 @@ items on the data lines. Each vertex line has the prefix character 'f'.<BR>
    fixed-width columns.
 <P>
  
+   MKDSK reads the input height data file sequentially: it views the values
+   in a height grid file as a 1-dimensional stream of data. Values in lines
+   are read from the file from left to right; lines are read from the start
+   of the file to the end.
+<P>
+ 
 <BR><BR>
-<A NAME="Height Grid Data Order"></A>
+<A NAME="Height Grid Data Mapping"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
-<H3> Height Grid Data Order
+<H3> Height Grid Data Mapping
 </H3><P><BR><BR>
-   MKDSK reads the input file sequentially: it views the values in a height
-   grid file as a 1-dimensional stream of data. Values in lines are read
-   from the file from left to right; lines are read from the start of the
-   file to the end.
+   Although the input file need not have its data arranged in a grid, the
+   data may be treated as though they do form a grid, since the numbers of
+   rows and columns, along with the row-major or column-major attribute
+   described below, imply a shape and size of a rectangular input grid.
+   Below, we depict the input data as already arranged in a grid.
 <P>
  
-   MKDSK can accept a variety of data orders. The order of data in the
-   input file are described by keywords in the setup file.
-<P>
- 
-   The input data can be in either ``row-major'' or ``column-major'' order.
+   The input data can be arranged in either row-major or column-major
+   order.
 <P>
  
    Row-major order means that data for rows in the vertex grid are adjacent
@@ -1762,127 +1772,165 @@ items on the data lines. Each vertex line has the prefix character 'f'.<BR>
    to a column, the next NROWS elements belong to a column, and so on.
 <P>
  
+   Input data can be mapped to the vertex grid in top-down or bottom-up
+   order, and in left-to-right or right-to-left order. The possible
+   mappings are illustrated below. Setup file keywords controlling the
+   mapping are discussed following these diagrams.
+<P>
+ 
+   When the input data are arranged in row-major order, rows of height data
+   in the input file map to rows in the segment's vertex grid as shown
+   below. Entries of the form h_ij represent height values in the ith row
+   and jth column of the input file. Horizontal and vertical lines denote
+   additional rows and columns of data.
+<P>
+ 
+   If the input data organization is row-major, top-down and left-right,
+   the mapping is:
+<P>
+ 
+<PRE>
+   h_11  h_12  ...  h_1n             h_11  h_12  ...  h_1n
+   h_21  h_22  ...  h_2n             h_21  h_22  ...  h_2n
+   ---------------------             ---------------------
+            ...              -&gt;               ...
+   ---------------------             ---------------------
+   ---------------------             ---------------------
+ 
+       Input file                    Segment's vertex grid
+</PRE>
+   If the input data organization is row-major, top-down and right-left,
+   the mapping is:
+<P>
+ 
+<PRE>
+   h_11  h_12  ...  h_1n             h_1n  ...  h_12  h_11
+   h_21  h_22  ...  h_2n             h_2n  ...  h_22  h_21
+   ---------------------             ---------------------
+            ...              -&gt;               ...
+   ---------------------             ---------------------
+   ---------------------             ---------------------
+ 
+       Input file                    Segment's vertex grid
+</PRE>
+   If the input data organization is row-major, bottom-up and left-right,
+   the mapping is:
+<P>
+ 
+<PRE>
+   h_11  h_12  ...  h_1n             ---------------------
+   h_21  h_22  ...  h_2n             ---------------------
+   ---------------------                      ...
+            ...              -&gt;      ---------------------
+   ---------------------             h_21  h_22  ...  h_2n
+   ---------------------             h_11  h_12  ...  h_1n
+ 
+       Input file                    Segment's vertex grid
+</PRE>
+   If the input data organization is row-major, bottom-up and right-left,
+   the mapping is:
+<P>
+ 
+<PRE>
+   h_11  h_12  ...  h_1n             ---------------------
+   h_21  h_22  ...  h_2n             ---------------------
+   ---------------------                      ...
+            ...              -&gt;      ---------------------
+   ---------------------             h_2n  ...  h_22  h_21
+   ---------------------             h_1n  ...  h_12  h_11
+ 
+       Input file                    Segment's vertex grid
+</PRE>
+   When the input data are arranged in column-major order, rows of height
+   data in the input file map to columns in the segment's vertex grid as
+   shown below. If the input data organization is column-major, top-down
+   and left-right, the mapping is:
+<P>
+ 
+<PRE>
+   h_11  h_12  ...  h_1n             h_11  h_21   |     | |
+   h_21  h_22  ...  h_2n             h_12  h_22   |     | |
+   ---------------------                          |     | |
+            ...              -&gt;      ...   ...    | ... | |
+   ---------------------                          |     | |
+   ---------------------             h_1n  h_2n   |     | |
+ 
+       Input file                    Segment's vertex grid
+</PRE>
+   If the input data organization is column-major, top-down and right-left,
+   the mapping is:
+<P>
+ 
+<PRE>
+   h_11  h_12  ...  h_1n              | |     | h_21  h_11
+   h_21  h_22  ...  h_2n              | |     | h_22  h_12
+   ---------------------              | |     |
+            ...              -&gt;       | | ... | ...   ...
+   ---------------------              | |     |
+   ---------------------              | |     | h_2n  h_1n
+ 
+       Input file                     Segment's vertex grid
+</PRE>
+   If the input data organization is column-major, bottom-up and
+   left-right, the mapping is:
+<P>
+ 
+<PRE>
+   h_11  h_12  ...  h_1n             h_1n  h_2n   |     | |
+   h_21  h_22  ...  h_2n                          |     | |
+   ---------------------              ...   ...   | ... | |
+            ...              -&gt;                   |     | |
+   ---------------------             h_12  h_22   |     | |
+   ---------------------             h_11  h_21   |     | |
+ 
+       Input file                    Segment's vertex grid
+</PRE>
+   If the input data organization is column-major, bottom-up and
+   right-left, the mapping is:
+<P>
+ 
+<PRE>
+   h_11  h_12  ...  h_1n              | |     | h_2n  h_1n
+   h_21  h_22  ...  h_2n              | |     |
+   ---------------------              | | ... | ...   ...
+            ...              -&gt;       | |     |
+   ---------------------              | |     | h_22  h_12
+   ---------------------              | |     | h_21  h_11
+ 
+       Input file                     Segment's vertex grid
+</PRE>
    The assignment of the string 'YES' to the keyword
 <P>
  
 <PRE>
    INPUT_GRID_ORDER_ROW_MAJOR
 </PRE>
-   indicates that the data are in row-major order. The assignment of 'NO'
-   indicates the data are in column-major order.
+   indicates that the input height data are arranged in row-major order.
+   The assignment of 'NO' indicates the data are in column-major order.
 <P>
  
-   The columns of the vertex grid can be filled in in top-down or bottom-up
-   order. When top-down ordering is used, data within each vertex grid
-   column are filled in in order of decreasing latitude or Y-value. This
-   applies whether or not the input file has row-major order. If the order
-   is not top-down, it is bottom-up. The assignment of the string 'YES' to
-   the keyword
+   The assignment of the string 'YES' to the keyword
 <P>
  
 <PRE>
    COLUMN_VALUE_ORDER_TOP_DOWN
 </PRE>
-   indicates that the data are in top-down order. The assignment of 'NO'
-   indicates the data are in bottom-up order.
+   indicates that the input height data are to be mapped to the vertex grid
+   in top-down order. The assignment of 'NO' indicates the mapping is
+   bottom-up.
 <P>
  
-   The rows of the vertex grid can be filled in in left-to-right or
-   right-to-left order. When left-to-right ordering is used, data within
-   each vertex grid row are filled in in order of increasing longitude or
-   X-value. This applies whether or not the input file has row-major order.
-   If the order is not left-to-right, it is right-to-left. The assignment
-   of the string 'YES' to the keyword
+   The assignment of the string 'YES' to the keyword
 <P>
  
 <PRE>
    ROW_VALUE_ORDER_LEFT_RIGHT
 </PRE>
-   indicates that the data are in left-to-right order. The assignment of
-   'NO' indicates the data are in right-to-left order.
+   indicates that the input height data are to be mapped to the vertex grid
+   in left-to-right order. The assignment of 'NO' indicates the mapping is
+   right-to-left.
 <P>
  
-   The following examples show different possible orderings of the input
-   height data. All orderings shown can be described by assignments in the
-   setup file.
-<P>
- 
-   For this example, we use an extremely small vertex grid having two rows
-   and three columns. Let the vertices of the vertex grid be numbered as
-   follows:
-<P>
- 
-<PRE>
- 
-      1     2     3
- 
-      4     5     6
- 
-</PRE>
-   The orderings of the data for these vertices, as a function of the data
-   file's attributes, are shown below.
-<P>
- 
-   Row-major, top-down, left-right:
-<P>
- 
-<PRE>
-    1  2  3
-    4  5  6
-</PRE>
-   Row-major, top-down, right-left:
-<P>
- 
-<PRE>
-    3  2  1
-    6  5  4
-</PRE>
-   Row-major, bottom-up, left-right:
-<P>
- 
-<PRE>
-    4  5  6
-    1  2  3
-</PRE>
-   Row-major, bottom-up, right-left:
-<P>
- 
-<PRE>
-    6  5  4
-    3  2  1
-</PRE>
-   Column-major, top-down, left-right:
-<P>
- 
-<PRE>
-    1  4
-    2  5
-    3  6
-</PRE>
-   Column-major, top-down, right-left:
-<P>
- 
-<PRE>
-    3  6
-    2  5
-    1  4
-</PRE>
-   Column-major, bottom-up, left-right:
-<P>
- 
-<PRE>
-    4  1
-    5  2
-    6  3
-</PRE>
-   Column-major, bottom-up, right-left:
-<P>
- 
-<PRE>
-    6  3
-    5  2
-    4  1
-</PRE>
 <BR><BR>
 <A NAME="Polar Caps"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
@@ -1949,9 +1997,12 @@ items on the data lines. Each vertex line has the prefix character 'f'.<BR>
    direction of latitude.
 <P>
  
-   A polar cap should not be generated if the input data set already has a
-   row of vertices with latitude on that pole: the cap would contain
-   degenerate plates.
+   If the input data set has a row of vertices with latitude on a pole,
+   that row is converted to single vertex having height equal to the
+   average height of the original vertices, and a polar cap is created
+   using that vertex and the adjacent row of vertices. As a result, no
+   degenerate plates are created. MKDSK takes these actions regardless of
+   whether creation of polar caps is commanded.
 <P>
  
 <BR><BR>

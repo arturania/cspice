@@ -13,18 +13,9 @@
 <table style="text-align: left; margin-left: auto; margin-right: auto; width: 800px;"
  border="0" cellpadding="5" cellspacing="2">
   <tbody>
-    <tr>
-      <td style="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
-      <div align="right"> 
-      <small><small><a href="index.html">Index Page</a></small></small>
-      </div>
-      <b>latcyl_c</b> </td>
-    </tr>
-
-    <tr>
-      <td style="vertical-align: top;">
-
-<small><div align="center">
+    <tr><td>
+<div align="center">
+Index of Functions: 
 <A HREF="index.html#A">A</A>&nbsp;
 <A HREF="index.html#B">B</A>&nbsp;
 <A HREF="index.html#C">C</A>&nbsp;
@@ -49,14 +40,28 @@
 <A HREF="index.html#V">V</A>&nbsp;
 <A HREF="index.html#W">W</A>&nbsp;
 <A HREF="index.html#X">X</A>&nbsp;
-</div></small>
+</div>
+</td></tr>
+
+    <tr>
+      <td style="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
+      <div align="right"> 
+      <small><small><a href="index.html">Index Page</a></small></small>
+      </div>
+      <b>latcyl_c</b></td>
+    </tr>
+    
+
+    <tr>
+      <td style="vertical-align: top;">
+
        <br>
+       <div align="left"><b>Table of contents</b></div>
        <table style="text-align: left; width: 60%; margin-left: auto; margin-right: auto;"
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
             <td style="width: 33%; text-align: center;">
-            <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
               <a href="#Required_Reading">Required_Reading<br></a>
@@ -64,37 +69,35 @@
               <a href="#Brief_I/O">Brief_I/O<br></a>
               <a href="#Detailed_Input">Detailed_Input<br></a>
 
-              </small>
               </td>
-              <td style="vertical-align: top; width: 33%; text-align: center;">
-              <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
+              <td style="vertical-align: top; width: 33%; text-align: center;">              <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
               <a href="#Files">Files<br></a>
               <a href="#Particulars">Particulars<br></a>
-              <a href="#Examples">Examples<br></a>
+              <big><b><a href="#Examples">Examples<br></a></b></big>
 
-              </small>
               </td>
-              <td style="vertical-align: top; width: 33%; text-align: center;">
-              <small>               <a href="#Restrictions">Restrictions<br></a>
+              <td style="vertical-align: top; width: 33%; text-align: center;">              <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
               <a href="#Version">Version<br></a>
               <a href="#Index_Entries">Index_Entries<br></a>
-             </small>
             </td>
           </tr>
         </tbody>
 </table>
+<hr>
 
 <h4><a name="Procedure">Procedure</a></h4>
 <PRE>
+   latcyl_c ( Latitudinal to cylindrical coordinates ) 
+
    void latcyl_c ( SpiceDouble    radius,
                    SpiceDouble    lon,
                    SpiceDouble    lat,
                    SpiceDouble *  r,
-                   SpiceDouble *  lonc,
+                   SpiceDouble *  clon,
                    SpiceDouble *  z )
 
 </PRE>
@@ -108,7 +111,8 @@
 </PRE>
 <h4><a name="Keywords">Keywords</a></h4>
 <PRE>
-   CONVERSION,  COORDINATES
+   CONVERSION
+   COORDINATES
 
 
 </PRE>
@@ -120,25 +124,25 @@
    lon        I   Angle of the point from the XZ plane in radians.
    lat        I   Angle of the point from the XY plane in radians.
    r          O   Distance of the point from the z axis.
-   lonc       O   Angle of the point from the XZ plane in radians.
+   clon       O   Angle of the point from the XZ plane in radians.
    z          O   Height of the point above the XY plane.
 </PRE>
 <h4><a name="Detailed_Input">Detailed_Input</a></h4>
 <PRE>
-   radius     Distance of a point from the origin.
+   radius      is the distance of a point from the origin.
 
-   lon        Angle of the point from the XZ plane in radians.
+   lon         is the angle of the point from the XZ plane in radians.
 
-   lat        Angle of the point from the XY plane in radians.
+   lat         is the angle of the point from the XY plane in radians.
 </PRE>
 <h4><a name="Detailed_Output">Detailed_Output</a></h4>
 <PRE>
-   r          Distance of the point from the z axis.
+   r           is the distance of the point from the z axis.
 
-   lonc       Angle of the point from the XZ plane in radians.
-              `lonc' is set equal to `lon'.
+   clon        is the angle of the point from the XZ plane in radians.
+               `clon' is set equal to `lon'.
 
-   z          Height of the point above the XY plane.
+   z           is the height of the point above the XY plane.
 </PRE>
 <h4><a name="Parameters">Parameters</a></h4>
 <PRE>
@@ -164,19 +168,331 @@
 </PRE>
 <h4><a name="Examples">Examples</a></h4>
 <PRE>
-   Other than the obvious conversion between coordinate systems
-   this routine could be used to obtain the axial projection
-   from a sphere to a cylinder about the z-axis that contains
-   the equator of the sphere.  The following code fragment
-   illustrates this idea.
+   The numerical results shown for these examples may differ across
+   platforms. The results depend on the SPICE kernels used as
+   input, the compiler and supporting libraries, and the machine
+   specific arithmetic implementation.
 
-         <b>latcyl_c</b> ( radius,  lon, lat, &amp;r,  &amp;lon, &amp;z );
-         r = radius;
+   1) Compute the latitudinal coordinates of the position of the Moon
+      as seen from the Earth, and convert them to cylindrical and
+      rectangular coordinates.
 
-   r,  lon, and z now contain the coordinates of the projected
-   point. Such a projection is valuable because it preserves the
-   areas between regions on the sphere and their projections to the
-   cylinder.
+      Use the meta-kernel shown below to load the required SPICE
+      kernels.
+
+
+         KPL/MK
+
+         File name: latcyl_ex1.tm
+
+         This meta-kernel is intended to support operation of SPICE
+         example programs. The kernels shown here should not be
+         assumed to contain adequate or correct versions of data
+         required by SPICE-based user applications.
+
+         In order for an application to use this meta-kernel, the
+         kernels referenced here must be present in the user's
+         current working directory.
+
+         The names and contents of the kernels referenced
+         by this meta-kernel are as follows:
+
+            File name                     Contents
+            ---------                     --------
+            de421.bsp                     Planetary ephemeris
+            naif0012.tls                  Leapseconds
+
+
+         \begindata
+
+            KERNELS_TO_LOAD = ( 'de421.bsp',
+                                'naif0012.tls'  )
+
+         \begintext
+
+         End of meta-kernel
+
+
+      Example code begins here.
+
+
+      /.
+         Program latcyl_ex1
+      ./
+      #include &lt;stdio.h&gt;
+      #include &quot;SpiceUsr.h&quot;
+
+      int main( )
+      {
+
+         /.
+         Local variables
+         ./
+         SpiceDouble          clon;
+         SpiceDouble          et;
+         SpiceDouble          lat;
+         SpiceDouble          lon;
+         SpiceDouble          lt;
+         SpiceDouble          pos    [3];
+         SpiceDouble          radius;
+         SpiceDouble          rectan [3];
+         SpiceDouble          r;
+         SpiceDouble          z;
+
+         /.
+         Load SPK and LSK kernels, use a meta kernel for
+         convenience.
+         ./
+         <a href="furnsh_c.html">furnsh_c</a> ( &quot;latcyl_ex1.tm&quot; );
+
+         /.
+         Look up the geometric state of the Moon as seen from
+         the Earth at 2017 Mar 20, relative to the J2000
+         reference frame.
+         ./
+         <a href="str2et_c.html">str2et_c</a> ( &quot;2017 Mar 20&quot;, &amp;et );
+
+         <a href="spkpos_c.html">spkpos_c</a> ( &quot;Moon&quot;, et, &quot;J2000&quot;, &quot;NONE&quot;, &quot;Earth&quot;, pos, &amp;lt );
+
+         /.
+         Convert the position vector `pos' to latitudinal
+         coordinates.
+         ./
+         <a href="reclat_c.html">reclat_c</a> ( pos, &amp;radius, &amp;lon, &amp;lat );
+
+         /.
+         Convert the latitudinal coordinates to cylindrical.
+         ./
+         <b>latcyl_c</b> ( radius, lon, lat, &amp;r, &amp;clon, &amp;z );
+
+         /.
+         Convert the cylindrical coordinates to rectangular.
+         ./
+         <a href="cylrec_c.html">cylrec_c</a> ( r, clon, z, rectan );
+
+         printf( &quot; \n&quot; );
+         printf( &quot;Original rectangular coordinates:\n&quot; );
+         printf( &quot; \n&quot; );
+         printf( &quot; X          (km):  %19.8f\n&quot;, pos[0] );
+         printf( &quot; Y          (km):  %19.8f\n&quot;, pos[1] );
+         printf( &quot; Z          (km):  %19.8f\n&quot;, pos[2] );
+         printf( &quot; \n&quot; );
+         printf( &quot;Latitudinal coordinates:\n&quot; );
+         printf( &quot; \n&quot; );
+         printf( &quot; Radius     (km):  %19.8f\n&quot;, radius );
+         printf( &quot; Longitude (deg):  %19.8f\n&quot;, lon*<a href="dpr_c.html">dpr_c</a> ( ) );
+         printf( &quot; Latitude  (deg):  %19.8f\n&quot;, lat*<a href="dpr_c.html">dpr_c</a> ( ) );
+         printf( &quot; \n&quot; );
+         printf( &quot;Cylindrical coordinates:\n&quot; );
+         printf( &quot; \n&quot; );
+         printf( &quot; Radius     (km):  %19.8f\n&quot;, r );
+         printf( &quot; Longitude (deg):  %19.8f\n&quot;, clon*<a href="dpr_c.html">dpr_c</a> ( ) );
+         printf( &quot; Z          (km):  %19.8f\n&quot;, z );
+         printf( &quot; \n&quot; );
+         printf( &quot;Rectangular coordinates from <a href="cylrec_c.html">cylrec_c</a>:\n&quot; );
+         printf( &quot; \n&quot; );
+         printf( &quot; X          (km):  %19.8f\n&quot;, rectan[0] );
+         printf( &quot; Y          (km):  %19.8f\n&quot;, rectan[1] );
+         printf( &quot; Z          (km):  %19.8f\n&quot;, rectan[2] );
+         printf( &quot; \n&quot; );
+
+         return ( 0 );
+      }
+
+
+      When this program was executed on a Mac/Intel/cc/64-bit
+      platform, the output was:
+
+
+      Original rectangular coordinates:
+
+       X          (km):      -55658.44323296
+       Y          (km):     -379226.32931475
+       Z          (km):     -126505.93063865
+
+      Latitudinal coordinates:
+
+       Radius     (km):      403626.33912495
+       Longitude (deg):         -98.34959789
+       Latitude  (deg):         -18.26566077
+
+      Cylindrical coordinates:
+
+       Radius     (km):      383289.01777726
+       Longitude (deg):         -98.34959789
+       Z          (km):     -126505.93063865
+
+      Rectangular coordinates from <a href="cylrec_c.html">cylrec_c</a>:
+
+       X          (km):      -55658.44323296
+       Y          (km):     -379226.32931475
+       Z          (km):     -126505.93063865
+
+
+   2) Create a table showing a variety of latitudinal coordinates
+      and the corresponding cylindrical coordinates.
+
+      Corresponding latitudinal and cylindrical coordinates are
+      listed to three decimal places. Input and output angles are
+      in degrees.
+
+
+      Example code begins here.
+
+
+      /.
+         Program latcyl_ex2
+      ./
+      #include &lt;stdio.h&gt;
+      #include &quot;SpiceUsr.h&quot;
+
+      int main( )
+      {
+
+         /.
+         Local parameters.
+         ./
+         #define NREC         11
+
+         /.
+         Local variables.
+         ./
+         SpiceDouble          clon;
+         SpiceDouble          r;
+         SpiceDouble          rlat;
+         SpiceDouble          rlon;
+         SpiceDouble          z;
+
+         SpiceInt             i;
+
+         /.
+         Define the input latitudinal coordinates. Angles in degrees.
+         ./
+
+         SpiceDouble          radius [NREC] = { 0.0,  1.0,     1.0,
+                                                1.0,  1.4142,  1.0,
+                                                1.0,  1.0,     1.4142,
+                                                1.0,  0.0             };
+
+         SpiceDouble          lon    [NREC] = {   0.0,    0.0,   90.0,
+                                                  0.0,  180.0,  -90.0,
+                                                  0.0,   45.0,  180.0,
+                                                180.0,    33.0        };
+
+         SpiceDouble          lat    [NREC] = {  90.0,   0.0,    0.0,
+                                                 90.0,  45.0,    0.0,
+                                                -90.0,   0.0,  -45.0,
+                                                 90.0,   0.0         };
+
+         /.
+         Print the banner.
+         ./
+         printf( &quot;  radius    lon      lat       r       clon      z   \n&quot; );
+         printf( &quot; -------  -------  -------  -------  -------  -------\n&quot; );
+
+         /.
+         Do the conversion. Output angles in degrees.
+         ./
+         for ( i = 0; i &lt; NREC; i++ )
+         {
+
+            rlon = lon[i] * <a href="rpd_c.html">rpd_c</a> ( );
+            rlat = lat[i] * <a href="rpd_c.html">rpd_c</a> ( );
+
+            <b>latcyl_c</b> ( radius[i], rlon, rlat, &amp;r, &amp;clon, &amp;z );
+
+            printf( &quot;%8.3f %8.3f %8.3f &quot;, radius[i], lon[i], lat[i] );
+            printf( &quot;%8.3f %8.3f %8.3f\n&quot;, r, clon * <a href="dpr_c.html">dpr_c</a> ( ), z );
+
+         }
+
+         return ( 0 );
+      }
+
+
+      When this program was executed on a Mac/Intel/cc/64-bit
+      platform, the output was:
+
+
+        radius    lon      lat       r       clon      z
+       -------  -------  -------  -------  -------  -------
+         0.000    0.000   90.000    0.000    0.000    0.000
+         1.000    0.000    0.000    1.000    0.000    0.000
+         1.000   90.000    0.000    1.000   90.000    0.000
+         1.000    0.000   90.000    0.000    0.000    1.000
+         1.414  180.000   45.000    1.000  180.000    1.000
+         1.000  -90.000    0.000    1.000  -90.000    0.000
+         1.000    0.000  -90.000    0.000    0.000   -1.000
+         1.000   45.000    0.000    1.000   45.000    0.000
+         1.414  180.000  -45.000    1.000  180.000   -1.000
+         1.000  180.000   90.000    0.000  180.000    1.000
+         0.000   33.000    0.000    0.000   33.000    0.000
+
+
+   3) Other than the obvious conversion between coordinate systems
+      this routine could be used to obtain the axial projection
+      from a sphere to a cylinder about the z-axis that contains
+      the equator of the sphere.
+
+      Such a projection is valuable because it preserves the
+      areas between regions on the sphere and their projections to
+      the cylinder.
+
+
+      Example code begins here.
+
+
+      /.
+         Program latcyl_ex3
+      ./
+      #include &lt;stdio.h&gt;
+      #include &quot;SpiceUsr.h&quot;
+
+      int main( )
+      {
+
+         /.
+         Local variables
+         ./
+         SpiceDouble          clon;
+         SpiceDouble          lat;
+         SpiceDouble          lon;
+         SpiceDouble          radius;
+         SpiceDouble          r;
+         SpiceDouble          z;
+
+         /.
+         Define the point whose projection is to be
+         computed.
+         ./
+         radius =  100.0;
+         lon    =   45.0  * <a href="rpd_c.html">rpd_c</a> ( );
+         lat    =  -12.5 * <a href="rpd_c.html">rpd_c</a> ( );
+
+         /.
+         Convert the latitudinal coordinates to cylindrical.
+         ./
+         <b>latcyl_c</b> ( radius, lon, lat, &amp;r, &amp;clon, &amp;z );
+
+         printf( &quot;Coordinates of the projected point on cylinder:\n&quot; );
+         printf( &quot; \n&quot; );
+         printf( &quot; Radius     (km):  %22.11f\n&quot;, r );
+         printf( &quot; Longitude (deg):  %22.11f\n&quot;, clon*<a href="dpr_c.html">dpr_c</a> ( ) );
+         printf( &quot; Z          (km):  %22.11f\n&quot;, z );
+
+         return ( 0 );
+      }
+
+
+      When this program was executed on a Mac/Intel/cc/64-bit
+      platform, the output was:
+
+
+      Coordinates of the projected point on cylinder:
+
+       Radius     (km):          97.62960071199
+       Longitude (deg):          45.00000000000
+       Z          (km):         -21.64396139381
 </PRE>
 <h4><a name="Restrictions">Restrictions</a></h4>
 <PRE>
@@ -188,16 +504,26 @@
 </PRE>
 <h4><a name="Author_and_Institution">Author_and_Institution</a></h4>
 <PRE>
-   E.D. Wright     (JPL)
-   W.L. Taber      (JPL)
+   J. Diaz del Rio     (ODC Space)
+   B.V. Semenov        (JPL)
+   W.L. Taber          (JPL)
+   E.D. Wright         (JPL)
 </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
+   -CSPICE Version 1.1.0, 04-JUL-2021 (JDR)
+
+       Edited the header to comply with NAIF standard.
+       Added complete code examples.
+
+       Changed the input argument name &quot;lonc&quot; to &quot;clon&quot; for consistency
+       with other routines.
+
    -CSPICE Version 1.0.1, 26-JUL-2016 (BVS)
 
-      Minor headers edits.
+       Minor headers edits.
 
-   -CSPICE Version 1.0.0, 08-FEB-1998 (EDW)
+   -CSPICE Version 1.0.0, 08-FEB-1998 (EDW) (WLT)
 </PRE>
 <h4><a name="Index_Entries">Index_Entries</a></h4>
 <PRE>
@@ -210,7 +536,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Apr  5 17:54:38 2017</pre>
+   <pre>Fri Dec 31 18:41:08 2021</pre>
 
 </body>
 </html>

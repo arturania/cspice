@@ -23,9 +23,12 @@
 </H2>
 
 <PRE>
+
    <A HREF="#Toolkit Contents Description">Toolkit Contents Description</A>
+
    <A HREF="#Introduction">Introduction</A>
       <A HREF="#Version Information">Version Information</A>
+
    <A HREF="#Directory Structure and Contents">Directory Structure and Contents</A>
       <A HREF="#DATA">DATA</A>
       <A HREF="#DOC">DOC</A>
@@ -54,10 +57,12 @@
          <A HREF="#TOBIN">TOBIN</A>
          <A HREF="#TOXFR">TOXFR</A>
          <A HREF="#VERSION">VERSION</A>
+
    <A HREF="#Using the Toolkit">Using the Toolkit</A>
       <A HREF="#All Users">All Users</A>
       <A HREF="#Repeat Users">Repeat Users</A>
       <A HREF="#First Time Users">First Time Users</A>
+
    <A HREF="#Appendix -- NAIF's File Naming Conventions">Appendix -- NAIF's File Naming Conventions</A>
 
 </PRE>
@@ -75,8 +80,8 @@
 <H1> Introduction
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
    This document describes the structure and contents of the latest version
-   of the NAIF cspice Toolkit for INTEL MAC computers using MAC OS-X
-   operating system and CC 64BIT compiler.
+   of the NAIF cspice Toolkit for PC computers using LINUX operating system
+   and GCC 64BIT compiler.
 <P>
  
    Most C compilers come with a large set of compilation options that can
@@ -91,8 +96,8 @@
 <H2> Version Information
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
 <PRE>
-   Creation Date: Fri Apr  7 16:41:22 PDT 2017
-   Version      : CSPICE.............V.N0066
+   Creation Date: Sat Jan  1 19:04:31 PST 2022
+   Version      : CSPICE.............V.N0067
 </PRE>
 <BR><BR>
 <A NAME="Directory Structure and Contents"></A>
@@ -111,6 +116,11 @@
          |
          makeall.csh
 </PRE>
+   It may optionally contain a zero-size file named N????, e.g. N0067,
+   indicating the generic SPICE Toolkit version on which this package is
+   based.
+<P>
+ 
    cspice also contains several subdirectories that will be described in
    more detail in the following sections.
 <P>
@@ -326,6 +336,7 @@ products in this package.
             |
             SpiceCK.h
             SpiceCel.h
+            SpiceDAS.h
             SpiceDLA.h
             SpiceDSK.h
             SpiceDtl.h
@@ -337,6 +348,7 @@ products in this package.
             SpiceOccult.h
             SpiceOsc.h
             SpicePln.h
+            SpiceSCLK.h
             SpiceSPK.h
             SpiceSrf.h
             SpiceUsr.h
@@ -373,7 +385,7 @@ products in this package.
 <P>
  
 <PRE>
-   -m64 -c -ansi -O2 -fPIC -DNON_UNIX_STDIO
+   -c -ansi -m64 -O2 -fPIC -DNON_UNIX_STDIO
 </PRE>
    The libraries contained in this directory are listed below. Each library
    is discussed in more detail later in the section devoted to the SRC

@@ -23,12 +23,14 @@
 </H2>
 
 <PRE>
+
    <A HREF="#Rotation">Rotation</A>
       <A HREF="#Abstract">Abstract</A>
       <A HREF="#Introduction">Introduction</A>
          <A HREF="#Using this document">Using this document</A>
          <A HREF="#References">References</A>
          <A HREF="#Notation">Notation</A>
+
    <A HREF="#CSPICE Functions">CSPICE Functions</A>
          <A HREF="#Categories of functions">Categories of functions</A>
       <A HREF="#Euler angle functions">Euler angle functions</A>
@@ -57,6 +59,7 @@
          <A HREF="#Differentiating rotations">Differentiating rotations</A>
          <A HREF="#State transformations">State transformations</A>
       <A HREF="#Validating a rotation matrix">Validating a rotation matrix</A>
+
    <A HREF="#Tutorial introduction to rotations">Tutorial introduction to rotations</A>
       <A HREF="#A comment of the heuristic variety">A comment of the heuristic variety</A>
       <A HREF="#Definition of ``rotation''">Definition of ``rotation''</A>
@@ -80,6 +83,7 @@
          <A HREF="#Basic properties of multiplication">Basic properties of multiplication</A>
          <A HREF="#Deducing the multiplication formula">Deducing the multiplication formula</A>
          <A HREF="#Composing rotations using quaternions">Composing rotations using quaternions</A>
+
    <A HREF="#Mathematical road map">Mathematical road map</A>
       <A HREF="#Rotation of a vector about an axis">Rotation of a vector about an axis</A>
       <A HREF="#Formation of a rotation matrix from axis and angle">Formation of a rotation matrix from axis and angle</A>
@@ -94,6 +98,7 @@
       <A HREF="#Recovery of Euler angles from a rotation matrix">Recovery of Euler angles from a rotation matrix</A>
          <A HREF="#Euler angle recovery: a-b-a case">Euler angle recovery: a-b-a case</A>
          <A HREF="#Euler angle recovery: a-b-c case">Euler angle recovery: a-b-c case</A>
+
    <A HREF="#Appendix A: Document Revision History">Appendix A: Document Revision History</A>
          <A HREF="#March 9, 2017">March 9, 2017</A>
          <A HREF="#May 27, 2010">May 27, 2010</A>
@@ -346,7 +351,7 @@ Klumpp.
 </DL>
 <DL><DT>
 <B>
- invstm_c
+ <a href="../cspice/invstm_c.html">invstm_c</a>
 </B><BR><BR>
 <DD>
  ( Inverse of state transformation matrix )<BR>
@@ -1241,7 +1246,7 @@ Klumpp.
 </DL>
 <DL><DT>
 <B>
- invstm_c
+ <a href="../cspice/invstm_c.html">invstm_c</a>
 </B><BR><BR>
 <DD>
  ( Inverse of state transformation matrix )<BR>
@@ -1405,13 +1410,13 @@ Klumpp.
    <a href="../cspice/mxvg_c.html">mxvg_c</a> ( tsipm, s, 6, 6, sbfixd );
 </PRE>
    Since the inverse of a state transformation matrix is not simply its
-   transpose, CSPICE provides the utility routine invstm_c to perform the
+   transpose, CSPICE provides the utility routine <a href="../cspice/invstm_c.html">invstm_c</a> to perform the
    inversion. If `m' is a state transformation matrix, the inverse matrix
    `minv' can be obtained via the function call
 <P>
  
 <PRE>
-   invstm_c ( m, minv );
+   <a href="../cspice/invstm_c.html">invstm_c</a> ( m, minv );
 </PRE>
 <BR><BR>
 <A NAME="Validating a rotation matrix"></A>

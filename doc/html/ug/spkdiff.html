@@ -23,6 +23,7 @@
 </H2>
 
 <PRE>
+
    <A HREF="#SPKDIFF User's Guide">SPKDIFF User's Guide</A>
       <A HREF="#Abstract">Abstract</A>
       <A HREF="#Summary">Summary</A>
@@ -37,7 +38,7 @@
          <A HREF="#Primary Kernel Files">Primary Kernel Files</A>
          <A HREF="#Additional Kernel Files">Additional Kernel Files</A>
       <A HREF="#Comparison Runs vs. Sampling Runs">Comparison Runs vs. Sampling Runs</A>
-      <A HREF="#Runs with Two, One, and No Primary SPK(s)">Runs with Two, One, and No Primary SPK(s)</A>
+      <A HREF="#Runs with Two, One, and No Primary SPKs">Runs with Two, One, and No Primary SPK(s)</A>
          <A HREF="#Runs with Two Primary SPK Files">Runs with Two Primary SPK Files</A>
          <A HREF="#Runs with One Primary SPK File">Runs with One Primary SPK File</A>
          <A HREF="#Runs Without Primary SPK Files">Runs Without Primary SPK Files</A>
@@ -50,6 +51,7 @@
          <A HREF="#Coverage Window">Coverage Window</A>
          <A HREF="#Times within Coverage Window">Times within Coverage Window</A>
          <A HREF="#Times for Comparison/Sampling Selection Scenarios">Times for Comparison/Sampling Selection Scenarios</A>
+
    <A HREF="#Output">Output</A>
       <A HREF="#Overview of Report Types">Overview of Report Types</A>
          <A HREF="#Time Tag Format for ``dump*'' Reports">Time Tag Format for ``dump*'' Reports</A>
@@ -60,12 +62,12 @@
          <A HREF="#Report Header for Sampling Trajectory">Report Header for Sampling Trajectory</A>
          <A HREF="#Report Header for Coverage/Gaps for Trajectory">Report Header for Coverage/Gaps for Trajectory</A>
       <A HREF="#Report Formats">Report Formats</A>
-         <A HREF="#Basic Report (no ``-t'' option or with ``-t basic'')">Basic Report (no ``-t'' option or with ``-t basic'')</A>
-         <A HREF="#View Frame Statistics Report (``-t stats'')">View Frame Statistics Report (``-t stats'')</A>
-         <A HREF="#Dump Report (no ``-t'' option or with ``-t dump'')">Dump Report (no ``-t'' option or with ``-t dump'')</A>
-         <A HREF="#View Frame Dump Report (``-t dumpvf'')">View Frame Dump Report (``-t dumpvf'')</A>
-         <A HREF="#Coverage Intervals Dump Report (``-t dumpc''):">Coverage Intervals Dump Report (``-t dumpc''):</A>
-         <A HREF="#Coverage Gaps Dump Report (``-t dumpg'')">Coverage Gaps Dump Report (``-t dumpg'')</A>
+         <A HREF="#Basic Report no ``-t'' option or with ``-t basic''">Basic Report (no ``-t'' option or with ``-t basic'')</A>
+         <A HREF="#View Frame Statistics Report ``-t stats''">View Frame Statistics Report (``-t stats'')</A>
+         <A HREF="#Dump Report no ``-t'' option or with ``-t dump''">Dump Report (no ``-t'' option or with ``-t dump'')</A>
+         <A HREF="#View Frame Dump Report ``-t dumpvf''">View Frame Dump Report (``-t dumpvf'')</A>
+         <A HREF="#Coverage Intervals Dump Report ``-t dumpc'':">Coverage Intervals Dump Report (``-t dumpc''):</A>
+         <A HREF="#Coverage Gaps Dump Report ``-t dumpg''">Coverage Gaps Dump Report (``-t dumpg'')</A>
       <A HREF="#Troubleshooting">Troubleshooting</A>
       <A HREF="#Examples">Examples</A>
          <A HREF="#Comparison: Checking if Two SPKs Provide the Same Trajectory">Comparison: Checking if Two SPKs Provide the Same Trajectory</A>
@@ -73,7 +75,7 @@
          <A HREF="#Comparison: Checking the Down Track Timing Error">Comparison: Checking the Down Track Timing Error</A>
          <A HREF="#Comparison: Checking Trajectory Differences Over Time">Comparison: Checking Trajectory Differences Over Time</A>
          <A HREF="#Sampling: States from a Single SPK File">Sampling: States from a Single SPK File</A>
-         <A HREF="#Sampling: States from Many SPKs Listed in Meta-Kernel(s)">Sampling: States from Many SPKs Listed in Meta-Kernel(s)</A>
+         <A HREF="#Sampling: States from Many SPKs Listed in Meta-Kernels">Sampling: States from Many SPKs Listed in Meta-Kernel(s)</A>
          <A HREF="#Coverage: Coverage for a Single Body">Coverage: Coverage for a Single Body</A>
          <A HREF="#Coverage: Coverage Overlap for Two Bodies">Coverage: Coverage Overlap for Two Bodies</A>
          <A HREF="#Coverage: Gaps in Coverage">Coverage: Gaps in Coverage</A>
@@ -87,7 +89,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> SPKDIFF User's Guide
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2012 FEB 15 by B. V. Semenov.
+   Last revised on 2021 NOV 17 by B. V. Semenov.
 <P>
  
 <BR><BR>
@@ -728,7 +730,7 @@ the same reference frame using both of these keys, or specify no reference
 frames at all
 <BR><BR></UL>
 <BR><BR>
-<A NAME="Runs with Two, One, and No Primary SPK(s)"></A>
+<A NAME="Runs with Two, One, and No Primary SPKs"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Runs with Two, One, and No Primary SPK(s)
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -1918,12 +1920,12 @@ output time type was specified using the ``-f'' key.
 <H2> Report Formats
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
 <BR><BR>
-<A NAME="Basic Report (no ``-t'' option or with ``-t basic'')"></A>
+<A NAME="Basic Report no ``-t'' option or with ``-t basic''"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Basic Report (no ``-t'' option or with ``-t basic'')
 </H3><P><BR><BR>
-   The basic report shows only the absolute and relative maximum and
-   average differences in magnitude of position and velocity vectors. The
+   The basic report shows only the maximum and average magnitudes of
+   position and velocity vector absolute and relative differences. The
    absolute differences are computed by simple subtraction of position and
    velocity components for the second trajectory from the corresponding
    position and velocity components for the first trajectory while the
@@ -1970,7 +1972,7 @@ output time type was specified using the ``-f'' key.
 <P>
  
 <BR><BR>
-<A NAME="View Frame Statistics Report (``-t stats'')"></A>
+<A NAME="View Frame Statistics Report ``-t stats''"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> View Frame Statistics Report (``-t stats'')
 </H3><P><BR><BR>
@@ -2109,7 +2111,7 @@ computed as the cross product of +X and +Y.
 <P>
  
 <BR><BR>
-<A NAME="Dump Report (no ``-t'' option or with ``-t dump'')"></A>
+<A NAME="Dump Report no ``-t'' option or with ``-t dump''"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Dump Report (no ``-t'' option or with ``-t dump'')
 </H3><P><BR><BR>
@@ -2173,7 +2175,7 @@ computed as the cross product of +X and +Y.
 <P>
  
 <BR><BR>
-<A NAME="View Frame Dump Report (``-t dumpvf'')"></A>
+<A NAME="View Frame Dump Report ``-t dumpvf''"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> View Frame Dump Report (``-t dumpvf'')
 </H3><P><BR><BR>
@@ -2240,7 +2242,7 @@ computed as the cross product of +X and +Y.
 <P>
  
 <BR><BR>
-<A NAME="Coverage Intervals Dump Report (``-t dumpc''):"></A>
+<A NAME="Coverage Intervals Dump Report ``-t dumpc'':"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Coverage Intervals Dump Report (``-t dumpc''):
 </H3><P><BR><BR>
@@ -2278,7 +2280,7 @@ significant digits or with the number of significant digits specified using
 the ``-d'' option.
 <BR><BR></UL>
 <BR><BR>
-<A NAME="Coverage Gaps Dump Report (``-t dumpg'')"></A>
+<A NAME="Coverage Gaps Dump Report ``-t dumpg''"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Coverage Gaps Dump Report (``-t dumpg'')
 </H3><P><BR><BR>
@@ -2881,7 +2883,7 @@ provided in it should be removed to resolve this conflict.
 <P>
  
 <BR><BR>
-<A NAME="Sampling: States from Many SPKs Listed in Meta-Kernel(s)"></A>
+<A NAME="Sampling: States from Many SPKs Listed in Meta-Kernels"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Sampling: States from Many SPKs Listed in Meta-Kernel(s)
 </H3><P><BR><BR>

@@ -13,18 +13,9 @@
 <table style="text-align: left; margin-left: auto; margin-right: auto; width: 800px;"
  border="0" cellpadding="5" cellspacing="2">
   <tbody>
-    <tr>
-      <td style="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
-      <div align="right"> 
-      <small><small><a href="index.html">Index Page</a></small></small>
-      </div>
-      <b>vrel_c</b> </td>
-    </tr>
-
-    <tr>
-      <td style="vertical-align: top;">
-
-<small><div align="center">
+    <tr><td>
+<div align="center">
+Index of Functions: 
 <A HREF="index.html#A">A</A>&nbsp;
 <A HREF="index.html#B">B</A>&nbsp;
 <A HREF="index.html#C">C</A>&nbsp;
@@ -49,14 +40,28 @@
 <A HREF="index.html#V">V</A>&nbsp;
 <A HREF="index.html#W">W</A>&nbsp;
 <A HREF="index.html#X">X</A>&nbsp;
-</div></small>
+</div>
+</td></tr>
+
+    <tr>
+      <td style="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
+      <div align="right"> 
+      <small><small><a href="index.html">Index Page</a></small></small>
+      </div>
+      <b>vrel_c</b></td>
+    </tr>
+    
+
+    <tr>
+      <td style="vertical-align: top;">
+
        <br>
+       <div align="left"><b>Table of contents</b></div>
        <table style="text-align: left; width: 60%; margin-left: auto; margin-right: auto;"
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
             <td style="width: 33%; text-align: center;">
-            <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
               <a href="#Required_Reading">Required_Reading<br></a>
@@ -64,32 +69,30 @@
               <a href="#Brief_I/O">Brief_I/O<br></a>
               <a href="#Detailed_Input">Detailed_Input<br></a>
 
-              </small>
               </td>
-              <td style="vertical-align: top; width: 33%; text-align: center;">
-              <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
+              <td style="vertical-align: top; width: 33%; text-align: center;">              <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
               <a href="#Files">Files<br></a>
               <a href="#Particulars">Particulars<br></a>
-              <a href="#Examples">Examples<br></a>
+              <big><b><a href="#Examples">Examples<br></a></b></big>
 
-              </small>
               </td>
-              <td style="vertical-align: top; width: 33%; text-align: center;">
-              <small>               <a href="#Restrictions">Restrictions<br></a>
+              <td style="vertical-align: top; width: 33%; text-align: center;">              <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
               <a href="#Version">Version<br></a>
               <a href="#Index_Entries">Index_Entries<br></a>
-             </small>
             </td>
           </tr>
         </tbody>
 </table>
+<hr>
 
 <h4><a name="Procedure">Procedure</a></h4>
 <PRE>
+   vrel_c ( Vector relative difference, 3 dimensions ) 
+
    SpiceDouble vrel_c ( ConstSpiceDouble v1[3],
                         ConstSpiceDouble v2[3]  )
 
@@ -111,29 +114,35 @@
 </PRE>
 <h4><a name="Brief_I/O">Brief_I/O</a></h4>
 <PRE>
-   Variable  I/O  Description
+   VARIABLE  I/O  DESCRIPTION
    --------  ---  --------------------------------------------------
-    v1,v2     I   Input vectors.
+   v1,
+   v2         I   Input vectors.
+
+   The function returns the relative difference between two
+   3-dimensional vectors.
 </PRE>
 <h4><a name="Detailed_Input">Detailed_Input</a></h4>
 <PRE>
-    v1, v2        are two 3-dimensional vectors for which the
-                  relative difference is to be computed.
+   v1,
+   v2          are two 3-dimensional vectors for which the relative
+               difference is to be computed.
 </PRE>
 <h4><a name="Detailed_Output">Detailed_Output</a></h4>
 <PRE>
-    <b>vrel_c</b>        the relative difference between V1 and V2.
-                  It is defined as:
-                                              || v1 - v2 ||
-                            <b>vrel_c</b>   =   ----------------------
-                                       max ( ||v1||, ||v2|| )
+   The function returns the relative difference between the two input
+   3-dimensional vectors `v1' and `v2'.
 
-                  where || x || indicates the Euclidean norm of
-                  the vector x ( ||x|| = sqrt( x . x ) ).
+   It is defined as:
 
-                  <b>vrel_c</b> assumes values in the range [0,2]. If both
-                  v1 and v2 are zero vectors then <b>vrel_c</b> is defined
-                  to be zero.
+                        || v1 - v2 ||
+      <b>vrel_c</b>   =   ------------------------
+                    max ( ||v1||, ||v2|| )
+
+   where ||x|| indicates the Euclidean norm of the vector `x'.
+
+   <b>vrel_c</b> assumes values in the range [0,2]. If both `v1' and `v2' are zero
+   vectors then <b>vrel_c</b> is defined to be zero.
 </PRE>
 <h4><a name="Parameters">Parameters</a></h4>
 <PRE>
@@ -143,8 +152,8 @@
 <PRE>
    Error free.
 
-   If both v1 and v2 are zero vectors then <b>vrel_c</b> is defined
-   to be zero.
+   1)  If both `v1' and `v2' are zero vectors, then <b>vrel_c</b> is defined
+       to be zero.
 </PRE>
 <h4><a name="Files">Files</a></h4>
 <PRE>
@@ -233,20 +242,26 @@
 </PRE>
 <h4><a name="Author_and_Institution">Author_and_Institution</a></h4>
 <PRE>
-   J.M. Lynch     (JPL)
-   E.D. Wright    (JPL)
+   N.J. Bachman        (JPL)
+   J. Diaz del Rio     (ODC Space)
+   J.M. Lynch          (JPL)
+   E.D. Wright         (JPL)
 </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
-   -CSPICE Version 1.1.0, 28-AUG-2001 (NJB)
-     
-      Include interface macro definition file SpiceZim.h. 
+   -CSPICE Version 1.1.1, 09-APR-2021 (JDR)
 
-   -CSPICE Version 1.0.1, 13-APR-2000 (NJB) 
-   
-      Made some minor updates and corrections in the code example.
-      
-   -CSPICE Version 1.0.0, 6-JUL-1999
+       Edited the header to comply with NAIF standard.
+
+   -CSPICE Version 1.1.0, 28-AUG-2001 (NJB)
+
+       Include interface macro definition file SpiceZim.h.
+
+   -CSPICE Version 1.0.1, 13-APR-2000 (NJB)
+
+       Made some minor updates and corrections in the code example.
+
+   -CSPICE Version 1.0.0, 06-JUL-1999 (EDW) (JML)
 </PRE>
 <h4><a name="Index_Entries">Index_Entries</a></h4>
 <PRE>
@@ -259,7 +274,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Apr  5 17:54:47 2017</pre>
+   <pre>Fri Dec 31 18:41:15 2021</pre>
 
 </body>
 </html>

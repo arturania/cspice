@@ -23,12 +23,14 @@
 </H2>
 
 <PRE>
+
    <A HREF="#DAS Required Reading">DAS Required Reading</A>
       <A HREF="#Abstract">Abstract</A>
       <A HREF="#Notes for CSPICE users">Notes for CSPICE users</A>
       <A HREF="#Intended audience">Intended audience</A>
       <A HREF="#Related Documents">Related Documents</A>
       <A HREF="#Introduction">Introduction</A>
+
    <A HREF="#DAS Concepts">DAS Concepts</A>
       <A HREF="#Logical Addresses">Logical Addresses</A>
       <A HREF="#Read and Write Access">Read and Write Access</A>
@@ -40,6 +42,7 @@
       <A HREF="#Buffering">Buffering</A>
       <A HREF="#Using Multiple DAS Files Concurrently">Using Multiple DAS Files Concurrently</A>
       <A HREF="#DAS vs DAF">DAS vs DAF</A>
+
    <A HREF="#Using the DAS Subsystem">Using the DAS Subsystem</A>
       <A HREF="#Creating a New DAS File">Creating a New DAS File</A>
       <A HREF="#Writing DAS Files">Writing DAS Files</A>
@@ -50,6 +53,7 @@
       <A HREF="#Mapping Between Handles, File Names, and Units">Mapping Between Handles, File Names, and Units</A>
       <A HREF="#Obtaining a DAS File Summary">Obtaining a DAS File Summary</A>
       <A HREF="#Using Scratch DAS Files">Using Scratch DAS Files</A>
+
    <A HREF="#DAS Architecture">DAS Architecture</A>
       <A HREF="#Overview of DAS Architecture">Overview of DAS Architecture</A>
       <A HREF="#The File Record">The File Record</A>
@@ -57,12 +61,17 @@
       <A HREF="#Comment Records">Comment Records</A>
       <A HREF="#Directory Records">Directory Records</A>
       <A HREF="#Data Records">Data Records</A>
+
    <A HREF="#DAS Routines">DAS Routines</A>
       <A HREF="#Summary of Mnemonics">Summary of Mnemonics</A>
       <A HREF="#Summary of Calling Sequences">Summary of Calling Sequences</A>
+
    <A HREF="#Examples">Examples</A>
       <A HREF="#Storing a Symbol Table in a DAS File">Storing a Symbol Table in a DAS File</A>
+
    <A HREF="#Appendix A --- Revision History">Appendix A --- Revision History</A>
+         <A HREF="#2021 DEC 31 by B. V. Semenov.">2021 DEC 31 by B. V. Semenov.</A>
+         <A HREF="#2021 NOV 01 by N. J. Bachman.">2021 NOV 01 by N. J. Bachman.</A>
          <A HREF="#2017 MAR 23 by N. J. Bachman.">2017 MAR 23 by N. J. Bachman.</A>
          <A HREF="#2009 APR 01 by B. V. Semenov.">2009 APR 01 by B. V. Semenov.</A>
          <A HREF="#2002 JAN 15 by N. J. Bachman">2002 JAN 15 by N. J. Bachman</A>
@@ -76,7 +85,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> DAS Required Reading
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2017 MAR 23 by N. J. Bachman.
+   Last revised on 2021 DEC 31 by B. V. Semenov.
 <P>
  
 <BR><BR>
@@ -349,7 +358,7 @@
    Writing non-native DAS files is not supported. Non-native DAS files must
    be converted to native format in order to update or add to their data,
    or to modify their comment areas. See the Convert User's Guide
-   (<a href="../ug/convert.html">convert.ug</a>) or the BINGO users Guide (bingo.ug) for details.
+   (<a href="../ug/convert.html">convert.ug</a>) or the BINGO User's Guide for details.
 <P>
  
 <BR><BR>
@@ -1244,10 +1253,10 @@
 <TT>--</TT> The comment character count
 <BR><BR></UL>
 <UL>
-<TT>--</TT> The FTP error detection string
+<TT>--</TT> The binary file format identification string
 <BR><BR></UL>
 <UL>
-<TT>--</TT> The binary file format identification string
+<TT>--</TT> The FTP error detection string
 <BR><BR></UL>
    The ID word is a character string that identifies the file as a DAS
    file, as opposed to a DAF or some other type of file. The ID word
@@ -1261,9 +1270,9 @@
 <P>
  
 <PRE>
-   +-------------------------------------------------------+
-   |IDWORD|IFNAME|NRR|NRC|NCR|NCC|&lt;unused&gt;|FTP|&lt;unused&gt;|BFF|
-   +-------------------------------------------------------+
+   +-----------------------------------------------------+
+   |IDWORD|IFNAME|NRR|NRC|NCR|NCC|BFF|&lt;nulls&gt;|FTP|&lt;nulls&gt;|
+   +-----------------------------------------------------+
 </PRE>
    where the abbreviations represent:
 <P>
@@ -1314,17 +1323,17 @@ in the comment area.<BR>
 </DL>
 <DL><DT>
 <B>
- `ftp'
-</B><BR><BR>
-<DD>
- is the FTP error detection string.<BR>
-</DL>
-<DL><DT>
-<B>
  `bff'
 </B><BR><BR>
 <DD>
  is the binary file format identifier.<BR>
+</DL>
+<DL><DT>
+<B>
+ `ftp'
+</B><BR><BR>
+<DD>
+ is the FTP error detection string.<BR>
 </DL>
    The file record can be read and updated at run time using DASRFR and
    DASWFR. DASRFR is normally used to read the internal file name of a DAS
@@ -2178,6 +2187,25 @@ in the comment area.<BR>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Appendix A --- Revision History
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="2021 DEC 31 by B. V. Semenov."></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> 2021 DEC 31 by B. V. Semenov.
+</H3><P><BR><BR>
+   Removed bingo"dot"ug string which was causing broken links in HTML
+   documentation in CSPICE-based packages that did not include BINGO.
+<P>
+ 
+<BR><BR>
+<A NAME="2021 NOV 01 by N. J. Bachman."></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> 2021 NOV 01 by N. J. Bachman.
+</H3><P><BR><BR>
+   Corrected the diagram showing the layout of DAS file records. Reordered
+   lists of file record elements to match the actual order of the elements
+   in the records.
+<P>
+ 
 <BR><BR>
 <A NAME="2017 MAR 23 by N. J. Bachman."></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>

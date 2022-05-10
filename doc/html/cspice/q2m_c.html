@@ -13,18 +13,9 @@
 <table style="text-align: left; margin-left: auto; margin-right: auto; width: 800px;"
  border="0" cellpadding="5" cellspacing="2">
   <tbody>
-    <tr>
-      <td style="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
-      <div align="right"> 
-      <small><small><a href="index.html">Index Page</a></small></small>
-      </div>
-      <b>q2m_c</b> </td>
-    </tr>
-
-    <tr>
-      <td style="vertical-align: top;">
-
-<small><div align="center">
+    <tr><td>
+<div align="center">
+Index of Functions: 
 <A HREF="index.html#A">A</A>&nbsp;
 <A HREF="index.html#B">B</A>&nbsp;
 <A HREF="index.html#C">C</A>&nbsp;
@@ -49,14 +40,28 @@
 <A HREF="index.html#V">V</A>&nbsp;
 <A HREF="index.html#W">W</A>&nbsp;
 <A HREF="index.html#X">X</A>&nbsp;
-</div></small>
+</div>
+</td></tr>
+
+    <tr>
+      <td style="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
+      <div align="right"> 
+      <small><small><a href="index.html">Index Page</a></small></small>
+      </div>
+      <b>q2m_c</b></td>
+    </tr>
+    
+
+    <tr>
+      <td style="vertical-align: top;">
+
        <br>
+       <div align="left"><b>Table of contents</b></div>
        <table style="text-align: left; width: 60%; margin-left: auto; margin-right: auto;"
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
             <td style="width: 33%; text-align: center;">
-            <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
               <a href="#Required_Reading">Required_Reading<br></a>
@@ -64,139 +69,132 @@
               <a href="#Brief_I/O">Brief_I/O<br></a>
               <a href="#Detailed_Input">Detailed_Input<br></a>
 
-              </small>
               </td>
-              <td style="vertical-align: top; width: 33%; text-align: center;">
-              <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
+              <td style="vertical-align: top; width: 33%; text-align: center;">              <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
               <a href="#Files">Files<br></a>
               <a href="#Particulars">Particulars<br></a>
-              <a href="#Examples">Examples<br></a>
+              <big><b><a href="#Examples">Examples<br></a></b></big>
 
-              </small>
               </td>
-              <td style="vertical-align: top; width: 33%; text-align: center;">
-              <small>               <a href="#Restrictions">Restrictions<br></a>
+              <td style="vertical-align: top; width: 33%; text-align: center;">              <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
               <a href="#Version">Version<br></a>
               <a href="#Index_Entries">Index_Entries<br></a>
-             </small>
             </td>
           </tr>
         </tbody>
 </table>
+<hr>
 
 <h4><a name="Procedure">Procedure</a></h4>
 <PRE>
-   void q2m_c ( ConstSpiceDouble  q[4], 
-                SpiceDouble       r[3][3] ) 
+   q2m_c ( Quaternion to matrix ) 
+
+   void q2m_c ( ConstSpiceDouble  q[4],
+                SpiceDouble       r[3][3] )
+
 </PRE>
 <h4><a name="Abstract">Abstract</a></h4>
 <PRE>
- 
-   Find the rotation matrix corresponding to a specified unit 
-   quaternion. 
- </PRE>
+   Find the rotation matrix corresponding to a specified unit
+   quaternion.
+</PRE>
 <h4><a name="Required_Reading">Required_Reading</a></h4>
 <PRE>
- 
-   <a href="../req/rotation.html">ROTATION</a> 
- </PRE>
+   <a href="../req/rotation.html">ROTATION</a>
+</PRE>
 <h4><a name="Keywords">Keywords</a></h4>
 <PRE>
- 
-   MATH 
-   MATRIX 
-   ROTATION 
- 
+   MATH
+   MATRIX
+   ROTATION
+
 
 </PRE>
 <h4><a name="Brief_I/O">Brief_I/O</a></h4>
 <PRE>
- 
-   Variable  I/O  Description 
-   --------  ---  -------------------------------------------------- 
-   q          I   A unit quaternion. 
-   r          O   A rotation matrix corresponding to `q'. 
- </PRE>
+   VARIABLE  I/O  DESCRIPTION
+   --------  ---  --------------------------------------------------
+   q          I   A unit quaternion.
+   r          O   A rotation matrix corresponding to `q'.
+</PRE>
 <h4><a name="Detailed_Input">Detailed_Input</a></h4>
 <PRE>
- 
-   q              is a unit-length SPICE-style quaternion representing
-                  a rotation. `q' has the property that
- 
-                     || q ||  =  1
+   q           is a unit-length SPICE-style quaternion representing
+               a rotation. `q' has the property that
 
-                  See the discussion of quaternion styles in
-                  Particulars below.
+                  || q ||  =  1
+
+               See the discussion of quaternion styles in
+               -Particulars below.
 </PRE>
 <h4><a name="Detailed_Output">Detailed_Output</a></h4>
 <PRE>
- 
-   r              is a 3 by 3 rotation matrix representing the same
-                  rotation as does `q'. See the discussion titled
-                  &quot;Associating SPICE Quaternions with Rotation
-                  Matrices&quot; in Particulars below.
- </PRE>
+   r           is a 3 by 3 rotation matrix representing the same
+               rotation as does `q'. See the discussion titled
+               &quot;Associating SPICE Quaternions with Rotation
+               Matrices&quot; in -Particulars below.
+</PRE>
 <h4><a name="Parameters">Parameters</a></h4>
 <PRE>
- 
-   None. 
- </PRE>
+   None.
+</PRE>
 <h4><a name="Exceptions">Exceptions</a></h4>
 <PRE>
- 
-   Error free. 
- 
-   1)  If `q' is not a unit quaternion, the output matrix `r' is 
-       unlikely to be a rotation matrix. 
- </PRE>
+   Error free.
+
+   1)  If `q' is not a unit quaternion, the output matrix `r' is
+       the rotation matrix that is the result of converting
+       normalized `q' to a rotation matrix.
+
+   2)  If `q' is the zero quaternion, the output matrix `r' is
+       the identity matrix.
+</PRE>
 <h4><a name="Files">Files</a></h4>
 <PRE>
- 
-   None. 
- </PRE>
+   None.
+</PRE>
 <h4><a name="Particulars">Particulars</a></h4>
 <PRE>
- 
-   If a 4-dimensional vector `q' satisfies the equality 
- 
-      || q ||   =  1 
- 
-   or equivalently 
- 
-          2          2          2          2 
-      q(0)   +   q(1)   +   q(2)   +   q(3)   =  1, 
- 
+   If a 4-dimensional vector `q' satisfies the equality
+
+      || q ||   =  1
+
+   or equivalently
+
+          2          2          2          2
+      q(0)   +   q(1)   +   q(2)   +   q(3)   =  1,
+
    then we can always find a unit vector `q' and a scalar `theta' such
    that
- 
-      q = 
+
+      q =
 
       ( cos(theta/2), sin(theta/2)a(1), sin(theta/2)a(2), sin(theta/2)a(3) )
- 
+
    We can interpret `a' and `theta' as the axis and rotation angle of a
    rotation in 3-space. If we restrict `theta' to the range [0, pi],
    then `theta' and `a' are uniquely determined, except if theta = pi.
    In this special case, `a' and -a are both valid rotation axes.
- 
-   Every rotation is represented by a unique orthogonal matrix; this 
-   routine returns that unique rotation matrix corresponding to `q'. 
- 
-   The CSPICE routine <a href="m2q_c.html">m2q_c</a> is a one-sided inverse of this routine: 
-   given any rotation matrix `r', the calls 
- 
-      <a href="m2q_c.html">m2q_c</a> ( r, q ) 
-      <b>q2m_c</b> ( q, r ) 
- 
-   leave `r' unchanged, except for round-off error.  However, the 
-   calls 
- 
-      <b>q2m_c</b> ( q, r ) 
-      <a href="m2q_c.html">m2q_c</a> ( r, q ) 
- 
+
+   Every rotation is represented by a unique orthogonal matrix; this
+   routine returns that unique rotation matrix corresponding to `q'.
+
+   The CSPICE routine <a href="m2q_c.html">m2q_c</a> is a one-sided inverse of this routine:
+   given any rotation matrix `r', the calls
+
+      <a href="m2q_c.html">m2q_c</a> ( r, q )
+      <b>q2m_c</b> ( q, r )
+
+   leave `r' unchanged, except for round-off error. However, the
+   calls
+
+      <b>q2m_c</b> ( q, r )
+      <a href="m2q_c.html">m2q_c</a> ( r, q )
+
    might preserve `q' or convert `q' to -q.
 
 
@@ -207,12 +205,12 @@
    science and engineering applications. Quaternion styles
    are characterized by
 
-      - The order of quaternion elements
+   -  The order of quaternion elements
 
-      - The quaternion multiplication formula
+   -  The quaternion multiplication formula
 
-      - The convention for associating quaternions
-        with rotation matrices
+   -  The convention for associating quaternions
+      with rotation matrices
 
    Two of the commonly used styles are
 
@@ -332,7 +330,7 @@
                  +-             -+
 
    The vector N of matrix entries (n1, n2, n3) is the rotation axis
-   of M and theta is M's rotation angle.  Note that N and theta
+   of M and theta is M's rotation angle. Note that N and theta
    are not unique.
 
    Let
@@ -396,12 +394,9 @@
    represents the matrix product
 
       M1*M2
- 
- </PRE>
+</PRE>
 <h4><a name="Examples">Examples</a></h4>
 <PRE>
- 
-
    1)  A case amenable to checking by hand calculation:
 
           To convert the rotation matrix
@@ -434,10 +429,10 @@
               a = ( 0, 0, 1 )
 
           Equivalently, `r' rotates vectors by pi/2 radians in
-          the counterclockwise sense about the axis vector 
+          the counterclockwise sense about the axis vector
 
              -a = ( 0, 0, -1 )
-   
+
           so our definition of `q',
 
              h = theta/2
@@ -450,75 +445,78 @@
              q =  ( cos(pi/4),  0,  0,  -sin(pi/4) )
 
                =  ( sqrt(2)/2,  0,  0,  -sqrt(2)/2 )
- 
- 
-   2)  Finding a set of Euler angles that represent a rotation 
-       specified by a quaternion: 
- 
-          Suppose our rotation `r' is represented by the quaternion 
-          `q'.  To find angles `tau', `alpha', `delta' such that 
- 
- 
-             r  =  [ tau ]  [ pi/2 - delta ]  [ alpha ] 
-                          3                 2          3 
- 
-          we can use the code fragment 
- 
- 
+
+
+   2)  Finding a set of Euler angles that represent a rotation
+       specified by a quaternion:
+
+          Suppose our rotation `r' is represented by the quaternion
+          `q'. To find angles `tau', `alpha', `delta' such that
+
+
+             r  =  [ tau ]  [ pi/2 - delta ]  [ alpha ]
+                          3                 2          3
+
+          we can use the code fragment
+
+
              <b>q2m_c</b>   ( q, r );
              <a href="m2eul_c.html">m2eul_c</a> ( r, 3, 2, 3, tau, delta, alpha );
- 
-             delta = <a href="halfpi_c.html">halfpi_c</a>() - delta; 
- </PRE>
+
+             delta = <a href="halfpi_c.html">halfpi_c</a>() - delta;
+</PRE>
 <h4><a name="Restrictions">Restrictions</a></h4>
 <PRE>
- 
-   None. 
- </PRE>
+   None.
+</PRE>
 <h4><a name="Literature_References">Literature_References</a></h4>
 <PRE>
- 
-   [1]    NAIF document 179.0, &quot;Rotations and their Habits&quot;, by 
-          W. L. Taber. 
- </PRE>
+   None.
+</PRE>
 <h4><a name="Author_and_Institution">Author_and_Institution</a></h4>
 <PRE>
- 
-   N.J. Bachman   (JPL) 
-   E.D. Wright    (JPL)
+   N.J. Bachman        (JPL)
+   J. Diaz del Rio     (ODC Space)
+   W.L. Taber          (JPL)
+   E.D. Wright         (JPL)
 </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
- 
+   -CSPICE Version 1.3.3, 10-AUG-2021 (JDR)
+
+       Edited the header to comply with NAIF standard. Moved ROTATIONS required
+       reading from -Literature_References to -Required_Reading section.
+
+       Updated entry #1 and added entry #2 to -Exceptions section.
+
    -CSPICE Version 1.3.2, 27-FEB-2008 (NJB)
 
-      Updated header; added information about SPICE quaternion
-      conventions. Made miscellaneous edits throughout header.
+       Updated header; added information about SPICE quaternion
+       conventions. Made miscellaneous edits throughout header.
 
    -CSPICE Version 1.3.1, 06-FEB-2003 (EDW)
 
-       Corrected typo error in Examples section.
+       Corrected typo error in -Examples section.
 
-   -CSPICE Version 1.3.0, 24-JUL-2001   (NJB)
+   -CSPICE Version 1.3.0, 24-JUL-2001 (NJB)
 
-       Changed prototype:  input q is now type (ConstSpiceDouble [4]).
+       Changed prototype: input q is now type (ConstSpiceDouble [4]).
        Implemented interface macro for casting input q to const.
 
    -CSPICE Version 1.2.0, 08-FEB-1998 (NJB)
-   
-      Removed local variables used for temporary capture of outputs.
-      Removed tracing calls, since the underlying Fortran routine
-      is error-free.
 
-   -CSPICE Version 1.0.0, 25-OCT-1997 (NJB)
-   
-      Based on SPICELIB Version 1.0.1, 10-MAR-1992 (WLT)
+       Removed local variables used for temporary capture of outputs.
+       Removed tracing calls, since the underlying Fortran routine
+       is error-free.
+
+   -CSPICE Version 1.0.0, 25-OCT-1997 (NJB) (WLT)
+
+       Based on SPICELIB Version 1.0.1, 10-MAR-1992 (WLT)
 </PRE>
 <h4><a name="Index_Entries">Index_Entries</a></h4>
 <PRE>
- 
-   quaternion to matrix 
- </PRE>
+   quaternion to matrix
+</PRE>
 <h4>Link to routine q2m_c source file <a href='../../../src/cspice/q2m_c.c'>q2m_c.c</a> </h4>
 
       </td>
@@ -526,7 +524,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Apr  5 17:54:41 2017</pre>
+   <pre>Fri Dec 31 18:41:11 2021</pre>
 
 </body>
 </html>

@@ -23,6 +23,7 @@
 </H2>
 
 <PRE>
+
    <A HREF="#SPK Required Reading">SPK Required Reading</A>
       <A HREF="#Abstract">Abstract</A>
          <A HREF="#Purpose">Purpose</A>
@@ -65,9 +66,9 @@
          <A HREF="#Example 2: Occultation or Transit">Example 2: Occultation or Transit</A>
       <A HREF="#Supported Data Types">Supported Data Types</A>
          <A HREF="#Type 1: Modified Difference Arrays">Type 1: Modified Difference Arrays</A>
-         <A HREF="#Type 2: Chebyshev (position only)">Type 2: Chebyshev (position only)</A>
-         <A HREF="#Type 3: Chebyshev (position and velocity)">Type 3: Chebyshev (position and velocity)</A>
-         <A HREF="#Type 5: Discrete states (two body propagation)">Type 5: Discrete states (two body propagation)</A>
+         <A HREF="#Type 2: Chebyshev position only">Type 2: Chebyshev (position only)</A>
+         <A HREF="#Type 3: Chebyshev position and velocity">Type 3: Chebyshev (position and velocity)</A>
+         <A HREF="#Type 5: Discrete states two body propagation">Type 5: Discrete states (two body propagation)</A>
          <A HREF="#Type 8: Lagrange Interpolation --- Equal Time Steps">Type 8: Lagrange Interpolation --- Equal Time Steps</A>
          <A HREF="#Type 9: Lagrange Interpolation --- Unequal Time Steps">Type 9: Lagrange Interpolation --- Unequal Time Steps</A>
          <A HREF="#Type 10: Space Command Two-Line Elements">Type 10: Space Command Two-Line Elements</A>
@@ -78,11 +79,13 @@
          <A HREF="#Type 17: Equinoctial Elements">Type 17: Equinoctial Elements</A>
          <A HREF="#Type 18: ESOC/DDID Hermite/Lagrange Interpolation">Type 18: ESOC/DDID Hermite/Lagrange Interpolation</A>
          <A HREF="#Type 19: ESOC/DDID Piecewise Interpolation">Type 19: ESOC/DDID Piecewise Interpolation</A>
-         <A HREF="#Type 20: Chebyshev (velocity only)">Type 20: Chebyshev (velocity only)</A>
+         <A HREF="#Type 20: Chebyshev velocity only">Type 20: Chebyshev (velocity only)</A>
          <A HREF="#Type 21: Extended Modified Difference Arrays">Type 21: Extended Modified Difference Arrays</A>
+
    <A HREF="#Appendix A --- Summary of SP-kernel Functions">Appendix A --- Summary of SP-kernel Functions</A>
       <A HREF="#Summary of Mnemonics">Summary of Mnemonics</A>
       <A HREF="#Summary of Calling Sequences">Summary of Calling Sequences</A>
+
    <A HREF="#Appendix B --- A Template for SPK Comments">Appendix B --- A Template for SPK Comments</A>
       <A HREF="#Constraints">Constraints</A>
       <A HREF="#The Basic Template">The Basic Template</A>
@@ -95,7 +98,9 @@
          <A HREF="#Special Notes">Special Notes</A>
          <A HREF="#References0">References</A>
          <A HREF="#Contacts">Contacts</A>
+
    <A HREF="#Appendix C---Revision History">Appendix C---Revision History</A>
+         <A HREF="#August 31, 2021">August 31, 2021</A>
          <A HREF="#March 29, 2017">March 29, 2017</A>
          <A HREF="#July 14, 2014">July 14, 2014</A>
          <A HREF="#April 15, 2009">April 15, 2009</A>
@@ -117,7 +122,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> SPK Required Reading
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2017 MAR 29 by N. J. Bachman.
+   Last revised on 2021 AUG 31 by B. V. Semenov.
 <P>
  
 <BR><BR>
@@ -2303,7 +2308,7 @@ set of states `centered' at that epoch and using Lagrange interpolation on
 each component of the states.
 <BR><BR></UL>
 <UL>
-<TT>10.</TT> Space Command Two-line Elements (Short Period Orbits)
+<TT>10.</TT> Space Command Two-line Elements
 <BR><BR></UL>
 <UL>
 <TT>&#32;&#32;</TT> This data type contains Space Command two-line element representations for
@@ -2483,7 +2488,7 @@ allows use of larger, higher-degree MDAs.
 <P>
  
 <BR><BR>
-<A NAME="Type 2: Chebyshev (position only)"></A>
+<A NAME="Type 2: Chebyshev position only"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Type 2: Chebyshev (position only)
 </H3><P><BR><BR>
@@ -2584,7 +2589,7 @@ past J2000.
 <P>
  
 <BR><BR>
-<A NAME="Type 3: Chebyshev (position and velocity)"></A>
+<A NAME="Type 3: Chebyshev position and velocity"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Type 3: Chebyshev (position and velocity)
 </H3><P><BR><BR>
@@ -2640,7 +2645,7 @@ past J2000.
 <P>
  
 <BR><BR>
-<A NAME="Type 5: Discrete states (two body propagation)"></A>
+<A NAME="Type 5: Discrete states two body propagation"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Type 5: Discrete states (two body propagation)
 </H3><P><BR><BR>
@@ -3138,7 +3143,7 @@ information about the generic segment.
       +-------------------+
 </PRE>
    The constants partition of the Type 10 segment contains the following
-   eight constants.
+   eight geophysical constants.
 <P>
  
 <PRE>
@@ -3153,13 +3158,13 @@ information about the generic segment.
    4  |  is expressed in Earth radii cubed per    |
       |  minutes squared                          |
       +-------------------------------------------+
-   5  |  Equatorial radius of the Earth in km     |
+   5  |  High altitude bound for atmospheric      |
+      |  model in km                              |
       +-------------------------------------------+
    6  |  Low altitude bound for atmospheric       |
       |  model in km                              |
       +-------------------------------------------+
-   7  |  High altitude bound for atmospheric      |
-      |  model in km                              |
+   7  |  Equatorial radius of the Earth in km     |
       +-------------------------------------------+
    8  |  Distance units/Earth radius (normally 1) |
       +-------------------------------------------+
@@ -4276,7 +4281,7 @@ The position components and velocity components are interpolated together.
 <P>
  
 <BR><BR>
-<A NAME="Type 20: Chebyshev (velocity only)"></A>
+<A NAME="Type 20: Chebyshev velocity only"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Type 20: Chebyshev (velocity only)
 </H3><P><BR><BR>
@@ -5065,6 +5070,20 @@ common degree of the Chebyshev expansions for each velocity component.
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Appendix C---Revision History
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+<BR><BR>
+<A NAME="August 31, 2021"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> August 31, 2021
+</H3><P><BR><BR>
+   Corrected severe documentation error in SPK type 10 (TLE) listing of
+   geophysical constants. Table entries 5, "High altitude bound for
+   atmospheric model in km," and 7, "Equatorial radius of the Earth in km"
+   were switched.
+<P>
+ 
+   Removed "(Short Period Orbits)" from TLE description.
+<P>
+ 
 <BR><BR>
 <A NAME="March 29, 2017"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>

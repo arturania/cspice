@@ -2,7 +2,7 @@
 Reference Frames
 ===========================================================================
  
-   Last revised on 2017 FEB 01 by B. V. Semenov.
+   Last revised on 2021 DEC 31 by N. J. Bachman
  
  
 Abstract
@@ -158,6 +158,9 @@ Frames Supported in SPICE
             refer to the appendix ``built in Inertial Reference Frames'' of
             this document.
  
+            The ICRF is a special case. See the section titled ``ICRF vs
+            J2000'' below.
+ 
        --   body-fixed frames based on IAU rotation models provided in text
             PCK files, such as Earth body-fixed rotating frame
             ('IAU_EARTH') and Mars body-fixed rotating frame ('IAU_MARS'),
@@ -169,20 +172,36 @@ Frames Supported in SPICE
  
    For all other frames the names are not ``built into'' SPICE. Instead,
    these names, as well as the parameters specifying the frames, are
-   provided via keywords included in a text kernel file. The types of
-   frames defined in text kernels include:
+   provided via keywords included in a text kernel file. Text kernel frame
+   definitions cannot overwrite definitions ``built into'' SPICE. The
+   ``built-in'' frames are always accessed first, making text kernel frames
+   with the same names or IDs invisible to the Toolkit.
+ 
+   The types of frames defined in text kernels include:
+ 
+       --   body-fixed frames based on text or binary PCK data for bodies
+            whose rotational data is not yet included in the IAU rotational
+            constants reports
  
        --   CK-based frames, i.e. frames for which orientation is provided
             in CK files
  
-       --   fixed offset frames, i.e. frames for which orientation is
+       --   Fixed offset frames, i.e. frames for which orientation is
             constant with respect to another frame and is specified as part
-            of the frame definition stored in a text kernel
+            of the frame definition stored in a text kernel. Fixed offset
+            frames are also called TK frames.
  
        --   Dynamic frames, i.e. frames for which orientation is based on
             dynamic directions computed based on SPICE kernel data (SPKs,
             CK, PCKs), on mathematical models implemented in CSPICE
             functions, or on formulas defined in frame kernels.
+ 
+       --   Switch frames, i.e. frames that choose at run time other frames
+            with which to align their orientation. Switch frames ``switch''
+            the base frames they align with as a function of time, using a
+            prioritized list of base frames and optional, associated time
+            bounds; this list is provided as part of the switch frame
+            definition stored in a text kernel.
  
    You can find the names of these frames by examining the text kernel file
    that contains the frame definitions. Normally definitions of all frames
@@ -195,13 +214,88 @@ Frames Supported in SPICE
  
          furnsh_c ( "myframe.tf" );
  
-   Note that the SPICE data loading mechanism detects and prohibits loading
-   text kernel files containing lines terminated with EOL character(s)
-   non-native to the platform on which the Toolkit was compiled. If a
-   non-native EOL terminator is detected in the first 132 characters of a
-   text kernel, the execution is stopped and an error message is displayed.
-   This feature does not work with files that are smaller that 132 bytes or
-   have the first line longer that 132 characters.
+ 
+ICRF vs J2000
+--------------------------------------------------------
+ 
+   The International Celestial Reference System (ICRS) defines coordinate
+   axes that are closely aligned with those of the J2000 (aka EME2000)
+   reference frame. The International Celestial Reference Frame (ICRF) and
+   later versions of it (ICRF1, etc.) are realizations of the ICRS. For
+   brevity, we'll simply refer to ``the ICRF'' below.
+ 
+   The rotational offset between the J2000 frame and the ICRS has magnitude
+   of under 0.1 arcseconds.
+ 
+   Certain JPL data products are referenced to the ICRF or later versions
+   of it. These include, but are not limited to,
+ 
+       --   DE4xx series planetary ephemerides
+ 
+       --   Satellite ephemerides compatible with DE4xx planetary
+            ephemerides
+ 
+       --   Small body ephemerides compatible with DE4xx planetary
+            ephemerides
+ 
+       --   Orientation of the terrestrial frame ITRF93
+ 
+       --   Orientation of the lunar principal axes frame
+ 
+   Rotation models provided by the IAU are referenced to the ICRF.
+ 
+   Modern spacecraft ephemerides and attitude data, other than those for
+   Earth orbiters, are likely referenced to the ICRF. Users should consult
+   documentation or data providers to verify this for data sets of
+   interest.
+ 
+   SPK and binary PCK files produced by NAIF from the data sources listed
+   above are referenced to the same version of the ICRF as the
+   corresponding data sources. For historical and backward compatibility
+   reasons, these data products are labeled as being referenced to the
+   J2000 frame.
+ 
+   No transformation is required to convert state vectors or orientation
+   data from the J2000 frame to the ICRF (or later version), if the vectors
+   or orientation data are computed using SPICE kernels created from the
+   data sources listed above. For example:
+ 
+       --   A call to spkezr_c with the input frame name J2000 will return
+            a state vector referenced to the ICRF, if the SPK data are from
+            a JPL planetary ephemeris SPK, or from any other SPK in which
+            data are referenced to the ICRF and labeled as referenced to
+            the J2000 frame.
+ 
+       --   A call to pxform_c with the input ``from'' frame name J2000 and
+            input ``to'' frame name ITRF93 will return a 3x3 matrix that
+            transforms position vectors from the ICRF to the ITRF93
+            terrestrial frame, if the Earth orientation data are provided
+            by a NAIF high-precision, binary Earth PCK.
+ 
+       --   A call to pxform_c with the input ``from'' frame name J2000 and
+            input ``to'' frame name IAU_MARS will return a 3x3 matrix that
+            transforms position vectors from the ICRF to the Mars
+            body-fixed, body-centered IAU_MARS frame, if the orientation
+            data are provided by a NAIF generic text PCK.
+ 
+       --   A call to pxform_c with the input ``from'' frame name J2000 and
+            an input ``to'' CK frame name will return a 3x3 matrix that
+            transforms position vectors from the ICRF to the specified CK
+            frame, if the CK data used by this call are referenced to the
+            ICRF and labeled as referenced to the J2000 frame.
+ 
+   SPICE kernel creators intending to support use of data referenced to the
+   ICRF, as shown above, should write the data without first converting it
+   to the J2000 frame. Segments of such SPK, CK, or binary PCK files should
+   indicate the frame is J2000. It is strongly recommended that kernel
+   creators add comments to the files to explain the actual characteristics
+   of the data.
+ 
+   SPICE users who export kernel data to non-SPICE file formats may need to
+   transform the data, depending on the frame to which the SPICE data are
+   actually referenced (as opposed to the frame to which the kernel
+   indicates the data are referenced), and depending on the desired output
+   frame.
  
  
 Kernels Needed For Computing Frame Transformations
@@ -241,6 +335,14 @@ Kernels Needed For Computing Frame Transformations
    additional data may be needed in order to compute its orientation, or
    one or more types of SPICE kernels, including SPKs, PCKs, CKs, and SCLK,
    may have to be loaded.
+ 
+   Data required to compute orientation of switch frames may be any
+   required to compute orientation of PCK, CK, or TK frames. Data for
+   dynamic and switch base frames are not required because the orientation
+   of a switch frame relative to base frames of those types is the
+   identity. In practice, data sufficient to connect the orientation of a
+   switch frame's base frames to other frames of interest are required by
+   most applications.
  
  
 Creating a Frame Kernel
@@ -299,6 +401,14 @@ Frame Classes
        5.   Dynamic frames. These are time-dependent reference frames
             defined via parameters or formulas specified in a frame kernel.
             The class number associated with dynamic frames is 5.
+ 
+       6.   Switch frames. These are time-dependent frames that choose at
+            run time other frames with which to align their orientation.
+            Switch frames ``switch'' the base frames they align with as a
+            function of time, using a prioritized list of base frames and
+            optional, associated time bounds; this list is provided as part
+            of the switch frame definition stored in a text kernel. The
+            class number associated with switch frames is 6.
  
  
 Specifying a New Frame
@@ -443,14 +553,12 @@ Selecting a Class ID
    If your frame is a CK class frame, the CLASS_ID is the ID code used in
    the C-kernel to describe the orientation of the spacecraft.
  
-   If the frame is a TK frame, the class ID must match the frame ID. For
-   both ID codes you should use a positive integer in the range from
-   1400000 to 2000000 (unless you are working in an official project
-   capacity in which case you should ask NAIF to provide a CLASS_ID for
-   you). In the example above, the CLASS_ID is the ID code for the C-kernel
-   structure: -10000001.
+   If the frame is a TK frame, the class ID must match the frame ID.
  
    If the frame is a dynamic frame, the class ID must match the frame ID.
+ 
+   If the frame is a switch frame, it is recommended that the class ID
+   match the frame ID.
  
  
 Frame IDs Reserved for Public Use
@@ -586,32 +694,15 @@ Inertial Frames
 ===========================================================================
  
    Inertial frames are ``built into'' the SPICE system via the routine
-   CHGIRF. Only the frames defined in that routine are available as
-   inertial class frames. For this reason there is rarely a need to specify
-   an inertial frame through a frame specification kernel. Essentially all
-   you can do by creating a frame specification for an inertial frame is to
-   supply a second name for one of the ``built in'' frames. For example you
-   might define EME2000 as another name for the J2000 frame.
+   chgirf_. Only the frames defined in that routine are available as
+   inertial (class 1) frames. It is not possible to override these
+   definitions.
  
-   NAIF recommends against creating inertial frame specifications. However,
-   if you choose to do so anyway, you are done once you've defined the
-   frame specification. (You may not be done explaining to your colleagues
-   why you've decided to do this.)
+   It is possible to create aliases for built-in inertial frames. For
+   example you might define EME2000 as another name for the J2000 frame.
  
-   In the example cited earlier (EME2000) here's how you'd specify the
-   frame.
- 
-      \begindata
- 
-         FRAME_EME2000          = 2000000
-         FRAME_2000000_NAME     = 'EME2000'
-         FRAME_2000000_CLASS    = 1
-         FRAME_2000000_CENTER   = 0
-         FRAME_2000000_CLASS_ID = 1
- 
-      \begintext
- 
-   Everything else about this frame is ``built into'' the SPICE system.
+   See the appendix containing frame definition examples for information on
+   how to create a frame alias using a TK frame.
  
  
 PCK Frames
@@ -988,7 +1079,7 @@ Parameterized Dynamic Frame Families
  
    The ``family'' to which a parameterized dynamic frame belongs indicates
    the underlying mathematical formula by which the frame is defined.
-   Currently there are four parameterized dynamic frame families:
+   Currently there are six parameterized dynamic frame families:
  
        --   Two-vector frames: a reference frame is defined by two vectors.
             The first vector is parallel to one axis of the frame; the
@@ -1016,6 +1107,11 @@ Parameterized Dynamic Frame Families
             an axis sequence are used to specify time-dependent Euler
             angles giving the orientation of the frame relative to a
             second, specified frame as a function of time.
+ 
+       --   Product frames: these define the orientation of a frame
+            relative to a base frame as the product of a specified sequence
+            of frame transformations. All of the factor transformations
+            must be computable by CSPICE.
  
  
 Notation
@@ -2099,7 +2195,7 @@ Defining an Euler Frame in a Frame Kernel
  
 Specifying the Base Frame
  
-   The base frame of an Euler frame specified via the assignment:
+   The base frame of an Euler frame is specified via the assignment:
  
       FRAME_<frame_ID>_RELATIVE           =  '<frame_name>'
  
@@ -2180,6 +2276,103 @@ Specifying the Euler Angles
  
    For an example of an Euler frame definition, see the subsection titled
    ``Euler Frames'' in the appendix ``Frame Definition Examples.''
+ 
+ 
+Product Frames
+===========================================================================
+ 
+   Product frames may be thought of as a generalization of TK frames. The
+   orientation of a product frame relative to a specified base frame is
+   defined by a product of one or more frame transformations, where each
+   factor may be any transformation computable by the CSPICE frame
+   subsystem.
+ 
+   Using the notation
+ 
+        B
+      T
+        A
+ 
+   to indicate the transformation from frame A to frame B, and letting the
+   names
+ 
+      PRODUCT
+      BASE
+ 
+   denote a product frame and a ``base'' frame relative to which the
+   orientation of the product frame is defined, the transformation from the
+   base frame to the product frame is defined by a product of one or more
+   frame transformation ``factors'' consisting of transformations from a
+   given ``from'' frame to a given ``to'' frame:
+ 
+        PRODUCT      TO_1       TO_2            TO_N-1      TO_N
+      T          =  T        * T       * ... * T         * T
+        BASE         FROM_1     FROM_2          FROM_N-1    FROM_N
+ 
+   If the vector
+ 
+      v
+        BASE
+ 
+   is expressed relative to the base frame, then applying a product frame
+   transformation to the vector expresses the vector relative to the
+   product frame:
+ 
+                   PRODUCT
+      v        =  T        * v
+       PRODUCT     BASE       BASE
+ 
+   In implementation of the equation above, the factor transformations on
+   the right hand side of the product frame's definition are applied in
+   right-to-left order.
+ 
+   The ``from'' and ``to'' frames of a product frame definition may be
+   completely arbitrary. The only restriction on these frames is that the
+   transformation from each ``from'' frame to its corresponding ``to''
+   frame must be computable by CSPICE at the time the product frame is
+   used.
+ 
+   Note that because product frames are parameterized dynamic frames,
+   limits on recursion depth for dynamic frames imply that while the
+   factors may be dynamic frames, they may not be dynamic frames that
+   require a level of recursion in order to evaluate their orientation.
+ 
+ 
+Defining a Product Frame in a Frame Kernel
+--------------------------------------------------------
+ 
+ 
+Specifying the Base Frame
+ 
+   The base frame of a product frame is specified via the assignment:
+ 
+      FRAME_<frame_ID>_RELATIVE =  '<frame_name>'
+ 
+ 
+Specifying the Frame Family
+ 
+   A product frame is identified by frame family specification:
+ 
+      FRAME_<frame_ID>_FAMILY = 'PRODUCT'
+ 
+ 
+Specifying the Factors
+ 
+   The factor transformations are specified by the kernel variable
+   assignments
+ 
+      FRAME_<frame_ID>_FROM_FRAMES = ( <from_frame 1> ... <from_frame N> )
+      FRAME_<frame_ID>_TO_FRAMES   = ( <to_frame 1>   ... <to_frame N>   )
+ 
+   The ``from'' and ``to'' frames must be specified by name.
+ 
+   The Ith elements of the respective right-hand-side vectors of ``from''
+   and ``to'' frame names define the Ith factor transformation. The order
+   of the factors in the kernel variables is the same as the order of the
+   factors in the transformation product. When a vector is transformed from
+   the base frame to the product frame, the transformations defined by the
+   factors are applied in right-to-left order: the factor defined by the
+   frames indexed by ``N'' is applied first.
  
  
 Dynamic Frame Implementation Considerations
@@ -2381,6 +2574,230 @@ Efficiency Concerns
    non-inertial frames to dynamic frames.
  
  
+Switch Frames
+===========================================================================
+ 
+   Switch frames choose at run time other frames, called ``base frames,''
+   with which to align their orientation. Switch frames ``switch'' the base
+   frames they align with as a function of time, using a prioritized list
+   of base frames and optional, associated time bounds; this list is
+   provided as part of the switch frame definition stored in a text kernel.
+ 
+   Switch frames extend the flexibility of the SPICE frame subsystem by
+   allowing a user-defined frame to rely on different data sources at
+   different times. For example:
+ 
+       --   A switch frame representing orientation of a spacecraft could
+            have a top-priority CK frame for reconstructed data, and a
+            lower-priority CK frame for predicted data, where the two CK
+            frames have different frame class IDs (also called ``instrument
+            IDs'' in some SPICE documentation) and different associated
+            spacecraft clocks.
+ 
+       --   A switch frame representing orientation of a spacecraft could
+            have a top-priority CK frame for reconstructed data, and a
+            lower-priority dynamic frame for times not covered by the CK
+            data.
+ 
+       --   A switch frame representing predicted orientation of a
+            spacecraft could have a sequence of base frames of one or more
+            classes covering time intervals which overlap only at their
+            endpoints.
+ 
+       --   A switch frame representing orientation of a comet's nucleus
+            could have a top-priority CK frame covering a time interval
+            over which accurate orientation data are available, and a
+            lower-priority PCK frame for a time interval of greater extent.
+ 
+   Base frames of a switch frame may have associated time intervals
+   limiting their applicability. Given a request time, a base frame will be
+   considered as a data source only if the request time falls within the
+   time interval associated with that base frame. If time intervals are
+   used in a switch frame definition, they must be provided for all base
+   frames of that switch frame.
+ 
+   If base frames of a switch frame don't have associated time intervals,
+   the base frames are applicable for all request times.
+ 
+   A switch frame selects a base frame as follows: given a request time,
+   the switch frame subsystem attempts to obtain orientation data from the
+   highest priority, applicable base frame. If that base frame is a CK
+   frame and data are unavailable, the next applicable frame in the base
+   frame list is used, and so on. If an applicable base frame is not a CK
+   frame and requested data are unavailable, an error is signaled. The
+   orientation and optional angular velocity of the switch frame are those
+   of the selected base frame.
+ 
+ 
+Specifying Switch Frames
+--------------------------------------------------------
+ 
+   As with other frame classes, switch frames require a frame name, frame
+   ID code, frame class ID code, and center. It is recommended that the
+   frame class ID match the frame ID. The frame class is 6. The initial
+   part of the frame specification has this form:
+ 
+      FRAME_<name>             = <ID code>
+      FRAME_<ID code>_NAME     = '<name>'
+      FRAME_<ID code>_CLASS    = 6
+      FRAME_<ID code>_CLASS_ID = <frame class ID>
+      FRAME_<ID code>_CENTER   = <center ID code or name>
+ 
+ 
+The Base Frame List
+ 
+   The next part of the specification is the prioritized base frame list:
+ 
+      FRAME_<ID code>_ALIGNED_WITH = (
+          < lowest priority base frame ID or name >
+          < next-lowest priority base frame ID or name >
+             ...
+          < highest priority base frame ID or name >  )
+ 
+   All base frames of a given switch frame must be specified by name, or
+   all must be specified by frame ID code.
+ 
+   All base frames of a switch frame must have specifications available at
+   the time the switch frame is used. This applies even to CK base frames.
+   Note that CK frame ID codes and frame class ID codes are not required to
+   match; the latter is the ID stored in CK files. It is the frame ID code
+   that's required in the base frame list; this is provided by a CK frame
+   specification.
+ 
+   A base frame may occur multiple times in the base frame list. This can
+   be useful for base frame lists that have associated time intervals.
+ 
+ 
+Time Intervals Associated with Base Frames
+ 
+   Optional time intervals associated with base frames are specified by two
+   kernel variables, respectively containing start and stop times:
+ 
+      FRAME_<ID code>_START = (
+      < start time for lowest priority base frame >
+      < start time for next-lowest priority base frame >
+         ...
+      < start time for highest priority base frame>  )
+ 
+      FRAME_<ID code>_STOP = (
+      < stop time for lowest priority base frame >
+      < stop time for next-lowest priority base frame >
+         ...
+      < stop time for highest priority base frame>  )
+ 
+   If time intervals are provided for a switch frame, the count of start
+   times must match the count of stop times, and each must match the count
+   of entries in the base frame list.
+ 
+   Start and stop times may be specified by single-quoted time strings,
+   double precision numbers, or as times using the text kernel ``@
+   format.'' For example:
+ 
+      '2021-12-31T12:00:00'
+      694224069.183907
+      6.94224069183907E+08
+      @2021-DEC-31/12:01:09.183907
+ 
+   Times provided as single-quoted strings must be accepted by the CSPICE
+   function str2et_c. A leapseconds kernel must be loaded in order to use
+   such time strings.
+ 
+   Numeric values are interpreted as seconds past J2000 TDB. Times in text
+   kernel time format are interpreted as TDB calendar dates. Use of times
+   in either of these formats does not require a leapseconds kernel.
+ 
+   See the Kernel Required Reading kernel.req for details concerning the
+   text kernel time format and accepted formats of double precision values.
+ 
+   Each list of times for a given switch frame must be specified by values
+   of the same type: string or numeric. Times in text kernel format are
+   actually considered to be numeric values. The types used for a switch
+   frame's list of start times and for its list of stop times need not
+   match, but use of consistent types is recommended for readability.
+ 
+ 
+Binary Search
+ 
+   To improve efficiency of base frame selection for a given switch frame
+   and request time, the switch frame subsystem may perform a binary search
+   of the base frames' time intervals to find the highest priority frame
+   providing data for the request time.
+ 
+   A switch frame is eligible for binary search if:
+ 
+       --   Its base frames have associated time intervals
+ 
+       --   Any pair of time intervals is disjoint or has only singleton
+            overlap. For example, the stop time of one interval may
+            coincide with the start time of another.
+ 
+       --   The intervals are listed in increasing time order. This
+            requires the intervals for later times to be associated with
+            higher priority base frames than those of intervals for earlier
+            times.
+ 
+   If the base frame identified by a binary search is a CK frame, and if it
+   does not provide data for the request time, it is still possible that
+   data are available in the special case where the request time matches
+   the start time of the selected base, and if that time is also the stop
+   time of preceding, next-lower-priority interval. In this case the
+   preceding interval will be checked for data availability.
+ 
+ 
+Switch Frame Connections
+--------------------------------------------------------
+ 
+   Connections between switch frames and other frames are made by the
+   CSPICE functions frmget_c and rotget_c. If either of these functions is
+   called with the frame ID of a switch frame as input, and if the selected
+   base frame is
+ 
+       --   a built-in inertial frame, then the output frame ID will be
+            that of J2000, and the returned transformation will be that
+            from the inertial base frame to J2000.
+ 
+       --   a PCK frame, then the output frame ID will be that of J2000,
+            and the returned transformation will be that from the PCK base
+            frame to J2000.
+ 
+       --   a CK frame, then the output frame ID will be that of the CK
+            frame's base frame, and the returned transformation will be
+            that from the CK frame to its base frame.
+ 
+       --   a TK frame, then the output frame ID will be that of the TK
+            frame's base frame, and the returned transformation will be
+            that from the TK frame to its base frame.
+ 
+       --   a dynamic frame, then the output frame ID will be that of the
+            dynamic base frame itself, and the returned transformation will
+            be the identity matrix of the appropriate dimension.
+ 
+       --   a switch frame, then the output frame ID will be that of the
+            switch base frame itself, and the returned transformation will
+            be the identity matrix of the appropriate dimension.
+ 
+ 
+Switch Frame Buffering
+--------------------------------------------------------
+ 
+   The switch frame subsystem buffers switch frame specifications in a form
+   suitable for efficient use. Expensive operations such as kernel pool
+   lookups, frame name conversions, and time string conversions are
+   performed only when the buffer contents must be modified.
+ 
+   It is possible for a user application to use many more switch frames
+   than can be buffered concurrently, but changing the buffer contents with
+   high frequency is inefficient.
+ 
+   The buffer limits shown below are hard-coded. They may be increased in
+   future versions of CSPICE.
+ 
+       --   Maximum count of switch frames loaded concurrently: 1013
+ 
+       --   Maximum count of base frames of all concurrently loaded switch
+            frames: 15000
+ 
+ 
 Appendix. ``Built in'' Inertial Reference Frames
 ===========================================================================
  
@@ -2406,11 +2823,11 @@ Complete List of ``Built in'' Inertial Reference Frames
  
                          [ -z ]  [ theta ]  [ -zeta ]
                                 3          2          3
-                         The values for z, theta, and zeta are taken
-                         directly from formulas given in table 5 of [5].
+                         The values for z, theta, and zeta are computed
+                         from the formulas given in table 5 of [5].
  
                          z     =  1153.04066200330"
-                         theta = -1002.26108439117"
+                         theta =  1002.26108439117"
                          zeta  =  1152.84248596724"
  
           3  FK4         Fundamental Catalog (4). The FK4 reference
@@ -2620,10 +3037,12 @@ Appendix. ``Built in'' PCK-Based IAU Body-Fixed Reference Frames
    files, which, therefore, must be loaded in order for orientation of
    these frames to be computed.
  
+      IAU_52_EUROPA
       IAU_ADRASTEA
       IAU_AMALTHEA
       IAU_ANANKE
       IAU_ARIEL
+      IAU_ARROKOTH
       IAU_ATLAS
       IAU_BELINDA
       IAU_BENNU
@@ -2642,7 +3061,10 @@ Appendix. ``Built in'' PCK-Based IAU Body-Fixed Reference Frames
       IAU_DEIMOS
       IAU_DESDEMONA
       IAU_DESPINA
+      IAU_DIDYMOS
+      IAU_DIMORPHOS
       IAU_DIONE
+      IAU_DONALDJOHANSON
       IAU_EARTH
       IAU_ELARA
       IAU_ENCELADUS
@@ -2650,12 +3072,14 @@ Appendix. ``Built in'' PCK-Based IAU Body-Fixed Reference Frames
       IAU_ERINOME
       IAU_EROS
       IAU_EUROPA
+      IAU_EURYBATES
       IAU_GALATEA
       IAU_GANYMEDE
       IAU_GASPRA
       IAU_HARPALYKE
       IAU_HELENE
       IAU_HIMALIA
+      IAU_HYDRA
       IAU_HYPERION
       IAU_IAPETUS
       IAU_IDA
@@ -2669,10 +3093,12 @@ Appendix. ``Built in'' PCK-Based IAU Body-Fixed Reference Frames
       IAU_KALYKE
       IAU_LARISSA
       IAU_LEDA
+      IAU_LEUCUS
       IAU_LUTETIA
       IAU_LYSITHEA
       IAU_MAGACLITE
       IAU_MARS
+      IAU_MENOETIUS
       IAU_MERCURY
       IAU_METIS
       IAU_MIMAS
@@ -2681,22 +3107,28 @@ Appendix. ``Built in'' PCK-Based IAU Body-Fixed Reference Frames
       IAU_NAIAD
       IAU_NEPTUNE
       IAU_NEREID
+      IAU_NIX
       IAU_OBERON
       IAU_OPHELIA
+      IAU_ORUS
       IAU_PALLAS
       IAU_PAN
       IAU_PANDORA
       IAU_PASIPHAE
+      IAU_PATROCLUS
       IAU_PHOBOS
       IAU_PHOEBE
       IAU_PLUTO
+      IAU_POLYMELE
       IAU_PORTIA
       IAU_PRAXIDIKE
       IAU_PROMETHEUS
       IAU_PROTEUS
       IAU_PUCK
+      IAU_QUETA
       IAU_RHEA
       IAU_ROSALIND
+      IAU_RYUGU
       IAU_SATURN
       IAU_SINOPE
       IAU_STEINS
@@ -2792,24 +3224,18 @@ Appendix. Frame Definition Examples
    for similar situations.
  
  
-Inertial Frame
+Inertial Frames
+--------------------------------------------------------
  
-   Inertial frames can be defined only as aliases for the ``built in''
-   inertial frames. This example defines EME50 to be the same frame as
-   B1950.
+   Inertial (class 1) frames cannot be defined in frame kernels; in
+   particular, built-in definitions of class 1 frames cannot be overridden.
  
-      \begindata
- 
-         FRAME_EME50            = 2000000
-         FRAME_2000000_NAME     = 'EME50'
-         FRAME_2000000_CLASS    =  1
-         FRAME_2000000_CLASS_ID =  2
-         FRAME_2000000_CENTER   =  0
- 
-      \begintext
+   Aliases for inertial frames can be defined; see the section below on
+   creating aliases using TK frames.
  
  
-PCK Frame
+PCK Frames
+--------------------------------------------------------
  
    This definition shows how you create a frame definition for the asteroid
    Eros. Note we also define which frame is associated with the asteroid
@@ -2829,6 +3255,7 @@ PCK Frame
  
  
 CK Frames
+--------------------------------------------------------
  
    This definition shows how you create a frame definition for the MGS
    spacecraft. Note this frame definition includes the appropriate SCLK
@@ -2848,6 +3275,12 @@ CK Frames
          OBJECT_-94_FRAME       = 'MGS_SPACECRAFT'
  
       \begintext
+ 
+ 
+TK frames
+--------------------------------------------------------
+ 
+   Examples of different uses of TK frames are shown below.
  
  
 TK frame --- Alias
@@ -3431,4 +3864,320 @@ Example of an Euler Frame
                                             -0.19298045478743630E-10 )
       FRAME_<frame_ID>_ANGLE_3_COEFFS = ( -176.630
                                             -0.40612497946759260E-02 )
+ 
+ 
+Examples of Product Frames
+--------------------------------------------------------
+ 
+ 
+IAU_EARTH Frame, Augmented with Nutation Model
+ 
+   The example shown here is not realistic; it is provided only to show how
+   to create a product frame specification.
+ 
+   The EARTH_ROTATING frame defined uses the Earth spin angle relative to
+   the mean equinox of date from the IAU_EARTH frame and pole and equinox
+   from the Earth true equator and true equinox of date frame. While the
+   pole direction of the IAU_EARTH frame reflects precession, the pole
+   direction of this frame reflects both precession and nutation.
+ 
+   The transformation from the J2000 frame to the product frame is defined
+   by:
+ 
+        EARTH_ROTATING       IAU_EARTH       TETE
+      T                =   T            *  T
+        J2000                EME             J2000
+ 
+   where the notation
+ 
+        B
+      T
+        A
+ 
+   indicates the transformation from frame A to frame B.
+ 
+   The specifications of the frame and of the two supporting frames EME and
+   TETE are shown below.
+ 
+      \begindata
+ 
+      FRAME_EARTH_ROTATING          =  1890000
+      FRAME_1890000_NAME            =  'EARTH_ROTATING'
+      FRAME_1890000_CLASS           =  5
+      FRAME_1890000_CLASS_ID        =  1890000
+      FRAME_1890000_CENTER          =  399
+      FRAME_1890000_RELATIVE        = 'J2000'
+      FRAME_1890000_DEF_STYLE       = 'PARAMETERIZED'
+      FRAME_1890000_FAMILY          = 'PRODUCT'
+      FRAME_1890000_ROTATION_STATE  = 'ROTATING'
+      FRAME_1890000_FROM_FRAMES     = ( 'EME',       'J2000' )
+      FRAME_1890000_TO_FRAMES       = ( 'IAU_EARTH', 'TETE'  )
+ 
+      \begintext
+ 
+      Earth mean equator and mean equinox of date frame "EME":
+ 
+      \begindata
+ 
+      FRAME_EME                     =  1890001
+      FRAME_1890001_NAME            =  'EME'
+      FRAME_1890001_CLASS           =  5
+      FRAME_1890001_CLASS_ID        =  1890001
+      FRAME_1890001_CENTER          =  399
+      FRAME_1890001_RELATIVE        = 'J2000'
+      FRAME_1890001_DEF_STYLE       = 'PARAMETERIZED'
+      FRAME_1890001_FAMILY          = 'MEAN_EQUATOR_AND_EQUINOX_OF_DATE'
+      FRAME_1890001_PREC_MODEL      = 'EARTH_IAU_1976'
+      FRAME_1890001_ROTATION_STATE  = 'ROTATING'
+ 
+      \begintext
+ 
+      Earth true equator and true equinox of date frame "TETE":
+ 
+      \begindata
+ 
+      FRAME_TETE                    =  1890002
+      FRAME_1890002_NAME            =  'TETE'
+      FRAME_1890002_CLASS           =  5
+      FRAME_1890002_CLASS_ID        =  1890002
+      FRAME_1890002_CENTER          =  399
+      FRAME_1890002_RELATIVE        = 'J2000'
+      FRAME_1890002_DEF_STYLE       = 'PARAMETERIZED'
+      FRAME_1890002_FAMILY          = 'TRUE_EQUATOR_AND_EQUINOX_OF_DATE'
+      FRAME_1890002_PREC_MODEL      = 'EARTH_IAU_1976'
+      FRAME_1890002_NUT_MODEL       = 'EARTH_IAU_1980'
+      FRAME_1890002_ROTATION_STATE  = 'ROTATING'
+ 
+      \begintext
+ 
+   In order for this frame to be generally useful, a more accurate Earth
+   spin model than that provided by the IAU_EARTH frame would need to be
+   used. In practice, high-precision binary Earth PCKs are more suitable as
+   a source of accurate Earth orientation data.
+ 
+ 
+Dog-Leg Frame for Saturn
+ 
+   A ``Dog-Leg'' frame for Saturn is a realistic application of product
+   frames. The specification of this frame is quite complex. Contact NAIF
+   for details.
+ 
+ 
+Examples of Switch Frames
+--------------------------------------------------------
+ 
+   In the examples below, all frame names and ID codes are fictitious.
+ 
+ 
+Switch Frame Using Reconstructed and Predict CKs
+ 
+   In this example, a switch frame uses distinct CK base frames for
+   reconstructed and predicted data. The two CK frames use different
+   spacecraft clocks.
+ 
+   The specification for such a switch frame would have the form:
+ 
+      \begindata
+ 
+      FRAME_SWITCH1              = -123001
+      FRAME_-123001_NAME         = 'SWITCH1'
+      FRAME_-123001_CLASS        = 6
+      FRAME_-123001_CLASS_ID     = -123001
+      FRAME_-123001_CENTER       = -123
+      FRAME_-123001_ALIGNED_WITH = (
+                                      'CK_PREDICTED'
+                                      'CK_RECONSTRUCTED'
+                                   )
+      \begintext
+ 
+   The base frames, which are specified by the assignment of the kernel
+   variable FRAME_-123001_ALIGNED_WITH, are listed in order of increasing
+   priority: given a request time, the SWITCH1 frame first tries to get
+   orientation of the frame CK_RECONSTRUCTED; if not found, it tries to get
+   orientation of the frame CK_PREDICTED.
+ 
+   The CK frames referenced by this switch frame must be defined, and the
+   corresponding CKs loaded, along with associated SCLK kernels and a
+   leapseconds kernel, for the switch frame to be usable.
+ 
+   Loading the CKs without loading an FK that defines the CK frames would
+   not work. Examples of the CK frame definitions are shown below.
+ 
+   Reconstructed attitude CK frame:
+ 
+      \begindata
+ 
+      FRAME_CK_RECONSTRUCTED = -123501
+      FRAME_-123501_NAME     = 'CK_RECONSTRUCTED'
+      FRAME_-123501_CLASS    = 3
+      FRAME_-123501_CLASS_ID = -123601
+      FRAME_-123501_CENTER   = -123
+      CK_-123501_SCLK        = -123
+ 
+      \begintext
+ 
+   Predicted attitude CK frame:
+ 
+      \begindata
+ 
+      FRAME_CK_PREDICTED     = -123502
+      FRAME_-123502_NAME     = 'CK_PREDICTED'
+      FRAME_-123502_CLASS    = 3
+      FRAME_-123502_CLASS_ID = -123602
+      FRAME_-123502_CENTER   = -123
+      CK_-123502_SCLK        = -123000
+ 
+      \begintext
+ 
+   Base frames may also be specified by frame ID, so the ``aligned with''
+   assignment may be written as
+ 
+      \begindata
+ 
+      FRAME_-123001_ALIGNED_WITH = (
+                                      -123502
+                                      -123501
+                                   )
+      \begintext
+ 
+   Note that the frame ID of a CK frame might not match the frame's frame
+   class ID, which is the ID used in CKs providing data for that frame. In
+   this case, the IDs used in reconstructed and predicted CKs would be
+   -123601 and -123602 respectively. Using those IDs in the ``aligned
+   with'' assignment would not work.
+ 
+ 
+Switch Frame Using CK and Dynamic Frames
+ 
+   This switch frame uses CK frames for reconstructed and predicted data as
+   in the previous example, and it uses dynamic frames providing nominal
+   attitude for the cruise and orbit mission phases, for times when no CK
+   data are available.
+ 
+   This example is for a seven year long mission:
+ 
+      launch          -- 2018-01-01
+      orbit insertion -- 2018-10-01
+      end of mission  -- 2025-01-01
+ 
+   The CK frames are applicable for the entire mission.
+ 
+   The nominal cruise attitude is implemented by the dynamic frame
+   DYN_CRUISE (definition not shown). This frame is applicable only for the
+   cruise phase of the mission.
+ 
+   The nominal orbital attitude is implemented by the dynamic frame
+   DYN_ORBIT (definition not shown). This frame is applicable only for the
+   orbital phase of the mission.
+ 
+   The CK frames are listed last in the set of base frame names, so they
+   have highest priority.
+ 
+   Start and stop times below are expressed in text kernel format. The
+   times are interpreted as TDB calendar dates.
+ 
+      \begindata
+ 
+      FRAME_SWITCH2              = -123002
+      FRAME_-123002_NAME         = 'SWITCH2'
+      FRAME_-123002_CLASS        = 6
+      FRAME_-123002_CLASS_ID     = -123001
+      FRAME_-123002_CENTER       = -123
+ 
+      FRAME_-123002_ALIGNED_WITH = (
+                                      'DYN_CRUISE'
+                                      'DYN_ORBIT'
+                                      'CK_PREDICTED'
+                                      'CK_RECONSTRUCTED'
+                                   )
+ 
+      FRAME_-123002_START        = (
+                                      @2018-01-01
+                                      @2018-10-01
+                                      @2018-01-01
+                                      @2018-01-01
+                                   )
+ 
+      FRAME_-123002_STOP         = (
+                                      @2018-10-01
+                                      @2025-01-01
+                                      @2025-01-01
+                                      @2025-01-01
+                                   )
+      \begintext
+ 
+   Time strings recognized by the CSPICE function str2et_c also may be
+   used. We could define the interval start times using the assignment
+ 
+      \begindata
+ 
+      FRAME_-123002_START        = (
+                                      '2018 JAN 1 00:00:00.000 TDB'
+                                      '2018 OCT 1 00:00:00.000 TDB'
+                                      '2018 JAN 1 00:00:00.000 TDB'
+                                      '2018 JAN 1 00:00:00.000 TDB'
+                                   )
+      \begintext
+ 
+ 
+Predicted Attitude Profile for Observation Planning
+ 
+   In this example, a sequence of base frames provides nominal predicted
+   pointing, over a short time period, for a spacecraft observing a target
+   object.
+ 
+   This example is for two six-hour long orbits, each broken into equal
+   chunks for Sun-pointing, Earth-pointing, and observation modes. Pointing
+   transitions are abrupt: at each transition time, the switch frame
+   instantaneously changes its orientation from that of one base frame that
+   of the next.
+ 
+   The nominal Sun-pointing attitude is implemented by the dynamic frame
+   DYN_SUN_POINTING (definition not shown).
+ 
+   The nominal Earth-pointing attitude is implemented by the dynamic frame
+   DYN_EARTH_POINTING (definition not shown).
+ 
+   The nominal observation attitude is implemented by the dynamic frame
+   DYN_OBSERVATION (definition not shown).
+ 
+      \begindata
+ 
+         FRAME_SWITCH3              = -123003
+         FRAME_-123003_NAME         = 'SWITCH3'
+         FRAME_-123003_CLASS        = 6
+         FRAME_-123003_CLASS_ID     = -123003
+         FRAME_-123003_CENTER       = -123
+         FRAME_-123003_ALIGNED_WITH = (
+                                         'DYN_SUN_POINTING'
+                                         'DYN_EARTH_POINTING'
+                                         'DYN_OBSERVATION'
+                                         'DYN_SUN_POINTING'
+                                         'DYN_EARTH_POINTING'
+                                         'DYN_OBSERVATION'
+                                      )
+ 
+         FRAME_-123003_START        = (
+                                         @2018-01-01/00:00:00
+                                         @2018-01-01/02:00:00
+                                         @2018-01-01/04:00:00
+                                         @2018-01-01/06:00:00
+                                         @2018-01-01/08:00:00
+                                         @2018-01-01/10:00:00
+                                      )
+ 
+         FRAME_-123003_STOP         = (
+                                         @2018-01-01/02:00:00
+                                         @2018-01-01/04:00:00
+                                         @2018-01-01/06:00:00
+                                         @2018-01-01/08:00:00
+                                         @2018-01-01/10:00:00
+                                         @2018-01-01/12:00:00
+                                      )
+      \begintext
+ 
+   Because the time intervals associated with the base frames are listed in
+   increasing time order and overlap only at their endpoints, request times
+   will be mapped to time intervals by binary search. If the time intervals
+   were listed in any other order, a linear search would be used.
  

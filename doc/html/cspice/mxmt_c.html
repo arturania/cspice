@@ -13,18 +13,9 @@
 <table style="text-align: left; margin-left: auto; margin-right: auto; width: 800px;"
  border="0" cellpadding="5" cellspacing="2">
   <tbody>
-    <tr>
-      <td style="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
-      <div align="right"> 
-      <small><small><a href="index.html">Index Page</a></small></small>
-      </div>
-      <b>mxmt_c</b> </td>
-    </tr>
-
-    <tr>
-      <td style="vertical-align: top;">
-
-<small><div align="center">
+    <tr><td>
+<div align="center">
+Index of Functions: 
 <A HREF="index.html#A">A</A>&nbsp;
 <A HREF="index.html#B">B</A>&nbsp;
 <A HREF="index.html#C">C</A>&nbsp;
@@ -49,14 +40,28 @@
 <A HREF="index.html#V">V</A>&nbsp;
 <A HREF="index.html#W">W</A>&nbsp;
 <A HREF="index.html#X">X</A>&nbsp;
-</div></small>
+</div>
+</td></tr>
+
+    <tr>
+      <td style="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
+      <div align="right"> 
+      <small><small><a href="index.html">Index Page</a></small></small>
+      </div>
+      <b>mxmt_c</b></td>
+    </tr>
+    
+
+    <tr>
+      <td style="vertical-align: top;">
+
        <br>
+       <div align="left"><b>Table of contents</b></div>
        <table style="text-align: left; width: 60%; margin-left: auto; margin-right: auto;"
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
             <td style="width: 33%; text-align: center;">
-            <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
               <a href="#Required_Reading">Required_Reading<br></a>
@@ -64,32 +69,30 @@
               <a href="#Brief_I/O">Brief_I/O<br></a>
               <a href="#Detailed_Input">Detailed_Input<br></a>
 
-              </small>
               </td>
-              <td style="vertical-align: top; width: 33%; text-align: center;">
-              <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
+              <td style="vertical-align: top; width: 33%; text-align: center;">              <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
               <a href="#Files">Files<br></a>
               <a href="#Particulars">Particulars<br></a>
-              <a href="#Examples">Examples<br></a>
+              <big><b><a href="#Examples">Examples<br></a></b></big>
 
-              </small>
               </td>
-              <td style="vertical-align: top; width: 33%; text-align: center;">
-              <small>               <a href="#Restrictions">Restrictions<br></a>
+              <td style="vertical-align: top; width: 33%; text-align: center;">              <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
               <a href="#Version">Version<br></a>
               <a href="#Index_Entries">Index_Entries<br></a>
-             </small>
             </td>
           </tr>
         </tbody>
 </table>
+<hr>
 
 <h4><a name="Procedure">Procedure</a></h4>
 <PRE>
+   mxmt_c ( Matrix times matrix transpose, 3x3 ) 
+
    void mxmt_c ( ConstSpiceDouble    m1  [3][3],
                  ConstSpiceDouble    m2  [3][3],
                  SpiceDouble         mout[3][3] )
@@ -97,15 +100,15 @@
 </PRE>
 <h4><a name="Abstract">Abstract</a></h4>
 <PRE>
-    Multiply a 3x3 matrix and the transpose of another 3x3 matrix.
+   Multiply a 3x3 matrix and the transpose of another 3x3 matrix.
 </PRE>
 <h4><a name="Required_Reading">Required_Reading</a></h4>
 <PRE>
-    None.
+   None.
 </PRE>
 <h4><a name="Keywords">Keywords</a></h4>
 <PRE>
-    MATRIX
+   MATRIX
 
 
 </PRE>
@@ -115,26 +118,25 @@
    --------  ---  --------------------------------------------------
    m1         I   3x3 double precision matrix.
    m2         I   3x3 double precision matrix.
-   mout       O   The product m1 times m2 transpose .
+   mout       O   The product `m1' times transpose of `m2'.
 </PRE>
 <h4><a name="Detailed_Input">Detailed_Input</a></h4>
 <PRE>
-   m1         is an arbitrary 3x3 double precision matrix.
+   m1          is an arbitrary 3x3 double precision matrix.
 
-   m2         is an arbitrary 3x3 double precision matrix.
-              Typically, m2 will be a rotation matrix since
-              then its transpose is its inverse (but this is
-              NOT a requirement).
+   m2          is an arbitrary 3x3 double precision matrix.
+               Typically, `m2' will be a rotation matrix since
+               then its transpose is its inverse (but this is
+               NOT a requirement).
 </PRE>
 <h4><a name="Detailed_Output">Detailed_Output</a></h4>
 <PRE>
-   mout       is a 3x3 double precision matrix. mout is the
-              product
+   mout        is a 3x3 double precision matrix. `mout' is the product
 
-                              t
-                 mout = m1  m2
+                                T
+                  mout = m1 x m2
 
-              mout may overwrite either m1 or m2.
+               `mout' may overwrite either `m1' or `m2'.
 </PRE>
 <h4><a name="Parameters">Parameters</a></h4>
 <PRE>
@@ -146,60 +148,127 @@
 </PRE>
 <h4><a name="Files">Files</a></h4>
 <PRE>
-   None
+   None.
 </PRE>
 <h4><a name="Particulars">Particulars</a></h4>
 <PRE>
    The code reflects precisely the following mathematical expression
 
-   For each value of the subscripts i and j from 0 to 2:
+      For each value of the subscripts `i' and `j' from 0 to 2:
 
-                     2
-                    __
-                    \
-      mout[i][j] =  /_  m1[i][k] * m2[j][k]
-                    k=0
+                         2
+                      .-----
+                       \
+         mout[i][j] =   )  m1[i][k] * m2[j][k]
+                       /
+                      '-----
+                        k=0
 
-   Note that the reversal of the k and i subscripts in the left-hand
-   matrix m1 is what makes mout the product of the TRANSPOSE of M1
-   and not simply of m1 itself.  Also, the intermediate results of
+   Note that the reversal of the `k' and `j' subscripts in the right-
+   hand matrix `m2' is what makes `mout' the product of the TRANSPOSE of
+   `m2' and not simply of `m2' itself. Also, the intermediate results of
    the operation above are buffered in a temporary matrix which is
-   later moved to the output matrix.  Thus mout can be actually be
+   later moved to the output matrix. Thus mout can be actually be
    m1 or m2 if desired without interfering with the computations.
 </PRE>
 <h4><a name="Examples">Examples</a></h4>
 <PRE>
-   Let  m1 = |  0.0  1.0  0.0 |
-             |                |
-             | -1.0  0.0  0.0 |
-             |                |
-             |  0.0  0.0  1.0 |
+   The numerical results shown for this example may differ across
+   platforms. The results depend on the SPICE kernels used as
+   input, the compiler and supporting libraries, and the machine
+   specific arithmetic implementation.
+
+   1) Given two 3x3 double precision matrices, multiply the first
+      matrix by the transpose of the second one.
 
 
-        m2 = |  0.0  1.0  0.0 |
-             |                |
-             | -1.0  0.0  0.0 |
-             |                |
-             |  0.0  0.0  1.0 |
+      Example code begins here.
 
-   then the call
 
-   <b>mxmt_c</b> ( m1, m2, mout );
+      /.
+         Program mxmt_ex1
+      ./
+      #include &lt;stdio.h&gt;
+      #include &quot;SpiceUsr.h&quot;
 
-   produces the matrix
+      int main( )
+      {
 
-   mout = | 1.0  0.0  0.0 |
-          |               |
-          | 0.0  1.0  0.0 |
-          |               |
-          | 0.0  0.0  1.0 |
+         /.
+         Local variables.
+         ./
+         SpiceDouble          m2     [3][3];
+         SpiceDouble          mout   [3][3];
+
+         SpiceInt             i;
+
+         /.
+         Define `m1'.
+         ./
+         SpiceDouble          m1     [3][3] = { { 0.0,  1.0,  0.0},
+                                                {-1.0,  0.0,  0.0},
+                                                { 0.0,  0.0,  1.0} };
+
+         /.
+         Make `m2' equal to `m1'.
+         ./
+         <a href="mequ_c.html">mequ_c</a> ( m1, m2 );
+
+         /.
+         Multiply `m1' by the transpose of `m2'.
+         ./
+         <b>mxmt_c</b> ( m1, m2, mout );
+
+         printf( &quot;M1:\n&quot; );
+         for ( i = 0; i &lt; 3; i++ )
+         {
+            printf( &quot;%16.7f %15.7f %15.7f\n&quot;, m1[i][0], m1[i][1], m1[i][2] );
+         }
+
+         printf( &quot;\n&quot; );
+         printf( &quot;M2:\n&quot; );
+         for ( i = 0; i &lt; 3; i++ )
+         {
+            printf( &quot;%16.7f %15.7f %15.7f\n&quot;, m2[i][0], m2[i][1], m2[i][2] );
+         }
+
+         printf( &quot;\n&quot; );
+         printf( &quot;M1 times transpose of M2:\n&quot; );
+         for ( i = 0; i &lt; 3; i++ )
+         {
+            printf( &quot;%16.7f %15.7f %15.7f\n&quot;,
+                    mout[i][0], mout[i][1], mout[i][2] );
+         }
+
+         return ( 0 );
+      }
+
+
+      When this program was executed on a Mac/Intel/cc/64-bit
+      platform, the output was:
+
+
+      M1:
+             0.0000000       1.0000000       0.0000000
+            -1.0000000       0.0000000       0.0000000
+             0.0000000       0.0000000       1.0000000
+
+      M2:
+             0.0000000       1.0000000       0.0000000
+            -1.0000000       0.0000000       0.0000000
+             0.0000000       0.0000000       1.0000000
+
+      M1 times transpose of M2:
+             1.0000000       0.0000000       0.0000000
+             0.0000000       1.0000000       0.0000000
+             0.0000000       0.0000000       1.0000000
 </PRE>
 <h4><a name="Restrictions">Restrictions</a></h4>
 <PRE>
-   The user is responsible for checking the magnitudes of the
-   elements of m1 and m2 so that a floating point overflow does
-   not occur.  (In the typical use where m1 and m2 are rotation
-   matrices, this not a risk at all.)
+   1)  The user is responsible for checking the magnitudes of the
+       elements of `m1' and `m2' so that a floating point overflow does
+       not occur. (In the typical use where `m1' and `m2' are rotation
+       matrices, this not a risk at all.)
 </PRE>
 <h4><a name="Literature_References">Literature_References</a></h4>
 <PRE>
@@ -207,12 +276,18 @@
 </PRE>
 <h4><a name="Author_and_Institution">Author_and_Institution</a></h4>
 <PRE>
-   W.M. Owen       (JPL)
-   E.D. Wright     (JPL)
+   J. Diaz del Rio     (ODC Space)
+   W.M. Owen           (JPL)
+   E.D. Wright         (JPL)
 </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
-   -CSPICE Version 1.0.0, 16-APR-1999 (EDW)
+   -CSPICE Version 1.0.1, 04-JUL-2021 (JDR)
+
+       Edited the header to comply with NAIF standard. Added complete
+       code examples based on existing code fragments.
+
+   -CSPICE Version 1.0.0, 16-APR-1999 (EDW) (WMO)
 </PRE>
 <h4><a name="Index_Entries">Index_Entries</a></h4>
 <PRE>
@@ -225,7 +300,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Apr  5 17:54:39 2017</pre>
+   <pre>Fri Dec 31 18:41:09 2021</pre>
 
 </body>
 </html>

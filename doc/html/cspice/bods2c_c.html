@@ -13,18 +13,9 @@
 <table style="text-align: left; margin-left: auto; margin-right: auto; width: 800px;"
  border="0" cellpadding="5" cellspacing="2">
   <tbody>
-    <tr>
-      <td style="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
-      <div align="right"> 
-      <small><small><a href="index.html">Index Page</a></small></small>
-      </div>
-      <b>bods2c_c</b> </td>
-    </tr>
-
-    <tr>
-      <td style="vertical-align: top;">
-
-<small><div align="center">
+    <tr><td>
+<div align="center">
+Index of Functions: 
 <A HREF="index.html#A">A</A>&nbsp;
 <A HREF="index.html#B">B</A>&nbsp;
 <A HREF="index.html#C">C</A>&nbsp;
@@ -49,14 +40,28 @@
 <A HREF="index.html#V">V</A>&nbsp;
 <A HREF="index.html#W">W</A>&nbsp;
 <A HREF="index.html#X">X</A>&nbsp;
-</div></small>
+</div>
+</td></tr>
+
+    <tr>
+      <td style="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
+      <div align="right"> 
+      <small><small><a href="index.html">Index Page</a></small></small>
+      </div>
+      <b>bods2c_c</b></td>
+    </tr>
+    
+
+    <tr>
+      <td style="vertical-align: top;">
+
        <br>
+       <div align="left"><b>Table of contents</b></div>
        <table style="text-align: left; width: 60%; margin-left: auto; margin-right: auto;"
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
             <td style="width: 33%; text-align: center;">
-            <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
               <a href="#Required_Reading">Required_Reading<br></a>
@@ -64,32 +69,30 @@
               <a href="#Brief_I/O">Brief_I/O<br></a>
               <a href="#Detailed_Input">Detailed_Input<br></a>
 
-              </small>
               </td>
-              <td style="vertical-align: top; width: 33%; text-align: center;">
-              <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
+              <td style="vertical-align: top; width: 33%; text-align: center;">              <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
               <a href="#Files">Files<br></a>
               <a href="#Particulars">Particulars<br></a>
-              <a href="#Examples">Examples<br></a>
+              <big><b><a href="#Examples">Examples<br></a></b></big>
 
-              </small>
               </td>
-              <td style="vertical-align: top; width: 33%; text-align: center;">
-              <small>               <a href="#Restrictions">Restrictions<br></a>
+              <td style="vertical-align: top; width: 33%; text-align: center;">              <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
               <a href="#Version">Version<br></a>
               <a href="#Index_Entries">Index_Entries<br></a>
-             </small>
             </td>
           </tr>
         </tbody>
 </table>
+<hr>
 
 <h4><a name="Procedure">Procedure</a></h4>
 <PRE>
+   bods2c_c ( Body string to ID code translation ) 
+
    void bods2c_c ( ConstSpiceChar  * name,
                    SpiceInt        * code,
                    SpiceBoolean    * found )
@@ -116,7 +119,7 @@
 </PRE>
 <h4><a name="Brief_I/O">Brief_I/O</a></h4>
 <PRE>
-   Variable  I/O  Description
+   VARIABLE  I/O  DESCRIPTION
    --------  ---  --------------------------------------------------
    name       I   String to be translated to an ID code.
    code       O   Integer ID code corresponding to `name'.
@@ -134,9 +137,9 @@
                in the SPICE kernel pool.
 
                Case and leading and trailing blanks in `name'
-               are not significant.  However when a name is made
+               are not significant. However when a name is made
                up of more than one word, they must be separated by
-               at least one blank.  That is, all of the following
+               at least one blank. That is, all of the following
                strings are equivalent names:
 
                        &quot;JUPITER BARYCENTER&quot;
@@ -147,46 +150,56 @@
 
                However, &quot;JUPITERBARYCENTER&quot; is not equivalent to
                the names above.
- 
+
                If NAME is a string representation of an integer,
                for example
 
                   &quot;399&quot;
 
                the string will be translated to the equivalent SpiceInt
-               datum.  The input integer need not be one recognized by
-               the SPICE system:  the integer need not be a built-in
+               datum. The input integer need not be one recognized by
+               the SPICE system: the integer need not be a built-in
                NAIF ID code, nor need it be associated with a name via
                run-time registration.
 </PRE>
 <h4><a name="Detailed_Output">Detailed_Output</a></h4>
 <PRE>
-   code         is, if `name' contains the name of a body or object,
-                the corresponding NAIF or user-defined integer ID code,
-                as determined by the SPICE name-code mapping subsystem.
-                If the input argument `name' represents an integer, the
-                same integer is returned in `code'.
- 
+   code        is, if `name' contains the name of a body or object,
+               the corresponding NAIF or user-defined integer ID
+               code, as determined by the SPICE name-code mapping
+               subsystem. If `name' represents an integer, the same
+               integer is returned in `code'.
+
                `code' is assigned a value only if `found' is returned
                as SPICETRUE; otherwise it is returned unchanged.
-                 
 
-   found       is SPICETRUE if `name' has a translation.  Otherwise,
-               `found' is SPICEFALSE.
+   found       is SPICETRUE if `name' has a translation or represents an
+               integer within the bounds of representable integers
+               as defined by the CSPICE routines <a href="intmax_c.html">intmax_c</a> and <a href="intmin_c.html">intmin_c</a>.
+               Otherwise, `found' is SPICEFALSE.
 </PRE>
 <h4><a name="Parameters">Parameters</a></h4>
 <PRE>
-   None.
+   MAXL        is the maximum allowable length of a body name. The
+               current value of this parameter is 36.
 </PRE>
 <h4><a name="Exceptions">Exceptions</a></h4>
 <PRE>
-   1) The error SPICE(EMPTYSTRING) is signaled if the input string
-      `name' does not contain at least one character, since the input
-      string cannot be converted to a Fortran-style string in this
-      case.
-      
-   2) The error SPICE(NULLPOINTER) is signaled if the input string
-      pointer `name' is null.
+   1)  If there is any problem with the body name-ID mapping kernel
+       variables present in the kernel pool, an error is signaled by
+       a routine in the call tree of this routine.
+
+   2)  Body name strings are upper-cased, their leading and trailing
+       blanks removed, and embedded blanks are compressed out, after
+       which they get truncated to the maximum body name length MAXL.
+       Therefore, two body names that differ only after that maximum
+       length are considered equal.
+
+   3)  If the `name' input string pointer is null, the error
+       SPICE(NULLPOINTER) is signaled.
+
+   4)  If the `name' input string has zero length, the error
+       SPICE(EMPTYSTRING) is signaled.
 </PRE>
 <h4><a name="Files">Files</a></h4>
 <PRE>
@@ -196,7 +209,7 @@
       NAIF_BODY_NAME += ( &lt;name 1&gt;, ... )
       NAIF_BODY_CODE += ( &lt;code 1&gt;, ... )
 
-   See NAIF_IDs for details.
+   See naif_ids.req for details.
 </PRE>
 <h4><a name="Particulars">Particulars</a></h4>
 <PRE>
@@ -208,8 +221,8 @@
       <a href="bodc2n_c.html">bodc2n_c</a>      Body code to name
       <a href="boddef_c.html">boddef_c</a>      Body name/code definition
 
-   <b>bods2c_c</b>, <a href="bodc2s_c.html">bodc2s_c</a>, <a href="bodn2c_c.html">bodn2c_c</a>, and <a href="bodc2n_c.html">bodc2n_c</a> perform translations between 
-   body names and their corresponding integer ID codes which are 
+   <b>bods2c_c</b>, <a href="bodc2s_c.html">bodc2s_c</a>, <a href="bodn2c_c.html">bodn2c_c</a>, and <a href="bodc2n_c.html">bodc2n_c</a> perform translations between
+   body names and their corresponding integer ID codes which are
    used in SPICE files and routines.
 
    <b>bods2c_c</b> is a slightly more general version of <a href="bodn2c_c.html">bodn2c_c</a>: support
@@ -221,7 +234,7 @@
    the name assigned in the body ID to name mapping or a string
    representation of the CODE value if no mapping exists.
 
-   <a href="boddef_c.html">boddef_c</a> assigns a body name to ID mapping. The mapping has priority 
+   <a href="boddef_c.html">boddef_c</a> assigns a body name to ID mapping. The mapping has priority
    in name-to-ID and ID-to-name translations.
 
    Refer to NAIF_IDs for the list of name/code associations built into
@@ -230,53 +243,91 @@
 </PRE>
 <h4><a name="Examples">Examples</a></h4>
 <PRE>
-   1.  In the following code fragment, bodeul_ returns the Euler
-       angles representing the orientation of Jupiter relative to
-       the J2000 reference frame. bodeul_ requires the NAIF integer
-       ID code for Jupiter, so we use <b>bods2c_c</b> to convert the name to
-       its corresponding integer ID code.
- 
-          <b>bods2c_c</b> ( &quot;JUPITER&quot;, &amp;jupid, &amp;found );
+   The numerical results shown for this example may differ across
+   platforms. The results depend on the SPICE kernels used as
+   input, the compiler and supporting libraries, and the machine
+   specific arithmetic implementation.
 
-          bodeul_  ( &amp;jupid, &amp;et, &amp;ra, &amp;dec, &amp;w, &amp;lambda );
+   1) Apply the <b>bods2c_c</b> call to several body names to retrieve
+      their associated NAIF IDs included in the default SPICE ID-name
+      lists, a name not included in that list, a string representing a
+      positive integer and another representing a negative integer.
 
-   2.  In this example, we assume that only the set of default 
-       name/code pairs has been defined.
-
-       Given these names, <b>bods2c_c</b> will return the following codes:
-
-          Name                           Code              Found?
-          ------------------------       ----------        ------
-          &quot;EARTH&quot;                               399        Yes
-          &quot;  Earth &quot;                            399        Yes
-          &quot;399&quot;                                 399        Yes
-          &quot; 399 &quot;                               399        Yes
-          &quot;EMB&quot;                                   3        Yes
-          &quot;3&quot;                                     3        Yes
-          &quot;1000000000&quot;                   1000000000        Yes
-          &quot;Solar System Barycenter&quot;               0        Yes
-          &quot;SolarSystemBarycenter&quot;                 -        No
-          &quot;SSB&quot;                                   0        Yes
-          &quot;Voyager 2&quot;                           -32        Yes
-          &quot;U.S.S. Enterprise&quot;                     -        No
-          &quot; &quot;                                     -        No
-          &quot;Halley's Comet&quot;                        -        No
+      Example code begins here.
 
 
-       Given these codes, <a href="bodc2n_c.html">bodc2n_c</a> will return the following names:
+      /.
+         Program bods2c_ex1
+      ./
+      #include &lt;stdio.h&gt;
+      #include &quot;SpiceUsr.h&quot;
 
-        Code           Name                                Found?
-        ----------     ------------------------            ------
-               399     &quot;EARTH&quot;                             Yes
-                 0     &quot;SOLAR SYSTEM BARYCENTER&quot;           Yes
-                 3     &quot;EARTH BARYCENTER&quot;                  Yes
-               -77     &quot;GALILEO ORBITER&quot;                   Yes
-                11      -                                  No
-        1000000000      -                                  No
+      int main()
+      {
+
+         /.
+         Local variables.
+         ./
+         SpiceBoolean            found;
+         SpiceInt                code;
+         SpiceInt                i;
+
+         /.
+         Assign an array of body names. Not all the listed names
+         map to a NAIF ID.
+         ./
+         SpiceChar             * names[] = { &quot;Hyperion&quot;, &quot;Earth&quot;,
+                                             &quot;  Earth &quot;, &quot;EMB&quot;,
+                                             &quot;Solar System Barycenter&quot;,
+                                             &quot;Voyager 2&quot;,
+                                             &quot;U.S.S. Enterprise&quot;,
+                                             &quot;1000000&quot;, &quot;-999&quot; };
+
+         /.
+         Loop over the `names' array, call <b>bods2c_c</b> for each
+         element of `names'.
+         ./
+         printf( &quot;Name                      Code   \n&quot; );
+         printf( &quot;-----------------------   -------\n&quot; );
+
+         for ( i = 0; i &lt; 9; i++ )
+         {
+            <b>bods2c_c</b> ( names[i], &amp;code, &amp;found );
+
+            if ( found )
+            {
+               printf( &quot;%23s   %7d\n&quot;, names[i], (int)code);
+            }
+            else
+            {
+               printf( &quot;%23s   **UNK**\n&quot;, names[i] );
+            }
+
+         }
+
+         return ( 0 );
+      }
+
+
+      When this program was executed on a Mac/Intel/cc/64-bit
+      platform, the output was:
+
+
+      Name                      Code
+      -----------------------   -------
+                     Hyperion       607
+                        Earth       399
+                       Earth        399
+                          EMB         3
+      Solar System Barycenter         0
+                    Voyager 2       -32
+            U.S.S. Enterprise   **UNK**
+                      1000000   1000000
+                         -999      -999
 </PRE>
 <h4><a name="Restrictions">Restrictions</a></h4>
 <PRE>
-   None.
+   1)  See exception &lt;2&gt;.
 </PRE>
 <h4><a name="Literature_References">Literature_References</a></h4>
 <PRE>
@@ -284,20 +335,30 @@
 </PRE>
 <h4><a name="Author_and_Institution">Author_and_Institution</a></h4>
 <PRE>
-   C.H. Acton      (JPL)
-   N.J. Bachman    (JPL)
-   K.R. Gehringer  (JPL)
-   B.V. Semenov    (JPL)
+   C.H. Acton          (JPL)
+   N.J. Bachman        (JPL)
+   J. Diaz del Rio     (ODC Space)
+   K.R. Gehringer      (JPL)
+   B.V. Semenov        (JPL)
+   E.D. Wright         (JPL)
 </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
-   -CSPICE Version 1.0.2, 16-MAY-2009 (EDW) 
+   -CSPICE Version 1.0.3, 10-AUG-2021 (JDR)
 
-       Edit to Particulars section to document the <a href="bodc2s_c.html">bodc2s_c</a> routine.
+       Edited the header to comply with NAIF standard. Added complete
+       code example.
+
+       Updated output argument `found' description in -Detailed_Output. Added
+       description of MAXL parameter. Added -Exceptions and -Restrictions.
+
+   -CSPICE Version 1.0.2, 16-MAY-2009 (EDW)
+
+       Edit to -Particulars section to document the <a href="bodc2s_c.html">bodc2s_c</a> routine.
 
    -CSPICE Version 1.0.1, 27-FEB-2008 (BVS)
 
-       Corrected the contents of the Required_Reading section of 
+       Corrected the contents of the -Required_Reading section of
        the header.
 
    -CSPICE Version 1.0.0, 23-JUL-2004 (CHA) (NJB) (KRG)
@@ -313,7 +374,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Apr  5 17:54:29 2017</pre>
+   <pre>Fri Dec 31 18:41:02 2021</pre>
 
 </body>
 </html>

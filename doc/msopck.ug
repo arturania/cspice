@@ -2,7 +2,7 @@
 MSOPCK User's Guide
 ===========================================================================
  
-   Last revised on 2017 FEB 09 by B. V. Semenov.
+   Last revised on 2021 DEC 31 by B. V. Semenov.
  
  
 Abstract
@@ -1336,7 +1336,9 @@ Reference Frame
    recognized by the program without requiring any additional FK file. If
    the frame is not one of the frames built into the SPICE system, then an
    FK file defining this frame must be specified using the FRAMES_FILE_NAME
-   keyword.
+   keyword. If input data is referenced to ICRF and CK created from it is
+   intended to be used as described below in the section ``ICRF vs J2000'',
+   the REFERENCE_FRAME_NAME keyword should be set to the value 'J2000'.
  
  
 Angular Velocity Flag
@@ -1368,6 +1370,89 @@ Angular Velocity Flag
    level SPICE routines such as SPKEZR and SXFORM. CK files without the
    angular velocities will make the high level interfaces dealing with
    states fail with the ``orientation-data-not-available'' error.
+ 
+ 
+ICRF vs J2000
+--------------------------------------------------------
+ 
+   The International Celestial Reference System (ICRS) defines coordinate
+   axes that are closely aligned with those of the J2000 (aka EME2000)
+   reference frame. The International Celestial Reference Frame (ICRF) and
+   later versions of it (ICRF1, etc.) are realizations of the ICRS. For
+   brevity, we'll simply refer to ``the ICRF'' below.
+ 
+   The rotational offset between the J2000 frame and the ICRS has magnitude
+   of under 0.1 arcseconds.
+ 
+   Certain JPL data products are referenced to the ICRF or later versions
+   of it. These include, but are not limited to,
+ 
+       --   DE4xx series planetary ephemerides
+ 
+       --   Satellite ephemerides compatible with DE4xx planetary
+            ephemerides
+ 
+       --   Small body ephemerides compatible with DE4xx planetary
+            ephemerides
+ 
+       --   Orientation of the terrestrial frame ITRF93
+ 
+       --   Orientation of the lunar principal axes frame
+ 
+   Rotation models provided by the IAU are referenced to the ICRF.
+ 
+   Modern spacecraft ephemerides and attitude data, other than those for
+   Earth orbiters, are likely referenced to the ICRF. Users should consult
+   documentation or data providers to verify this for data sets of
+   interest.
+ 
+   SPK and binary PCK files produced by NAIF from the data sources listed
+   above are referenced to the same version of the ICRF as the
+   corresponding data sources. For historical and backward compatibility
+   reasons, these data products are labeled as being referenced to the
+   J2000 frame.
+ 
+   No transformation is required to convert state vectors or orientation
+   data from the J2000 frame to the ICRF (or later version), if the vectors
+   or orientation data are computed using SPICE kernels created from the
+   data sources listed above. For example:
+ 
+       --   A call to spkezr_c with the input frame name J2000 will return
+            a state vector referenced to the ICRF, if the SPK data are from
+            a JPL planetary ephemeris SPK, or from any other SPK in which
+            data are referenced to the ICRF and labeled as referenced to
+            the J2000 frame.
+ 
+       --   A call to pxform_c with the input ``from'' frame name J2000 and
+            input ``to'' frame name ITRF93 will return a 3x3 matrix that
+            transforms position vectors from the ICRF to the ITRF93
+            terrestrial frame, if the Earth orientation data are provided
+            by a NAIF high-precision, binary Earth PCK.
+ 
+       --   A call to pxform_c with the input ``from'' frame name J2000 and
+            input ``to'' frame name IAU_MARS will return a 3x3 matrix that
+            transforms position vectors from the ICRF to the Mars
+            body-fixed, body-centered IAU_MARS frame, if the orientation
+            data are provided by a NAIF generic text PCK.
+ 
+       --   A call to pxform_c with the input ``from'' frame name J2000 and
+            an input ``to'' CK frame name will return a 3x3 matrix that
+            transforms position vectors from the ICRF to the specified CK
+            frame, if the CK data used by this call are referenced to the
+            ICRF and labeled as referenced to the J2000 frame.
+ 
+   SPICE kernel creators intending to support use of data referenced to the
+   ICRF, as shown above, should write the data without first converting it
+   to the J2000 frame. Segments of such SPK, CK, or binary PCK files should
+   indicate the frame is J2000. It is strongly recommended that kernel
+   creators add comments to the files to explain the actual characteristics
+   of the data.
+ 
+   SPICE users who export kernel data to non-SPICE file formats may need to
+   transform the data, depending on the frame to which the SPICE data are
+   actually referenced (as opposed to the frame to which the kernel
+   indicates the data are referenced), and depending on the desired output
+   frame.
  
  
 Output CK Metadata

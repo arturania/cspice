@@ -2,7 +2,7 @@
 Geometry Finder Required Reading
 ===========================================================================
  
-   Last revised on 2012 OCT 01 by E. D. Wright.
+   Last revised on 2017 JUN 19 by N. J. Bachman.
  
  
 Abstract
@@ -71,7 +71,7 @@ Introduction
       Within the time interval January 1 2009 to January 1 2010,
       find the time periods when the light time corrected
       distance between the centers of the Earth and
-      Moon is less than 40000 kilometers.
+      Moon is less than 400000 kilometers.
  
    The GF subsystem works with a small set of geometric quantities:
  
@@ -3563,6 +3563,11 @@ Summary of Mnemonics
  
 Appendix B --- Revision History
 ===========================================================================
+ 
+ 
+2017 JUN 19 by N. J. Bachman
+ 
+   Corrected typo.
  
  
 2012 OCT 01 by E. D. Wright.

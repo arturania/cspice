@@ -2,7 +2,7 @@
 MKDSK User's Guide
 ===========================================================================
  
-   Last revised on 2017 APR 05 by N. J. Bachman.
+   Last revised on 2021 DEC 31 by N. J. Bachman.
  
  
 Abstract
@@ -455,8 +455,8 @@ Detailed Description of Setup File Keywords
                                        hand side of the assignment has the
                                        format ( 'ANGLES = angular unit'
                                        'DISTANCES = distance unit' ). The
-                                       units accepted by the CSPICE routine
-                                       convrt_c are accepted in this
+                                       units accepted by the SPICE routine
+                                       CONVRT are accepted in this
                                        assignment. This assignment is
                                        required.
  
@@ -983,7 +983,7 @@ Units
 --------------------------------------------------------
  
    The distance units of plate model vertex data may be any supported by
-   the SPICE unit conversion routine convrt_c. Distance units must be
+   the CSPICE unit conversion routine convrt_c. Distance units must be
    specified in the MKDSK setup file.
  
  
@@ -1381,7 +1381,7 @@ Domain Coordinates
  
       TOPLAT to TOPLAT - ((NROWS-1) * LATSTP)
  
-   For rectangular coordinates, X vaues are defined by a ``leftmost''
+   For rectangular coordinates, X values are defined by a ``leftmost''
    (minimum) X value LEFTX and an X step size XSTEP. These are the values
    assigned to the keywords LEFT_COLUMN_X and COLUMN_STEP_SIZE. The X
    values of the grid points increase from
@@ -1432,18 +1432,22 @@ Height Grid File Format
    file may be easier to human readers to scan if data values are placed in
    fixed-width columns.
  
+   MKDSK reads the input height data file sequentially: it views the values
+   in a height grid file as a 1-dimensional stream of data. Values in lines
+   are read from the file from left to right; lines are read from the start
+   of the file to the end.
  
-Height Grid Data Order
  
-   MKDSK reads the input file sequentially: it views the values in a height
-   grid file as a 1-dimensional stream of data. Values in lines are read
-   from the file from left to right; lines are read from the start of the
-   file to the end.
+Height Grid Data Mapping
  
-   MKDSK can accept a variety of data orders. The order of data in the
-   input file are described by keywords in the setup file.
+   Although the input file need not have its data arranged in a grid, the
+   data may be treated as though they do form a grid, since the numbers of
+   rows and columns, along with the row-major or column-major attribute
+   described below, imply a shape and size of a rectangular input grid.
+   Below, we depict the input data as already arranged in a grid.
  
-   The input data can be in either ``row-major'' or ``column-major'' order.
+   The input data can be arranged in either row-major or column-major
+   order.
  
    Row-major order means that data for rows in the vertex grid are adjacent
    in the input file: the first NCOLS elements of the file belong to a row,
@@ -1453,97 +1457,137 @@ Height Grid Data Order
    adjacent in the input file: the first NROWS elements of the file belong
    to a column, the next NROWS elements belong to a column, and so on.
  
+   Input data can be mapped to the vertex grid in top-down or bottom-up
+   order, and in left-to-right or right-to-left order. The possible
+   mappings are illustrated below. Setup file keywords controlling the
+   mapping are discussed following these diagrams.
+ 
+   When the input data are arranged in row-major order, rows of height data
+   in the input file map to rows in the segment's vertex grid as shown
+   below. Entries of the form h_ij represent height values in the ith row
+   and jth column of the input file. Horizontal and vertical lines denote
+   additional rows and columns of data.
+ 
+   If the input data organization is row-major, top-down and left-right,
+   the mapping is:
+ 
+      h_11  h_12  ...  h_1n             h_11  h_12  ...  h_1n
+      h_21  h_22  ...  h_2n             h_21  h_22  ...  h_2n
+      ---------------------             ---------------------
+               ...              ->               ...
+      ---------------------             ---------------------
+      ---------------------             ---------------------
+ 
+          Input file                    Segment's vertex grid
+ 
+   If the input data organization is row-major, top-down and right-left,
+   the mapping is:
+ 
+      h_11  h_12  ...  h_1n             h_1n  ...  h_12  h_11
+      h_21  h_22  ...  h_2n             h_2n  ...  h_22  h_21
+      ---------------------             ---------------------
+               ...              ->               ...
+      ---------------------             ---------------------
+      ---------------------             ---------------------
+ 
+          Input file                    Segment's vertex grid
+ 
+   If the input data organization is row-major, bottom-up and left-right,
+   the mapping is:
+ 
+      h_11  h_12  ...  h_1n             ---------------------
+      h_21  h_22  ...  h_2n             ---------------------
+      ---------------------                      ...
+               ...              ->      ---------------------
+      ---------------------             h_21  h_22  ...  h_2n
+      ---------------------             h_11  h_12  ...  h_1n
+ 
+          Input file                    Segment's vertex grid
+ 
+   If the input data organization is row-major, bottom-up and right-left,
+   the mapping is:
+ 
+      h_11  h_12  ...  h_1n             ---------------------
+      h_21  h_22  ...  h_2n             ---------------------
+      ---------------------                      ...
+               ...              ->      ---------------------
+      ---------------------             h_2n  ...  h_22  h_21
+      ---------------------             h_1n  ...  h_12  h_11
+ 
+          Input file                    Segment's vertex grid
+ 
+   When the input data are arranged in column-major order, rows of height
+   data in the input file map to columns in the segment's vertex grid as
+   shown below. If the input data organization is column-major, top-down
+   and left-right, the mapping is:
+ 
+      h_11  h_12  ...  h_1n             h_11  h_21   |     | |
+      h_21  h_22  ...  h_2n             h_12  h_22   |     | |
+      ---------------------                          |     | |
+               ...              ->      ...   ...    | ... | |
+      ---------------------                          |     | |
+      ---------------------             h_1n  h_2n   |     | |
+ 
+          Input file                    Segment's vertex grid
+ 
+   If the input data organization is column-major, top-down and right-left,
+   the mapping is:
+ 
+      h_11  h_12  ...  h_1n              | |     | h_21  h_11
+      h_21  h_22  ...  h_2n              | |     | h_22  h_12
+      ---------------------              | |     |
+               ...              ->       | | ... | ...   ...
+      ---------------------              | |     |
+      ---------------------              | |     | h_2n  h_1n
+ 
+          Input file                     Segment's vertex grid
+ 
+   If the input data organization is column-major, bottom-up and
+   left-right, the mapping is:
+ 
+      h_11  h_12  ...  h_1n             h_1n  h_2n   |     | |
+      h_21  h_22  ...  h_2n                          |     | |
+      ---------------------              ...   ...   | ... | |
+               ...              ->                   |     | |
+      ---------------------             h_12  h_22   |     | |
+      ---------------------             h_11  h_21   |     | |
+ 
+          Input file                    Segment's vertex grid
+ 
+   If the input data organization is column-major, bottom-up and
+   right-left, the mapping is:
+ 
+      h_11  h_12  ...  h_1n              | |     | h_2n  h_1n
+      h_21  h_22  ...  h_2n              | |     |
+      ---------------------              | | ... | ...   ...
+               ...              ->       | |     |
+      ---------------------              | |     | h_22  h_12
+      ---------------------              | |     | h_21  h_11
+ 
+          Input file                     Segment's vertex grid
+ 
    The assignment of the string 'YES' to the keyword
  
       INPUT_GRID_ORDER_ROW_MAJOR
  
-   indicates that the data are in row-major order. The assignment of 'NO'
-   indicates the data are in column-major order.
+   indicates that the input height data are arranged in row-major order.
+   The assignment of 'NO' indicates the data are in column-major order.
  
-   The columns of the vertex grid can be filled in in top-down or bottom-up
-   order. When top-down ordering is used, data within each vertex grid
-   column are filled in in order of decreasing latitude or Y-value. This
-   applies whether or not the input file has row-major order. If the order
-   is not top-down, it is bottom-up. The assignment of the string 'YES' to
-   the keyword
+   The assignment of the string 'YES' to the keyword
  
       COLUMN_VALUE_ORDER_TOP_DOWN
  
-   indicates that the data are in top-down order. The assignment of 'NO'
-   indicates the data are in bottom-up order.
+   indicates that the input height data are to be mapped to the vertex grid
+   in top-down order. The assignment of 'NO' indicates the mapping is
+   bottom-up.
  
-   The rows of the vertex grid can be filled in in left-to-right or
-   right-to-left order. When left-to-right ordering is used, data within
-   each vertex grid row are filled in in order of increasing longitude or
-   X-value. This applies whether or not the input file has row-major order.
-   If the order is not left-to-right, it is right-to-left. The assignment
-   of the string 'YES' to the keyword
+   The assignment of the string 'YES' to the keyword
  
       ROW_VALUE_ORDER_LEFT_RIGHT
  
-   indicates that the data are in left-to-right order. The assignment of
-   'NO' indicates the data are in right-to-left order.
- 
-   The following examples show different possible orderings of the input
-   height data. All orderings shown can be described by assignments in the
-   setup file.
- 
-   For this example, we use an extremely small vertex grid having two rows
-   and three columns. Let the vertices of the vertex grid be numbered as
-   follows:
- 
- 
-         1     2     3
- 
-         4     5     6
- 
- 
-   The orderings of the data for these vertices, as a function of the data
-   file's attributes, are shown below.
- 
-   Row-major, top-down, left-right:
- 
-       1  2  3
-       4  5  6
- 
-   Row-major, top-down, right-left:
- 
-       3  2  1
-       6  5  4
- 
-   Row-major, bottom-up, left-right:
- 
-       4  5  6
-       1  2  3
- 
-   Row-major, bottom-up, right-left:
- 
-       6  5  4
-       3  2  1
- 
-   Column-major, top-down, left-right:
- 
-       1  4
-       2  5
-       3  6
- 
-   Column-major, top-down, right-left:
- 
-       3  6
-       2  5
-       1  4
- 
-   Column-major, bottom-up, left-right:
- 
-       4  1
-       5  2
-       6  3
- 
-   Column-major, bottom-up, right-left:
- 
-       6  3
-       5  2
-       4  1
+   indicates that the input height data are to be mapped to the vertex grid
+   in left-to-right order. The assignment of 'NO' indicates the mapping is
+   right-to-left.
  
  
 Polar Caps
@@ -1600,9 +1644,12 @@ Polar Caps
    vertices of the southernmost row of the grid, and are inverted in the
    direction of latitude.
  
-   A polar cap should not be generated if the input data set already has a
-   row of vertices with latitude on that pole: the cap would contain
-   degenerate plates.
+   If the input data set has a row of vertices with latitude on a pole,
+   that row is converted to single vertex having height equal to the
+   average height of the original vertices, and a polar cap is created
+   using that vertex and the adjacent row of vertices. As a result, no
+   degenerate plates are created. MKDSK takes these actions regardless of
+   whether creation of polar caps is commanded.
  
  
 Longitude Wrapping

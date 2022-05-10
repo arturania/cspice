@@ -23,17 +23,22 @@
 </H2>
 
 <PRE>
+
    <A HREF="#SPICE Kernel Required Reading">SPICE Kernel Required Reading</A>
       <A HREF="#Abstract">Abstract</A>
       <A HREF="#Document Outline">Document Outline</A>
+
    <A HREF="#Introduction to Kernels">Introduction to Kernels</A>
          <A HREF="#Kernel Types">Kernel Types</A>
          <A HREF="#Text Kernels and the Kernel Pool">Text Kernels and the Kernel Pool</A>
          <A HREF="#Binary Kernels">Binary Kernels</A>
+
    <A HREF="#SPICE Kernel Type Identification and Kernel Naming">SPICE Kernel Type Identification and Kernel Naming</A>
          <A HREF="#SPICE Kernel Type Identification">SPICE Kernel Type Identification</A>
          <A HREF="#Recommendations on Kernel File Naming">Recommendations on Kernel File Naming</A>
+
    <A HREF="#Binary Kernel Specifications">Binary Kernel Specifications</A>
+
    <A HREF="#Text Kernel Specifications and Interfaces">Text Kernel Specifications and Interfaces</A>
       <A HREF="#Text Kernel Specifications">Text Kernel Specifications</A>
          <A HREF="#Variable Name Rules">Variable Name Rules</A>
@@ -45,10 +50,12 @@
          <A HREF="#Additional Meta-kernel Specifications">Additional Meta-kernel Specifications</A>
       <A HREF="#Text Kernel Interfaces - Fetching Data from the Kernel Pool">Text Kernel Interfaces - Fetching Data from the Kernel Pool</A>
          <A HREF="#Informational Functions">Informational Functions</A>
+
    <A HREF="#Section 5 -- Kernel Management">Section 5 -- Kernel Management</A>
          <A HREF="#Loading Kernels">Loading Kernels</A>
          <A HREF="#Kernel Priority">Kernel Priority</A>
          <A HREF="#Path Symbols in Meta-kernels">Path Symbols in Meta-kernels</A>
+         <A HREF="#Specifying Kernels Using Relative Paths">Specifying Kernels Using Relative Paths</A>
          <A HREF="#Keeping Track of Loaded Kernels">Keeping Track of Loaded Kernels</A>
          <A HREF="#Reloading Kernels">Reloading Kernels</A>
          <A HREF="#Changing Kernel Priority">Changing Kernel Priority</A>
@@ -58,12 +65,14 @@
          <A HREF="#Loading of Non-native Text and Binary Kernels">Loading of Non-native Text and Binary Kernels</A>
          <A HREF="#Manipulating Kernel Pool Contents">Manipulating Kernel Pool Contents</A>
          <A HREF="#Detecting Changes in the Kernel Pool Using Watchers">Detecting Changes in the Kernel Pool Using Watchers</A>
+
    <A HREF="#Appendix A -- Discussion of Competing Data">Appendix A -- Discussion of Competing Data</A>
       <A HREF="#Binary Kernels0">Binary Kernels</A>
          <A HREF="#SPKs">SPKs</A>
          <A HREF="#CKs">CKs</A>
          <A HREF="#Binary PCKs">Binary PCKs</A>
       <A HREF="#Text Kernels">Text Kernels</A>
+
    <A HREF="#Appendix B -- Glossary of Terms">Appendix B -- Glossary of Terms</A>
          <A HREF="#Agent">Agent</A>
          <A HREF="#Assignment">Assignment</A>
@@ -72,17 +81,20 @@
          <A HREF="#Direct assignment">Direct assignment</A>
          <A HREF="#Element">Element</A>
          <A HREF="#Incremental assignment">Incremental assignment</A>
-         <A HREF="#Keeper (subsystem)">Keeper (subsystem)</A>
-         <A HREF="#Kernel pool (sometimes just called ``the pool'')">Kernel pool (sometimes just called ``the pool'')</A>
+         <A HREF="#Keeper subsystem">Keeper (subsystem)</A>
+         <A HREF="#Kernel pool sometimes just called ``the pool''">Kernel pool (sometimes just called ``the pool'')</A>
          <A HREF="#Kernel variable">Kernel variable</A>
-         <A HREF="#Meta-kernel (also known as ``FURNSH kernel'')">Meta-kernel (also known as ``FURNSH kernel'')</A>
+         <A HREF="#Meta-kernel also known as ``FURNSH kernel''">Meta-kernel (also known as ``FURNSH kernel'')</A>
          <A HREF="#Operator">Operator</A>
          <A HREF="#Principal data">Principal data</A>
          <A HREF="#Value">Value</A>
          <A HREF="#Variable name">Variable name</A>
          <A HREF="#Vector value">Vector value</A>
+
    <A HREF="#Appendix C -- Summary of Routines">Appendix C -- Summary of Routines</A>
+
    <A HREF="#Appendix D -- Summary of Key Text Kernel Parameter Values">Appendix D -- Summary of Key Text Kernel Parameter Values</A>
+
    <A HREF="#Appendix E -- Revision History">Appendix E -- Revision History</A>
 
 </PRE>
@@ -94,7 +106,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> SPICE Kernel Required Reading
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2014 JUL 15 by N. J. Bachman.
+   Last revised on 2021 DEC 29 by B. V. Semenov.
 <P>
  
 <BR><BR>
@@ -222,6 +234,9 @@ meta-kernels
 (binary PCK)
 <BR><BR></UL>
 <UL>
+<TT>--</TT> shape models or topographic data for extended objects (DSK)
+<BR><BR></UL>
+<UL>
 <TT>--</TT> mission events (EK)
 <BR><BR></UL>
 <BR><BR>
@@ -333,7 +348,7 @@ meta-kernels
    kernel type specific ``open new file'' function -- <a href="../cspice/spkopn_c.html">spkopn_c</a> for SPK
    files, <a href="../cspice/ckopn_c.html">ckopn_c</a> for CK files, etc. If a binary kernel is created by
    calling an architecture specific ``open new file'' function -- dafonw_c
-   for DAF files, dasonw_c for DAS files, etc., -- it is the caller's
+   for DAF files, <a href="../cspice/dasonw_c.html">dasonw_c</a> for DAS files, etc., -- it is the caller's
    responsibility to specify the correct kernel type in the corresponding
    input argument of these functions to make sure the correct kernel type
    identifier is written into the kernel.
@@ -369,6 +384,7 @@ meta-kernels
  
             SPK           DAF/SPK
             CK            DAF/CK
+            DSK           DAS/DSK
             PCK           DAF/PCK
             EK            DAS/EK
  
@@ -447,6 +463,7 @@ passed as input arguments to CSPICE functions.
  
 <PRE>
             .bc    binary CK
+            .bds   binary DSK
             .bes   binary Sequence Component EK
             .bpc   binary PCK
             .bsp   binary SPK
@@ -508,6 +525,9 @@ passed as input arguments to CSPICE functions.
    format description given below applies to all SPICE text kernels; the
    specific data names shown in this example apply only to text PCK
    kernels.
+<P>
+ 
+   Vectors of values are enclosed in parentheses.
 <P>
  
    The example begins with a SPICE kernel type identifier and is then
@@ -637,7 +657,7 @@ passed as input arguments to CSPICE functions.
 <TT>1.</TT> `` '' (space)
 <BR><BR></UL>
 <UL>
-<TT>2.</TT> ``.'' (period)
+<TT>2.</TT> ``,'' (comma)
 <BR><BR></UL>
 <UL>
 <TT>3.</TT> ``('' (open parentheses)
@@ -719,7 +739,7 @@ passed as input arguments to CSPICE functions.
 <P>
  
 <PRE>
-         DISTANCE_UNITS = ( 'KILOMETERS' )
+         DISTANCE_UNITS = 'KILOMETERS'
 </PRE>
    This quoting convention is independent of the CSPICE Toolkit language
    version being used.
@@ -740,7 +760,7 @@ passed as input arguments to CSPICE functions.
 <P>
  
 <PRE>
-         MESSAGE = ( 'You can''t always get what you want.' )
+         MESSAGE = 'You can''t always get what you want.'
 </PRE>
    Date values may be entered in a wide variety of formats, using two
    methods. The easiest method is to enter a date as a string, as described
@@ -777,8 +797,13 @@ passed as input arguments to CSPICE functions.
 <P>
  
    Vector values, whether of numeric, string or date types, are enclosed in
-   parenthesis, and adjacent components are separated by either white space
-   (blank or carriage return, but not TAB) or commas.
+   parentheses, and adjacent components are separated by either white space
+   (blank or carriage return, but not TAB) or commas. Multiple components
+   can be placed on a single line. Multiple lines may be used to continue a
+   list of values. Individual numeric, date, and string values may not be
+   split across lines, but a long string may be continued using multiple
+   substrings. See the section ``Additional Text Kernel Syntax Rules''
+   below for details.
 <P>
  
 <PRE>
@@ -810,6 +835,12 @@ passed as input arguments to CSPICE functions.
    All assignments, or portions of an assignment, occurring on a line must
    not exceed 132 characters, including the assignment operator and any
    leading or embedded white space.
+<P>
+ 
+   Blank Lines
+<P>
+ 
+   Blank lines in data blocks are ignored.
 <P>
  
    String Continuation
@@ -1348,6 +1379,28 @@ implementation of the kernel pool.<BR>
 <P>
  
 <BR><BR>
+<A NAME="Specifying Kernels Using Relative Paths"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H3> Specifying Kernels Using Relative Paths
+</H3><P><BR><BR>
+   When a kernel is specified with a relative path, this path should be
+   valid at the time when <a href="../cspice/furnsh_c.html">furnsh_c</a> is called and stay valid for the rest of
+   the application run. This is required because SPICE stores kernel names
+   as provided by the caller and uses them to open and close binary kernels
+   as needed by the DAF/DAS handle manager subsystem (behind the scenes, to
+   allow reading many more binary kernels than available logical units),
+   and to automatically reload into the POOL the rest of text kernels that
+   should stay loaded when a particular text kernel is unloaded.
+<P>
+ 
+   Changing the working directory from within an application during an
+   application run after calling <a href="../cspice/furnsh_c.html">furnsh_c</a> to load kernels specified using
+   relative paths is likely to invalidate stored paths and prevent
+   open/close and unload operations mentioned above. A simple workaround
+   when this is needed is to specify kernels using absolute paths.
+<P>
+ 
+<BR><BR>
 <A NAME="Keeping Track of Loaded Kernels"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Keeping Track of Loaded Kernels
@@ -1424,16 +1477,17 @@ implementation of the kernel pool.<BR>
  
    CSPICE provides kernel access functions to support these needs. For
    every loaded kernel, an application can find the name of the kernel, the
-   kernel type (text or one of SPK, CK, PCK, or EK), the kernel's DAF or
-   DAS handle if applicable, and the name of the meta-kernel used to load
-   the kernel, if applicable.
+   kernel type (text or one of SPK, CK, DSK, PCK, or EK), the kernel's DAF
+   or DAS handle if applicable, and the name of the meta-kernel used to
+   load the kernel, if applicable.
 <P>
  
-   The function <a href="../cspice/ktotal_c.html">ktotal_c</a> returns the count of loaded kernels of a given
-   type. The function <a href="../cspice/kdata_c.html">kdata_c</a> returns information on the nth kernel of a
-   given type. The two functions are normally used together. The following
-   example shows how an application could retrieve summary information on
-   the currently loaded SPK files:
+   The function <a href="../cspice/ktotal_c.html">ktotal_c</a> returns the count of loaded kernels having their
+   types on a caller-supplied list of one or more types. The function
+   <a href="../cspice/kdata_c.html">kdata_c</a> returns information on the nth kernel of the set having the
+   types named in the list. The two functions are normally used together.
+   The following example shows how an application could retrieve summary
+   information on the currently loaded SPK files:
 <P>
  
 <PRE>
@@ -1483,18 +1537,21 @@ implementation of the kernel pool.<BR>
    "spk"
 <P>
  
-   is a kernel type specifier. The allowed set of values is shown below.
+   is a kernel type specifier. More generally, a blank-delimited list of
+   types may be provided as the input argument. The set of types that may
+   appear in the list is shown below.
 <P>
  
 <PRE>
-            SPK  --- Only SPK kernels are counted in the total
-            CK   --- Only CK kernels are counted in the total
-            PCK  --- Only binary PCK kernels are counted in the
+            SPK  --- All SPK kernels are counted in the total
+            CK   --- All CK kernels are counted in the total
+            PCK  --- All binary PCK kernels are counted in the
                      total
-            EK   --- Only EK kernels are counted in the total
-            TEXT --- Only text kernels that are not meta-
+            DSK  --- All DSK kernels are counted in the total
+            EK   --- All EK kernels are counted in the total
+            TEXT --- All text kernels that are not meta-
                      kernels are included in the total
-            META --- Only meta-kernels are counted in the
+            META --- All meta-kernels are counted in the
                      total
             ALL  --- Every type of kernel is counted in the
                      total
@@ -2020,7 +2077,7 @@ since the last time the agent checked with the pool.<BR>
 <P>
  
 <BR><BR>
-<A NAME="Keeper (subsystem)"></A>
+<A NAME="Keeper subsystem"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Keeper (subsystem)
 </H3><P><BR><BR>
@@ -2029,7 +2086,7 @@ since the last time the agent checked with the pool.<BR>
 <P>
  
 <BR><BR>
-<A NAME="Kernel pool (sometimes just called ``the pool'')"></A>
+<A NAME="Kernel pool sometimes just called ``the pool''"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Kernel pool (sometimes just called ``the pool'')
 </H3><P><BR><BR>
@@ -2047,7 +2104,7 @@ since the last time the agent checked with the pool.<BR>
 <P>
  
 <BR><BR>
-<A NAME="Meta-kernel (also known as ``FURNSH kernel'')"></A>
+<A NAME="Meta-kernel also known as ``FURNSH kernel''"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Meta-kernel (also known as ``FURNSH kernel'')
 </H3><P><BR><BR>
@@ -2180,6 +2237,20 @@ since the last time the agent checked with the pool.<BR>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> Appendix E -- Revision History
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
+   2021 October 28, NJB (JPL)
+<P>
+ 
+   Removed unnecessary parentheses from examples of scalar string
+   assignments. Introduced a mention of vectors of values so that it
+   precedes the first example showing their use. Added some details to
+   discussion of vector value syntax. Added statement that blank lines in
+   data blocks are ignored. Added comma to list of characters that may not
+   appear in kernel variable names; removed period from this list. Updated
+   documentation of ID words, binary kernel types, KEEPER APIs, and file
+   name conventions to cover DSKs. Corrected description of file type
+   inputs to KEEPER APIs. Fixed several typos.
+<P>
+ 
    2014 July 15, NJB (JPL)
 <P>
  

@@ -13,18 +13,9 @@
 <table style="text-align: left; margin-left: auto; margin-right: auto; width: 800px;"
  border="0" cellpadding="5" cellspacing="2">
   <tbody>
-    <tr>
-      <td style="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
-      <div align="right"> 
-      <small><small><a href="index.html">Index Page</a></small></small>
-      </div>
-      <b>mxvg_c</b> </td>
-    </tr>
-
-    <tr>
-      <td style="vertical-align: top;">
-
-<small><div align="center">
+    <tr><td>
+<div align="center">
+Index of Functions: 
 <A HREF="index.html#A">A</A>&nbsp;
 <A HREF="index.html#B">B</A>&nbsp;
 <A HREF="index.html#C">C</A>&nbsp;
@@ -49,14 +40,28 @@
 <A HREF="index.html#V">V</A>&nbsp;
 <A HREF="index.html#W">W</A>&nbsp;
 <A HREF="index.html#X">X</A>&nbsp;
-</div></small>
+</div>
+</td></tr>
+
+    <tr>
+      <td style="background-color: rgb(153, 153, 153); vertical-align: middle; text-align: center;">
+      <div align="right"> 
+      <small><small><a href="index.html">Index Page</a></small></small>
+      </div>
+      <b>mxvg_c</b></td>
+    </tr>
+    
+
+    <tr>
+      <td style="vertical-align: top;">
+
        <br>
+       <div align="left"><b>Table of contents</b></div>
        <table style="text-align: left; width: 60%; margin-left: auto; margin-right: auto;"
        border="0" cellspacing="2" cellpadding="2">
         <tbody>
           <tr>
             <td style="width: 33%; text-align: center;">
-            <small>
               <a href="#Procedure">Procedure<br></a>
               <a href="#Abstract">Abstract<br></a>
               <a href="#Required_Reading">Required_Reading<br></a>
@@ -64,37 +69,36 @@
               <a href="#Brief_I/O">Brief_I/O<br></a>
               <a href="#Detailed_Input">Detailed_Input<br></a>
 
-              </small>
               </td>
-              <td style="vertical-align: top; width: 33%; text-align: center;">
-              <small>               <a href="#Detailed_Output">Detailed_Output<br></a>
+              <td style="vertical-align: top; width: 33%; text-align: center;">              <a href="#Detailed_Output">Detailed_Output<br></a>
               <a href="#Parameters">Parameters<br></a>
               <a href="#Exceptions">Exceptions<br></a>
               <a href="#Files">Files<br></a>
               <a href="#Particulars">Particulars<br></a>
-              <a href="#Examples">Examples<br></a>
+              <big><b><a href="#Examples">Examples<br></a></b></big>
 
-              </small>
               </td>
-              <td style="vertical-align: top; width: 33%; text-align: center;">
-              <small>               <a href="#Restrictions">Restrictions<br></a>
+              <td style="vertical-align: top; width: 33%; text-align: center;">              <a href="#Restrictions">Restrictions<br></a>
               <a href="#Literature_References">Literature_References<br></a>
               <a href="#Author_and_Institution">Author_and_Institution<br></a>
               <a href="#Version">Version<br></a>
               <a href="#Index_Entries">Index_Entries<br></a>
-             </small>
             </td>
           </tr>
         </tbody>
 </table>
+<hr>
 
 <h4><a name="Procedure">Procedure</a></h4>
 <PRE>
+   mxvg_c ( Matrix times vector, general dimension ) 
+
    void mxvg_c ( const void   * m1,
                  const void   * v2,
-                 SpiceInt       nrow1,
+                 SpiceInt       nr1,
                  SpiceInt       nc1r2,
                  void         * vout   )
+
 </PRE>
 <h4><a name="Abstract">Abstract</a></h4>
 <PRE>
@@ -106,7 +110,8 @@
 </PRE>
 <h4><a name="Keywords">Keywords</a></h4>
 <PRE>
-   MATRIX,  VECTOR
+   MATRIX
+   VECTOR
 
 
 </PRE>
@@ -116,35 +121,32 @@
    --------  ---  --------------------------------------------------
    m1         I   Left-hand matrix to be multiplied.
    v2         I   Right-hand vector to be multiplied.
-   nrow1      I   Row dimension of m1 and length of vout.
-   nc1r2      I   Column dimension of m1 and length of v2.
+   nr1        I   Row dimension of `m1' and length of `vout'.
+   nc1r2      I   Column dimension of `m1' and length of `v2'.
    vout       O   Product vector m1*v2.
 </PRE>
 <h4><a name="Detailed_Input">Detailed_Input</a></h4>
 <PRE>
-   m1         is a double precision matrix of arbitrary size which
-              forms the left-hand matrix of the multiplication.
+   m1          is a double precision matrix of arbitrary size which
+               forms the left-hand matrix of the multiplication.
 
-   v2         is a double precision vector on the right of the
-              multiplication.
+   v2          is a double precision vector on the right of the
+               multiplication.
 
-   nrow1      is the row dimension of m1 and length of vout.
+   nr1         is the row dimension of `m1' and length of `vout'.
 
-   nc1r2      is the column dimension of m1 and length of v2.
+   nc1r2       is the column dimension of `m1' and length of `v2'.
 </PRE>
 <h4><a name="Detailed_Output">Detailed_Output</a></h4>
 <PRE>
-   vout       is the double precision vector which results from
-              the multiplication
+   vout        is the double precision vector which results from
+               the multiplication
 
-                 vout = (m1) x v2
+                  vout = (m1) x v2
 
-              vout has length nrow1.
+               `vout' has length `nr1'.
 
-              vout may overwrite m1 or v2.  Note that this capability
-              does not exist in the Fortran version of SPICELIB; in the
-              Fortran version, the output must not overwrite either
-              input.
+               `vout' may overwrite `m1' or `v2'.
 </PRE>
 <h4><a name="Parameters">Parameters</a></h4>
 <PRE>
@@ -152,7 +154,9 @@
 </PRE>
 <h4><a name="Exceptions">Exceptions</a></h4>
 <PRE>
-   Error free.
+   1)  If memory cannot be allocated to create the temporary matrix
+       required for the execution of the routine, the error
+       SPICE(MALLOCFAILED) is signaled.
 </PRE>
 <h4><a name="Files">Files</a></h4>
 <PRE>
@@ -160,41 +164,72 @@
 </PRE>
 <h4><a name="Particulars">Particulars</a></h4>
 <PRE>
-    The code reflects precisely the following mathematical expression
+   The code reflects precisely the following mathematical expression
 
-       For each value of the subscript i from 1 to nrow1,
+   For each value of the subscript `i' from 1 to `nr1',
 
-       vout(i) = Summation from k=1 to nc1r2 of  ( m1(i,k) * v2(k) )
+      vout(i) = Summation from k=1 to nc1r2 of  ( m1(i,k) * v2(k) )
 </PRE>
 <h4><a name="Examples">Examples</a></h4>
 <PRE>
-   1)  Suppose that
+   The numerical results shown for this example may differ across
+   platforms. The results depend on the SPICE kernels used as
+   input, the compiler and supporting libraries, and the machine
+   specific arithmetic implementation.
 
-          M1 = | 1  1  1 |
-               | 2  3  4 |
-
-       and that
-
-               | 1 |
-          V2 = | 2 |
-               | 3 |
+   1) Given a 2x3 matrix and a 3-vector, multiply the matrix by
+      the vector.
 
 
-       Then calling <b>mxvg_c</b> as shown
-
-          <b>mxvg_c</b> ( m1, v2, 2, 3, vout );
+      Example code begins here.
 
 
-       will yield the following vector value for vout:
+      /.
+         Program mxvg_ex1
+      ./
+      #include &lt;stdio.h&gt;
+      #include &quot;SpiceUsr.h&quot;
 
-          vout = | 6  |
-                 | 20 |
+      int main( )
+      {
+
+         /.
+         Local variables.
+         ./
+         SpiceDouble          vout   [2];
+
+         /.
+         Define `m' and `vin'.
+         ./
+         SpiceDouble          m      [2][3] = { { 1.0, 1.0, 1.0 },
+                                                { 2.0, 3.0, 4.0 } };
+
+         SpiceDouble          vin    [3] = { 1.0, 2.0, 3.0 };
+
+         /.
+         Multiply `m' by `vin'.
+         ./
+         <b>mxvg_c</b> ( m, vin, 2, 3, vout );
+
+         printf( &quot;M times VIN:\n&quot; );
+         printf( &quot;%10.3f %9.3f\n&quot;, vout[0], vout[1] );
+
+         return ( 0 );
+      }
+
+
+      When this program was executed on a Mac/Intel/cc/64-bit
+      platform, the output was:
+
+
+      M times VIN:
+           6.000    20.000
 </PRE>
 <h4><a name="Restrictions">Restrictions</a></h4>
 <PRE>
-   1) The user is responsible for checking the magnitudes of the
-      elements of m1 and v2 so that a floating point overflow does
-      not occur.
+   1)  The user is responsible for checking the magnitudes of the
+       elements of `m1' and `v2' so that a floating point overflow does
+       not occur.
 </PRE>
 <h4><a name="Literature_References">Literature_References</a></h4>
 <PRE>
@@ -202,25 +237,37 @@
 </PRE>
 <h4><a name="Author_and_Institution">Author_and_Institution</a></h4>
 <PRE>
-   N.J. Bachman    (JPL)
-   W.M. Owen       (JPL)
+   N.J. Bachman        (JPL)
+   J. Diaz del Rio     (ODC Space)
+   W.L. Taber          (JPL)
 </PRE>
 <h4><a name="Version">Version</a></h4>
 <PRE>
-   -CSPICE Version 1.1.0, 25-JUL-2001   (NJB)
+   -CSPICE Version 1.2.0, 04-JUL-2021 (JDR)
 
-      Changed protoype:  inputs m1 and v2 are now type (const void *).
-      Implemented interface macro for casting inputs m1 and v2 to 
-      const.
+       Changed input argument name &quot;nrow1&quot; to &quot;nr1&quot; for consistency with
+       other routines.
+
+       Updated short error message for consistency within CSPICE wrapper
+       interface: MEMALLOCFAILED -&gt; MALLOCFAILED.
+
+       Edited the header to comply with NAIF standard. Added complete code
+       example based on the existing example.
+
+   -CSPICE Version 1.1.0, 25-JUL-2001 (NJB)
+
+       Changed protoype: inputs &quot;m1&quot; and &quot;v2&quot; are now type
+       (const void *). Implemented interface macro for casting inputs
+       &quot;m1&quot; and &quot;v2&quot; to const.
 
    -CSPICE Version 1.0.1, 08-FEB-1998 (NJB)
 
-      Corrected a comment describing the local macro INDEX.   Made
-      miscellaneous code format corrections.
+       Corrected a comment describing the local macro INDEX. Made
+       miscellaneous code format corrections.
 
-   -CSPICE Version 1.0.0, 25-OCT-1997 (NJB)
+   -CSPICE Version 1.0.0, 25-OCT-1997 (NJB) (WLT)
 
-      Based on SPICELIB Version 1.0.1, 10-MAR-1992 (WLT)
+       Based on SPICELIB Version 1.0.1, 10-MAR-1992 (WLT)
 </PRE>
 <h4><a name="Index_Entries">Index_Entries</a></h4>
 <PRE>
@@ -233,7 +280,7 @@
   </tbody>
 </table>
 
-   <pre>Wed Apr  5 17:54:39 2017</pre>
+   <pre>Fri Dec 31 18:41:09 2021</pre>
 
 </body>
 </html>

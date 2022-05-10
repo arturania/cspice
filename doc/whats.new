@@ -15,6 +15,7 @@ Introduction
  
    The Toolkit version changes described in this document are
  
+      Version 67 --- January 2022
       Version 66 --- April 2017
       Version 65 --- July 2014
       Version 64 --- June 2010
@@ -41,6 +42,773 @@ Introduction
       Version 43 --- May 1996
       Version 42 --- December 1995
       Version 41 --- October 1995
+ 
+ 
+Version 67 --- January 2022
+===========================================================================
+ 
+ 
+Summary
+--------------------------------------------------------
+ 
+   This is a brief summary of what's new and updated in N0067, with the
+   details about each item provided later in this section:
+ 
+       --   support for one new environment (M1 Mac 64-bit C/clang)
+ 
+       --   termination of support for 16 environments, across all
+            languages
+ 
+       --   complete examples in most high level API headers in all
+            languages
+ 
+       --   extension of Icy and Mice headers to include all sections
+ 
+       --   new SWITCH frames class
+ 
+       --   new PRODUCT dynamic frames type
+ 
+       --   SCLK subsystem overhaul (increased efficiency for multiple
+            clocks)
+ 
+       --   text PCK extensions (additional terms, synonym keywords)
+ 
+       --   Time subsystem extensions (allowing Z in ISO tags, TT and GPS
+            time systems support)
+ 
+       --   SPK and CK ID buffers capacity increase
+ 
+       --   new tangent point routine (TANGPT)
+ 
+       --   new target separation routine (TRGSEP)
+ 
+       --   new TLE evaluator routine based on Vallado 2006 (EVSGP4)
+ 
+       --   new azimuth and elevation family of routines
+ 
+       --   new get-FOV by instrument name routine (GETFVN)
+ 
+       --   49 new CSPICE wrappers
+ 
+       --   62 new Icy wrappers
+ 
+       --   95 new Mice wrappers
+ 
+       --   new MKDSK polar cap generation capability
+ 
+       --   bug fixes in the Toolkit and utility programs
+ 
+ 
+Acknowledgements
+--------------------------------------------------------
+ 
+   The N0067 version of the toolkit includes substantial contributions by
+   ODC Space (https://www.odcspace.com) with the majority of new CSPICE,
+   Icy, and Mice wrappers, complete compilable/executable examples, and
+   documentation improvements produced by this company with the assistance
+   of its automated SPICE code and documentation conversion/production
+   tools developed under contract with NAIF/JPL.
+ 
+ 
+Environments
+--------------------------------------------------------
+ 
+ 
+New Environments
+ 
+   The SPICE Toolkit is now officially supported on this new environment:
+ 
+      CSPICE:
+ 
+         Mac/M1       OS-X          clang / 64bit
+ 
+ 
+ 
+Deprecated Environments
+ 
+   The SPICE Toolkit is no longer supported on these environments:
+ 
+      FORTRAN Toolkit:
+ 
+         Mac/Intel    OS-X          GFORTRAN / 32bit
+         Mac/Intel    OS-X          Intel FORTRAN / 32bit
+         PC           CYGWIN        GFORTRAN / 32bit
+         Sun/Intel    Solaris       SUN FORTRAN / 32bit
+         Sun/Intel    Solaris       SUN FORTRAN / 64bit
+ 
+      CSPICE:
+ 
+         Mac/Intel    OS-X          Apple C / 32bit
+         PC           CYGWIN        gCC / 32bit
+         Sun/Intel    Solaris       SUN C / 32bit
+         Sun/Intel    Solaris       SUN C / 64bit
+ 
+      Icy:
+ 
+         PC           Linux         gCC / IDL 8.x / 32bit
+         PC           Windows       MS VS C / IDL 7.x / 32bit
+         Sun          Solaris       SUN C / IDL 7.x / 32bit
+         Sun          Solaris       gCC / IDL 7.x / 32bit
+         Sun          Solaris       gCC / IDL 7.x / 64bit
+         Sun/Intel    Solaris       SUN C / IDL 8.x / 64bit
+ 
+      Mice:
+ 
+         Sun          Solaris       SUN C / MATLAB 7.x / 64bit
+ 
+ 
+ 
+Complete List of Supported Environments
+ 
+   This is the complete list of environments on which the N0067 version of
+   the SPICE Toolkit is supported:
+ 
+      FORTRAN Toolkit:
+ 
+         Mac/Intel    OS-X          GFORTRAN / 64bit
+         Mac/Intel    OS-X          Intel FORTRAN / 64bit
+         PC           CYGWIN        GFORTRAN / 64bit
+         PC           Linux         GFORTRAN / 32bit
+         PC           Linux         GFORTRAN / 64bit
+         PC           Linux         Intel FORTRAN / 64bit
+         PC           Linux         Intel FORTRAN / 32bit
+         PC           Linux         g77 / 32bit
+         PC           Windows       Intel FORTRAN / 32bit
+         PC           Windows       Intel FORTRAN / 64bit
+         Sun          Solaris       SUN FORTRAN / 32bit
+ 
+      CSPICE:
+ 
+         Mac/Intel    OS-X          Apple C / 64bit
+         Mac/M1       OS-X          clang / 64bit
+         PC           CYGWIN        gCC / 64bit
+         PC           Linux         gCC / 32bit
+         PC           Linux         gCC / 64bit
+         PC           Windows       MS VS C / 32bit
+         PC           Windows       MS VS C / 64bit
+         Sun          Solaris       SUN C / 32bit
+         Sun          Solaris       SUN C / 64bit
+         Sun          Solaris       gCC / 32bit
+         Sun          Solaris       gCC / 64bit
+ 
+      Icy:
+ 
+         Mac/Intel    OS-X          Apple C / IDL 8.x / 64bit
+         PC           Linux         gCC / IDL 8.x / 64bit
+         PC           Windows       MS VS C / IDL 8.x / 64bit
+ 
+      Mice:
+ 
+         Mac/Intel    OS-X          Apple C / MATLAB 9.x / 64bit
+         PC           Linux         gCC / MATLAB 9.x / 64bit
+         PC           Windows       MS VS C / MATLAB 9.x / 64bit
+ 
+ 
+ 
+Scratch EK File Issue in Icy on PC/Windows
+ 
+   The scratch EK file issue in Icy on PC/Windows described in the N0061
+   section of this document persists in the N0067_update_log version of the
+   Toolkit.
+ 
+ 
+Optimization on PC Linux, Intel FORTRAN, 32bit
+ 
+   Default optimization was turned off in the PC Linux, Intel FORTRAN,
+   32bit toolkit because of the bugs in the compiler versions available to
+   NAIF.
+ 
+ 
+Need for Static System Libraries on Linux and OS-X
+ 
+   Static system libraries needed to build statically-linked FORTRAN
+   toolkit executables on Linux and OS-X are frequently not included in
+   more modern versions of these operating systems. If a need to recompile
+   a Linux or an OS-X FORTRAN toolkit arises and the linking step performed
+   by mkprodct.csh build scripts fails with an error message indicating the
+   lack of needed static system libraries, users should install these
+   libraries as appropriate for their system before re-trying a recompile.
+ 
+ 
+SPICELIB/CSPICE/Icy/Mice Additions and Updates
+--------------------------------------------------------
+ 
+ 
+Zero-sized Generic Toolkit Version Identification File
+ 
+   All toolkit packages now include a zero-sized file identifying the
+   generic toolkit version, e.g. ``N0067'', located in the toolkit's top
+   directory .
+ 
+ 
+Complete examples in Headers
+ 
+   The Examples sections of the vast majority of SPICELIB and CSPICE
+   headers and nearly all Icy and Mice headers now contain one or more
+   complete compilable/executable examples using PDS-archived and/or
+   generic kernels from the NAIF server. The list of all kernels used in
+   the examples is available at:
+ 
+      https://naif.jpl.nasa.gov/naif/n0066_example_kernels.html
+ 
+ 
+Additional Sections in Icy and Mice Headers
+ 
+   The set of sections included in the Icy and Mice headers has been
+   extended to match that of SPICELIB and CSPICE headers by adding the
+ 
+      Parameters
+      Exceptions
+      Files
+      Restrictions
+      Literature_References
+      Author_and_Institution
+ 
+   sections.
+ 
+   The set of information provided in the headers of APIs present in all
+   four languages has been made consistent across all languages.
+ 
+ 
+New Switch Frames Class
+ 
+   The Frames Subsystem was extended to support a new class of frames,
+   ``Switch Frames.'' Switch frames choose at run time other frames, called
+   ``base frames,'' with which to align their orientation. Switch frames
+   ``switch'' the base frames they align with as a function of time, using
+   a prioritized list of base frames and optional, associated time bounds;
+   this list is provided as part of the switch frame definition stored in a
+   text kernel.
+ 
+   Switch frames extend the flexibility of the SPICE frame subsystem by
+   allowing a user-defined frame to rely on different data sources at
+   different times.
+ 
+   Refer to the ``Switch Frames'' section of the Frames Required Reading
+   document, frames.req, for details.
+ 
+ 
+New Dynamic Frame Family -- Product Frames
+ 
+   The Dynamic Frames subsystem was extended to support a new frame family,
+   ``Product Frames.'' Product frames may be thought of as a generalization
+   of TK (constant offset) frames. The orientation of a product frame
+   relative to a specified base frame is defined by a product of one or
+   more frame transformations, where each factor may be any transformation
+   computable by the SPICE frame subsystem.
+ 
+   Refer to the ``Product Frames'' section of the Frames Required Reading
+   document, frames.req, for details.
+ 
+ 
+SCLK Subsystem Overhaul
+ 
+   The SCLK Subsystem was substantially redesigned to efficiently support
+   interleaved time conversions involving multiple spacecraft clocks.
+ 
+   The maximum number of SCLK coefficient records that can be buffered
+   simultaneously has been increased from 50000 to 100000.
+ 
+ 
+Text PCK Extensions
+ 
+   The text PCK subsystem was extended to support optional use of phase
+   angle polynomials of up to cubic degree. Formerly these polynomials were
+   required to be linear.
+ 
+   The keywords
+ 
+      BODY<id code>_CONSTS_JED_EPOCH
+      BODY<id code>_CONSTS_REF_FRAME
+ 
+   are now recognized as synonyms of the respective keywords
+ 
+      BODY<id code>_CONSTANTS_JED_EPOCH
+      BODY<id code>_CONSTANTS_REF_FRAME
+ 
+   The new, shorter keywords enable use of ID codes that occupy 11
+   characters in string form.
+ 
+   Refer to the PCK Required Reading document, pck.req, for details.
+ 
+ 
+Time System changes
+ 
+   The Time system capabilities were extended:
+ 
+       --   to accept ISO-style UTC time string with trailing ``Z'', e.g.
+            2022-01-01T12:00:00.000Z, 2022-001T12:00:00.000Z, in all high
+            level routines that accept a UTC string on input -- STR2ET,
+            TPARSE, UTC2ET.
+ 
+       --   to support ``TT'' as a synonym of ``TDT'' in the output
+            template definition in the TIMOUT routine that outputs time
+            strings and in the uniform numeric time conversion routine
+            UNITIM.
+ 
+       --   to support GPS time in the uniform numeric time conversion
+            routine UNITIM
+ 
+ 
+CK Buffered Structure ID Limit
+ 
+   The maximum number of CK structure IDs that can be buffered
+   simultaneously has been increased from 100 to 5000.
+ 
+ 
+SPK Buffered Body ID Limit
+ 
+   The maximum number of SPK body IDs that can be buffered simultaneously
+   has been increased from 200 to 10000.
+ 
+ 
+New Tangent Point Routine
+ 
+   The N0067 version offers a new routine to compute, for a given observer,
+   ray emanating from the observer, and target, the ``tangent point'' --
+   the point on the ray nearest to the target's surface, as well as the
+   point on the target's surface nearest to the tangent point:
+ 
+      TANGPT                         (SPICELIB)
+      tagnpt_c                       (CSPICE)
+      cspice_tagnpt                  (ICY and MICE)
+ 
+ 
+New Target Separation Routine
+ 
+   The N0067 version offers a new function to compute the angular
+   separation between two spherical or point objects as seen from a third
+   object:
+ 
+      TRGSEP                         (SPICELIB)
+      trgsep_c                       (CSPICE)
+      cspice_trgsep                  (ICY and MICE)
+ 
+ 
+New TLE Evaluator Routine
+ 
+   The N0067 version offers a new routine to evaluate NORAD two-line
+   element data for earth orbiting spacecraft based on the algorithms
+   published by Vallado et. al. (2006):
+ 
+      EVSGP4                         (SPICELIB)
+      evsgp4_c                       (CSPICE)
+      cspice_evsgp4                  (ICY and MICE)
+ 
+ 
+New Azimuth and Elevation State Routine
+ 
+   The N0067 version offers a new routine to compute the azimuth/elevation
+   coordinates of a specified target relative to an ``observer,'' where the
+   observer has constant position in a specified reference frame:
+ 
+      AZLCPO                         (SPICELIB)
+      azlcpo_c                       (CSPICE)
+      cspice_azlcpo                  (ICY and MICE)
+ 
+ 
+New Azimuth and Elevation Conversion Routines
+ 
+   The N0067 version offers new routines to convert between range, azimuth
+   and elevation and rectangular coordinates, and for computing the
+   Jacobian matrices of the transformation between their derivatives:
+ 
+      AZLREC          DAZLDR         (SPICELIB)
+      RECAZL          DRDAZL         (SPICELIB)
+ 
+      azlrec_c        dazldr_c       (CSPICE)
+      recazl_c        drdazl_c       (CSPICE)
+ 
+      cspice_azlrec   cspice_dazldr  (ICY and MICE)
+      cspice_recazl   cspice_drdazl  (ICY and MICE)
+ 
+ 
+New Routine to Get FOV Parameters Using Instrument Name
+ 
+   The N0067 version offers a new routine to retrieve the field-of-view
+   (FOV) parameters for an instrument specified by its name:
+ 
+      GETFVN                         (SPICELIB)
+      getfvn_c                       (CSPICE)
+      cspice_getfvn                  (ICY and MICE)
+ 
+ 
+Other New SPICELIB Interfaces
+ 
+   The following new miscellaneous APIs were added to SPICELIB:
+ 
+      REPML
+ 
+ 
+New CSPICE Wrapper Routines
+ 
+   The following 49 new wrapper APIs were added to CSPICE to make the set
+   of its APIs be more closely aligned with the set available in the
+   FORTRAN toolkit:
+ 
+      chbigr_c         chbint_c         chbval_c
+      ckfrot_c         ckfxfm_c         ckgr02_c
+      ckgr03_c         ckmeta_c         cknr02_c
+      cknr03_c         clearc_c         cleari_c
+      dafhsf_c         dasadc_c         dasadd_c
+      dasadi_c         dashfs_c         daslla_c
+      dasllc_c         dasonw_c         dasops_c
+      dasrdc_c         dasrdd_c         dasrdi_c
+      dasudc_c         dasudd_c         dasudi_c
+      daswbr_c         dlabns_c         dlaens_c
+      dlaopn_c         dnearp_c         ednmpt_c
+      edpnt_c          filld_c          filli_c
+      hrmesp_c         invstm_c         lgresp_c
+      lgrint_c         moved_c          nextwd_c
+      nthwd_c          qderiv_c         stlabx_c
+      tkfram_c         tparch_c         twovxf_c
+      vprojg_c
+ 
+ 
+New Icy Wrapper Routines and Global Parameter Scripts
+ 
+   The following 62 new wrapper APIs were added to Icy to make the set of
+   its APIs be more closely aligned with the set available in the CSPICE
+   toolkit:
+ 
+      cspice_bltfrm    cspice_chbder    cspice_chbigr
+      cspice_chbint    cspice_chbval    cspice_ckfrot
+      cspice_ckfxfm    cspice_ckgr02    cspice_ckgr03
+      cspice_ckmeta    cspice_cknr02    cspice_cknr03
+      cspice_dafhsf    cspice_dafps     cspice_dasadc
+      cspice_dasadd    cspice_dasadi    cspice_dashfs
+      cspice_daslla    cspice_dasllc    cspice_dasonw
+      cspice_dasops    cspice_dasopw    cspice_dasrdc
+      cspice_dasrdd    cspice_dasrdi    cspice_dasudc
+      cspice_dasudd    cspice_dasudi    cspice_daswbr
+      cspice_dlabbs    cspice_dlabns    cspice_dlaens
+      cspice_dlafps    cspice_dlaopn    cspice_dnearp
+      cspice_ednmpt    cspice_edpnt     cspice_hrmesp
+      cspice_hrmint    cspice_invstm    cspice_kplfrm
+      cspice_lgresp    cspice_lgrind    cspice_lgrint
+      cspice_nextwd    cspice_nthwd     cspice_oscltx
+      cspice_polyds    cspice_qderiv    cspice_repmc
+      cspice_repmct    cspice_repmd     cspice_repmf
+      cspice_repmi     cspice_repmot    cspice_stlabx
+      cspice_surfpv    cspice_tkfram    cspice_tparch
+      cspice_twovxf    cspice_vprojg
+ 
+   The following global parameter scripts were added to Icy:
+ 
+      IcyDAS.pro       IcyDLA.pro       IcyDSK.pro
+      IcyDtl.pro       IcyFrm.pro       IcyGF.pro
+      IcyOsc.pro
+ 
+   For user convenience, the IcyUser.pro script includes all of these
+   global parameter scripts.
+ 
+   The following global parameter scripts were removed from Icy, with the
+   relevant parameters that they used to define moved to the new global
+   parameter scripts listed above:
+ 
+      DSKIcy02.pro     DSKIcyUser.pro   DSKtol.pro
+ 
+ 
+New Mice Wrapper Routines and Global Parameter Scripts
+ 
+   The following 95 new wrapper APIs were added to Mice to make the set of
+   its APIs be more closely aligned with the set available in the CSPICE
+   toolkit:
+ 
+      cspice_badkpv    cspice_bltfrm    cspice_chbder
+      cspice_chbigr    cspice_chbint    cspice_chbval
+      cspice_ckfrot    cspice_ckfxfm    cspice_ckgr02
+      cspice_ckgr03    cspice_cklpf     cspice_ckmeta
+      cspice_cknr02    cspice_cknr03    cspice_ckupf
+      cspice_dafhsf    cspice_dafps     cspice_dafrs
+      cspice_dasadc    cspice_dasadd    cspice_dasadi
+      cspice_dashfs    cspice_daslla    cspice_dasllc
+      cspice_dasonw    cspice_dasops    cspice_dasopw
+      cspice_dasrdc    cspice_dasrdd    cspice_dasrdi
+      cspice_dasudc    cspice_dasudd    cspice_dasudi
+      cspice_daswbr    cspice_dlabbs    cspice_dlabns
+      cspice_dlaens    cspice_dlafps    cspice_dlaopn
+      cspice_dnearp    cspice_dpmax     cspice_dpmin
+      cspice_ednmpt    cspice_edpnt     cspice_expool
+      cspice_getelm    cspice_getfat    cspice_hrmesp
+      cspice_hrmint    cspice_intmax    cspice_intmin
+      cspice_invstm    cspice_kplfrm    cspice_ldpool
+      cspice_lgresp    cspice_lgrind    cspice_lgrint
+      cspice_nextwd    cspice_nthwd     cspice_oscltx
+      cspice_polyds    cspice_prop2b    cspice_qderiv
+      cspice_qdq2av    cspice_qxq       cspice_repmc
+      cspice_repmct    cspice_repmd     cspice_repmf
+      cspice_repmi     cspice_repmot    cspice_rotvec
+      cspice_scfmt     cspice_scpart    cspice_spkapo
+      cspice_spkez     cspice_spkgeo    cspice_spklef
+      cspice_spkssb    cspice_spkuef    cspice_spkw09
+      cspice_spkw10    cspice_spkw13    cspice_stelab
+      cspice_stlabx    cspice_surfpv    cspice_szpool
+      cspice_tipbod    cspice_tisbod    cspice_tkfram
+      cspice_tparch    cspice_tparse    cspice_twovxf
+      cspice_vprojg    cspice_vupack
+ 
+   The following global parameter scripts were added to Mice:
+ 
+      MiceDAS.m        MiceDLA.m        MiceDSK.m
+      MiceDtl.m        MiceFrm.m        MiceGF.m
+      MiceOsc.m
+ 
+   For user convenience, the MiceUser.m script includes all of these global
+   parameter scripts.
+ 
+   The following global parameter scripts were removed from Mice, with the
+   relevant parameters that they used to define moved to the new global
+   parameter scripts listed above:
+ 
+      DLAMice.m        DSKMice02.m      DSKMiceUser.m
+ 
+ 
+NAIF IDs Document Update for Extended Asteroids ID Schema
+ 
+   The NAIF IDs Required Reading document, naif_ids.req, was updated to
+   describe the new extended asteroid NAIF ID schema providing for 8-9
+   digit asteroid IDs allowing for distinct style IDs for singular
+   asteroids and objects in multi-body asteroid systems (barycenters,
+   primary asteroids, satellite asteroids).
+ 
+   Refer to the ``Asteroids'' section of the document for details.
+ 
+ 
+Built-in NAIF ID Code/Name Definitions
+ 
+   The following new built-in NAIF ID code/name definitions have been added
+   to or changed in the Toolkit:
+ 
+      Spacecraft:
+ 
+             -652   MERCURY TRANSFER MODULE
+             -652   MTM
+             -652   BEPICOLOMBO MTM
+             -255   PSYC
+             -243   VIPER
+             -242   LUNAR TRAILBLAZER
+             -240   SMART LANDER FOR INVESTIGATING MOON
+             -240   SLIM
+             -239   MARTIAN MOONS EXPLORATION
+             -239   MMX
+             -210   LICIA
+             -210   LICIACUBE
+             -197   EXOMARS_LARA
+             -197   LARA
+             -174   EXM RSP RM
+             -174   EXM ROVER
+             -174   EXOMARS ROVER
+             -173   EXM RSP SP
+             -173   EXM SURFACE PLATFORM
+             -173   EXOMARS SP
+             -172   EXM RSP SCC
+             -172   EXM SPACECRAFT COMPOSITE
+             -172   EXOMARS SCC
+             -168   PERSEVERANCE
+             -168   MARS 2020
+             -168   MARS2020
+             -168   M2020
+             -164   LUNAR FLASHLIGHT
+             -156   ADITYA
+             -156   ADIT
+             -155   KPLO
+             -155   KOREAN PATHFINDER LUNAR ORBITER
+             -153   CH2L
+             -153   CHANDRAYAAN-2 LANDER
+             -152   CH2O
+             -152   CHANDRAYAAN-2 ORBITER
+             -148   DFLY
+             -148   DRAGONFLY
+             -135   DART
+             -135   DOUBLE ASTEROID REDIRECTION TEST
+             -119   MARS_ORBITER_MISSION_2
+             -119   MOM2
+              -96   PARKER SOLAR PROBE
+              -72   JNSB
+              -72   JANUS_B
+              -57   LUNAR ICECUBE
+              -45   JNSA
+              -45   JANUS_A
+              -43   IMAP
+              -39   LUNAR POLAR HYDROGEN MAPPER
+              -39   LUNAH-MAP
+              -37   HYB2
+              -37   HAYABUSA 2
+              -37   HAYABUSA2
+              -33   NEOS
+              -33   NEO SURVEYOR
+ 
+      DSN Stations:
+ 
+           399035   DSS-35
+           399036   DSS-36
+           399056   DSS-56
+           399069   DSS-69
+ 
+      Asteroids:
+ 
+          2000052   52_EUROPA
+          2000052   52 EUROPA
+          2162173   RYUGU
+          2486958   ARROKOTH
+         20000617   PATROCLUS_BARYCENTER
+         20000617   PATROCLUS BARYCENTER
+         20003548   EURYBATES_BARYCENTER
+         20003548   EURYBATES BARYCENTER
+         20011351   LEUCUS
+         20015094   POLYMELE
+         20021900   ORUS
+         20052246   DONALDJOHANSON
+         20065803   DIDYMOS_BARYCENTER
+         20065803   DIDYMOS BARYCENTER
+        120000617   MENOETIUS
+        120003548   QUETA
+        120065803   DIMORPHOS
+        920000617   PATROCLUS
+        920003548   EURYBATES
+        920065803   DIDYMOS
+ 
+   The following built-in NAIF ID code/name definitions have been removed
+   from the Toolkit:
+ 
+             -164   YOHKOH
+             -164   SOLAR-A
+             -135   DRTS-W
+              -69   PSYC
+              -54   ASTEROID RETRIEVAL MISSION
+              -54   ARM
+ 
+   The object name in the following built-in NAIF ID code/name definition
+   have been corrected from
+ 
+              519   MAGACLITE
+ 
+   to
+ 
+              519   MEGACLITE
+ 
+ 
+Built-in Body-Fixed Frames
+ 
+   The following built-in body-fixed frames were added to the list of
+   frames hard-coded in the Toolkit:
+ 
+                    IAU_52_EUROPA
+                    IAU_NIX
+                    IAU_HYDRA
+                    IAU_RYUGU
+                    IAU_ARROKOTH
+                    IAU_DIDYMOS_BARYCENTER
+                    IAU_DIDYMOS
+                    IAU_DIMORPHOS
+                    IAU_DONALDJOHANSON
+                    IAU_EURYBATES
+                    IAU_EURYBATES_BARYCENTER
+                    IAU_QUETA
+                    IAU_POLYMELE
+                    IAU_LEUCUS
+                    IAU_ORUS
+                    IAU_PATROCLUS_BARYCENTER
+                    IAU_PATROCLUS
+                    IAU_MENOETIUS
+ 
+   The frame name in the following built-in NAIF ID frame definition have
+   been corrected from
+ 
+                    IAU_MAGACLITE
+ 
+   to
+ 
+                    IAU_MEGACLITE
+ 
+ 
+Updated Toolkit Application
+--------------------------------------------------------
+ 
+ 
+MKDSK
+ 
+   The MKDSK program was updated to
+ 
+       --   replace rows at the poles, if present, with polar vertices, and
+            create polar caps using these vertices and the adjacent vertex
+            rows.
+ 
+       --   store comment lines up to 255 characters longer
+ 
+   Refer to the MKDSK User's Guide, mkdsk.ug, for more information about
+   the program.
+ 
+ 
+Bug Fixes
+--------------------------------------------------------
+ 
+ 
+SPICELIB -- DSKX02, DSKXSI
+ 
+   The routine DSKX02 was updated to not return an intercept outside of the
+   segment boundaries by more than the allowed margin and not return an
+   invalid plate ID for such intercepts.
+ 
+   This bug fix corrected a bug in DSKXSI, which previously could return an
+   invalid plate ID obtained from DSKX02.
+ 
+ 
+SPICELIB -- GETFOV
+ 
+   This routine was updated to have the previously missing exception for
+   the boresight vector being the zero vector.
+ 
+ 
+SPICELIB -- GFFOVE, GFRFOV, GFTFOV
+ 
+   Two bugs affecting these routines were corrected: the inability to work
+   with wide-angle circular or elliptical fields of view at small
+   observer-target distances, and incorrect operation resulting from use of
+   non-unit-length boresight vectors. Bug fixes in entry points of the
+   routine ZZGFFVU corrected these problems.
+ 
+ 
+SPICELIB -- SUBPNT
+ 
+   This routine was updated to correct a bug that could cause it to fail
+   finding DSK data within the time bounds of a DSK segment.
+ 
+ 
+SPICELIB -- TIMOUT
+ 
+   This routine was updated to correctly calculate decimal values for the
+   HR.###... and MN.###... markers in the presence of the ::UTC+N:M and
+   ::UTC-N:M meta tags.
+ 
+ 
+SPICELIB -- TKFRAM
+ 
+   This routine was updated to signal an error if name-based and ID-based
+   forms of any TKFRAME_ keyword are present in the POOL at the same time;
+   to always return FOUND = .FALSE. when it fails to fetch any frame
+   keywords from the POOL or for any other reason; and to always return
+   FRAME = 0 when it fails due to a frame being defined relative to itself
+   or due to an unrecognized _SPEC. In the case of any failures the routine
+   now return the identity matrix.
+ 
+ 
+MKDSK
+ 
+   MKDSK was updated so as to avoid creation of degenerate plates when
+   input height grid data sets included rows of vertices at polar
+   latitudes.
+ 
+   The program was updated to correctly compute the required number of
+   plates used for overflow detection.
+ 
+ 
+MSOPCK
+ 
+   The MSOPCK program was updated to fix a bug in the downsampling
+   algorithm that caused it to go into an indefinite loop when adjacent
+   points are close to 180 degrees apart.
  
  
 Version 66 --- April 2017
@@ -594,7 +1362,7 @@ Status of the Alpha DSK Toolkit
             frame ID-to-name translation can be provided on the command
             line.
  
-   MDKSK upgrades include:
+   MKDSK upgrades include:
  
        --   The maximum output segment plate count has been increased to 32
             million plates on Linux, Mac, and Solaris/Intel environments

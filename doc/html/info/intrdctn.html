@@ -30,7 +30,7 @@ Page</a></small></small> </div>
 style="vertical-align: top;">
       <div style="text-align: right;">
  
-<pre>12-May-2014</pre>
+<pre>30-Dec-2021</pre>
       </div>
       <h1> Welcome to SPICE</h1>
  
@@ -42,29 +42,23 @@ into mission design, science observation planning, and
 science data
 analysis software.  </p>
 
-<p>The principle components of 
-the SPICE system are SPICE Toolkit software and SPICE
-data 
-files&#8212often called "kernels."<p>
-
-
-   
 <p>SPICE is used 
 throughout NASA and within many other U.S. and international agencies 
 for
 organizing, distributing, and accessing ancillary data associated 
 with space science
 missions.  The NAIF website contains the few <a 
-href="http://naif.jpl.nasa.gov/naif/rules.html">  
+href="https://naif.jpl.nasa.gov/naif/rules.html">  
 important rules 
-</a> regarding using SPICE. Please take a moment to read these.</p>
+</a> regarding using SPICE, including the Toolkit license and 
+other important considerations. Please take a moment to read these.</p>
  
 
  <br>    
       <h1>Using SPICE Toolkit Software</h1>
 
 <p>Your first 
-step is to <a href="http://naif.jpl.nasa.gov/naif/toolkit.html"> 
+step is to <a href="https://naif.jpl.nasa.gov/naif/toolkit.html"> 
 
 download a SPICE Toolkit package </a>from the NAIF website if 
 a
@@ -79,13 +73,19 @@ several important documents.
 installation instructions.
 
       <p>The Description document 
-(dscriptn.txt) provides an
+(<a
+ href="dscriptn.html" 
+target="_blank">dscriptn.txt</a>)
+provides an
 overview of the contents and organization 
 of the Toolkit.<br>
       </p>
       
       <p>The What's New 
-document (whats.new)
+document
+(<a
+ href="whatsnew.html" 
+target="_blank">whats.new</a>)
 describes new and changed capabilities of this 
 Toolkit as regards
 previous versions, and lists the supported 
@@ -133,7 +133,7 @@ provided in viewgraph style.
 Individual tutorials, or the entire 
 package, may be 
 <a 
-href="http://naif.jpl.nasa.gov/naif/tutorials.html">downloaded</a>
+href="https://naif.jpl.nasa.gov/naif/tutorials.html">downloaded</a>
 from 
 the NAIF website. These tutorials are listed pretty much in the 
 order
@@ -150,12 +150,24 @@ and "spk" at a minimum.
 
 <h3>Programming Examples</h3>
 
-Three kinds 
+Four kinds 
 of programming examples are available, each a little different. 
 Each 
 type is offered in all the languages supported by SPICE.
 
 <ul>
+
+<li>
+Most high level Toolkit APIs include at least one complete, 
+compilable/executable example in their reference documentation,
+a.k.a. headers. These examples illustrate how a particular routine
+might be used in solving a typical problem.
+The html versions of Toolkit documentation 
+contain hyperlinks to these headers, or you may open the
+source code
+module in an editor or with a text display utility.
+
+<p>
 <li> 
 The code for several very simple SPICE-based programs is provided 
 in
@@ -186,7 +198,7 @@ step-by-step.
 
 <p>
 <li> A set of <a 
-href="ftp://naif.jpl.nasa.gov/pub/naif/toolkit_docs/Lessons">
+href="https://naif.jpl.nasa.gov/naif/lessons.html">
 "open 
 book" programming lessons</a> is available from the NAIF server. 
 These
@@ -234,19 +246,6 @@ occultations)
 </ul>
 </ul>
 <p>
-In addition to the training code 
-described above, nearly every API (subroutine)
-contains one or more 
-example code fragments showing samples of how that
-particular routine 
-might be used in a typical problem. These examples
-are contained in 
-the header of the module. The html versions of Toolkit 
-documentation 
-contain hyperlinks to these headers, or you may open the
-source code 
-module in an editor or with a text display utility.
-
 
  
 <h3>Finding the Appropriate Routine </h3>
@@ -267,7 +266,11 @@ Toolkit to help
 you find an API that may meet your needs.
 <ol>
 
-<li>A document named "Most Used APIs" provides a 
+<li>A document named 
+<a
+ href="mostused.html" 
+target="_blank">"Most Used APIs"</a>
+provides a 
 brief
 summary of the purpose and use of the most used 
 (high-level)
@@ -281,9 +284,7 @@ categories, such as:
 <li> reference frame transformations
 <li> illumination angles
 </ul>
-<p>and so on. The "Most Used APIs" document 
-is found in the /doc/html/info folder of
-each Toolkit.
+<p>and so on.
 
 <li> A permuted index 
 may help you identify the
@@ -315,11 +316,12 @@ decide if the module does
 indeed provide the computation you sought.
 
 <p> The permuted index is 
-found in the /doc/html/info folder and is named
-spicelib.idx in 
-FORTRAN toolkits and cspice_idx in CSPICE, Icy and 
+found in the doc/html/info folder and is named
+spicelib_idx.html in 
+FORTRAN toolkits, cspice_idx.html in CSPICE toolkits, 
+icy_idx.html in Icy toolkits, and mice_idx.html in 
 Mice 
-Toolkits.
+toolkits.
 
 </ol>
 
@@ -375,9 +377,8 @@ include code that allows reading of
 non-native text kernels. 
 Unfortunately this accommodation is <b>not</b> possible
 in the 
-FORTRAN Toolkits because the FORTRAN language does not allow 
-detection of 
-C-style line terminations. FORTRAN Toolkits contain 
+FORTRAN Toolkits.
+FORTRAN Toolkits contain 
 code that will issue a SPICE
 error message whenever a non-native text 
 kernel load occurs.<br>
@@ -627,7 +628,7 @@ reference frame specifications (FK)
 generic kernels are produced by NAIF and made available from 
 the
 generic kernels link on the <a 
-href="http://naif.jpl.nasa.gov/naif/data.html">Data webpage.</a>
+href="https://naif.jpl.nasa.gov/naif/data.html">Data webpage.</a>
 But, 
 as the use of SPICE spreads, other agencies may also offer generic 
 kernels.
@@ -644,7 +645,7 @@ available from a national data archive center. The
 NAIF node of the
 Planetary Data System is one such example (<a
  
-href="http://naif.jpl.nasa.gov/naif/data.html">http://naif.jpl.nasa.gov/naif/data.html</a>).<br>
+href="https://naif.jpl.nasa.gov/naif/data.html">https://naif.jpl.nasa.gov/naif/data.html</a>).<br>
  
 </p>
 
@@ -674,7 +675,7 @@ Toolkit distributions include a document named <a
  
 href="../req/problems.html" target="_blank">problems.req</a> in the /doc 
 folder, and
- in the /doc/html folder. This document lists the 
+ in the doc/html folder. This document lists the 
 most
 common problems and aggravations the new SPICE user might 
 experience,
@@ -696,7 +697,7 @@ environment,
 find a file, don't have
 sufficient privileges to perform some action, 
 etc.) contact your system
-manager. She/He may be able to assist you.
+administrator. She/He may be able to assist you.
  
 <li> If you are using either the Icy (IDL) or Mice (MATLAB) version
  
@@ -728,7 +729,7 @@ e-mail or
 call us on the phone; we'll do what we can to help within 
 our
 resources and programmatic limitations. See the <a 
-href="http://naif.jpl.nasa.gov/naif/gettinghelp.html">
+href="https://naif.jpl.nasa.gov/naif/gettinghelp.html">
 getting 
 help</a> link on the NAIF webpage.</li>
       </ul>
@@ -877,7 +878,7 @@ well informed about SPICE related news,
       consider signing up 
 with the
       <a 
-href="http://naif.jpl.nasa.gov/mailman/listinfo/spice_announce">
+href="https://naif.jpl.nasa.gov/mailman/listinfo/spice_announce">
  
 spice_announce</a> Mailman system. </p>
       </td>

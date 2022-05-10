@@ -7,8 +7,8 @@ Introduction
 ===========================================================================
  
    This document describes the structure and contents of the latest version
-   of the NAIF cspice Toolkit for INTEL MAC computers using MAC OS-X
-   operating system and CC 64BIT compiler.
+   of the NAIF cspice Toolkit for PC computers using LINUX operating system
+   and GCC 64BIT compiler.
  
    Most C compilers come with a large set of compilation options that can
    be used when compiling source code. The compiler options we (NAIF) used
@@ -19,8 +19,8 @@ Introduction
 Version Information
 --------------------------------------------------------
  
-      Creation Date: Fri Apr  7 16:41:22 PDT 2017
-      Version      : CSPICE.............V.N0066
+      Creation Date: Sat Jan  1 19:04:31 PST 2022
+      Version      : CSPICE.............V.N0067
  
  
 Directory Structure and Contents
@@ -35,6 +35,10 @@ Directory Structure and Contents
          cspice
             |
             makeall.csh
+ 
+   It may optionally contain a zero-size file named N????, e.g. N0067,
+   indicating the generic SPICE Toolkit version on which this package is
+   based.
  
    cspice also contains several subdirectories that will be described in
    more detail in the following sections.
@@ -219,6 +223,7 @@ INCLUDE
                |
                SpiceCK.h
                SpiceCel.h
+               SpiceDAS.h
                SpiceDLA.h
                SpiceDSK.h
                SpiceDtl.h
@@ -230,6 +235,7 @@ INCLUDE
                SpiceOccult.h
                SpiceOsc.h
                SpicePln.h
+               SpiceSCLK.h
                SpiceSPK.h
                SpiceSrf.h
                SpiceUsr.h
@@ -262,7 +268,7 @@ LIB
  
    All static libraries are compiled using the following compiler options:
  
-      -m64 -c -ansi -O2 -fPIC -DNON_UNIX_STDIO
+      -c -ansi -m64 -O2 -fPIC -DNON_UNIX_STDIO
  
    The libraries contained in this directory are listed below. Each library
    is discussed in more detail later in the section devoted to the SRC

@@ -23,12 +23,14 @@
 </H2>
 
 <PRE>
+
    <A HREF="#DSK Required Reading">DSK Required Reading</A>
       <A HREF="#Abstract">Abstract</A>
          <A HREF="#Purpose">Purpose</A>
          <A HREF="#Intended Audience">Intended Audience</A>
          <A HREF="#References">References</A>
       <A HREF="#Introduction">Introduction</A>
+
    <A HREF="#DSK Software">DSK Software</A>
       <A HREF="#High-Level DSK-Enabled Geometry Functions">High-Level DSK-Enabled Geometry Functions</A>
       <A HREF="#DSK File Loading and Unloading">DSK File Loading and Unloading</A>
@@ -38,6 +40,7 @@
       <A HREF="#Surface Name and ID Conversion Functions">Surface Name and ID Conversion Functions</A>
       <A HREF="#SPICE Toolkit DSK Utility Programs">SPICE Toolkit DSK Utility Programs</A>
       <A HREF="#Non-SPICE Toolkit DSK Utility Programs">Non-SPICE Toolkit DSK Utility Programs</A>
+
    <A HREF="#DSK Concepts">DSK Concepts</A>
       <A HREF="#Shapes and Surfaces">Shapes and Surfaces</A>
       <A HREF="#Surface IDs">Surface IDs</A>
@@ -59,10 +62,12 @@
          <A HREF="#DSK Tolerances">DSK Tolerances</A>
          <A HREF="#Drawbacks">Drawbacks</A>
          <A HREF="#Access to DSK Tolerances and Margin Values">Access to DSK Tolerances and Margin Values</A>
+
    <A HREF="#DSK Files">DSK Files</A>
       <A HREF="#DAS Files">DAS Files</A>
       <A HREF="#DLA Files">DLA Files</A>
       <A HREF="#DSK File Format">DSK File Format</A>
+
    <A HREF="#DSK Type 2: Triangular Plate Model">DSK Type 2: Triangular Plate Model</A>
       <A HREF="#Type 2 Shape Data">Type 2 Shape Data</A>
          <A HREF="#Vertices">Vertices</A>
@@ -85,6 +90,7 @@
          <A HREF="#DSK Type 2 Integer Segment Component">DSK Type 2 Integer Segment Component</A>
          <A HREF="#DSK Type 2 Double Precision Segment Component">DSK Type 2 Double Precision Segment Component</A>
          <A HREF="#Coordinate System Parameters">Coordinate System Parameters</A>
+
    <A HREF="#Common Problems">Common Problems</A>
       <A HREF="#Slow DSK Computations">Slow DSK Computations</A>
       <A HREF="#Non-Portable and Unstable Results">Non-Portable and Unstable Results</A>
@@ -94,8 +100,10 @@
          <A HREF="#Data Errors">Data Errors</A>
          <A HREF="#Segment Coverage Errors">Segment Coverage Errors</A>
          <A HREF="#Poor Data Distribution Across Segments">Poor Data Distribution Across Segments</A>
+
    <A HREF="#Appendix A --- Revision History">Appendix A --- Revision History</A>
          <A HREF="#2017 APR 05 by N. J. Bachman.">2017 APR 05 by N. J. Bachman.</A>
+
    <A HREF="#Appendix B --- DSK Subsystem Limits">Appendix B --- DSK Subsystem Limits</A>
       <A HREF="#General Limits">General Limits</A>
       <A HREF="#DSK Type 2 Segment Limits">DSK Type 2 Segment Limits</A>
@@ -109,7 +117,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> DSK Required Reading
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2017 APR 05 by N. J. Bachman.
+   Last revised on 2021 OCT 22 by N. J. Bachman.
 <P>
  
 <BR><BR>
@@ -872,6 +880,14 @@ single file.<BR>
    assignment of surface names and surface IDs.
 <P>
  
+   For a given body, the surface name to surface ID mapping may be
+   many-to-one. If multiple surface names are associated with a surface ID
+   for a specified body, then the surface ID-to-name conversion routines
+   will map that surface ID to the last name associated with the ID. The
+   surface name-to-ID mapping routines will map any of the surface names to
+   that surface ID.
+<P>
+ 
    The CSPICE functions for converting between surface IDs and surface
    names are listed in the section ``Surface Name and ID Conversion
    Functions'' above.
@@ -917,6 +933,25 @@ single file.<BR>
 </PRE>
    operator; this operator appends to rather than overwrites the kernel
    variable named on the left hand side of the assignment.
+<P>
+ 
+   Multiple surface names, also called ``surface aliases,'' can be mapped
+   to a surface ID for a given body as follows:
+<P>
+ 
+<PRE>
+   NAIF_SURFACE_NAME += &lt;surface name 1&gt;
+   NAIF_SURFACE_CODE += &lt;surface code 1&gt;
+   NAIF_SURFACE_BODY += &lt;body code 1&gt;
+ 
+   NAIF_SURFACE_NAME += &lt;surface name 2&gt;
+   NAIF_SURFACE_CODE += &lt;surface code 1&gt;
+   NAIF_SURFACE_BODY += &lt;body code 1&gt;
+</PRE>
+   Using this mapping, body code 1 and either surface name will be mapped
+   by the surface name-to-ID conversion routines to surface code 1. Body
+   code 1 and surface code 1 will be mapped by the surface ID-to-name
+   routines to surface name 2.
 <P>
  
 <BR><BR>

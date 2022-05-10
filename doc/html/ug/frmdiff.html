@@ -23,6 +23,7 @@
 </H2>
 
 <PRE>
+
    <A HREF="#FRMDIFF User's Guide">FRMDIFF User's Guide</A>
       <A HREF="#Abstract">Abstract</A>
       <A HREF="#Summary">Summary</A>
@@ -33,12 +34,13 @@
          <A HREF="#To Compute Transformation Between Two Frames">To Compute Transformation Between Two Frames</A>
       <A HREF="#Usage">Usage</A>
       <A HREF="#Options">Options</A>
+
    <A HREF="#Inputs">Inputs</A>
       <A HREF="#Kernel Files">Kernel Files</A>
          <A HREF="#Primary Kernel Files">Primary Kernel Files</A>
          <A HREF="#Additional Kernel Files">Additional Kernel Files</A>
       <A HREF="#Comparison Runs vs. Sampling Runs">Comparison Runs vs. Sampling Runs</A>
-      <A HREF="#Runs with Two, One, and No Primary Kernel File(s)">Runs with Two, One, and No Primary Kernel File(s)</A>
+      <A HREF="#Runs with Two, One, and No Primary Kernel Files">Runs with Two, One, and No Primary Kernel File(s)</A>
          <A HREF="#Runs with Two Primary Kernel Files">Runs with Two Primary Kernel Files</A>
          <A HREF="#Runs with One Primary Kernel File">Runs with One Primary Kernel File</A>
          <A HREF="#Runs Without Primary Kernel Files">Runs Without Primary Kernel Files</A>
@@ -50,6 +52,7 @@
          <A HREF="#Coverage Window">Coverage Window</A>
          <A HREF="#Times within Coverage Window">Times within Coverage Window</A>
       <A HREF="#Angular Velocities">Angular Velocities</A>
+
    <A HREF="#Output">Output</A>
       <A HREF="#Overview of Report Types">Overview of Report Types</A>
          <A HREF="#Time Tag Format for ``dump*'' Reports">Time Tag Format for ``dump*'' Reports</A>
@@ -61,15 +64,16 @@
          <A HREF="#Report Header for Sampling an Orientation">Report Header for Sampling an Orientation</A>
          <A HREF="#Report Header for Coverage/Gaps for An Orientation">Report Header for Coverage/Gaps for An Orientation</A>
       <A HREF="#Report Formats">Report Formats</A>
-         <A HREF="#Basic Report (no ``-t'' or ``-t basic'')">Basic Report (no ``-t'' or ``-t basic'')</A>
-         <A HREF="#Statistics Report (``-t stats'')">Statistics Report (``-t stats'')</A>
-         <A HREF="#Angle and Axis Dump Report (``-t dumpaa'')">Angle and Axis Dump Report (``-t dumpaa'')</A>
-         <A HREF="#Matrix Dump Report (``-t dumpm'')">Matrix Dump Report (``-t dumpm'')</A>
-         <A HREF="#SPICE-Style Quaternion Dump Report (``-t dumpqs'')">SPICE-Style Quaternion Dump Report (``-t dumpqs'')</A>
-         <A HREF="#``Other''-Style Quaternion Dump Report (``-t dumpqo'')">``Other''-Style Quaternion Dump Report (``-t dumpqo'')</A>
-         <A HREF="#Euler Angles Dump Report (``-t dumpea'')">Euler Angles Dump Report (``-t dumpea'')</A>
-         <A HREF="#Coverage Intervals Dump Report (``-t dumpc''):">Coverage Intervals Dump Report (``-t dumpc''):</A>
-         <A HREF="#Coverage Gaps Dump Report (``-t dumpg'')">Coverage Gaps Dump Report (``-t dumpg'')</A>
+         <A HREF="#Basic Report no ``-t'' or ``-t basic''">Basic Report (no ``-t'' or ``-t basic'')</A>
+         <A HREF="#Statistics Report ``-t stats''">Statistics Report (``-t stats'')</A>
+         <A HREF="#Angle and Axis Dump Report ``-t dumpaa''">Angle and Axis Dump Report (``-t dumpaa'')</A>
+         <A HREF="#Matrix Dump Report ``-t dumpm''">Matrix Dump Report (``-t dumpm'')</A>
+         <A HREF="#SPICE-Style Quaternion Dump Report ``-t dumpqs''">SPICE-Style Quaternion Dump Report (``-t dumpqs'')</A>
+         <A HREF="#``Other''-Style Quaternion Dump Report ``-t dumpqo''">``Other''-Style Quaternion Dump Report (``-t dumpqo'')</A>
+         <A HREF="#Euler Angles Dump Report ``-t dumpea''">Euler Angles Dump Report (``-t dumpea'')</A>
+         <A HREF="#Coverage Intervals Dump Report ``-t dumpc'':">Coverage Intervals Dump Report (``-t dumpc''):</A>
+         <A HREF="#Coverage Gaps Dump Report ``-t dumpg''">Coverage Gaps Dump Report (``-t dumpg'')</A>
+
    <A HREF="#Examples">Examples</A>
       <A HREF="#Checking if Two CKs Provide the Same Orientation">Checking if Two CKs Provide the Same Orientation</A>
       <A HREF="#Comparing Predicted and Reconstructed CKs">Comparing Predicted and Reconstructed CKs</A>
@@ -82,12 +86,16 @@
       <A HREF="#Sampling Orientation With Two Different ``Coverage'' Frames">Sampling Orientation With Two Different ``Coverage'' Frames</A>
       <A HREF="#Displaying Overlap in Coverage between Two CKs">Displaying Overlap in Coverage between Two CKs</A>
       <A HREF="#Displaying Gaps in a CK File">Displaying Gaps in a CK File</A>
+
    <A HREF="#Miscellaneous Things to Consider">Miscellaneous Things to Consider</A>
       <A HREF="#``Apples vs. Oranges''">``Apples vs. Oranges''</A>
       <A HREF="#Using Euler Angles for Small Rotation Differences">Using Euler Angles for Small Rotation Differences</A>
       <A HREF="#Single Epoch">Single Epoch</A>
+
    <A HREF="#References">References</A>
+
    <A HREF="#Acronyms">Acronyms</A>
+
    <A HREF="#Appendix 1: Comparison, Sampling and Report Quantity Algorithms">Appendix 1: Comparison, Sampling and Report Quantity Algorithms</A>
       <A HREF="#Computing Rotation and Angular Velocity Difference">Computing Rotation and Angular Velocity Difference</A>
       <A HREF="#Sampling Rotation and Angular Velocity">Sampling Rotation and Angular Velocity</A>
@@ -884,7 +892,7 @@ automatically are the same frames and the ``to'' frames provided using the
 ``-t1''/``-t2'' keys or determined automatically are the same frames.
 <BR><BR></UL>
 <BR><BR>
-<A NAME="Runs with Two, One, and No Primary Kernel File(s)"></A>
+<A NAME="Runs with Two, One, and No Primary Kernel Files"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Runs with Two, One, and No Primary Kernel File(s)
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
@@ -2119,7 +2127,7 @@ key TIMESPEC is replaced with one of the following strings:
 <H2> Report Formats
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
 <BR><BR>
-<A NAME="Basic Report (no ``-t'' or ``-t basic'')"></A>
+<A NAME="Basic Report no ``-t'' or ``-t basic''"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Basic Report (no ``-t'' or ``-t basic'')
 </H3><P><BR><BR>
@@ -2180,7 +2188,7 @@ using the ``-x'' key have no effect on the values in this report).
 significant digits specified using ``-d'' apply to this report.
 <BR><BR></UL>
 <BR><BR>
-<A NAME="Statistics Report (``-t stats'')"></A>
+<A NAME="Statistics Report ``-t stats''"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Statistics Report (``-t stats'')
 </H3><P><BR><BR>
@@ -2272,7 +2280,7 @@ using the ``-x'' key have no effect on the values in this report).
 significant digits specified using ``-d'' apply to this report.
 <BR><BR></UL>
 <BR><BR>
-<A NAME="Angle and Axis Dump Report (``-t dumpaa'')"></A>
+<A NAME="Angle and Axis Dump Report ``-t dumpaa''"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Angle and Axis Dump Report (``-t dumpaa'')
 </H3><P><BR><BR>
@@ -2325,7 +2333,7 @@ header line are omitted when AVs are not compared/sampled (no ``-a'' or
 <TT>--</TT> UNITS is replaced with the units used to display the angles.
 <BR><BR></UL>
 <BR><BR>
-<A NAME="Matrix Dump Report (``-t dumpm'')"></A>
+<A NAME="Matrix Dump Report ``-t dumpm''"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Matrix Dump Report (``-t dumpm'')
 </H3><P><BR><BR>
@@ -2369,7 +2377,7 @@ header line are omitted when AVs are not compared/sampled (no ``-a'' or
 ``-a no'').
 <BR><BR></UL>
 <BR><BR>
-<A NAME="SPICE-Style Quaternion Dump Report (``-t dumpqs'')"></A>
+<A NAME="SPICE-Style Quaternion Dump Report ``-t dumpqs''"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> SPICE-Style Quaternion Dump Report (``-t dumpqs'')
 </H3><P><BR><BR>
@@ -2413,7 +2421,7 @@ header line are omitted when AVs are not compared/sampled (no ``-a'' or
 ``-a no'').
 <BR><BR></UL>
 <BR><BR>
-<A NAME="``Other''-Style Quaternion Dump Report (``-t dumpqo'')"></A>
+<A NAME="``Other''-Style Quaternion Dump Report ``-t dumpqo''"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> ``Other''-Style Quaternion Dump Report (``-t dumpqo'')
 </H3><P><BR><BR>
@@ -2458,7 +2466,7 @@ header line are omitted when AVs are not compared/sampled (no ``-a'' or
 ``-a no'').
 <BR><BR></UL>
 <BR><BR>
-<A NAME="Euler Angles Dump Report (``-t dumpea'')"></A>
+<A NAME="Euler Angles Dump Report ``-t dumpea''"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Euler Angles Dump Report (``-t dumpea'')
 </H3><P><BR><BR>
@@ -2519,7 +2527,7 @@ header line are omitted when AVs are not compared/sampled (no ``-a'' or
 labels (X,Y, or Z).
 <BR><BR></UL>
 <BR><BR>
-<A NAME="Coverage Intervals Dump Report (``-t dumpc''):"></A>
+<A NAME="Coverage Intervals Dump Report ``-t dumpc'':"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Coverage Intervals Dump Report (``-t dumpc''):
 </H3><P><BR><BR>
@@ -2552,7 +2560,7 @@ minutes, seconds format (replaces DAYS:HR:MN:SC.MMMMMM). The STARTTIMEs and
 STOPTIMEs are displayed in the format specified using the ``-f'' key.
 <BR><BR></UL>
 <BR><BR>
-<A NAME="Coverage Gaps Dump Report (``-t dumpg'')"></A>
+<A NAME="Coverage Gaps Dump Report ``-t dumpg''"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H3> Coverage Gaps Dump Report (``-t dumpg'')
 </H3><P><BR><BR>

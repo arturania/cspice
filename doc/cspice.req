@@ -2,7 +2,7 @@
 CSPICE Required Reading
 ===========================================================================
  
-   Last revised on 2016 JUL 28 by E. D. Wright.
+   Last revised on 2017 APR 24 by E. D. Wright.
  
  
 Abstract
@@ -281,8 +281,8 @@ The CSPICE API
    (underscore). The underscore does not appear in the corresponding source
    file names.
  
-   f2'd routines may be called directly, but this is strongly discouraged
-   since f2'd routines emulate Fortran functionality:
+   f2c'd routines may be called directly, but this is strongly discouraged
+   since f2c'd routines emulate Fortran functionality:
  
        --   All argumentss called by reference
  
@@ -834,15 +834,25 @@ File size
    The exact size limitation depends on the operating system and compiler.
  
  
-Revisions
+Appendix A: Document Revision History
+===========================================================================
+ 
+ 
+2017 APR 24 by E. D. Wright.
 --------------------------------------------------------
  
-   2016 JUL 28 by E. D. Wright.
+   Corrected format mistake in Revisions Appendix.
+ 
+ 
+2016 JUL 28 by E. D. Wright.
+--------------------------------------------------------
  
    Document updated and expanded to reflect current state of CSPICE
    distributions.
  
-   2006 NOV 20 by N. J. Bachman and B. V. Semenov.
+ 
+2006 NOV 20 by N. J. Bachman and B. V. Semenov.
+--------------------------------------------------------
  
    Original version.
  

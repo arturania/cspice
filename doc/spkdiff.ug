@@ -2,7 +2,7 @@
 SPKDIFF User's Guide
 ===========================================================================
  
-   Last revised on 2012 FEB 15 by B. V. Semenov.
+   Last revised on 2021 NOV 17 by B. V. Semenov.
  
  
 Abstract
@@ -1528,8 +1528,8 @@ Report Formats
  
 Basic Report (no ``-t'' option or with ``-t basic'')
  
-   The basic report shows only the absolute and relative maximum and
-   average differences in magnitude of position and velocity vectors. The
+   The basic report shows only the maximum and average magnitudes of
+   position and velocity vector absolute and relative differences. The
    absolute differences are computed by simple subtraction of position and
    velocity components for the second trajectory from the corresponding
    position and velocity components for the first trajectory while the

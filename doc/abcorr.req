@@ -2,7 +2,7 @@
 Aberration Corrections Required Reading
 ===========================================================================
  
-   Last revised on 2015 AUG 11 by N. J. Bachman and E. D. Wright.
+   Last revised on 2020 MAY 26 by E. D. Wright.
  
  
 Abstract
@@ -349,52 +349,21 @@ Reception case
    and `et'.
  
    If correction for stellar aberration is requested, the target position
-   is rotated toward the solar system barycenter-relative velocity vector
+   is rotated toward the solar system barycenter- relative velocity vector
    of the observer. The rotation is computed as follows:
- 
-   Note, the term
- 
-            d(lt)
-            -----
-            dt
- 
-   does not equal zero, nor approximate zero.
- 
-   Given
- 
-                 || r2(t) - r1(t) ||
-            lt = -------------------
-                         c
- 
-   with r2(t) the position of the target at some time, and r1(t) the
-   position of the observer at some time.
- 
-   Let
- 
-            r(t)  = r2(t) - r1(t)
- 
-            range = || r2(t) - r1(t) ||
-                  = || r(t) ||
- 
-   The derivative of light time (lt) with respect to time equals the
-   instantaneous range rate between the two bodies divided by light speed.
- 
-               d(lt)    d(range)   1
-               ----- =  -------- * -
-                dt        dt       c
  
    Let r be the light time corrected vector from the observer to the
    object, and v be the velocity of the observer with respect to the solar
    system barycenter. Let w be the angle between them. The aberration angle
    phi is given by
  
-               sin(phi) = v sin(w)
-                          --------
-                              c
+                  sin(phi) = v sin(w)
+                             --------
+                             c
  
    Let h be the vector given by the cross product
  
-               h = r X v
+                  h = r X v
  
    Rotate r by phi radians about h to obtain the apparent position of the
    object.
@@ -593,15 +562,20 @@ Appendix A --- Revision History
 ===========================================================================
  
  
+2020 MAY 26 by E. D. Wright.
+ 
+   Removed block describing derivative of light-time in the geometric case.
+   Not needed, as well as the derivation shown in the wrong document
+   section.
+ 
+ 
 2015 AUG 11 by E. D. Wright.
  
    Created a Required Reading document from Nat Bachman's original
-   derivations and write-up. Edited as required only for fake TeX format,
-   corrections, and improvement of descriptions.
+   derivations and write-up as shown in SPICELIB routine SPKEZ. Edited as
+   required only for fake TeX format, corrections, and improvement of
+   descriptions.
  
-   This document now serves as the primary reference for the implementation
-   of aberration corrections in all SPICE Toolkit distributions.
- 
- 
-Original version by N. J. Bachman
+   This document serves as a reference for the implementation of aberration
+   corrections in all SPICE Toolkit distributions.
  

@@ -23,6 +23,7 @@
 </H2>
 
 <PRE>
+
    <A HREF="#SCLK Required Reading">SCLK Required Reading</A>
       <A HREF="#Abstract">Abstract</A>
       <A HREF="#Introduction">Introduction</A>
@@ -49,6 +50,7 @@
          <A HREF="#Clock type-specific parameters">Clock type-specific parameters</A>
       <A HREF="#Expanding the system: What NAIF must do">Expanding the system: What NAIF must do</A>
       <A HREF="#An Example Using SCLK Functions">An Example Using SCLK Functions</A>
+
    <A HREF="#SCLK01">SCLK01</A>
       <A HREF="#Conforming spacecraft clocks">Conforming spacecraft clocks</A>
       <A HREF="#Type 1 SCLK format">Type 1 SCLK format</A>
@@ -66,6 +68,7 @@
          <A HREF="#Time coefficients">Time coefficients</A>
          <A HREF="#Partition boundaries0">Partition boundaries</A>
          <A HREF="#Sample SCLK kernels">Sample SCLK kernels</A>
+
    <A HREF="#Appendix: Document Revision History">Appendix: Document Revision History</A>
          <A HREF="#May 27, 2010">May 27, 2010</A>
          <A HREF="#April 1, 2009">April 1, 2009</A>
@@ -83,7 +86,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> SCLK Required Reading
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2010 MAY 27 by E. D. Wright.
+   Last revised on 2021 SEP 04 by B. V. Semenov.
 <P>
  
 <BR><BR>
@@ -1227,12 +1230,24 @@ time t2 than time t3? And so on.)
 <PRE>
    -  .  ,  :  &lt;blank&gt;
 </PRE>
-   On output from CSPICE functions, the delimiter characters will be those
-   defined by a parameter in the SCLK kernel, described later.
+   Consecutive non-blank delimiters containing no intervening digits are
+   treated as if they delimit zero values, consecutive blanks are treated
+   as a single blank, while blanks preceding or following a non-blank
+   delimiter are ignored, as illustrated by this list of eqivalent Galileo
+   SCLK strings:
 <P>
  
-   Consecutive delimiters containing no intervening digits are treated as
-   if they delimit zero values.
+<PRE>
+   00000001:00:3:4
+   1:0:3:4
+   1::3:4
+   1 0 3 4
+   1  0   3    4
+   1 : 0   3  :  4
+   1 : : 3 : 4
+</PRE>
+   On output from CSPICE functions, the delimiter characters will be those
+   defined by a parameter in the SCLK kernel, described later.
 <P>
  
    Note that all fields in time strings represent integers, not decimal

@@ -23,6 +23,7 @@
 </H2>
 
 <PRE>
+
    <A HREF="#MSOPCK User's Guide">MSOPCK User's Guide</A>
       <A HREF="#Abstract">Abstract</A>
       <A HREF="#Summary">Summary</A>
@@ -56,13 +57,14 @@
          <A HREF="#CK ID">CK ID</A>
          <A HREF="#Reference Frame">Reference Frame</A>
          <A HREF="#Angular Velocity Flag">Angular Velocity Flag</A>
+      <A HREF="#ICRF vs J2000">ICRF vs J2000</A>
       <A HREF="#Output CK Metadata">Output CK Metadata</A>
       <A HREF="#Output CK Comment Area Contents">Output CK Comment Area Contents</A>
       <A HREF="#Applying Time Bias to Input Times">Applying Time Bias to Input Times</A>
       <A HREF="#Augmenting Input Attitude by Additional Rotation">Augmenting Input Attitude by Additional Rotation</A>
       <A HREF="#Adding Made-Up Angular Velocity Data to Output CK">Adding Made-Up Angular Velocity Data to Output CK</A>
       <A HREF="#Controlling Coverage Provided by Output CK">Controlling Coverage Provided by Output CK</A>
-      <A HREF="#Reducing Size of Output CK (Downsampling)">Reducing Size of Output CK (Downsampling)</A>
+      <A HREF="#Reducing Size of Output CK Downsampling">Reducing Size of Output CK (Downsampling)</A>
       <A HREF="#Examples">Examples</A>
          <A HREF="#Example 1: Typical Spacecraft CK, Input Includes Angular Velocities">Example 1: Typical Spacecraft CK, Input Includes Angular Velocities</A>
          <A HREF="#Example 2: Typical Spacecraft CK, Input Does Not Include Angular Velocities">Example 2: Typical Spacecraft CK, Input Does Not Include Angular Velocities</A>
@@ -79,7 +81,7 @@
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H1> MSOPCK User's Guide
 </H1><HR SIZE=3 NOSHADE><P><BR><BR><BR>
-   Last revised on 2017 FEB 09 by B. V. Semenov.
+   Last revised on 2021 DEC 31 by B. V. Semenov.
 <P>
  
 <BR><BR>
@@ -1707,7 +1709,9 @@ attitude, then optional angular velocity,
    recognized by the program without requiring any additional FK file. If
    the frame is not one of the frames built into the SPICE system, then an
    FK file defining this frame must be specified using the FRAMES_FILE_NAME
-   keyword.
+   keyword. If input data is referenced to ICRF and CK created from it is
+   intended to be used as described below in the section ``ICRF vs J2000'',
+   the REFERENCE_FRAME_NAME keyword should be set to the value 'J2000'.
 <P>
  
 <BR><BR>
@@ -1746,6 +1750,104 @@ attitude, then optional angular velocity,
    level SPICE routines such as SPKEZR and SXFORM. CK files without the
    angular velocities will make the high level interfaces dealing with
    states fail with the ``orientation-data-not-available'' error.
+<P>
+ 
+<BR><BR>
+<A NAME="ICRF vs J2000"></A>
+<p align="right"><a href="#top"><small>Top</small></a></p>
+<H2> ICRF vs J2000
+</H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
+   The International Celestial Reference System (ICRS) defines coordinate
+   axes that are closely aligned with those of the J2000 (aka EME2000)
+   reference frame. The International Celestial Reference Frame (ICRF) and
+   later versions of it (ICRF1, etc.) are realizations of the ICRS. For
+   brevity, we'll simply refer to ``the ICRF'' below.
+<P>
+ 
+   The rotational offset between the J2000 frame and the ICRS has magnitude
+   of under 0.1 arcseconds.
+<P>
+ 
+   Certain JPL data products are referenced to the ICRF or later versions
+   of it. These include, but are not limited to,
+<P>
+ 
+<UL>
+<TT>--</TT> DE4xx series planetary ephemerides
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Satellite ephemerides compatible with DE4xx planetary ephemerides
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Small body ephemerides compatible with DE4xx planetary ephemerides
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Orientation of the terrestrial frame ITRF93
+<BR><BR></UL>
+<UL>
+<TT>--</TT> Orientation of the lunar principal axes frame
+<BR><BR></UL>
+   Rotation models provided by the IAU are referenced to the ICRF.
+<P>
+ 
+   Modern spacecraft ephemerides and attitude data, other than those for
+   Earth orbiters, are likely referenced to the ICRF. Users should consult
+   documentation or data providers to verify this for data sets of
+   interest.
+<P>
+ 
+   SPK and binary PCK files produced by NAIF from the data sources listed
+   above are referenced to the same version of the ICRF as the
+   corresponding data sources. For historical and backward compatibility
+   reasons, these data products are labeled as being referenced to the
+   J2000 frame.
+<P>
+ 
+   No transformation is required to convert state vectors or orientation
+   data from the J2000 frame to the ICRF (or later version), if the vectors
+   or orientation data are computed using SPICE kernels created from the
+   data sources listed above. For example:
+<P>
+ 
+<UL>
+<TT>--</TT> A call to <a href="../cspice/spkezr_c.html">spkezr_c</a> with the input frame name J2000 will return a state
+vector referenced to the ICRF, if the SPK data are from a JPL planetary
+ephemeris SPK, or from any other SPK in which data are referenced to the
+ICRF and labeled as referenced to the J2000 frame.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> A call to <a href="../cspice/pxform_c.html">pxform_c</a> with the input ``from'' frame name J2000 and input
+``to'' frame name ITRF93 will return a 3x3 matrix that transforms position
+vectors from the ICRF to the ITRF93 terrestrial frame, if the Earth
+orientation data are provided by a NAIF high-precision, binary Earth PCK.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> A call to <a href="../cspice/pxform_c.html">pxform_c</a> with the input ``from'' frame name J2000 and input
+``to'' frame name IAU_MARS will return a 3x3 matrix that transforms
+position vectors from the ICRF to the Mars body-fixed, body-centered
+IAU_MARS frame, if the orientation data are provided by a NAIF generic text
+PCK.
+<BR><BR></UL>
+<UL>
+<TT>--</TT> A call to <a href="../cspice/pxform_c.html">pxform_c</a> with the input ``from'' frame name J2000 and an input
+``to'' CK frame name will return a 3x3 matrix that transforms position
+vectors from the ICRF to the specified CK frame, if the CK data used by
+this call are referenced to the ICRF and labeled as referenced to the J2000
+frame.
+<BR><BR></UL>
+   SPICE kernel creators intending to support use of data referenced to the
+   ICRF, as shown above, should write the data without first converting it
+   to the J2000 frame. Segments of such SPK, CK, or binary PCK files should
+   indicate the frame is J2000. It is strongly recommended that kernel
+   creators add comments to the files to explain the actual characteristics
+   of the data.
+<P>
+ 
+   SPICE users who export kernel data to non-SPICE file formats may need to
+   transform the data, depending on the frame to which the SPICE data are
+   actually referenced (as opposed to the frame to which the kernel
+   indicates the data are referenced), and depending on the desired output
+   frame.
 <P>
  
 <BR><BR>
@@ -2270,7 +2372,7 @@ angle angleN about the coordinate axis axisN.<BR>
 <P>
  
 <BR><BR>
-<A NAME="Reducing Size of Output CK (Downsampling)"></A>
+<A NAME="Reducing Size of Output CK Downsampling"></A>
 <p align="right"><a href="#top"><small>Top</small></a></p>
 <H2> Reducing Size of Output CK (Downsampling)
 </H2><HR ALIGN="LEFT" WIDTH=50% ><P><BR><BR>
